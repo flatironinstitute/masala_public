@@ -31,10 +31,13 @@ SOFTWARE.
 #ifndef Masala_src_core_pose_Pose_hh
 #define Masala_src_core_pose_Pose_hh
 
-// Forward declarations.
+// Forward declarations:
 #include <core/pose/Pose.fwd.hh>
 
-// Base includes.
+// Core headers:
+#include <core/chemistry/Molecule.fwd.hh>
+
+// Base headers:
 #include <base/MasalaObject.hh>
 
 namespace core {
@@ -42,12 +45,17 @@ namespace pose {
 
 
 /// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
-/// annotations, and computed or measured properties.
+/// @details Poses store atom coordinates and bonds (in the form of a Molecule object),
+/// degree-of-freedom and kinematic relationships, annotations, and computed or measured
+/// properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class Pose : public base::MasalaObject {
 
 public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
     Pose() = default;
@@ -70,6 +78,49 @@ public:
     /// @details Be sure to update this function whenever a private member is added!
     void
     make_independent();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Access the Molecule object in this pose, by shared pointer.
+    /// @details The Molecule object contains the coordinates and properties of atoms
+    /// and chemical bonds.
+    /// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+    /// not all form one contiguously-bonded set).
+    core::chemistry::MoleculeCSP
+    molecule_shared_ptr() const;
+
+    /// @brief Access the Molecule object in this pose, by weak pointer.
+    /// @details The Molecule object contains the coordinates and properties of atoms
+    /// and chemical bonds.
+    /// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+    /// not all form one contiguously-bonded set).
+    core::chemistry::MoleculeCWP
+    molecule_weak_ptr() const;
+
+    /// @brief Access the Molecule object in this pose, by const reference.
+    /// @details The Molecule object contains the coordinates and properties of atoms
+    /// and chemical bonds.
+    /// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+    /// not all form one contiguously-bonded set).
+    core::chemistry::Molecule const &
+    molecule() const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER DATA
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief the Molecule object in this Pose.
+    /// @details The Molecule object contains the coordinates and properties of atoms
+    /// and chemical bonds.
+    /// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+    /// not all form one contiguously-bonded set).
+    core::chemistry::MoleculeSP molecule_;
 
 };
 

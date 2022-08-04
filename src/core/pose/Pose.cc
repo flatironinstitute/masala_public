@@ -61,5 +61,39 @@ Pose::make_independent() {
     // Currently GNDN.
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Access the Molecule object in this pose, by shared pointer.
+/// @details The Molecule object contains the coordinates and properties of atoms
+/// and chemical bonds.
+/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::MoleculeCSP
+Pose::molecule_shared_ptr() const {
+    return molecule_;
+}
+
+/// @brief Access the Molecule object in this pose, by weak pointer.
+/// @details The Molecule object contains the coordinates and properties of atoms
+/// and chemical bonds.
+/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::MoleculeCWP
+Pose::molecule_weak_ptr() const {
+    return molecule_;
+}
+
+/// @brief Access the Molecule object in this pose, by const reference.
+/// @details The Molecule object contains the coordinates and properties of atoms
+/// and chemical bonds.
+/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::Molecule const &
+Pose::molecule() const {
+    return *molecule_;
+}
+
 } // namespace pose
 } // namespace core
