@@ -30,6 +30,9 @@ SOFTWARE.
 #ifndef Masala_src_base_MasalaObject_hh
 #define Masala_src_base_MasalaObject_hh
 
+// Forward declarations.
+#include <base/MasalaObject.fwd.hh>
+
 namespace base {
 
 /// @brief A base class for all Masala derived classes.  This allows the possibility of having a

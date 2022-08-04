@@ -23,8 +23,8 @@ SOFTWARE.
 */
 
 /// @file src/base/MasalaObject.hh
-/// @brief A base class for all Masala derived classes.  This allows the possibility of having a
-/// generic MasalaObject pointer or shared pointer.
+/// @brief Forward declarations for a base class for all Masala derived classes.  This
+/// allows the possibility of having a generic MasalaObject pointer or shared pointer.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_MasalaObject_fwd_hh
