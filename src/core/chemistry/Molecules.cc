@@ -31,6 +31,9 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/Molecules.hh>
 
+// Core headers:
+#include <core/chemistry/Molecule.hh>
+
 namespace core {
 namespace chemistry {
 
@@ -54,7 +57,40 @@ Molecules::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 Molecules::make_independent() {
-    // GNDN, for now.
+    // Deep-clone the molecules:
+    std::set< MoleculeSP > molecule_set_copy_( molecule_set_ );
+    molecule_set_.clear();
+    for(
+        std::set< MoleculeSP>::const_iterator it( molecule_set_copy_.cbegin() );
+        it != molecule_set_copy_.cend();
+        ++it
+    ) {
+        molecule_set_.insert( (*it)->deep_clone() );
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the number of molecules in this Molecules container.
+std::size_t
+Molecules::size() const {
+    return molecule_set_.size();
+}
+
+/// @brief Get an iterator to the first molecule stored in this Molecules
+/// container.
+std::set< MoleculeSP >::const_iterator
+Molecules::molecule_set_begin() const {
+    return molecule_set_.cbegin();
+}
+
+/// @brief Get an iterator to the end of the set of molecules stored in
+/// this Molecules container.
+std::set< MoleculeSP >::const_iterator
+Molecules::molecule_set_end() const {
+    return molecule_set_.cend();
 }
 
 } // namespace chemistry

@@ -33,9 +33,13 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/Molecule.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
+
+// STL headers:
+#include <set>
 
 namespace core {
 namespace chemistry {
@@ -47,7 +51,7 @@ namespace chemistry {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class Molecules : public base::MasalaObject {
 
-    public:
+public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
@@ -79,6 +83,28 @@ class Molecules : public base::MasalaObject {
     virtual
     void
     make_independent();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the number of molecules in this Molecules container.
+    std::size_t size() const;
+
+    /// @brief Get an iterator to the first molecule stored in this Molecules
+    /// container.
+    std::set< MoleculeSP >::const_iterator molecule_set_begin() const;
+
+    /// @brief Get an iterator to the end of the set of molecules stored in
+    /// this Molecules container.
+    std::set< MoleculeSP >::const_iterator molecule_set_end() const;
+
+private:
+
+    /// @brief The molecules that we're storing.
+    std::set< MoleculeSP > molecule_set_;
 
 };
 
