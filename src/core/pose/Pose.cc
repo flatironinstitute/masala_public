@@ -28,8 +28,11 @@ SOFTWARE.
 /// annotations, and computed or measured properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Headers:
+// Class headers:
 #include <core/pose/Pose.hh>
+
+// Core headers:
+#include <core/chemistry/Molecules.hh>
 
 namespace core {
 namespace pose {
@@ -58,7 +61,7 @@ Pose::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 Pose::make_independent() {
-    // Currently GNDN.
+    molecules_ = molecules_->deep_clone();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
