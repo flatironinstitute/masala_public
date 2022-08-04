@@ -33,6 +33,8 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core/chemistry/Molecules.fwd.hh>
+
+// Core headers:
 #include <core/chemistry/Molecule.fwd.hh>
 
 // Base headers:
