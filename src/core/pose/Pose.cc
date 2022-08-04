@@ -65,34 +65,34 @@ Pose::make_independent() {
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Access the Molecule object in this pose, by shared pointer.
-/// @details The Molecule object contains the coordinates and properties of atoms
+/// @brief Access the Molecules object in this pose, by shared pointer.
+/// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculeCSP
-Pose::molecule_shared_ptr() const {
-    return molecule_;
+core::chemistry::MoleculesCSP
+Pose::molecules_shared_ptr() const {
+    return molecules_;
 }
 
-/// @brief Access the Molecule object in this pose, by weak pointer.
-/// @details The Molecule object contains the coordinates and properties of atoms
+/// @brief Access the Molecules object in this pose, by weak pointer.
+/// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculeCWP
-Pose::molecule_weak_ptr() const {
-    return molecule_;
+core::chemistry::MoleculesCWP
+Pose::molecules_weak_ptr() const {
+    return molecules_;
 }
 
-/// @brief Access the Molecule object in this pose, by const reference.
-/// @details The Molecule object contains the coordinates and properties of atoms
+/// @brief Access the Molecules object in this pose, by const reference.
+/// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecule object may contain more than one molecule (i.e. its atoms may
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::Molecule const &
-Pose::molecule() const {
-    return *molecule_;
+core::chemistry::Molecules const &
+Pose::molecules() const {
+    return *molecules_;
 }
 
 } // namespace pose
