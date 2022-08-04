@@ -66,16 +66,17 @@ public:
     /// @brief Default destructor.
     ~Pose() override = default;
 
-    /// @brief Clone opereration: make a copy of this object and return a shared pointer
+    /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
-    PoseSP clone() const;
+    virtual PoseSP clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
-    PoseSP deep_clone() const;
+    virtual PoseSP deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
     /// @details Be sure to update this function whenever a private member is added!
+    virtual
     void
     make_independent();
 

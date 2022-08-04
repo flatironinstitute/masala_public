@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef Masala_src_core_pose_Pose_fwd_hh
 #define Masala_src_core_pose_Pose_fwd_hh
 
+#include <memory>
+
 namespace core {
 namespace pose {
 

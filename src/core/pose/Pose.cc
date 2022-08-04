@@ -41,7 +41,7 @@ namespace pose {
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Clone opereration: make a copy of this object and return a shared pointer
+/// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 PoseSP
 Pose::clone() const {
