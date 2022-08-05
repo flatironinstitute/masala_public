@@ -32,6 +32,9 @@ SOFTWARE.
 // Forward declarations:
 #include <core/chemistry/Molecule.fwd.hh>
 
+// Core headers:
+#include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
+
 // Base headers:
 #include <base/MasalaObject.hh>
 
@@ -89,6 +92,15 @@ public:
 
 private:
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER DATA
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The representation of the atom coordinates.
+    /// @details Different calculators might need atoms represented in different ways, internally (e.g.
+    /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
+    /// store the data differently, but all offer iterators to access atom coordinates.
+    AtomCoordinateRepresentationSP atom_coordinates_;
 
 };
 
