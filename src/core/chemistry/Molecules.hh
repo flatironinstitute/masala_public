@@ -86,6 +86,9 @@ public:
     void
     make_independent();
 
+    /// @brief Returns "Molecules".
+	std::string class_name() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

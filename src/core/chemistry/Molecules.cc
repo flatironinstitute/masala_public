@@ -34,6 +34,9 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/Molecule.hh>
 
+// STL headers:
+#include <string>
+
 namespace core {
 namespace chemistry {
 
@@ -67,6 +70,12 @@ Molecules::make_independent() {
     ) {
         molecule_set_.insert( (*it)->deep_clone() );
     }
+}
+
+/// @brief Returns "Molecule".
+std::string
+Molecules::class_name() const {
+    return "Molecules";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
