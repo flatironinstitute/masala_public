@@ -29,6 +29,9 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/Molecule.hh>
 
+// STL headers:
+#include <string>
+
 namespace core {
 namespace chemistry {
 
@@ -53,6 +56,12 @@ Molecule::deep_clone() const {
 void
 Molecule::make_independent() {
     // Currently GNDN.
+}
+
+/// @brief Returns "Molecule".
+std::string
+Molecule::class_name() const {
+    return "Molecule";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -52,6 +52,9 @@ public:
 	/// derived classes can.
 	virtual ~MasalaObject() = 0;
 
+	/// @brief Every class can name itself.
+	virtual std::string class_name() const = 0;
+
 }; // class MasalaObject
 
 } //namespace base
