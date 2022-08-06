@@ -35,7 +35,7 @@ SOFTWARE.
 #include <core/pose/Pose.fwd.hh>
 
 // Core headers:
-#include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/MoleculesCollection.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -45,7 +45,7 @@ namespace pose {
 
 
 /// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates and bonds (in the form of a Molecules object),
+/// @details Poses store atom coordinates and bonds (in the form of a MoleculesCollection object),
 /// degree-of-freedom and kinematic relationships, annotations, and computed or measured
 /// properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -86,28 +86,28 @@ public:
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Access the Molecules object in this pose, by shared pointer.
-    /// @details The Molecules object contains the coordinates and properties of atoms
+    /// @brief Access the MoleculesCollection object in this pose, by shared pointer.
+    /// @details The MoleculesCollection object contains the coordinates and properties of atoms
     /// and chemical bonds.
-    /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+    /// @note A MoleculesCollection object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesCSP
+    core::chemistry::MoleculesCollectionCSP
     molecules_shared_ptr() const;
 
-    /// @brief Access the Molecules object in this pose, by weak pointer.
-    /// @details The Molecules object contains the coordinates and properties of atoms
+    /// @brief Access the MoleculesCollection object in this pose, by weak pointer.
+    /// @details The MoleculesCollection object contains the coordinates and properties of atoms
     /// and chemical bonds.
-    /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+    /// @note A MoleculesCollection object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesCWP
+    core::chemistry::MoleculesCollectionCWP
     molecules_weak_ptr() const;
 
-    /// @brief Access the Molecules object in this pose, by const reference.
-    /// @details The Molecules object contains the coordinates and properties of atoms
+    /// @brief Access the MoleculesCollection object in this pose, by const reference.
+    /// @details The MoleculesCollection object contains the coordinates and properties of atoms
     /// and chemical bonds.
-    /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+    /// @note A MoleculesCollection object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::Molecules const &
+    core::chemistry::MoleculesCollection const &
     molecules() const;
 
 private:
@@ -116,12 +116,12 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief the Molecules object in this Pose.
-    /// @details The Molecules object contains the coordinates and properties of atoms
+    /// @brief the MoleculesCollection object in this Pose.
+    /// @details The MoleculesCollection object contains the coordinates and properties of atoms
     /// and chemical bonds.
-    /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+    /// @note A MoleculesCollection object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesSP molecules_;
+    core::chemistry::MoleculesCollectionSP molecules_;
 
 };
 

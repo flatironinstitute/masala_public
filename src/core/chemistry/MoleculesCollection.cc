@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecules.cc
+/// @file src/core/chemistry/MoleculesCollection.cc
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The Molecules container can also
+/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
 /// define intermolecular bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/Molecules.hh>
+#include <core/chemistry/MoleculesCollection.hh>
 
 // Core headers:
 #include <core/chemistry/Molecule.hh>
@@ -42,16 +42,16 @@ namespace chemistry {
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-MoleculesSP
-Molecules::clone() const {
-    return std::make_shared< Molecules >( *this );
+MoleculesCollectionSP
+MoleculesCollection::clone() const {
+    return std::make_shared< MoleculesCollection >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
-MoleculesSP
-Molecules::deep_clone() const {
-    MoleculesSP molecules_copy( std::make_shared< Molecules >( *this ) );
+MoleculesCollectionSP
+MoleculesCollection::deep_clone() const {
+    MoleculesCollectionSP molecules_copy( std::make_shared< MoleculesCollection >( *this ) );
     molecules_copy->make_independent();
     return molecules_copy;
 }
@@ -59,7 +59,7 @@ Molecules::deep_clone() const {
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Be sure to update this function whenever a private member is added!
 void
-Molecules::make_independent() {
+MoleculesCollection::make_independent() {
     // Deep-clone the molecules:
     std::set< MoleculeSP > molecule_set_copy_( molecule_set_ );
     molecule_set_.clear();
@@ -74,31 +74,31 @@ Molecules::make_independent() {
 
 /// @brief Returns "Molecule".
 std::string
-Molecules::class_name() const {
-    return "Molecules";
+MoleculesCollection::class_name() const {
+    return "MoleculesCollection";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get the number of molecules in this Molecules container.
+/// @brief Get the number of molecules in this MoleculesCollection container.
 std::size_t
-Molecules::size() const {
+MoleculesCollection::size() const {
     return molecule_set_.size();
 }
 
-/// @brief Get an iterator to the first molecule stored in this Molecules
+/// @brief Get an iterator to the first molecule stored in this MoleculesCollection
 /// container.
 std::set< MoleculeSP >::const_iterator
-Molecules::molecule_set_begin() const {
+MoleculesCollection::molecule_set_begin() const {
     return molecule_set_.cbegin();
 }
 
 /// @brief Get an iterator to the end of the set of molecules stored in
-/// this Molecules container.
+/// this MoleculesCollection container.
 std::set< MoleculeSP >::const_iterator
-Molecules::molecule_set_end() const {
+MoleculesCollection::molecule_set_end() const {
     return molecule_set_.cend();
 }
 

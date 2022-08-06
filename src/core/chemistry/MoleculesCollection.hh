@@ -22,17 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecules.hh
+/// @file src/core/chemistry/MoleculesCollection.hh
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The Molecules container can also
+/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
 /// define intermolecular bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_hh
-#define Masala_src_core_chemistry_Molecules_hh
+#ifndef Masala_src_core_chemistry_MoleculesCollection_hh
+#define Masala_src_core_chemistry_MoleculesCollection_hh
 
 // Forward declarations:
-#include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/MoleculesCollection.fwd.hh>
 
 // Core headers:
 #include <core/chemistry/Molecule.fwd.hh>
@@ -48,10 +48,10 @@ namespace chemistry {
 
 
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The Molecules container can also
+/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
 /// define intermolecular bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Molecules : public base::MasalaObject {
+class MoleculesCollection : public base::MasalaObject {
 
 public:
 
@@ -60,24 +60,24 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    Molecules() = default;
+    MoleculesCollection() = default;
 
     /// @brief Copy constructor.
-    Molecules( Molecules const & ) = default;
+    MoleculesCollection( MoleculesCollection const & ) = default;
 
     /// @brief Default destructor.
-    ~Molecules() override = default;
+    ~MoleculesCollection() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     virtual
-    MoleculesSP
+    MoleculesCollectionSP
     clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
     virtual
-    MoleculesSP
+    MoleculesCollectionSP
     deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -86,7 +86,7 @@ public:
     void
     make_independent();
 
-    /// @brief Returns "Molecules".
+    /// @brief Returns "MoleculesCollection".
 	std::string class_name() const override;
 
 public:
@@ -95,15 +95,15 @@ public:
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get the number of molecules in this Molecules container.
+    /// @brief Get the number of molecules in this MoleculesCollection container.
     std::size_t size() const;
 
-    /// @brief Get an iterator to the first molecule stored in this Molecules
+    /// @brief Get an iterator to the first molecule stored in this MoleculesCollection
     /// container.
     std::set< MoleculeSP >::const_iterator molecule_set_begin() const;
 
     /// @brief Get an iterator to the end of the set of molecules stored in
-    /// this Molecules container.
+    /// this MoleculesCollection container.
     std::set< MoleculeSP >::const_iterator molecule_set_end() const;
 
 private:
@@ -116,4 +116,4 @@ private:
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_Molecules_hh
+#endif // Masala_src_core_chemistry_MoleculesCollection_hh

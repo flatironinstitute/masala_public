@@ -22,28 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecules.fwd.hh
+/// @file src/core/chemistry/MoleculesCollection.fwd.hh
 /// @brief Forward declarations for a class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The Molecules container can also
+/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
 /// define intermolecular bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_fwd_hh
-#define Masala_src_core_chemistry_Molecules_fwd_hh
+#ifndef Masala_src_core_chemistry_MoleculesCollection_fwd_hh
+#define Masala_src_core_chemistry_MoleculesCollection_fwd_hh
 
 #include <memory>
 
 namespace core {
 namespace chemistry {
 
-    class Molecules;
+    class MoleculesCollection;
 
-    using MoleculesSP = std::shared_ptr< Molecules >;
-    using MoleculesCSP = std::shared_ptr< Molecules const >;
-    using MoleculesWP = std::weak_ptr< Molecules >;
-    using MoleculesCWP = std::weak_ptr< Molecules const >;
+    using MoleculesCollectionSP = std::shared_ptr< MoleculesCollection >;
+    using MoleculesCollectionCSP = std::shared_ptr< MoleculesCollection const >;
+    using MoleculesCollectionWP = std::weak_ptr< MoleculesCollection >;
+    using MoleculesCollectionCWP = std::weak_ptr< MoleculesCollection const >;
 
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_Molecules_fwd_hh
+#endif // Masala_src_core_chemistry_MoleculesCollection_fwd_hh
