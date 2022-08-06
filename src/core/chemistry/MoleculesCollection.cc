@@ -24,15 +24,14 @@ SOFTWARE.
 
 /// @file src/core/chemistry/MoleculesCollection.cc
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
-/// define intermolecular bonds.
+/// @details Each Molecules object contains atoms and bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
 #include <core/chemistry/MoleculesCollection.hh>
 
 // Core headers:
-#include <core/chemistry/Molecule.hh>
+#include <core/chemistry/Molecules.hh>
 
 // STL headers:
 #include <string>
@@ -64,7 +63,7 @@ MoleculesCollection::make_independent() {
     std::set< MoleculeSP > molecule_set_copy_( molecule_set_ );
     molecule_set_.clear();
     for(
-        std::set< MoleculeSP>::const_iterator it( molecule_set_copy_.cbegin() );
+        std::set< MoleculesSP>::const_iterator it( molecule_set_copy_.cbegin() );
         it != molecule_set_copy_.cend();
         ++it
     ) {
@@ -88,16 +87,16 @@ MoleculesCollection::size() const {
     return molecule_set_.size();
 }
 
-/// @brief Get an iterator to the first molecule stored in this MoleculesCollection
+/// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
 /// container.
-std::set< MoleculeSP >::const_iterator
+std::set< MoleculesSP >::const_iterator
 MoleculesCollection::molecule_set_begin() const {
     return molecule_set_.cbegin();
 }
 
-/// @brief Get an iterator to the end of the set of molecules stored in
+/// @brief Get an iterator to the end of the set of Molecules objects stored in
 /// this MoleculesCollection container.
-std::set< MoleculeSP >::const_iterator
+std::set< MoleculesSP >::const_iterator
 MoleculesCollection::molecule_set_end() const {
     return molecule_set_.cend();
 }

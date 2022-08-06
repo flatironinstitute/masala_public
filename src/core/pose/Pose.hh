@@ -116,7 +116,7 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief the MoleculesCollection object in this Pose.
+    /// @brief The MoleculesCollection object in this Pose.
     /// @details The MoleculesCollection object contains the coordinates and properties of atoms
     /// and chemical bonds.
     /// @note A MoleculesCollection object may contain more than one molecule (i.e. its atoms may

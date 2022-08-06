@@ -24,8 +24,7 @@ SOFTWARE.
 
 /// @file src/core/chemistry/MoleculesCollection.hh
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
-/// define intermolecular bonds.
+/// @details Each Molecules object contains atoms and bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_MoleculesCollection_hh
@@ -35,7 +34,7 @@ SOFTWARE.
 #include <core/chemistry/MoleculesCollection.fwd.hh>
 
 // Core headers:
-#include <core/chemistry/Molecule.fwd.hh>
+#include <core/chemistry/Molecules.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -48,8 +47,7 @@ namespace chemistry {
 
 
 /// @brief A class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
-/// define intermolecular bonds.
+/// @details Each Molecules object contains atoms and bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MoleculesCollection : public base::MasalaObject {
 
@@ -98,18 +96,18 @@ public:
     /// @brief Get the number of molecules in this MoleculesCollection container.
     std::size_t size() const;
 
-    /// @brief Get an iterator to the first molecule stored in this MoleculesCollection
+    /// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
     /// container.
-    std::set< MoleculeSP >::const_iterator molecule_set_begin() const;
+    std::set< MoleculesSP >::const_iterator molecules_set_begin() const;
 
-    /// @brief Get an iterator to the end of the set of molecules stored in
+    /// @brief Get an iterator to the end of the set of Molecules objects stored in
     /// this MoleculesCollection container.
-    std::set< MoleculeSP >::const_iterator molecule_set_end() const;
+    std::set< MoleculesSP >::const_iterator molecules_set_end() const;
 
 private:
 
-    /// @brief The molecules that we're storing.
-    std::set< MoleculeSP > molecule_set_;
+    /// @brief The Molecules objects that we're storing.
+    std::set< MoleculesSP > molecule_set_;
 
 };
 

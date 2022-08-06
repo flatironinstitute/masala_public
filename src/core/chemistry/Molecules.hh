@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecule.hh
+/// @file src/core/chemistry/Molecules.hh
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecule_hh
-#define Masala_src_core_chemistry_Molecule_hh
+#ifndef Masala_src_core_chemistry_Molecules_hh
+#define Masala_src_core_chemistry_Molecules_hh
 
 // Forward declarations:
-#include <core/chemistry/Molecule.fwd.hh>
+#include <core/chemistry/Molecules.fwd.hh>
 
 // Core headers:
 #include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
@@ -48,7 +48,7 @@ namespace chemistry {
 
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Molecule : public base::MasalaObject {
+class Molecules : public base::MasalaObject {
 
 public:
 
@@ -57,24 +57,24 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    Molecule() = default;
+    Molecules() = default;
 
     /// @brief Copy constructor.
-    Molecule( Molecule const & ) = default;
+    Molecules( Molecules const & ) = default;
 
     /// @brief Default destructor.
-    ~Molecule() override = default;
+    ~Molecules() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     virtual
-    MoleculeSP
+    MoleculesSP
     clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
     virtual
-    MoleculeSP
+    MoleculesSP
     deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -83,7 +83,7 @@ public:
     void
     make_independent();
 
-	/// @brief Returns "Molecule".
+	/// @brief Returns "Molecules".
 	std::string class_name() const override;
 
 public:
@@ -110,4 +110,4 @@ private:
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_Molecule_hh
+#endif // Masala_src_core_chemistry_Molecules_hh

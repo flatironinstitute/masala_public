@@ -22,26 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecule.fwd.hh
+/// @file src/core/chemistry/Molecules.fwd.hh
 /// @brief Forward declarations for a class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecule_fwd_hh
-#define Masala_src_core_chemistry_Molecule_fwd_hh
+#ifndef Masala_src_core_chemistry_Molecules_fwd_hh
+#define Masala_src_core_chemistry_Molecules_fwd_hh
 
 #include <memory>
 
 namespace core {
 namespace chemistry {
 
-    class Molecule;
+    class Molecules;
 
-    using MoleculeSP = std::shared_ptr< Molecule >;
-    using MoleculeCSP = std::shared_ptr< Molecule const >;
-    using MoleculeWP = std::weak_ptr< Molecule >;
-    using MoleculeCWP = std::weak_ptr< Molecule const >;
+    using MoleculesSP = std::shared_ptr< Molecules >;
+    using MoleculesCSP = std::shared_ptr< Molecules const >;
+    using MoleculesWP = std::weak_ptr< Molecules >;
+    using MoleculesCWP = std::weak_ptr< Molecules const >;
 
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_Molecule_fwd_hh
+#endif // Masala_src_core_chemistry_Molecules_fwd_hh

@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecule.cc
+/// @file src/core/chemistry/Molecules.cc
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/Molecule.hh>
+#include <core/chemistry/Molecules.hh>
 
 // STL headers:
 #include <string>
@@ -37,16 +37,16 @@ namespace chemistry {
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-MoleculeSP
-Molecule::clone() const {
-    return std::make_shared< Molecule >( *this );
+MoleculesSP
+Molecules::clone() const {
+    return std::make_shared< Molecules >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
-MoleculeSP
-Molecule::deep_clone() const {
-    MoleculeSP molecules_copy( std::make_shared< Molecule >( *this ) );
+MoleculesSP
+Molecules::deep_clone() const {
+    MoleculesSP molecules_copy( std::make_shared< Molecules >( *this ) );
     molecules_copy->make_independent();
     return molecules_copy;
 }
@@ -54,14 +54,14 @@ Molecule::deep_clone() const {
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Be sure to update this function whenever a private member is added!
 void
-Molecule::make_independent() {
+Molecules::make_independent() {
     // Currently GNDN.
 }
 
-/// @brief Returns "Molecule".
+/// @brief Returns "Molecules".
 std::string
-Molecule::class_name() const {
-    return "Molecule";
+Molecules::class_name() const {
+    return "Molecules";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

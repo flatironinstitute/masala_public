@@ -24,8 +24,7 @@ SOFTWARE.
 
 /// @file src/core/chemistry/MoleculesCollection.fwd.hh
 /// @brief Forward declarations for a class contiaining a collection of molecules.
-/// @details Each molecule contains atoms and bonds.  The MoleculesCollection container can also
-/// define intermolecular bonds.
+/// @details Each Molecules object contains atoms and bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_MoleculesCollection_fwd_hh
