@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/pose/Pose.hh
+/// @file src/core/pose/Pose.cc
 /// @brief A class representing a molecular structure.
 /// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
