@@ -90,14 +90,14 @@ MoleculesCollection::size() const {
 /// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
 /// container.
 std::set< MoleculesSP >::const_iterator
-MoleculesCollection::molecule_set_begin() const {
+MoleculesCollection::molecules_set_begin() const {
     return molecule_set_.cbegin();
 }
 
 /// @brief Get an iterator to the end of the set of Molecules objects stored in
 /// this MoleculesCollection container.
 std::set< MoleculesSP >::const_iterator
-MoleculesCollection::molecule_set_end() const {
+MoleculesCollection::molecules_set_end() const {
     return molecule_set_.cend();
 }
 
