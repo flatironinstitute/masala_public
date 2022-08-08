@@ -32,6 +32,7 @@ SOFTWARE.
 
 // Forward declarations.
 #include <base/MasalaObject.fwd.hh>
+#include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
 namespace base {
 
@@ -54,6 +55,24 @@ public:
 
 	/// @brief Every class can name itself.
 	virtual std::string class_name() const = 0;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Does this object return an API definition?
+	/// @details By default, returns false.  Derived classes might, though.
+	bool has_api_definition() const;
+
+	/// @brief Get an object describing the API for this object.
+	/// @details Default implementation returns nullptr.  May be overridden by
+	/// derived objects.
+	virtual
+	MasalaObjectAPIDefinitionCSP
+	get_api_definition() const;
+
 
 }; // class MasalaObject
 
