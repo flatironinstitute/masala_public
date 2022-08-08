@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "src",
+                "${workspaceFolder}",
+                "${workspaceFolder}/src",
                 "/usr/include/c++/7",
                 "/usr/include/x86_64-linux-gnu/c++/7"
             ],
