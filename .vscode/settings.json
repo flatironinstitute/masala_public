@@ -1,5 +1,3 @@
 {
-    "C_Cpp.default.includePath": [
-        "src/"
-    ]
+    "C_Cpp.default.cppStandard": "c++14"
 }

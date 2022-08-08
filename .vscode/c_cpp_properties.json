@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${default}",
+                "src",
+                "/usr/include/c++/7",
+                "/usr/include/x86_64-linux-gnu/c++/7"
+            ],
+            "compilerPath": "/usr/bin/gcc"
+        }
+    ],
+    "version": 4
+}
