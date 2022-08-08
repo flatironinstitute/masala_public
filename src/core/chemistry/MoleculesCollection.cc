@@ -60,7 +60,7 @@ MoleculesCollection::deep_clone() const {
 void
 MoleculesCollection::make_independent() {
     // Deep-clone the molecules:
-    std::set< MoleculeSP > molecule_set_copy_( molecule_set_ );
+    std::set< MoleculesSP > molecule_set_copy_( molecule_set_ );
     molecule_set_.clear();
     for(
         std::set< MoleculesSP>::const_iterator it( molecule_set_copy_.cbegin() );
