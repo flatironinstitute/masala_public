@@ -42,6 +42,19 @@ namespace chemistry {
     using AtomInstanceWP = std::weak_ptr< AtomInstance >;
     using AtomInstanceCWP = std::weak_ptr< AtomInstance const >;
 
+    /// @brief An enum for the hybridization state of an atom.
+    enum class AtomHybridizationState {
+        INVALID_HYBRIDIZATION_STATE = -1, // Keep first.
+        UNKNOWN_HYBRIDIZATION_STATE = 0, // Keep second.
+        sp, // Keep third.
+        FIRST_HYBRIDIZATION_STATE = sp, // Keep fourth.
+        sp2,
+        sp3,
+        s, // No hybridization -- just S-shell for hydrogen or helium.
+        OTHER_HYBRIDIZATION_STATE, //Keep second-to-last.
+        N_HYBRIDIZATION_STATES = OTHER_HYBRIDIZATION_STATE //Keep last.
+    };
+
 } // namespace chemistry
 } // namespace core
 

@@ -46,6 +46,8 @@ namespace chemistry {
 
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
+/// @note This stores element type, formal charge, partial charge,
+/// hybridization state... everything EXCEPT atomic coordinates.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class AtomInstance : public base::MasalaObject {
 
@@ -97,6 +99,12 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The type of element that this atom is.
+    ElementTypeCSP element_type_;
+
+    /// @brief This atom's hydbridization state.
+    AtomHybridizationState hybridization_state_ = AtomHybridizationState::sp3;
 
 };
 
