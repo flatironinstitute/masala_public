@@ -5,11 +5,12 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
-                "${workspaceFolder}/src",
-                "/usr/include/c++/7",
-                "/usr/include/x86_64-linux-gnu/c++/7"
+                "${workspaceFolder}/src"
             ],
-            "compilerPath": "/usr/bin/gcc"
+            "compilerPath": "/mnt/sw/nix/store/a6n0x14xp5cpd0bpb67migy5nj7r5r1i-gcc-11.2.0/bin/gcc",
+            "intelliSenseMode": "gcc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14"
         }
     ],
     "version": 4
