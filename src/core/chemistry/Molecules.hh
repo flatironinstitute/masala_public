@@ -31,6 +31,7 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/AtomInstance.fwd.hh>
 
 // Core headers:
 #include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
@@ -104,6 +105,9 @@ private:
     /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
     /// store the data differently, but all offer iterators to access atom coordinates.
     AtomCoordinateRepresentationSP atom_coordinates_;
+
+    /// @brief The atoms themselves and their properties.
+    std::set< AtomInstanceSP > atoms_;
 
 };
 

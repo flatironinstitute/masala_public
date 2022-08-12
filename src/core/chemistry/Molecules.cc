@@ -29,6 +29,9 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/Molecules.hh>
 
+// Core headers:
+#include <core/chemistry/AtomInstance.hh>
+
 // STL headers:
 #include <string>
 
@@ -55,7 +58,11 @@ Molecules::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 Molecules::make_independent() {
-    // Currently GNDN.
+    std::set< AtomInstanceSP > old_atom_instances( atoms_ );
+    atoms_.clear();
+    for( std::set< AtomInstanceSP >::const_iterator it( old_atom_instances.begin() ); it != old_atom_instances.end(); ++it ) {
+        atoms_.insert( (*it)->deep_clone() );
+    }
 }
 
 /// @brief Returns "Molecules".
