@@ -34,6 +34,7 @@ SOFTWARE.
 #include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
+#include <core/chemistry/AtomInstance.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -76,7 +77,9 @@ public:
     /// pointer to the deep copy.
     virtual
     AtomCoordinateRepresentationSP
-    deep_clone() const;
+    deep_clone(
+        std::set< AtomInstanceCSP > const & new_atom_instance_set
+    ) const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
     /// @details Be sure to update this function whenever a private member is added!

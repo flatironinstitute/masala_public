@@ -41,6 +41,7 @@ SOFTWARE.
 
 // STL headers:
 #include <set>
+#include <mutex>
 
 namespace core {
 namespace chemistry {
@@ -74,6 +75,7 @@ public:
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
+    /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
     virtual
     MoleculesSP
     deep_clone() const;
@@ -100,6 +102,9 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief A mutex for locking a whole molecules object.
+    std::mutex whole_object_mutex_;
+
     /// @brief The representation of the atom coordinates.
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.
     /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
@@ -107,6 +112,8 @@ private:
     AtomCoordinateRepresentationSP atom_coordinates_;
 
     /// @brief The atoms themselves and their properties.
+    /// @details The Molecules container is responsible for keeping these linked to the
+    /// AtomCoordinateRepresentation.
     std::set< AtomInstanceSP > atoms_;
 
 };

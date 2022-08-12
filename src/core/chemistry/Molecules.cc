@@ -55,14 +55,19 @@ Molecules::deep_clone() const {
 }
 
 /// @brief Make this object independent by making a deep copy of all of its private members.
-/// @details Be sure to update this function whenever a private member is added!
+/// @details Threadsafe.  Be sure to update this function whenever a private member is added!
 void
 Molecules::make_independent() {
+    std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
+
     std::set< AtomInstanceSP > old_atom_instances( atoms_ );
     atoms_.clear();
     for( std::set< AtomInstanceSP >::const_iterator it( old_atom_instances.begin() ); it != old_atom_instances.end(); ++it ) {
         atoms_.insert( (*it)->deep_clone() );
     }
+
+    AtomCoordinateRepresentationSP old_coordinates( atom_coordinates_ );
+    atom_coordinates_ = old_coordinates->deep_clone( atoms_ ); //Need to pass in the new atom instances to associate with them.
 }
 
 /// @brief Returns "Molecules".
