@@ -23,6 +23,42 @@
 
 ## This file actually does the building.
 
-CMAKE_MINIMUM_REQUIRED_VERSION( VERSION 3.10 )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
-INCLUDE( build.cmake )
+# Set project attributes:
+PROJECT( Masala )
+SET( MODE debug )
+SET( LINK_TYPE SHARED )
+SET( LINK_EXTERNAL_LIBS stdc++ )
+SET( CMAKE_MACOSX_RPATH 1 )
+SET( CMAKE_SKIP_BUILD_RPATH FALSE )
+SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
+
+# Set header file locations:
+INCLUDE_DIRECTORIES( SYSTEM ../ ../src/ )
+
+# Compiler settings and compilation flags:
+INCLUDE( compiler.cmake )
+
+# Generate the cmake files for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Build the base, numeric, and core libraries:
+#INCLUDE( cmake_generated/base.cmake )
+#INCLUDE( numeric.cmake )
+#INCLUDE( cmake_generated/core.cmake )
+
+# Link the base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Generate the API description for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Generate the API C++ code for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Compile the API for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Link the API for base, numeric, and core libraries:
+# TODO TODO TODO
