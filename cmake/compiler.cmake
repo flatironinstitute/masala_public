@@ -24,4 +24,21 @@
 # This file sets compiler settings for compilation.
 
 SET(COMPILER gcc)
+
+SET( cxx -std=c++14 )
+SET( compile -pipe -ftemplate-depth-512 -fPIC -I /usr/include -I src -Wl --no-as-needed )
+SET( warn -Wall -Wextra -pedantic -Werror -Wno-long-long -Wno-strict-aliasing )
+SET( link -Wl --no-as-needed )
+
+IF( ${MODE} STREQUAL "debug" )
+    LIST( APPEND compile -O0 )
+    LIST( APPEND mode -g -ggdb -ffloat-store )
+    LIST( APPEND defines -D_DEBUG )
+ELSEIF( ${MODE} STREQUAL "release" )
+    LIST( APPEND compile -O3 -ffast-math -fno-finite-math-only -funroll-loops -finline-functions -finline-limit=100000 -s )
+    LIST( APPEND defines -DNDEBUG )
+ELSE()
+    MESSAGE( FATAL_ERROR "The only allowed compilation modes are debug and release." )
+ENDIF()
+
 MESSAGE(STATUS "Compiler: ${COMPILER}")
