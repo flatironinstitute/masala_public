@@ -73,20 +73,6 @@ public:
     AtomCoordinateRepresentationSP
     clone() const;
 
-    /// @brief Deep clone operation: make a deep copy of this object and return a shared
-    /// pointer to the deep copy.
-    virtual
-    AtomCoordinateRepresentationSP
-    deep_clone(
-        std::set< AtomInstanceCSP > const & new_atom_instance_set
-    ) const;
-
-    /// @brief Make this object independent by making a deep copy of all of its private members.
-    /// @details Be sure to update this function whenever a private member is added!
-    virtual
-    void
-    make_independent();
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

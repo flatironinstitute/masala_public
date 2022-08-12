@@ -31,6 +31,7 @@ SOFTWARE.
 
 // Core headers:
 #include <core/chemistry/AtomInstance.hh>
+#include <core/chemistry/AtomCoordinateRepresentation.hh>
 
 // STL headers:
 #include <string>
@@ -60,14 +61,15 @@ void
 Molecules::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
-    std::set< AtomInstanceSP > old_atom_instances( atoms_ );
+    AtomCoordinateRepresentationCSP old_coordinates( atom_coordinates_ );
+    atom_coordinates_ = old_coordinates->clone();
+    std::set< AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
     for( std::set< AtomInstanceSP >::const_iterator it( old_atom_instances.begin() ); it != old_atom_instances.end(); ++it ) {
-        atoms_.insert( (*it)->deep_clone() );
+        AtomInstanceSP new_atom( (*it)->deep_clone() );
+        atoms_.insert( new_atom );
+        atom_coordinates_->replace_atom_instance( *it, new_atom );
     }
-
-    AtomCoordinateRepresentationSP old_coordinates( atom_coordinates_ );
-    atom_coordinates_ = old_coordinates->deep_clone( atoms_ ); //Need to pass in the new atom instances to associate with them.
 }
 
 /// @brief Returns "Molecules".
