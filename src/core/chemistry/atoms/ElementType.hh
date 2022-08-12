@@ -81,6 +81,8 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief The element type, as an enum.
+    ElementTypeEnum element_type_ = ElementTypeEnum::C;
 
 };
 
