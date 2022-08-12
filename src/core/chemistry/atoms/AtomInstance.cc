@@ -22,19 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomInstance.cc
+/// @file src/core/chemistry/atoms/AtomInstance.cc
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/AtomInstance.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
 
 // STL headers:
 #include <string>
 
 namespace core {
 namespace chemistry {
+namespace atoms {
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
@@ -69,6 +70,6 @@ AtomInstance::class_name() const {
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-
+} // namespace atoms
 } // namespace chemistry
 } // namespace core

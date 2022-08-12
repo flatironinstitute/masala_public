@@ -22,18 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomInstance.fwd.hh
+/// @file src/core/chemistry/atoms/AtomInstance.fwd.hh
 /// @brief Forward declarations for a class contiaining a description of the properties of
 /// a particular atom.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_AtomInstance_fwd_hh
-#define Masala_src_core_chemistry_AtomInstance_fwd_hh
+#ifndef Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
+#define Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
 
 #include <memory>
 
 namespace core {
 namespace chemistry {
+namespace atoms {
 
     class AtomInstance;
 
@@ -55,7 +56,8 @@ namespace chemistry {
         N_HYBRIDIZATION_STATES = OTHER_HYBRIDIZATION_STATE //Keep last.
     };
 
+} // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_AtomInstance_fwd_hh
+#endif // Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh

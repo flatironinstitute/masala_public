@@ -30,8 +30,8 @@ SOFTWARE.
 #include <core/chemistry/Molecules.hh>
 
 // Core headers:
-#include <core/chemistry/AtomInstance.hh>
-#include <core/chemistry/AtomCoordinateRepresentation.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
+#include <core/chemistry/atoms/AtomCoordinateRepresentation.hh>
 
 // STL headers:
 #include <string>
@@ -61,12 +61,16 @@ void
 Molecules::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
-    AtomCoordinateRepresentationCSP old_coordinates( atom_coordinates_ );
+    core::chemistry::atoms::AtomCoordinateRepresentationCSP old_coordinates( atom_coordinates_ );
     atom_coordinates_ = old_coordinates->clone();
-    std::set< AtomInstanceSP > const old_atom_instances( atoms_ );
+    std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
-    for( std::set< AtomInstanceSP >::const_iterator it( old_atom_instances.begin() ); it != old_atom_instances.end(); ++it ) {
-        AtomInstanceSP new_atom( (*it)->deep_clone() );
+    for(
+        std::set< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
+        it != old_atom_instances.end();
+        ++it
+    ) {
+        core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
         atom_coordinates_->replace_atom_instance( *it, new_atom );
     }

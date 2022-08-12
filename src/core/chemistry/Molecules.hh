@@ -31,10 +31,10 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core/chemistry/Molecules.fwd.hh>
-#include <core/chemistry/AtomInstance.fwd.hh>
 
 // Core headers:
-#include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
+#include <core/chemistry/atoms/AtomInstance.fwd.hh>
+#include <core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -109,12 +109,12 @@ private:
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.
     /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
     /// store the data differently, but all offer iterators to access atom coordinates.
-    AtomCoordinateRepresentationSP atom_coordinates_;
+    core::chemistry::atoms::AtomCoordinateRepresentationSP atom_coordinates_;
 
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the
     /// AtomCoordinateRepresentation.
-    std::set< AtomInstanceSP > atoms_;
+    std::set< core::chemistry::atoms::AtomInstanceSP > atoms_;
 
 };
 

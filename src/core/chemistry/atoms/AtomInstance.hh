@@ -22,16 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomInstance.hh
+/// @file src/core/chemistry/atoms/AtomInstance.hh
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_AtomInstance_hh
-#define Masala_src_core_chemistry_AtomInstance_hh
+#ifndef Masala_src_core_chemistry_atoms_AtomInstance_hh
+#define Masala_src_core_chemistry_atoms_AtomInstance_hh
 
 // Forward declarations:
-#include <core/chemistry/AtomInstance.fwd.hh>
+#include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Core headers:
 #include <core/types.hh>
@@ -43,7 +43,7 @@ SOFTWARE.
 
 namespace core {
 namespace chemistry {
-
+namespace atoms {
 
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
@@ -115,7 +115,8 @@ private:
 
 };
 
+} // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_AtomInstance_hh
+#endif // Masala_src_core_chemistry_atoms_AtomInstance_hh

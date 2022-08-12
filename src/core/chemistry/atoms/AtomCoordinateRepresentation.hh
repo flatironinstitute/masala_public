@@ -22,19 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomCoordinateRepresentation.hh
+/// @file src/core/chemistry/atoms/AtomCoordinateRepresentation.hh
 /// @brief A pure virtual base class class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_AtomCoordinateRepresentation_hh
-#define Masala_src_core_chemistry_AtomCoordinateRepresentation_hh
+#ifndef Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_hh
+#define Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_hh
 
 // Forward declarations:
-#include <core/chemistry/AtomCoordinateRepresentation.fwd.hh>
+#include <core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
-#include <core/chemistry/AtomInstance.fwd.hh>
+#include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -44,7 +44,7 @@ SOFTWARE.
 
 namespace core {
 namespace chemistry {
-
+namespace atoms {
 
 
 /// @brief A pure virtual base class class for the container of a collection of atom
@@ -98,7 +98,8 @@ private:
 
 };
 
+} // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_AtomCoordinateRepresentation_hh
+#endif // Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_hh
