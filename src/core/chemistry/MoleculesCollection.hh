@@ -34,6 +34,7 @@ SOFTWARE.
 #include <core/chemistry/MoleculesCollection.fwd.hh>
 
 // Core headers:
+#include <core/types.hh>
 #include <core/chemistry/Molecules.fwd.hh>
 
 // Base headers:
@@ -94,7 +95,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the number of molecules in this MoleculesCollection container.
-    std::size_t size() const;
+    core::Size size() const;
 
     /// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
     /// container.
