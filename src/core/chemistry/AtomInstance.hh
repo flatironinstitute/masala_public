@@ -34,6 +34,7 @@ SOFTWARE.
 #include <core/chemistry/AtomInstance.fwd.hh>
 
 // Core headers:
+#include <core/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -103,8 +104,14 @@ private:
     /// @brief The type of element that this atom is.
     ElementTypeCSP element_type_;
 
-    /// @brief This atom's hydbridization state.
+    /// @brief This atom's hybridization state.
     AtomHybridizationState hybridization_state_ = AtomHybridizationState::sp3;
+
+    /// @brief The formal charge on this atom.
+    signed int formal_charge_ = 0;
+
+    /// @brief The partial charge on this atom.
+    core::Real partial_charge_ = 0.0;
 
 };
 
