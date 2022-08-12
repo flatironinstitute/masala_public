@@ -37,3 +37,26 @@ INCLUDE_DIRECTORIES( SYSTEM ../ ../src/ )
 
 # Compiler settings and compilation flags:
 INCLUDE( compiler.cmake )
+
+# Generate the cmake files for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Build the base, numeric, and core libraries:
+INCLUDE( cmake_generated/base.cmake )
+#INCLUDE( numeric.cmake )
+INCLUDE( cmake_generated/core.cmake )
+
+# Link the base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Generate the API description for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Generate the API C++ code for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Compile the API for base, numeric, and core libraries:
+# TODO TODO TODO
+
+# Link the API for base, numeric, and core libraries:
+# TODO TODO TODO

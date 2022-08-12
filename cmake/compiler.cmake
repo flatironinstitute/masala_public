@@ -25,6 +25,8 @@
 
 SET(COMPILER gcc)
 
+SET( CMAKE_CXX_STANDARD 14 )
+SET( CMAKE_CXX_STANDARD_REQUIRED True )
 SET( cxx -std=c++14 )
 SET( compile -pipe -ftemplate-depth-512 -fPIC -I /usr/include -I src -Wl --no-as-needed )
 SET( warn -Wall -Wextra -pedantic -Werror -Wno-long-long -Wno-strict-aliasing )
