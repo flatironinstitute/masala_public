@@ -71,14 +71,24 @@ public:
     /// to the copy.
     virtual
     AtomCoordinateRepresentationSP
-    clone() const;
+    clone() const = 0;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+
+    /// @brief Replace an atom instance with a new one.
+    /// @details Used for deep cloning, since the AtomCoordinateRepresentation does not itself
+    /// implement a deep_clone() function.
+    virtual
+    void
+    replace_atom_instance(
+        AtomInstanceCSP const & old_instance,
+        AtomInstanceCSP new_instance
+    ) = 0;
 
 private:
 
