@@ -55,7 +55,7 @@ ElementType::class_name() const {
 core::Size
 ElementType::atomic_number() const {
     CHECK_OR_THROW(
-        element_type_ > 0 && element_type_ <= ElementTypeEnum::NUM_KNOWN_ELEMENTS,
+        static_cast<signed long>(element_type_) > 0 && static_cast<signed long>(element_type_) <= static_cast<signed long>(ElementTypeEnum::NUM_KNOWN_ELEMENTS),
         "Error in core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
     );
     return static_cast< core::Size >( element_type_ );
