@@ -30,6 +30,9 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/atoms/ElementType.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 #include <string>
 
@@ -46,6 +49,24 @@ ElementType::class_name() const {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the atomic number.
+/// @details Throws if atomic number is out of range!
+core::Size
+ElementType::atomic_number() const {
+    CHECK_OR_THROW(
+        element_type_ > 0 && element_type_ <= ElementTypeEnum::NUM_KNOWN_ELEMENTS,
+        "Error in core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
+    );
+    return static_cast< core::Size >( element_type_ );
+}
+
+/// @brief Get the isotope number (the total number of nucleons in the current isotope).
+/// @details Throws if atomic number is out of range!
+core::Size
+ElementType::isotope_number() const {
+    return atomic_number() + neutron_count_current_isotope_;
+}
 
 } // namespace atoms
 } // namespace chemistry

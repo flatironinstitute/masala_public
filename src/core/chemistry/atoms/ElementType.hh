@@ -74,6 +74,24 @@ public:
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get the atomic number.
+    /// @details Throws if atomic number is out of range!
+    core::Size atomic_number() const;
+
+    /// @brief Get the isotope number (the total number of nucleons in the current isotope).
+    /// @details Throws if atomic number is out of range!
+    core::Size isotope_number() const;
+
+    /// @brief Get the number of neturons in the current isotope.
+    inline core::Size neutron_count_current_isotope() const { return neutron_count_current_isotope_; }
+
+    /// @brief Get the average atomic mass, across all isotopes weighted by abundance.
+    /// @details In Daltons.
+    inline core::Real average_atomic_mass() const { return average_atomic_mass_; }
+
+    /// @brief Get the atomic mass of the current isotope.
+    /// @details In Daltons.
+    inline core::Real atomic_mass_current_isotope() const { return atomic_mass_current_isotope_; }
 
 private:
 
@@ -83,6 +101,17 @@ private:
 
     /// @brief The element type, as an enum.
     ElementTypeEnum element_type_ = ElementTypeEnum::C;
+
+    /// @brief The number of neutrons in the current isotope.
+    core::Size neutron_count_current_isotope_ = 6;
+
+    /// @brief The average atomic mass, across all isotopes weighted by abundance.
+    /// @details In Daltons.
+    core::Real average_atomic_mass_ = 12.011;
+
+    /// @brief The atomic mass of the current isotope.
+    /// @details In Daltons.
+    core::Real atomic_mass_current_isotope_ = 12.0;
 
 };
 
