@@ -7,7 +7,7 @@
                 "${workspaceFolder}",
                 "${workspaceFolder}/src"
             ],
-            "compilerPath": "/mnt/sw/nix/store/a6n0x14xp5cpd0bpb67migy5nj7r5r1i-gcc-11.2.0/bin/gcc",
+            "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "gcc-x64",
             "cStandard": "c11",
             "cppStandard": "c++14"
