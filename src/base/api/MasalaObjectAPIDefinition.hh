@@ -39,9 +39,9 @@ SOFTWARE.
 
 // Base headers.
 #include <base/types.hh>
-#include <base/api/MasalaObjectAPISetterDefinition.hh>
-#include <base/api/MasalaObjectAPIGetterDefinition.hh>
-#include <base/api/MasalaObjectAPIWorkFunctionDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 
 // STL headers.
 #include <set>
@@ -93,14 +93,14 @@ public:
 
 	/// @brief Begin iterator for the setters.
 	inline
-	std::set<MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_begin() const {
 		return setters_.cbegin();
 	}
 
 	/// @brief End iterator for the setters.
 	inline
-	std::set<MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_end() const {
 		return setters_.cend();
 	}
@@ -114,14 +114,14 @@ public:
 
 	/// @brief Begin iterator for the getters.
 	inline
-	std::set<MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	std::set<base::api::getter::GetterDefinitionCSP>::const_iterator
 	getters_begin() const {
 		return getters_.cbegin();
 	}
 
 	/// @brief End iterator for the getters.
 	inline
-	std::set<MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	std::set<base::api::getter::GetterDefinitionCSP>::const_iterator
 	getters_end() const {
 		return getters_.cend();
 	}
@@ -135,14 +135,14 @@ public:
 
 	/// @brief Begin iterator for the work functions.
 	inline
-	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	work_functions_begin() const {
 		return work_functions_.cbegin();
 	}
 
 	/// @brief End iterator for the work functions.
 	inline
-	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	work_functions_end() const {
 		return work_functions_.cend();
 	}
@@ -169,13 +169,13 @@ private:
 	std::string const api_class_description_;
 
 	/// @brief A list of setters.
-	std::set<MasalaObjectAPISetterDefinitionCSP> setters_;
+	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP> setters_;
 
 	/// @brief A list of getters.
-	std::set<MasalaObjectAPIGetterDefinitionCSP> getters_;
+	std::set<base::api::getter::GetterDefinitionCSP> getters_;
 
 	/// @brief A list of work functions.
-	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
+	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP> work_functions_;
 
 
 }; // class MasalaObjectAPIDefinition
