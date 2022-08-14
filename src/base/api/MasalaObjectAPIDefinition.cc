@@ -39,12 +39,17 @@ namespace api {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Options constructor.
-/// @param[in] api_class_name The class for which we're providing an API definition.
+/// @param[in] api_class_name The name of the class for which we're
+///            providing an API definition.
+/// @param[in] api_class_description The description of the class for which
+///			   we're providing an API definition.
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
-    std::string const & api_class_name
+    std::string const & api_class_name,
+    std::string const & api_class_description
 ) :
     base::MasalaObject(),
-    api_class_name_( api_class_name )
+    api_class_name_( api_class_name ),
+    api_class_description_( api_class_description )
 {}
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".

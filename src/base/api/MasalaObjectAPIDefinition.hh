@@ -37,6 +37,15 @@ SOFTWARE.
 // Forward declarations.
 #include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
+// Base headers.
+#include <base/types.hh>
+#include <base/api/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/MasalaObjectAPIGetterDefinition.hh>
+#include <base/api/MasalaObjectAPIWorkFunctionDefinition.hh>
+
+// STL headers.
+#include <set>
+
 namespace base {
 namespace api {
 
@@ -56,9 +65,13 @@ public:
 	MasalaObjectAPIDefinition() = delete;
 
 	/// @brief Options constructor.
-	/// @param[in] api_class_name The class for which we're providing an API definition.
+	/// @param[in] api_class_name The name of the class for which we're
+	///            providing an API definition.
+	/// @param[in] api_class_description The description of the class for which
+	///			   we're providing an API definition.
 	MasalaObjectAPIDefinition(
-		std::string const & api_class_name
+		std::string const & api_class_name,
+		std::string const & api_class_description
 	);
 
 
@@ -78,6 +91,69 @@ public:
 // PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Begin iterator for the setters.
+	inline
+	std::set<MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_begin() const {
+		return setters_.cbegin();
+	}
+
+	/// @brief End iterator for the setters.
+	inline
+	std::set<MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_end() const {
+		return setters_.cend();
+	}
+
+	/// @brief Number of setters.
+	inline
+	base::Size
+	n_setters() const {
+		return setters_.size();
+	}
+
+	/// @brief Begin iterator for the getters.
+	inline
+	std::set<MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_begin() const {
+		return getters_.cbegin();
+	}
+
+	/// @brief End iterator for the getters.
+	inline
+	std::set<MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_end() const {
+		return getters_.cend();
+	}
+
+	/// @brief Number of getters.
+	inline
+	base::Size
+	n_getters() const {
+		return getters_.size();
+	}
+
+	/// @brief Begin iterator for the work functions.
+	inline
+	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_begin() const {
+		return work_functions_.cbegin();
+	}
+
+	/// @brief End iterator for the work functions.
+	inline
+	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_end() const {
+		return work_functions_.cend();
+	}
+
+	/// @brief Number of work functions.
+	inline
+	base::Size
+	n_work_functions() const {
+		return work_functions_.size();
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +163,20 @@ private:
 	/// @brief The name of the class for which we're providing an API definition.
 	/// @details Must be set at construction time.
 	std::string const api_class_name_;
+
+	/// @brief The description of the class for which we're providing an API definition.
+	/// @details Must be set at construction time.
+	std::string const api_class_description_;
+
+	/// @brief A list of setters.
+	std::set<MasalaObjectAPISetterDefinitionCSP> setters_;
+
+	/// @brief A list of getters.
+	std::set<MasalaObjectAPIGetterDefinitionCSP> getters_;
+
+	/// @brief A list of work functions.
+	std::set<MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
+
 
 }; // class MasalaObjectAPIDefinition
 
