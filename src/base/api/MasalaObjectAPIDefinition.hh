@@ -53,7 +53,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	MasalaObjectAPIDefinition() = default;
+	MasalaObjectAPIDefinition() = delete;
+
+	/// @brief Options constructor.
+	/// @param[in] api_class_name The class for which we're providing an API definition.
+	MasalaObjectAPIDefinition(
+		std::string const & api_class_name
+	);
+
 
 	/// @brief Copy constructor.
 	MasalaObjectAPIDefinition( MasalaObjectAPIDefinition const & ) = default;
@@ -71,6 +78,15 @@ public:
 // PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
 ////////////////////////////////////////////////////////////////////////////////
 
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The name of the class for which we're providing an API definition.
+	/// @details Must be set at construction time.
+	std::string const api_class_name_;
 
 }; // class MasalaObjectAPIDefinition
 
