@@ -98,7 +98,7 @@ public:
 	/// derived classes.
 	// virtual
 	// json_return_type ???
-	// get_setter_human_readable_description() const = 0;
+	// get_setter_json_description() const = 0;
 	// TODO TODO TODO
 
 private:

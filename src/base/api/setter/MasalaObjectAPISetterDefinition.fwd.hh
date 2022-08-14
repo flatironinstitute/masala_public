@@ -36,6 +36,7 @@ SOFTWARE.
 
 namespace base {
 namespace api {
+namespace setter {
 
 	class MasalaObjectAPISetterDefinition;
 
@@ -55,6 +56,7 @@ namespace api {
 	/// represents a std::weak_ptr for const objects of that class.
 	using MasalaObjectAPISetterDefinitionCWP = std::weak_ptr< MasalaObjectAPISetterDefinition const >;
 
+} // namespace setter
 } // namespace api
 } // namespace base
 
