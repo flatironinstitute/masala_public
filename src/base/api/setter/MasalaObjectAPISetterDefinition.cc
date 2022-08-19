@@ -53,6 +53,22 @@ MasalaObjectAPISetterDefinition::MasalaObjectAPISetterDefinition(
     setter_function_description_(setter_function_description)
 {}
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of the setter function.
+std::string const &
+MasalaObjectAPISetterDefinition::setter_function_name() const {
+    return setter_function_name_;
+}
+
+/// @brief Get the setter function's description.
+std::string const &
+MasalaObjectAPISetterDefinition::setter_function_description() const {
+    return setter_function_description_;
+}
+
 } // namespace setter
 } // namespace api
 } // namespace base

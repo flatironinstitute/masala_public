@@ -40,6 +40,7 @@ SOFTWARE.
 // Base headers.
 
 // STL headers.
+#include <string>
 
 namespace base {
 namespace api {
@@ -100,6 +101,18 @@ public:
 	// json_return_type ???
 	// get_setter_json_description() const = 0;
 	// TODO TODO TODO
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the name of the setter function.
+	std::string const & setter_function_name() const;
+
+	/// @brief Get the setter function's description.
+	std::string const & setter_function_description() const;
 
 private:
 
