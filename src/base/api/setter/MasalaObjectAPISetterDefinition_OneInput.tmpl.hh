@@ -22,16 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/api/MasalaObjectAPISetterDefinition_OneInput.hh
-/// @brief A class that stores the definition for a setter function, as part
+/// @file src/base/api/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh
+/// @brief A template class that stores the definition for a setter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for single-input setters.  The type T1
 /// defines the input type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_hh
-#define Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_hh
+#ifndef Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_tmpl_hh
+#define Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_tmpl_hh
 
 // Base class.
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
@@ -40,8 +40,10 @@ SOFTWARE.
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.fwd.hh>
 
 // Base headers.
+#include <base/api/names_from_types.tmpl.hh>
 
 // STL headers.
+#include <sstream>
 #include <functional>
 
 namespace base {
@@ -91,7 +93,10 @@ public:
 	~MasalaObjectAPISetterDefinition_OneInput() override = default;
 
 	/// @brief Every class can name itself.  This returns "MasalaObjectAPISetterDefinition_OneInput".
-	std::string class_name() const override;
+	std::string
+	class_name() const override {
+		return "MasalaObjectAPISetterDefinition_OneInput";
+	}
 
 public:
 
@@ -103,7 +108,12 @@ public:
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
 	std::string
-	get_setter_human_readable_description() const override;
+	get_setter_human_readable_description() const override {
+		std::ostringstream ss;
+    	ss << "Setter:\tvoid " << setter_function_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
+		ss << setter_function_description() << std::endl;
+		return ss.str();
+	}
 
 	/// @brief Get a JSON description of this setter.
 	/// @details Used for auto-generated help.  Must be implemented by
@@ -130,4 +140,4 @@ private:
 } //namespace api
 } //namespace base
 
-#endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_hh
+#endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_tmpl_hh
