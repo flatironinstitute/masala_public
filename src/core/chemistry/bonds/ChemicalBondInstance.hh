@@ -22,36 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/Molecules.hh
-/// @brief A class contiaining a collection of atoms and chemical bonds.
+/// @file src/core/chemistry/bonds/ChemicalBondInstance.hh
+/// @brief A class containing a particular chemical bond between a pair of atoms.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_hh
-#define Masala_src_core_chemistry_Molecules_hh
+#ifndef Masala_src_core_chemistry_bonds_ChemicalBondInstance_hh
+#define Masala_src_core_chemistry_bonds_ChemicalBondInstance_hh
 
 // Forward declarations:
-#include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 
 // Core headers:
+#include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
-#include <core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh>
-#include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
 
 // STL headers:
-#include <set>
-#include <mutex>
 
 namespace core {
 namespace chemistry {
+namespace bonds {
 
 
-
-/// @brief A class contiaining a collection of atoms and chemical bonds.
+/// @brief A class containing a particular chemical bond between a pair of atoms.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Molecules : public base::MasalaObject {
+class ChemicalBondInstance : public base::MasalaObject {
 
 public:
 
@@ -60,25 +57,24 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    Molecules() = default;
+    ChemicalBondInstance() = default;
 
     /// @brief Copy constructor.
-    Molecules( Molecules const & ) = default;
+    ChemicalBondInstance( ChemicalBondInstance const & ) = default;
 
     /// @brief Default destructor.
-    ~Molecules() override = default;
+    ~ChemicalBondInstance() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     virtual
-    MoleculesSP
+    ChemicalBondInstanceSP
     clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
-    /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
     virtual
-    MoleculesSP
+    ChemicalBondInstanceSP
     deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -87,7 +83,7 @@ public:
     void
     make_independent();
 
-	/// @brief Returns "Molecules".
+	/// @brief Returns "ChemicalBondInstance".
 	std::string class_name() const override;
 
 public:
@@ -103,26 +99,21 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief A mutex for locking a whole molecules object.
-    std::mutex whole_object_mutex_;
+    /// @brief The first atom involved in the bond.
+    /// @note "First" and "second" have no meaning, here.
+    core::chemistry::atoms::AtomInstanceCWP atom1_;
 
-    /// @brief The representation of the atom coordinates.
-    /// @details Different calculators might need atoms represented in different ways, internally (e.g.
-    /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
-    /// store the data differently, but all offer iterators to access atom coordinates.
-    core::chemistry::atoms::AtomCoordinateRepresentationSP atom_coordinates_;
+    /// @brief The second atom involved in the bond.
+    /// @note "First" and "second" have no meaning, here.
+    core::chemistry::atoms::AtomInstanceCWP atom2_;
 
-    /// @brief The atoms themselves and their properties.
-    /// @details The Molecules container is responsible for keeping these linked to the
-    /// AtomCoordinateRepresentation.
-    std::set< core::chemistry::atoms::AtomInstanceSP > atoms_;
-
-    /// @brief The bonds between atoms.
-    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
+    /// @brief The type of bond this is.
+    ChemicalBondType bond_type_ = ChemicalBondType::SINGLE_BOND;
 
 };
 
+} // namespace bonds
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_Molecules_hh
+#endif // Masala_src_core_chemistry_bonds_ChemicalBondInstance_hh
