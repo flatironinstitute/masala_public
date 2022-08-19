@@ -32,6 +32,7 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/AtomCoordinateRepresentation.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // STL headers:
 #include <string>
@@ -74,6 +75,19 @@ Molecules::make_independent() {
         atoms_.insert( new_atom );
         atom_coordinates_->replace_atom_instance( *it, new_atom );
     }
+
+    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
+    bonds_.clear();
+    for(
+        std::set< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
+        it != old_bonds.end();
+        ++it
+    ) {
+        bonds_.insert( (*it)->deep_clone() );
+    }
+
+    //TODO TODO TODO -- need maps of atoms to bonds and bonds to atoms.
+    //Need to clone these appropriately.
 }
 
 /// @brief Returns "Molecules".

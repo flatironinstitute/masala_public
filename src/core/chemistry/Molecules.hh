@@ -42,6 +42,7 @@ SOFTWARE.
 
 // STL headers:
 #include <set>
+#include <map>
 #include <mutex>
 
 namespace core {

@@ -30,6 +30,9 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 #include <string>
 
@@ -69,6 +72,24 @@ ChemicalBondInstance::class_name() const {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the bond type.
+void
+ChemicalBondInstance::set_bond_type(
+    ChemicalBondType const bond_type_in
+) {
+    CHECK_OR_THROW(
+        bond_type_in != ChemicalBondType::INVALID_CHEMICAL_BOND_TYPE,
+        "Error in ChemicalBondInstance::set_bond_type(): An invalid chemical bond type was specified."
+    );
+    bond_type_ = bond_type_in;
+}
+
+/// @brief Get the bond type.
+ChemicalBondType
+ChemicalBondInstance::bond_type() const {
+    return bond_type_;
+}
 
 } // namespace bonds
 } // namespace chemistry

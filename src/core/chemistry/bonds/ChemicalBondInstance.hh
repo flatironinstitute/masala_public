@@ -92,20 +92,18 @@ public:
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Set the bond type.
+    void set_bond_type( ChemicalBondType const bond_type_in );
+
+    /// @brief Get the bond type.
+    ChemicalBondType bond_type() const;
+
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief The first atom involved in the bond.
-    /// @note "First" and "second" have no meaning, here.
-    core::chemistry::atoms::AtomInstanceCWP atom1_;
-
-    /// @brief The second atom involved in the bond.
-    /// @note "First" and "second" have no meaning, here.
-    core::chemistry::atoms::AtomInstanceCWP atom2_;
 
     /// @brief The type of bond this is.
     ChemicalBondType bond_type_ = ChemicalBondType::SINGLE_BOND;
