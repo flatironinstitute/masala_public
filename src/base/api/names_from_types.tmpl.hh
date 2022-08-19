@@ -98,6 +98,13 @@ namespace api {
         return "double";
     }
 
+    /// @brief Manually override for strings.
+    template<>
+    std::string
+    name_from_type< std::string >() {
+        return "std::string";
+    }
+
 } // namespace api
 } // namespace base
 
