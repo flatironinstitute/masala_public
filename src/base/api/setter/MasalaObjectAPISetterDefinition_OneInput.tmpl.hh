@@ -112,6 +112,7 @@ public:
 		std::ostringstream ss;
     	ss << "Setter:\tvoid " << setter_function_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
 		ss << setter_function_description() << std::endl;
+		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		return ss.str();
 	}
 
