@@ -28,7 +28,7 @@ SOFTWARE.
 /// the public C++ headers, plus the bindings for Python or XML (or other
 //// scripting languages).
 /// @details This is a derived class for single-input getters.  The type T1
-/// defines the input type.
+/// defines the input type and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_MasalaObjectAPIGetterDefinition_OneInput_fwd_hh

@@ -51,7 +51,7 @@ namespace getter {
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a pure virtual base class.  Derived classes are for
 /// zero-parameter, one-parameter, two-parameter, three-parameter, etc. getters.
-/// @note A getter must take one or more inputs, and must return void.
+/// @note A getter can take zero or more inputs, and must return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaObjectAPIGetterDefinition : public base::MasalaObject {
 

@@ -27,7 +27,7 @@ SOFTWARE.
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for single-input getters.  The type T1
-/// defines the input type.
+/// defines the input type and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_OneInput_tmpl_hh
@@ -55,7 +55,7 @@ namespace getter {
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for single-input getters.  The type T1
 /// defines the input type and the type T0 defines the output type.
-/// @note A getter must take one or more inputs, and must return void.
+/// @note A getter can take zero or more inputs, and must return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 template< typename T0, typename T1 >
 class MasalaObjectAPIGetterDefinition_OneInput : public MasalaObjectAPIGetterDefinition {
