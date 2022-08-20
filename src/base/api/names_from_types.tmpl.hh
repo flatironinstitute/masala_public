@@ -42,6 +42,13 @@ namespace api {
         return typeid(T).name();
     }
 
+    /// @brief Manually override for booleans.
+    template<>
+    std::string
+    name_from_type< bool >() {
+        return "bool";
+    }
+
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
