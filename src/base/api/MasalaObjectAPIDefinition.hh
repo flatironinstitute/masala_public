@@ -39,9 +39,9 @@ SOFTWARE.
 
 // Base headers.
 #include <base/types.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
-#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
 
 // STL headers.
 #include <set>
