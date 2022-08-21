@@ -35,6 +35,7 @@ SOFTWARE.
 
 // Core headers:
 #include <core/types.hh>
+#include <core/chemistry/atoms/ElementType.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
