@@ -45,6 +45,7 @@ SOFTWARE.
 
 // STL headers.
 #include <set>
+#include <string>
 
 namespace base {
 namespace api {
@@ -114,14 +115,14 @@ public:
 
 	/// @brief Begin iterator for the getters.
 	inline
-	std::set<base::api::getter::GetterDefinitionCSP>::const_iterator
+	std::set<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_begin() const {
 		return getters_.cbegin();
 	}
 
 	/// @brief End iterator for the getters.
 	inline
-	std::set<base::api::getter::GetterDefinitionCSP>::const_iterator
+	std::set<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_end() const {
 		return getters_.cend();
 	}
@@ -135,14 +136,14 @@ public:
 
 	/// @brief Begin iterator for the work functions.
 	inline
-	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::set<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_begin() const {
 		return work_functions_.cbegin();
 	}
 
 	/// @brief End iterator for the work functions.
 	inline
-	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::set<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_end() const {
 		return work_functions_.cend();
 	}
@@ -172,10 +173,10 @@ private:
 	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP> setters_;
 
 	/// @brief A list of getters.
-	std::set<base::api::getter::GetterDefinitionCSP> getters_;
+	std::set<base::api::getter::MasalaObjectAPIGetterDefinitionCSP> getters_;
 
 	/// @brief A list of work functions.
-	std::set<base::api::work_function::MasalaObjectAPISetterDefinitionCSP> work_functions_;
+	std::set<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
 
 
 }; // class MasalaObjectAPIDefinition
