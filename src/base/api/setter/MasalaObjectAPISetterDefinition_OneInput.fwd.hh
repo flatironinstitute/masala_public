@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/api/MasalaObjectAPISetterDefinition_OneInput.hh
+/// @file src/base/api/setter/MasalaObjectAPISetterDefinition_OneInput.fwd.hh
 /// @brief Forward definitions for a class that stores the definition for a
 /// setter function, as part of the API for an object.  Used to auto-generate
 /// the public C++ headers, plus the bindings for Python or XML (or other
@@ -31,8 +31,8 @@ SOFTWARE.
 /// defines the input type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
-#define Masala_src_base_api_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
+#ifndef Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
+#define Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
@@ -67,4 +67,4 @@ namespace setter {
 } // namespace api
 } // namespace base
 
-#endif //Masala_src_base_api_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
+#endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_fwd_hh
