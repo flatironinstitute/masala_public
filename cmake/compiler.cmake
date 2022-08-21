@@ -23,7 +23,18 @@
 
 # This file sets compiler settings for compilation.
 
-SET(COMPILER gcc)
+IF(APPLE)
+    SET(COMPILER clang)
+	ADD_DEFINITIONS(-DMASALA_MAC)
+ELSEIF(UNIX)
+    SET(COMPILER gcc)
+	ADD_DEFINITIONS(-DMASALA_UNIX)
+ELSEIF(WIN32)
+    SET(COMPILER gcc)
+	ADD_DEFINITIONS(-DMASALA_WINDOWS)
+ELSE()
+    MESSAGE( FATAL_ERROR "Only Macintosh, Linux/Unix, and Windows builds are supported at this time." )
+ENDIF()
 
 SET( CMAKE_CXX_STANDARD 14 )
 SET( CMAKE_CXX_STANDARD_REQUIRED True )
