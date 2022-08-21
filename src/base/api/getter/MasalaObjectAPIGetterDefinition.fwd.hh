@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/api/MasalaObjectAPIGetterDefinition.hh
+/// @file src/base/api/getter/MasalaObjectAPIGetterDefinition.hh
 /// @brief Forward definitions for a class that stores the definition for a
 /// getter function, as part of the API for an object.  Used to auto-generate
 /// the public C++ headers, plus the bindings for Python or XML (or other
 //// scripting languages).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaObjectAPIGetterDefinition_fwd_hh
-#define Masala_src_base_api_MasalaObjectAPIGetterDefinition_fwd_hh
+#ifndef Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_fwd_hh
+#define Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
@@ -60,4 +60,4 @@ namespace getter {
 } // namespace api
 } // namespace base
 
-#endif //Masala_src_base_api_MasalaObjectAPIGetterDefinition_fwd_hh
+#endif //Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_fwd_hh

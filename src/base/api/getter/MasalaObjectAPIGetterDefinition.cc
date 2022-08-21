@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/api/MasalaObjectAPIGetterDefinition.cc
+/// @file src/base/api/getter/MasalaObjectAPIGetterDefinition.cc
 /// @brief A class that stores the definition for a getter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
