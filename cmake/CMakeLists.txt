@@ -44,7 +44,7 @@ INCLUDE( compiler.cmake )
 # TODO TODO TODO
 
 # Build the base, numeric, and core libraries:
-#INCLUDE( cmake_generated/base.cmake )
+INCLUDE( ../build/cmake_generated/base.cmake )
 #INCLUDE( numeric.cmake )
 #INCLUDE( cmake_generated/core.cmake )
 
