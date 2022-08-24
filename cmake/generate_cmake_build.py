@@ -24,7 +24,7 @@
 ## @brief Used during the build process to generate the cmake files for all the stuff that
 ## has to be compiled in a given library.
 ## @details Recursively goes through directories and finds .cc files to compile.  Usage:
-##          python3 generate_cmake_build.py <source dir> <output path and filename for cmake file>
+##          python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 from genericpath import isdir, isfile
@@ -45,14 +45,19 @@ def get_all_cc_files_in_dir_and_subdirs( dirname : str ) -> list :
             outlist.extend( get_all_cc_files_in_dir_and_subdirs( concatname ) )
     return outlist        
 
-assert len(argv) == 3, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <source dir> <output path and filename for cmake file>."
+assert len(argv) == 4, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>."
 
-source_dir = argv[1]
-output_file = argv[2]
+lib_name = argv[1]
+source_dir = argv[2]
+output_file = argv[3]
 
 cclist = get_all_cc_files_in_dir_and_subdirs( source_dir )
 with open( output_file, 'w' ) as fhandle:
+    if len(cclist) > 0 :
+        fhandle.write( "ADD_LIBRARY(" + lib_name + " OBJECT" )
     for entry in cclist:
-        fhandle.write( entry + "\n" )
+        fhandle.write( "\n\t" + entry )
+    if len(cclist) > 0 :
+        fhandle.write( "\n)\n" )
 
 print( "Wrote " + output_file + "." )
