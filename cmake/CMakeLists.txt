@@ -41,12 +41,15 @@ INCLUDE_DIRECTORIES( SYSTEM ../ ../src/ )
 INCLUDE( compiler.cmake )
 
 # Generate the cmake files for base, numeric, and core libraries:
-# TODO TODO TODO
+add_custom_command(
+    OUTPUT ../build/cmake_generated/base.cmake ../build/cmake_generated/numeric.cmake ../build/cmake_generated/core.cmake
+    COMMAND python3 generate_cmake_files.py base && python3 generate_cmake_files.py numeric && python3 generate_cmake_files.py core
+)
 
 # Build the base, numeric, and core libraries:
 INCLUDE( ../build/cmake_generated/base.cmake )
-#INCLUDE( numeric.cmake )
-#INCLUDE( cmake_generated/core.cmake )
+INCLUDE( ../build/cmake_generated/numeric.cmake )
+INCLUDE( ../build/cmake_generated/core.cmake )
 
 # Link the base, numeric, and core libraries:
 # TODO TODO TODO
