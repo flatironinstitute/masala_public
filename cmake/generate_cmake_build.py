@@ -37,11 +37,12 @@ def get_all_cc_files_in_dir_and_subdirs( dirname : str ) -> list :
     assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
     outlist = []
     for fname in listdir( dirname ) :
-        if path.isfile( dirname + fname ) :
+        concatname = dirname + "/" + fname
+        if path.isfile( concatname ) :
             if fname.endswith( ".cc" ) :
-                outlist.append( dirname + fname )
-        elif path.isdir( dirname + fname ) :
-            outlist.extend( get_all_cc_files_in_dir_and_subdirs( dirname + fname ) )
+                outlist.append( concatname )
+        elif path.isdir( concatname ) :
+            outlist.extend( get_all_cc_files_in_dir_and_subdirs( concatname ) )
     return outlist        
 
 assert len(argv) == 3, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <source dir> <output path and filename for cmake file>."
@@ -52,6 +53,6 @@ output_file = argv[2]
 cclist = get_all_cc_files_in_dir_and_subdirs( source_dir )
 with open( output_file, 'w' ) as fhandle:
     for entry in cclist:
-        fhandle.write( entry )
+        fhandle.write( entry + "\n" )
 
 print( "Wrote " + output_file + "." )
