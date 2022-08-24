@@ -40,12 +40,6 @@ INCLUDE_DIRECTORIES( SYSTEM ../ ../src/ )
 # Compiler settings and compilation flags:
 INCLUDE( compiler.cmake )
 
-# Generate the cmake files for base, numeric, and core libraries:
-add_custom_command(
-    OUTPUT ../build/cmake_generated/base.cmake ../build/cmake_generated/numeric.cmake ../build/cmake_generated/core.cmake
-    COMMAND python3 generate_cmake_files.py base && python3 generate_cmake_files.py numeric && python3 generate_cmake_files.py core
-)
-
 # Build the base, numeric, and core libraries:
 INCLUDE( ../build/cmake_generated/base.cmake )
 INCLUDE( ../build/cmake_generated/numeric.cmake )
