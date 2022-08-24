@@ -40,6 +40,17 @@ SOFTWARE.
 namespace core {
 namespace chemistry {
 
+/// @brief Copy constructor.
+/// @details Must be explicitly declared due to mutex.
+Molecules::Molecules(
+    Molecules const & src
+) {
+    std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
+    atom_coordinates_ = src.atom_coordinates_;
+    atoms_ = src.atoms_;
+    bonds_ = src.bonds_;
+}
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 MoleculesSP

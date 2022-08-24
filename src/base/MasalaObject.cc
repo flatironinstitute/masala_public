@@ -29,9 +29,9 @@ SOFTWARE.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <basic/MasalaObject.hh>
+#include <base/MasalaObject.hh>
 
-namespace basic {
+namespace base {
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
@@ -40,16 +40,16 @@ namespace basic {
 /// @brief Does this object return an API definition?
 /// @details By default, returns false.  Derived classes might, though.
 bool
-MaslaObject::has_api_definition() const {
+MasalaObject::has_api_definition() const {
     return get_api_definition() != nullptr;
 }
 
 /// @brief Get an object describing the API for this object.
 /// @details Default implementation returns nullptr.  May be overridden by
 /// derived objects.
-MasalaObjectAPIDefinitionCSP
+base::api::MasalaObjectAPIDefinitionCSP
 MasalaObject::get_api_definition() const {
     return nullptr;
 }
 
-} // namespace basic
+} // namespace base

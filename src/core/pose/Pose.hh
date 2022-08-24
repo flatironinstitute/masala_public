@@ -80,6 +80,10 @@ public:
     void
     make_independent();
 
+    /// @brief Returns "Pose".
+    std::string
+    class_name() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

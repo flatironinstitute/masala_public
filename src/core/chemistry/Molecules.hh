@@ -64,7 +64,8 @@ public:
     Molecules() = default;
 
     /// @brief Copy constructor.
-    Molecules( Molecules const & ) = default;
+    /// @details Must be explicitly declared due to mutex.
+    Molecules( Molecules const & src );
 
     /// @brief Default destructor.
     ~Molecules() override = default;
@@ -105,7 +106,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief A mutex for locking a whole molecules object.
-    std::mutex whole_object_mutex_;
+    mutable std::mutex whole_object_mutex_;
 
     /// @brief The representation of the atom coordinates.
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.

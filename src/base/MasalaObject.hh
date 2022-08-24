@@ -70,7 +70,7 @@ public:
 	/// @details Default implementation returns nullptr.  May be overridden by
 	/// derived objects.
 	virtual
-	MasalaObjectAPIDefinitionCSP
+	base::api::MasalaObjectAPIDefinitionCSP
 	get_api_definition() const;
 
 
