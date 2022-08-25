@@ -57,8 +57,9 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor.
-    Pose() = default;
+    /// @brief Default constructor, making an empty Pose.
+    /// @details Ensures that the molecules_ object always exists.
+    Pose();
 
     /// @brief Copy constructor.
     Pose( Pose const & ) = default;
@@ -113,6 +114,16 @@ public:
     /// not all form one contiguously-bonded set).
     core::chemistry::Molecules const &
     molecules() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the Pose class.
+    base::api::MasalaObjectAPIDefinitionCSP
+    get_api_definition() const override;
 
 private:
 

@@ -34,12 +34,22 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/Molecules.hh>
 
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+
 namespace core {
 namespace pose {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Default constructor, making an empty Pose.
+/// @details Ensures that the molecules_ object always exists.
+Pose::Pose() :
+    base::MasalaObject(),
+    molecules_( std::make_shared< core::chemistry::Molecules >() )
+{}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
@@ -102,6 +112,25 @@ Pose::molecules_weak_ptr() const {
 core::chemistry::Molecules const &
 Pose::molecules() const {
     return *molecules_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the Pose class.
+base::api::MasalaObjectAPIDefinitionCSP
+Pose::get_api_definition() const {
+    using namespace base::api;
+
+    MasalaObjectAPIDefinitionSP api_def(
+        std::make_shared< MasalaObjectAPIDefinition >(
+            class_name(),
+            "The Pose class stores information about the geometry, chemical properties, annotations, "
+            "and energies of a molecule or group of molecules, as well as any cached data for that "
+            "molecule or group of molecules."
+        )
+    );
 }
 
 } // namespace pose
