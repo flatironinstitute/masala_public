@@ -131,6 +131,8 @@ Pose::get_api_definition() const {
             "molecule or group of molecules."
         )
     );
+
+    return api_def;
 }
 
 } // namespace pose
