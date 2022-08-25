@@ -77,6 +77,13 @@ Pose::make_independent() {
 /// @brief Returns "Pose".
 std::string
 Pose::class_name() const {
+    return class_name_static();
+}
+
+/// @brief Returns "Pose".
+/// @details Called by non-static version.
+std::string
+Pose::class_name_static() {
     return "Pose";
 }
 
@@ -119,13 +126,21 @@ Pose::molecules() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a description of the API for the Pose class.
+/// @details Non-static version calls static version.
 base::api::MasalaObjectAPIDefinitionCSP
 Pose::get_api_definition() const {
+    return get_api_definition_static();
+}
+
+/// @brief Get a description of the API for the Pose class.
+/// @details Static version called by non-static version.
+base::api::MasalaObjectAPIDefinitionCSP
+Pose::get_api_definition_static() {
     using namespace base::api;
 
     MasalaObjectAPIDefinitionSP api_def(
         std::make_shared< MasalaObjectAPIDefinition >(
-            class_name(),
+            class_name_static(),
             "The Pose class stores information about the geometry, chemical properties, annotations, "
             "and energies of a molecule or group of molecules, as well as any cached data for that "
             "molecule or group of molecules."

@@ -82,8 +82,15 @@ public:
     make_independent();
 
     /// @brief Returns "Pose".
+    /// @details Calls static version.
     std::string
     class_name() const override;
+
+    /// @brief Returns "Pose".
+    /// @details Called by non-static version.
+    static
+    std::string
+    class_name_static();
 
 public:
 
@@ -122,8 +129,15 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get a description of the API for the Pose class.
+    /// @details Non-static version calls static version.
     base::api::MasalaObjectAPIDefinitionCSP
     get_api_definition() const override;
+
+    /// @brief Get a description of the API for the Pose class.
+    /// @details Static version called by non-static version.
+    static
+    base::api::MasalaObjectAPIDefinitionCSP
+    get_api_definition_static();
 
 private:
 
