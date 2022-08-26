@@ -69,9 +69,11 @@ public:
 	///			   we are describing here.
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
+	/// @param[in] is_const Is this work function a const function?
 	MasalaObjectAPIWorkFunctionDefinition(
 		std::string const & work_function_name,
-		std::string const & work_function_description
+		std::string const & work_function_description,
+		bool const is_const
 	);
 
 	/// @brief Copy constructor.
@@ -114,6 +116,9 @@ public:
 	/// @brief Get the work function's description.
 	std::string const & work_function_description() const;
 
+	/// @brief Get whether this work function is a const function.
+	bool is_const() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +132,10 @@ private:
 	/// @brief The description of the work function.
 	/// @details Must be set on construction.
 	std::string const work_function_description_;
+
+	/// @brief Is this work function a const function?
+	/// @details Must be set on construction.
+	bool const is_const_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 

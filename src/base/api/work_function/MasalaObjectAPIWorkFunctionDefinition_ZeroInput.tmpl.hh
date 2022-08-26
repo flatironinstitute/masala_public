@@ -74,15 +74,17 @@ public:
 	///			   we are describing here.
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
+	/// @param[in] is_const Is this work function a const function?
 	/// @param[in] output_parameter_description The description of what the work function returns.
 	/// @param[in] work_function The actual work function.
 	MasalaObjectAPIWorkFunctionDefinition_ZeroInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
+		bool const is_const,
 		std::string const & output_parameter_description,
 		std::function< T0() > const & work_function
 	) :
-		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description ),
+		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
 		output_description_( output_parameter_description ),
 		work_function_( work_function )
 	{}
@@ -111,7 +113,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "():" << std::endl;
+    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "()" << (is_const ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
 		return ss.str();

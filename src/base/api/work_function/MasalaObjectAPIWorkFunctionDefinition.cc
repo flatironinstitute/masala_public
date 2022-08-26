@@ -44,13 +44,16 @@ namespace work_function {
 ///			   we are describing here.
 /// @param[in] work_function_description The description of the work function that
 ///			   we are describing here.
+/// @param[in] is_const Is this work function a const function?
 MasalaObjectAPIWorkFunctionDefinition::MasalaObjectAPIWorkFunctionDefinition(
     std::string const & work_function_name,
-    std::string const & work_function_description
+    std::string const & work_function_description,
+    bool const is_const
 ) :
     base::MasalaObject(),
     work_function_name_(work_function_name),
-    work_function_description_(work_function_description)
+    work_function_description_(work_function_description),
+    is_const_(is_const)
 {}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +70,12 @@ MasalaObjectAPIWorkFunctionDefinition::work_function_name() const {
 std::string const &
 MasalaObjectAPIWorkFunctionDefinition::work_function_description() const {
     return work_function_description_;
+}
+
+/// @brief Get whether this work function is a const function.
+bool
+MasalaObjectAPIWorkFunctionDefinition::is_const() const {
+    return is_const_;
 }
 
 } // namespace work_function

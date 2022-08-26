@@ -114,7 +114,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
+    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "( " << base::api::name_from_type< T1 >() << " )" << (is_const ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;

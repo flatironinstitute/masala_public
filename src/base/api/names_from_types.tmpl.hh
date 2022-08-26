@@ -98,6 +98,20 @@ namespace api {
         return "float";
     }
 
+    /// @brief Manually override for float instances.
+    template<>
+    std::string
+    name_from_type< float & >() {
+        return "float &";
+    }
+
+    /// @brief Manually override for float const instances.
+    template<>
+    std::string
+    name_from_type< float const & >() {
+        return "float const &";
+    }
+
     /// @brief Manually override for doubles.
     template<>
     std::string
@@ -105,11 +119,32 @@ namespace api {
         return "double";
     }
 
+    /// @brief Manually override for double instances.
+    template<>
+    std::string
+    name_from_type< double & >() {
+        return "double &";
+    }
+
+    /// @brief Manually override for double const instances.
+    template<>
+    std::string
+    name_from_type< double const & >() {
+        return "double const &";
+    }
+
     /// @brief Manually override for strings.
     template<>
     std::string
     name_from_type< std::string >() {
         return "std::string";
+    }
+
+    /// @brief Manually override for const instance strings.
+    template<>
+    std::string
+    name_from_type< std::string const & >() {
+        return "std::string const &";
     }
 
 } // namespace api
