@@ -28,7 +28,9 @@ SOFTWARE.
 /// the public C++ headers, plus the bindings for Python or XML (or other
 //// scripting languages).
 /// @details This is a derived class for single-input constructors.  The type T1
-/// defines the input type.
+/// defines the input type, and the type T0 defines the type for which we're defining
+/// a constructor.
+/// @note A constructor must take one or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_OneInput_fwd_hh
@@ -40,28 +42,28 @@ namespace base {
 namespace api {
 namespace constructor {
 
-	template< typename T1 >
+	template< typename T0, typename T1 >
 	class MasalaObjectAPIConstructorDefinition_OneInput;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a std::shared_ptr for objects of that class.
-	template< typename T1 >
-	using MasalaObjectAPIConstructorDefinition_OneInputSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T1 > >;
+	template< typename T0, typename T1 >
+	using MasalaObjectAPIConstructorDefinition_OneInputSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T0, T1 > >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a std::shared_ptr for const objects of that class.
-	template< typename T1 >
-	using MasalaObjectAPIConstructorDefinition_OneInputCSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T1 > const >;
+	template< typename T0, typename T1 >
+	using MasalaObjectAPIConstructorDefinition_OneInputCSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T0, T1 > const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a std::weak_ptr for objects of that class.
-	template< typename T1 >
-	using MasalaObjectAPIConstructorDefinition_OneInputWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T1 > >;
+	template< typename T0, typename T1 >
+	using MasalaObjectAPIConstructorDefinition_OneInputWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T0, T1 > >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a std::weak_ptr for const objects of that class.
-	template< typename T1 >
-	using MasalaObjectAPIConstructorDefinition_OneInputCWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T1 > const >;
+	template< typename T0, typename T1 >
+	using MasalaObjectAPIConstructorDefinition_OneInputCWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition_OneInput< T0, T1 > const >;
 
 } // namespace constructor
 } // namespace api

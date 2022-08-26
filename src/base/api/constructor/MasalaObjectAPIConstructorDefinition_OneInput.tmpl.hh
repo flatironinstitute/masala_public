@@ -27,7 +27,9 @@ SOFTWARE.
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for single-input constructors.  The type T1
-/// defines the input type.
+/// defines the input type, and the type T0 defines the type for which we're defining
+/// a constructor.
+/// @note A constructor must take one or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_OneInput_tmpl_hh
@@ -54,10 +56,11 @@ namespace constructor {
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for single-input constructors.  The type T1
-/// defines the input type.
+/// defines the input type, and the type T0 defines the type for which we're defining
+/// a constructor.
 /// @note A constructor must take one or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename T1 >
+template< typename T0, typename T1 >
 class MasalaObjectAPIConstructorDefinition_OneInput : public MasalaObjectAPIConstructorDefinition {
 
 public:
@@ -120,6 +123,18 @@ public:
 	// json_return_type ???
 	// get_constructor_json_description() const override;
 	// TODO TODO TODO
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create an instance of this class using the constructor.
+	std::shared_ptr< T0 >
+	create_object( T1 const & input_parameter ) {
+		return std::make_shared< T0 >( input_parameter );
+	}
 
 private:
 
