@@ -39,6 +39,7 @@ SOFTWARE.
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
 namespace core {
 namespace pose {
@@ -142,6 +143,7 @@ Pose::get_api_definition() {
         )
     );
 
+    // Constructors:
     api_def->add_constructor(
         std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
             class_name_static(),
@@ -157,6 +159,7 @@ Pose::get_api_definition() {
         )
     );
 
+    // Work functions:
     api_def->add_work_function(
         std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
             "make_independent",
@@ -164,11 +167,20 @@ Pose::get_api_definition() {
             "Pose instance or any other class instance.",
             false,
             "None (void).",
-            std::bind( &core::pose::Pose::make_independent, this )
+            std::bind( &Pose::make_independent, this )
         )
     );
 
-    //std::function< void() > x = std::bind( &Pose::make_independent, this );
+    // Getters:
+    api_def->add_getter(
+        std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::Molecules const & > >(
+            "molecules",
+            "Access the Molecules object within the Pose.",
+            "A const reference to the Molecules object, which stores atoms, atomic geometry, "
+            "and chemical connectivity.",
+            std::bind( &Pose::molecules, this )
+        )
+    );
 
     return api_def;
 }
