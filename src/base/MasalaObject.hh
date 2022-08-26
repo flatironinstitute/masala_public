@@ -64,14 +64,14 @@ public:
 
 	/// @brief Does this object return an API definition?
 	/// @details By default, returns false.  Derived classes might, though.
-	bool has_api_definition() const;
+	bool has_api_definition();
 
 	/// @brief Get an object describing the API for this object.
 	/// @details Default implementation returns nullptr.  May be overridden by
 	/// derived objects.
 	virtual
 	base::api::MasalaObjectAPIDefinitionCSP
-	get_api_definition() const;
+	get_api_definition();
 
 
 }; // class MasalaObject

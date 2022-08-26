@@ -40,7 +40,7 @@ namespace base {
 /// @brief Does this object return an API definition?
 /// @details By default, returns false.  Derived classes might, though.
 bool
-MasalaObject::has_api_definition() const {
+MasalaObject::has_api_definition() {
     return get_api_definition() != nullptr;
 }
 
@@ -48,7 +48,7 @@ MasalaObject::has_api_definition() const {
 /// @details Default implementation returns nullptr.  May be overridden by
 /// derived objects.
 base::api::MasalaObjectAPIDefinitionCSP
-MasalaObject::get_api_definition() const {
+MasalaObject::get_api_definition() {
     return nullptr;
 }
 

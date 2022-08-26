@@ -130,7 +130,7 @@ Pose::molecules() const {
 
 /// @brief Get a description of the API for the Pose class.
 base::api::MasalaObjectAPIDefinitionCSP
-Pose::get_api_definition() const {
+Pose::get_api_definition() {
     using namespace base::api;
 
     MasalaObjectAPIDefinitionSP api_def(
@@ -164,7 +164,7 @@ Pose::get_api_definition() const {
             "Pose instance or any other class instance.",
             false,
             "None (void).",
-            std::bind( &Pose::make_independent, this )
+            TODO
         )
     );
 

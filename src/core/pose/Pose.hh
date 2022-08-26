@@ -130,7 +130,7 @@ public:
 
     /// @brief Get a description of the API for the Pose class.
     base::api::MasalaObjectAPIDefinitionCSP
-    get_api_definition() const override;
+    get_api_definition() override;
 
 private:
 
