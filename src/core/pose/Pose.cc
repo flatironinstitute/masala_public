@@ -38,6 +38,7 @@ SOFTWARE.
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
 namespace core {
 namespace pose {
@@ -128,16 +129,8 @@ Pose::molecules() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a description of the API for the Pose class.
-/// @details Non-static version calls static version.
 base::api::MasalaObjectAPIDefinitionCSP
 Pose::get_api_definition() const {
-    return get_api_definition_static();
-}
-
-/// @brief Get a description of the API for the Pose class.
-/// @details Static version called by non-static version.
-base::api::MasalaObjectAPIDefinitionCSP
-Pose::get_api_definition_static() {
     using namespace base::api;
 
     MasalaObjectAPIDefinitionSP api_def(
@@ -161,6 +154,17 @@ Pose::get_api_definition_static() {
             "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
             "make_independent() is subsequently called.",
             "The input Pose to copy.  Unaltered by this operation."
+        )
+    );
+
+    api_def->add_work_function(
+        std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< Pose, void > >(
+            "make_independent",
+            "Deep-copies all internal data, and ensures that data are not shared with any other "
+            "Pose instance or any other class instance.",
+            false,
+            "None (void).",
+            std::bind( &Pose::make_independent, this )
         )
     );
 
