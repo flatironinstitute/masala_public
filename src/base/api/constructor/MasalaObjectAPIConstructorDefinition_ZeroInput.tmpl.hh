@@ -79,7 +79,7 @@ public:
 		std::string const & constructor_name,
 		std::string const & constructor_description
 	) :
-		MasalaObjectAPIConstructorDefinition( constructor_name, constructor_description ),
+		MasalaObjectAPIConstructorDefinition( constructor_name, constructor_description )
 	{}
 
 	/// @brief Copy constructor.
