@@ -66,7 +66,7 @@ public:
 
 	/// @brief Options constructor, to be called by derived classes.
 	/// @param[in] constructor_name The name of the constructor that
-	///			   we are describing here.
+	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
 	MasalaObjectAPIConstructorDefinition(
@@ -108,7 +108,7 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Get the name of the constructor.
+	/// @brief Get the name of the constructor.  Should match the T0 class name.
 	std::string const & constructor_name() const;
 
 	/// @brief Get the constructor's description.
@@ -121,7 +121,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief The name of the constructor.
-	/// @details Must be set on construction.
+	/// @details Must be set on construction.  Should match the T0 class name.
 	std::string const constructor_name_;
 
 	/// @brief The description of the constructor.

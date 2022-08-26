@@ -72,7 +72,7 @@ public:
 
 	/// @brief Options constructor, to be called by derived classes.
 	/// @param[in] constructor_name The name of the constructor that
-	///			   we are describing here.
+	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
 	MasalaObjectAPIConstructorDefinition_ZeroInput(

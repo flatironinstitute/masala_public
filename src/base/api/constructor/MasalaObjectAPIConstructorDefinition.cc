@@ -41,7 +41,7 @@ namespace constructor {
 
 /// @brief Options constructor, to be called by derived classes.
 /// @param[in] constructor_name The name of the constructor that
-///			   we are describing here.
+///			   we are describing here.  Should match the T0 class name.
 /// @param[in] constructor_description The description of the constructor that
 ///			   we are describing here.
 MasalaObjectAPIConstructorDefinition::MasalaObjectAPIConstructorDefinition(
@@ -57,7 +57,7 @@ MasalaObjectAPIConstructorDefinition::MasalaObjectAPIConstructorDefinition(
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get the name of the constructor.
+/// @brief Get the name of the constructor.  Should match the T0 class name.
 std::string const &
 MasalaObjectAPIConstructorDefinition::constructor_name() const {
     return constructor_name_;
