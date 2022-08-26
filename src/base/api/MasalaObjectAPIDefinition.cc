@@ -58,5 +58,15 @@ MasalaObjectAPIDefinition::class_name() const {
     return "MasalaObjectAPIDefinition";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a human-readable description of the API for a module.
+std::string
+MasalaObjectAPIDefinition::get_human_readable_description() const {
+    TODO TODO TODO
+}
+
 } // namespace api
 } // namespace base

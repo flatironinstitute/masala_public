@@ -93,6 +93,10 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get a human-readable description of the API for a module.
+	std::string
+	get_human_readable_description() const;
+
 	/// @brief Begin iterator for the constructors.
 	inline
 	std::set<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
