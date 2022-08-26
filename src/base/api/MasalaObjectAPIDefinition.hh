@@ -39,6 +39,7 @@ SOFTWARE.
 
 // Base headers.
 #include <base/types.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.fwd.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
@@ -89,8 +90,29 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
+// PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Begin iterator for the constructors.
+	inline
+	std::set<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_begin() const {
+		return constructors_.cbegin();
+	}
+
+	/// @brief End iterator for the constructors.
+	inline
+	std::set<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_end() const {
+		return constructors_.cend();
+	}
+
+	/// @brief Number of constructors.
+	inline
+	base::Size
+	n_constructors() const {
+		return constructors_.size();
+	}
 
 	/// @brief Begin iterator for the setters.
 	inline
@@ -168,6 +190,9 @@ private:
 	/// @brief The description of the class for which we're providing an API definition.
 	/// @details Must be set at construction time.
 	std::string const api_class_description_;
+
+	/// @brief A list of constructors.
+	std::set<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP> constructors_;
 
 	/// @brief A list of setters.
 	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP> setters_;
