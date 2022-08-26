@@ -40,28 +40,28 @@ namespace base {
 namespace api {
 namespace work_function {
 
-	template< typename P, typename T0 >
+	template< typename T0 >
 	class MasalaObjectAPIWorkFunctionDefinition_ZeroInput;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a std::shared_ptr for objects of that class.
-	template< typename P, typename T0 >
-	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< P, T0 > >;
+	template< typename T0 >
+	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< T0 > >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a std::shared_ptr for const objects of that class.
-	template< typename P, typename T0 >
-	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputCSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< P, T0 > const >;
+	template< typename T0 >
+	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputCSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< T0 > const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a std::weak_ptr for objects of that class.
-	template< typename P, typename T0 >
-	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< P, T0 > >;
+	template< typename T0 >
+	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< T0 > >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a std::weak_ptr for const objects of that class.
-	template< typename P, typename T0 >
-	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputCWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< P, T0 > const >;
+	template< typename T0 >
+	using MasalaObjectAPIWorkFunctionDefinition_ZeroInputCWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< T0 > const >;
 
 } // namespace work_function
 } // namespace api

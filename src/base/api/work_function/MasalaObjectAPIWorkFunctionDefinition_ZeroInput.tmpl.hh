@@ -57,7 +57,7 @@ namespace work_function {
 /// defines the output type.  The type P defines the class.
 /// @note A work function can take zero or more inputs, and can return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename P, typename T0 >
+template< typename T0 = void >
 class MasalaObjectAPIWorkFunctionDefinition_ZeroInput : public MasalaObjectAPIWorkFunctionDefinition {
 
 public:
@@ -82,7 +82,7 @@ public:
 		std::string const & work_function_description,
 		bool const is_const,
 		std::string const & output_parameter_description,
-		std::function< T0() > & work_function
+		std::function< T0() > const & work_function
 	) :
 		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
 		output_description_( output_parameter_description ),
@@ -113,7 +113,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "()" << (is_const ? " const" : "" ) << ":" << std::endl;
+    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "()" << (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
 		return ss.str();
