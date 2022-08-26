@@ -114,7 +114,7 @@ public:
 	std::string
 	get_getter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Getter:\t" << base::api::name_from_type< T0 >() << " " << getter_function_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
+    	ss << "Getter:\t" << base::api::name_from_type< T0 >() << " " << getter_function_name() << "( " << base::api::name_from_type< T1 >() << " ) const:" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
