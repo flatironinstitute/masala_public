@@ -151,7 +151,16 @@ Pose::get_api_definition_static() {
 
     api_def->add_constructor(
         std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
+            class_name_static(),
             "Creates an empty Pose, initializing it only with an empty Molecules object."
+        )
+    );
+    api_def->add_constructor(
+        std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
+            class_name_static(),
+            "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
+            "make_independent() is subsequently called.",
+            "The input Pose to copy.  Unaltered by this operation."
         )
     );
 
