@@ -29,7 +29,7 @@ SOFTWARE.
 /// @details This is a derived class for single-input constructors.  The type T1
 /// defines the input type, and the type T0 defines the type for which we're defining
 /// a constructor.
-/// @note A constructor must take one or more inputs, and must return void.
+/// @note A constructor must take zero or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_OneInput_tmpl_hh
@@ -58,7 +58,7 @@ namespace constructor {
 /// @details This is a derived class for single-input constructors.  The type T1
 /// defines the input type, and the type T0 defines the type for which we're defining
 /// a constructor.
-/// @note A constructor must take one or more inputs, and must return void.
+/// @note A constructor must take zero or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 template< typename T0, typename T1 >
 class MasalaObjectAPIConstructorDefinition_OneInput : public MasalaObjectAPIConstructorDefinition {
@@ -111,7 +111,7 @@ public:
 	std::string
 	get_constructor_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Setter:\tvoid " << constructor_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
+    	ss << "Constructor:\t" << constructor_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
 		ss << constructor_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		return ss.str();
@@ -132,7 +132,7 @@ public:
 
 	/// @brief Create an instance of this class using the constructor.
 	std::shared_ptr< T0 >
-	create_object( T1 const & input_parameter ) {
+	create_object( T1 const & input_parameter ) const {
 		return std::make_shared< T0 >( input_parameter );
 	}
 

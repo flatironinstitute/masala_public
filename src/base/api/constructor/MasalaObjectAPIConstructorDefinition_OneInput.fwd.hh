@@ -30,7 +30,7 @@ SOFTWARE.
 /// @details This is a derived class for single-input constructors.  The type T1
 /// defines the input type, and the type T0 defines the type for which we're defining
 /// a constructor.
-/// @note A constructor must take one or more inputs, and must return void.
+/// @note A constructor must take zero or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_OneInput_fwd_hh
