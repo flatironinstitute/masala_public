@@ -114,6 +114,15 @@ public:
 		return constructors_.size();
 	}
 
+	/// @brief Add a constructor.
+	inline
+	void
+	add_constructor(
+		base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
+	) {
+		constructors_.insert( constructor_in );
+	}
+
 	/// @brief Begin iterator for the setters.
 	inline
 	std::set<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
@@ -133,6 +142,15 @@ public:
 	base::Size
 	n_setters() const {
 		return setters_.size();
+	}
+
+	/// @brief Add a setter.
+	inline
+	void
+	add_setter(
+		base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
+	) {
+		setters_.insert( setter_in );
 	}
 
 	/// @brief Begin iterator for the getters.
@@ -156,6 +174,15 @@ public:
 		return getters_.size();
 	}
 
+	/// @brief Add a getter.
+	inline
+	void
+	add_getter(
+		base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
+	) {
+		getters_.insert( getter_in );
+	}
+
 	/// @brief Begin iterator for the work functions.
 	inline
 	std::set<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
@@ -175,6 +202,15 @@ public:
 	base::Size
 	n_work_functions() const {
 		return work_functions_.size();
+	}
+
+	/// @brief Add a work function.
+	inline
+	void
+	add_work_function(
+		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
+	) {
+		work_functions_.insert( work_function_in );
 	}
 
 private:
