@@ -57,7 +57,7 @@ namespace work_function {
 /// defines the output type.  The type P defines the class.
 /// @note A work function can take zero or more inputs, and can return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename T0 = void >
+template< typename T0 >
 class MasalaObjectAPIWorkFunctionDefinition_ZeroInput : public MasalaObjectAPIWorkFunctionDefinition {
 
 public:
