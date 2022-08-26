@@ -27,7 +27,7 @@ SOFTWARE.
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for zero-input work functions.  The type T0
-/// defines the output type.
+/// defines the output type.  The type P defines the class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_ZeroInput_tmpl_hh
@@ -54,10 +54,10 @@ namespace work_function {
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
 /// @details This is a derived class for zero-input work functions.  The type T0
-/// defines the output type.
+/// defines the output type.  The type P defines the class.
 /// @note A work function can take zero or more inputs, and can return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename T0 >
+template< typename P, typename T0 >
 class MasalaObjectAPIWorkFunctionDefinition_ZeroInput : public MasalaObjectAPIWorkFunctionDefinition {
 
 public:
@@ -82,7 +82,7 @@ public:
 		std::string const & work_function_description,
 		bool const is_const,
 		std::string const & output_parameter_description,
-		std::function< T0() > const & work_function
+		std::function< T0() > & work_function
 	) :
 		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
 		output_description_( output_parameter_description ),
@@ -136,7 +136,7 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0() > const work_function_;
+	std::function< T0() > work_function_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition_ZeroInput
 
