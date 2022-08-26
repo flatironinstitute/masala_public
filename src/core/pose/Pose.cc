@@ -36,6 +36,8 @@ SOFTWARE.
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 
 namespace core {
 namespace pose {
@@ -144,6 +146,12 @@ Pose::get_api_definition_static() {
             "The Pose class stores information about the geometry, chemical properties, annotations, "
             "and energies of a molecule or group of molecules, as well as any cached data for that "
             "molecule or group of molecules."
+        )
+    );
+
+    api_def->add_constructor(
+        std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
+            "Creates an empty Pose, initializing it only with an empty Molecules object."
         )
     );
 
