@@ -31,6 +31,15 @@ SOFTWARE.
 // Class headers
 #include <base/api/MasalaObjectAPIDefinition.hh>
 
+// Base headers
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
+
+// STL headers
+#include <sstream>
+
 namespace base {
 namespace api {
 
@@ -65,7 +74,60 @@ MasalaObjectAPIDefinition::class_name() const {
 /// @brief Get a human-readable description of the API for a module.
 std::string
 MasalaObjectAPIDefinition::get_human_readable_description() const {
-    TODO TODO TODO
+    using namespace base::api::constructor;
+    using namespace base::api::setter;
+    using namespace base::api::getter;
+    using namespace base::api::work_function;
+
+    std::ostringstream ss;
+    ss << api_class_name_ << " API:\n\n";
+    ss << api_class_description_ << "\n";
+
+    if( !constructors_.empty() ) {
+        ss << "\nCONSTRUCTORS\n";
+        for(
+            std::set< MasalaObjectAPIConstructorDefinitionCSP >::const_iterator it( constructors_.begin() );
+            it != constructors_.end();
+            ++it
+        ) {
+            ss << "\n" << (*it)->get_constructor_human_readable_description();
+        }
+    }
+
+    if( !setters_.empty() ) {
+        ss << "\nSETTERS\n";
+        for(
+            std::set< MasalaObjectAPISetterDefinitionCSP >::const_iterator it( setters_.begin() );
+            it != setters_.end();
+            ++it
+        ) {
+            ss << "\n" << (*it)->get_setter_human_readable_description();
+        }
+    }
+
+    if( !getters_.empty() ) {
+        ss << "\nGETTERS\n";
+        for(
+            std::set< MasalaObjectAPIGetterDefinitionCSP >::const_iterator it( getters_.begin() );
+            it != getters_.end();
+            ++it
+        ) {
+            ss << "\n" << (*it)->get_getter_human_readable_description();
+        }
+    }
+
+    if( !work_functions_.empty() ) {
+        ss << "\nWORK FUNCTIONS\n";
+        for(
+            std::set< MasalaObjectAPIWorkFunctionDefinitionCSP >::const_iterator it( work_functions_.begin() );
+            it != work_functions_.end();
+            ++it
+        ) {
+            ss << "\n" << (*it)->get_work_function_human_readable_description();
+        }
+    }
+
+    return ss.str();
 }
 
 } // namespace api
