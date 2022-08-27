@@ -44,7 +44,6 @@ SOFTWARE.
 
 // STL headers.
 #include <sstream>
-#include <functional>
 
 namespace base {
 namespace api {
@@ -75,16 +74,13 @@ public:
 	/// @param[in] getter_function_description The description of the getter function that
 	///			   we are describing here.
 	/// @param[in] output_parameter_description The description of what the getter returns.
-	/// @param[in] getter_function The actual getter function.
 	MasalaObjectAPIGetterDefinition_ZeroInput(
 		std::string const & getter_function_name,
 		std::string const & getter_function_description,
-		std::string const & output_parameter_description,
-		std::function< T0() > const & getter_function
+		std::string const & output_parameter_description
 	) :
 		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description ),
-		output_description_( output_parameter_description ),
-		getter_function_( getter_function )
+		output_description_( output_parameter_description )
 	{}
 
 	/// @brief Copy constructor.
@@ -132,9 +128,6 @@ private:
 
 	/// @brief A description of what this getter returns.
 	std::string const output_description_;
-
-	/// @brief The function that we're binding to.
-	std::function< T0() > const getter_function_;
 
 }; // class MasalaObjectAPIGetterDefinition_ZeroInput
 

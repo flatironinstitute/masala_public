@@ -166,8 +166,7 @@ Pose::get_api_definition() {
             "Deep-copies all internal data, and ensures that data are not shared with any other "
             "Pose instance or any other class instance.",
             false,
-            "None (void).",
-            std::bind( &Pose::make_independent, this )
+            "None (void)."
         )
     );
 
@@ -177,8 +176,7 @@ Pose::get_api_definition() {
             "molecules_shared_ptr",
             "Access the Molecules object within the Pose, by shared pointer.",
             "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.",
-            std::bind( &Pose::molecules_shared_ptr, this )
+            "and chemical connectivity."
         )
     );
     api_def->add_getter(
@@ -186,8 +184,7 @@ Pose::get_api_definition() {
             "molecules_weak_ptr",
             "Access the Molecules object within the Pose, by weak pointer.",
             "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.  Must be converted to a shared pointer before use.",
-            std::bind( &Pose::molecules_weak_ptr, this )
+            "and chemical connectivity.  Must be converted to a shared pointer before use."
         )
     );
     api_def->add_getter(
@@ -195,8 +192,7 @@ Pose::get_api_definition() {
             "molecules",
             "Access the Molecules object within the Pose.",
             "A const reference to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.",
-            std::bind( &Pose::molecules, this )
+            "and chemical connectivity."
         )
     );
 
