@@ -67,6 +67,12 @@ MasalaObjectAPIDefinition::class_name() const {
     return "MasalaObjectAPIDefinition";
 }
 
+/// @brief Every class can provide its own namespace.  This returns "base::api".
+std::string
+MasalaObjectAPIDefinition::class_namespace() const {
+    return "base::api";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

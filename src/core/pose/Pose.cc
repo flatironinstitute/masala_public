@@ -91,6 +91,12 @@ Pose::class_name_static() {
     return "Pose";
 }
 
+/// @brief Every class can provide its own namespace.  This returns "core::pose".
+std::string
+Pose::class_namespace() const {
+    return "core::pose";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////

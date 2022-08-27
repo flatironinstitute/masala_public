@@ -95,6 +95,12 @@ public:
 		return "MasalaObjectAPIGetterDefinition_ZeroInput";
 	}
 
+	/// @brief Every class can provide its own namespace.  This returns "base::api::getter".
+	std::string
+	class_namespace() const override {
+		return "base::api::getter";
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -56,6 +56,9 @@ public:
 	/// @brief Every class can name itself.
 	virtual std::string class_name() const = 0;
 
+	/// @brief Every class can provide its own namespace.
+	virtual std::string class_namespace() const = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

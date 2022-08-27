@@ -77,6 +77,12 @@ MoleculesCollection::class_name() const {
     return "MoleculesCollection";
 }
 
+/// @brief Every class can provide its own namespace.  This returns "core::chemistry".
+std::string
+MoleculesCollection::class_namespace() const {
+    return "core::chemistry";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////

@@ -97,6 +97,12 @@ public:
 		return "MasalaObjectAPIWorkFunctionDefinition_ZeroInput";
 	}
 
+	/// @brief Every class can provide its own namespace.  This returns "base::api::work_function".
+	std::string
+	class_namespace() const override {
+		return "base::api::work_function";
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

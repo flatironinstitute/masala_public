@@ -98,6 +98,12 @@ public:
 		return "MasalaObjectAPIConstructorDefinition_OneInput";
 	}
 
+	/// @brief Every class can provide its own namespace.  This returns "base::api::constructor".
+	std::string
+	class_namespace() const override {
+		return "base::api::constructor";
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

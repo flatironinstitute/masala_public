@@ -86,6 +86,9 @@ public:
 	/// @brief Returns "ChemicalBondInstance".
 	std::string class_name() const override;
 
+    /// @brief Every class can provide its own namespace.  This returns "core::chemistry::bonds".
+    std::string class_namespace() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

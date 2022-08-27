@@ -69,6 +69,12 @@ ChemicalBondInstance::class_name() const {
     return "ChemicalBondInstance";
 }
 
+/// @brief Every class can provide its own namespace.  This returns "core::chemistry::bonds".
+std::string
+ChemicalBondInstance::class_namespace() const {
+    return "core::chemistry::bonds";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////

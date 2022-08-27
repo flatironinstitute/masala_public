@@ -95,6 +95,12 @@ public:
 		return "MasalaObjectAPISetterDefinition_OneInput";
 	}
 
+	/// @brief Every class can provide its own namespace.  This returns "base::api::setter".
+	std::string
+	class_namespace() const override {
+		return "base::api::setter";
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

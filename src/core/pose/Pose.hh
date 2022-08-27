@@ -92,6 +92,9 @@ public:
     std::string
     class_name_static();
 
+    /// @brief Every class can provide its own namespace.  This returns "core::pose".
+    std::string class_namespace() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
