@@ -129,14 +129,14 @@ public:
 
 	/// @brief Begin iterator for the setters.
 	inline
-	set::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_begin() const {
 		return setters_.cbegin();
 	}
 
 	/// @brief End iterator for the setters.
 	inline
-	set::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_end() const {
 		return setters_.cend();
 	}
@@ -159,14 +159,14 @@ public:
 
 	/// @brief Begin iterator for the getters.
 	inline
-	set::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_begin() const {
 		return getters_.cbegin();
 	}
 
 	/// @brief End iterator for the getters.
 	inline
-	set::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_end() const {
 		return getters_.cend();
 	}
@@ -189,14 +189,14 @@ public:
 
 	/// @brief Begin iterator for the work functions.
 	inline
-	set::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_begin() const {
 		return work_functions_.cbegin();
 	}
 
 	/// @brief End iterator for the work functions.
 	inline
-	set::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_end() const {
 		return work_functions_.cend();
 	}

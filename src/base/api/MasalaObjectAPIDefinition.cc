@@ -86,7 +86,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     if( !constructors_.empty() ) {
         ss << "\nCONSTRUCTORS\n";
         for(
-            std::set< MasalaObjectAPIConstructorDefinitionCSP >::const_iterator it( constructors_.begin() );
+            std::vector< MasalaObjectAPIConstructorDefinitionCSP >::const_iterator it( constructors_.begin() );
             it != constructors_.end();
             ++it
         ) {
@@ -97,7 +97,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     if( !setters_.empty() ) {
         ss << "\nSETTERS\n";
         for(
-            std::set< MasalaObjectAPISetterDefinitionCSP >::const_iterator it( setters_.begin() );
+            std::vector< MasalaObjectAPISetterDefinitionCSP >::const_iterator it( setters_.begin() );
             it != setters_.end();
             ++it
         ) {
@@ -108,7 +108,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     if( !getters_.empty() ) {
         ss << "\nGETTERS\n";
         for(
-            std::set< MasalaObjectAPIGetterDefinitionCSP >::const_iterator it( getters_.begin() );
+            std::vector< MasalaObjectAPIGetterDefinitionCSP >::const_iterator it( getters_.begin() );
             it != getters_.end();
             ++it
         ) {
@@ -119,7 +119,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     if( !work_functions_.empty() ) {
         ss << "\nWORK FUNCTIONS\n";
         for(
-            std::set< MasalaObjectAPIWorkFunctionDefinitionCSP >::const_iterator it( work_functions_.begin() );
+            std::vector< MasalaObjectAPIWorkFunctionDefinitionCSP >::const_iterator it( work_functions_.begin() );
             it != work_functions_.end();
             ++it
         ) {
