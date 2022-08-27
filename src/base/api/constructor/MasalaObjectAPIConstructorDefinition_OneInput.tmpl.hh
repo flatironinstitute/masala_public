@@ -46,7 +46,6 @@ SOFTWARE.
 
 // STL headers.
 #include <sstream>
-#include <functional>
 
 namespace base {
 namespace api {
