@@ -44,6 +44,7 @@ SOFTWARE.
 
 // STL headers.
 #include <sstream>
+#include <functional>
 
 namespace base {
 namespace api {
@@ -77,10 +78,12 @@ public:
 	MasalaObjectAPISetterDefinition_OneInput(
 		std::string const & setter_function_name,
 		std::string const & setter_function_description,
-		std::string const & input_parameter1_description
+		std::string const & input_parameter1_description,
+		std::function< void( T1 ) > const & setter_function
 	) :
 		MasalaObjectAPISetterDefinition( setter_function_name, setter_function_description ),
-		input_parameter1_description_(input_parameter1_description)
+		input_parameter1_description_(input_parameter1_description),
+		setter_function_( setter_function )
 	{}
 
 	/// @brief Copy constructor.
@@ -134,6 +137,9 @@ private:
 
 	/// @brief A description of input parameter 1.
 	std::string const input_parameter1_description_;
+
+	/// @brief The function that we're binding to.
+	std::function< void(T1) > const setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_OneInput
 

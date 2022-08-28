@@ -44,6 +44,7 @@ SOFTWARE.
 
 // STL headers.
 #include <sstream>
+#include <functional>
 
 namespace base {
 namespace api {
@@ -75,14 +76,17 @@ public:
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
 	/// @param[in] output_parameter_description The description of what the work function returns.
+	/// @param[in] work_function The actual work function.
 	MasalaObjectAPIWorkFunctionDefinition_ZeroInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
 		bool const is_const,
-		std::string const & output_parameter_description
+		std::string const & output_parameter_description,
+		std::function< T0() > const & work_function
 	) :
 		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
-		output_description_( output_parameter_description )
+		output_description_( output_parameter_description ),
+		work_function_( work_function )
 	{}
 
 	/// @brief Copy constructor.
@@ -136,6 +140,9 @@ private:
 
 	/// @brief A description of what this work function returns.
 	std::string const output_description_;
+
+	/// @brief The function that we're binding to.
+	std::function< T0() > const work_function_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition_ZeroInput
 
