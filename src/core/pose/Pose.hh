@@ -132,7 +132,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get a description of the API for the Pose class.
-    base::api::MasalaObjectAPIDefinitionCSP
+    base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
 private:
@@ -147,6 +147,12 @@ private:
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
     core::chemistry::MoleculesSP molecules_;
+
+    /// @brief A description of this object's interface.
+    /// @details Generated on first request.  Persists only as long as this instance
+    /// persists.  Weak pointers are handed out.
+    base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
 
 };
 

@@ -136,77 +136,82 @@ Pose::molecules() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a description of the API for the Pose class.
-base::api::MasalaObjectAPIDefinitionCSP
+base::api::MasalaObjectAPIDefinitionCWP
 Pose::get_api_definition() {
     using namespace base::api;
 
-    MasalaObjectAPIDefinitionSP api_def(
-        std::make_shared< MasalaObjectAPIDefinition >(
-            class_name_static(),
-            "The Pose class stores information about the geometry, chemical properties, annotations, "
-            "and energies of a molecule or group of molecules, as well as any cached data for that "
-            "molecule or group of molecules."
-        )
-    );
+    if( api_definition_ == nullptr ) {
 
-    // Constructors:
-    api_def->add_constructor(
-        std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
-            class_name_static(),
-            "Creates an empty Pose, initializing it only with an empty Molecules object."
-        )
-    );
-    api_def->add_constructor(
-        std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
-            class_name_static(),
-            "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
-            "make_independent() is subsequently called.",
-            "The input Pose to copy.  Unaltered by this operation."
-        )
-    );
+        MasalaObjectAPIDefinitionSP api_def(
+            std::make_shared< MasalaObjectAPIDefinition >(
+                class_name_static(),
+                "The Pose class stores information about the geometry, chemical properties, annotations, "
+                "and energies of a molecule or group of molecules, as well as any cached data for that "
+                "molecule or group of molecules."
+            )
+        );
 
-    // Work functions:
-    api_def->add_work_function(
-        std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
-            "make_independent",
-            "Deep-copies all internal data, and ensures that data are not shared with any other "
-            "Pose instance or any other class instance.",
-            false,
-            "None (void).",
-            std::bind( &Pose::make_independent, this )
-        )
-    );
+        // Constructors:
+        api_def->add_constructor(
+            std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
+                class_name_static(),
+                "Creates an empty Pose, initializing it only with an empty Molecules object."
+            )
+        );
+        api_def->add_constructor(
+            std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
+                class_name_static(),
+                "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
+                "make_independent() is subsequently called.",
+                "The input Pose to copy.  Unaltered by this operation."
+            )
+        );
 
-    // Getters:
-    api_def->add_getter(
-        std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCSP > >(
-            "molecules_shared_ptr",
-            "Access the Molecules object within the Pose, by shared pointer.",
-            "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.",
-            std::bind( &Pose::molecules_shared_ptr, this )
-        )
-    );
-    api_def->add_getter(
-        std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCWP > >(
-            "molecules_weak_ptr",
-            "Access the Molecules object within the Pose, by weak pointer.",
-            "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.  Must be converted to a shared pointer before use.",
-            std::bind( &Pose::molecules_weak_ptr, this )
-        )
-    );
-    api_def->add_getter(
-        std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::Molecules const & > >(
-            "molecules",
-            "Access the Molecules object within the Pose.",
-            "A const reference to the Molecules object, which stores atoms, atomic geometry, "
-            "and chemical connectivity.",
-            std::bind( &Pose::molecules, this )
-        )
-    );
+        // Work functions:
+        api_def->add_work_function(
+            std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
+                "make_independent",
+                "Deep-copies all internal data, and ensures that data are not shared with any other "
+                "Pose instance or any other class instance.",
+                false,
+                "None (void).",
+                std::bind( &Pose::make_independent, this )
+            )
+        );
 
-    return api_def;
+        // Getters:
+        api_def->add_getter(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCSP > >(
+                "molecules_shared_ptr",
+                "Access the Molecules object within the Pose, by shared pointer.",
+                "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
+                "and chemical connectivity.",
+                std::bind( &Pose::molecules_shared_ptr, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCWP > >(
+                "molecules_weak_ptr",
+                "Access the Molecules object within the Pose, by weak pointer.",
+                "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
+                "and chemical connectivity.  Must be converted to a shared pointer before use.",
+                std::bind( &Pose::molecules_weak_ptr, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::Molecules const & > >(
+                "molecules",
+                "Access the Molecules object within the Pose.",
+                "A const reference to the Molecules object, which stores atoms, atomic geometry, "
+                "and chemical connectivity.",
+                std::bind( &Pose::molecules, this )
+            )
+        );
+
+        api_definition_ = api_def; //Make const.
+    }
+
+    return api_definition_;
 }
 
 } // namespace pose

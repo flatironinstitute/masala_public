@@ -73,7 +73,7 @@ public:
 	/// @details Default implementation returns nullptr.  May be overridden by
 	/// derived objects.
 	virtual
-	base::api::MasalaObjectAPIDefinitionCSP
+	base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition();
 
 

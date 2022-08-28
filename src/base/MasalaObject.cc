@@ -41,15 +41,15 @@ namespace base {
 /// @details By default, returns false.  Derived classes might, though.
 bool
 MasalaObject::has_api_definition() {
-    return get_api_definition() != nullptr;
+    return get_api_definition().lock() != nullptr;
 }
 
 /// @brief Get an object describing the API for this object.
 /// @details Default implementation returns nullptr.  May be overridden by
 /// derived objects.
-base::api::MasalaObjectAPIDefinitionCSP
+base::api::MasalaObjectAPIDefinitionCWP
 MasalaObject::get_api_definition() {
-    return nullptr;
+    return base::api::MasalaObjectAPIDefinitionCWP();
 }
 
 } // namespace base
