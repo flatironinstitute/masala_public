@@ -5,7 +5,8 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/external"
             ],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "gcc-x64",
