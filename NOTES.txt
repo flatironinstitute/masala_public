@@ -7,6 +7,12 @@
 - [X] Add namespace function to all instantiable objects.
 - [ ] Update API classes to use namespace function.
 - [ ] Add list of API classes somewhere.
+- [ ] Add JSON functions.
+     - [X] To MasalaObjectAPIDefinition.
+     - [X] To MasalaObjectAPIConstructorDefinition and derived classes.
+     - [ ] To MasalaObjectAPISetterDefinition and derived classes.
+     - [ ] To MasalaObjectAPIGetterDefinition and derived classes.
+     - [ ] To MasalaObjectAPIWorkFunctionDefinition and derived classes.
 - [ ] Add app to generate API description from class list.
 - [ ] Add Python code to generate API layer from API descriptions.
 - [ ] Add script and compilation of API layer to build script.
