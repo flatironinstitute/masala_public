@@ -43,6 +43,9 @@ SOFTWARE.
 // Base headers.
 #include <base/api/names_from_types.tmpl.hh>
 
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers.
 #include <sstream>
 
@@ -119,9 +122,14 @@ public:
 	/// @brief Get a JSON description of this constructor.
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
-	// json_return_type ???
-	// get_constructor_json_description() const override;
-	// TODO TODO TODO
+	nlohmann::json
+	get_constructor_json_description() const override {
+		nlohmann::json json_api;
+		json_api["Constructor_Name"] = constructor_name();
+		json_api["Constructor_Description"] = constructor_description();
+		json_api["Constructor_N_Inputs"] = 0;
+		return json_api;
+	}
 
 public:
 

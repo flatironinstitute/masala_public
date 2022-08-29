@@ -44,6 +44,9 @@ SOFTWARE.
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
 
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
+
 // STL headers.
 #include <vector>
 #include <string>
@@ -97,8 +100,16 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get a human-readable description of the API for a module.
+	/// @details Note that this does not cache the generated string, but generates it anew
+	/// each time.
 	std::string
 	get_human_readable_description() const;
+
+	/// @brief Get a JSON object describing the API for a module.
+	/// @details Note that this does not cache the generated JSON object, but generates it anew
+	/// each time.
+	std::shared_ptr< nlohmann::json >
+	get_json_description() const;
 
 	/// @brief Begin iterator for the constructors.
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
@@ -171,6 +182,17 @@ public:
 	add_work_function(
 		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 	);
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Generate JSON descriptions for all of the constructors.
+	/// @details Nothing is cached here, so this will generate a new JSON object
+	/// each time it is called.  This isn't super fast.
+	nlohmann::json get_json_description_for_constructors() const;
 
 private:
 

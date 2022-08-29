@@ -37,7 +37,8 @@ SOFTWARE.
 // Forward declarations.
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition.fwd.hh>
 
-// Base headers.
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
 // STL headers.
 #include <string>
@@ -97,10 +98,9 @@ public:
 	/// @brief Get a JSON description of this constructor.
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
-	// virtual
-	// json_return_type ???
-	// get_constructor_json_description() const = 0;
-	// TODO TODO TODO
+	virtual
+	nlohmann::json
+	get_constructor_json_description() const = 0;
 
 public:
 

@@ -37,6 +37,9 @@ SOFTWARE.
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 
+// External headers
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers
 #include <sstream>
 
@@ -78,6 +81,8 @@ MasalaObjectAPIDefinition::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a human-readable description of the API for a module.
+/// @details Note that this does not cache the generated string, but generates it anew
+/// each time.
 std::string
 MasalaObjectAPIDefinition::get_human_readable_description() const {
     using namespace base::api::constructor;
@@ -134,6 +139,25 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     }
 
     return ss.str();
+}
+
+/// @brief Get a JSON object describing the API for a module.
+/// @details Note that this does not cache the generated JSON object, but generates it anew
+/// each time.
+std::shared_ptr< nlohmann::json >
+MasalaObjectAPIDefinition::get_json_description() const {
+    std::shared_ptr< nlohmann::json > json_ptr( std::make_shared< nlohmann::json >() );
+    nlohmann::json & json_api( *json_ptr );
+
+    json_api["Title"] = "API description";
+    json_api["Module"] = api_class_name_;
+    json_api["Description"] = api_class_description_;
+    json_api["Constructors"] = get_json_description_for_constructors();
+    // json_api["Setters"] = get_json_description_for_setters();
+    // json_api["Getters"] = get_json_description_for_getters();
+    // json_api["WorkFunctions"] = get_json_description_for_work_functions();
+
+    return json_ptr;
 }
 
 /// @brief Begin iterator for the constructors.
@@ -238,6 +262,27 @@ MasalaObjectAPIDefinition::add_work_function(
     base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
     work_functions_.emplace_back( work_function_in );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Generate JSON descriptions for all of the constructors.
+/// @details Nothing is cached here, so this will generate a new JSON object
+/// each time it is called.  This isn't super fast.
+nlohmann::json
+MasalaObjectAPIDefinition::get_json_description_for_constructors() const {
+    nlohmann::json json_api;
+    json_api["N_Constructors"] = constructors_.size();
+
+    std::vector< nlohmann::json > constructor_jsons( constructors_.size() );
+    for( base::Size i(1), imax(constructors_.size()); i<=imax; ++i ) {
+        constructor_jsons[i] = constructors_[i]->get_constructor_json_description();
+    }
+
+    json_api["Constructor_APIs"] = constructor_jsons;
+    return json_api;
 }
 
 } // namespace api
