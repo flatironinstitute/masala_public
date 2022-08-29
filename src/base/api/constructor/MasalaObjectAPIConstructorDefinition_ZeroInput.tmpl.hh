@@ -127,7 +127,10 @@ public:
 		nlohmann::json json_api;
 		json_api["Constructor_Name"] = constructor_name();
 		json_api["Constructor_Description"] = constructor_description();
+
+		//Inputs:
 		json_api["Constructor_N_Inputs"] = 0;
+		
 		return json_api;
 	}
 
