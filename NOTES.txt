@@ -11,7 +11,7 @@
      - [X] To MasalaObjectAPIDefinition.
      - [X] To MasalaObjectAPIConstructorDefinition and derived classes.
      - [X] To MasalaObjectAPISetterDefinition and derived classes.
-     - [ ] To MasalaObjectAPIGetterDefinition and derived classes.
+     - [X] To MasalaObjectAPIGetterDefinition and derived classes.
      - [ ] To MasalaObjectAPIWorkFunctionDefinition and derived classes.
 - [ ] Add app to generate API description from class list.
 - [ ] Add Python code to generate API layer from API descriptions.
