@@ -136,5 +136,109 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     return ss.str();
 }
 
+/// @brief Begin iterator for the constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_begin() const {
+    return constructors_.cbegin();
+}
+
+/// @brief End iterator for the constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_end() const {
+    return constructors_.cend();
+}
+
+/// @brief Number of constructors.
+base::Size
+MasalaObjectAPIDefinition::n_constructors() const {
+    return constructors_.size();
+}
+
+/// @brief Add a constructor.
+void
+MasalaObjectAPIDefinition::add_constructor(
+    base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
+) {
+    constructors_.emplace_back( constructor_in );
+}
+
+/// @brief Begin iterator for the setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_begin() const {
+    return setters_.cbegin();
+}
+
+/// @brief End iterator for the setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_end() const {
+    return setters_.cend();
+}
+
+/// @brief Number of setters.
+base::Size
+MasalaObjectAPIDefinition::n_setters() const {
+    return setters_.size();
+}
+
+/// @brief Add a setter.
+void
+MasalaObjectAPIDefinition::add_setter(
+    base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
+) {
+    setters_.emplace_back( setter_in );
+}
+
+/// @brief Begin iterator for the getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_begin() const {
+    return getters_.cbegin();
+}
+
+/// @brief End iterator for the getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_end() const {
+    return getters_.cend();
+}
+
+/// @brief Number of getters.
+base::Size
+MasalaObjectAPIDefinition::n_getters() const {
+    return getters_.size();
+}
+
+/// @brief Add a getter.
+void
+MasalaObjectAPIDefinition::add_getter(
+    base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
+) {
+    getters_.emplace_back( getter_in );
+}
+
+/// @brief Begin iterator for the work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_begin() const {
+    return work_functions_.cbegin();
+}
+
+/// @brief End iterator for the work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_end() const {
+    return work_functions_.cend();
+}
+
+/// @brief Number of work functions.
+base::Size
+MasalaObjectAPIDefinition::n_work_functions() const {
+    return work_functions_.size();
+}
+
+/// @brief Add a work function.
+void
+MasalaObjectAPIDefinition::add_work_function(
+    base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
+) {
+    work_functions_.emplace_back( work_function_in );
+}
+
 } // namespace api
 } // namespace base
