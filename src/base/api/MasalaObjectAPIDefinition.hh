@@ -194,6 +194,11 @@ private:
 	/// each time it is called.  This isn't super fast.
 	nlohmann::json get_json_description_for_constructors() const;
 
+	/// @brief Generate JSON descriptions for all of the setters.
+	/// @details Nothing is cached here, so this will generate a new JSON object
+	/// each time it is called.  This isn't super fast.
+	nlohmann::json get_json_description_for_setters() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

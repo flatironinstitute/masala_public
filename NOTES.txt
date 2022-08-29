@@ -10,7 +10,7 @@
 - [ ] Add JSON functions.
      - [X] To MasalaObjectAPIDefinition.
      - [X] To MasalaObjectAPIConstructorDefinition and derived classes.
-     - [ ] To MasalaObjectAPISetterDefinition and derived classes.
+     - [X] To MasalaObjectAPISetterDefinition and derived classes.
      - [ ] To MasalaObjectAPIGetterDefinition and derived classes.
      - [ ] To MasalaObjectAPIWorkFunctionDefinition and derived classes.
 - [ ] Add app to generate API description from class list.
