@@ -154,7 +154,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["Description"] = api_class_description_;
     json_api["Constructors"] = get_json_description_for_constructors();
     json_api["Setters"] = get_json_description_for_setters();
-    // json_api["Getters"] = get_json_description_for_getters();
+    json_api["Getters"] = get_json_description_for_getters();
     // json_api["WorkFunctions"] = get_json_description_for_work_functions();
 
     return json_ptr;
@@ -299,6 +299,23 @@ MasalaObjectAPIDefinition::get_json_description_for_setters() const {
     }
 
     json_api["Setter_APIs"] = setter_jsons;
+    return json_api;
+}
+
+/// @brief Generate JSON descriptions for all of the getters.
+/// @details Nothing is cached here, so this will generate a new JSON object
+/// each time it is called.  This isn't super fast.
+nlohmann::json
+MasalaObjectAPIDefinition::get_json_description_for_getters() const {
+    nlohmann::json json_api;
+    json_api["N_Getters"] = getters_.size();
+
+    std::vector< nlohmann::json > getter_jsons( getters_.size() );
+    for( base::Size i(1), imax(getters_.size()); i<=imax; ++i ) {
+        getter_jsons[i] = getters_[i]->get_getter_json_description();
+    }
+
+    json_api["Getter_APIs"] = getter_jsons;
     return json_api;
 }
 
