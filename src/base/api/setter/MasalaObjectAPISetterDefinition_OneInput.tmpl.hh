@@ -131,8 +131,8 @@ public:
 	nlohmann::json
 	get_setter_json_description() const override {
 		nlohmann::json json_api;
-		json_api["Setter_Name"] = setter_name();
-		json_api["Setter_Description"] = setter_description();
+		json_api["Setter_Name"] = setter_function_name();
+		json_api["Setter_Description"] = setter_function_description();
 
 		//Inputs:
 		json_api["Setter_N_Inputs"] = 1;
