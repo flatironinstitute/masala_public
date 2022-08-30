@@ -137,8 +137,8 @@ public:
 	nlohmann::json
 	get_work_function_json_description() const override {
 		nlohmann::json json_api;
-		json_api["Work_Function_Name"] = work_function_function_name();
-		json_api["Work_Function_Description"] = work_function_function_description();
+		json_api["Work_Function_Name"] = work_function_name();
+		json_api["Work_Function_Description"] = work_function_description();
 		json_api["Is_Const"] = is_const();
 
 		//Inputs:
