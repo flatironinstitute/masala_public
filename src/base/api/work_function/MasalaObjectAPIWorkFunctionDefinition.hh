@@ -37,7 +37,8 @@ SOFTWARE.
 // Forward declarations.
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
 
-// Base headers.
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
 // STL headers.
 #include <string>
@@ -96,13 +97,12 @@ public:
 	std::string
 	get_work_function_human_readable_description() const = 0;
 
-	/// @brief Get a JSON description of this work function.
+	/// @brief Get a JSON description of this setter.
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
-	// virtual
-	// json_return_type ???
-	// get_work_function_json_description() const = 0;
-	// TODO TODO TODO
+	virtual
+	nlohmann::json
+	get_work_function_json_description() const = 0;
 
 public:
 

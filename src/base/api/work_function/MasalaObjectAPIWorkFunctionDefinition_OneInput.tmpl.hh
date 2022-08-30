@@ -42,6 +42,9 @@ SOFTWARE.
 // Base headers.
 #include <base/api/names_from_types.tmpl.hh>
 
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers.
 #include <sstream>
 #include <functional>
@@ -128,12 +131,34 @@ public:
 		return ss.str();
 	}
 
-	/// @brief Get a JSON description of this work function.
+	/// @brief Get a JSON description of this work_function.
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
-	// json_return_type ???
-	// get_work_function_json_description() const override;
-	// TODO TODO TODO
+	nlohmann::json
+	get_work_function_json_description() const override {
+		nlohmann::json json_api;
+		json_api["Work_Function_Name"] = work_function_function_name();
+		json_api["Work_Function_Description"] = work_function_function_description();
+		json_api["Is_Const"] = is_const();
+
+		//Inputs:
+		json_api["Work_Function_N_Inputs"] = 1;
+
+		nlohmann::json json_input1;
+		json_input1["Input_Index"] = 1;
+		json_input1["Input_Type"] = base::api::name_from_type< T1 >();
+		json_input1["Input_Description"] = input_parameter1_description_;
+
+		json_api["Input_1"] = json_input1;
+
+		// Outputs:
+		nlohmann::json json_output;
+		json_output[ "Output_Type" ] = base::api::name_from_type< T0 >();
+		json_output[ "Output_Description" ] = output_description_;
+		json_api["Output"] = json_output;
+
+		return json_api;
+	}
 
 private:
 
