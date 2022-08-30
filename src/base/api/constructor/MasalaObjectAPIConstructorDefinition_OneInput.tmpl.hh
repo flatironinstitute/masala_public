@@ -130,6 +130,7 @@ public:
 		nlohmann::json json_api;
 		json_api["Constructor_Name"] = constructor_name();
 		json_api["Constructor_Description"] = constructor_description();
+		json_api["Is_Const"] = false; //Constructors are never const.
 
 		//Inputs:
 		json_api["Constructor_N_Inputs"] = 1;

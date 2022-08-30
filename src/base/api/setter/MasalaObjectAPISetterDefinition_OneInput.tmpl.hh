@@ -133,6 +133,7 @@ public:
 		nlohmann::json json_api;
 		json_api["Setter_Name"] = setter_function_name();
 		json_api["Setter_Description"] = setter_function_description();
+		json_api["Is_Const"] = false;
 
 		//Inputs:
 		json_api["Setter_N_Inputs"] = 1;

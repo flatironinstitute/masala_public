@@ -134,6 +134,10 @@ public:
 		nlohmann::json json_api;
 		json_api["Getter_Name"] = getter_function_name();
 		json_api["Getter_Description"] = getter_function_description();
+		json_api["Is_Const"] = true;
+
+		// Inputs:
+		json_api["Getter_N_Inputs"] = 0;
 
 		// Outputs:
 		nlohmann::json json_output;
