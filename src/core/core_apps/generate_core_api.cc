@@ -55,7 +55,7 @@ main(
     std::vector< base::MasalaObjectSP > const api_objects( core::api::generate_api_classes() );
     for( core::Size i(0), imax(api_objects.size()); i<imax; ++i ) {
         base::api::MasalaObjectAPIDefinitionCSP api_def( api_objects[i]->get_api_definition() );
-        api_entries[ "Element_" + std::to_string(i) ] = *api_def->get_json_description();
+        api_entries[ api_objects[i]->class_namespace() + "::" + api_objects[i]->class_name() ] = *api_def->get_json_description();
     }
     api_definition["Elements"] = api_entries;
 
