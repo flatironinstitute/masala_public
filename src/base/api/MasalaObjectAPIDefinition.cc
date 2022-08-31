@@ -277,7 +277,7 @@ MasalaObjectAPIDefinition::get_json_description_for_constructors() const {
     json_api["N_Constructors"] = constructors_.size();
 
     std::vector< nlohmann::json > constructor_jsons( constructors_.size() );
-    for( base::Size i(1), imax(constructors_.size()); i<=imax; ++i ) {
+    for( base::Size i(0), imax(constructors_.size()); i<imax; ++i ) {
         constructor_jsons[i] = constructors_[i]->get_constructor_json_description();
     }
 
@@ -294,7 +294,7 @@ MasalaObjectAPIDefinition::get_json_description_for_setters() const {
     json_api["N_Setters"] = setters_.size();
 
     std::vector< nlohmann::json > setter_jsons( setters_.size() );
-    for( base::Size i(1), imax(setters_.size()); i<=imax; ++i ) {
+    for( base::Size i(0), imax(setters_.size()); i<imax; ++i ) {
         setter_jsons[i] = setters_[i]->get_setter_json_description();
     }
 
@@ -311,7 +311,7 @@ MasalaObjectAPIDefinition::get_json_description_for_getters() const {
     json_api["N_Getters"] = getters_.size();
 
     std::vector< nlohmann::json > getter_jsons( getters_.size() );
-    for( base::Size i(1), imax(getters_.size()); i<=imax; ++i ) {
+    for( base::Size i(0), imax(getters_.size()); i<imax; ++i ) {
         getter_jsons[i] = getters_[i]->get_getter_json_description();
     }
 
@@ -328,7 +328,7 @@ MasalaObjectAPIDefinition::get_json_description_for_work_functions() const {
     json_api["N_Work_Functions"] = work_functions_.size();
 
     std::vector< nlohmann::json > work_function_jsons( work_functions_.size() );
-    for( base::Size i(1), imax(work_functions_.size()); i<=imax; ++i ) {
+    for( base::Size i(0), imax(work_functions_.size()); i<imax; ++i ) {
         work_function_jsons[i] = work_functions_[i]->get_work_function_json_description();
     }
 
