@@ -43,7 +43,19 @@ def get_all_cc_files_in_dir_and_subdirs( dirname : str ) -> list :
                 outlist.append( concatname )
         elif path.isdir( concatname ) :
             outlist.extend( get_all_cc_files_in_dir_and_subdirs( concatname ) )
-    return outlist        
+    return outlist
+
+def get_library_dependencies( dirname : str ) -> list :
+    assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
+    liblistfile = dirname + "/link_dependencies.txt"
+    if path.isfile( liblistfile ) :
+        with open( liblistfile, 'r' ) as fread :
+            dlist = fread.read().split()
+        for entry in dlist :
+            if entry[0] == "#" :
+                dlist.remove(entry)
+        return dlist
+    return []
 
 assert len(argv) == 4, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>."
 
@@ -52,13 +64,18 @@ source_dir = argv[2]
 output_file = argv[3]
 
 cclist = get_all_cc_files_in_dir_and_subdirs( source_dir )
+depend_list = get_library_dependencies( source_dir )
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
         fhandle.write( "ADD_LIBRARY(" + lib_name + " SHARED" )
-    for entry in cclist:
-        fhandle.write( "\n\t" + entry )
-    if len(cclist) > 0 :
+        for entry in cclist:
+            fhandle.write( "\n\t" + entry )
         fhandle.write( "\n)\n" )
         fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
+        if len(depend_list) > 0 :
+            fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
+            for dentry in depend_list :
+                fhandle.write( "\n\t" + dentry )
+            fhandle.write("\n)\n")
 
 print( "Wrote " + output_file + "." )
