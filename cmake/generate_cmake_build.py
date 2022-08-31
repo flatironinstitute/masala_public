@@ -33,8 +33,11 @@ from os import path, listdir
 
 errmsg = "Error in generate_cmake_build.py: "
 
-def get_all_cc_files_in_dir_and_subdirs( dirname : str ) -> list :
+def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str ) -> list :
     assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
+    if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
+        # Skip directories like core_apps.  Apps are compiled separately into executables.
+        return []
     outlist = []
     for fname in listdir( dirname ) :
         concatname = dirname + "/" + fname
@@ -42,7 +45,7 @@ def get_all_cc_files_in_dir_and_subdirs( dirname : str ) -> list :
             if fname.endswith( ".cc" ) :
                 outlist.append( concatname )
         elif path.isdir( concatname ) :
-            outlist.extend( get_all_cc_files_in_dir_and_subdirs( concatname ) )
+            outlist.extend( get_all_cc_files_in_dir_and_subdirs( libname, concatname ) )
     return outlist
 
 def get_library_dependencies( dirname : str ) -> list :
@@ -63,7 +66,7 @@ lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
 
-cclist = get_all_cc_files_in_dir_and_subdirs( source_dir )
+cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir )
 depend_list = get_library_dependencies( source_dir )
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
