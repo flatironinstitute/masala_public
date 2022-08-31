@@ -54,10 +54,11 @@ output_file = argv[3]
 cclist = get_all_cc_files_in_dir_and_subdirs( source_dir )
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
-        fhandle.write( "ADD_LIBRARY(" + lib_name + " OBJECT" )
+        fhandle.write( "ADD_LIBRARY(" + lib_name + " SHARED" )
     for entry in cclist:
         fhandle.write( "\n\t" + entry )
     if len(cclist) > 0 :
         fhandle.write( "\n)\n" )
+        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
 
 print( "Wrote " + output_file + "." )
