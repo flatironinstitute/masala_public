@@ -51,7 +51,7 @@ public:
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~MasalaObject() = 0;
+	virtual ~MasalaObject() = default;
 
 	/// @brief Every class can name itself.
 	virtual std::string class_name() const = 0;
