@@ -33,11 +33,12 @@ from os import path, listdir
 
 errmsg = "Error in generate_cmake_build.py: "
 
-def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str ) -> list :
+def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str, skip_apps : bool ) -> list :
     assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
-    if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
-        # Skip directories like core_apps.  Apps are compiled separately into executables.
-        return []
+    if skip_apps == True :
+        if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
+            # Skip directories like core_apps.  Apps are compiled separately into executables.
+            return []
     outlist = []
     for fname in listdir( dirname ) :
         concatname = dirname + "/" + fname
@@ -45,7 +46,7 @@ def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str ) -> list :
             if fname.endswith( ".cc" ) :
                 outlist.append( concatname )
         elif path.isdir( concatname ) :
-            outlist.extend( get_all_cc_files_in_dir_and_subdirs( libname, concatname ) )
+            outlist.extend( get_all_cc_files_in_dir_and_subdirs( libname, concatname, skip_apps ) )
     return outlist
 
 def get_library_dependencies( dirname : str ) -> list :
@@ -66,8 +67,16 @@ lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
 
-cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir )
+cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir, True )
 depend_list = get_library_dependencies( source_dir )
+
+appsdir = source_dir + "/" + lib_name + "_apps"
+if path.isdir( appsdir ) :
+    print( "\tChecking " + appsdir + " for apps." )
+    appslist = get_all_cc_files_in_dir_and_subdirs( lib_name, appsdir, False )
+else :
+    appslist = []
+
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
         fhandle.write( "ADD_LIBRARY(" + lib_name + " SHARED" )
@@ -80,5 +89,13 @@ with open( output_file, 'w' ) as fhandle:
             for dentry in depend_list :
                 fhandle.write( "\n\t" + dentry )
             fhandle.write("\n)\n")
+    if len( appslist ) > 0 :
+        for app in appslist :
+            appname = path.basename( app ).split(".")[0]
+            fhandle.write("\nADD_EXECUTABLE( " + appname + " " + app + ")\n" )
+            fhandle.write("TARGET_LINK_LIBRARIES(" + appname )
+            for dentry in depend_list :
+                fhandle.write( "\n\t" + dentry )
+            fhandle.write("\n\t" + lib_name + "\n)\n")
 
 print( "Wrote " + output_file + "." )

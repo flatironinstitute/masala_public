@@ -36,7 +36,7 @@ SOFTWARE.
 #include <base/api/MasalaObjectAPIDefinition.hh>
 
 // External headers
-#include <nlohmann_json/single_include/nlohmann/json.hpp>
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
 
 // STL headers
 #include <fstream> // TEMPORARY!  SWITCH THIS TO USE DISK I/O MANAGER INSTEAD!
@@ -44,8 +44,9 @@ SOFTWARE.
 // Program entry point:
 int
 main(
-    int /*argc*/,
-    char * /*argv[]*/
+    // int argc,
+    // char * argv[]
+    int, char**
 ) {
     nlohmann::json api_definition;
     api_definition["FileType"] = "API_definition";
