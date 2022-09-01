@@ -87,7 +87,7 @@ with open( output_file, 'w' ) as fhandle:
         if len(depend_list) > 0 :
             fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
             for dentry in depend_list :
-                fhandle.write( "\n\t" + dentry )
+                fhandle.write( "\n\t PUBLIC " + dentry )
             fhandle.write("\n)\n")
     if len( appslist ) > 0 :
         for app in appslist :
@@ -95,7 +95,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write("\nADD_EXECUTABLE( " + appname + " " + app + ")\n" )
             fhandle.write("TARGET_LINK_LIBRARIES(" + appname )
             for dentry in depend_list :
-                fhandle.write( "\n\t" + dentry )
-            fhandle.write("\n\t" + lib_name + "\n)\n")
+                fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
 print( "Wrote " + output_file + "." )
