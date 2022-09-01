@@ -46,12 +46,26 @@ namespace api {
     template <class T>
     std::string
     name_from_type(type<T>) {
-        // T tempobj;
-        // base::MasalaObject const * tempptr( dynamic_cast< base::MasalaObject const * >(&tempobj) );
-        // if( tempptr != nullptr ) {
-        //     return tempptr->class_namespace() + "::" + tempptr->class_name();
-        // }
+        std::shared_ptr<T> tempobj( std::make_shared<T>() );
+        base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< base::MasalaObject >(tempobj) );
+        if( tempptr != nullptr ) {
+            return tempptr->class_namespace() + "::" + tempptr->class_name();
+        }
         return typeid(T).name();
+    }
+
+    /// @brief Manually override for references.
+    template< class T >
+    std::string
+    name_from_type(type<T&>) {
+        return name_from_type(type<T>()) + " &";
+    }
+
+    /// @brief Manually override for const references.
+    template< class T >
+    std::string
+    name_from_type(type<T const &>) {
+        return name_from_type(type<T>()) + " const &";
     }
 
     /// @brief Manually override for shared pointers.
@@ -59,6 +73,27 @@ namespace api {
     std::string
     name_from_type(type<std::shared_ptr<T>>) {
         return "std::shared_ptr< " + name_from_type(type<T>()) + " >";
+    }
+
+    /// @brief Manually override for const shared pointers.
+    template<class T>
+    std::string
+    name_from_type(type<std::shared_ptr<T const>>) {
+        return "std::shared_ptr< " + name_from_type(type<T>()) + " const >";
+    }
+
+    /// @brief Manually override for weak pointers.
+    template<class T>
+    std::string
+    name_from_type(type<std::weak_ptr<T>>) {
+        return "std::weak_ptr< " + name_from_type(type<T>()) + " >";
+    }
+
+    /// @brief Manually override for const weak pointers.
+    template<class T>
+    std::string
+    name_from_type(type<std::weak_ptr<T const>>) {
+        return "std::weak_ptr< " + name_from_type(type<T>()) + " const >";
     }
 
     /// @brief Manually override for void.
