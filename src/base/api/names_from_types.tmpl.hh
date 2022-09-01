@@ -29,121 +29,154 @@ SOFTWARE.
 #ifndef Masala_src_base_api_names_from_types_tmpl_hh
 #define Masala_src_base_api_names_from_types_tmpl_hh
 
+// Base headers
+#include <base/MasalaObject.hh>
+
 // STL headers
 #include <string>
+#include <memory>
 
 namespace base {
 namespace api {
 
+    template< typename T >
+    struct type {};
+
     /// @brief Default behaviour is compiler-specific, and not ideal.
-    template <typename T>
+    template <class T>
     std::string
-    name_from_type() {
+    name_from_type(type<T>) {
+        // T tempobj;
+        // base::MasalaObject const * tempptr( dynamic_cast< base::MasalaObject const * >(&tempobj) );
+        // if( tempptr != nullptr ) {
+        //     return tempptr->class_namespace() + "::" + tempptr->class_name();
+        // }
         return typeid(T).name();
+    }
+
+    /// @brief Manually override for shared pointers.
+    template<class T>
+    std::string
+    name_from_type(type<std::shared_ptr<T>>) {
+        return "std::shared_ptr< " + name_from_type(type<T>()) + " >";
+    }
+
+    /// @brief Manually override for void.
+    template<>
+    std::string
+    name_from_type< void >(type<void>) {
+        return "void";
     }
 
     /// @brief Manually override for booleans.
     template<>
     std::string
-    name_from_type< bool >() {
+    name_from_type< bool >(type<bool>) {
         return "bool";
     }
 
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
-    name_from_type< unsigned short >() {
+    name_from_type< unsigned short >(type<unsigned short>) {
         return "unsigned short int";
     }
 
     /// @brief Manually override for unsigned ints.
     template<>
     std::string
-    name_from_type< unsigned int >() {
+    name_from_type< unsigned int >(type<unsigned int>) {
         return "unsigned int";
     }
 
     /// @brief Manually override for unsigned long ints.
     template<>
     std::string
-    name_from_type< unsigned long >() {
+    name_from_type< unsigned long >(type<unsigned long>) {
         return "unsigned long int";
     }
 
     /// @brief Manually override for signed short ints.
     template<>
     std::string
-    name_from_type< signed short >() {
+    name_from_type< signed short >(type<signed short>) {
         return "signed short int";
     }
 
     /// @brief Manually override for signed ints.
     template<>
     std::string
-    name_from_type< signed int >() {
+    name_from_type< signed int >(type<signed int>) {
         return "signed int";
     }
 
     /// @brief Manually override for signed long ints.
     template<>
     std::string
-    name_from_type< signed long >() {
+    name_from_type< signed long >(type<signed long>) {
         return "signed long int";
     }
 
     /// @brief Manually override for floats.
     template<>
     std::string
-    name_from_type< float >() {
+    name_from_type< float >(type<float>) {
         return "float";
     }
 
     /// @brief Manually override for float instances.
     template<>
     std::string
-    name_from_type< float & >() {
+    name_from_type< float & >(type<float&>) {
         return "float &";
     }
 
     /// @brief Manually override for float const instances.
     template<>
     std::string
-    name_from_type< float const & >() {
+    name_from_type< float const & >(type<float const &>) {
         return "float const &";
     }
 
     /// @brief Manually override for doubles.
     template<>
     std::string
-    name_from_type< double >() {
+    name_from_type< double >(type<double>) {
         return "double";
     }
 
     /// @brief Manually override for double instances.
     template<>
     std::string
-    name_from_type< double & >() {
+    name_from_type< double & >(type<double &>) {
         return "double &";
     }
 
     /// @brief Manually override for double const instances.
     template<>
     std::string
-    name_from_type< double const & >() {
+    name_from_type< double const & >(type<double const&>) {
         return "double const &";
     }
 
     /// @brief Manually override for strings.
     template<>
     std::string
-    name_from_type< std::string >() {
+    name_from_type< std::string >(type<std::string>) {
         return "std::string";
+    }
+
+    /// @brief Manually override for string instances.
+    template<>
+    std::string
+    name_from_type< std::string & >(type<std::string &>) {
+        return "std::string const &";
     }
 
     /// @brief Manually override for const instance strings.
     template<>
     std::string
-    name_from_type< std::string const & >() {
+    name_from_type< std::string const & >(type<std::string const&>) {
         return "std::string const &";
     }
 

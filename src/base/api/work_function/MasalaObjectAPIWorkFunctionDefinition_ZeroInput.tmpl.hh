@@ -122,7 +122,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << base::api::name_from_type< T0 >() << " " << work_function_name() << "()" << (is_const() ? " const" : "" ) << ":" << std::endl;
+    	ss << "WorkFunction:\t" << base::api::name_from_type(base::api::type< T0 >()) << " " << work_function_name() << "()" << (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
 		return ss.str();
@@ -143,7 +143,7 @@ public:
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = base::api::name_from_type< T0 >();
+		json_output[ "Output_Type" ] = base::api::name_from_type(base::api::type< T0 >());
 		json_output[ "Output_Description" ] = output_description_;
 		json_api["Output"] = json_output;
 
