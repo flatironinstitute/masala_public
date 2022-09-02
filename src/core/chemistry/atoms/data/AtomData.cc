@@ -38,10 +38,12 @@ SOFTWARE.
 
 namespace core {
 namespace chemistry {
+namespace data {
 
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
 void AtomData::make_independent() {}
 
+} // namespace data
 } // namespace chemistry
 } // namespace core
