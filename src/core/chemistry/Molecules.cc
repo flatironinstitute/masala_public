@@ -114,9 +114,25 @@ Molecules::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Add an atom to this molecule.
+void
+Molecules::add_atom(
+    core::chemistry::atoms::AtomInstanceSP const & atom_in,
+    std::array< core::Real, 3 > const & coords
+) {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    atoms_.insert(atom_in);
+    atom_coordinates_->add_atom_instance( atom_in, coords );
+
+    //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
+}
 
 } // namespace chemistry
 } // namespace core

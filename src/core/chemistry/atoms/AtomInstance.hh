@@ -36,6 +36,7 @@ SOFTWARE.
 // Core headers:
 #include <core/types.hh>
 #include <core/chemistry/atoms/ElementType.fwd.hh>
+#include <core/chemistry/atoms/data/AtomData.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -61,6 +62,13 @@ public:
 
     /// @brief Default constructor.
     AtomInstance() = default;
+
+    /// @brief Constructor from PDB atom.
+    AtomInstance(
+        std::string const & pdb_atom_name,
+        signed long pdb_atom_index,
+        std::string const & pdb_element_name
+    );
 
     /// @brief Copy constructor.
     AtomInstance( AtomInstance const & ) = default;
@@ -116,6 +124,10 @@ private:
 
     /// @brief The partial charge on this atom.
     core::Real partial_charge_ = 0.0;
+
+    /// @brief Optional additional data attached to this atom.
+    /// @details Intended to store things like PDB name, PDB index, etc.
+    std::vector< data::AtomDataSP > additional_atom_data_;
 
 };
 

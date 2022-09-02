@@ -41,6 +41,7 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <array>
 #include <set>
 #include <map>
 #include <mutex>
@@ -98,9 +99,15 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Add an atom to this molecule.
+    void
+    add_atom(
+        core::chemistry::atoms::AtomInstanceSP const & atom_in,
+        std::array< core::Real, 3 > const & coords
+    );
 
 private:
 

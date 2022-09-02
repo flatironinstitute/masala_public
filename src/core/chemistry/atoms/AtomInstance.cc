@@ -30,12 +30,25 @@ SOFTWARE.
 // Class header:
 #include <core/chemistry/atoms/AtomInstance.hh>
 
+// Core headers:
+#include <core/chemistry/atoms/data/PDBAtomData.hh>
+
 // STL headers:
 #include <string>
 
 namespace core {
 namespace chemistry {
 namespace atoms {
+
+    /// @brief Constructor from PDB atom.
+    AtomInstance::AtomInstance(
+        std::string const & pdb_atom_name,
+        signed long pdb_atom_index,
+        std::string const & pdb_element_name
+    ) :
+        base::MasalaObject(),
+        additional_atom_data_( std::vector< data::AtomDataSP >{ std::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) } )
+    {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.

@@ -131,6 +131,42 @@ Pose::molecules() const {
     return *molecules_;
 }
 
+/// @brief Access the Molecules object in this pose, by nonconst shared pointer.
+/// @details The Molecules object contains the coordinates and properties of atoms
+/// and chemical bonds.  We will use an observer system to ensure that direct updates
+/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// access is safe.
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::MoleculesSP
+Pose::molecules_shared_ptr_nonconst() {
+    return molecules_;
+}
+
+/// @brief Access the Molecules object in this pose, by nonconst weak pointer.
+/// @details The Molecules object contains the coordinates and properties of atoms
+/// and chemical bonds.  We will use an observer system to ensure that direct updates
+/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// access is safe.
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::MoleculesWP
+Pose::molecules_weak_ptr_nonconst() {
+    return molecules_;
+}
+
+/// @brief Access the Molecules object in this pose, by nonconst reference.
+/// @details The Molecules object contains the coordinates and properties of atoms
+/// and chemical bonds.  We will use an observer system to ensure that direct updates
+/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// access is safe.
+/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// not all form one contiguously-bonded set).
+core::chemistry::Molecules &
+Pose::molecules_nonconst() {
+    return *molecules_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////

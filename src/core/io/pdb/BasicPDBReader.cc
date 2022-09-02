@@ -32,6 +32,8 @@ SOFTWARE.
 
 // Core headers:
 #include <core/pose/Pose.hh>
+#include <core/chemistry/Molecules.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/types.hh>
 
 // Base headers:
@@ -42,6 +44,7 @@ SOFTWARE.
 
 // STL headers:
 #include <sstream>
+#include <array>
 
 
 namespace core {
@@ -129,6 +132,9 @@ BasicPDBReader::add_atoms_from_file_lines(
 
         CHECK_OR_THROW( curline.size() >= 80, errmsg + "Expected 80-character ATOM or HETATM record.  Instead got:\n" + curline + "\n" );
 
+        // Mark this as an ATOM or HETATOM line:
+        atom_lines_read[i] = true;
+
         // Just parsing out some of the salient information -- not the residue annotations at this time.
         std::string const curline_atomno( curline.substr(6, 5) );
         std::string const curline_atomname( curline.substr(12, 4) );
@@ -139,11 +145,15 @@ BasicPDBReader::add_atoms_from_file_lines(
 
         // Containers:
         signed long const atomno( utility::string::parse_string< signed long >( curline_atomno, true ) );
-        core::Real const xcoord( utility::string::parse_string< core::Real >( curline_xcoord, true ) );
-        core::Real const ycoord( utility::string::parse_string< core::Real >( curline_ycoord, true ) );
-        core::Real const zcoord( utility::string::parse_string< core::Real >( curline_zcoord, true ) );
+        std::array< core::Real, 3 > coords{
+            utility::string::parse_string< core::Real >( curline_xcoord, true ),
+            utility::string::parse_string< core::Real >( curline_ycoord, true ),
+            utility::string::parse_string< core::Real >( curline_zcoord, true )
+        };
 
-        TODO TODO TODO CONTINUE HERE
+        // The new atom.
+        core::chemistry::atoms::AtomInstanceSP newatom( std::make_shared< core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
+        pose.molecules_nonconst().add_atom( newatom, coords );
     }
 }
 
