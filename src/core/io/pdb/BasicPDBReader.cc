@@ -1,0 +1,85 @@
+/*
+MIT License
+
+Copyright (c) 2022 Vikram K. Mulligan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/// @file src/core/chemistry/BasicPDBReader.cc
+/// @brief A class for reading the basic information from a PDB file quickly, and
+/// setting up a minimal pose.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+// Class header:
+#include <core/io/pdb/BasicPDBReader.hh>
+
+// Core headers:
+
+// STL headers:
+
+
+namespace core {
+namespace io {
+namespace pdb {
+
+
+/// @brief Clone operation: make a copy of this object and return a shared pointer
+/// to the copy.
+BasicPDBReaderSP
+BasicPDBReader::clone() const {
+    return std::make_shared< BasicPDBReader >( *this );
+}
+
+/// @brief Deep clone operation: make a deep copy of this object and return a shared
+/// pointer to the deep copy.
+BasicPDBReaderSP
+BasicPDBReader::deep_clone() const {
+    BasicPDBReaderSP reader_copy( std::make_shared< BasicPDBReader >( *this ) );
+    reader_copy->make_independent();
+    return reader_copy;
+}
+
+/// @brief Make this object independent by making a deep copy of all of its private members.
+/// @details Threadsafe.  Be sure to update this function whenever a private member is added!
+void
+BasicPDBReader::make_independent() {
+    
+}
+
+/// @brief Returns "BasicPDBReader".
+std::string
+BasicPDBReader::class_name() const {
+    return "BasicPDBReader";
+}
+
+/// @brief Every class can provide its own namespace.  This returns "core::io::pdb".
+std::string
+BasicPDBReader::class_namespace() const {
+    return "core::io::pdb";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
+
+
+} // namespace pdb
+} // namespace io
+} // namespace core
