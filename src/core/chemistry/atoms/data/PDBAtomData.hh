@@ -32,6 +32,9 @@ SOFTWARE.
 // Forward declarations:
 #include <core/chemistry/atoms/data/PDBAtomData.fwd.hh>
 
+// Parent header:
+#include <core/chemistry/atoms/data/AtomData.hh>
+
 // Core headers:
 #include <core/types.hh>
 
@@ -47,7 +50,7 @@ namespace data {
 
 /// @brief A container class for data attached to an atom that was read from a PDB file.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PDBAtomData : public base::MasalaObject {
+class PDBAtomData : public AtomData {
 
 public:
 
