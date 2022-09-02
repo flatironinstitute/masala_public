@@ -123,7 +123,12 @@ private:
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.
     /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
     /// store the data differently, but all offer iterators to access atom coordinates.
-    core::chemistry::atoms::AtomCoordinateRepresentationSP atom_coordinates_;
+    /// @note This is the MASTER representation.  All other representations either update this
+    /// representation, or are updated by this representation.
+    core::chemistry::atoms::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
+
+    /// @brief Additional representations of atom coordinates.
+    std::set< core::chemistry::atoms::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
 
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the

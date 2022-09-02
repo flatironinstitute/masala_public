@@ -41,6 +41,7 @@ SOFTWARE.
 
 // STL headers:
 #include <set>
+#include <array>
 
 namespace core {
 namespace chemistry {
@@ -83,11 +84,21 @@ public:
     /// @brief Replace an atom instance with a new one.
     /// @details Used for deep cloning, since the AtomCoordinateRepresentation does not itself
     /// implement a deep_clone() function.
+    /// @note Must be implemented by derived classes.
     virtual
     void
     replace_atom_instance(
         AtomInstanceCSP const & old_instance,
         AtomInstanceCSP new_instance
+    ) = 0;
+
+    /// @brief Add an atom.
+    /// @note Must be implemented by derived classes.
+    virtual
+    void
+    add_atom_instance(
+        AtomInstanceCSP const & new_atom,
+        std::array< core::Real, 3 > const & new_atom_coordinates
     ) = 0;
 
 private:

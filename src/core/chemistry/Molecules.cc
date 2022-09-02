@@ -46,7 +46,7 @@ Molecules::Molecules(
     Molecules const & src
 ) {
     std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
-    atom_coordinates_ = src.atom_coordinates_;
+    master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
     atoms_ = src.atoms_;
     bonds_ = src.bonds_;
 }
@@ -73,8 +73,8 @@ void
 Molecules::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
-    core::chemistry::atoms::AtomCoordinateRepresentationCSP old_coordinates( atom_coordinates_ );
-    atom_coordinates_ = old_coordinates->clone();
+    core::chemistry::atoms::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
+    master_atom_coordinate_representation_ = old_coordinates->clone();
     std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
     for(
@@ -84,7 +84,7 @@ Molecules::make_independent() {
     ) {
         core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
-        atom_coordinates_->replace_atom_instance( *it, new_atom );
+        master_atom_coordinate_representation_->replace_atom_instance( *it, new_atom );
     }
 
     std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
@@ -128,10 +128,17 @@ Molecules::add_atom(
     std::array< core::Real, 3 > const & coords
 ) {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    //TODO: Ensure up-to-date.
+    // if( master_atom_coordinate_representation_ == nullptr ) {
+    //     create_master_atom_coordinate_representation();
+    // }
+
+    // Add the atom:
     atoms_.insert(atom_in);
-    atom_coordinates_->add_atom_instance( atom_in, coords );
+    master_atom_coordinate_representation_->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
+    //update_additional_representations_from_master();
 }
 
 } // namespace chemistry
