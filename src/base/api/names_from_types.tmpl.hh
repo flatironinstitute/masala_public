@@ -99,121 +99,87 @@ namespace api {
     /// @brief Manually override for void.
     template<>
     std::string
-    name_from_type< void >(type<void>) {
-        return "void";
-    }
+    name_from_type< void >(type<void>);
 
     /// @brief Manually override for booleans.
     template<>
     std::string
-    name_from_type< bool >(type<bool>) {
-        return "bool";
-    }
+    name_from_type< bool >(type<bool>);
 
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
-    name_from_type< unsigned short >(type<unsigned short>) {
-        return "unsigned short int";
-    }
+    name_from_type< unsigned short >(type<unsigned short>);
 
     /// @brief Manually override for unsigned ints.
     template<>
     std::string
-    name_from_type< unsigned int >(type<unsigned int>) {
-        return "unsigned int";
-    }
+    name_from_type< unsigned int >(type<unsigned int>);
 
     /// @brief Manually override for unsigned long ints.
     template<>
     std::string
-    name_from_type< unsigned long >(type<unsigned long>) {
-        return "unsigned long int";
-    }
+    name_from_type< unsigned long >(type<unsigned long>);
 
     /// @brief Manually override for signed short ints.
     template<>
     std::string
-    name_from_type< signed short >(type<signed short>) {
-        return "signed short int";
-    }
+    name_from_type< signed short >(type<signed short>);
 
     /// @brief Manually override for signed ints.
     template<>
     std::string
-    name_from_type< signed int >(type<signed int>) {
-        return "signed int";
-    }
+    name_from_type< signed int >(type<signed int>);
 
     /// @brief Manually override for signed long ints.
     template<>
     std::string
-    name_from_type< signed long >(type<signed long>) {
-        return "signed long int";
-    }
+    name_from_type< signed long >(type<signed long>);
 
     /// @brief Manually override for floats.
     template<>
     std::string
-    name_from_type< float >(type<float>) {
-        return "float";
-    }
+    name_from_type< float >(type<float>);
 
     /// @brief Manually override for float instances.
     template<>
     std::string
-    name_from_type< float & >(type<float&>) {
-        return "float &";
-    }
+    name_from_type< float & >(type<float&>);
 
     /// @brief Manually override for float const instances.
     template<>
     std::string
-    name_from_type< float const & >(type<float const &>) {
-        return "float const &";
-    }
+    name_from_type< float const & >(type<float const &>);
 
     /// @brief Manually override for doubles.
     template<>
     std::string
-    name_from_type< double >(type<double>) {
-        return "double";
-    }
+    name_from_type< double >(type<double>);
 
     /// @brief Manually override for double instances.
     template<>
     std::string
-    name_from_type< double & >(type<double &>) {
-        return "double &";
-    }
+    name_from_type< double & >(type<double &>);
 
     /// @brief Manually override for double const instances.
     template<>
     std::string
-    name_from_type< double const & >(type<double const&>) {
-        return "double const &";
-    }
+    name_from_type< double const & >(type<double const&>);
 
     /// @brief Manually override for strings.
     template<>
     std::string
-    name_from_type< std::string >(type<std::string>) {
-        return "std::string";
-    }
+    name_from_type< std::string >(type<std::string>);
 
     /// @brief Manually override for string instances.
     template<>
     std::string
-    name_from_type< std::string & >(type<std::string &>) {
-        return "std::string const &";
-    }
+    name_from_type< std::string & >(type<std::string &>);
 
     /// @brief Manually override for const instance strings.
     template<>
     std::string
-    name_from_type< std::string const & >(type<std::string const&>) {
-        return "std::string const &";
-    }
+    name_from_type< std::string const & >(type<std::string const&>);
 
 } // namespace api
 } // namespace base

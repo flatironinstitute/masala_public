@@ -1,0 +1,157 @@
+/*
+MIT License
+
+Copyright (c) 2022 Vikram K. Mulligan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/// @file src/base/api/names_from_types.cc
+/// @brief Given typenames, get human-readable strings.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+// Project headers
+#include <base/api/names_from_types.tmpl.hh>
+
+// STL headers
+
+namespace base {
+namespace api {
+
+    /// @brief Manually override for void.
+    template<>
+    std::string
+    name_from_type< void >(type<void>) {
+        return "void";
+    }
+
+    /// @brief Manually override for booleans.
+    template<>
+    std::string
+    name_from_type< bool >(type<bool>) {
+        return "bool";
+    }
+
+    /// @brief Manually override for unsigned short ints.
+    template<>
+    std::string
+    name_from_type< unsigned short >(type<unsigned short>) {
+        return "unsigned short int";
+    }
+
+    /// @brief Manually override for unsigned ints.
+    template<>
+    std::string
+    name_from_type< unsigned int >(type<unsigned int>) {
+        return "unsigned int";
+    }
+
+    /// @brief Manually override for unsigned long ints.
+    template<>
+    std::string
+    name_from_type< unsigned long >(type<unsigned long>) {
+        return "unsigned long int";
+    }
+
+    /// @brief Manually override for signed short ints.
+    template<>
+    std::string
+    name_from_type< signed short >(type<signed short>) {
+        return "signed short int";
+    }
+
+    /// @brief Manually override for signed ints.
+    template<>
+    std::string
+    name_from_type< signed int >(type<signed int>) {
+        return "signed int";
+    }
+
+    /// @brief Manually override for signed long ints.
+    template<>
+    std::string
+    name_from_type< signed long >(type<signed long>) {
+        return "signed long int";
+    }
+
+    /// @brief Manually override for floats.
+    template<>
+    std::string
+    name_from_type< float >(type<float>) {
+        return "float";
+    }
+
+    /// @brief Manually override for float instances.
+    template<>
+    std::string
+    name_from_type< float & >(type<float&>) {
+        return "float &";
+    }
+
+    /// @brief Manually override for float const instances.
+    template<>
+    std::string
+    name_from_type< float const & >(type<float const &>) {
+        return "float const &";
+    }
+
+    /// @brief Manually override for doubles.
+    template<>
+    std::string
+    name_from_type< double >(type<double>) {
+        return "double";
+    }
+
+    /// @brief Manually override for double instances.
+    template<>
+    std::string
+    name_from_type< double & >(type<double &>) {
+        return "double &";
+    }
+
+    /// @brief Manually override for double const instances.
+    template<>
+    std::string
+    name_from_type< double const & >(type<double const&>) {
+        return "double const &";
+    }
+
+    /// @brief Manually override for strings.
+    template<>
+    std::string
+    name_from_type< std::string >(type<std::string>) {
+        return "std::string";
+    }
+
+    /// @brief Manually override for string instances.
+    template<>
+    std::string
+    name_from_type< std::string & >(type<std::string &>) {
+        return "std::string const &";
+    }
+
+    /// @brief Manually override for const instance strings.
+    template<>
+    std::string
+    name_from_type< std::string const & >(type<std::string const&>) {
+        return "std::string const &";
+    }
+
+} // namespace api
+} // namespace base
