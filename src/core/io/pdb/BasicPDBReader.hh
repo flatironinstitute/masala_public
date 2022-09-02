@@ -34,6 +34,7 @@ SOFTWARE.
 #include <core/io/pdb/BasicPDBReader.fwd.hh>
 
 // Core headers:
+#include <core/pose/Pose.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -93,8 +94,14 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Given the contents of a PDB file, generate a Pose.
+    core::pose::PoseSP
+    pose_from_pdb_file_contents(
+        std::vector< std::string > const & file_lines
+    ) const;
 
 
 private:

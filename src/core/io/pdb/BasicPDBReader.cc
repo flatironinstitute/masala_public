@@ -31,6 +31,7 @@ SOFTWARE.
 #include <core/io/pdb/BasicPDBReader.hh>
 
 // Core headers:
+#include <core/pose/Pose.hh>
 
 // STL headers:
 
@@ -76,8 +77,22 @@ BasicPDBReader::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given the contents of a PDB file, generate a Pose.
+core::pose::PoseSP
+BasicPDBReader::pose_from_pdb_file_contents(
+    std::vector< std::string > const & file_lines
+) const {
+    core::pose::PoseSP pose( std::make_shared< core::pose::Pose >() );
+
+    add_atoms_from_file_lines( *pose, file_lines );
+    add_bonds_from_conect_and_link_records( *pose, file_lines );
+    infer_bonds( *pose );
+
+    return pose;
+}
 
 
 } // namespace pdb
