@@ -22,17 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomData.hh
+/// @file src/core/chemistry/atoms/data/AtomData.hh
 /// @brief A container data for additional optional data that might be
 /// attached to an atom.
 /// @details Note that this is a pure virtual base class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_data_AtomData_hh
-#define Masala_src_core_chemistry_data_AtomData_hh
+#ifndef Masala_src_core_chemistry_atoms_data_AtomData_hh
+#define Masala_src_core_chemistry_atoms_data_AtomData_hh
 
 // Forward declarations:
-#include <core/chemistry/data/AtomData.fwd.hh>
+#include <core/chemistry/atoms/data/AtomData.fwd.hh>
 
 // Core headers:
 
@@ -43,6 +43,7 @@ SOFTWARE.
 
 namespace core {
 namespace chemistry {
+namespace atoms {
 namespace data {
 
 
@@ -89,7 +90,8 @@ private:
 };
 
 } // namespace data
+} // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_data_AtomData_hh
+#endif // Masala_src_core_chemistry_atoms_data_AtomData_hh

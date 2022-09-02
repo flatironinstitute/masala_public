@@ -42,6 +42,7 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <set>
 
 namespace core {
 namespace chemistry {
@@ -127,7 +128,7 @@ private:
 
     /// @brief Optional additional data attached to this atom.
     /// @details Intended to store things like PDB name, PDB index, etc.
-    std::vector< data::AtomDataSP > additional_atom_data_;
+    std::set< data::AtomDataSP > additional_atom_data_;
 
 };
 

@@ -47,7 +47,7 @@ namespace atoms {
         std::string const & pdb_element_name
     ) :
         base::MasalaObject(),
-        additional_atom_data_( std::vector< data::AtomDataSP >{ std::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) } )
+        additional_atom_data_( std::set< data::AtomDataSP >{ std::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) } )
     {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer

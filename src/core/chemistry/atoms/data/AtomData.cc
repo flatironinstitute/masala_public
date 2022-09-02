@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomData.cc
+/// @file src/core/chemistry/atoms/data/AtomData.cc
 /// @brief A container data for additional optional data that might be
 /// attached to an atom.
 /// @details Note that this is a pure virtual base class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/data/AtomData.hh>
+#include <core/chemistry/atoms/data/AtomData.hh>
 
 // Core headers:
 
@@ -38,6 +38,7 @@ SOFTWARE.
 
 namespace core {
 namespace chemistry {
+namespace atoms {
 namespace data {
 
 /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -45,5 +46,6 @@ namespace data {
 void AtomData::make_independent() {}
 
 } // namespace data
+} // namespace atoms
 } // namespace chemistry
 } // namespace core

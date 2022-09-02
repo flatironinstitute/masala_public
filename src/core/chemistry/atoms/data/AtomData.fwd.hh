@@ -22,18 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/AtomData.fwd.hh
+/// @file src/core/chemistry/atoms/data/AtomData.fwd.hh
 /// @brief Forward declarations for a container data for additional optional
 /// data that might be attached to an atom.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_data_AtomData_fwd_hh
-#define Masala_src_core_chemistry_data_AtomData_fwd_hh
+#ifndef Masala_src_core_chemistry_atoms_data_AtomData_fwd_hh
+#define Masala_src_core_chemistry_atoms_data_AtomData_fwd_hh
 
 #include <memory>
 
 namespace core {
 namespace chemistry {
+namespace atoms {
 namespace data {
 
     class AtomData;
@@ -44,7 +45,8 @@ namespace data {
     using AtomDataCWP = std::weak_ptr< AtomData const >;
 
 } // namespace data
+} // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_data_AtomData_fwd_hh
+#endif // Masala_src_core_chemistry_atoms_data_AtomData_fwd_hh
