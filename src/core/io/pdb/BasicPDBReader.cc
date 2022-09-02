@@ -37,7 +37,11 @@ SOFTWARE.
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 
+// Utility headers:
+#include <utility/string/string_parsing.tmpl.hh>
+
 // STL headers:
+#include <sstream>
 
 
 namespace core {
@@ -94,8 +98,8 @@ BasicPDBReader::pose_from_pdb_file_contents(
     std::vector< bool > atom_lines_read( file_lines.size(), false ); // Allows us to skip re-parsing the same lines.
 
     add_atoms_from_file_lines( *pose, file_lines, atom_lines_read );
-    add_bonds_from_conect_and_link_records( *pose, file_lines );
-    infer_bonds( *pose );
+    // add_bonds_from_conect_and_link_records( *pose, file_lines );
+    // infer_bonds( *pose );
 
     return pose;
 }
@@ -107,6 +111,8 @@ BasicPDBReader::pose_from_pdb_file_contents(
 /// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a Pose.
 /// @details This modifies pose, as well as atom_lines_read, marking off which lines
 /// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
+/// @note In its current form, this does NOT set up residue information.  It only assigns
+/// atom coordinates and identities.
 void
 BasicPDBReader::add_atoms_from_file_lines(
     core::pose::Pose & pose,
@@ -130,6 +136,12 @@ BasicPDBReader::add_atoms_from_file_lines(
         std::string const curline_ycoord( curline.substr(38, 8) );
         std::string const curline_zcoord( curline.substr(46, 8) );
         std::string const curline_element( curline.substr(76, 2) );
+
+        // Containers:
+        signed long const atomno( utility::string::parse_string< signed long >( curline_atomno, true ) );
+        core::Real const xcoord( utility::string::parse_string< core::Real >( curline_xcoord, true ) );
+        core::Real const ycoord( utility::string::parse_string< core::Real >( curline_ycoord, true ) );
+        core::Real const zcoord( utility::string::parse_string< core::Real >( curline_zcoord, true ) );
 
         TODO TODO TODO CONTINUE HERE
     }

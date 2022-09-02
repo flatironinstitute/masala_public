@@ -113,6 +113,8 @@ private:
     /// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a Pose.
     /// @details This modifies pose, as well as atom_lines_read, marking off which lines
     /// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
+    /// @note In its current form, this does NOT set up residue information.  It only assigns
+    /// atom coordinates and identities.
     void
     add_atoms_from_file_lines(
         core::pose::Pose & pose,
