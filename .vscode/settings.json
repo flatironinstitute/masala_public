@@ -81,6 +81,19 @@
         "ranges": "cpp",
         "variant": "cpp",
         "__functional_base": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "any": "cpp",
+        "codecvt": "cpp",
+        "csignal": "cpp",
+        "forward_list": "cpp",
+        "iomanip": "cpp",
+        "iostream": "cpp",
+        "list": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "span": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp"
     }
 }
