@@ -32,6 +32,10 @@ SOFTWARE.
 
 // Core headers:
 #include <core/pose/Pose.hh>
+#include <core/types.hh>
+
+// Base headers:
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 
@@ -87,11 +91,48 @@ BasicPDBReader::pose_from_pdb_file_contents(
 ) const {
     core::pose::PoseSP pose( std::make_shared< core::pose::Pose >() );
 
-    add_atoms_from_file_lines( *pose, file_lines );
+    std::vector< bool > atom_lines_read( file_lines.size(), false ); // Allows us to skip re-parsing the same lines.
+
+    add_atoms_from_file_lines( *pose, file_lines, atom_lines_read );
     add_bonds_from_conect_and_link_records( *pose, file_lines );
     infer_bonds( *pose );
 
     return pose;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a Pose.
+/// @details This modifies pose, as well as atom_lines_read, marking off which lines
+/// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
+void
+BasicPDBReader::add_atoms_from_file_lines(
+    core::pose::Pose & pose,
+    std::vector< std::string > const & file_lines,
+    std::vector< bool > & atom_lines_read
+) const {
+    std::string const errmsg( get_errmsg_header( "add_atoms_from_file_lines" ) );
+    for( core::Size i(0), imax(file_lines.size()); i<=imax; ++i ) {
+        if( atom_lines_read[i] ) continue;
+        std::string const & curline( file_lines[i] );
+        if( curline.size() < 6 ) continue; //Skip short lines.
+        std::string const curline_record( curline.substr(0, 6) );
+        if( curline_record != "ATOM  " && curline_record != "HETATM" ) continue;
+
+        CHECK_OR_THROW( curline.size() >= 80, errmsg + "Expected 80-character ATOM or HETATM record.  Instead got:\n" + curline + "\n" );
+
+        // Just parsing out some of the salient information -- not the residue annotations at this time.
+        std::string const curline_atomno( curline.substr(6, 5) );
+        std::string const curline_atomname( curline.substr(12, 4) );
+        std::string const curline_xcoord( curline.substr(30, 8) );
+        std::string const curline_ycoord( curline.substr(38, 8) );
+        std::string const curline_zcoord( curline.substr(46, 8) );
+        std::string const curline_element( curline.substr(76, 2) );
+
+        TODO TODO TODO CONTINUE HERE
+    }
 }
 
 

@@ -41,6 +41,7 @@ SOFTWARE.
 
 // STL headers:
 #include <string>
+#include <vector>
 
 namespace core {
 namespace io {
@@ -103,6 +104,21 @@ public:
         std::vector< std::string > const & file_lines
     ) const;
 
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a Pose.
+    /// @details This modifies pose, as well as atom_lines_read, marking off which lines
+    /// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
+    void
+    add_atoms_from_file_lines(
+        core::pose::Pose & pose,
+        std::vector< std::string > const & file_lines,
+        std::vector< bool > & atom_lines_read
+    ) const;
 
 private:
 
