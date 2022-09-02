@@ -39,6 +39,7 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <string>
 
 namespace core {
 namespace io {
