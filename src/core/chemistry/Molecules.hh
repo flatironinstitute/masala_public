@@ -33,6 +33,7 @@ SOFTWARE.
 #include <core/chemistry/Molecules.fwd.hh>
 
 // Core headers:
+#include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 #include <core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
