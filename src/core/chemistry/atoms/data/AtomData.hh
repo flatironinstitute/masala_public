@@ -63,7 +63,6 @@ public:
     AtomData() = default;
 
     /// @brief Copy constructor.
-    /// @details Must be explicitly declared due to mutex.
     AtomData( AtomData const & src ) = default;
 
     /// @brief Default destructor.
