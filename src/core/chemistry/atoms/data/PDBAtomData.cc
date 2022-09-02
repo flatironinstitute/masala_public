@@ -35,12 +35,30 @@ SOFTWARE.
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // STL headers:
-#include <string>
 
 namespace core {
 namespace chemistry {
 namespace atoms {
 namespace data {
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Options constructor.
+/// @param[in] pdb_atom_name The atom name as specified in a PDB file.
+/// @param[in] pdb_atom_index The atom index as specified in a PDB file.
+/// @param[in] pdb_element_type The element type string, as specified in a PDB file.
+PDBAtomData::PDBAtomData(
+    std::string const & pdb_atom_name,
+    signed long pdb_atom_index,
+    std::string const & pdb_element_type
+) :
+    AtomData(),
+    pdb_atom_name_(pdb_atom_name),
+    pdb_atom_index_(pdb_atom_index),
+    pdb_element_type_(pdb_element_type)
+{}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
@@ -74,6 +92,28 @@ PDBAtomData::class_name() const {
 std::string
 PDBAtomData::class_namespace() const {
     return "core::chemistry::atoms::data";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Access the atom name as listed in a PDB file.
+std::string const &
+PDBAtomData::pdb_atom_name() const {
+    return pdb_atom_name_;
+}
+
+/// @brief Access the atom index as listed in a PDB file.
+signed long
+PDBAtomData::pdb_atom_index() const {
+    return pdb_atom_index_;
+}
+
+/// @brief Access the element type as listed in a PDB file.
+std::string const &
+PDBAtomData::pdb_element_type() const {
+    return pdb_element_type_;
 }
 
 } // namespace data

@@ -42,6 +42,7 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <string>
 
 namespace core {
 namespace chemistry {
@@ -60,6 +61,16 @@ public:
 
     /// @brief Default constructor.
     PDBAtomData() = default;
+
+    /// @brief Options constructor.
+    /// @param[in] pdb_atom_name The atom name as specified in a PDB file.
+    /// @param[in] pdb_atom_index The atom index as specified in a PDB file.
+    /// @param[in] pdb_element_type The element type string, as specified in a PDB file.
+    PDBAtomData(
+        std::string const & pdb_atom_name,
+        signed long pdb_atom_index,
+        std::string const & pdb_element_type
+    );
 
     /// @brief Copy constructor.
     PDBAtomData( PDBAtomData const & src ) = default;
@@ -98,12 +109,31 @@ public:
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Access the atom name as listed in a PDB file.
+    std::string const & pdb_atom_name() const;
+
+    /// @brief Access the atom index as listed in a PDB file.
+    signed long pdb_atom_index() const;
+
+    /// @brief Access the element type as listed in a PDB file.
+    /// @note May not match the AtomInstance::element().  Use AtomInstance::element() for
+    /// Masala protocols that depend on element types.
+    std::string const & pdb_element_type() const;
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The atom name as listed in a PDB file.
+    std::string pdb_atom_name_;
+
+    /// @brief The atom index as listed in a PDB file.
+    signed long pdb_atom_index_ = 0;
+
+    /// @brief The element type as listed in a PDB file.
+    std::string pdb_element_type_;
 
 
 };
