@@ -31,11 +31,27 @@ SOFTWARE.
 // Class headers:
 #include <base/MasalaObject.hh>
 
+// STL headers
+#include <string>
+
 namespace base {
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS (OVERRIDABLE)
+// PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a string for the error message header, of the form:
+/// "Error in <namespace>::<class name>::<function name>(): ".
+/// @param[in] function_name The function from which we're calling this function,
+/// used to construct the string.  This should just be a function name, without
+/// namespace, class, colons, return type, parameters, or parentheses.
+/// @note This cannot be called from constructors!
+std::string
+MasalaObject::get_errmsg_header(
+    std::string const & function_name
+) const {
+    return "Error in " + class_namespace() + "::" + class_name() + "::" + function_name + "(): ";
+}
 
 /// @brief Does this object return an API definition?
 /// @details By default, returns false.  Derived classes might, though.
