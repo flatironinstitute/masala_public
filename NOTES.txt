@@ -17,4 +17,5 @@
 - [ ] Add Python code to generate API layer from API descriptions.
 - [ ] Add script and compilation of API layer to build script.
 
+- [ ] Use ViennaCL for linear algebra.
 - [ ] Replace std::set with std::vector.
