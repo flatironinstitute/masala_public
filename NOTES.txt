@@ -2,7 +2,7 @@
      - [X] On second thought, let's keep these around.
      - [X] Figure out problem of MasalaObjectAPIDefinition persisting after the object that it describes is destroyed.  Observer?  Hand out a weak pointer to a MasalaObjectAPIDefinition cached in the object?
           - [X] I'll hand out a weak pointer.
-- [ ] Do API classes need to be templated?
+- [X] Do API classes need to be templated?  YES.
 - [ ] Can API classes derive from common base?
 - [X] Add namespace function to all instantiable objects.
 - [ ] Update API classes to use namespace function.
@@ -13,6 +13,8 @@
      - [X] To MasalaObjectAPISetterDefinition and derived classes.
      - [X] To MasalaObjectAPIGetterDefinition and derived classes.
      - [X] To MasalaObjectAPIWorkFunctionDefinition and derived classes.
-- [ ] Add app to generate API description from class list.
+- [X] Add app to generate API description from class list.
 - [ ] Add Python code to generate API layer from API descriptions.
 - [ ] Add script and compilation of API layer to build script.
+
+- [ ] Replace std::set with std::vector.
