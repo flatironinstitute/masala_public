@@ -116,7 +116,7 @@ private:
 
     /// @brief Data storage for atom coordinates.
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
-    Eigen::Matrix< core::Real, 3, Eigen::Dynamic > matrix_;
+    Eigen::Matrix< core::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
     /// @brief Vector mapping atoms to columns.
     std::vector< core::chemistry::atoms::AtomInstanceCSP > atom_to_column_index_;

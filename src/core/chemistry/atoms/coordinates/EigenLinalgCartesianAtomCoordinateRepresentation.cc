@@ -32,6 +32,12 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
 
+// Utility headers:
+#include <utility/container/container_util.tmpl.hh>
+
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 #include <string>
 
@@ -88,7 +94,13 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     AtomInstanceCSP const & new_atom,
     std::array< core::Real, 3 > const & new_atom_coordinates
 ) {
-    TODO TODO TODO
+    DEBUG_MODE_CHECK_OR_THROW( !utility::container::has_value( atom_to_column_index_, new_atom ), get_errmsg_header("add_atom_instance") + "Atom has already been added!" );
+    atom_to_column_index_.push_back( new_atom );
+    atom_coordinates_.conservativeResize( Eigen::NoChange, atom_coordinates_.cols() + 1 );
+    atom_coordinates_(0, atom_coordinates_.cols() - 1 ) = new_atom_coordinates[0]; 
+    atom_coordinates_(1, atom_coordinates_.cols() - 1 ) = new_atom_coordinates[1];
+    atom_coordinates_(2, atom_coordinates_.cols() - 1 ) = new_atom_coordinates[2];
+    DEBUG_MODE_CHECK_OR_THROW( atom_coordinates_.cols() == atom_to_column_index_.size(), get_errmsg_header("add_atom_instance") + "Mismatch in vector and matrix sizes!" );
 }
 
 } // namespace coordinates
