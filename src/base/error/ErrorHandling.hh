@@ -79,4 +79,11 @@ private:
 /// @brief A macro for checking an assertion and throwing an error.
 #define CHECK_OR_THROW( assertion, message ) if( !(assertion) ) { throw base::error::MasalaException( message ); }
 
+#ifdef NDEBUG
+#define DEBUG_MODE_CHECK_OR_THROW( assertion, message )
+#else
+/// @brief A macro for checking an assertion and throwing an error only in debug mode.
+#define DEBUG_MODE_CHECK_OR_THROW( assertion, message ) if( !(assertion) ) { throw base::error::MasalaException( message ); }
+#endif
+
 #endif //Masala_src_base_error_ErrorHandling_hh
