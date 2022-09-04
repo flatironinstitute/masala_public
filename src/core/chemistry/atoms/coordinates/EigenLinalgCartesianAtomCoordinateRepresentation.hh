@@ -39,7 +39,11 @@ SOFTWARE.
 #include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
+// External headers:
+#include <external/eigen/Eigen/Core>
+
 // STL headers:
+#include <vector>
 
 namespace core {
 namespace chemistry {
@@ -109,6 +113,13 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Data storage for atom coordinates.
+    /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
+    Eigen::Matrix< core::Real, 3, Eigen::Dynamic > matrix_;
+
+    /// @brief Vector mapping atoms to columns.
+    std::vector< core::chemistry::atoms::AtomInstanceCSP > atom_to_column_index_;
 
 };
 
