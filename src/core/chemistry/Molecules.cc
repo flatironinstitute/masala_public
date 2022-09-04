@@ -55,6 +55,7 @@ Molecules::Molecules(
 /// to the copy.
 MoleculesSP
 Molecules::clone() const {
+    std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
     return std::make_shared< Molecules >( *this );
 }
 
@@ -62,7 +63,10 @@ Molecules::clone() const {
 /// pointer to the deep copy.
 MoleculesSP
 Molecules::deep_clone() const {
-    MoleculesSP molecules_copy( std::make_shared< Molecules >( *this ) );
+    {   // Scope for lock guard.
+        std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
+        MoleculesSP molecules_copy( std::make_shared< Molecules >( *this ) );
+    }
     molecules_copy->make_independent();
     return molecules_copy;
 }
@@ -75,26 +79,26 @@ Molecules::make_independent() {
 
     core::chemistry::atoms::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
     master_atom_coordinate_representation_ = old_coordinates->clone();
-    std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
+    std::vector< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
     for(
-        std::set< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
+        std::vector< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
         it != old_atom_instances.end();
         ++it
     ) {
         core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
-        atoms_.insert( new_atom );
+        atoms_.push_back( new_atom );
         master_atom_coordinate_representation_->replace_atom_instance( *it, new_atom );
     }
 
-    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
+    std::vector< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
     bonds_.clear();
     for(
-        std::set< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
+        std::vector< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
         it != old_bonds.end();
         ++it
     ) {
-        bonds_.insert( (*it)->deep_clone() );
+        bonds_.push_back( (*it)->deep_clone() );
     }
 
     //TODO TODO TODO -- need maps of atoms to bonds and bonds to atoms.

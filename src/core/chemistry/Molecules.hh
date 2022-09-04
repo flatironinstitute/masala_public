@@ -43,7 +43,7 @@ SOFTWARE.
 
 // STL headers:
 #include <array>
-#include <set>
+#include <vector>
 #include <map>
 #include <mutex>
 
@@ -128,15 +128,15 @@ private:
     core::chemistry::atoms::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
 
     /// @brief Additional representations of atom coordinates.
-    std::set< core::chemistry::atoms::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
+    std::vector< core::chemistry::atoms::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
 
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the
     /// AtomCoordinateRepresentation.
-    std::set< core::chemistry::atoms::AtomInstanceSP > atoms_;
+    std::vector< core::chemistry::atoms::AtomInstanceSP > atoms_;
 
     /// @brief The bonds between atoms.
-    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
+    std::vector< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
 
 };
 
