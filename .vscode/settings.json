@@ -94,6 +94,8 @@
         "span": "cpp",
         "stack": "cpp",
         "unordered_set": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "dense": "cpp",
+        "eigen": "cpp"
     }
 }
