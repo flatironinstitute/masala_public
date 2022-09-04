@@ -31,7 +31,6 @@ SOFTWARE.
 
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
-#include <core/chemistry/atoms/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // STL headers:

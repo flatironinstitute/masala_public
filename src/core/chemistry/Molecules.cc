@@ -139,7 +139,7 @@ Molecules::add_atom(
     // }
 
     // Add the atom:
-    atoms_.insert(atom_in);
+    atoms_.push_back(atom_in);
     master_atom_coordinate_representation_->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
