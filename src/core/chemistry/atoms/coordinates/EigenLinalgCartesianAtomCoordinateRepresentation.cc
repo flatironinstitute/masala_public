@@ -33,7 +33,7 @@ SOFTWARE.
 #include <core/chemistry/atoms/AtomInstance.hh>
 
 // STL headers:
-
+#include <string>
 
 namespace core {
 namespace chemistry {
@@ -50,6 +50,18 @@ namespace coordinates {
 AtomCoordinateRepresentationSP
 EigenLinalgCartesianAtomCoordinateRepresentation::clone() const {
     return std::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
+}
+
+/// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
+std::string
+EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
+    return "EigenLinalgCartesianAtomCoordinateRepresentation";
+}
+
+/// @brief Returns "core::chemistry::atoms::coordinates".
+std::string
+EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
+    return "core::chemistry::atoms::coordinates";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

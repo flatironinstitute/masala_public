@@ -71,6 +71,14 @@ public:
     AtomCoordinateRepresentationSP
     clone() const override;
 
+    /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
+    std::string
+    class_name() const override;
+
+    /// @brief Returns "core::chemistry::atoms::coordinates".
+    std::string
+    class_namespace() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
