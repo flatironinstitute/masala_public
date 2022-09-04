@@ -1,3 +1,6 @@
 [submodule "external/nlohmann_json"]
 	path = external/nlohmann_json
 	url = git@gitlab.com:vmullig/nlohmann_json_fork.git
+[submodule "external/eigen_fork"]
+	path = external/eigen_fork
+	url = git@gitlab.com:vmullig/eigen_fork.git
