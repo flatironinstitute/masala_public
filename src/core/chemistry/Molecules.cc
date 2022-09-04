@@ -31,7 +31,7 @@ SOFTWARE.
 
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
-#include <core/chemistry/atoms/AtomCoordinateRepresentation.hh>
+#include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // STL headers:
@@ -63,9 +63,10 @@ Molecules::clone() const {
 /// pointer to the deep copy.
 MoleculesSP
 Molecules::deep_clone() const {
+    MoleculesSP molecules_copy;
     {   // Scope for lock guard.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-        MoleculesSP molecules_copy( std::make_shared< Molecules >( *this ) );
+        molecules_copy = std::make_shared< Molecules >( *this );
     }
     molecules_copy->make_independent();
     return molecules_copy;
@@ -77,7 +78,7 @@ void
 Molecules::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
-    core::chemistry::atoms::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
+    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
     master_atom_coordinate_representation_ = old_coordinates->clone();
     std::vector< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();

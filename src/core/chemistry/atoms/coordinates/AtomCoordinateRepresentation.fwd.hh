@@ -22,20 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh
+/// @file src/core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh
 /// @brief Forward declarations for a pure virtual base class class for the container
 /// of a collection of atom coordinates, represented in a manner that can make manipulations
 /// very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_fwd_hh
-#define Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_fwd_hh
+#ifndef Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh
+#define Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh
 
 #include <memory>
 
 namespace core {
 namespace chemistry {
 namespace atoms {
+namespace coordinates {
 
     class AtomCoordinateRepresentation;
 
@@ -44,8 +45,9 @@ namespace atoms {
     using AtomCoordinateRepresentationWP = std::weak_ptr< AtomCoordinateRepresentation >;
     using AtomCoordinateRepresentationCWP = std::weak_ptr< AtomCoordinateRepresentation const >;
 
+} // namespace coordinates
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
 
-#endif // Masala_src_core_chemistry_atoms_AtomCoordinateRepresentation_fwd_hh
+#endif // Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh

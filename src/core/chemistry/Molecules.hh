@@ -35,7 +35,7 @@ SOFTWARE.
 // Core headers:
 #include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
-#include <core/chemistry/atoms/AtomCoordinateRepresentation.fwd.hh>
+#include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 
 // Base headers:
@@ -125,10 +125,10 @@ private:
     /// store the data differently, but all offer iterators to access atom coordinates.
     /// @note This is the MASTER representation.  All other representations either update this
     /// representation, or are updated by this representation.
-    core::chemistry::atoms::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
+    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
 
     /// @brief Additional representations of atom coordinates.
-    std::vector< core::chemistry::atoms::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
+    std::vector< core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
 
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the
