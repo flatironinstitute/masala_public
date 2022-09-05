@@ -36,6 +36,9 @@ SOFTWARE.
 // Forward declarations:
 #include <base/managers/disk/MasalaDiskManager.fwd.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace base {
 namespace managers {
 namespace disk {
@@ -46,21 +49,42 @@ class MasalaDiskManager : public base::MasalaObject {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC STATIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Instantiate the static singleton and get a handle to it.
     static MasalaDiskManagerHandle getInstance();
 
 private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTION
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Private constructor: object can only be instantiated with getInstance().
     MasalaDiskManager() = default;
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief No copy constructor.
     MasalaDiskManager( MasalaDiskManager const & ) = delete;
 
     /// @brief No assignment operator.
     void operator=( MasalaDiskManager const & ) = delete;
+
+    /// @brief Default destructor.
+    ~MasalaDiskManager() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the name of this object.
     /// @details Returns "MasalaDiskManager".
@@ -71,6 +95,11 @@ public:
     /// @details Returns "base::managers::disk".
     std::string
     class_namespace() const override;
+
+private: // Data
+
+    /// @brief A mutex to ensure that one thread at a time does disk i/o.
+    mutable std::mutex disk_io_mutex_;
 
 };
 

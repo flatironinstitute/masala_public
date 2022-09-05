@@ -65,6 +65,9 @@ public:
     /// @brief No assignment operator.
     void operator=( MasalaConfigurationManager const & ) = delete;
 
+    /// @brief Default destructor.
+    ~MasalaConfigurationManager() = default;
+
     /// @brief Get the name of this object.
     /// @details Returns "MasalaConfigurationManager".
     std::string
