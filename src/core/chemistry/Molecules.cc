@@ -80,26 +80,26 @@ Molecules::make_independent() {
 
     core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
     master_atom_coordinate_representation_ = old_coordinates->clone();
-    std::vector< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
+    std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
     for(
-        std::vector< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
+        std::set< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
         it != old_atom_instances.end();
         ++it
     ) {
         core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
-        atoms_.push_back( new_atom );
+        atoms_.insert( new_atom );
         master_atom_coordinate_representation_->replace_atom_instance( *it, new_atom );
     }
 
-    std::vector< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
+    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
     bonds_.clear();
     for(
-        std::vector< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
+        std::set< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
         it != old_bonds.end();
         ++it
     ) {
-        bonds_.push_back( (*it)->deep_clone() );
+        bonds_.insert( (*it)->deep_clone() );
     }
 
     //TODO TODO TODO -- need maps of atoms to bonds and bonds to atoms.
@@ -139,7 +139,7 @@ Molecules::add_atom(
     // }
 
     // Add the atom:
-    atoms_.push_back(atom_in);
+    atoms_.insert(atom_in);
     master_atom_coordinate_representation_->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.

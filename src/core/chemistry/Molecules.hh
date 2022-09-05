@@ -43,6 +43,7 @@ SOFTWARE.
 
 // STL headers:
 #include <array>
+#include <set>
 #include <vector>
 #include <map>
 #include <mutex>
@@ -133,10 +134,19 @@ private:
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the
     /// AtomCoordinateRepresentation.
-    std::vector< core::chemistry::atoms::AtomInstanceSP > atoms_;
+    /// @note This is deliberately a set and not a vector to prevent an arbitrary index
+    /// from being handed out or used for atoms.  Iterators are properly used to iterate
+    /// over all atoms, and pointers to access a particular atom.  This also allows more
+    /// efficient insertions and deletions of atoms.  AtomCoordinateRepresentations are
+    /// responsible for keeping track of coordinates given atom smart pointers.
+    std::set< core::chemistry::atoms::AtomInstanceSP > atoms_;
 
     /// @brief The bonds between atoms.
-    std::vector< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
+    /// @note This is deliberately a set and not a vector to prevent an arbitrary index
+    /// from being handed out or used for bonds.  Iterators are properly used to iterate
+    /// over all bonds, and pointers to access a particular bonds.  This also allows more
+    /// efficient insertions and deletions of bonds.
+    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
 
 };
 
