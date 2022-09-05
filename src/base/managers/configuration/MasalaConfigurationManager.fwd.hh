@@ -38,8 +38,9 @@ namespace configuration {
 
     class MasalaConfigurationManager;
 
-    /// Note that singletons define no shared pointers or weak pointers.
-    using MasalaConfigurationManagerHandle = MasalaConfigurationManager const *;
+    /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow
+    /// lazy loading of data.
+    using MasalaConfigurationManagerHandle = MasalaConfigurationManager *;
 
 } // namespace configuration
 } // namespace managers
