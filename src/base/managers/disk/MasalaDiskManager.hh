@@ -23,9 +23,8 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/disk/MasalaDiskManager.hh
-/// @brief A static singleton for managing global disk for a Masala session.
-/// @details The sorts of options that get set globally are defaults, which can be overridden
-/// on a case-by-case basis.
+/// @brief A static singleton for managing disk access.
+/// @details All disk i/o must go through this manager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_disk_MasalaDiskManager_hh
@@ -41,6 +40,8 @@ namespace base {
 namespace managers {
 namespace disk {
 
+/// @brief A static singleton for managing disk access.
+/// @details All disk i/o must go through this manager.
 class MasalaDiskManager : public base::MasalaObject {
 
 public:

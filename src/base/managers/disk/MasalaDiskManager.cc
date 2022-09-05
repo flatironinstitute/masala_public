@@ -23,9 +23,8 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/disk/MasalaDiskManager.cc
-/// @brief A static singleton for managing global disk for a Masala session.
-/// @details The sorts of options that get set globally are defaults, which can be overridden
-/// on a case-by-case basis.
+/// @brief A static singleton for managing disk access.
+/// @details All disk i/o must go through this manager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project header:
@@ -41,8 +40,8 @@ namespace disk {
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaDiskManagerHandle
 MasalaDiskManager::getInstance() {
-    static MasalaDiskManager config_manager;
-    return &config_manager;
+    static const MasalaDiskManager disk_manager;
+    return &disk_manager;
 }
 
 /// @brief Get the name of this object.

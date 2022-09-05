@@ -23,10 +23,8 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/disk/MasalaDiskManager.fwd.hh
-/// @brief Forward declarations for a static singleton for managing global disk
-/// for a Masala session.
-/// @details The sorts of options that get set globally are defaults, which can be overridden
-/// on a case-by-case basis.
+/// @brief Forward declarations for a static singleton for managing disk access.
+/// @details All disk i/o must go through this manager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_disk_MasalaDiskManager_fwd_hh
@@ -38,9 +36,8 @@ namespace disk {
 
     class MasalaDiskManager;
 
-    /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow
-    /// lazy loading of data.
-    using MasalaDiskManagerHandle = MasalaDiskManager *;
+    /// Note that singletons define no shared pointers or weak pointers.
+    using MasalaDiskManagerHandle = MasalaDiskManager const *;
 
 } // namespace disk
 } // namespace managers
