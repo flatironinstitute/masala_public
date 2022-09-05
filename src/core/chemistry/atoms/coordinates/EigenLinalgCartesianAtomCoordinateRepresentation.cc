@@ -82,9 +82,13 @@ EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
     AtomInstanceCSP const & old_instance,
-    AtomInstanceCSP new_instance
+    AtomInstanceCSP const & new_instance
 ) {
-    TODO TODO TODO
+    DEBUG_MODE_CHECK_OR_THROW( atom_instance_to_column_.count( old_instance ) == 1, get_errmsg_header("replace_atom_instance") + "Could not replace atom.  Old atom is not present!" );
+    core::Size const col_index( atom_instance_to_column_.at(old_instance) );
+    atom_instance_to_column_.erase(old_instance);
+    DEBUG_MODE_CHECK_OR_THROW( atom_instance_to_column_.count(new_instance) == 0, get_errmsg_header("replace_atom_instance") + "Could not replace atom.  New atom is already present!" );
+    atom_instance_to_column_[new_instance] = col_index;
 }
 
 /// @brief Add an atom.
@@ -94,7 +98,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     AtomInstanceCSP const & new_atom,
     std::array< core::Real, 3 > const & new_atom_coordinates
 ) {
-    DEBUG_MODE_CHECK_OR_THROW( !atom_instance_to_column_.count(new_atom) == 0, get_errmsg_header("add_atom_instance") + "Atom has already been added!" );
+    DEBUG_MODE_CHECK_OR_THROW( atom_instance_to_column_.count(new_atom) == 0, get_errmsg_header("add_atom_instance") + "Atom has already been added!" );
     core::Size const natoms_before( atom_coordinates_.cols() );
     atom_instance_to_column_[ new_atom ] = natoms_before;
     atom_coordinates_.conservativeResize( Eigen::NoChange, natoms_before + 1 );

@@ -91,7 +91,7 @@ public:
     void
     replace_atom_instance(
         AtomInstanceCSP const & old_instance,
-        AtomInstanceCSP new_instance
+        AtomInstanceCSP const & new_instance
     ) = 0;
 
     /// @brief Add an atom.
