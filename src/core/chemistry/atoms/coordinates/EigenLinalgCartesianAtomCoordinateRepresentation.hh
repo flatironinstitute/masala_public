@@ -43,7 +43,7 @@ SOFTWARE.
 #include <external/eigen/Eigen/Core>
 
 // STL headers:
-#include <vector>
+#include <map>
 
 namespace core {
 namespace chemistry {
@@ -118,8 +118,8 @@ private:
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
     Eigen::Matrix< core::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
-    /// @brief Vector mapping atoms to columns.
-    std::vector< core::chemistry::atoms::AtomInstanceCSP > atom_to_column_index_;
+    /// @brief Map of atom index to column index.
+    std::map< core::chemistry::atoms::AtomInstanceCSP, core::Size > atom_instance_to_column_;
 
 };
 
