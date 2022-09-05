@@ -41,6 +41,10 @@ namespace base {
 namespace managers {
 namespace configuration {
 
+
+/// @brief A static singleton for managing global configuration for a Masala session.
+/// @details The sorts of options that get set globally are defaults, which can be overridden
+/// on a case-by-case basis.
 class MasalaConfigurationManager : public base::MasalaObject {
 
 public:
