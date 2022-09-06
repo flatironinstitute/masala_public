@@ -40,7 +40,7 @@ namespace configuration {
 
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaConfigurationManagerHandle
-MasalaConfigurationManager::getInstance() {
+MasalaConfigurationManager::get_instance() {
     static MasalaConfigurationManager config_manager;
     return &config_manager;
 }

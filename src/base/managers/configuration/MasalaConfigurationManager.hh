@@ -50,7 +50,7 @@ class MasalaConfigurationManager : public base::MasalaObject {
 public:
 
     /// @brief Instantiate the static singleton and get a handle to it.
-    static MasalaConfigurationManagerHandle getInstance();
+    static MasalaConfigurationManagerHandle get_instance();
 
 private:
 
