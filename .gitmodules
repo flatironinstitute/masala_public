@@ -4,3 +4,6 @@
 [submodule "external/eigen_fork"]
 	path = external/eigen
 	url = git@gitlab.com:vmullig/eigen_fork.git
+[submodule "external/catch2_fork"]
+	path = external/catch2_fork
+	url = git@gitlab.com:vmullig/catch2_fork.git
