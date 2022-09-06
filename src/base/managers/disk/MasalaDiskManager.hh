@@ -54,7 +54,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Instantiate the static singleton and get a handle to it.
-    static MasalaDiskManagerHandle getInstance();
+    static MasalaDiskManagerHandle get_instance();
 
 private:
 
@@ -95,6 +95,13 @@ public:
     /// @details Returns "base::managers::disk".
     std::string
     class_namespace() const override;
+
+    /// @brief Write a string to an ASCII file.
+    void
+    write_ascii_file(
+        std::string const & file_name,
+        std::string const & file_contents
+    ) const;
 
 private: // Data
 

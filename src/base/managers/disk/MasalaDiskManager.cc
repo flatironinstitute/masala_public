@@ -32,6 +32,7 @@ SOFTWARE.
 
 // STL headers:
 #include <string>
+#include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 
 namespace base {
 namespace managers {
@@ -43,7 +44,7 @@ namespace disk {
 
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaDiskManagerHandle
-MasalaDiskManager::getInstance() {
+MasalaDiskManager::get_instance() {
     static const MasalaDiskManager disk_manager;
     return &disk_manager;
 }
@@ -64,6 +65,17 @@ MasalaDiskManager::class_name() const {
 std::string
 MasalaDiskManager::class_namespace() const {
     return "base::managers::disk";
+}
+
+/// @brief Write a string to an ASCII file.
+void
+MasalaDiskManager::write_ascii_file(
+    std::string const & file_name,
+    std::string const & file_contents
+) const {
+    std::ofstream filehandle( file_name );
+    filehandle << file_contents;
+    filehandle.close();
 }
 
 } // namespace disk
