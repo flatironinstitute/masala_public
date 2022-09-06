@@ -61,7 +61,7 @@ main(
 
     // TEMPORARY!  REPLACE THE FOLLOWING TO USE DISK I/O MANAGER INSTEAD!
     std::ofstream filehandle( "core_api.json" );
-    filehandle << api_definition.dump() << "\n";
+    filehandle << api_definition.dump( 1, '\t' ) << "\n";
     filehandle.close();
 
     return 0;
