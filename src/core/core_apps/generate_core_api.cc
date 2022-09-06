@@ -34,12 +34,13 @@ SOFTWARE.
 // Base headers
 #include <base/MasalaObject.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/managers/disk/MasalaDiskManager.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
 
 // STL headers
-#include <fstream> // TEMPORARY!  SWITCH THIS TO USE DISK I/O MANAGER INSTEAD!
+#include <sstream>
 
 // Program entry point:
 int
@@ -59,10 +60,9 @@ main(
     }
     api_definition["Elements"] = api_entries;
 
-    // TEMPORARY!  REPLACE THE FOLLOWING TO USE DISK I/O MANAGER INSTEAD!
-    std::ofstream filehandle( "core_api.json" );
-    filehandle << api_definition.dump( 1, '\t' ) << "\n";
-    filehandle.close();
+    std::ostringstream ss;
+    ss << api_definition.dump( 1, '\t' ) << "\n";
+    base::managers::disk::MasalaDiskManager::get_instance()->write_ascii_file( "core_api.json", ss.str() );
 
     return 0;
 }
