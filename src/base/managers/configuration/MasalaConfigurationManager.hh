@@ -37,6 +37,13 @@ SOFTWARE.
 // Forward declarations:
 #include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
+// Base headers:
+#include <base/managers/configuration/ConfigurationBase.fwd.hh>
+#include <base/api/names_from_types.tmpl.hh>
+
+// STL headers:
+#include <map>
+
 namespace base {
 namespace managers {
 namespace configuration {
@@ -77,6 +84,8 @@ public:
     /// @details Returns "base::managers::configuration".
     std::string
     class_namespace() const override;
+
+private:
 
 };
 
