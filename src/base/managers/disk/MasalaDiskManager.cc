@@ -73,6 +73,7 @@ MasalaDiskManager::write_ascii_file(
     std::string const & file_name,
     std::string const & file_contents
 ) const {
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
     std::ofstream filehandle( file_name );
     filehandle << file_contents;
     filehandle.close();
