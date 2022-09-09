@@ -29,7 +29,8 @@ SOFTWARE.
 // Project headers
 #include <core/chemistry/MoleculesConfiguration.hh>
 
-// Base headers
+// STL headers
+#include <string>
 
 namespace core{
 namespace chemistry{
@@ -60,6 +61,18 @@ MoleculesConfiguration::clone() const {
 MoleculesConfigurationSP
 MoleculesConfiguration::deep_clone() const {
     return std::make_shared< MoleculesConfiguration >(*this);
+}
+
+/// @brief Returns "MoleculesConfiguration".
+std::string
+MoleculesConfiguration::class_name() const {
+    return "MoleculesConfiguration";
+}
+
+/// @brief Returns "core::chemistry".
+std::string
+MoleculesConfiguration::class_namespace() const {
+    return "core::chemistry";
 }
 
 } // namespace chemistry

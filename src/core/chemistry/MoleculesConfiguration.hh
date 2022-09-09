@@ -70,6 +70,12 @@ public:
     /// @brief Deep operation: make an independent copy of this object and return a shared_ptr to the copy.
     MoleculesConfigurationSP deep_clone() const;
 
+    /// @brief Returns "MoleculesConfiguration".
+    std::string class_name() const override;
+
+    /// @brief Returns "core::chemistry".
+    std::string class_namespace() const override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

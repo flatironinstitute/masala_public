@@ -35,19 +35,30 @@ SOFTWARE.
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 #include <core/chemistry/MoleculesConfiguration.hh>
 
+// Base headers:
+#include <base/managers/configuration/MasalaConfigurationManager.hh>
+
 // STL headers:
 #include <string>
 
 namespace core {
 namespace chemistry {
 
+/// @brief Default constructor.
+/// @details Gets configuration from configuration manager, which may trigger load from disk.
+Molecules::Molecules() :
+    base::MasalaObject(),
+    configuration_( std::dynamic_pointer_cast< MoleculesConfiguration const >( base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings(*this) ) )
+{}
+
 /// @brief Copy constructor.
 /// @details Must be explicitly declared due to mutex.
 Molecules::Molecules(
     Molecules const & src
-) {
+) :
+    base::MasalaObject(src)
+{
     std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
-    master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
     configuration_ = src.configuration_;
     master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
     additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
