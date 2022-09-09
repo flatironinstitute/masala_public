@@ -31,6 +31,9 @@ SOFTWARE.
 // Class headers:
 #include <base/MasalaObject.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers
 #include <string>
 
@@ -66,6 +69,25 @@ MasalaObject::has_api_definition() {
 base::api::MasalaObjectAPIDefinitionCWP
 MasalaObject::get_api_definition() {
     return base::api::MasalaObjectAPIDefinitionCWP();
+}
+
+/// @brief Returns result of class_namespace() + "::" + class_name().
+std::string
+MasalaObject::class_namespace_and_name() const {
+    return class_namespace() + "::" + class_name();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a configuration object for this object.
+/// @details Can trigger read from disk.  Private since it intended to be called only the first time
+/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+/// implementation throws.  Must be implemented by derived classes that have configurations.
+base::managers::configuration::ConfigurationBaseCSP
+MasalaObject::load_configuration() const {
+    MASALA_THROW( class_namespace_and_name(), "load_configuration", "The load_configuration() function has not been implemented for " + class_name() + "." );
 }
 
 } // namespace base

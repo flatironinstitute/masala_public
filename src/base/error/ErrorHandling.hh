@@ -76,6 +76,10 @@ private:
 } // namespace error
 } // namespace base
 
+/// @brief Throw an error given a source namespace and class, a function name (with no parentheses), and
+/// an error message.
+#define MASALA_THROW( namespace_and_class, function_name, message ) throw base::error::MasalaException( namespace_and_class + "::" + function_name + "(): " + message );
+
 /// @brief A macro for checking an assertion and throwing an error.
 #define CHECK_OR_THROW( assertion, message ) if( !(assertion) ) { throw base::error::MasalaException( message ); }
 

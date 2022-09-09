@@ -45,6 +45,10 @@ MasalaConfigurationManager::get_instance() {
     return &config_manager;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 /// @brief Get the name of this object.
 /// @details Returns "MasalaConfigurationManager".
 std::string
@@ -57,6 +61,26 @@ MasalaConfigurationManager::class_name() const {
 std::string
 MasalaConfigurationManager::class_namespace() const {
     return "base::managers::configuration";
+}
+
+/// @brief Retrieve configuration settings for a given class.
+/// @details If the configuration settings are not already cached, we create them by calling
+/// the object's load_configuration() function.  This throws if not overridden by derived
+/// Masala classes.  This triggers one-time read from disk.  Threadsafe.
+ConfigurationBaseCSP
+MasalaConfigurationManager::get_configuration_settings(
+    base::MasalaObject const & masala_object
+) {
+    std::lock_guard< std::mutex > lock( configuration_settings_mutex_ );
+    std::string const key( masala_object.class_namespace_and_name() );
+    std::map< std::string, ConfigurationBaseCSP >::const_iterator it( configuration_settings_.find( key ) );
+    if( it != configuration_settings_.end() ) {
+        return it->second;
+    }
+    // If we reach here, we have to create the object.
+    ConfigurationBaseCSP config( masala_object.load_configuration() );
+    configuration_settings_[key] = config;
+    return config;
 }
 
 } // namespace configuration

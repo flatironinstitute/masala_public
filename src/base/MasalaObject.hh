@@ -30,16 +30,24 @@ SOFTWARE.
 #ifndef Masala_src_base_MasalaObject_hh
 #define Masala_src_base_MasalaObject_hh
 
-// Forward declarations.
+// Forward declarations:
 #include <base/MasalaObject.fwd.hh>
+
+// Base headers:
 #include <base/api/MasalaObjectAPIDefinition.fwd.hh>
+#include <base/managers/configuration/ConfigurationBase.fwd.hh>
+#include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
 namespace base {
 
 /// @brief A base class for all Masala derived classes.  This allows the possibility of having a
 /// generic MasalaObject pointer or shared pointer.
+/// @note The MasalaConfigurationManager can access the private member functions (and data) of MasalaObjects.
+/// This allows it to call load_configuration() when first needed.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaObject {
+
+	friend class base::managers::configuration::MasalaConfigurationManager;
 
 public:
 
@@ -58,6 +66,9 @@ public:
 
 	/// @brief Every class can provide its own namespace.
 	virtual std::string class_namespace() const = 0;
+
+	/// @brief Returns result of class_namespace() + "::" + class_name().
+	std::string class_namespace_and_name() const;
 
 public:
 
@@ -83,10 +94,29 @@ public:
 	/// @brief Get an object describing the API for this object.
 	/// @details Default implementation returns nullptr.  May be overridden by
 	/// derived objects.
+	/// @note This is a weak pointer rather than a shared pointer since the
+	/// original object is expected to hold on to its API definition (which includes
+	/// funciton pointers to the functions of the instance).  Querying whether the
+	/// weak pointer can be converted to a shared pointer serves on a check as to
+	/// whether it is safe to use the function pointers.  Not ideal, but better than
+	/// nothing.
 	virtual
 	base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition();
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create a configuration object for this object.
+	/// @details Can trigger read from disk.  Private since it intended to be called only the first time
+	/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+	/// implementation throws.  Must be implemented by derived classes that have configurations.
+	virtual
+	base::managers::configuration::ConfigurationBaseCSP
+	load_configuration() const;
 
 }; // class MasalaObject
 

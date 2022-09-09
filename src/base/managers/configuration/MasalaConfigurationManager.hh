@@ -43,6 +43,8 @@ SOFTWARE.
 
 // STL headers:
 #include <map>
+#include <mutex>
+#include <string>
 
 namespace base {
 namespace managers {
@@ -61,10 +63,18 @@ public:
 
 private:
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Private constructor: object can only be instantiated with getInstance().
     MasalaConfigurationManager() = default;
 
 public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS AND DESTRUCTORS
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief No copy constructor.
     MasalaConfigurationManager( MasalaConfigurationManager const & ) = delete;
@@ -74,6 +84,12 @@ public:
 
     /// @brief Default destructor.
     ~MasalaConfigurationManager() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the name of this object.
     /// @details Returns "MasalaConfigurationManager".
@@ -85,7 +101,22 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Retrieve configuration settings for a given class.
+    /// @details If the configuration settings are not already cached, we create them by calling
+    /// the object's load_configuration() function.  This throws if not overridden by derived
+    /// Masala classes.  This triggers one-time read from disk.  Threadsafe.
+    ConfigurationBaseCSP
+    get_configuration_settings(
+        base::MasalaObject const & masala_object
+    );
+
 private:
+
+    /// @brief A mutex for the map.
+    std::mutex configuration_settings_mutex_;
+
+    /// @brief A map of all of the configuration settings, indexed by class namespace and name.
+    std::map< std::string, ConfigurationBaseCSP > configuration_settings_;
 
 };
 
