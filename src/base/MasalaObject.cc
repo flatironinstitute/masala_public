@@ -86,7 +86,9 @@ MasalaObject::class_namespace_and_name() const {
 /// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
 /// implementation throws.  Must be implemented by derived classes that have configurations.
 base::managers::configuration::ConfigurationBaseCSP
-MasalaObject::load_configuration() const {
+MasalaObject::load_configuration(
+    base::managers::configuration::MasalaConfigurationManagerAuthorization const &
+) const {
     MASALA_THROW( class_namespace_and_name(), "load_configuration", "The load_configuration() function has not been implemented for " + class_name() + "." );
 }
 

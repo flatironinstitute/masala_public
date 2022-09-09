@@ -22,28 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/configuration/ConfigurationBase.hh
-/// @brief Pure virtual base class for containers that store configuration
-/// settings for modules.
+/// @file src/core/chemistry/MoleculesConfiguration.hh
+/// @brief A container of configuration settings for a Molecules object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_configuration_ConfigurationBase_hh
-#define Masala_src_base_managers_configuration_ConfigurationBase_hh
+#ifndef Masala_src_core_chemistry_MoleculesConfiguration_hh
+#define Masala_src_core_chemistry_MoleculesConfiguration_hh
 
-// Forward declarations:
-#include <base/managers/configuration/ConfigurationBase.fwd.hh>
+// Parent header
+#include <base/managers/configuration/ConfigurationBase.hh>
 
-// Parent header:
-#include <base/MasalaObject.hh>
-
-// Base headers:
+// Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 
-namespace base{
-namespace managers{
-namespace configuration{
+namespace core{
+namespace chemistry{
 
-class ConfigurationBase : public base::MasalaObject {
+class MoleculesConfiguration : public base::managers::configuration::ConfigurationBase {
 
 public:
 
@@ -52,19 +47,19 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    ConfigurationBase() = delete;
-    
+    MoleculesConfiguration() = delete;
+
     /// @brief MasalaConfigurationManager-authorized constructor.
     /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
     /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
     /// ConfigurationBase-derived object.
-    ConfigurationBase( MasalaConfigurationManagerAuthorization const & );
+    MoleculesConfiguration( base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey );
 
     /// @brief Copy constructor.
-    ConfigurationBase( ConfigurationBase const & src ) = default;
+    MoleculesConfiguration( MoleculesConfiguration const & src ) = default;
 
     /// @brief Default destructor.
-    ~ConfigurationBase() override = default;
+    ~MoleculesConfiguration() override = default;
 
 private:
 
@@ -74,8 +69,7 @@ private:
 
 };
 
-} // namespace configuration
-} // namespace managers
-} // namespace base
+} // namespace chemistry
+} // namespace core
 
-#endif //Masala_src_base_managers_configuration_ConfigurationBase_hh
+#endif //Masala_src_core_chemistry_MoleculesConfiguration_hh

@@ -36,6 +36,7 @@ SOFTWARE.
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 #include <base/managers/configuration/ConfigurationBase.fwd.hh>
+#include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
 namespace base {
@@ -114,9 +115,14 @@ protected:
 	/// @details Can trigger read from disk.  Private since it intended to be called only the first time
 	/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
 	/// implementation throws.  Must be implemented by derived classes that have configurations.
+	/// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
+	/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
+	/// class.
 	virtual
 	base::managers::configuration::ConfigurationBaseCSP
-	load_configuration() const;
+	load_configuration(
+		base::managers::configuration::MasalaConfigurationManagerAuthorization const &
+	) const;
 
 }; // class MasalaObject
 

@@ -31,6 +31,9 @@ SOFTWARE.
 // Project header:
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
 
+// Base headers:
+#include <base/managers/configuration/MasalaConfigurationManagerAuthorization.hh>
+
 // STL headers:
 #include <string>
 
@@ -78,7 +81,8 @@ MasalaConfigurationManager::get_configuration_settings(
         return it->second;
     }
     // If we reach here, we have to create the object.
-    ConfigurationBaseCSP config( masala_object.load_configuration() );
+    MasalaConfigurationManagerAuthorization authorization_key;
+    ConfigurationBaseCSP config( masala_object.load_configuration( authorization_key ) );
     configuration_settings_[key] = config;
     return config;
 }

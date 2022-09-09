@@ -22,60 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/configuration/ConfigurationBase.hh
-/// @brief Pure virtual base class for containers that store configuration
-/// settings for modules.
+/// @file src/core/chemistry/MoleculesConfiguration.cc
+/// @brief A container of configuration settings for a Molecules object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_configuration_ConfigurationBase_hh
-#define Masala_src_base_managers_configuration_ConfigurationBase_hh
+// Project headers
+#include <core/chemistry/MoleculesConfiguration.hh>
 
-// Forward declarations:
-#include <base/managers/configuration/ConfigurationBase.fwd.hh>
+// Base headers
 
-// Parent header:
-#include <base/MasalaObject.hh>
+namespace core{
+namespace chemistry{
 
-// Base headers:
-#include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
-
-namespace base{
-namespace managers{
-namespace configuration{
-
-class ConfigurationBase : public base::MasalaObject {
-
-public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor.
-    ConfigurationBase() = delete;
-    
+
     /// @brief MasalaConfigurationManager-authorized constructor.
     /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
     /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
     /// ConfigurationBase-derived object.
-    ConfigurationBase( MasalaConfigurationManagerAuthorization const & );
+    MoleculesConfiguration::MoleculesConfiguration(
+        base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+    ) :
+        base::managers::configuration::ConfigurationBase( passkey )
+    {}
 
-    /// @brief Copy constructor.
-    ConfigurationBase( ConfigurationBase const & src ) = default;
-
-    /// @brief Default destructor.
-    ~ConfigurationBase() override = default;
-
-private:
-
-////////////////////////////////////////////////////////////////////////////////
-// DATA
-////////////////////////////////////////////////////////////////////////////////
-
-};
-
-} // namespace configuration
-} // namespace managers
-} // namespace base
-
-#endif //Masala_src_base_managers_configuration_ConfigurationBase_hh
+} // namespace chemistry
+} // namespace core

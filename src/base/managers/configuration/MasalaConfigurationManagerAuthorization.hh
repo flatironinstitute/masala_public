@@ -22,28 +22,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/configuration/ConfigurationBase.hh
-/// @brief Pure virtual base class for containers that store configuration
-/// settings for modules.
+/// @file src/base/managers/configuration/MasalaConfigurationManagerAuthorization.hh
+/// @brief A "key" class with a private constructor, which can only be instantiated by
+/// the MasalaConfigurationManager, used to ensure that only the configuration manager
+/// can instantiate configuration objects.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_configuration_ConfigurationBase_hh
-#define Masala_src_base_managers_configuration_ConfigurationBase_hh
+#ifndef Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_hh
+#define Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_hh
 
-// Forward declarations:
-#include <base/managers/configuration/ConfigurationBase.fwd.hh>
-
-// Parent header:
+// Parent header
 #include <base/MasalaObject.hh>
 
-// Base headers:
+// Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
+#include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
 namespace base{
 namespace managers{
 namespace configuration{
 
-class ConfigurationBase : public base::MasalaObject {
+/// @brief A "key" class with a private constructor, which can only be instantiated by
+/// the MasalaConfigurationManager, used to ensure that only the configuration manager
+/// can instantiate configuration objects.
+class MasalaConfigurationManagerAuthorization : public base::MasalaObject {
+
+    friend class MasalaConfigurationManager;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR -- ONLY ACCESSIBLE TO MasalaConfigurationManager
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor.
+    MasalaConfigurationManagerAuthorization() = default;
 
 public:
 
@@ -51,26 +64,23 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor.
-    ConfigurationBase() = delete;
-    
-    /// @brief MasalaConfigurationManager-authorized constructor.
-    /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
-    /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
-    /// ConfigurationBase-derived object.
-    ConfigurationBase( MasalaConfigurationManagerAuthorization const & );
-
     /// @brief Copy constructor.
-    ConfigurationBase( ConfigurationBase const & src ) = default;
+    MasalaConfigurationManagerAuthorization( MasalaConfigurationManagerAuthorization const & src ) = delete;
 
     /// @brief Default destructor.
-    ~ConfigurationBase() override = default;
+    ~MasalaConfigurationManagerAuthorization() override = default;
 
-private:
+public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// DATA
+// PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the class name ("MasalaConfigurationManagerAuthorization").
+    std::string class_name() const override;
+
+    /// @brief Get the class namespace ("base::managers::configuration").
+    std::string class_namespace() const override;
 
 };
 
@@ -78,4 +88,4 @@ private:
 } // namespace managers
 } // namespace base
 
-#endif //Masala_src_base_managers_configuration_ConfigurationBase_hh
+#endif //Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_hh
