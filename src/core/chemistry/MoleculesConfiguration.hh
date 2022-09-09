@@ -32,6 +32,9 @@ SOFTWARE.
 // Parent header
 #include <base/managers/configuration/ConfigurationBase.hh>
 
+// Project headers:
+#include <core/chemistry/MoleculesConfiguration.fwd.hh>
+
 // Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 
@@ -60,6 +63,12 @@ public:
 
     /// @brief Default destructor.
     ~MoleculesConfiguration() override = default;
+
+    /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
+    MoleculesConfigurationSP clone() const;
+
+    /// @brief Deep operation: make an independent copy of this object and return a shared_ptr to the copy.
+    MoleculesConfigurationSP deep_clone() const;
 
 private:
 

@@ -37,6 +37,7 @@ SOFTWARE.
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
+#include <core/chemistry/MoleculesConfiguration.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -64,7 +65,8 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    Molecules() = default;
+    /// @details Gets configuration from configuration manager, which may trigger load from disk.
+    Molecules();
 
     /// @brief Copy constructor.
     /// @details Must be explicitly declared due to mutex.
@@ -119,6 +121,9 @@ private:
 
     /// @brief A mutex for locking a whole molecules object.
     mutable std::mutex whole_object_mutex_;
+
+    /// @brief Configuration for this object.
+    MoleculesConfigurationCSP configuration_;
 
     /// @brief The representation of the atom coordinates.
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.

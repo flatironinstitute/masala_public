@@ -33,6 +33,7 @@ SOFTWARE.
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
+#include <core/chemistry/MoleculesConfiguration.hh>
 
 // STL headers:
 #include <string>
@@ -47,6 +48,9 @@ Molecules::Molecules(
 ) {
     std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
     master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
+    configuration_ = src.configuration_;
+    master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
+    additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
     atoms_ = src.atoms_;
     bonds_ = src.bonds_;
 }
@@ -78,6 +82,8 @@ void
 Molecules::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
+    configuration_ = configuration_->deep_clone();
+
     core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
     master_atom_coordinate_representation_ = old_coordinates->clone();
     std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
@@ -101,6 +107,8 @@ Molecules::make_independent() {
     ) {
         bonds_.insert( (*it)->deep_clone() );
     }
+
+    //TODO TODO TODO -- deep-clone additional atom coordinate representations.
 
     //TODO TODO TODO -- need maps of atoms to bonds and bonds to atoms.
     //Need to clone these appropriately.

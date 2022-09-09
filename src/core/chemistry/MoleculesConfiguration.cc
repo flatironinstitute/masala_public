@@ -40,15 +40,27 @@ namespace chemistry{
 ////////////////////////////////////////////////////////////////////////////////
 
 
-    /// @brief MasalaConfigurationManager-authorized constructor.
-    /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
-    /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
-    /// ConfigurationBase-derived object.
-    MoleculesConfiguration::MoleculesConfiguration(
-        base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
-    ) :
-        base::managers::configuration::ConfigurationBase( passkey )
-    {}
+/// @brief MasalaConfigurationManager-authorized constructor.
+/// @details The MasalaConfigurationManagerAuthorization object is an object that only the
+/// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
+/// ConfigurationBase-derived object.
+MoleculesConfiguration::MoleculesConfiguration(
+    base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+) :
+    base::managers::configuration::ConfigurationBase( passkey )
+{}
+
+/// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
+MoleculesConfigurationSP
+MoleculesConfiguration::clone() const {
+    return std::make_shared< MoleculesConfiguration >(*this);
+}
+
+/// @brief Deep clone operation: make an independent copy of this object and return a shared_ptr to the copy.
+MoleculesConfigurationSP
+MoleculesConfiguration::deep_clone() const {
+    return std::make_shared< MoleculesConfiguration >(*this);
+}
 
 } // namespace chemistry
 } // namespace core
