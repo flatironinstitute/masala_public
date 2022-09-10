@@ -129,4 +129,15 @@ private:
 } // namespace managers
 } // namespace base
 
+/// @brief A macro for obtaining a configuration object for a particular class.
+/// @note The class must override load_configuration().  This must be called from a member function
+/// like the class constructor.
+#define OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( CLASSNAME, CONFIG_CONTAINER_CLASSNAME ) \
+    std::dynamic_pointer_cast< CONFIG_CONTAINER_CLASSNAME const >( \
+            base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings( \
+                CLASSNAME::class_namespace() + "::" + CLASSNAME::class_name(), \
+                std::bind( &CLASSNAME::load_configuration, this, std::placeholders::_1 ) \
+            ) \
+        )
+
 #endif // Masala_src_base_managers_configuration_MasalaConfigurationManager_hh

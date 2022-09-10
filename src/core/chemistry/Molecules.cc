@@ -49,10 +49,8 @@ namespace chemistry {
 Molecules::Molecules() :
     base::MasalaObject(),
     configuration_(
-        std::dynamic_pointer_cast< MoleculesConfiguration const >(
-            base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings(
-                Molecules::class_namespace() + "::" + Molecules::class_name(),
-                std::bind( &Molecules::load_configuration, this, std::placeholders::_1 ) ) ) )
+        OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( Molecules, MoleculesConfiguration )
+    )
 {}
 
 /// @brief Copy constructor.
