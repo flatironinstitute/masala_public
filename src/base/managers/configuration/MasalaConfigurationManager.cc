@@ -68,22 +68,26 @@ MasalaConfigurationManager::class_namespace() const {
 
 /// @brief Retrieve configuration settings for a given class.
 /// @details If the configuration settings are not already cached, we create them by calling
-/// the object's load_configuration() function.  This throws if not overridden by derived
-/// Masala classes.  This triggers one-time read from disk.  Threadsafe.
+/// the passed creator_function. This triggers one-time read from disk.  Threadsafe.
+/// @param[in] unique_key A unique key identifying the type of object for which we're getting
+/// the configuration.  Best practice is to use the class_name_and_namespace() function's output.
+/// @param[in] creator_function A function that takes an authorization key and returns a configuration
+/// container (a derived class from ConfigurationBase).  This should be the load_configuration() function
+/// for the class for which we're getting configuration.
 ConfigurationBaseCSP
 MasalaConfigurationManager::get_configuration_settings(
-    base::MasalaObject const & masala_object
+    std::string const & unique_key,
+    std::function< ConfigurationBaseCSP ( MasalaConfigurationManagerAuthorization const & ) > const & creator_function
 ) {
     std::lock_guard< std::mutex > lock( configuration_settings_mutex_ );
-    std::string const key( masala_object.class_namespace_and_name() );
-    std::map< std::string, ConfigurationBaseCSP >::const_iterator it( configuration_settings_.find( key ) );
+    std::map< std::string, ConfigurationBaseCSP >::const_iterator it( configuration_settings_.find( unique_key ) );
     if( it != configuration_settings_.end() ) {
         return it->second;
     }
     // If we reach here, we have to create the object.
     MasalaConfigurationManagerAuthorization authorization_key;
-    ConfigurationBaseCSP config( masala_object.load_configuration( authorization_key ) );
-    configuration_settings_[key] = config;
+    ConfigurationBaseCSP config( creator_function( authorization_key ) );
+    configuration_settings_[unique_key] = config;
     return config;
 }
 

@@ -41,6 +41,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/managers/configuration/ConfigurationBase.fwd.hh>
 
 // STL headers:
 #include <array>
@@ -112,6 +113,24 @@ public:
         core::chemistry::atoms::AtomInstanceSP const & atom_in,
         std::array< core::Real, 3 > const & coords
     );
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create a configuration object for this object.
+	/// @details Can trigger read from disk.  Private since it intended to be called only the first time
+	/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+	/// implementation throws.  Must be implemented by derived classes that have configurations.
+	/// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
+	/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
+	/// class.  This version creates a MoleculesConfiguration object.
+	base::managers::configuration::ConfigurationBaseCSP
+	load_configuration(
+		base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+	) const override;
 
 private:
 

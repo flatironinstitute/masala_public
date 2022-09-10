@@ -48,7 +48,11 @@ namespace chemistry {
 /// @details Gets configuration from configuration manager, which may trigger load from disk.
 Molecules::Molecules() :
     base::MasalaObject(),
-    configuration_( std::dynamic_pointer_cast< MoleculesConfiguration const >( base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings(*this) ) )
+    configuration_(
+        std::dynamic_pointer_cast< MoleculesConfiguration const >(
+            base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings(
+                Molecules::class_namespace() + "::" + Molecules::class_name(),
+                std::bind( &Molecules::load_configuration, this, std::placeholders::_1 ) ) ) )
 {}
 
 /// @brief Copy constructor.
@@ -141,10 +145,6 @@ Molecules::class_namespace() const {
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
 /// @brief Add an atom to this molecule.
 void
 Molecules::add_atom(
@@ -163,6 +163,24 @@ Molecules::add_atom(
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
     //update_additional_representations_from_master();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a configuration object for this object.
+/// @details Can trigger read from disk.  Private since it intended to be called only the first time
+/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+/// implementation throws.  Must be implemented by derived classes that have configurations.
+/// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
+/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
+/// class.  This version creates a MoleculesConfiguration object.
+base::managers::configuration::ConfigurationBaseCSP
+Molecules::load_configuration(
+    base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+) const {
+    return std::make_shared< MoleculesConfiguration >( passkey );
 }
 
 } // namespace chemistry
