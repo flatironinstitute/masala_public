@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/pose/Pose.cc
-/// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
-/// annotations, and computed or measured properties.
+/// @file src/base/MasalaObject.cc
+/// @brief A base class for all Masala objects.
+/// @details Masala objects all define certain functions, such as write_to_tracer(),
+/// class_name(), and class_namespace().
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
