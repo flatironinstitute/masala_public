@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/utility/string/string_parsing.tmpl.hh
+/// @file src/base/utility/string/string_parsing.tmpl.hh
 /// @brief Template functions for conveniently parsing strings.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_utility_string_string_parsing_tmpl_hh
-#define Masala_src_utility_string_string_parsing_tmpl_hh
+#ifndef Masala_src_base_utility_string_string_parsing_tmpl_hh
+#define Masala_src_base_utility_string_string_parsing_tmpl_hh
 
 // STL headers
 #include <sstream>
@@ -36,8 +36,9 @@ SOFTWARE.
 #include <base/api/names_from_types.tmpl.hh>
 #include <base/error/ErrorHandling.hh>
 
+namespace base {
 namespace utility{
-namespace string{
+namespace string {
 
     /// @brief Parse a string and return an object of type T.
     /// @tparam T The type of the return value.
@@ -65,5 +66,6 @@ namespace string{
 
 } // namespace string
 } // namespace utility
+} // namespace base
 
-#endif //Masala_src_utility_string_string_parsing_tmpl_hh
+#endif //Masala_src_base_utility_string_string_parsing_tmpl_hh

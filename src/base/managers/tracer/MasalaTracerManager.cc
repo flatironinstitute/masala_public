@@ -33,9 +33,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/types.hh>
-
-// Utility headers:
-#include <utility/string/string_manipulation.hh>
+#include <base/utility/string/string_manipulation.hh>
 
 // STL headers:
 #include <string>
@@ -130,7 +128,7 @@ MasalaTracerManager::write_to_tracer(
     }
 
     // Write the message to the tracer.
-    std::vector< std::string > const splitlines( utility::string::split_by_newlines( message ) );
+    std::vector< std::string > const splitlines( base::utility::string::split_by_newlines( message ) );
     for( base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
         std::cout << tracer_name << ": " << splitlines[i] << "\n";
     }

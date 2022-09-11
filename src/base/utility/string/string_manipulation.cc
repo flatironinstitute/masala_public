@@ -22,19 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/utility/string/string_manipulation.cc
+/// @file src/base/utility/string/string_manipulation.cc
 /// @brief Functions for conveniently manipulating strings.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project headers
-#include <utility/string/string_manipulation.hh>
+#include <base/utility/string/string_manipulation.hh>
 
 // Base headers
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
 
-namespace utility{
-namespace string{
+namespace base {
+namespace utility {
+namespace string {
 
 /// @brief Split a string by newline (\n or \r) characters.
 std::vector< std::string >
@@ -73,3 +74,4 @@ split_by_newlines(
 
 } // namespace string
 } // namespace utility
+} // namespace base

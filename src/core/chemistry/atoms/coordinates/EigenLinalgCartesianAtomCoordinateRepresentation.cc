@@ -32,11 +32,9 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
 
-// Utility headers:
-#include <utility/container/container_util.tmpl.hh>
-
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 // STL headers:
 #include <string>

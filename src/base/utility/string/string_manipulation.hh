@@ -22,27 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/utility/container/container_util.tmpl.hh
-/// @brief Utility functions for dealing with STL containers.
+/// @file src/base/utility/string/string_manipulation.hh
+/// @brief Functions for conveniently manipulating strings.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_utility_container_container_util_tmpl_hh
-#define Masala_src_utility_container_container_util_tmpl_hh
+#ifndef Masala_src_base_utility_string_string_manipulation_hh
+#define Masala_src_base_utility_string_string_manipulation_hh
 
 // STL headers
-#include <algorithm>
+#include <vector>
+#include <string>
 
+namespace base {
 namespace utility {
-namespace container {
+namespace string {
 
-    /// @brief Check whether an element exists in a container.
-    template< class C, class T >
-    bool
-    has_value( C const & container, T const & value ) {
-        return std::find( container.begin(), container.end(), value ) != container.end();
-    }
+    /// @brief Split a string by newline (\n or \r) characters.
+    std::vector< std::string >
+    split_by_newlines(
+        std::string const & string_in
+    );
 
-} // namespace container
+} // namespace string
 } // namespace utility
+} // namespace base
 
-#endif //Masala_src_utility_container_container_util_tmpl_hh
+#endif //Masala_src_base_utility_string_string_manipulation_hh

@@ -38,9 +38,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
-
-// Utility headers:
-#include <utility/string/string_parsing.tmpl.hh>
+#include <base/utility/string/string_parsing.tmpl.hh>
 
 // STL headers:
 #include <sstream>
@@ -144,11 +142,11 @@ BasicPDBReader::add_atoms_from_file_lines(
         std::string const curline_element( curline.substr(76, 2) );
 
         // Containers:
-        signed long const atomno( utility::string::parse_string< signed long >( curline_atomno, true ) );
+        signed long const atomno( base::utility::string::parse_string< signed long >( curline_atomno, true ) );
         std::array< core::Real, 3 > coords{
-            utility::string::parse_string< core::Real >( curline_xcoord, true ),
-            utility::string::parse_string< core::Real >( curline_ycoord, true ),
-            utility::string::parse_string< core::Real >( curline_zcoord, true )
+            base::utility::string::parse_string< core::Real >( curline_xcoord, true ),
+            base::utility::string::parse_string< core::Real >( curline_ycoord, true ),
+            base::utility::string::parse_string< core::Real >( curline_zcoord, true )
         };
 
         // The new atom.
