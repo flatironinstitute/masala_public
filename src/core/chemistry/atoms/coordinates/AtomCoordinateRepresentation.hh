@@ -36,9 +36,7 @@ SOFTWARE.
 // Core headers:
 #include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
-
-// Base headers:
-#include <base/MasalaObject.hh>
+#include <core/engine/MasalaDataRepresentationBase.hh>
 
 // STL headers:
 #include <set>
@@ -53,7 +51,7 @@ namespace coordinates {
 /// @brief A pure virtual base class class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomCoordinateRepresentation : public base::MasalaObject {
+class AtomCoordinateRepresentation : public core::engine::MasalaDataRepresentationBase {
 
 public:
 
