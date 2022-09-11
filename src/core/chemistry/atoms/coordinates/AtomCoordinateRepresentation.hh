@@ -65,8 +65,8 @@ public:
     /// @brief Copy constructor.
     AtomCoordinateRepresentation( AtomCoordinateRepresentation const & ) = default;
 
-    // Destructor ommitted to keep class pure virtual.
-    // ~AtomCoordinateRepresentation() override;
+    // Destructor.
+    ~AtomCoordinateRepresentation() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
