@@ -144,5 +144,4 @@ private:
 } // namespace managers
 } // namespace base
 
-
 #endif // Masala_src_base_managers_tracer_MasalaTracerManager_hh

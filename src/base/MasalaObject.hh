@@ -105,6 +105,13 @@ public:
 	base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition();
 
+	/// @brief Writes text to the tracer, using the MasalaTracerManager.
+	/// @details Threadsafe.
+	void
+	write_to_tracer(
+		std::string const & message
+	) const;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////

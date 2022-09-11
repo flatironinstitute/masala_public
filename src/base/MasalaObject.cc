@@ -33,6 +33,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers
 #include <string>
@@ -42,6 +43,12 @@ namespace base {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Returns result of class_namespace() + "::" + class_name().
+std::string
+MasalaObject::class_namespace_and_name() const {
+    return class_namespace() + "::" + class_name();
+}
 
 /// @brief Get a string for the error message header, of the form:
 /// "Error in <namespace>::<class name>::<function name>(): ".
@@ -71,10 +78,17 @@ MasalaObject::get_api_definition() {
     return base::api::MasalaObjectAPIDefinitionCWP();
 }
 
-/// @brief Returns result of class_namespace() + "::" + class_name().
-std::string
-MasalaObject::class_namespace_and_name() const {
-    return class_namespace() + "::" + class_name();
+/// @brief Writes text to the tracer, using the MasalaTracerManager.
+/// @details Threadsafe.
+void
+MasalaObject::write_to_tracer(
+    std::string const & message
+) const {
+    base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( base::managers::tracer::MasalaTracerManager::get_instance() );
+    std::string const tracername( class_namespace_and_name() );
+    if( tracer_handle->tracer_is_enabled( tracername ) ) {
+        tracer_handle->write_to_tracer( tracername, message, true );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
