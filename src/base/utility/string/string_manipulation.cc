@@ -69,6 +69,11 @@ split_by_newlines(
             }
         }
     }
+    if( last_non_return >= laststart ) {
+        outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+    } else {
+        outvec.push_back( string_in.substr( laststart ) );
+    }
     return outvec;
 }
 

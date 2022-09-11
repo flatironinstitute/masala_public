@@ -37,6 +37,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers:
 #include <string>
@@ -178,6 +179,13 @@ base::managers::configuration::ConfigurationBaseCSP
 Molecules::load_configuration(
     base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) const {
+
+    base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( base::managers::tracer::MasalaTracerManager::get_instance() );
+    std::string const tracername( Molecules::class_namespace() + "::" + Molecules::class_name() );
+    if( tracer_handle->tracer_is_enabled( tracername ) ) {
+        tracer_handle->write_to_tracer( tracername, "Loading default Molecules configuration.", true );
+    }
+
     return std::make_shared< MoleculesConfiguration >( passkey );
 }
 
