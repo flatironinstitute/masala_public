@@ -34,6 +34,9 @@ SOFTWARE.
 // Base headers:
 #include <base/types.hh>
 
+// Utility headers:
+#include <utility/string/string_manipulation.hh>
+
 // STL headers:
 #include <string>
 #include <iostream>
@@ -108,7 +111,7 @@ void
 MasalaTracerManager::write_to_tracer(
     std::string const & tracer_name,
     std::string const & message,
-    bool const skip_check = false
+    bool const skip_check /*= false*/
 ) const {
     std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 
