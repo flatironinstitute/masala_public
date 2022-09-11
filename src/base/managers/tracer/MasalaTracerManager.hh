@@ -94,12 +94,49 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Check whether a particular tracer is enabled.
+    /// @details If the tracer is in the list of tracers specifically enabled or disabled, the
+    /// tracer's status is returned.  Otherwise, the global default is returned.
+    bool
+    tracer_is_enabled(
+        std::string const & tracer_name
+    ) const;
+
+    /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
+    bool global_tracer_default() const;
+
+    /// @brief Set whether the global default for unspecified tracers is enabled or disabled.
+    void set_global_tracer_default( bool const setting );
+
+    /// @brief Write a message to a tracer.
+    /// @param tracer_name The tracer to which we are writing.
+    /// @param message The text that we are writing.  This gets split by lines, with each line preceded
+    /// by the tracer name.
+    /// @param skip_check If true, we don't bother to check whether the tracer is enabled.  If false, we
+    /// check and skip writing if the tracer is disabled.  Default false.
+    void
+    write_to_tracer(
+        std::string const & tracer_name,
+        std::string const & message,
+        bool const skip_check = false
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief A mutex to lock this object.
+    mutable std::mutex masala_tracer_manager_mutex_;
+
+    /// @brief The default setting for tracers.
+    /// @details Defaults to "on" ("true") for now.  Will be set from configuration file
+    /// at a later time.
+    bool global_tracer_default_ = true;
+
+    /// @brief List of tracers that are either explicitly enabled or explicitly disabled.
+    std::map< std::string, bool > explicitly_enabled_or_disabled_tracers_;
 
 };
 

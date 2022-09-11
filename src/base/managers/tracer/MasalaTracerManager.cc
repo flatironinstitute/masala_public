@@ -32,9 +32,11 @@ SOFTWARE.
 #include <base/managers/tracer/MasalaTracerManager.hh>
 
 // Base headers:
+#include <base/types.hh>
 
 // STL headers:
 #include <string>
+#include <iostream>
 
 namespace base {
 namespace managers {
@@ -63,6 +65,73 @@ MasalaTracerManager::class_name() const {
 std::string
 MasalaTracerManager::class_namespace() const {
     return "base::managers::tracer";
+}
+
+    /// @brief Check whether a particular tracer is enabled.
+    /// @details If the tracer is in the list of tracers specifically enabled or disabled, the
+    /// tracer's status is returned.  Otherwise, the global default is returned.
+    bool
+    MasalaTracerManager::tracer_is_enabled(
+        std::string const & tracer_name
+    ) const {
+        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+        std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+        if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+            return it->second;
+        }
+        return global_tracer_default_;
+    }
+
+    /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
+    bool
+    MasalaTracerManager::global_tracer_default() const {
+        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+        return global_tracer_default_;
+    }
+
+    /// @brief Set whether the global default for unspecified tracers is enabled or disabled.
+    void
+    MasalaTracerManager::set_global_tracer_default(
+        bool const setting
+    ) {
+        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+        global_tracer_default_ = setting;
+    }
+
+/// @brief Write a message to a tracer.
+/// @param tracer_name The tracer to which we are writing.
+/// @param message The text that we are writing.  This gets split by lines, with each line preceded
+/// by the tracer name.
+/// @param skip_check If true, we don't bother to check whether the tracer is enabled.  If false, we
+/// check and skip writing if the tracer is disabled.  Default false.
+void
+MasalaTracerManager::write_to_tracer(
+    std::string const & tracer_name,
+    std::string const & message,
+    bool const skip_check = false
+) const {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+
+    // Check whether the tracer is enabled:
+    if( !skip_check ) {
+        std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+        if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+            if( !(it->second) ) {
+                return;
+            }
+        } else {
+            if( !global_tracer_default_ ) {
+                return;
+            }
+        }
+    }
+
+    // Write the message to the tracer.
+    std::vector< std::string > const splitlines( utility::string::split_by_newlines( message ) );
+    for( base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
+        std::cout << tracer_name << ": " << splitlines[i] << "\n";
+    }
+    std::cout.flush();
 }
 
 } // namespace tracer
