@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/engine/MasalaEngineBase.fwd.hh
+/// @file src/base/managers/engine/MasalaEngineBase.fwd.hh
 /// @brief Forward declarations for a base class for Masala engines, which perform hard calculations
 /// of a given type using a given method.
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
@@ -30,12 +30,13 @@ SOFTWARE.
 /// math libraries, optimizers, hardware, etc.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_engine_MasalaEngineBase_fwd_hh
-#define Masala_src_core_engine_MasalaEngineBase_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaEngineBase_fwd_hh
+#define Masala_src_base_managers_engine_MasalaEngineBase_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
-namespace core {
+namespace base {
+namespace managers {
 namespace engine {
 
 	class MasalaEngineBase;
@@ -57,6 +58,7 @@ namespace engine {
 	using MasalaEngineBaseCWP = std::weak_ptr< MasalaEngineBase const >;
 
 } // namespace engine
-} // namespace core
+} // namespace managers
+} // namespace base
 
-#endif //Masala_src_core_engine_MasalaEngineBase_fwd_hh
+#endif //Masala_src_base_managers_engine_MasalaEngineBase_fwd_hh

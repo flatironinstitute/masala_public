@@ -22,17 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/engine/MasalaDataRepresentationBase.fwd.hh
+/// @file src/base/managers/engine/MasalaDataRepresentationBase.fwd.hh
 /// @brief Forward declarations for a pure virtual base class class for particular representations
 /// of data that can be requested by engines for efficient manipulation of those data.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_engine_MasalaDataRepresentationBase_fwd_hh
-#define Masala_src_core_engine_MasalaDataRepresentationBase_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
 
 #include <memory>
 
-namespace core {
+namespace base {
+namespace managers {
 namespace engine {
 
     class MasalaDataRepresentationBase;
@@ -44,6 +45,7 @@ namespace engine {
 
 
 } // namespace engine
-} // namespace core
+} // namespace managers
+} // namespace base
 
-#endif // Masala_src_core_engine_MasalaDataRepresentationBase_fwd_hh
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
