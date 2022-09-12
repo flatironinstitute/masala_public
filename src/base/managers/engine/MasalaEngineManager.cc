@@ -71,7 +71,7 @@ MasalaEngineManager::create_engine(
     std::string const & engine_type,
     bool const throw_if_missing /*= true*/
 ) const {
-    std::lock_guard< std::mutex >( masala_engine_manager_mutex_ );
+    std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
     std::map< std::string, MasalaEngineCreatorBaseCSP >::const_iterator it( engine_creators_.find(engine_type) );
     if( it == engine_creators_.end() ) {
         if( throw_if_missing ) {
@@ -92,7 +92,7 @@ MasalaEngineManager::register_engine(
     MasalaEngineCreatorBaseCSP engine_creator,
     bool const throw_if_present /*= true*/
 ) {
-    std::lock_guard< std::mutex >( masala_engine_manager_mutex_ );
+    std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
     if( throw_if_present && engine_creators_.find(engine_name) != engine_creators_.end() ) {
         MASALA_THROW( class_namespace_and_name(), "register_engine", "Engine \"" + engine_name + "\" has already been registered!"  );
     }
@@ -105,9 +105,9 @@ MasalaEngineManager::register_engine(
 void
 MasalaEngineManager::unregister_engine(
     std::string const & engine_name,
-    bool const throw_if_missing = true
+    bool const throw_if_missing /*= true*/
 ) {
-    std::lock_guard< std::mutex >( masala_engine_manager_mutex_ );
+    std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
     std::map< std::string, MasalaEngineCreatorBaseCSP >::const_iterator it( engine_creators_.find(engine_name) );
     if( it == engine_creators_.end() ) {
         if( throw_if_missing ) {
