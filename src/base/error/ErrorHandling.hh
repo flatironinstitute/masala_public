@@ -78,21 +78,21 @@ private:
 
 /// @brief Throw an error given a source namespace and class, a function name (with no parentheses), and
 /// an error message.
-#define MASALA_THROW( NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE ) throw base::error::MasalaException( NAMESPACE_AND_CLASS + "::" + FUNCTION_NAME + "(): " + MESSAGE );
+#define MASALA_THROW( NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE ) throw base::error::MasalaException( std::string(NAMESPACE_AND_CLASS) + "::" + std::string(FUNCTION_NAME) + "(): " + std::string(MESSAGE) );
 
 /// @brief A macro for checking an assertion and throwing an error.
 #define CHECK_OR_THROW( ASSERTION, NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( std::string(NAMESPACE_AND_CLASS) + "::" + std::string(FUNCTION_NAME) + "(): " + std::string(MESSAGE) ); }
 
 /// @brief A macro for checking an assertion and throwing an error from within a class.
 /// @note Do not use in constructors!
-#define CHECK_OR_THROW_FOR_CLASS( ASSERTION, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( get_errmsg_header(FUNCTION_NAME) + MESSAGE ); }
+#define CHECK_OR_THROW_FOR_CLASS( ASSERTION, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( get_errmsg_header(FUNCTION_NAME) + std::string(MESSAGE) ); }
 
 
 #ifdef NDEBUG
 #define DEBUG_MODE_CHECK_OR_THROW( ASSERTION, NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE )
 #else
 /// @brief A macro for checking an assertion and throwing an error only in debug mode.
-#define DEBUG_MODE_CHECK_OR_THROW( ASSERTION, NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( NAMESPACE_AND_CLASS + "::" + FUNCTION_NAME + "(): " + MESSAGE ); }
+#define DEBUG_MODE_CHECK_OR_THROW( ASSERTION, NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( std::string(NAMESPACE_AND_CLASS) + "::" + std::string(FUNCTION_NAME) + "(): " + std::string(MESSAGE) ); }
 #endif
 
 #ifdef NDEBUG
@@ -100,7 +100,7 @@ private:
 #else
 /// @brief A macro for checking an assertion and throwing an error only in debug mode, from within a class.
 /// @note Do not use in constructors!
-#define DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( ASSERTION, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( get_errmsg_header(FUNCTION_NAME) + MESSAGE ); }
+#define DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( ASSERTION, FUNCTION_NAME, MESSAGE ) if( !(ASSERTION) ) { throw base::error::MasalaException( get_errmsg_header(FUNCTION_NAME) + std::string(MESSAGE) ); }
 #endif
 
 #endif //Masala_src_base_error_ErrorHandling_hh
