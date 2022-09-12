@@ -57,9 +57,9 @@ namespace string {
         T returnval;
         std::istringstream ss( string_in );
         ss >> returnval;
-        CHECK_OR_THROW( !( ss.fail() || ss.bad() ), "Error in utility::string::parse_string(): Could not interpret \"" + string_in + "\" as a value of type " + base::api::name_from_type< T >(base::api::type<T>()) + "!" );
+        CHECK_OR_THROW( !( ss.fail() || ss.bad() ), "utility::string", "parse_string", "Could not interpret \"" + string_in + "\" as a value of type " + base::api::name_from_type< T >(base::api::type<T>()) + "!" );
         if( eof_expected ) {
-            CHECK_OR_THROW( ss.eof(), "Error in utility::string::parse_string(): Additional content found in string \"" + string_in + "\"." );
+            CHECK_OR_THROW( ss.eof(), "utility::string", "parse_string", "Additional content found in string \"" + string_in + "\"." );
         }
         return returnval;
     }

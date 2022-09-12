@@ -120,7 +120,6 @@ BasicPDBReader::add_atoms_from_file_lines(
     std::vector< std::string > const & file_lines,
     std::vector< bool > & atom_lines_read
 ) const {
-    std::string const errmsg( get_errmsg_header( "add_atoms_from_file_lines" ) );
     for( core::Size i(0), imax(file_lines.size()); i<=imax; ++i ) {
         if( atom_lines_read[i] ) continue;
         std::string const & curline( file_lines[i] );
@@ -128,7 +127,7 @@ BasicPDBReader::add_atoms_from_file_lines(
         std::string const curline_record( curline.substr(0, 6) );
         if( curline_record != "ATOM  " && curline_record != "HETATM" ) continue;
 
-        CHECK_OR_THROW( curline.size() >= 80, errmsg + "Expected 80-character ATOM or HETATM record.  Instead got:\n" + curline + "\n" );
+        CHECK_OR_THROW_FOR_CLASS( curline.size() >= 80, "add_atoms_from_file_lines", "Expected 80-character ATOM or HETATM record.  Instead got:\n" + curline + "\n" );
 
         // Mark this as an ATOM or HETATOM line:
         atom_lines_read[i] = true;

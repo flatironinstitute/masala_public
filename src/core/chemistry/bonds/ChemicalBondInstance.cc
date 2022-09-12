@@ -86,7 +86,9 @@ ChemicalBondInstance::set_bond_type(
 ) {
     CHECK_OR_THROW(
         bond_type_in != ChemicalBondType::INVALID_CHEMICAL_BOND_TYPE,
-        "Error in ChemicalBondInstance::set_bond_type(): An invalid chemical bond type was specified."
+        class_namespace_and_name(),
+        "set_bond_type",
+        "An invalid chemical bond type was specified."
     );
     bond_type_ = bond_type_in;
 }
