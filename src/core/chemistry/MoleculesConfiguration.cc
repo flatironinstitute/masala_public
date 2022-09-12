@@ -49,7 +49,10 @@ MoleculesConfiguration::MoleculesConfiguration(
     base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) :
     base::managers::configuration::ConfigurationBase( passkey )
-{}
+{
+    write_to_tracer( "Loading Molecules class configuration from configuration settings on disk." );
+    //TODO load configuration from disk here.
+}
 
 /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
 MoleculesConfigurationSP
@@ -74,6 +77,17 @@ std::string
 MoleculesConfiguration::class_namespace() const {
     return "core::chemistry";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Getters
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the default kinematic representation.
+std::string const &
+MoleculesConfiguration::default_atom_coordinate_representation() const {
+    return default_atom_coordinate_representation_;
+}
+
 
 } // namespace chemistry
 } // namespace core

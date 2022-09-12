@@ -76,11 +76,24 @@ public:
     /// @brief Returns "core::chemistry".
     std::string class_namespace() const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// Getters
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the default kinematic representation.
+    std::string const &
+    default_atom_coordinate_representation() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
-// DATA
+// Data
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The default atom coordinate representation.
+    std::string const default_atom_coordinate_representation_ = "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation";
 
 };
 
