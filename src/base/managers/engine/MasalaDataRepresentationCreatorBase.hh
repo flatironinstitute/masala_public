@@ -36,6 +36,7 @@ SOFTWARE.
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 
 namespace base {
@@ -46,6 +47,8 @@ namespace engine {
 /// @details Creators must be registered with the MasalaDataRepresentationManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationCreatorBase : public base::MasalaObject {
+
+    friend class MasalaDataRepresentationManager;
 
 public:
 
@@ -62,13 +65,15 @@ public:
     // Destructor.
     ~MasalaDataRepresentationCreatorBase() override = default;
 
-public:
+protected:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
+// PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Creators must implement a create_data_representation() function.
+    /// @details Protected so that this can only be called by the MasalaDataRepresentationManager,
+    /// for which this is a friend class.
     virtual
     MasalaDataRepresentationBaseSP
     create_data_representation() const = 0;
