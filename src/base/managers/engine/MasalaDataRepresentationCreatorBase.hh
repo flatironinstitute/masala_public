@@ -70,7 +70,7 @@ public:
 
     /// @brief Creators must implement a create_data_representation() function.
     MasalaDataRepresentationBaseSP
-    create_data_representation() const;
+    create_data_representation() const = 0;
 
 };
 
