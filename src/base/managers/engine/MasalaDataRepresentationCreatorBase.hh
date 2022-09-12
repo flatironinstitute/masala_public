@@ -69,6 +69,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Creators must implement a create_data_representation() function.
+    virtual
     MasalaDataRepresentationBaseSP
     create_data_representation() const = 0;
 
