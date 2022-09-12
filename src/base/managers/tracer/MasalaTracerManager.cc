@@ -23,9 +23,7 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/tracer/MasalaTracerManager.cc
-/// @brief A static singleton for managing global configuration for a Masala session.
-/// @details The sorts of options that get set globally are defaults, which can be overridden
-/// on a case-by-case basis.
+/// @brief A static singleton for managing output to the tracer (screen and/or logfile(s)).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project header:
@@ -68,36 +66,36 @@ MasalaTracerManager::class_namespace() const {
     return "base::managers::tracer";
 }
 
-    /// @brief Check whether a particular tracer is enabled.
-    /// @details If the tracer is in the list of tracers specifically enabled or disabled, the
-    /// tracer's status is returned.  Otherwise, the global default is returned.
-    bool
-    MasalaTracerManager::tracer_is_enabled(
-        std::string const & tracer_name
-    ) const {
-        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-        std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
-        if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
-            return it->second;
-        }
-        return global_tracer_default_;
+/// @brief Check whether a particular tracer is enabled.
+/// @details If the tracer is in the list of tracers specifically enabled or disabled, the
+/// tracer's status is returned.  Otherwise, the global default is returned.
+bool
+MasalaTracerManager::tracer_is_enabled(
+    std::string const & tracer_name
+) const {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+    std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+    if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+        return it->second;
     }
+    return global_tracer_default_;
+}
 
-    /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
-    bool
-    MasalaTracerManager::global_tracer_default() const {
-        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-        return global_tracer_default_;
-    }
+/// @brief Check whether the global default for unspecified tracers is enabled or disabled.
+bool
+MasalaTracerManager::global_tracer_default() const {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+    return global_tracer_default_;
+}
 
-    /// @brief Set whether the global default for unspecified tracers is enabled or disabled.
-    void
-    MasalaTracerManager::set_global_tracer_default(
-        bool const setting
-    ) {
-        std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-        global_tracer_default_ = setting;
-    }
+/// @brief Set whether the global default for unspecified tracers is enabled or disabled.
+void
+MasalaTracerManager::set_global_tracer_default(
+    bool const setting
+) {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+    global_tracer_default_ = setting;
+}
 
 /// @brief Write a message to a tracer.
 /// @param tracer_name The tracer to which we are writing.
