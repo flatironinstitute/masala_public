@@ -37,6 +37,7 @@ SOFTWARE.
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
+#include <base/managers/engine/MasalaEngineManager.fwd.hh>
 
 namespace base {
 namespace managers {
@@ -47,6 +48,8 @@ namespace engine {
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngineCreatorBase : public base::MasalaObject {
+
+	friend class MasalaEngineManager;
 
 public:
 
@@ -60,7 +63,7 @@ public:
 	/// derived classes can.
 	virtual ~MasalaEngineCreatorBase() = default;
 
-public:
+protected:
 
 	/// @brief All Masala engine creators must implement a create_engine() method.
 	virtual
