@@ -32,11 +32,25 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentation.hh>
 
+// STL headers:
+#include <string>
 
 namespace core {
 namespace chemistry {
 namespace atoms {
 namespace coordinates {
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the class name.
+    /// @returns "EigenLinalgCartesianAtomCoordinateRepresentationCreator".
+    std::string EigenLinalgCartesianAtomCoordinateRepresentationCreator::class_name() const { return "EigenLinalgCartesianAtomCoordinateRepresentationCreator"; }
+
+    /// @brief Get the class namespace.
+    /// @returns "core::chemistry::atoms::coordinates"
+    std::string EigenLinalgCartesianAtomCoordinateRepresentationCreator::class_namespace() const { return "core::chemistry::atoms::coordinates"; }
 
 
 ////////////////////////////////////////////////////////////////////////////////

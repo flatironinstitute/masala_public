@@ -69,6 +69,20 @@ public:
     // Destructor.
     ~EigenLinalgCartesianAtomCoordinateRepresentationCreator() override = default;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the class name.
+    /// @returns "EigenLinalgCartesianAtomCoordinateRepresentationCreator".
+    std::string class_name() const override;
+
+    /// @brief Get the class namespace.
+    /// @returns "core::chemistry::atoms::coordinates"
+    std::string class_namespace() const override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
