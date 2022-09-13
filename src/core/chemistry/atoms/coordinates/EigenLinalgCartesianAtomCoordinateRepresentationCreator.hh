@@ -34,6 +34,7 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentationCreator.fwd.hh>
+#include <core/initialization/registrators/CoreAtomCoordinateRepresentationRegistrator.fwd.hh>
 
 // Base headers:
 
@@ -47,11 +48,13 @@ namespace coordinates {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class EigenLinalgCartesianAtomCoordinateRepresentationCreator : public base::managers::engine::MasalaDataRepresentationCreatorBase {
 
+    friend class core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
-// CONSTRUCTOR -- PROTECTED TO ALLOW ONLY MasalaDataRepresentationRegistrators
-// TO CREATE CREATORS.
+// CONSTRUCTOR -- PROTECTED TO ALLOW CoreAtomCoordinateRepresentationRegistrator
+// ONLY TO CREATE CREATORS.
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.

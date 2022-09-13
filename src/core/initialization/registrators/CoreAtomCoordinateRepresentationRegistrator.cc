@@ -60,7 +60,7 @@ CoreAtomCoordinateRepresentationRegistrator::CoreAtomCoordinateRepresentationReg
         base::managers::engine::MasalaDataRepresentationManager::get_instance()
     );
     // TODO: register all atom coordinate representations defined in core here.
-    manager->register_data_representation( "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", std::make_shared< core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator >() );
+    manager->register_data_representation( "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
