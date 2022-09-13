@@ -36,6 +36,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
 
 
 namespace base {
@@ -45,17 +46,27 @@ namespace engine {
 /// @brief A pure virtual base class class for particular representations
 /// of data that can be requested by engines for efficient manipulation of
 /// those data.
+/// @note Only a MasalaDataRepresentationCreator can create a MasalaDataRepresentation.
+/// Only a MasalaDataRepresentationRegistrator can create a MasalaDataRepresentationCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationBase : public base::MasalaObject {
+
+    friend class MasalaDataRepresentationCreatorBase;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTOR -- PROTECTED
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor.
+    MasalaDataRepresentationBase() = default;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Default constructor.
-    MasalaDataRepresentationBase() = default;
 
     /// @brief Copy constructor.
     MasalaDataRepresentationBase( MasalaDataRepresentationBase const & ) = default;
