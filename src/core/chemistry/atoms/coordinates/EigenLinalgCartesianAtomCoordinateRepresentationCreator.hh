@@ -22,36 +22,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/engine/MasalaDataRepresentationCreatorBase.hh
-/// @brief A pure virtual base class for creators for data representations.
-/// @details Creators must be registered with the MasalaDataRepresentationManager.
+/// @file src/base/managers/engine/EigenLinalgCartesianAtomCoordinateRepresentationCreator.hh
+/// @brief A creator for Eigen linear algebra Cartesian atom coordinate data representations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
+#ifndef Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentationCreator_hh
+#define Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentationCreator_hh
+
+// Parent declarations:
+#include <base/managers/engine/MasalaDataRepresentationCreatorBase.hh>
 
 // Forward declarations:
-#include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
+#include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentationCreator.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
-#include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentationRegistratorBase.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 
-namespace base {
-namespace managers {
-namespace engine {
+namespace core {
+namespace chemistry {
+namespace atoms {
+namespace coordinates {
 
-/// @brief A pure virtual base class for creators for data representations.
-/// @details Creators must be registered with the MasalaDataRepresentationManager.  They
-/// can only be created with static registrators.
+/// @brief A creator for Eigen linear algebra Cartesian atom coordinate data representations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationCreatorBase : public base::MasalaObject {
-
-    friend class MasalaDataRepresentationRegistratorBase; // For creation.
-    friend class MasalaDataRepresentationManager; // To call protected create_data_representation() function.
+class EigenLinalgCartesianAtomCoordinateRepresentationCreator : public base::managers::engine::MasalaDataRepresentationCreatorBase {
 
 protected:
 
@@ -61,7 +55,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaDataRepresentationCreatorBase() = default;
+    EigenLinalgCartesianAtomCoordinateRepresentationCreator() = default;
 
 public:
 
@@ -70,10 +64,10 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Copy constructor.
-    MasalaDataRepresentationCreatorBase( MasalaDataRepresentationCreatorBase const & ) = delete;
+    EigenLinalgCartesianAtomCoordinateRepresentationCreator( EigenLinalgCartesianAtomCoordinateRepresentationCreator const & ) = delete;
 
     // Destructor.
-    ~MasalaDataRepresentationCreatorBase() override = default;
+    ~EigenLinalgCartesianAtomCoordinateRepresentationCreator() override = default;
 
 protected:
 
@@ -84,14 +78,14 @@ protected:
     /// @brief Creators must implement a create_data_representation() function.
     /// @details Protected so that this can only be called by the MasalaDataRepresentationManager,
     /// for which this is a friend class.
-    virtual
-    MasalaDataRepresentationBaseSP
-    create_data_representation() const = 0;
+    base::managers::engine::MasalaDataRepresentationBaseSP
+    create_data_representation() const override;
 
 };
 
-} // namespace engine
-} // namespace managers
-} // namespace base
+} // namespace coordinates
+} // namespace atoms
+} // namespace chemistry
+} // namespace core
 
-#endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
+#endif // Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentationCreator_hh
