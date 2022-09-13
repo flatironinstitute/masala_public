@@ -38,6 +38,9 @@ SOFTWARE.
 // Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 
+// STL headers
+#include <string>
+
 namespace core{
 namespace chemistry{
 

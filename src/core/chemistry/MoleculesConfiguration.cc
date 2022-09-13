@@ -29,9 +29,6 @@ SOFTWARE.
 // Project headers
 #include <core/chemistry/MoleculesConfiguration.hh>
 
-// STL headers
-#include <string>
-
 namespace core{
 namespace chemistry{
 

@@ -29,6 +29,9 @@ SOFTWARE.
 #ifndef Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_hh
 #define Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_hh
 
+// Parent headers:
+#include <base/MasalaObject.hh>
+
 // Forward declarations:
 #include <base/managers/engine/MasalaDataRepresentationRegistratorBase.fwd.hh>
 
@@ -39,7 +42,7 @@ namespace engine {
 
 /// @brief A base class for data representation registrators.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationRegistratorBase {
+class MasalaDataRepresentationRegistratorBase : public base::MasalaObject {
 
 public:
 
