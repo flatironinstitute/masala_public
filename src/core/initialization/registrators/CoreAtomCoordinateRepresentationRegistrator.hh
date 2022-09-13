@@ -42,9 +42,9 @@ SOFTWARE.
 #include <map>
 #include <mutex>
 
-namespace base {
-namespace managers {
-namespace tracer {
+namespace core {
+namespace initialization {
+namespace registrators {
 
 
 /// @brief A static singleton that registers representations for atom coordinates
