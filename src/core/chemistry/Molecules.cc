@@ -34,10 +34,13 @@ SOFTWARE.
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 #include <core/chemistry/MoleculesConfiguration.hh>
+#include <core/initialization/registrators/CoreAtomCoordinateRepresentationRegistrator.hh>
 
 // Base headers:
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationManager.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 #include <string>
@@ -98,7 +101,7 @@ Molecules::make_independent() {
 
     configuration_ = configuration_->deep_clone();
 
-    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_ );
+    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_mutex_locked() );
     master_atom_coordinate_representation_ = old_coordinates->clone();
     std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
@@ -109,7 +112,7 @@ Molecules::make_independent() {
     ) {
         core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
-        master_atom_coordinate_representation_->replace_atom_instance( *it, new_atom );
+        master_atom_coordinate_representation_mutex_locked()->replace_atom_instance( *it, new_atom );
     }
 
     std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
@@ -151,14 +154,10 @@ Molecules::add_atom(
     std::array< core::Real, 3 > const & coords
 ) {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
-    //TODO: Ensure up-to-date.
-    // if( master_atom_coordinate_representation_ == nullptr ) {
-    //     create_master_atom_coordinate_representation();
-    // }
 
     // Add the atom:
     atoms_.insert(atom_in);
-    master_atom_coordinate_representation_->add_atom_instance( atom_in, coords );
+    master_atom_coordinate_representation_mutex_locked()->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
     //update_additional_representations_from_master();
@@ -167,6 +166,26 @@ Molecules::add_atom(
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Access the master coordinate representation.
+/// @details Creates the representation from options if necessary.
+/// @note For nonconst access. Use with care!  Avoid:
+/// - Holding on to this owning pointer past a single manipulation or set of manipulations.
+/// - Calling this from multiple threads.  This function does not lock the object mutex!  It should
+/// only be called from locked contexts!
+core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
+Molecules::master_atom_coordinate_representation_mutex_locked() {
+    if( master_atom_coordinate_representation_ == nullptr ) {
+        core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
+        master_atom_coordinate_representation_ = std::dynamic_pointer_cast< core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
+            base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
+                configuration_->default_atom_coordinate_representation()
+            )
+        );
+        CHECK_OR_THROW_FOR_CLASS( master_atom_coordinate_representation_ != nullptr, "master_atom_coordinate_representation", configuration_->default_atom_coordinate_representation() + " was not an AtomCoordinateRepresentation!" );
+    }
+    return master_atom_coordinate_representation_;
+}
 
 /// @brief Create a configuration object for this object.
 /// @details Can trigger read from disk.  Private since it intended to be called only the first time

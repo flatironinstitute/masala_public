@@ -59,6 +59,7 @@ CoreAtomCoordinateRepresentationRegistrator::CoreAtomCoordinateRepresentationReg
     base::managers::engine::MasalaDataRepresentationManagerHandle manager(
         base::managers::engine::MasalaDataRepresentationManager::get_instance()
     );
+    CoreAtomCoordinateRepresentationRegistrator::write_to_tracer( "Registering core atom coordinate representations with the MasalaDataRepresentationManager." );
     // TODO: register all atom coordinate representations defined in core here.
     manager->register_data_representation( "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
 }

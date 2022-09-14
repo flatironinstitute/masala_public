@@ -97,6 +97,7 @@ MasalaDataRepresentationManager::register_data_representation(
     if( throw_if_present && data_representation_creators_.find(data_representation_name) != data_representation_creators_.end() ) {
         MASALA_THROW( class_namespace_and_name(), "register_data_representation", "DataRepresentation \"" + data_representation_name + "\" has already been registered!"  );
     }
+    write_to_tracer( "Registering " + data_representation_name + " with MasalaDataRepresentationManager." );
     data_representation_creators_[data_representation_name] = data_representation_creator;
 }
 

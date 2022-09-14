@@ -120,6 +120,15 @@ private:
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Access the master coordinate representation.
+    /// @details Creates the representation from options if necessary.
+    /// @note For nonconst access. Use with care!  Avoid:
+    /// - Holding on to this owning pointer past a single manipulation or set of manipulations.
+    /// - Calling this from multiple threads.  This function does not lock the object mutex!  It should
+    /// only be called from locked contexts!
+    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
+    master_atom_coordinate_representation_mutex_locked();
+
 	/// @brief Create a configuration object for this object.
 	/// @details Can trigger read from disk.  Private since it intended to be called only the first time
 	/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
@@ -149,8 +158,12 @@ private:
     /// matrices of coordinates, etc.)  Different subclasses of the AtomCoordinateRepresentation class
     /// store the data differently, but all offer iterators to access atom coordinates.
     /// @note This is the MASTER representation.  All other representations either update this
-    /// representation, or are updated by this representation.
+    /// representation, or are updated by this representation.  Be sure to use master_atom_coordinate_representation()
+    /// internally, since this does a check for whether it's necessary to create the master representation.
     core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
+
+    /// @brief Have the master coordinates changed?
+    bool master_coordinates_have_changed_ = false;
 
     /// @brief Additional representations of atom coordinates.
     std::vector< core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
