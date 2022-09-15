@@ -41,10 +41,11 @@ SOFTWARE.
 // STL headers
 #include <string>
 
-namespace core{
-namespace chemistry{
+namespace masala {
+namespace core {
+namespace chemistry {
 
-class MoleculesConfiguration : public base::managers::configuration::ConfigurationBase {
+class MoleculesConfiguration : public masala::base::managers::configuration::ConfigurationBase {
 
 public:
 
@@ -59,7 +60,7 @@ public:
     /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
     /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
     /// ConfigurationBase-derived object.
-    MoleculesConfiguration( base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey );
+    MoleculesConfiguration( masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey );
 
     /// @brief Copy constructor.
     MoleculesConfiguration( MoleculesConfiguration const & src ) = default;
@@ -102,5 +103,6 @@ private:
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_chemistry_MoleculesConfiguration_hh

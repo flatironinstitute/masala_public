@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace bonds {
@@ -63,5 +64,6 @@ namespace bonds {
 } // namespace bonds
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_bonds_ChemicalBondInstance_fwd_hh

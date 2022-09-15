@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 
@@ -109,3 +110,4 @@ MoleculesCollection::molecules_set_end() const {
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala

@@ -44,6 +44,7 @@ SOFTWARE.
 // STL headers:
 #include <set>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -53,7 +54,7 @@ namespace atoms {
 /// @note This stores element type, formal charge, partial charge,
 /// hybridization state... everything EXCEPT atomic coordinates.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomInstance : public base::MasalaObject {
+class AtomInstance : public masala::base::MasalaObject {
 
 public:
 
@@ -124,7 +125,7 @@ private:
     signed int formal_charge_ = 0;
 
     /// @brief The partial charge on this atom.
-    core::Real partial_charge_ = 0.0;
+    masala::core::Real partial_charge_ = 0.0;
 
     /// @brief Optional additional data attached to this atom.
     /// @details Intended to store things like PDB name, PDB index, etc.
@@ -135,5 +136,6 @@ private:
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_AtomInstance_hh

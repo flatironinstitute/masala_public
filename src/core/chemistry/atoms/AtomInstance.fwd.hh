@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -59,5 +60,6 @@ namespace atoms {
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh

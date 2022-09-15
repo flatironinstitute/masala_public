@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -46,7 +47,7 @@ namespace atoms {
         signed long pdb_atom_index,
         std::string const & pdb_element_name
     ) :
-        base::MasalaObject(),
+        masala::base::MasalaObject(),
         additional_atom_data_{ std::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
     {}
 
@@ -92,3 +93,4 @@ AtomInstance::class_namespace() const {
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

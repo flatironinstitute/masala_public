@@ -31,11 +31,13 @@ SOFTWARE.
 
 #include <base/types.hh>
 
+namespace masala {
 namespace numeric {
 
-    typedef base::Size Size;
-    typedef base::Real Real;
+    typedef masala::base::Size Size;
+    typedef masala::base::Real Real;
 
 } // namespace numeric
+} // namespace masala
 
 #endif // Masala_src_numeric_types_hh

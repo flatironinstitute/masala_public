@@ -43,14 +43,14 @@ SOFTWARE.
 // STL headers:
 #include <set>
 
+namespace masala {
 namespace core {
 namespace chemistry {
-
 
 /// @brief A class contiaining a collection of molecules.
 /// @details Each Molecules object contains atoms and bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MoleculesCollection : public base::MasalaObject {
+class MoleculesCollection : public masala::base::MasalaObject {
 
 public:
 
@@ -98,7 +98,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the number of molecules in this MoleculesCollection container.
-    core::Size size() const;
+    masala::core::Size size() const;
 
     /// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
     /// container.
@@ -117,5 +117,6 @@ private:
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_MoleculesCollection_hh

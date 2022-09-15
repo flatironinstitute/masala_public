@@ -35,6 +35,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -70,3 +71,4 @@ EigenLinalgCartesianAtomCoordinateRepresentationCreator::create_data_representat
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

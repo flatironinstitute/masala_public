@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace io {
 namespace pdb {
@@ -46,5 +47,6 @@ namespace pdb {
 } // namespace pdb
 } // namespace io
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_io_pdb_BasicPDBReader_fwd_hh

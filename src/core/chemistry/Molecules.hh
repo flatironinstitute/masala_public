@@ -50,14 +50,13 @@ SOFTWARE.
 #include <map>
 #include <mutex>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 
-
-
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Molecules : public base::MasalaObject {
+class Molecules : public masala::base::MasalaObject {
 
 public:
 
@@ -110,8 +109,8 @@ public:
     /// @brief Add an atom to this molecule.
     void
     add_atom(
-        core::chemistry::atoms::AtomInstanceSP const & atom_in,
-        std::array< core::Real, 3 > const & coords
+        masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
+        std::array< masala::core::Real, 3 > const & coords
     );
 
 private:
@@ -126,7 +125,7 @@ private:
     /// - Holding on to this owning pointer past a single manipulation or set of manipulations.
     /// - Calling this from multiple threads.  This function does not lock the object mutex!  It should
     /// only be called from locked contexts!
-    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
+    masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
     master_atom_coordinate_representation_mutex_locked();
 
 	/// @brief Create a configuration object for this object.
@@ -160,13 +159,13 @@ private:
     /// @note This is the MASTER representation.  All other representations either update this
     /// representation, or are updated by this representation.  Be sure to use master_atom_coordinate_representation()
     /// internally, since this does a check for whether it's necessary to create the master representation.
-    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
+    masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP master_atom_coordinate_representation_;
 
     /// @brief Have the master coordinates changed?
     bool master_coordinates_have_changed_ = false;
 
     /// @brief Additional representations of atom coordinates.
-    std::vector< core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
+    std::vector< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
 
     /// @brief The atoms themselves and their properties.
     /// @details The Molecules container is responsible for keeping these linked to the
@@ -176,18 +175,19 @@ private:
     /// over all atoms, and pointers to access a particular atom.  This also allows more
     /// efficient insertions and deletions of atoms.  AtomCoordinateRepresentations are
     /// responsible for keeping track of coordinates given atom smart pointers.
-    std::set< core::chemistry::atoms::AtomInstanceSP > atoms_;
+    std::set< masala::core::chemistry::atoms::AtomInstanceSP > atoms_;
 
     /// @brief The bonds between atoms.
     /// @note This is deliberately a set and not a vector to prevent an arbitrary index
     /// from being handed out or used for bonds.  Iterators are properly used to iterate
     /// over all bonds, and pointers to access a particular bonds.  This also allows more
     /// efficient insertions and deletions of bonds.
-    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
+    std::set< masala::core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
 
 };
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_Molecules_hh

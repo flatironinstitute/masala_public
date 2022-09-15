@@ -40,6 +40,7 @@ SOFTWARE.
 // Base headers:
 #include <base/MasalaObject.hh>
 
+namespace masala {
 namespace core {
 namespace pose {
 
@@ -49,7 +50,7 @@ namespace pose {
 /// degree-of-freedom and kinematic relationships, annotations, and computed or measured
 /// properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Pose : public base::MasalaObject {
+class Pose : public masala::base::MasalaObject {
 
 public:
 
@@ -106,7 +107,7 @@ public:
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesCSP
+    masala::core::chemistry::MoleculesCSP
     molecules_shared_ptr() const;
 
     /// @brief Access the Molecules object in this pose, by weak pointer.
@@ -114,7 +115,7 @@ public:
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesCWP
+    masala::core::chemistry::MoleculesCWP
     molecules_weak_ptr() const;
 
     /// @brief Access the Molecules object in this pose, by const reference.
@@ -122,7 +123,7 @@ public:
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::Molecules const &
+    masala::core::chemistry::Molecules const &
     molecules() const;
 
     /// @brief Access the Molecules object in this pose, by nonconst shared pointer.
@@ -132,7 +133,7 @@ public:
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesSP
+    masala::core::chemistry::MoleculesSP
     molecules_shared_ptr_nonconst();
 
     /// @brief Access the Molecules object in this pose, by nonconst weak pointer.
@@ -142,7 +143,7 @@ public:
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesWP
+    masala::core::chemistry::MoleculesWP
     molecules_weak_ptr_nonconst();
 
     /// @brief Access the Molecules object in this pose, by nonconst reference.
@@ -152,7 +153,7 @@ public:
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::Molecules &
+    masala::core::chemistry::Molecules &
     molecules_nonconst();
 
 public:
@@ -162,7 +163,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get a description of the API for the Pose class.
-    base::api::MasalaObjectAPIDefinitionCWP
+    masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
 private:
@@ -176,17 +177,18 @@ private:
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
-    core::chemistry::MoleculesSP molecules_;
+    masala::core::chemistry::MoleculesSP molecules_;
 
     /// @brief A description of this object's interface.
     /// @details Generated on first request.  Persists only as long as this instance
     /// persists.  Weak pointers are handed out.
-    base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 
 };
 
 } // namespace pose
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_pose_Pose_hh

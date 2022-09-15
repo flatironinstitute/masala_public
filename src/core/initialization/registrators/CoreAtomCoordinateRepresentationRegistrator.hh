@@ -42,6 +42,7 @@ SOFTWARE.
 #include <map>
 #include <mutex>
 
+namespace masala {
 namespace core {
 namespace initialization {
 namespace registrators {
@@ -50,7 +51,7 @@ namespace registrators {
 /// @brief A static singleton that registers representations for atom coordinates
 /// on first initialization.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CoreAtomCoordinateRepresentationRegistrator : public base::managers::engine::MasalaDataRepresentationRegistratorBase {
+class CoreAtomCoordinateRepresentationRegistrator : public masala::base::managers::engine::MasalaDataRepresentationRegistratorBase {
 
 public:
 
@@ -103,5 +104,6 @@ public:
 } // namespace registrators
 } // namespace initialization
 } // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_initialization_registrators_CoreAtomCoordinateRepresentationRegistrator_hh

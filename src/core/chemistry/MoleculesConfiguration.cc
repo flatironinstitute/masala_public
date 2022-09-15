@@ -29,9 +29,9 @@ SOFTWARE.
 // Project headers
 #include <core/chemistry/MoleculesConfiguration.hh>
 
-namespace core{
-namespace chemistry{
-
+namespace masala {
+namespace core {
+namespace chemistry {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
@@ -43,9 +43,9 @@ namespace chemistry{
 /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
 /// ConfigurationBase-derived object.
 MoleculesConfiguration::MoleculesConfiguration(
-    base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+    masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) :
-    base::managers::configuration::ConfigurationBase( passkey )
+    masala::base::managers::configuration::ConfigurationBase( passkey )
 {
     write_to_tracer( "Loading Molecules class configuration from configuration settings on disk." );
     //TODO load configuration from disk here.
@@ -85,6 +85,6 @@ MoleculesConfiguration::default_atom_coordinate_representation() const {
     return default_atom_coordinate_representation_;
 }
 
-
 } // namespace chemistry
 } // namespace core
+} // namespace masala

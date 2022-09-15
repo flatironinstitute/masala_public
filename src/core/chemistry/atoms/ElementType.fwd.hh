@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -44,7 +45,7 @@ namespace atoms {
 
     /// @brief The element type, as an enum.
     /// @details We use the atomic symbol, and explicitly associate with it the
-    /// atomic number.  This enum can be cast to a core::Size to give the atomic number.
+    /// atomic number.  This enum can be cast to a masala::core::Size to give the atomic number.
     /// @note In the comments, I give the IUPAC name (e.g. "sulfur") and then any
     /// variants (e.g. "sulphur") in brackets.
     enum class ElementTypeEnum {
@@ -195,5 +196,6 @@ namespace atoms {
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_ElementType_fwd_hh

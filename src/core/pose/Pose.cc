@@ -41,6 +41,7 @@ SOFTWARE.
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
+namespace masala {
 namespace core {
 namespace pose {
 
@@ -51,8 +52,8 @@ namespace pose {
 /// @brief Default constructor, making an empty Pose.
 /// @details Ensures that the molecules_ object always exists.
 Pose::Pose() :
-    base::MasalaObject(),
-    molecules_( std::make_shared< core::chemistry::Molecules >() )
+    masala::base::MasalaObject(),
+    molecules_( std::make_shared< masala::core::chemistry::Molecules >() )
 {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
@@ -174,7 +175,7 @@ Pose::molecules_nonconst() {
 /// @brief Get a description of the API for the Pose class.
 base::api::MasalaObjectAPIDefinitionCWP
 Pose::get_api_definition() {
-    using namespace base::api;
+    using namespace masala::base::api;
 
     if( api_definition_ == nullptr ) {
 
@@ -217,7 +218,7 @@ Pose::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCSP > >(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
                 "molecules_shared_ptr",
                 "Access the Molecules object within the Pose, by shared pointer.",
                 "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
@@ -226,7 +227,7 @@ Pose::get_api_definition() {
             )
         );
         api_def->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::MoleculesCWP > >(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
                 "molecules_weak_ptr",
                 "Access the Molecules object within the Pose, by weak pointer.",
                 "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
@@ -235,7 +236,7 @@ Pose::get_api_definition() {
             )
         );
         api_def->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< core::chemistry::Molecules const & > >(
+            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
                 "molecules",
                 "Access the Molecules object within the Pose.",
                 "A const reference to the Molecules object, which stores atoms, atomic geometry, "
@@ -252,3 +253,4 @@ Pose::get_api_definition() {
 
 } // namespace pose
 } // namespace core
+} // namespace masala

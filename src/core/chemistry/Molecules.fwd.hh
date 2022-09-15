@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 
@@ -43,5 +44,6 @@ namespace chemistry {
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_Molecules_fwd_hh

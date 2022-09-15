@@ -44,6 +44,7 @@ SOFTWARE.
 #include <set>
 #include <array>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -53,7 +54,7 @@ namespace coordinates {
 /// @brief A pure virtual base class class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomCoordinateRepresentation : public base::managers::engine::MasalaDataRepresentationBase {
+class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentationBase {
 
 public:
 
@@ -100,7 +101,7 @@ public:
     void
     add_atom_instance(
         AtomInstanceCSP const & new_atom,
-        std::array< core::Real, 3 > const & new_atom_coordinates
+        std::array< masala::core::Real, 3 > const & new_atom_coordinates
     ) = 0;
 
 private:
@@ -115,5 +116,6 @@ private:
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_hh

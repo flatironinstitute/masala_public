@@ -36,6 +36,7 @@ SOFTWARE.
 // Core headers:
 #include <core/engine/MasalaEngineBase.hh>
 
+namespace masala {
 namespace core {
 namespace engine {
 namespace kinematics {
@@ -43,7 +44,7 @@ namespace kinematics {
 /// @brief A base class for Masala kinematic engines, which perform kinematic
 /// manipulations (forward kinematics, inverse kinematics, and derivatives).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class KinematicEngineBase : public core::engine::MasalaEngineBase {
+class KinematicEngineBase : public masala::core::engine::MasalaEngineBase {
 
 public:
 
@@ -59,8 +60,9 @@ public:
 
 }; // class KinematicEngineBase
 
-} //namespace kinematics
-} //namespace engine
-} //namespace core
+} // namespace kinematics
+} // namespace engine
+} // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_engine_kinematics_KinematicEngineBase_hh

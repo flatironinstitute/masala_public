@@ -36,7 +36,7 @@ SOFTWARE.
 // Core headers:
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentationCreator.hh>
 
-
+namespace masala {
 namespace core {
 namespace initialization {
 namespace registrators {
@@ -54,14 +54,14 @@ CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representa
 
 /// @brief Private constructor: object can only be instantiated with getInstance().
 CoreAtomCoordinateRepresentationRegistrator::CoreAtomCoordinateRepresentationRegistrator() :
-    base::managers::engine::MasalaDataRepresentationRegistratorBase()
+    masala::base::managers::engine::MasalaDataRepresentationRegistratorBase()
 {
-    base::managers::engine::MasalaDataRepresentationManagerHandle manager(
-        base::managers::engine::MasalaDataRepresentationManager::get_instance()
+    masala::base::managers::engine::MasalaDataRepresentationManagerHandle manager(
+        masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()
     );
     CoreAtomCoordinateRepresentationRegistrator::write_to_tracer( "Registering core atom coordinate representations with the MasalaDataRepresentationManager." );
     // TODO: register all atom coordinate representations defined in core here.
-    manager->register_data_representation( "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
+    manager->register_data_representation( "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,3 +85,4 @@ CoreAtomCoordinateRepresentationRegistrator::class_namespace() const {
 } // namespace registrators
 } // namespace initialization
 } // namespace core
+} // namespace masala

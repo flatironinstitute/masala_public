@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -49,3 +50,4 @@ void AtomData::make_independent() {}
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

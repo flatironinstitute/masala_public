@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -48,5 +49,6 @@ namespace data {
 } // atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_data_PDBAtomData_fwd_hh

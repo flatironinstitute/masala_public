@@ -53,16 +53,16 @@ main(
     api_definition["FileType"] = "API_definition";
     api_definition["Module"] = "Core";
     nlohmann::json api_entries;
-    std::vector< base::MasalaObjectSP > const api_objects( core::api::generate_api_classes() );
-    for( core::Size i(0), imax(api_objects.size()); i<imax; ++i ) {
-        base::api::MasalaObjectAPIDefinitionCSP api_def( api_objects[i]->get_api_definition() );
+    std::vector< masala::base::MasalaObjectSP > const api_objects( masala::core::api::generate_api_classes() );
+    for( masala::core::Size i(0), imax(api_objects.size()); i<imax; ++i ) {
+        masala::base::api::MasalaObjectAPIDefinitionCSP api_def( api_objects[i]->get_api_definition() );
         api_entries[ api_objects[i]->class_namespace() + "::" + api_objects[i]->class_name() ] = *api_def->get_json_description();
     }
     api_definition["Elements"] = api_entries;
 
     std::ostringstream ss;
     ss << api_definition.dump( 1, '\t' ) << "\n";
-    base::managers::disk::MasalaDiskManager::get_instance()->write_ascii_file( "core_api.json", ss.str() );
+    masala::base::managers::disk::MasalaDiskManager::get_instance()->write_ascii_file( "core_api.json", ss.str() );
 
     return 0;
 }

@@ -30,6 +30,7 @@ SOFTWARE.
 #ifndef Masala_src_core_initialization_registrators_CoreAtomCoordinateRepresentationRegistrator_fwd_hh
 #define Masala_src_core_initialization_registrators_CoreAtomCoordinateRepresentationRegistrator_fwd_hh
 
+namespace masala {
 namespace core {
 namespace initialization {
 namespace registrators {
@@ -39,5 +40,6 @@ namespace registrators {
 } // namespace registrators
 } // namespace initialization
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_initialization_registrators_CoreAtomCoordinateRepresentationRegistrator_fwd_hh

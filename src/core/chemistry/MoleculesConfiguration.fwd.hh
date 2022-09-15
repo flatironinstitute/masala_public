@@ -33,8 +33,9 @@ SOFTWARE.
 // STL headers
 #include <memory>
 
-namespace core{
-namespace chemistry{
+namespace masala {
+namespace core {
+namespace chemistry {
 
     class MoleculesConfiguration;
 
@@ -45,5 +46,6 @@ namespace chemistry{
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_chemistry_MoleculesConfiguration_fwd_hh

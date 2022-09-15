@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -63,9 +64,9 @@ ElementType::atomic_number() const {
     CHECK_OR_THROW_FOR_CLASS(
         static_cast<signed long>(element_type_) > 0 && static_cast<signed long>(element_type_) <= static_cast<signed long>(ElementTypeEnum::NUM_KNOWN_ELEMENTS),
         "atomic_number",
-        "Error in core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
+        "Error in masala::core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
     );
-    return static_cast< core::Size >( element_type_ );
+    return static_cast< masala::core::Size >( element_type_ );
 }
 
 /// @brief Get the isotope number (the total number of nucleons in the current isotope).
@@ -78,3 +79,4 @@ ElementType::isotope_number() const {
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

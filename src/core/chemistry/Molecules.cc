@@ -45,13 +45,14 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 
 /// @brief Default constructor.
 /// @details Gets configuration from configuration manager, which may trigger load from disk.
 Molecules::Molecules() :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     configuration_(
         OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( Molecules, MoleculesConfiguration )
     )
@@ -62,7 +63,7 @@ Molecules::Molecules() :
 Molecules::Molecules(
     Molecules const & src
 ) :
-    base::MasalaObject(src)
+    masala::base::MasalaObject(src)
 {
     std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
     configuration_ = src.configuration_;
@@ -101,24 +102,24 @@ Molecules::make_independent() {
 
     configuration_ = configuration_->deep_clone();
 
-    core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_mutex_locked() );
+    masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP old_coordinates( master_atom_coordinate_representation_mutex_locked() );
     master_atom_coordinate_representation_ = old_coordinates->clone();
-    std::set< core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
+    std::set< masala::core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
     for(
-        std::set< core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
+        std::set< masala::core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
         it != old_atom_instances.end();
         ++it
     ) {
-        core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
+        masala::core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
         master_atom_coordinate_representation_mutex_locked()->replace_atom_instance( *it, new_atom );
     }
 
-    std::set< core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
+    std::set< masala::core::chemistry::bonds::ChemicalBondInstanceSP > const old_bonds( bonds_ );
     bonds_.clear();
     for(
-        std::set< core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
+        std::set< masala::core::chemistry::bonds::ChemicalBondInstanceSP >::const_iterator it( old_bonds.begin() );
         it != old_bonds.end();
         ++it
     ) {
@@ -150,8 +151,8 @@ Molecules::class_namespace() const {
 /// @brief Add an atom to this molecule.
 void
 Molecules::add_atom(
-    core::chemistry::atoms::AtomInstanceSP const & atom_in,
-    std::array< core::Real, 3 > const & coords
+    masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
+    std::array< masala::core::Real, 3 > const & coords
 ) {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
@@ -176,9 +177,9 @@ Molecules::add_atom(
 core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
 Molecules::master_atom_coordinate_representation_mutex_locked() {
     if( master_atom_coordinate_representation_ == nullptr ) {
-        core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
-        master_atom_coordinate_representation_ = std::dynamic_pointer_cast< core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
-            base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
+        masala::core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
+        master_atom_coordinate_representation_ = std::dynamic_pointer_cast< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
+            masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
                 configuration_->default_atom_coordinate_representation()
             )
         );
@@ -196,7 +197,7 @@ Molecules::master_atom_coordinate_representation_mutex_locked() {
 /// class.  This version creates a MoleculesConfiguration object.
 base::managers::configuration::ConfigurationBaseCSP
 Molecules::load_configuration(
-    base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+    masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) const {
 
     write_to_tracer( "Loading default Molecules configuration." );
@@ -206,3 +207,4 @@ Molecules::load_configuration(
 
 } // namespace chemistry
 } // namespace core
+} // namespace masala

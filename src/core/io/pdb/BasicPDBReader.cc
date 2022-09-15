@@ -44,7 +44,7 @@ SOFTWARE.
 #include <sstream>
 #include <array>
 
-
+namespace masala {
 namespace core {
 namespace io {
 namespace pdb {
@@ -94,7 +94,7 @@ core::pose::PoseSP
 BasicPDBReader::pose_from_pdb_file_contents(
     std::vector< std::string > const & file_lines
 ) const {
-    core::pose::PoseSP pose( std::make_shared< core::pose::Pose >() );
+    masala::core::pose::PoseSP pose( std::make_shared< masala::core::pose::Pose >() );
 
     std::vector< bool > atom_lines_read( file_lines.size(), false ); // Allows us to skip re-parsing the same lines.
 
@@ -116,11 +116,11 @@ BasicPDBReader::pose_from_pdb_file_contents(
 /// atom coordinates and identities.
 void
 BasicPDBReader::add_atoms_from_file_lines(
-    core::pose::Pose & pose,
+    masala::core::pose::Pose & pose,
     std::vector< std::string > const & file_lines,
     std::vector< bool > & atom_lines_read
 ) const {
-    for( core::Size i(0), imax(file_lines.size()); i<=imax; ++i ) {
+    for( masala::core::Size i(0), imax(file_lines.size()); i<=imax; ++i ) {
         if( atom_lines_read[i] ) continue;
         std::string const & curline( file_lines[i] );
         if( curline.size() < 6 ) continue; //Skip short lines.
@@ -141,15 +141,15 @@ BasicPDBReader::add_atoms_from_file_lines(
         std::string const curline_element( curline.substr(76, 2) );
 
         // Containers:
-        signed long const atomno( base::utility::string::parse_string< signed long >( curline_atomno, true ) );
-        std::array< core::Real, 3 > coords{
-            base::utility::string::parse_string< core::Real >( curline_xcoord, true ),
-            base::utility::string::parse_string< core::Real >( curline_ycoord, true ),
-            base::utility::string::parse_string< core::Real >( curline_zcoord, true )
+        signed long const atomno( masala::base::utility::string::parse_string< signed long >( curline_atomno, true ) );
+        std::array< masala::core::Real, 3 > coords{
+            masala::base::utility::string::parse_string< masala::core::Real >( curline_xcoord, true ),
+            masala::base::utility::string::parse_string< masala::core::Real >( curline_ycoord, true ),
+            masala::base::utility::string::parse_string< masala::core::Real >( curline_zcoord, true )
         };
 
         // The new atom.
-        core::chemistry::atoms::AtomInstanceSP newatom( std::make_shared< core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
+        masala::core::chemistry::atoms::AtomInstanceSP newatom( std::make_shared< masala::core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
         pose.molecules_nonconst().add_atom( newatom, coords );
     }
 }
@@ -158,3 +158,4 @@ BasicPDBReader::add_atoms_from_file_lines(
 } // namespace pdb
 } // namespace io
 } // namespace core
+} // namespace masala

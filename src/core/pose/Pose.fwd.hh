@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace core {
 namespace pose {
 
@@ -45,5 +46,6 @@ namespace pose {
 
 } // namespace pose
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_pose_Pose_fwd_hh

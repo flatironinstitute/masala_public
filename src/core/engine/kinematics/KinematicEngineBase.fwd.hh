@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace core {
 namespace engine {
 namespace kinematics {
@@ -57,5 +58,6 @@ namespace kinematics {
 } // namespace kinematics
 } // namespace engine
 } // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_engine_kinematics_KinematicEngineBase_fwd_hh

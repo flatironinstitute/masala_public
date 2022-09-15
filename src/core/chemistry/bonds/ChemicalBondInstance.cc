@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace bonds {
@@ -102,3 +103,4 @@ ChemicalBondInstance::bond_type() const {
 } // namespace bonds
 } // namespace chemistry
 } // namespace core
+} // namespace masala

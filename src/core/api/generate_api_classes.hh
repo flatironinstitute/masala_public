@@ -36,15 +36,17 @@ SOFTWARE.
 // STL headers
 #include <vector>
 
+namespace masala {
 namespace core {
 namespace api {
 
     /// @brief Generate an instance of each of the classes in core that have a defined API, and
     /// return a vector of owning pointers to these instances.
     /// @details Used for auto-generating the core API description (as a JSON file).
-    std::vector< base::MasalaObjectSP > generate_api_classes();
+    std::vector< masala::base::MasalaObjectSP > generate_api_classes();
 
 } // namespace api
 } // namespace core
+} // namespace masala
 
 #endif //Masala_src_core_api_generate_api_classes_hh

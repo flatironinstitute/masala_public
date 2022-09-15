@@ -43,6 +43,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
+namespace masala {
 namespace core {
 namespace io {
 namespace pdb {
@@ -50,7 +51,7 @@ namespace pdb {
 /// @brief A class for reading the basic information from a PDB file quickly, and
 /// setting up a minimal pose.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class BasicPDBReader : public base::MasalaObject {
+class BasicPDBReader : public masala::base::MasalaObject {
 
 public:
 
@@ -99,7 +100,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Given the contents of a PDB file, generate a Pose.
-    core::pose::PoseSP
+    masala::core::pose::PoseSP
     pose_from_pdb_file_contents(
         std::vector< std::string > const & file_lines
     ) const;
@@ -117,7 +118,7 @@ private:
     /// atom coordinates and identities.
     void
     add_atoms_from_file_lines(
-        core::pose::Pose & pose,
+        masala::core::pose::Pose & pose,
         std::vector< std::string > const & file_lines,
         std::vector< bool > & atom_lines_read
     ) const;
@@ -134,5 +135,6 @@ private:
 } // namespace pdb
 } // namespace io
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_io_pdb_BasicPDBReader_hh

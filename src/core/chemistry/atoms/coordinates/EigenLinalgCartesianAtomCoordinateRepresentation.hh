@@ -45,6 +45,7 @@ SOFTWARE.
 // STL headers:
 #include <map>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -105,7 +106,7 @@ public:
     void
     add_atom_instance(
         AtomInstanceCSP const & new_atom,
-        std::array< core::Real, 3 > const & new_atom_coordinates
+        std::array< masala::core::Real, 3 > const & new_atom_coordinates
     ) override;
 
 private:
@@ -116,10 +117,10 @@ private:
 
     /// @brief Data storage for atom coordinates.
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
-    Eigen::Matrix< core::Real, 3, Eigen::Dynamic > atom_coordinates_;
+    Eigen::Matrix< masala::core::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
     /// @brief Map of atom index to column index.
-    std::map< core::chemistry::atoms::AtomInstanceCSP, core::Size > atom_instance_to_column_;
+    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::Size > atom_instance_to_column_;
 
 };
 
@@ -127,5 +128,6 @@ private:
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentation_hh

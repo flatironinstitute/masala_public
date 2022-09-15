@@ -38,7 +38,7 @@ SOFTWARE.
 
 // Base headers:
 
-
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -46,9 +46,9 @@ namespace coordinates {
 
 /// @brief A creator for Eigen linear algebra Cartesian atom coordinate data representations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class EigenLinalgCartesianAtomCoordinateRepresentationCreator : public base::managers::engine::MasalaDataRepresentationCreatorBase {
+class EigenLinalgCartesianAtomCoordinateRepresentationCreator : public masala::base::managers::engine::MasalaDataRepresentationCreatorBase {
 
-    friend class core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator;
+    friend class masala::core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator;
 
 protected:
 
@@ -95,7 +95,7 @@ protected:
     /// @brief Creators must implement a create_data_representation() function.
     /// @details Protected so that this can only be called by the MasalaDataRepresentationManager,
     /// for which this is a friend class.
-    base::managers::engine::MasalaDataRepresentationBaseSP
+    masala::base::managers::engine::MasalaDataRepresentationBaseSP
     create_data_representation() const override;
 
 };
@@ -104,5 +104,6 @@ protected:
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentationCreator_hh

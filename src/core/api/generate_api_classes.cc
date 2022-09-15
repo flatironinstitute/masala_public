@@ -33,18 +33,19 @@ SOFTWARE.
 // Core headers
 #include <core/pose/Pose.hh>
 
+namespace masala {
 namespace core {
 namespace api {
 
     /// @brief Generate an instance of each of the classes in core that have a defined API, and
     /// return a vector of owning pointers to these instances.
     /// @details Used for auto-generating the core API description (as a JSON file).
-    std::vector< base::MasalaObjectSP >
+    std::vector< masala::base::MasalaObjectSP >
     generate_api_classes() {
-        std::vector< base::MasalaObjectSP > outvec;
+        std::vector< masala::base::MasalaObjectSP > outvec;
 
         // Add to this vector whenever a class is added with a defined API:
-        outvec.emplace_back( std::make_shared< core::pose::Pose >() );
+        outvec.emplace_back( std::make_shared< masala::core::pose::Pose >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;
@@ -52,3 +53,4 @@ namespace api {
 
 } // namespace api
 } // namespace core
+} // namespace masala

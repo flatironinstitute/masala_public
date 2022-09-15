@@ -39,11 +39,11 @@ SOFTWARE.
 // STL headers:
 #include <string>
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
 namespace coordinates {
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
@@ -83,7 +83,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
     AtomInstanceCSP const & new_instance
 ) {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count( old_instance ) == 1, "replace_atom_instance", "Could not replace atom.  Old atom is not present!" );
-    core::Size const col_index( atom_instance_to_column_.at(old_instance) );
+    masala::core::Size const col_index( atom_instance_to_column_.at(old_instance) );
     atom_instance_to_column_.erase(old_instance);
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
     atom_instance_to_column_[new_instance] = col_index;
@@ -94,10 +94,10 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     AtomInstanceCSP const & new_atom,
-    std::array< core::Real, 3 > const & new_atom_coordinates
+    std::array< masala::core::Real, 3 > const & new_atom_coordinates
 ) {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_atom) == 0, "add_atom_instance", "Atom has already been added!" );
-    core::Size const natoms_before( atom_coordinates_.cols() );
+    masala::core::Size const natoms_before( atom_coordinates_.cols() );
     atom_instance_to_column_[ new_atom ] = natoms_before;
     atom_coordinates_.conservativeResize( Eigen::NoChange, natoms_before + 1 );
     atom_coordinates_(0, natoms_before ) = new_atom_coordinates[0]; 
@@ -110,3 +110,4 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

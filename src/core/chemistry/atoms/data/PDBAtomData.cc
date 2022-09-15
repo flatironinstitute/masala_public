@@ -35,6 +35,7 @@ SOFTWARE.
 
 // STL headers:
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -119,3 +120,4 @@ PDBAtomData::pdb_element_type() const {
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala

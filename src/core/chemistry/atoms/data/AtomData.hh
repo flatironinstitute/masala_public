@@ -41,6 +41,7 @@ SOFTWARE.
 
 // STL headers:
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
@@ -51,7 +52,7 @@ namespace data {
 /// attached to an atom.
 /// @details Note that this is a pure virtual base class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomData : public base::MasalaObject {
+class AtomData : public masala::base::MasalaObject {
 
 public:
 
@@ -92,5 +93,6 @@ private:
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_atoms_data_AtomData_hh

@@ -41,6 +41,7 @@ SOFTWARE.
 
 // STL headers:
 
+namespace masala {
 namespace core {
 namespace chemistry {
 namespace bonds {
@@ -48,7 +49,7 @@ namespace bonds {
 
 /// @brief A class containing a particular chemical bond between a pair of atoms.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ChemicalBondInstance : public base::MasalaObject {
+class ChemicalBondInstance : public masala::base::MasalaObject {
 
 public:
 
@@ -116,5 +117,6 @@ private:
 } // namespace bonds
 } // namespace chemistry
 } // namespace core
+} // namespace masala
 
 #endif // Masala_src_core_chemistry_bonds_ChemicalBondInstance_hh
