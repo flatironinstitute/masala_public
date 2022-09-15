@@ -1,7 +1,7 @@
 <__COMMENTED_LICENCE__>
 
-<__DOXYGEN_FILE_PATH_AND_FILE_NAME__>
-<__DOXYGEN_BRIEF_DESCRIPTION__>
+<__DOXYGEN_FILE_PATH_AND_FWD_FILE_NAME__>
+<__DOXYGEN_FWD_BRIEF_DESCRIPTION__>
 <__DOXYGEN_DETAILED_DESCRIPTION__>
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 /// @note This file is an auto-generated API file.  Do not edit it, but instead
@@ -10,6 +10,7 @@
 
 <__CPP_FWD_HEADER_GUARD__>
 
+// STL headers:
 #include <memory> // For std::shared_ptr and std::weak_ptr.
 
 <__CPP_NAMESPACE__>
