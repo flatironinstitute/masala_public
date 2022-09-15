@@ -28,3 +28,18 @@
 ## produce code in "core_api/auto_generated_code/".
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
+import json
+from sys import argv
+from os import path, listdir
+
+# Parse the commandline options.
+def get_options() :
+    assert len(argv) == 3, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <source library name> <json api definition file>"
+    return (argv[1], argv[2])
+
+################################################################################
+## Program entry point
+################################################################################
+
+library_name, api_def_file = get_options()
+print( "Generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
