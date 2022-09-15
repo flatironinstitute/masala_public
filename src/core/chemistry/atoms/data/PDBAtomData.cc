@@ -88,10 +88,10 @@ PDBAtomData::class_name() const {
     return "PDBAtomData";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "core::chemistry::atoms::data".
+/// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::atoms::data".
 std::string
 PDBAtomData::class_namespace() const {
-    return "core::chemistry::atoms::data";
+    return "masla::core::chemistry::atoms::data";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

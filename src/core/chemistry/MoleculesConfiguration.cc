@@ -69,10 +69,10 @@ MoleculesConfiguration::class_name() const {
     return "MoleculesConfiguration";
 }
 
-/// @brief Returns "core::chemistry".
+/// @brief Returns "masla::core::chemistry".
 std::string
 MoleculesConfiguration::class_namespace() const {
-    return "core::chemistry";
+    return "masla::core::chemistry";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

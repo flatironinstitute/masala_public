@@ -62,10 +62,10 @@ EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
     return "EigenLinalgCartesianAtomCoordinateRepresentation";
 }
 
-/// @brief Returns "core::chemistry::atoms::coordinates".
+/// @brief Returns "masla::core::chemistry::atoms::coordinates".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
-    return "core::chemistry::atoms::coordinates";
+    return "masla::core::chemistry::atoms::coordinates";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

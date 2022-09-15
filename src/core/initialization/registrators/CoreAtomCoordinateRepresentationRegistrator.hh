@@ -95,7 +95,7 @@ public:
     class_name() const override;
 
     /// @brief Get the namespace of this object.
-    /// @details Returns "core::initialization::registrators".
+    /// @details Returns "masla::core::initialization::registrators".
     std::string
     class_namespace() const override;
 

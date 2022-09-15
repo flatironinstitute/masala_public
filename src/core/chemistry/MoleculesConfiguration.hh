@@ -77,7 +77,7 @@ public:
     /// @brief Returns "MoleculesConfiguration".
     std::string class_name() const override;
 
-    /// @brief Returns "core::chemistry".
+    /// @brief Returns "masla::core::chemistry".
     std::string class_namespace() const override;
 
 public:
@@ -97,7 +97,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The default atom coordinate representation.
-    std::string const default_atom_coordinate_representation_ = "core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation";
+    std::string const default_atom_coordinate_representation_ = "masla::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation";
 
 };
 

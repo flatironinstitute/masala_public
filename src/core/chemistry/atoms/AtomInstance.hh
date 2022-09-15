@@ -99,7 +99,7 @@ public:
 	/// @brief Returns "AtomInstance".
 	std::string class_name() const override;
 
-    /// @brief Every class can provide its own namespace.  This returns "core::chemistry::atoms".
+    /// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::atoms".
     std::string class_namespace() const override;
 
 public:

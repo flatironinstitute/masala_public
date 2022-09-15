@@ -90,7 +90,7 @@ public:
 	/// @brief Returns "BasicPDBReader".
 	std::string class_name() const override;
 
-    /// @brief Every class can provide its own namespace.  This returns "core::io::pdb".
+    /// @brief Every class can provide its own namespace.  This returns "masla::core::io::pdb".
 	std::string class_namespace() const override;
 
 public:

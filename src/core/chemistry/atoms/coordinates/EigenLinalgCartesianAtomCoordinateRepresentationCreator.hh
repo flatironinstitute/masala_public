@@ -83,7 +83,7 @@ public:
     std::string class_name() const override;
 
     /// @brief Get the class namespace.
-    /// @returns "core::chemistry::atoms::coordinates"
+    /// @returns "masla::core::chemistry::atoms::coordinates"
     std::string class_namespace() const override;
 
 protected:
