@@ -27,7 +27,6 @@
 ##          python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-from genericpath import isdir, isfile
 from sys import argv
 from os import path, listdir
 
