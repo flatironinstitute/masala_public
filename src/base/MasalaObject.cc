@@ -38,6 +38,7 @@ SOFTWARE.
 // STL headers
 #include <string>
 
+namespace masala {
 namespace base {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ MasalaObject::has_api_definition() {
 /// derived objects.
 base::api::MasalaObjectAPIDefinitionCWP
 MasalaObject::get_api_definition() {
-    return base::api::MasalaObjectAPIDefinitionCWP();
+    return masala::base::api::MasalaObjectAPIDefinitionCWP();
 }
 
 /// @brief Writes text to the tracer, using the MasalaTracerManager.
@@ -84,7 +85,7 @@ void
 MasalaObject::write_to_tracer(
     std::string const & message
 ) const {
-    base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( base::managers::tracer::MasalaTracerManager::get_instance() );
+    masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
     std::string const tracername( class_namespace_and_name() );
     if( tracer_handle->tracer_is_enabled( tracername ) ) {
         tracer_handle->write_to_tracer( tracername, message, true );
@@ -101,9 +102,10 @@ MasalaObject::write_to_tracer(
 /// implementation throws.  Must be implemented by derived classes that have configurations.
 base::managers::configuration::ConfigurationBaseCSP
 MasalaObject::load_configuration(
-    base::managers::configuration::MasalaConfigurationManagerAuthorization const &
+    masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const &
 ) const {
     MASALA_THROW( class_namespace_and_name(), "load_configuration", "The load_configuration() function has not been implemented for " + class_name() + "." );
 }
 
 } // namespace base
+} // namespace masala

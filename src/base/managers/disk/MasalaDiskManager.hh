@@ -39,13 +39,14 @@ SOFTWARE.
 // STL headers:
 #include <mutex>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace disk {
 
 /// @brief A static singleton for managing disk access.
 /// @details All disk i/o must go through this manager.
-class MasalaDiskManager : public base::MasalaObject {
+class MasalaDiskManager : public masala::base::MasalaObject {
 
 public:
 
@@ -113,5 +114,6 @@ private: // Data
 } // namespace disk
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_disk_MasalaDiskManager_hh

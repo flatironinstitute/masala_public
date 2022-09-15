@@ -34,6 +34,7 @@ SOFTWARE.
 #include <base/managers/engine/MasalaDataRepresentationCreatorBase.hh>
 #include <base/error/ErrorHandling.hh>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -125,3 +126,4 @@ MasalaDataRepresentationManager::unregister_data_representation(
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala

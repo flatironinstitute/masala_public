@@ -49,6 +49,7 @@ SOFTWARE.
 #include <sstream>
 #include <functional>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace getter {
@@ -123,7 +124,7 @@ public:
 	std::string
 	get_getter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Getter:\t" << base::api::name_from_type< T0 >() << " " << getter_function_name() << "( " << base::api::name_from_type< T1 >() << " ) const:" << std::endl;
+    	ss << "Getter:\t" << masala::base::api::name_from_type< T0 >() << " " << getter_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " ) const:" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
@@ -145,14 +146,14 @@ public:
 
 		nlohmann::json json_input1;
 		json_input1["Input_Index"] = 1;
-		json_input1["Input_Type"] = base::api::name_from_type< T1 >();
+		json_input1["Input_Type"] = masala::base::api::name_from_type< T1 >();
 		json_input1["Input_Description"] = input_parameter1_description_;
 
 		json_api["Input_1"] = json_input1;
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = base::api::name_from_type< T0 >();
+		json_output[ "Output_Type" ] = masala::base::api::name_from_type< T0 >();
 		json_output[ "Output_Description" ] = output_description_;
 		json_api["Output"] = json_output;
 
@@ -176,8 +177,9 @@ private:
 
 }; // class MasalaObjectAPIGetterDefinition_OneInput
 
-} //namespace getter
-} //namespace api
-} //namespace base
+} // namespace getter
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_OneInput_tmpl_hh

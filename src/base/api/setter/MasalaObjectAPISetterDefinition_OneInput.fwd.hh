@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace api {
 namespace setter {
@@ -66,5 +67,6 @@ namespace setter {
 } // namespace setter
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_fwd_hh

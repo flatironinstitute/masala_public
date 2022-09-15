@@ -36,6 +36,7 @@ SOFTWARE.
 #include <string>
 #include <memory>
 
+namespace masala {
 namespace base {
 namespace api {
 
@@ -47,7 +48,7 @@ namespace api {
     std::string
     name_from_type(type<T>) {
         std::shared_ptr<T> tempobj( std::make_shared<T>() );
-        base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< base::MasalaObject >(tempobj) );
+        masala::base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj) );
         if( tempptr != nullptr ) {
             return tempptr->class_namespace() + "::" + tempptr->class_name();
         }
@@ -183,5 +184,6 @@ namespace api {
 
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_names_from_types_tmpl_hh

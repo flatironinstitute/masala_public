@@ -47,6 +47,7 @@ SOFTWARE.
 #include <string>
 #include <functional>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace configuration {
@@ -55,7 +56,7 @@ namespace configuration {
 /// @brief A static singleton for managing global configuration for a Masala session.
 /// @details The sorts of options that get set globally are defaults, which can be overridden
 /// on a case-by-case basis.
-class MasalaConfigurationManager : public base::MasalaObject {
+class MasalaConfigurationManager : public masala::base::MasalaObject {
 
 public:
 
@@ -128,13 +129,14 @@ private:
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala {
 
 /// @brief A macro for obtaining a configuration object for a particular class.
 /// @note The class must override load_configuration().  This must be called from a member function
 /// like the class constructor.
 #define OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( CLASSNAME, CONFIG_CONTAINER_CLASSNAME ) \
     std::dynamic_pointer_cast< CONFIG_CONTAINER_CLASSNAME const >( \
-            base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings( \
+            masala::base::managers::configuration::MasalaConfigurationManager::get_instance()->get_configuration_settings( \
                 CLASSNAME::class_namespace() + "::" + CLASSNAME::class_name(), \
                 std::bind( &CLASSNAME::load_configuration, this, std::placeholders::_1 ) \
             ) \

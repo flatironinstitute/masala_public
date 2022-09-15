@@ -41,13 +41,14 @@ SOFTWARE.
 #include <map>
 #include <mutex>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace tracer {
 
 
 /// @brief A static singleton for managing output to the tracer (screen and/or logfile(s)).
-class MasalaTracerManager : public base::MasalaObject {
+class MasalaTracerManager : public masala::base::MasalaObject {
 
 public:
 
@@ -143,5 +144,6 @@ private:
 } // namespace tracer
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_tracer_MasalaTracerManager_hh

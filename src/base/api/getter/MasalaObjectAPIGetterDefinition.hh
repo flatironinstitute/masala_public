@@ -43,6 +43,7 @@ SOFTWARE.
 // STL headers.
 #include <string>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace getter {
@@ -54,7 +55,7 @@ namespace getter {
 /// zero-parameter, one-parameter, two-parameter, three-parameter, etc. getters.
 /// @note A getter can take zero or more inputs, and must return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPIGetterDefinition : public base::MasalaObject {
+class MasalaObjectAPIGetterDefinition : public masala::base::MasalaObject {
 
 public:
 
@@ -130,8 +131,9 @@ private:
 
 }; // class MasalaObjectAPIGetterDefinition
 
-} //namespace getter
-} //namespace api
-} //namespace base
+} // namespace getter
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_hh

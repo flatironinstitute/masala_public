@@ -31,6 +31,7 @@ SOFTWARE.
 
 // STL headers
 
+namespace masala {
 namespace base {
 namespace api {
 
@@ -155,3 +156,4 @@ namespace api {
 
 } // namespace api
 } // namespace base
+} // namespace masala

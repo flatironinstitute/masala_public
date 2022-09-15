@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -47,5 +48,6 @@ namespace engine {
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh

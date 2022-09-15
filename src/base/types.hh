@@ -31,11 +31,13 @@ SOFTWARE.
 
 #include <cstddef>
 
+namespace masala {
 namespace base {
 
     typedef std::size_t Size;
     typedef double Real;
 
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_types_hh

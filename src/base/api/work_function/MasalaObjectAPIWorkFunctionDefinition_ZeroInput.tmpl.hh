@@ -49,6 +49,7 @@ SOFTWARE.
 #include <sstream>
 #include <functional>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace work_function {
@@ -122,7 +123,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << base::api::name_from_type(base::api::type< T0 >()) << " " << work_function_name() << "()" << (is_const() ? " const" : "" ) << ":" << std::endl;
+    	ss << "WorkFunction:\t" << masala::base::api::name_from_type(base::api::type< T0 >()) << " " << work_function_name() << "()" << (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
 		return ss.str();
@@ -143,7 +144,7 @@ public:
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = base::api::name_from_type(base::api::type< T0 >());
+		json_output[ "Output_Type" ] = masala::base::api::name_from_type(base::api::type< T0 >());
 		json_output[ "Output_Description" ] = output_description_;
 		json_api["Output"] = json_output;
 
@@ -164,8 +165,9 @@ private:
 
 }; // class MasalaObjectAPIWorkFunctionDefinition_ZeroInput
 
-} //namespace work_function
-} //namespace api
-} //namespace base
+} // namespace work_function
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_ZeroInput_tmpl_hh

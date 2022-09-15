@@ -30,9 +30,10 @@ SOFTWARE.
 // Project headers
 #include <base/managers/configuration/ConfigurationBase.hh>
 
-namespace base{
-namespace managers{
-namespace configuration{
+namespace masala {
+namespace base {
+namespace managers {
+namespace configuration {
 
 /// @brief MasalaConfigurationManager-authorized constructor.
 /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
@@ -41,9 +42,10 @@ namespace configuration{
 ConfigurationBase::ConfigurationBase(
     MasalaConfigurationManagerAuthorization const &
 ) : 
-    base::MasalaObject()
+    masala::base::MasalaObject()
 {}
 
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala

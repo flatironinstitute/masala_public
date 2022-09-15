@@ -33,9 +33,10 @@ SOFTWARE.
 // STL headers
 #include <memory>
 
-namespace base{
-namespace managers{
-namespace configuration{
+namespace masala {
+namespace base {
+namespace managers {
+namespace configuration {
 
     class ConfigurationBase;
 
@@ -47,5 +48,6 @@ namespace configuration{
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_configuration_ConfigurationBase_fwd_hh

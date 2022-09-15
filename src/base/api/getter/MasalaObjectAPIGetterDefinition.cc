@@ -31,6 +31,7 @@ SOFTWARE.
 // Class headers
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace getter {
@@ -48,7 +49,7 @@ MasalaObjectAPIGetterDefinition::MasalaObjectAPIGetterDefinition(
     std::string const & getter_function_name,
     std::string const & getter_function_description
 ) :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     getter_function_name_(getter_function_name),
     getter_function_description_(getter_function_description)
 {}
@@ -72,3 +73,4 @@ MasalaObjectAPIGetterDefinition::getter_function_description() const {
 } // namespace getter
 } // namespace api
 } // namespace base
+} // namespace masala

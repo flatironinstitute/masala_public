@@ -49,6 +49,7 @@ SOFTWARE.
 #include <sstream>
 #include <functional>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace setter {
@@ -119,7 +120,7 @@ public:
 	std::string
 	get_setter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Setter:\tvoid " << setter_function_name() << "( " << base::api::name_from_type< T1 >() << " ):" << std::endl;
+    	ss << "Setter:\tvoid " << setter_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " ):" << std::endl;
 		ss << setter_function_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		return ss.str();
@@ -140,7 +141,7 @@ public:
 
 		nlohmann::json json_input1;
 		json_input1["Input_Index"] = 1;
-		json_input1["Input_Type"] = base::api::name_from_type< T1 >();
+		json_input1["Input_Type"] = masala::base::api::name_from_type< T1 >();
 		json_input1["Input_Description"] = input_parameter1_description_;
 
 		json_api["Input_1"] = json_input1;
@@ -162,8 +163,9 @@ private:
 
 }; // class MasalaObjectAPISetterDefinition_OneInput
 
-} //namespace setter
-} //namespace api
-} //namespace base
+} // namespace setter
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_OneInput_tmpl_hh

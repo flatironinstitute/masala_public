@@ -43,6 +43,7 @@ SOFTWARE.
 // STL headers.
 #include <string>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace work_function {
@@ -54,7 +55,7 @@ namespace work_function {
 /// one-parameter, two-parameter, three-parameter, etc. work functions.
 /// @note A work function can take any number of inputs, and can return anything.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPIWorkFunctionDefinition : public base::MasalaObject {
+class MasalaObjectAPIWorkFunctionDefinition : public masala::base::MasalaObject {
 
 public:
 
@@ -139,8 +140,9 @@ private:
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 
-} //namespace work_function
-} //namespace api
-} //namespace base
+} // namespace work_function
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_hh

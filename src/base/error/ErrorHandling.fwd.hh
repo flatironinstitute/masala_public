@@ -29,6 +29,7 @@ SOFTWARE.
 #ifndef Masala_src_base_error_ErrorHandling_fwd_hh
 #define Masala_src_base_error_ErrorHandling_fwd_hh
 
+namespace masala {
 namespace base {
 namespace error {
 
@@ -36,6 +37,6 @@ namespace error {
 
 } // namespace error
 } // namespace base
-
+} // namespace masala
 
 #endif //Masala_src_base_error_ErrorHandling_fwd_hh

@@ -35,14 +35,14 @@ SOFTWARE.
 // Forward declarations:
 #include <base/managers/engine/MasalaDataRepresentationRegistratorBase.fwd.hh>
 
-
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
 
 /// @brief A base class for data representation registrators.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationRegistratorBase : public base::MasalaObject {
+class MasalaDataRepresentationRegistratorBase : public masala::base::MasalaObject {
 
 public:
 
@@ -61,5 +61,6 @@ public:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_hh

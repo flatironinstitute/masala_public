@@ -39,7 +39,7 @@ SOFTWARE.
 #include <base/managers/engine/MasalaDataRepresentationRegistratorBase.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
-
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -48,7 +48,7 @@ namespace engine {
 /// @details Creators must be registered with the MasalaDataRepresentationManager.  They
 /// can only be created with static registrators.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationCreatorBase : public base::MasalaObject {
+class MasalaDataRepresentationCreatorBase : public masala::base::MasalaObject {
 
     friend class MasalaDataRepresentationRegistratorBase; // For creation.
     friend class MasalaDataRepresentationManager; // To call protected create_data_representation() function.
@@ -93,5 +93,6 @@ protected:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh

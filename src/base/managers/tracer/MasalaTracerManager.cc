@@ -37,6 +37,7 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace tracer {
@@ -126,8 +127,8 @@ MasalaTracerManager::write_to_tracer(
     }
 
     // Write the message to the tracer.
-    std::vector< std::string > const splitlines( base::utility::string::split_by_newlines( message ) );
-    for( base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
+    std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
+    for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
         std::cout << tracer_name << ": " << splitlines[i] << "\n";
     }
     std::cout.flush();
@@ -136,3 +137,4 @@ MasalaTracerManager::write_to_tracer(
 } // namespace tracer
 } // namespace managers
 } // namespace base
+} // namespace masala

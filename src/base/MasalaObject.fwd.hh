@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 
 	class MasalaObject;
@@ -53,5 +54,6 @@ namespace base {
 	using MasalaObjectCWP = std::weak_ptr< MasalaObject const >;
 
 } // namespace base
+} // namesapce masala
 
 #endif //Masala_src_base_MasalaObject_fwd_hh

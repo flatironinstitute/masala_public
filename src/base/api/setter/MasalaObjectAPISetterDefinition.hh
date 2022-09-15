@@ -43,6 +43,7 @@ SOFTWARE.
 // STL headers.
 #include <string>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace setter {
@@ -54,7 +55,7 @@ namespace setter {
 /// one-parameter, two-parameter, three-parameter, etc. setters.
 /// @note A setter must take one or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPISetterDefinition : public base::MasalaObject {
+class MasalaObjectAPISetterDefinition : public masala::base::MasalaObject {
 
 public:
 
@@ -130,8 +131,9 @@ private:
 
 }; // class MasalaObjectAPISetterDefinition
 
-} //namespace setter
-} //namespace api
-} //namespace base
+} // namespace setter
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_setter_MasalaObjectAPISetterDefinition_hh

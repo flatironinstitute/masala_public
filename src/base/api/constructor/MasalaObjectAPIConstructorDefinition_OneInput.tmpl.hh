@@ -47,6 +47,7 @@ SOFTWARE.
 // STL headers.
 #include <sstream>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace constructor {
@@ -116,7 +117,7 @@ public:
 	std::string
 	get_constructor_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Constructor:\t" << constructor_name() << "( " << base::api::name_from_type(base::api::type<T1>()) << " ):" << std::endl;
+    	ss << "Constructor:\t" << constructor_name() << "( " << masala::base::api::name_from_type(base::api::type<T1>()) << " ):" << std::endl;
 		ss << constructor_description() << std::endl;
 		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
 		return ss.str();
@@ -137,7 +138,7 @@ public:
 
 		nlohmann::json json_input1;
 		json_input1["Input_Index"] = 1;
-		json_input1["Input_Type"] = base::api::name_from_type(base::api::type< T1 >());
+		json_input1["Input_Type"] = masala::base::api::name_from_type(base::api::type< T1 >());
 		json_input1["Input_Description"] = input_parameter1_description_;
 
 		json_api["Input_1"] = json_input1;
@@ -168,8 +169,9 @@ private:
 
 }; // class MasalaObjectAPIConstructorDefinition_OneInput
 
-} //namespace constructor
-} //namespace api
-} //namespace base
+} // namespace constructor
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_OneInput_tmpl_hh

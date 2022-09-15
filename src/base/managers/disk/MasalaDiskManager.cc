@@ -34,6 +34,7 @@ SOFTWARE.
 #include <string>
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace disk {
@@ -82,3 +83,4 @@ MasalaDiskManager::write_ascii_file(
 } // namespace disk
 } // namespace managers
 } // namespace base
+} // namespace masala

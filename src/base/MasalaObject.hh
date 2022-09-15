@@ -39,6 +39,7 @@ SOFTWARE.
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
+namespace masala {
 namespace base {
 
 /// @brief A base class for all Masala derived classes.  This allows the possibility of having a
@@ -48,7 +49,7 @@ namespace base {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaObject {
 
-	friend class base::managers::configuration::MasalaConfigurationManager;
+	friend class masala::base::managers::configuration::MasalaConfigurationManager;
 
 public:
 
@@ -102,7 +103,7 @@ public:
 	/// whether it is safe to use the function pointers.  Not ideal, but better than
 	/// nothing.
 	virtual
-	base::api::MasalaObjectAPIDefinitionCWP
+	masala::base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition();
 
 	/// @brief Writes text to the tracer, using the MasalaTracerManager.
@@ -126,13 +127,14 @@ protected:
 	/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
 	/// class.
 	virtual
-	base::managers::configuration::ConfigurationBaseCSP
+	masala::base::managers::configuration::ConfigurationBaseCSP
 	load_configuration(
-		base::managers::configuration::MasalaConfigurationManagerAuthorization const &
+		masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const &
 	) const;
 
 }; // class MasalaObject
 
-} //namespace base
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_MasalaObject_hh

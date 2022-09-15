@@ -34,6 +34,7 @@ SOFTWARE.
 #include <base/managers/engine/MasalaEngineCreatorBase.hh>
 #include <base/error/ErrorHandling.hh>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -122,3 +123,4 @@ MasalaEngineManager::unregister_engine(
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala

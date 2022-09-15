@@ -43,6 +43,7 @@ SOFTWARE.
 // STL headers
 #include <sstream>
 
+namespace masala {
 namespace base {
 namespace api {
 
@@ -59,7 +60,7 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     std::string const & api_class_name,
     std::string const & api_class_description
 ) :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     api_class_name_( api_class_name ),
     api_class_description_( api_class_description )
 {}
@@ -85,10 +86,10 @@ MasalaObjectAPIDefinition::class_namespace() const {
 /// each time.
 std::string
 MasalaObjectAPIDefinition::get_human_readable_description() const {
-    using namespace base::api::constructor;
-    using namespace base::api::setter;
-    using namespace base::api::getter;
-    using namespace base::api::work_function;
+    using namespace masala::base::api::constructor;
+    using namespace masala::base::api::setter;
+    using namespace masala::base::api::getter;
+    using namespace masala::base::api::work_function;
 
     std::ostringstream ss;
     ss << api_class_name_ << " API:\n\n";
@@ -181,7 +182,7 @@ MasalaObjectAPIDefinition::n_constructors() const {
 /// @brief Add a constructor.
 void
 MasalaObjectAPIDefinition::add_constructor(
-    base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
+    masala::base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
 ) {
     constructors_.emplace_back( constructor_in );
 }
@@ -207,7 +208,7 @@ MasalaObjectAPIDefinition::n_setters() const {
 /// @brief Add a setter.
 void
 MasalaObjectAPIDefinition::add_setter(
-    base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
+    masala::base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
 ) {
     setters_.emplace_back( setter_in );
 }
@@ -233,7 +234,7 @@ MasalaObjectAPIDefinition::n_getters() const {
 /// @brief Add a getter.
 void
 MasalaObjectAPIDefinition::add_getter(
-    base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
+    masala::base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
 ) {
     getters_.emplace_back( getter_in );
 }
@@ -259,7 +260,7 @@ MasalaObjectAPIDefinition::n_work_functions() const {
 /// @brief Add a work function.
 void
 MasalaObjectAPIDefinition::add_work_function(
-    base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
+    masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
     work_functions_.emplace_back( work_function_in );
 }
@@ -277,7 +278,7 @@ MasalaObjectAPIDefinition::get_json_description_for_constructors() const {
     json_api["N_Constructors"] = constructors_.size();
 
     std::vector< nlohmann::json > constructor_jsons( constructors_.size() );
-    for( base::Size i(0), imax(constructors_.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(constructors_.size()); i<imax; ++i ) {
         constructor_jsons[i] = constructors_[i]->get_constructor_json_description();
     }
 
@@ -294,7 +295,7 @@ MasalaObjectAPIDefinition::get_json_description_for_setters() const {
     json_api["N_Setters"] = setters_.size();
 
     std::vector< nlohmann::json > setter_jsons( setters_.size() );
-    for( base::Size i(0), imax(setters_.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(setters_.size()); i<imax; ++i ) {
         setter_jsons[i] = setters_[i]->get_setter_json_description();
     }
 
@@ -311,7 +312,7 @@ MasalaObjectAPIDefinition::get_json_description_for_getters() const {
     json_api["N_Getters"] = getters_.size();
 
     std::vector< nlohmann::json > getter_jsons( getters_.size() );
-    for( base::Size i(0), imax(getters_.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(getters_.size()); i<imax; ++i ) {
         getter_jsons[i] = getters_[i]->get_getter_json_description();
     }
 
@@ -328,7 +329,7 @@ MasalaObjectAPIDefinition::get_json_description_for_work_functions() const {
     json_api["N_Work_Functions"] = work_functions_.size();
 
     std::vector< nlohmann::json > work_function_jsons( work_functions_.size() );
-    for( base::Size i(0), imax(work_functions_.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(work_functions_.size()); i<imax; ++i ) {
         work_function_jsons[i] = work_functions_[i]->get_work_function_json_description();
     }
 
@@ -338,3 +339,4 @@ MasalaObjectAPIDefinition::get_json_description_for_work_functions() const {
 
 } // namespace api
 } // namespace base
+} // namespace masala

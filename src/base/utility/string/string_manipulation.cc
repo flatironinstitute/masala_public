@@ -33,6 +33,7 @@ SOFTWARE.
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
 
+namespace masala {
 namespace base {
 namespace utility {
 namespace string {
@@ -80,3 +81,4 @@ split_by_newlines(
 } // namespace string
 } // namespace utility
 } // namespace base
+} // namespace masala

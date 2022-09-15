@@ -32,6 +32,7 @@ SOFTWARE.
 // STL headers
 #include <algorithm>
 
+namespace masala {
 namespace base {
 namespace utility {
 namespace container {
@@ -46,5 +47,6 @@ namespace container {
 } // namespace container
 } // namespace utility
 } // namsespace base
+} // namespace masala
 
 #endif //Masala_src_base_utility_container_container_util_tmpl_hh

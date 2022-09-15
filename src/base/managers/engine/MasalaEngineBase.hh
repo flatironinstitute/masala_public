@@ -39,6 +39,7 @@ SOFTWARE.
 // Base headers:
 #include <base/MasalaObject.hh>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -49,7 +50,7 @@ namespace engine {
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineBase : public base::MasalaObject {
+class MasalaEngineBase : public masala::base::MasalaObject {
 
 public:
 
@@ -68,5 +69,6 @@ public:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_engine_MasalaEngineBase_hh

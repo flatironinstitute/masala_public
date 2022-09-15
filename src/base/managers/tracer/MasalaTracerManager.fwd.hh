@@ -30,6 +30,7 @@ SOFTWARE.
 #ifndef Masala_src_base_managers_tracer_MasalaTracerManager_fwd_hh
 #define Masala_src_base_managers_tracer_MasalaTracerManager_fwd_hh
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace tracer {
@@ -43,5 +44,6 @@ namespace tracer {
 } // namespace tracer
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_tracer_MasalaTracerManager_fwd_hh

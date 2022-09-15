@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace api {
 namespace constructor {
@@ -59,5 +60,6 @@ namespace constructor {
 } // namespace constructor
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_fwd_hh

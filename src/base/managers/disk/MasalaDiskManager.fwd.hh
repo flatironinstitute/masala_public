@@ -30,6 +30,7 @@ SOFTWARE.
 #ifndef Masala_src_base_managers_disk_MasalaDiskManager_fwd_hh
 #define Masala_src_base_managers_disk_MasalaDiskManager_fwd_hh
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace disk {
@@ -42,5 +43,6 @@ namespace disk {
 } // namespace disk
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_disk_MasalaDiskManager_fwd_hh

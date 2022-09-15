@@ -45,6 +45,7 @@ SOFTWARE.
 #include <mutex>
 #include <string>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -52,7 +53,7 @@ namespace engine {
 /// @brief A static singleton for managing available engines.
 /// @details Modules may register and retrieve engines by unique keystring.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineManager : public base::MasalaObject {
+class MasalaEngineManager : public masala::base::MasalaObject {
 
 public:
 
@@ -144,5 +145,6 @@ private:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_engine_MasalaEngineManager_hh

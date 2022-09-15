@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace api {
 namespace getter {
@@ -59,5 +60,6 @@ namespace getter {
 } // namespace getter
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_fwd_hh

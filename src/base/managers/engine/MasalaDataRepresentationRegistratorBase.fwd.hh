@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -42,5 +43,6 @@ namespace engine {
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_fwd_hh

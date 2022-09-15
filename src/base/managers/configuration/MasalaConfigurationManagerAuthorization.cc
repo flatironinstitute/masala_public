@@ -34,6 +34,7 @@ SOFTWARE.
 // STL headers
 #include <string>
 
+namespace masala {
 namespace base{
 namespace managers{
 namespace configuration{
@@ -58,3 +59,4 @@ MasalaConfigurationManagerAuthorization::class_namespace() const {
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala

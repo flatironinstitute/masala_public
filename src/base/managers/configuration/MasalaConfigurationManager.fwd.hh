@@ -32,6 +32,7 @@ SOFTWARE.
 #ifndef Masala_src_base_managers_configuration_MasalaConfigurationManager_fwd_hh
 #define Masala_src_base_managers_configuration_MasalaConfigurationManager_fwd_hh
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace configuration {
@@ -45,5 +46,6 @@ namespace configuration {
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_configuration_MasalaConfigurationManager_fwd_hh

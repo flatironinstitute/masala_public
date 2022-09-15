@@ -38,7 +38,7 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
 
-
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -49,7 +49,7 @@ namespace engine {
 /// @note Only a MasalaDataRepresentationCreator can create a MasalaDataRepresentation.
 /// Only a MasalaDataRepresentationRegistrator can create a MasalaDataRepresentationCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationBase : public base::MasalaObject {
+class MasalaDataRepresentationBase : public masala::base::MasalaObject {
 
     friend class MasalaDataRepresentationCreatorBase;
 
@@ -79,5 +79,6 @@ public:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif // Masala_src_base_managers_engine_MasalaDataRepresentationBase_hh

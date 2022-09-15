@@ -31,6 +31,7 @@ SOFTWARE.
 // Class headers
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace setter {
@@ -48,7 +49,7 @@ MasalaObjectAPISetterDefinition::MasalaObjectAPISetterDefinition(
     std::string const & setter_function_name,
     std::string const & setter_function_description
 ) :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     setter_function_name_(setter_function_name),
     setter_function_description_(setter_function_description)
 {}
@@ -72,3 +73,4 @@ MasalaObjectAPISetterDefinition::setter_function_description() const {
 } // namespace setter
 } // namespace api
 } // namespace base
+} // namespace masala

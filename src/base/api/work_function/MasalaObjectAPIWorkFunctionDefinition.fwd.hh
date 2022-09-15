@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace api {
 namespace work_function {
@@ -59,5 +60,6 @@ namespace work_function {
 } // namespace work_function
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_fwd_hh

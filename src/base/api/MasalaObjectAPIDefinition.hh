@@ -51,6 +51,7 @@ SOFTWARE.
 #include <vector>
 #include <string>
 
+namespace masala {
 namespace base {
 namespace api {
 
@@ -58,7 +59,7 @@ namespace api {
 /// to auto-generate the public C++ headers, plus the bindings for Python
 /// or XML (or other scripting languages).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPIDefinition : public base::MasalaObject {
+class MasalaObjectAPIDefinition : public masala::base::MasalaObject {
 
 public:
 
@@ -238,7 +239,8 @@ private:
 
 }; // class MasalaObjectAPIDefinition
 
-} //namespace api
-} //namespace base
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_MasalaObjectAPIDefinition_hh

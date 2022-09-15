@@ -34,6 +34,7 @@ SOFTWARE.
 // STL headers
 #include <memory>
 
+namespace masala {
 namespace base{
 namespace managers{
 namespace configuration{
@@ -43,5 +44,6 @@ namespace configuration{
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_fwd_hh

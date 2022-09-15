@@ -49,6 +49,7 @@ SOFTWARE.
 #include <sstream>
 #include <functional>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace getter {
@@ -120,7 +121,7 @@ public:
 	std::string
 	get_getter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Getter:\t" << base::api::name_from_type(base::api::type<T0>()) << " " << getter_function_name() << "() const:" << std::endl;
+    	ss << "Getter:\t" << masala::base::api::name_from_type(base::api::type<T0>()) << " " << getter_function_name() << "() const:" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Output: \t" << output_description_ << std::endl;
 		return ss.str();
@@ -141,7 +142,7 @@ public:
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = base::api::name_from_type(base::api::type<T0>());
+		json_output[ "Output_Type" ] = masala::base::api::name_from_type(base::api::type<T0>());
 		json_output[ "Output_Description" ] = output_description_;
 		json_api["Output"] = json_output;
 
@@ -162,8 +163,9 @@ private:
 
 }; // class MasalaObjectAPIGetterDefinition_ZeroInput
 
-} //namespace getter
-} //namespace api
-} //namespace base
+} // namespace getter
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_getter_MasalaObjectAPIGetterDefinition_ZeroInput_tmpl_hh

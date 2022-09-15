@@ -43,6 +43,7 @@ SOFTWARE.
 // STL headers.
 #include <string>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace constructor {
@@ -54,7 +55,7 @@ namespace constructor {
 /// one-parameter, two-parameter, three-parameter, etc. constructors.
 /// @note A constructor must take one or more inputs, and must have no return value.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPIConstructorDefinition : public base::MasalaObject {
+class MasalaObjectAPIConstructorDefinition : public masala::base::MasalaObject {
 
 public:
 
@@ -130,8 +131,9 @@ private:
 
 }; // class MasalaObjectAPIConstructorDefinition
 
-} //namespace constructor
-} //namespace api
-} //namespace base
+} // namespace constructor
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_hh

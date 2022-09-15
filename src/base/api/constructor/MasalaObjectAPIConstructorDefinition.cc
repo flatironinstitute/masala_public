@@ -31,6 +31,7 @@ SOFTWARE.
 // Class headers
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace constructor {
@@ -48,7 +49,7 @@ MasalaObjectAPIConstructorDefinition::MasalaObjectAPIConstructorDefinition(
     std::string const & constructor_name,
     std::string const & constructor_description
 ) :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     constructor_name_(constructor_name),
     constructor_description_(constructor_description)
 {}
@@ -72,3 +73,4 @@ MasalaObjectAPIConstructorDefinition::constructor_description() const {
 } // namespace constructor
 } // namespace api
 } // namespace base
+} // namespace masala

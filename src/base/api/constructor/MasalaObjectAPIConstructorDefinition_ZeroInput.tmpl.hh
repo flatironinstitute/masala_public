@@ -49,6 +49,7 @@ SOFTWARE.
 // STL headers.
 #include <sstream>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace constructor {
@@ -155,8 +156,9 @@ private:
 
 }; // class MasalaObjectAPIConstructorDefinition_ZeroInput
 
-} //namespace constructor
-} //namespace api
-} //namespace base
+} // namespace constructor
+} // namespace api
+} // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_ZeroInput_tmpl_hh

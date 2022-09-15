@@ -30,6 +30,7 @@ SOFTWARE.
 /// Headers.
 #include <base/error/ErrorHandling.hh>
 
+namespace masala {
 namespace base {
 namespace error {
 
@@ -57,3 +58,4 @@ MasalaException::message() const {
 
 } // namespace error
 } // namespace base
+} // namespace masala

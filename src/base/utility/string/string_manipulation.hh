@@ -33,6 +33,7 @@ SOFTWARE.
 #include <vector>
 #include <string>
 
+namespace masala {
 namespace base {
 namespace utility {
 namespace string {
@@ -46,5 +47,6 @@ namespace string {
 } // namespace string
 } // namespace utility
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_utility_string_string_manipulation_hh

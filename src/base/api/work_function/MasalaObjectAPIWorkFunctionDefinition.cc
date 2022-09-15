@@ -31,6 +31,7 @@ SOFTWARE.
 // Class headers
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 
+namespace masala {
 namespace base {
 namespace api {
 namespace work_function {
@@ -50,7 +51,7 @@ MasalaObjectAPIWorkFunctionDefinition::MasalaObjectAPIWorkFunctionDefinition(
     std::string const & work_function_description,
     bool const is_const
 ) :
-    base::MasalaObject(),
+    masala::base::MasalaObject(),
     work_function_name_(work_function_name),
     work_function_description_(work_function_description),
     is_const_(is_const)
@@ -81,3 +82,4 @@ MasalaObjectAPIWorkFunctionDefinition::is_const() const {
 } // namespace work_function
 } // namespace api
 } // namespace base
+} // namespace masala

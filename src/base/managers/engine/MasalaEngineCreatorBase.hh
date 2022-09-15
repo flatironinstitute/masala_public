@@ -39,6 +39,7 @@ SOFTWARE.
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
@@ -47,7 +48,7 @@ namespace engine {
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineCreatorBase : public base::MasalaObject {
+class MasalaEngineCreatorBase : public masala::base::MasalaObject {
 
 	friend class MasalaEngineManager;
 
@@ -75,5 +76,6 @@ protected:
 } // namespace engine
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_engine_MasalaEngineCreatorBase_hh

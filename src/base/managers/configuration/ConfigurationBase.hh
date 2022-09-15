@@ -39,11 +39,12 @@ SOFTWARE.
 // Base headers:
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 
+namespace masala {
 namespace base{
 namespace managers{
 namespace configuration{
 
-class ConfigurationBase : public base::MasalaObject {
+class ConfigurationBase : public masala::base::MasalaObject {
 
 public:
 
@@ -77,5 +78,6 @@ private:
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_configuration_ConfigurationBase_hh

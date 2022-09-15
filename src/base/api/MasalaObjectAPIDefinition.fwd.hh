@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <memory> // For std::shared_ptr
 
+namespace masala {
 namespace base {
 namespace api {
 
@@ -56,5 +57,6 @@ namespace api {
 
 } // namespace api
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_api_MasalaObjectAPIDefinition_fwd_hh

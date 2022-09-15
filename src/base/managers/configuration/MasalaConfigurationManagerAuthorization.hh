@@ -38,6 +38,7 @@ SOFTWARE.
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
 
+namespace masala {
 namespace base{
 namespace managers{
 namespace configuration{
@@ -45,7 +46,7 @@ namespace configuration{
 /// @brief A "key" class with a private constructor, which can only be instantiated by
 /// the MasalaConfigurationManager, used to ensure that only the configuration manager
 /// can instantiate configuration objects.
-class MasalaConfigurationManagerAuthorization : public base::MasalaObject {
+class MasalaConfigurationManagerAuthorization : public masala::base::MasalaObject {
 
     friend class MasalaConfigurationManager;
 
@@ -87,5 +88,6 @@ public:
 } // namespace configuration
 } // namespace managers
 } // namespace base
+} // namespace masala
 
 #endif //Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_hh
