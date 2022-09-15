@@ -13,8 +13,8 @@
 // Unit header:
 <__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>
 
-// Source class header:
-<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
+// Source class forward header:
+<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>
 
 // Base headers:
 #include <base_api/MasalaObjectAPI.hh>
@@ -32,7 +32,7 @@ public:
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-<__CPP_CONSTRUCTORS__>
+<__CPP_CONSTRUCTOR_PROTOTYPES__>
 
     /// @brief Destructor.
     <__SOURCE_CLASS_API_NAME__>() = default;
@@ -64,7 +64,7 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-<__CPP_SETTERS__>
+<__CPP_SETTER_PROTOTYPES__>
 
 public:
 
@@ -72,7 +72,7 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-<__CPP_GETTERS__>
+<__CPP_GETTER_PROTOTYPES__>
 
 public:
 
@@ -80,7 +80,7 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-<__CPP_WORK_FUNCTIONS__>
+<__CPP_WORK_FUNCTION_PROTOTYPES__>
 
 private:
 
