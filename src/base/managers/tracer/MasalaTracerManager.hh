@@ -91,7 +91,7 @@ public:
     class_name() const override;
 
     /// @brief Get the namespace of this object.
-    /// @details Returns "base::managers::tracer".
+    /// @details Returns "masala::base::managers::tracer".
     std::string
     class_namespace() const override;
 

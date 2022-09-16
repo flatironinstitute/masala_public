@@ -96,7 +96,7 @@ public:
     class_name() const override;
 
     /// @brief Get the namespace of this object.
-    /// @details Returns "base::managers::engine".
+    /// @details Returns "masala::base::managers::engine".
     std::string
     class_namespace() const override;
 

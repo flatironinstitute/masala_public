@@ -61,10 +61,10 @@ MasalaTracerManager::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "base::managers::tracer".
+/// @details Returns "masala::base::managers::tracer".
 std::string
 MasalaTracerManager::class_namespace() const {
-    return "base::managers::tracer";
+    return "masala::base::managers::tracer";
 }
 
 /// @brief Check whether a particular tracer is enabled.

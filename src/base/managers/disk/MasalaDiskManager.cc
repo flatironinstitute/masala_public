@@ -62,10 +62,10 @@ MasalaDiskManager::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "base::managers::disk".
+/// @details Returns "masala::base::managers::disk".
 std::string
 MasalaDiskManager::class_namespace() const {
-    return "base::managers::disk";
+    return "masala::base::managers::disk";
 }
 
 /// @brief Write a string to an ASCII file.

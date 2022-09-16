@@ -61,10 +61,10 @@ MasalaConfigurationManager::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "base::managers::configuration".
+/// @details Returns "masala::base::managers::configuration".
 std::string
 MasalaConfigurationManager::class_namespace() const {
-    return "base::managers::configuration";
+    return "masala::base::managers::configuration";
 }
 
 /// @brief Retrieve configuration settings for a given class.

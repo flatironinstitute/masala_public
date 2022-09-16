@@ -80,7 +80,7 @@ public:
     /// @brief Get the class name ("MasalaConfigurationManagerAuthorization").
     std::string class_name() const override;
 
-    /// @brief Get the class namespace ("base::managers::configuration").
+    /// @brief Get the class namespace ("masala::base::managers::configuration").
     std::string class_namespace() const override;
 
 };

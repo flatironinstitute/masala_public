@@ -106,10 +106,10 @@ public:
 		return "MasalaObjectAPIGetterDefinition_OneInput";
 	}
 
-	/// @brief Every class can provide its own namespace.  This returns "base::api::getter".
+	/// @brief Every class can provide its own namespace.  This returns "masala::base::api::getter".
 	std::string
 	class_namespace() const override {
-		return "base::api::getter";
+		return "masala::base::api::getter";
 	}
 
 public:

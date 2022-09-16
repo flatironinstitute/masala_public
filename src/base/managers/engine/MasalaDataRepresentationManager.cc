@@ -58,10 +58,10 @@ MasalaDataRepresentationManager::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "base::managers::engine".
+/// @details Returns "masala::base::managers::engine".
 std::string
 MasalaDataRepresentationManager::class_namespace() const {
-    return "base::managers::engine";
+    return "masala::base::managers::engine";
 }
 
 /// @brief Create a data representation, by name.

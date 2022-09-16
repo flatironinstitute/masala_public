@@ -73,10 +73,13 @@ public:
 	/// @brief Options constructor.
 	/// @param[in] api_class_name The name of the class for which we're
 	///            providing an API definition.
+	/// @param[in] api_class_namespace The namespace of the class for which
+	///            we're providing an API definition.
 	/// @param[in] api_class_description The description of the class for which
 	///			   we're providing an API definition.
 	MasalaObjectAPIDefinition(
 		std::string const & api_class_name,
+		std::string const & api_class_namespace,
 		std::string const & api_class_description
 	);
 
@@ -91,7 +94,7 @@ public:
 	/// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
 	std::string class_name() const override;
 
-	/// @brief Every class can provide its own namespace.  This returns "base::api".
+	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".
 	std::string class_namespace() const override;
 
 public:
@@ -219,6 +222,10 @@ private:
 	/// @brief The name of the class for which we're providing an API definition.
 	/// @details Must be set at construction time.
 	std::string const api_class_name_;
+
+	/// @brief The namespace of the class for which we're providing an API definition.
+	/// @details Must be set at construction time.
+	std::string const api_class_namespace_;
 
 	/// @brief The description of the class for which we're providing an API definition.
 	/// @details Must be set at construction time.

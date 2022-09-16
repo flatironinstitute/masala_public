@@ -50,7 +50,7 @@ MasalaConfigurationManagerAuthorization::class_name() const {
     return "MasalaConfigurationManagerAuthorization";
 }
 
-/// @brief Get the class namespace ("base::managers::configuration").
+/// @brief Get the class namespace ("masala::base::managers::configuration").
 std::string
 MasalaConfigurationManagerAuthorization::class_namespace() const {
     return "bas::managers::configuration";
