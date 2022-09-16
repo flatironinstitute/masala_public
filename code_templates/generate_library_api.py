@@ -127,8 +127,13 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 ## @note The classname input should include namespace.
 def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str) -> str :
     outstring = ""
+    first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
-        print(constructor)
+        #print(constructor)
+        if first :
+            first = False
+        else :
+            outstring += "\n\n"
         outstring += tabchar + "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -138,12 +143,11 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + constructor["Input_" + str(i+1)]["Input_Type"] + " input_" + str(i)
-            outstring += "\n" + tabchar + ");\n\n"
+            outstring += "\n" + tabchar + ");"
         else :
-            outstring += ");\n\n"
+            outstring += ");"
     return outstring
-
-
+    
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
 def prepare_forward_declarations( libraryname : str, classname : str, namespace : list, dirname : str, fwdfile_template : str, licence : str ) :
     apiclassname = classname + "_API"
