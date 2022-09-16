@@ -164,7 +164,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
         namepattern = "Work_Function"
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
-        print(fxn)
+        #print(fxn)
         if first :
             first = False
         else :
