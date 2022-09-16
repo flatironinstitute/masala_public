@@ -136,8 +136,8 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
         .replace( "<__CPP_FWD_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
-        .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
-        .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname )
+        .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
+        .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif // " + header_guard_string )
 
     fname = dirname + apiclassname + ".fwd.hh"
     with open( fname, 'w' ) as filehandle :
