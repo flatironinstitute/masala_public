@@ -29,19 +29,36 @@
 ## root directory.
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
+from dbm.ndbm import library
 import json
 from re import split as regex_split
 from sys import argv
-from os import path, listdir
+import os
 
 ## @brief Parse the commandline options.
-## @returns Source library name, JSON API definition file.  Throws if these two options aren't provided.
-def get_options() :
+## @returns Source library name, JSON API definition file.  Throws if
+## these two options aren't provided.
+def get_options() -> tuple :
     assert len(argv) == 3, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <source library name> <json api definition file>"
     return (argv[1], argv[2])
 
-## @brief Given a namespace string of the form "XXXX::YYYY::ZZZZ", return a list of [ "XXXX", "YYYY", "ZZZZ" ].
-def separate_namespace( namespace_string ):
+## @brief Initialize the auto_generated_api directory, creating it if it does
+## not exist and deleting anything in it if it does.
+def initialize_directory( library_name : str ) -> None :
+    assert os.path.isdir( "src/" + library_name + "_api" ), "Error in generate_library_api.py: Could not find directory \"src/" + library_name + "\".  Note that this script must be run from the Masala root directory."
+    apidir = "src/" + library_name + "_api/auto_generated_api/"
+    if os.path.isdir( apidir ) :
+        print( "Found directory \"" + apidir + "\".  Clearing contents." )
+        os.removedirs( apidir )
+    else :
+        print( "Creating \"" + apidir + "\"." )
+    os.makedirs( apidir )
+    
+        
+
+## @brief Given a namespace string of the form "XXXX::YYYY::ZZZZ", return a\
+## list of [ "XXXX", "YYYY", "ZZZZ" ].
+def separate_namespace( namespace_string ) -> list :
     return regex_split( "\:\:" , namespace_string )
 
 ################################################################################
@@ -56,7 +73,7 @@ print( "Generating API for library \"" + library_name + "\" from API definition 
 with open( api_def_file, 'r' ) as jfile :
     json_api = json.load( jfile )
 
-#initialize_directory()
+initialize_directory( library_name )
 
 for element in json_api["Elements"] :
     #print( element )
