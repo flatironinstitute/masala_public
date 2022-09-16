@@ -208,7 +208,7 @@ Pose::get_api_definition() {
                 class_name_static(),
                 "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
                 "make_independent() is subsequently called.",
-                "The input Pose to copy.  Unaltered by this operation."
+                "src", "The input Pose to copy.  Unaltered by this operation."
             )
         );
 
