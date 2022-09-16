@@ -213,16 +213,7 @@ Pose::get_api_definition() {
         );
 
         // Work functions:
-        api_def->add_work_function(
-            std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
-                "make_independent",
-                "Deep-copies all internal data, and ensures that data are not shared with any other "
-                "Pose instance or any other class instance.",
-                false,
-                "None", "None (void).",
-                std::bind( &Pose::make_independent, this )
-            )
-        );
+
 
         // Getters:
         api_def->add_getter(
