@@ -79,10 +79,10 @@ BasicPDBReader::class_name() const {
     return "BasicPDBReader";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::io::pdb".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::io::pdb".
 std::string
 BasicPDBReader::class_namespace() const {
-    return "masla::core::io::pdb";
+    return "masala::core::io::pdb";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

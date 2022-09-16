@@ -92,17 +92,17 @@ Pose::class_name_static() {
     return "Pose";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::pose".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::pose".
 std::string
 Pose::class_namespace() const {
     return class_namespace_static();
 }
 
-/// @brief Returns "masla::core::pose".
+/// @brief Returns "masala::core::pose".
 /// @details Called by non-static version.
 std::string
 Pose::class_namespace_static() {
-    return "masla::core::pose";
+    return "masala::core::pose";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

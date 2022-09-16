@@ -138,10 +138,10 @@ Molecules::class_name() const {
     return "Molecules";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry".
 std::string
 Molecules::class_namespace() const {
-    return "masla::core::chemistry";
+    return "masala::core::chemistry";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -47,10 +47,10 @@ ElementType::class_name() const {
     return "ElementType";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::atoms".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
 std::string
 ElementType::class_namespace() const {
-    return "masla::core::chemistry::atoms";
+    return "masala::core::chemistry::atoms";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

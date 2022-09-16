@@ -70,10 +70,10 @@ ChemicalBondInstance::class_name() const {
     return "ChemicalBondInstance";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::bonds".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::bonds".
 std::string
 ChemicalBondInstance::class_namespace() const {
-    return "masla::core::chemistry::bonds";
+    return "masala::core::chemistry::bonds";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

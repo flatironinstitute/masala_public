@@ -61,7 +61,7 @@ CoreAtomCoordinateRepresentationRegistrator::CoreAtomCoordinateRepresentationReg
     );
     CoreAtomCoordinateRepresentationRegistrator::write_to_tracer( "Registering core atom coordinate representations with the MasalaDataRepresentationManager." );
     // TODO: register all atom coordinate representations defined in core here.
-    manager->register_data_representation( "masla::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
+    manager->register_data_representation( "masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation", masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreatorSP( new masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentationCreator /*Note -- must use new, since constructor is protected.*/ ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,10 +76,10 @@ CoreAtomCoordinateRepresentationRegistrator::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "masla::core::initialization::registrators".
+/// @details Returns "masala::core::initialization::registrators".
 std::string
 CoreAtomCoordinateRepresentationRegistrator::class_namespace() const {
-    return "masla::core::initialization::registrators";
+    return "masala::core::initialization::registrators";
 }
 
 } // namespace registrators

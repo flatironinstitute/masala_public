@@ -80,10 +80,10 @@ AtomInstance::class_name() const {
     return "AtomInstance";
 }
 
-/// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::atoms".
+/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
 std::string
 AtomInstance::class_namespace() const {
-    return "masla::core::chemistry::atoms";
+    return "masala::core::chemistry::atoms";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

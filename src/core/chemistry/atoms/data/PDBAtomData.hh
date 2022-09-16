@@ -101,7 +101,7 @@ public:
 	/// @brief Returns "PDBAtomData".
 	std::string class_name() const override;
 
-    /// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry::atoms::data".
+    /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms::data".
 	std::string class_namespace() const override;
 
 public:

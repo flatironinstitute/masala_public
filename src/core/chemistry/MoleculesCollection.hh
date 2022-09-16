@@ -88,7 +88,7 @@ public:
     /// @brief Returns "MoleculesCollection".
 	std::string class_name() const override;
 
-    /// @brief Every class can provide its own namespace.  This returns "masla::core::chemistry".
+    /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry".
     std::string class_namespace() const override;
 
 public:

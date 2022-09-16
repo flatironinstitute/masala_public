@@ -80,7 +80,7 @@ public:
     std::string
     class_name() const override;
 
-    /// @brief Returns "masla::core::chemistry::atoms::coordinates".
+    /// @brief Returns "masala::core::chemistry::atoms::coordinates".
     std::string
     class_namespace() const override;
 

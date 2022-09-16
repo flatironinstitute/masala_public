@@ -50,8 +50,8 @@ namespace coordinates {
     std::string EigenLinalgCartesianAtomCoordinateRepresentationCreator::class_name() const { return "EigenLinalgCartesianAtomCoordinateRepresentationCreator"; }
 
     /// @brief Get the class namespace.
-    /// @returns "masla::core::chemistry::atoms::coordinates"
-    std::string EigenLinalgCartesianAtomCoordinateRepresentationCreator::class_namespace() const { return "masla::core::chemistry::atoms::coordinates"; }
+    /// @returns "masala::core::chemistry::atoms::coordinates"
+    std::string EigenLinalgCartesianAtomCoordinateRepresentationCreator::class_namespace() const { return "masala::core::chemistry::atoms::coordinates"; }
 
 
 ////////////////////////////////////////////////////////////////////////////////
