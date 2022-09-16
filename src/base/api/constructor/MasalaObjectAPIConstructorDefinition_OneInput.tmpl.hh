@@ -145,7 +145,8 @@ public:
 		json_input1["Input_Name"] = input_parameter1_name_;
 		json_input1["Input_Description"] = input_parameter1_description_;
 
-		nlohmann::json json_inputs{ json_input1 };
+		nlohmann::json json_inputs;
+		json_inputs["Input_1"] = json_input1;
 
 		json_api["Inputs"] = json_inputs;
 
