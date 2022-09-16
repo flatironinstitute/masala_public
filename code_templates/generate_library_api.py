@@ -25,7 +25,7 @@
 ## @details Usage:
 ##          python3 generate_library_api.py <source library name> <json api definition file>
 ## @note The source library name is something like "core".  This Python code would then
-## produce code in "core_api/auto_generated_code/".  This file should be run from the Masala
+## produce code in "core_api/auto_generated_api/".  This file should be run from the Masala
 ## root directory.
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
