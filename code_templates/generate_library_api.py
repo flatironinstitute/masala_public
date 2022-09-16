@@ -129,7 +129,7 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
     outstring = ""
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
-        print(constructor)
+        #print(constructor)
         if first :
             first = False
         else :
@@ -146,6 +146,57 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
+    return outstring
+
+def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
+    outstring = ""
+    first = True
+
+    assert fxn_type == "SETTER" or fxn_type == "GETTER" or fxn_type == "WORKFXN"
+    if fxn_type == "SETTER" :
+        groupname = "Setters"
+        namepattern = "Setter"
+    elif fxn_type == "GETTER" :
+        groupname = "Getters"
+        namepattern = "Getter"
+    elif fxn_type == "WORKFXN" :
+        groupname = "WorkFunctions"
+        namepattern = "Work_Function"
+
+    for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
+        print(fxn)
+        if first :
+            first = False
+        else :
+            outstring += "\n\n"
+        outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
+        ninputs = fxn[namepattern+"_N_Inputs"]
+        if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
+            has_output = True
+        else :
+            has_output = False
+
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += tabchar + "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
+        if has_output :
+            outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
+            outstring += tabchar + fxn["Output"]["Output_Type"] + "\n"
+        else :
+            outstring += tabchar + "void\n"
+        outstring += tabchar + fxn[namepattern + "_Name"] + "("
+
+        if fxn["Is_Const"] == True :
+            conststr = " const"
+        else :
+            conststr = ""
+
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += "\n" + tabchar + tabchar + fxn["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+            outstring += "\n" + tabchar + ")" + conststr + ";"
+        else :
+            outstring += ")" + conststr + ";"
     return outstring
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
@@ -214,6 +265,9 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
 
     fname = dirname + apiclassname + ".hh"
