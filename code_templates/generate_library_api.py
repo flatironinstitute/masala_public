@@ -30,17 +30,41 @@
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 import json
+from re import split as regex_split
 from sys import argv
 from os import path, listdir
 
-# Parse the commandline options.
+## @brief Parse the commandline options.
+## @returns Source library name, JSON API definition file.  Throws if these two options aren't provided.
 def get_options() :
     assert len(argv) == 3, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <source library name> <json api definition file>"
     return (argv[1], argv[2])
+
+## @brief Given a namespace string of the form "XXXX::YYYY::ZZZZ", return a list of [ "XXXX", "YYYY", "ZZZZ" ].
+def separate_namespace( namespace_string ):
+    return regex_split( "\:\:" , namespace_string )
 
 ################################################################################
 ## Program entry point
 ################################################################################
 
+# Get options
 library_name, api_def_file = get_options()
 print( "Generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
+
+# Read JSON
+with open( api_def_file, 'r' ) as jfile :
+    json_api = json.load( jfile )
+
+#initialize_directory()
+
+for element in json_api["Elements"] :
+    #print( element )
+    namespace_string = json_api["Elements"][element]["ModuleNamespace"]
+    name_string = json_api["Elements"][element]["Module"]
+    namespace = separate_namespace( namespace_string )
+    #print( namespace_string, name_string )
+    #print( namespace )
+    assert len(namespace) > 2
+    assert namespace[0] == "masala", "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"masala\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+    assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"masala::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
