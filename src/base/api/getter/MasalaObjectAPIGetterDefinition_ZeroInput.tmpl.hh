@@ -78,15 +78,18 @@ public:
 	///			   we are describing here.
 	/// @param[in] getter_function_description The description of the getter function that
 	///			   we are describing here.
+	/// @param[in] output_parameter_name The name for what the getter returns.
 	/// @param[in] output_parameter_description The description of what the getter returns.
 	/// @param[in] getter_function The actual getter function.
 	MasalaObjectAPIGetterDefinition_ZeroInput(
 		std::string const & getter_function_name,
 		std::string const & getter_function_description,
+		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
 		std::function< T0() > const & getter_function
 	) :
 		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description ),
+		output_name_( output_parameter_name ),
 		output_description_( output_parameter_description ),
 		getter_function_( getter_function )
 	{}
@@ -123,7 +126,7 @@ public:
 		std::ostringstream ss;
     	ss << "Getter:\t" << masala::base::api::name_from_type(base::api::type<T0>()) << " " << getter_function_name() << "() const:" << std::endl;
 		ss << getter_function_description() << std::endl;
-		ss << "Output: \t" << output_description_ << std::endl;
+		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}
 
@@ -144,6 +147,7 @@ public:
 		nlohmann::json json_output;
 		json_output[ "Output_Type" ] = masala::base::api::name_from_type(base::api::type<T0>());
 		json_output[ "Output_Description" ] = output_description_;
+		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;
 
 		return json_api;
@@ -154,6 +158,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A name for what this getter returns.
+	std::string const output_name_;
 
 	/// @brief A description of what this getter returns.
 	std::string const output_description_;
