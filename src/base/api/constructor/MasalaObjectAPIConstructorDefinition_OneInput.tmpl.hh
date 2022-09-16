@@ -139,14 +139,14 @@ public:
 		//Inputs:
 		json_api["Constructor_N_Inputs"] = 1;
 
-		nlohmann::json json_input1;
-		json_input1["Input_Index"] = 0;
-		json_input1["Input_Type"] = masala::base::api::name_from_type(base::api::type< T1 >());
-		json_input1["Input_Name"] = input_parameter0_name_;
-		json_input1["Input_Description"] = input_parameter0_description_;
+		nlohmann::json json_input0;
+		json_input0["Input_Index"] = 0;
+		json_input0["Input_Type"] = masala::base::api::name_from_type(base::api::type< T1 >());
+		json_input0["Input_Name"] = input_parameter0_name_;
+		json_input0["Input_Description"] = input_parameter0_description_;
 
 		nlohmann::json json_inputs;
-		json_inputs["Input_0"] = json_input1;
+		json_inputs["Input_0"] = json_input0;
 
 		json_api["Inputs"] = json_inputs;
 
