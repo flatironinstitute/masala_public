@@ -112,6 +112,18 @@ def generate_cpp_namespace( namespace: list, opening_parentheses : bool ) -> str
         outstr += "\n"
     return outstr
 
+## @brief Given a source class and namespace, generate the path and filename for a source file
+## with a given extension.
+def generate_source_class_filename( classname : str, namespace : list, extension : str ) -> str :
+    assert len(namespace) >= 2
+    outstr = ""
+    for i in range( 1, len(namespace) ) :
+        outstr += namespace[i]
+        outstr += "/"
+    outstr += classname + extension
+    return outstr
+
+
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
 def prepare_forward_declarations( libraryname : str, classname : str, namespace : list, dirname : str, fwdfile_template : str, licence : str ) :
     apiclassname = classname + "_API"
@@ -174,6 +186,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh" ) \
+        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
 
     fname = dirname + apiclassname + ".hh"
