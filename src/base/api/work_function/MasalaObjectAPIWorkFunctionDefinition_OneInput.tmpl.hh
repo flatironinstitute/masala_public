@@ -79,19 +79,25 @@ public:
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
-	/// @param[in] input_parameter1_description The description of the input parameter.
+	/// @param[in] input_parameter0_name The name for the input parameter.
+	/// @param[in] input_parameter0_description The description of the input parameter.
+	/// @param[in] output_parameter_name The name for what the work function returns.
 	/// @param[in] output_parameter_description The description of what the work function returns.
 	/// @param[in] work_function The actual work function.
 	MasalaObjectAPIWorkFunctionDefinition_OneInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
-		std::string const & input_parameter1_description,
+		std::string const & input_parameter0_name,
+		std::string const & input_parameter0_description,
+		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
 		std::function< T0( T1 ) > const & work_function
 	) :
 		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
+		input_parameter0_name_(input_parameter0_name),
+		input_parameter0_description_(input_parameter0_description),
+		output_name_( output_parameter_name ),
 		output_description_( output_parameter_description ),
-		input_parameter1_description_(input_parameter1_description),
 		work_function_( work_function )
 	{}
 
@@ -127,8 +133,8 @@ public:
 		std::ostringstream ss;
     	ss << "WorkFunction:\t" << masala::base::api::name_from_type< T0 >() << " " << work_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " )" << (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
-		ss << "Input 1:\t" << input_parameter1_description_ << std::endl;
-		ss << "Output: \t" << output_description_ << std::endl;
+		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
+		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}
 
@@ -145,17 +151,21 @@ public:
 		//Inputs:
 		json_api["Work_Function_N_Inputs"] = 1;
 
-		nlohmann::json json_input1;
-		json_input1["Input_Index"] = 1;
-		json_input1["Input_Type"] = masala::base::api::name_from_type< T1 >();
-		json_input1["Input_Description"] = input_parameter1_description_;
+		nlohmann::json json_input0;
+		json_input0["Input_Index"] = 0;
+		json_input0["Input_Type"] = masala::base::api::name_from_type< T1 >();
+		json_input0["Input_Description"] = input_parameter0_description_;
+		json_input0["Input_Name"] = input_parameter0_name_;
 
-		json_api["Input_1"] = json_input1;
+		nlohmann::json json_inputs;
+		json_inputs["Input_0"] = json_input0;
+		json_api["Inputs"] = json_inputs;
 
 		// Outputs:
 		nlohmann::json json_output;
 		json_output[ "Output_Type" ] = masala::base::api::name_from_type< T0 >();
 		json_output[ "Output_Description" ] = output_description_;
+		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;
 
 		return json_api;
@@ -167,11 +177,17 @@ private:
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief A description of what this work function returns.
-	std::string const output_description_;
+	/// @brief A name for input parameter 1.
+	std::string const input_parameter0_name_;
 
 	/// @brief A description of input parameter 1.
-	std::string const input_parameter1_description_;
+	std::string const input_parameter0_description_;
+
+	/// @brief A name for what this work function returns.
+	std::string const output_name_;
+
+	/// @brief A description of what this work function returns.
+	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
 	std::function< T0(T1) > const work_function_;

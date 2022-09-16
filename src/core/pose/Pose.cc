@@ -219,7 +219,7 @@ Pose::get_api_definition() {
                 "Deep-copies all internal data, and ensures that data are not shared with any other "
                 "Pose instance or any other class instance.",
                 false,
-                "None (void).",
+                "None", "None (void).",
                 std::bind( &Pose::make_independent, this )
             )
         );
@@ -229,7 +229,7 @@ Pose::get_api_definition() {
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
                 "molecules_shared_ptr",
                 "Access the Molecules object within the Pose, by shared pointer.",
-                "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
+                "molecules", "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
                 "and chemical connectivity.",
                 std::bind( &Pose::molecules_shared_ptr, this )
             )
@@ -238,7 +238,7 @@ Pose::get_api_definition() {
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
                 "molecules_weak_ptr",
                 "Access the Molecules object within the Pose, by weak pointer.",
-                "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
+                "molecules", "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
                 "and chemical connectivity.  Must be converted to a shared pointer before use.",
                 std::bind( &Pose::molecules_weak_ptr, this )
             )
@@ -247,7 +247,7 @@ Pose::get_api_definition() {
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
                 "molecules",
                 "Access the Molecules object within the Pose.",
-                "A const reference to the Molecules object, which stores atoms, atomic geometry, "
+                "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
                 "and chemical connectivity.",
                 std::bind( &Pose::molecules, this )
             )
