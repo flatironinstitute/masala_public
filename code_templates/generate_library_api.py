@@ -138,11 +138,11 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += tabchar + "/// @param[in] " + constructor["Inputs"]["Input_" + str(i+1)]["Input_Name"] + " " + constructor["Inputs"]["Input_" + str(i+1)]["Input_Description"] + "\n"
+                outstring += tabchar + "/// @param[in] " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         outstring += tabchar + constructor["Constructor_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + constructor["Inputs"]["Input_" + str(i+1)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i+1)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + constructor["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"

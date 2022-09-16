@@ -77,17 +77,17 @@ public:
 	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
-	/// @param[in] input_parameter1_name The name of the input parameter.
-	/// @param[in] input_parameter1_description The description of the input parameter.
+	/// @param[in] input_parameter0_name The name of the input parameter.
+	/// @param[in] input_parameter0_description The description of the input parameter.
 	MasalaObjectAPIConstructorDefinition_OneInput(
 		std::string const & constructor_name,
 		std::string const & constructor_description,
-		std::string const & input_parameter1_name,
-		std::string const & input_parameter1_description
+		std::string const & input_parameter0_name,
+		std::string const & input_parameter0_description
 	) :
 		MasalaObjectAPIConstructorDefinition( constructor_name, constructor_description ),
-		input_parameter1_name_(input_parameter1_name),
-		input_parameter1_description_(input_parameter1_description)
+		input_parameter0_name_(input_parameter0_name),
+		input_parameter0_description_(input_parameter0_description)
 	{}
 
 	/// @brief Copy constructor.
@@ -122,7 +122,7 @@ public:
 		std::ostringstream ss;
     	ss << "Constructor:\t" << constructor_name() << "( " << masala::base::api::name_from_type(base::api::type<T1>()) << " ):" << std::endl;
 		ss << constructor_description() << std::endl;
-		ss << "Input 1:\t" << input_parameter1_name_ << "\t" << input_parameter1_description_ << std::endl;
+		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		return ss.str();
 	}
 
@@ -140,13 +140,13 @@ public:
 		json_api["Constructor_N_Inputs"] = 1;
 
 		nlohmann::json json_input1;
-		json_input1["Input_Index"] = 1;
+		json_input1["Input_Index"] = 0;
 		json_input1["Input_Type"] = masala::base::api::name_from_type(base::api::type< T1 >());
-		json_input1["Input_Name"] = input_parameter1_name_;
-		json_input1["Input_Description"] = input_parameter1_description_;
+		json_input1["Input_Name"] = input_parameter0_name_;
+		json_input1["Input_Description"] = input_parameter0_description_;
 
 		nlohmann::json json_inputs;
-		json_inputs["Input_1"] = json_input1;
+		json_inputs["Input_0"] = json_input1;
 
 		json_api["Inputs"] = json_inputs;
 
@@ -171,13 +171,13 @@ private:
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief The name of input parameter 1.
+	/// @brief The name of input parameter 0.
 	/// @details Must be set on construction.
-	std::string const input_parameter1_name_;
+	std::string const input_parameter0_name_;
 
-	/// @brief A description of input parameter 1.
+	/// @brief A description of input parameter 0.
 	/// @details Must be set on construction.
-	std::string const input_parameter1_description_;
+	std::string const input_parameter0_description_;
 
 }; // class MasalaObjectAPIConstructorDefinition_OneInput
 
