@@ -94,7 +94,15 @@ public:
     class_name_static();
 
     /// @brief Every class can provide its own namespace.  This returns "masla::core::pose".
-    std::string class_namespace() const;
+    /// @details Calls static version
+    std::string
+    class_namespace() const override;
+
+    /// @brief Returns "masla::core::pose".
+    /// @details Called by non-static version.
+    static
+    std::string
+    class_namespace_static();
 
 public:
 

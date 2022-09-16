@@ -96,7 +96,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     using namespace masala::base::api::work_function;
 
     std::ostringstream ss;
-    ss << api_class_name_ << " API:\n\n";
+    ss << api_class_namespace_ << "::" << api_class_name_ << " API:\n\n";
     ss << api_class_description_ << "\n";
 
     if( !constructors_.empty() ) {
@@ -156,6 +156,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
 
     json_api["Title"] = "API description";
     json_api["Module"] = api_class_name_;
+    json_api["ModuleNamespace"] = api_class_namespace_;
     json_api["Description"] = api_class_description_;
     json_api["Constructors"] = get_json_description_for_constructors();
     json_api["Setters"] = get_json_description_for_setters();

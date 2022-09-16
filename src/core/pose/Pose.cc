@@ -95,6 +95,13 @@ Pose::class_name_static() {
 /// @brief Every class can provide its own namespace.  This returns "masla::core::pose".
 std::string
 Pose::class_namespace() const {
+    return class_namespace_static();
+}
+
+/// @brief Returns "masla::core::pose".
+/// @details Called by non-static version.
+std::string
+Pose::class_namespace_static() {
     return "masla::core::pose";
 }
 
@@ -182,6 +189,7 @@ Pose::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             std::make_shared< MasalaObjectAPIDefinition >(
                 class_name_static(),
+                class_namespace_static(),
                 "The Pose class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
                 "molecule or group of molecules."
