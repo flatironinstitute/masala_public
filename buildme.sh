@@ -3,5 +3,5 @@ mkdir build && echo "Created build/ directory." || echo "Directory build/ alread
 cd build
 mkdir cmake_generated && echo "Created build/cmake_generated/ sub-directory." || echo "Sub-directory build/cmake_generated/ already exists."
 cmake ../cmake/
-make -j `nproc` && echo "Build completed.  Executables may be found in the bin/ directory." || echo "Build errors!  Check output log."
+make -j `nproc` && echo "Build completed." || echo "Build errors!  Check output log."
 cd ..
