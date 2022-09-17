@@ -22,6 +22,33 @@
 
 <__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>
 
+/// @brief Clone operation: make a copy of this object and return
+/// a shared pointer to the copy.
+<__SOURCE_CLASS_API_NAME__>SP
+<__SOURCE_CLASS_API_NAME__>::clone() const {
+    std::lock_guard< std::mutex > lock( api_mutex_ );
+    return std::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
+}
+
+/// @brief Deep clone operation: make a copy of this object and return
+/// a shared pointer to the copy, where the copy is fully independent
+/// (all contents also deep-cloned).
+<__SOURCE_CLASS_API_NAME__>SP    
+<__SOURCE_CLASS_API_NAME__>::deep_clone() const {
+    std::lock_guard< std::mutex > lock( api_mutex_ );
+    <__SOURCE_CLASS_API_NAME__>SP object_copy( clone() );
+    object_copy->make_independent();
+    return object_copy;
+}
+
+/// @brief Deep clone all of the internal data for this object, making it fully
+/// independent of any other object.
+void
+<__SOURCE_CLASS_API_NAME__>::make_independent() {
+    std::lock_guard< std::mutex > lock( api_mutex_ );
+    inner_object_ = inner_object_->deep_clone();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,3 +66,5 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>
+
+<__CPP_END_NAMESPACE__>

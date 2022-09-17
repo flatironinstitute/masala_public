@@ -19,6 +19,9 @@
 // Base headers:
 #include <base_api/MasalaObjectAPI.hh>
 
+// STL headers:
+#include <mutex>
+
 <__CPP_NAMESPACE__>
 
 <__DOXYGEN_BRIEF_DESCRIPTION__>
@@ -87,6 +90,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief A mutex for locking the API.
+    mutable std::mutex api_mutex_;
 
     /// @brief The instance of the class for which we're providing an API.
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP inner_object_;
