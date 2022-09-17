@@ -58,17 +58,21 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 
 # Generate the JSON descriptions of the APIs for the base, numeric, and core libraries:
 # TODO TODO TODO base and numeric
-execute_process(
+add_custom_command(
+    TARGET generate_core_api POST_BUILD
     COMMAND echo "Generating JSON description of core API."
     COMMAND ./generate_core_api
+    COMMAND echo "Auto-generating core API C++ code."
+    COMMAND sh -c "cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build"
+    VERBATIM
 )
 
 # Auto-generate the C++ code for the APIs for base, numeric, and core libraries:
 # TODO TODO TODO base and numeric
-execute_process(
-    COMMAND echo "Auto-generating core API C++ code."
-    COMMAND sh -c "cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build"
-)
+# add_custom_command(
+#     COMMAND echo "Auto-generating core API C++ code."
+#     COMMAND sh -c "cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build"
+# )
 
 # Link the base, numeric, and core libraries:
 # TODO TODO TODO
