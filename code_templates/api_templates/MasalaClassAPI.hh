@@ -38,7 +38,7 @@ public:
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
 
     /// @brief Destructor.
-    <__SOURCE_CLASS_API_NAME__>() = default;
+    ~<__SOURCE_CLASS_API_NAME__>() = default;
 
     /// @brief Assignment operator.
     operator=(
