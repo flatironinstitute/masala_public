@@ -188,6 +188,9 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
         outstring += "{}"
     return outstring
 
+## @brief Generate the prototypes for setters, getters, or work functions based on the JSON
+## description of the API.
+## @note The classname input should include namespace.
 def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
     outstring = ""
     first = True
@@ -237,6 +240,79 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
             outstring += "\n" + tabchar + ")" + conststr + ";"
         else :
             outstring += ")" + conststr + ";"
+    return outstring
+
+## @brief Generate the implementations for setters, getters, or work functions based on the JSON
+## description of the API.
+## @note The classname input should include namespace.
+def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
+    outstring = ""
+    first = True
+
+    assert fxn_type == "SETTER" or fxn_type == "GETTER" or fxn_type == "WORKFXN"
+    if fxn_type == "SETTER" :
+        groupname = "Setters"
+        namepattern = "Setter"
+    elif fxn_type == "GETTER" :
+        groupname = "Getters"
+        namepattern = "Getter"
+    elif fxn_type == "WORKFXN" :
+        groupname = "WorkFunctions"
+        namepattern = "Work_Function"
+
+    apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
+
+    for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
+        #print(fxn)
+        if first :
+            first = False
+        else :
+            outstring += "\n\n"
+        outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
+        ninputs = fxn[namepattern+"_N_Inputs"]
+        if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
+            has_output = True
+        else :
+            has_output = False
+
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
+        if has_output :
+            outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
+            outstring += fxn["Output"]["Output_Type"] + "\n"
+        else :
+            outstring += "void\n"
+        outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
+
+        if fxn["Is_Const"] == True :
+            conststr = " const"
+        else :
+            conststr = ""
+
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += "\n" + tabchar + tabchar + fxn["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+            outstring += "\n" + tabchar + ")" + conststr + " {\n"
+        else :
+            outstring += ")" + conststr + " {\n"
+
+        # Body
+        outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        outstring += tabchar
+        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
+            outstring += "return "
+
+        outstring += "inner_object->" + fxn[namepattern + "_Name"] + "("
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if i+1 < ninputs :
+                    outstring += ","
+                else :
+                    outstring += " "
+        outstring += ");\n"
+        outstring += "}"
     return outstring
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
@@ -340,10 +416,10 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) )
-        # .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
-        # .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
-        # .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") )
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
