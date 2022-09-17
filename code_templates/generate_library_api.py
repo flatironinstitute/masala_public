@@ -378,7 +378,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
-        .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh" ) \
+        .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar) ) \
         .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
@@ -414,7 +414,7 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
-        .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh" ) \
+        .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) ) \
         .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
