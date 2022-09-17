@@ -139,13 +139,53 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += tabchar + "/// @param[in] " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
-        outstring += tabchar + constructor["Constructor_Name"] + "("
+        outstring += tabchar + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + constructor["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
+    return outstring
+
+## @brief Generate the implementations for the constructors based on the JSON description of the API.
+## @note The classname input should include namespace.
+def generate_constructor_implementations(classname: str, jsonfile: json, tabchar: str) -> str :
+    outstring = ""
+    first = True
+    for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
+        #print(constructor)
+        if first :
+            first = False
+        else :
+            outstring += "\n\n"
+        outstring += "/// @brief " + constructor["Constructor_Description"] + "\n"
+        ninputs = constructor["Constructor_N_Inputs"]
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += "/// @param[in] " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
+        outstring += constructor["Constructor_Name"] + "_API::" + constructor["Constructor_Name"] + "_API("
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += "\n" + tabchar + constructor["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+            outstring += "\n" + ") :\n"
+        else :
+            outstring += ") :\n"
+        
+        # Initialization:
+        outstring += tabchar + "base_api::MasalaObjectAPI(),\n"
+        outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
+        if ninputs > 0 :
+            for i in range(ninputs) :
+                outstring += " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if i+1 < ninputs :
+                    outstring += ","
+                else :
+                    outstring += " "
+        outstring +=") )\n"
+
+        # Body:
+        outstring += "{}"
     return outstring
 
 def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
@@ -299,8 +339,8 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh" ) \
-        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" )
-        # .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) ) \
+        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) )
         # .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
         # .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
         # .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") )
