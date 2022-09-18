@@ -318,7 +318,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
             outstring += "return "
 
-        outstring += "inner_object->" + fxn[namepattern + "_Name"] + "("
+        outstring += "inner_object_->" + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
