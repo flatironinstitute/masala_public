@@ -22,7 +22,8 @@
 
 ## @file cmake/generate_cmake_build.py
 ## @brief Used during the build process to generate the cmake files for all the stuff that
-## has to be compiled in a given library.
+## has to be compiled in a given library.  This also generates the cmake files for the
+## associated API libraries.
 ## @details Recursively goes through directories and finds .cc files to compile.  Usage:
 ##          python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -32,20 +33,95 @@ from os import path, listdir
 
 errmsg = "Error in generate_cmake_build.py: "
 
-def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str, skip_apps : bool ) -> list :
+## @brief Given a string for the contents of a .cc file, purge anything that is between braces
+## that are not namespace braces.
+
+## @brief Given file contents, purge comments and comment lines.
+def purge_comments( file_contents : str ) -> str :
+    # Get rid of //
+    outstr = ""
+    file_lines = file_contents.splitlines()
+    for line in file_lines:
+        pos = line.find("//")
+        if pos == -1 :
+            outstr += line + "\n"
+        else :
+            outstr += line[0:pos] + "\n"
+
+    # Get rid of /*...*/
+    outstr2 = ""
+    recording = True
+    for i in range(len(outstr)) :
+        if i + 1 < len(outstr) and recording == True :
+            if outstr[i:i+2] == "/*" :
+                recording = False
+                continue
+        if i > 0 and recording == False :
+            if outstr[i-1:i+1] == "*/" :
+                recording = True
+                continue
+        if recording == True :
+            outstr2 += outstr[i]
+    # print( "Original string:\n--------------------------------------------------------------------------------\n" )
+    # print( file_contents + "\n" )
+    # print( "--------------------------------------------------------------------------------\n" )
+    # print( "Stripped of comments:\n--------------------------------------------------------------------------------\n" )
+    # print( outstr2 + "\n" )
+    # print("--------------------------------------------------------------------------------\n")
+    return outstr2
+
+## @brief Purge anything between braces EXCEPT namespace braces.
+## @details Expects the file to have all whitespace concatenated and replaced with single spaces.
+def purge_non_namespace_curly_bracket_contents( file_contents : str ) -> str :
+    return file_contents #TODO TODO TODO
+
+## @brief Determine whether a given .cc file contains an API definition:
+def has_api_definition( filename : str, concatname : str ) -> bool :
+    with open( concatname, 'r' ) as fhandle:
+        file_contents = fhandle.read()
+
+    filename_base = filename.split('.')[0]
+
+    # Initial check: if we don't have the string at all, we're done.
+    if file_contents.find( filename_base + "::" + "get_api_definition" ) == -1 :
+        return False
+
+    # Second check: if the string is in the file, we need to make sure that it doesn't
+    # occur inside a comment or in a context other than a function definition.
+    file_contents = purge_non_namespace_curly_bracket_contents( ' '.join( purge_comments( file_contents ).split() ) ) #Put the file on a single line with all whitespace converted to spaces.
+    if file_contents.find( filename_base + "::" + "get_api_definition" ) == -1 :
+        return False
+
+    return True
+
+## @brief Scan all directories and subdirectories in a path, and make a list of all .cc files.
+## @details If skip_apps is true, we also check for .cc files that contain API definitions, and
+## report those in a second list.  If skip_apps is false, we do not do this.
+def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str, skip_apps : bool ) :
     assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
     if skip_apps == True :
         if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
             # Skip directories like core_apps.  Apps are compiled separately into executables.
-            return []
+            return [], []
     outlist = []
+    if skip_apps == True :
+        outlist_apis = []
     for fname in listdir( dirname ) :
         concatname = dirname + "/" + fname
         if path.isfile( concatname ) :
             if fname.endswith( ".cc" ) :
                 outlist.append( concatname )
+            if (skip_apps == True) and (has_api_definition(fname, concatname)) :
+                outlist_apis.append( concatname )
         elif path.isdir( concatname ) :
-            outlist.extend( get_all_cc_files_in_dir_and_subdirs( libname, concatname, skip_apps ) )
+            if skip_apps == True :
+                outlist2, outlist2_apis = get_all_cc_files_in_dir_and_subdirs( libname, concatname, skip_apps )
+                outlist.extend(outlist2)
+                outlist_apis.extend(outlist2_apis)
+            else :
+                outlist.extend( get_all_cc_files_in_dir_and_subdirs( libname, concatname, skip_apps ) )
+    if skip_apps == True :
+        return outlist, outlist_apis
     return outlist
 
 def get_library_dependencies( dirname : str ) -> list :
@@ -66,7 +142,7 @@ lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
 
-cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir, True )
+cclist, api_cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir, True )
 depend_list = get_library_dependencies( source_dir )
 
 appsdir = source_dir + "/" + lib_name + "_apps"
