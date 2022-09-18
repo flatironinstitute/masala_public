@@ -89,6 +89,29 @@ def has_api_definition( filename : str, concatname : str ) -> bool :
 
     return True
 
+## @brief From a filename, generate the name of the corresponding api file.
+def apiname_from_filename( fname: str) -> str :
+    fname_entries = fname.split("/")
+    assert len(fname_entries) > 3
+    newname = ""
+    for i in range( len(fname_entries) ):
+        if i == 0 :
+            newname += fname_entries[i]
+        elif i == 2 :
+            newname += "/" + fname_entries[i] + "_api/auto_generated_api"
+        elif i == len(fname_entries) - 1 :
+            entrysplit = fname_entries[i].split(".")
+            first = True
+            for chunk in entrysplit :
+                if first == True :
+                    first = False
+                    newname += "/" + chunk + "_API"
+                else :
+                    newname += "." + chunk
+        else :
+            newname += "/" + fname_entries[i]
+    return newname
+
 ## @brief Scan all directories and subdirectories in a path, and make a list of all .cc files.
 ## @details If skip_apps is true, we also check for .cc files that contain API definitions, and
 ## report those in a second list.  If skip_apps is false, we do not do this.
@@ -107,7 +130,7 @@ def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str, skip_apps :
             if fname.endswith( ".cc" ) :
                 outlist.append( concatname )
             if (skip_apps == True) and (concatname != "../src/base/MasalaObject.cc") and (has_api_definition(fname, concatname)) :
-                outlist_apis.append( concatname )
+                outlist_apis.append( apiname_from_filename( concatname ) )
         elif path.isdir( concatname ) :
             if skip_apps == True :
                 outlist2, outlist2_apis = get_all_cc_files_in_dir_and_subdirs( libname, concatname, skip_apps )

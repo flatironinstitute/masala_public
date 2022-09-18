@@ -67,7 +67,7 @@ add_custom_command(
     VERBATIM
 )
 
-INCLUDE( ../build/cmake_generated/core_api.cmake )
+#INCLUDE( ../build/cmake_generated/core_api.cmake )
 
 # Compile the API for base, numeric, and core libraries:
 # TODO TODO TODO
