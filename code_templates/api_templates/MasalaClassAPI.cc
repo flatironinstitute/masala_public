@@ -14,6 +14,9 @@
 // Source class header:
 <__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
 
+// STL header:
+#include <string>
+
 <__CPP_NAMESPACE__>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +50,22 @@ void
 <__SOURCE_CLASS_API_NAME__>::make_independent() {
     std::lock_guard< std::mutex > lock( api_mutex_ );
     inner_object_ = inner_object_->deep_clone();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// NAMING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of this class.  Returns "<__SOURCE_CLASS_API_NAME__>".
+std::string
+<__SOURCE_CLASS_API_NAME__>::class_name() const {
+    return "<__SOURCE_CLASS_API_NAME__>";
+}
+
+/// @brief Get the namespace of this class.  Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+std::string
+<__SOURCE_CLASS_API_NAME__>::class_namespace() const {
+    return "<__SOURCE_CLASS_API_NAMESPACE__>";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

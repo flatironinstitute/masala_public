@@ -112,6 +112,21 @@ def generate_cpp_namespace( namespace: list, opening_parentheses : bool ) -> str
         outstr += "\n"
     return outstr
 
+## @brief Given the namespace as a list of strings, generate the C++ namespace for the API
+## as a single line (separated by double colons):
+def generate_cpp_namespace_singleline( namespace: list ) -> str :
+    outstr = ""
+    first = True
+    for i in range( len( namespace ) ) :
+        if first == True :
+            first = False
+        else :
+            outstr += "::"
+        outstr += namespace[i]
+        if i == 1 :
+            outstr += "_api::auto_generated_api"
+    return outstr
+
 ## @brief Given a source class and namespace, generate the path and filename for a source file
 ## with a given extension.
 def generate_source_class_filename( classname : str, namespace : list, extension : str ) -> str :
@@ -378,6 +393,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
+        .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar) ) \
@@ -414,6 +430,7 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
+        .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) ) \
