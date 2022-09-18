@@ -41,6 +41,7 @@ public:
     ~<__SOURCE_CLASS_API_NAME__>() = default;
 
     /// @brief Assignment operator.
+    <__SOURCE_CLASS_API_NAME__> &
     operator=(
         <__SOURCE_CLASS_API_NAME__> const &
     ) = default;
