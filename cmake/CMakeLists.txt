@@ -42,13 +42,13 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake
 )
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake
 )
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake
 )
 
 # Build the base, numeric, and core libraries:
@@ -64,10 +64,10 @@ add_custom_command(
     COMMAND ./generate_core_api
     COMMAND echo "Auto-generating core API C++ code."
     COMMAND sh -c "cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build"
-    COMMAND python3 ../cmake/generate_cmake_build.py core_api ../src/core_api cmake_generated/core_api.cmake
-    #INCLUDE( ../build/cmake_generated/core_api.cmake )
     VERBATIM
 )
+
+INCLUDE( ../build/cmake_generated/core_api.cmake )
 
 # Compile the API for base, numeric, and core libraries:
 # TODO TODO TODO

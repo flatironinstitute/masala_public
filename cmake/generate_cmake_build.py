@@ -70,11 +70,6 @@ def purge_comments( file_contents : str ) -> str :
     # print("--------------------------------------------------------------------------------\n")
     return outstr2
 
-## @brief Purge anything between braces EXCEPT namespace braces.
-## @details Expects the file to have all whitespace concatenated and replaced with single spaces.
-def purge_non_namespace_curly_bracket_contents( file_contents : str ) -> str :
-    return file_contents #TODO TODO TODO
-
 ## @brief Determine whether a given .cc file contains an API definition:
 def has_api_definition( filename : str, concatname : str ) -> bool :
     with open( concatname, 'r' ) as fhandle:
@@ -88,7 +83,7 @@ def has_api_definition( filename : str, concatname : str ) -> bool :
 
     # Second check: if the string is in the file, we need to make sure that it doesn't
     # occur inside a comment or in a context other than a function definition.
-    file_contents = purge_non_namespace_curly_bracket_contents( ' '.join( purge_comments( file_contents ).split() ) ) #Put the file on a single line with all whitespace converted to spaces.
+    file_contents = ' '.join( purge_comments( file_contents ).split() ) #Put the file on a single line with all whitespace converted to spaces and comments removed.
     if file_contents.find( filename_base + "::" + "get_api_definition" ) == -1 :
         return False
 
@@ -111,7 +106,7 @@ def get_all_cc_files_in_dir_and_subdirs( libname:str, dirname : str, skip_apps :
         if path.isfile( concatname ) :
             if fname.endswith( ".cc" ) :
                 outlist.append( concatname )
-            if (skip_apps == True) and (has_api_definition(fname, concatname)) :
+            if (skip_apps == True) and (concatname != "../src/base/MasalaObject.cc") and (has_api_definition(fname, concatname)) :
                 outlist_apis.append( concatname )
         elif path.isdir( concatname ) :
             if skip_apps == True :
@@ -136,11 +131,12 @@ def get_library_dependencies( dirname : str ) -> list :
         return dlist
     return []
 
-assert len(argv) == 4, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>."
+assert len(argv) == 5, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file>."
 
 lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
+output_file_api = argv[4]
 
 cclist, api_cclist = get_all_cc_files_in_dir_and_subdirs( lib_name, source_dir, True )
 depend_list = get_library_dependencies( source_dir )
@@ -162,7 +158,7 @@ with open( output_file, 'w' ) as fhandle:
         if len(depend_list) > 0 :
             fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
             for dentry in depend_list :
-                fhandle.write( "\n\t PUBLIC " + dentry )
+                fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write("\n)\n")
     if len( appslist ) > 0 :
         for app in appslist :
@@ -172,5 +168,19 @@ with open( output_file, 'w' ) as fhandle:
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
+
+if len(api_cclist) > 0 :
+    with open( output_file_api, 'w' ) as fhandle :
+        fhandle.write( "ADD_LIBRARY(" + lib_name + "_api SHARED" )
+        for entry in api_cclist :
+            fhandle.write( "\n\t" + entry )
+        fhandle.write( "\n)\n" )
+        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + "_api PROPERTIES VERSION ${PROJECT_VERSION})\n" )
+        fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name + "_api" )
+        if len(depend_list) > 0 :
+            for dentry in depend_list :
+                fhandle.write( "\n\tPUBLIC " + dentry )
+        fhandle.write( "\n\tPUBLIC " + lib_name )
+        fhandle.write("\n)\n")
 
 print( "Wrote " + output_file + "." )
