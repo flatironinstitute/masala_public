@@ -32,6 +32,7 @@ SOFTWARE.
 
 // Core headers
 #include <core/pose/Pose.hh>
+#include <core/chemistry/Molecules.hh>
 
 namespace masala {
 namespace core {
@@ -46,6 +47,7 @@ namespace api {
 
         // Add to this vector whenever a class is added with a defined API:
         outvec.emplace_back( std::make_shared< masala::core::pose::Pose >() );
+        outvec.emplace_back( std::make_shared< masala::core::chemistry::Molecules >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;
