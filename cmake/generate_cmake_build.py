@@ -193,16 +193,6 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
 if len(api_cclist) > 0 :
-# ADD_CUSTOM_COMMAND(
-#     DEPENDS generate_core_api POST_BUILD
-#     OUTPUT ../build/cmake_generated/core_api.cmake
-#     COMMAND echo "Generating JSON description of core API."
-#     COMMAND ./generate_core_api
-#     COMMAND echo "Auto-generating core API C++ code."
-#     COMMAND sh -c "cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build"
-#     VERBATIM
-# )
-
     with open( output_file_api, 'w' ) as fhandle :
         fhandle.write( "ADD_CUSTOM_COMMAND(\n" )
         fhandle.write( "\tDEPENDS generate_" + lib_name + "_api POST_BUILD\n" )
