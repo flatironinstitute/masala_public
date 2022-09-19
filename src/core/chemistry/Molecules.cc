@@ -41,6 +41,9 @@ SOFTWARE.
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -71,6 +74,7 @@ Molecules::Molecules(
     additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
     atoms_ = src.atoms_;
     bonds_ = src.bonds_;
+    // Deliberately do not copy api_definition_.
 }
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
@@ -142,6 +146,39 @@ Molecules::class_name() const {
 std::string
 Molecules::class_namespace() const {
     return "masala::core::chemistry";
+}
+
+/// @brief Get the API definition for this object.
+base::api::MasalaObjectAPIDefinitionCWP
+Molecules::get_api_definition() {
+    using namespace base::api;
+    using namespace base::api::constructor;
+
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+
+    if( api_definition_ == nullptr ) {
+
+        MasalaObjectAPIDefinitionSP api_def(
+            std::make_shared< MasalaObjectAPIDefinition >(
+                class_name(), class_namespace(),
+                "A container for atoms and chemical bonds, and for data representations "
+                "that allow efficient geometric manipulations."
+            )
+        );
+        api_def->add_constructor(
+            std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
+                class_name(), "Construct an empty instance of a Molecules object, with no options."
+            )
+        );
+        api_def->add_constructor(
+            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
+                class_name(), "Molecules object copy constructor.",
+                "src", "The input Molecules object to copy."
+            )
+        );
+        api_definition_ = api_def; // Nonconst to const.
+    }
+    return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

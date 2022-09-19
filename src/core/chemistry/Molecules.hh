@@ -100,6 +100,10 @@ public:
     /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry".
 	std::string class_namespace() const override;
 
+    /// @brief Get the API definition for this object.
+    base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +188,10 @@ private:
     /// efficient insertions and deletions of bonds.
     std::set< masala::core::chemistry::bonds::ChemicalBondInstanceSP > bonds_;
 
-};
+    /// @brief The API definition for this class.
+    base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+}; // class Molecules
 
 } // namespace chemistry
 } // namespace core
