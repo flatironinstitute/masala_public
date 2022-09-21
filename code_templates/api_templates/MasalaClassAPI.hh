@@ -48,10 +48,11 @@ public:
     ~<__SOURCE_CLASS_API_NAME__>() = default;
 
     /// @brief Assignment operator.
+    /// @details Performs assignment on the inner object.
     <__SOURCE_CLASS_API_NAME__> &
     operator=(
-        <__SOURCE_CLASS_API_NAME__> const &
-    ) = default;
+        <__SOURCE_CLASS_API_NAME__> const & src
+    );
 
     /// @brief Clone operation: make a copy of this object and return
     /// a shared pointer to the copy.

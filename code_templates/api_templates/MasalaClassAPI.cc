@@ -37,6 +37,18 @@
     inner_object_( inner_object )
 {}
 
+/// @brief Assignment operator.
+/// @details Performs assignment on the inner object.
+<__SOURCE_CLASS_API_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::operator=(
+    <__SOURCE_CLASS_API_NAME__> const & src
+) {
+    std::lock_guard< std::mutex > lock( api_mutex_ );
+    std::lock_guard< std::mutex > lock2( src.api_mutex_ );
+    (*inner_object_) = (*src.inner_object_);
+    return *this;
+}
+
 /// @brief Clone operation: make a copy of this object and return
 /// a shared pointer to the copy.
 <__SOURCE_CLASS_API_NAME__>SP
@@ -107,9 +119,9 @@ std::string
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Const access to the inner object.
-/// @note Mutex is not locked!  Not threadsafe!
 <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
 <__SOURCE_CLASS_API_NAME__>::get_inner_object() const {
+    std::lock_guard< std::mutex > lock_guard( api_mutex_ );
     return inner_object_;
 }
 
