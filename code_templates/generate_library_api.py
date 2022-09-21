@@ -414,8 +414,9 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
             if( ismasalaAPIptr ) :
                 dummy = []
-                outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >( "
-                outstring += "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( "
+                outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >(\n"
+                outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
+                outstring += tabchar + tabchar + tabchar
         else :
             outstring += tabchar
 
@@ -429,7 +430,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                     outstring += " "
         outstring += ")"
         if ismasalaAPIptr :
-            outstring += " ) )"
+            outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
         outstring += ";\n"
         outstring += "}"
     return outstring
