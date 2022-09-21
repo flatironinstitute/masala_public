@@ -75,6 +75,13 @@ public:
     /// @brief Default destructor.
     ~Molecules() override = default;
 
+    /// @brief Assignment operator.
+    /// @details Be sure to update this as data are added.
+    Molecules &
+    operator=(
+        Molecules const & src
+    );
+
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     virtual

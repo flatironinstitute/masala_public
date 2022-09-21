@@ -77,6 +77,29 @@ Molecules::Molecules(
     // Deliberately do not copy api_definition_.
 }
 
+/// @brief Assignment operator.
+/// @details Be sure to update this as data are added.
+Molecules &
+Molecules::operator=(
+    Molecules const & src
+) {
+    { //Scope for lock guard:
+        std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+        // mutex deliberately not copied.
+        configuration_ = src.configuration_;
+        master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
+        master_coordinates_have_changed_ = src.master_coordinates_have_changed_;
+        additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
+        atoms_ = src.atoms_;
+        bonds_ = src.bonds_;
+        // api_definition deliberately not copied.
+    }
+
+    make_independent();
+
+    return *this;
+}
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 MoleculesSP
