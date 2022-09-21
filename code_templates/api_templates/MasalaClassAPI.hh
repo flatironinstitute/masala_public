@@ -97,9 +97,9 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Access the inner object.
+    /// @brief Const access to the inner object.
     /// @note Mutex is not locked!  Not threadsafe!
-    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
     get_inner_object() const;
 
 <__CPP_GETTER_PROTOTYPES__>

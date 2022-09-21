@@ -90,9 +90,9 @@ std::string
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Access the inner object.
+/// @brief Const access to the inner object.
 /// @note Mutex is not locked!  Not threadsafe!
-<__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
 <__SOURCE_CLASS_API_NAME__>::get_inner_object() const {
     return inner_object_;
 }
