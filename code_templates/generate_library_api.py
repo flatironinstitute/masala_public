@@ -106,6 +106,20 @@ def access_needed_object( classname : str, instancename : str ) -> str :
         return instancename #Not an API class
     return "*( " + instancename + ".get_inner_object() )"
 
+## @brief Given a Masala type that may contain "const", drop the const.
+def drop_const( classname: str )-> str :
+    classname_split = classname.split()
+    outstr = ""
+    first = True
+    for entry in classname_split :
+        if entry != "const" :
+            if first == False :
+                outstr += " "
+            else :
+                first = False
+            outstr += entry
+    return outstr
+
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
 ## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
@@ -375,11 +389,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         else :
             outstring += ")" + conststr + " {\n"
 
-        # Body
-        outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-        outstring += tabchar
-        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
-            outstring += "return "
+        # Body:
 
         ismasalaAPIptr = False
         #ismasalaAPIobj = False
@@ -392,9 +402,22 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         # elif outtype.startswith( "masala::" ) :
         #     ismasalaAPIobj = True
 
-        if( ismasalaAPIptr ) :
-            dummy = []
-            outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >( "
+        outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
+            if ismasalaAPIptr :
+                outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We\n"
+                outstring += tabchar + "// cast away the constness of the object, but effectively restore it by encapsulating\n"
+                outstring += tabchar + "// it in an API object that only allows const access.  This is ONLY allowed in Masala\n"
+                outstring += tabchar + "// code that is auto-generated in a manner that ensures that nothing unsafe is done\n"
+                outstring += tabchar + "// with the nonconst object.\n"
+            outstring += tabchar + "return "
+
+            if( ismasalaAPIptr ) :
+                dummy = []
+                outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >( "
+                outstring += "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( "
+        else :
+            outstring += tabchar
 
         outstring += "inner_object_->" + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
@@ -406,7 +429,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                     outstring += " "
         outstring += ")"
         if ismasalaAPIptr :
-            outstring += " )"
+            outstring += " ) )"
         outstring += ";\n"
         outstring += "}"
     return outstring
