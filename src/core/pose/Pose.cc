@@ -234,15 +234,15 @@ Pose::get_api_definition() {
                 std::bind( &Pose::molecules_weak_ptr, this )
             )
         );
-        api_def->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
-                "molecules",
-                "Access the Molecules object within the Pose.",
-                "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
-                "and chemical connectivity.",
-                std::bind( &Pose::molecules, this )
-            )
-        );
+        // api_def->add_getter(
+        //     std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
+        //         "molecules",
+        //         "Access the Molecules object within the Pose.",
+        //         "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
+        //         "and chemical connectivity.",
+        //         std::bind( &Pose::molecules, this )
+        //     )
+        // );
 
         api_definition_ = api_def; //Make const.
     }
