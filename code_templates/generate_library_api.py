@@ -102,6 +102,14 @@ def read_file( filename : str ) -> list :
 def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
     #print( inputclass )
     if inputclass.startswith( "masala::" ) == False :
+        if( inputclass.startswith( "std::shared_ptr" ) ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            return "std::shared_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
+        elif( inputclass.startswith( "std::weak_ptr" ) ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
         return inputclass # Do nothing if ths isn't a masala class.
     
     api_classname = ""
