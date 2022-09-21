@@ -28,6 +28,15 @@
 
 <__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>
 
+/// @brief Constructor from shared pointer to object.
+/// @details Directly uses the object that is passed in.  Does not clone it.
+<__SOURCE_CLASS_API_NAME__>::<__SOURCE_CLASS_API_NAME__>(
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP const & inner_object
+) :
+    base_api::MasalaObjectAPI(),
+    inner_object_( inner_object )
+{}
+
 /// @brief Clone operation: make a copy of this object and return
 /// a shared pointer to the copy.
 <__SOURCE_CLASS_API_NAME__>SP

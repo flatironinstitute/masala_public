@@ -40,6 +40,10 @@ public:
 
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
 
+    /// @brief Constructor from shared pointer to object.
+    /// @details Directly uses the object that is passed in.  Does not clone it.
+    <__SOURCE_CLASS_API_NAME__>( <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP const & inner_object );
+
     /// @brief Destructor.
     ~<__SOURCE_CLASS_API_NAME__>() = default;
 
