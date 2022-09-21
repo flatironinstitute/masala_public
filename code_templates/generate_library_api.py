@@ -93,6 +93,19 @@ def read_file( filename : str ) -> list :
     print( "\tRead contents of \"" + filename + "\" into memory." )
     return filecontents
 
+## @brief Determine whether an object is an API type, and if so, access the
+## class type inside.
+def access_needed_object( classname : str, instancename : str ) -> str :
+    if classname.startswith( "masala::" ) == False :
+        if classname.startswith( "std::shared_ptr" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            innerclass = classname[firstchevron+1:lastchevron].strip()
+            if innerclass.startswith("masala::") :
+                return instancename + "->get_inner_object()"
+        return instancename #Not an API class
+    return "*( " + instancename + ".get_inner_object() )"
+
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
 ## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
@@ -102,14 +115,14 @@ def read_file( filename : str ) -> list :
 def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
     #print( inputclass )
     if inputclass.startswith( "masala::" ) == False :
-        if( inputclass.startswith( "std::shared_ptr" ) ) :
+        if inputclass.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             return "std::shared_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
-        elif( inputclass.startswith( "std::weak_ptr" ) ) :
-            firstchevron = inputclass.find( "<" )
-            lastchevron = inputclass.rfind( ">" )
-            return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
+        # elif inputclass.startswith( "std::weak_ptr" ) :
+        #     firstchevron = inputclass.find( "<" )
+        #     lastchevron = inputclass.rfind( ">" )
+        #     return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
         return inputclass # Do nothing if ths isn't a masala class.
     
     api_classname = ""
@@ -239,7 +252,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
         outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += " " + access_needed_object( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"] )
                 if i+1 < ninputs :
                     outstring += ","
                 else :
