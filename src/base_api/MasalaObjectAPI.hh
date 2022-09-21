@@ -59,6 +59,20 @@ public:
 	/// derived classes can.
 	virtual ~MasalaObjectAPI() = default;
 
+public:
+
+	/// @brief Get the name of the class for which this class provides an API.
+	/// @details Must be implemented by derived classes.
+	virtual
+    std::string
+    inner_class_name() const = 0;
+
+    /// @brief Get the namespace of the class for which this class provides an API.
+	/// @details Must be implemented by derived classes.
+	virtual
+    std::string
+    inner_class_namespace() const = 0;
+
 }; // class MasalaObjectAPI
 
 } // namespace base_api

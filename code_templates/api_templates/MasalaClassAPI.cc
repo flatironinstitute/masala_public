@@ -68,16 +68,32 @@ void
 // NAMING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get the name of this class.  Returns "<__SOURCE_CLASS_API_NAME__>".
+/// @brief Get the name of this class.
+/// @returns Returns "<__SOURCE_CLASS_API_NAME__>".
 std::string
 <__SOURCE_CLASS_API_NAME__>::class_name() const {
     return "<__SOURCE_CLASS_API_NAME__>";
 }
 
-/// @brief Get the namespace of this class.  Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+/// @brief Get the namespace of this class.
+/// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
 std::string
 <__SOURCE_CLASS_API_NAME__>::class_namespace() const {
     return "<__SOURCE_CLASS_API_NAMESPACE__>";
+}
+
+/// @brief Get the name of the class for which this class provides an API.
+/// @returns Returns "<__SOURCE_CLASS_NAME__>".
+std::string
+<__SOURCE_CLASS_API_NAME__>::inner_class_name() const {
+    return inner_object_->class_name();
+}
+
+/// @brief Get the namespace of the class for which this class provides an API.
+/// @returns Returns "<__SOURCE_CLASS_NAMESPACE__>".
+std::string
+<__SOURCE_CLASS_API_NAME__>::inner_class_namespace() const {
+    return inner_object_->class_namespace();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

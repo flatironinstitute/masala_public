@@ -75,13 +75,25 @@ public:
 // NAMING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get the name of this class.  Returns "<__SOURCE_CLASS_API_NAME__>".
+    /// @brief Get the name of this class.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAME__>".
     std::string
     class_name() const override;
 
-    /// @brief Get the namespace of this class.  Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+    /// @brief Get the namespace of this class.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
     std::string
     class_namespace() const override;
+
+    /// @brief Get the name of the class for which this class provides an API.
+    /// @returns Returns "<__SOURCE_CLASS_NAME__>".
+    std::string
+    inner_class_name() const override;
+
+    /// @brief Get the namespace of the class for which this class provides an API.
+    /// @returns Returns "<__SOURCE_CLASS_NAMESPACE__>".
+    std::string
+    inner_class_namespace() const override;
 
 public:
 
