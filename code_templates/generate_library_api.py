@@ -100,6 +100,7 @@ def read_file( filename : str ) -> list :
 ## for the additional API classes.  Each entry added is first checked so that it is not added
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
 def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
+    #print( inputclass )
     if inputclass.startswith( "masala::" ) == False :
         return inputclass # Do nothing if ths isn't a masala class.
     
@@ -111,12 +112,12 @@ def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
     inputclass_split = inputclass_base.split("::")
     assert len(inputclass_split) > 2
     for i in range(len(inputclass_split)) :
-        if i == 1 :
+        if i == 0 :
             continue # Skip "masala"
         curstring = inputclass_split[i]
         api_classname += curstring
         api_filename += curstring
-        if i == 2 :
+        if i == 1 :
             api_classname += "_api::auto_generated_api"
             api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
@@ -127,7 +128,7 @@ def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
             api_filename += "/"
     if api_filename not in additional_includes :
         additional_includes.append( api_filename )
-    return api_classname + inputclass_extension
+    return api_classname + " " + inputclass_extension
 
     
 
@@ -379,7 +380,7 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
     else :
         fwdstr = ""
     for entry in additional_includes :
-        outstr += "include <" + entry + fwdstr + ".hh>\n"
+        outstr += "#include <" + entry + fwdstr + ".hh>\n"
     return outstr
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
