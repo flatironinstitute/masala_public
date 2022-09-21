@@ -44,16 +44,16 @@ INCLUDE( compiler.cmake )
 execute_process(
     COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake
 )
-execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake
-)
+# execute_process(
+#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake
+# )
 execute_process(
     COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake
 )
 
 # Build the base, numeric, and core libraries:
 INCLUDE( ../build/cmake_generated/base.cmake )
-INCLUDE( ../build/cmake_generated/numeric.cmake )
+#INCLUDE( ../build/cmake_generated/numeric.cmake )
 INCLUDE( ../build/cmake_generated/core.cmake )
 
 # Generate the JSON descriptions and C++ code for the APIs for the base, numeric, and core libraries:
