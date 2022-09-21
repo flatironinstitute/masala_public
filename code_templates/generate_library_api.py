@@ -347,7 +347,8 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             outstring += "\n\n"
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]
-        if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
+        outtype = fxn["Output"]["Output_Type"]
+        if ("Output" in fxn) and (outtype != "void") :
             has_output = True
         else :
             has_output = False
@@ -357,7 +358,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
             outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
-            outstring += correct_masala_types( fxn["Output"]["Output_Type"], additional_includes ) + "\n"
+            outstring += correct_masala_types( outtype, additional_includes ) + "\n"
         else :
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
@@ -380,6 +381,21 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
             outstring += "return "
 
+        ismasalaAPIptr = False
+        #ismasalaAPIobj = False
+        if outtype.startswith( "std::shared_ptr" ) :
+            firstchevron = outtype.find("<")
+            lastchevron = outtype.rfind(">")
+            outtype_inner = outtype[firstchevron+1:lastchevron].strip()
+            if( outtype_inner.startswith("masala::") ) :
+                ismasalaAPIptr = True
+        # elif outtype.startswith( "masala::" ) :
+        #     ismasalaAPIobj = True
+
+        if( ismasalaAPIptr ) :
+            dummy = []
+            outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >( "
+
         outstring += "inner_object_->" + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -388,7 +404,10 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                     outstring += ","
                 else :
                     outstring += " "
-        outstring += ");\n"
+        outstring += ")"
+        if ismasalaAPIptr :
+            outstring += " )"
+        outstring += ";\n"
         outstring += "}"
     return outstring
 
