@@ -14,6 +14,9 @@
 // Source class header:
 <__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
 
+// Additional API headers:
+<__CPP_ADDITIONAL_HH_INCLUDES__>
+
 // STL header:
 #include <string>
 

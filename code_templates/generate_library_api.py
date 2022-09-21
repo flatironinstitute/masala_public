@@ -93,6 +93,44 @@ def read_file( filename : str ) -> list :
     print( "\tRead contents of \"" + filename + "\" into memory." )
     return filecontents
 
+## @brief Given a class name, construct the name of the API class (if it is a Masala class)
+## or do nothing (if it is not a Masala class.)
+## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
+## @note As a side-effect, this populates the additional_includes list with files to include
+## for the additional API classes.  Each entry added is first checked so that it is not added
+## multiple times.  The extension (.hh or .fwd.hh) is omitted.
+def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
+    if inputclass.startswith( "masala::" ) == False :
+        return inputclass # Do nothing if ths isn't a masala class.
+    
+    api_classname = ""
+    api_filename = ""
+    firstspace = inputclass.find(" ")
+    inputclass_base = inputclass[0:firstspace]
+    inputclass_extension = inputclass[firstspace + 1:]
+    inputclass_split = inputclass_base.split("::")
+    assert len(inputclass_split) > 2
+    for i in range(len(inputclass_split)) :
+        if i == 1 :
+            continue # Skip "masala"
+        curstring = inputclass_split[i]
+        api_classname += curstring
+        api_filename += curstring
+        if i == 2 :
+            api_classname += "_api::auto_generated_api"
+            api_filename += "_api/auto_generated_api"
+        if i == len(inputclass_split) - 1 :
+            api_classname += "_API"
+            api_filename += "_API"
+        else :
+            api_classname += "::"
+            api_filename += "/"
+    if api_filename not in additional_includes :
+        additional_includes.append( api_filename )
+    return api_classname + inputclass_extension
+
+    
+
 ## @brief Given the namespace as a list of strings, generate the C++ namespace lines.
 ## @details If opening_parentheses is true, we generate the parentheses that open the
 ## namespace.  Otherwise, we generate the parentheses that close the namespace.
@@ -140,7 +178,7 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 
 ## @brief Generate the prototypes for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str) -> str :
+def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
     outstring = ""
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
@@ -157,7 +195,7 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
         outstring += tabchar + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + constructor["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
@@ -165,7 +203,7 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(classname: str, jsonfile: json, tabchar: str) -> str :
+def generate_constructor_implementations(classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
     outstring = ""
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
@@ -182,7 +220,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
         outstring += constructor["Constructor_Name"] + "_API::" + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + constructor["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + correct_masala_types( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + ") :\n"
         else :
             outstring += ") :\n"
@@ -205,8 +243,9 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
 
 ## @brief Generate the prototypes for setters, getters, or work functions based on the JSON
 ## description of the API.
-## @note The classname input should include namespace.
-def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
+## @note The classname input should include namespace.  As a side-effect, this function appends to the
+## additional_includes list.
+def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
     outstring = ""
     first = True
 
@@ -239,7 +278,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
                 outstring += tabchar + "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
             outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
-            outstring += tabchar + fxn["Output"]["Output_Type"] + "\n"
+            outstring += tabchar + correct_masala_types( fxn["Output"]["Output_Type"], additional_includes ) + "\n"
         else :
             outstring += tabchar + "void\n"
         outstring += tabchar + fxn[namepattern + "_Name"] + "("
@@ -251,7 +290,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + fxn["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ")" + conststr + ";"
         else :
             outstring += ")" + conststr + ";"
@@ -259,8 +298,9 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
-## @note The classname input should include namespace.
-def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str) -> str :
+## @note The classname input should include namespace.  As a side-effect, this function appends to the
+## additional_includes list.
+def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
     outstring = ""
     first = True
 
@@ -295,7 +335,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
             outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
-            outstring += fxn["Output"]["Output_Type"] + "\n"
+            outstring += correct_masala_types( fxn["Output"]["Output_Type"], additional_includes ) + "\n"
         else :
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
@@ -307,7 +347,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + fxn["Inputs"]["Input_" + str(i)]["Input_Type"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ")" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
@@ -329,6 +369,18 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         outstring += ");\n"
         outstring += "}"
     return outstring
+
+## @brief Given a list of additional files to include, generate a
+## string of the inclusions.
+def generate_additional_includes( additional_includes : list, generate_fwd_includes : bool ) -> str :
+    outstr = ""
+    if generate_fwd_includes == True :
+        fwdstr = ".fwd"
+    else :
+        fwdstr = ""
+    for entry in additional_includes :
+        outstr += "include <" + entry + fwdstr + ".hh>\n"
+    return outstr
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
 def prepare_forward_declarations( libraryname : str, classname : str, namespace : list, dirname : str, fwdfile_template : str, licence : str ) :
@@ -381,6 +433,8 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
+    additional_includes = []
+
     hhfile = \
         hhfile_template \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
@@ -396,11 +450,12 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") ) \
-        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
+        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
+        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
+        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True ) )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -419,6 +474,8 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
+    additional_includes = []
+
     ccfile = \
         ccfile_template \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
@@ -433,10 +490,11 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER") ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER") ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN") )
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
+        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False ) )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :

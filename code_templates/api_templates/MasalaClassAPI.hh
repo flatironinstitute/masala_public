@@ -19,6 +19,9 @@
 // Base headers:
 #include <base_api/MasalaObjectAPI.hh>
 
+// Forward declarations for additional API headers:
+<__CPP_ADDITIONAL_FWD_INCLUDES__>
+
 // STL headers:
 #include <mutex>
 
