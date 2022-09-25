@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/engine/MasalaEngineCreatorBase.hh
-/// @brief Forward declarations for a base class for creating Masala engines.
+/// @brief A pure virtual base class for creators for engines.
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -38,33 +38,50 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
+#include <base/managers/engine/MasalaEngineRegistratorBase.fwd.hh>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
 
-/// @brief Forward declarations for a base class for creating Masala engines.
+/// @brief A pure virtual base class for creators for engines.
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngineCreatorBase : public masala::base::MasalaObject {
 
-	friend class MasalaEngineManager;
+    friend class MasalaEngineRegistratorBase; // For creation.
+    friend class MasalaEngineManager; // To call protected create_engine() function.
 
-public:
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTOR -- PROTECTED TO ALLOW ONLY MasalaEngineRegistrators
+// TO CREATE CREATORS.
+////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
 	MasalaEngineCreatorBase() = default;
 
-	/// @brief Copy constructor.
-	MasalaEngineCreatorBase( MasalaEngineCreatorBase const & ) = default;
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Copy constructor, deleted.
+	MasalaEngineCreatorBase( MasalaEngineCreatorBase const & ) = delete;
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
 	virtual ~MasalaEngineCreatorBase() = default;
 
 protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief All Masala engine creators must implement a create_engine() method.
 	virtual
