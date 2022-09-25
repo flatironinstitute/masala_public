@@ -26,6 +26,8 @@ SOFTWARE.
 /// @brief A pure virtual base class class for particular representations
 /// of data that can be requested by engines for efficient manipulation of
 /// those data.
+/// @note Only a MasalaDataRepresentationCreator can create a MasalaDataRepresentation.
+/// Only a MasalaDataRepresentationRegistrator can create a MasalaDataRepresentationCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_MasalaDataRepresentationBase_hh

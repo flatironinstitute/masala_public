@@ -28,6 +28,8 @@ SOFTWARE.
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
+/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
+/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_MasalaEngineBase_hh
@@ -38,6 +40,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -49,13 +52,27 @@ namespace engine {
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
+/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
+/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngineBase : public masala::base::MasalaObject {
 
-public:
+    friend class MasalaEngineCreatorBase;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTOR -- PROTECTED
+////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
 	MasalaEngineBase() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Copy constructor.
 	MasalaEngineBase( MasalaEngineBase const & ) = default;
