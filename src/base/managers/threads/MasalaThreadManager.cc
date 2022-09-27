@@ -32,11 +32,11 @@ SOFTWARE.
 
 // Base headers:
 #include <base/types.hh>
-#include <base/utility/string/string_manipulation.hh>
+#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
+#include <base/managers/threads/MasalaThreadedWorkRequestConfiguration.hh>
 
 // STL headers:
 #include <string>
-#include <iostream>
 
 namespace masala {
 namespace base {
@@ -66,6 +66,24 @@ MasalaThreadManager::class_name() const {
 std::string
 MasalaThreadManager::class_namespace() const {
     return "masala::base::managers::threads";
+}
+
+/// @brief Do a vector of work in threads, without a reservation.
+MasalaThreadedWorkExecutionSummary
+MasalaThreadManager::do_work_vector_in_threads(
+    std::vector< std::function< void () > > const & work_vector,
+    MasalaThreadedWorkRequestConfiguration const & settings
+) {
+    if( work_vector.empty() ) {
+        write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing nothing." );
+        return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0 );
+    }
+    base::Size const n_threads_requested(
+        settings.all_threads_requested() ?
+        nthreads_ :
+        settings.n_threads_requested()
+    );
+    TODO TODO TODO
 }
 
 } // namespace threads

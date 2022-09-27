@@ -37,10 +37,12 @@ SOFTWARE.
 #include <base/managers/threads/MasalaThreadManager.fwd.hh>
 
 // Base headers:
+#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh>
+#include <base/managers/threads/MasalaThreadedWorkRequestConfiguration.fwd.hh>
 
 // STL headers:
-#include <map>
 #include <mutex>
+#include <functional>
 
 namespace masala {
 namespace base {
@@ -97,6 +99,13 @@ public:
     /// @details Returns "masala::base::managers::thread".
     std::string
     class_namespace() const override;
+
+    /// @brief Do a vector of work in threads, without a reservation.
+    MasalaThreadedWorkExecutionSummary
+    do_work_vector_in_threads(
+        std::vector< std::function< void () > > const & work_vector,
+        MasalaThreadedWorkRequestConfiguration const & settings
+    );
 
 
 private:
