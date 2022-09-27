@@ -43,6 +43,7 @@ SOFTWARE.
 
 // STL headers:
 #include <mutex>
+#include <atomic>
 
 namespace masala {
 namespace base {
@@ -67,7 +68,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Private constructor: object can only be instantiated with getInstance().
-    MasalaThreadManager() = default;
+    /// @details Creates the thread pool object, but that does not launch threads until
+    /// work is first assigned to threads (lazy thread launching).
+    MasalaThreadManager();
 
 public:
 
@@ -126,6 +129,11 @@ private:
 
     /// @brief The total number of threads to launch.
     base::Size total_threads_ = 1;
+
+    /// @brief The thread pool.  These are created on instantiation of the thread
+    /// manager.  Threads are launched internally on first request, and are kept
+    /// idling until work is assigned.
+    base::managers::threads::thread_pool::MasalaThreadPoolSP thread_pool_;
 
 };
 

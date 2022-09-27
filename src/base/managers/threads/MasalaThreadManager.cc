@@ -50,6 +50,19 @@ MasalaThreadManager::get_instance() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Private constructor: object can only be instantiated with getInstance().
+/// @details Creates the thread pool object, but that does not launch threads until
+/// work is first assigned to threads (lazy thread launching).
+MasalaThreadManager::MasalaThreadManager() :
+    base::MasalaObject(),
+    thread_pool_( std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >() )
+{}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
