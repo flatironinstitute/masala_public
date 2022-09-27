@@ -37,6 +37,7 @@ SOFTWARE.
 #include <base/managers/threads/MasalaThreadManager.fwd.hh>
 
 // Base headers:
+#include <base/types.hh>
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh>
 #include <base/managers/threads/MasalaThreadedWorkRequest.fwd.hh>
 
