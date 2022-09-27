@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/MasalaObject.hh
+/// @file src/base/MasalaObject.fwd.hh
 /// @brief Forward declarations for a base class for all Masala derived classes.  This
 /// allows the possibility of having a generic MasalaObject pointer or shared pointer.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
