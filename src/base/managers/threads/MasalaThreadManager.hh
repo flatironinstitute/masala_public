@@ -40,6 +40,7 @@ SOFTWARE.
 #include <base/types.hh>
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh>
 #include <base/managers/threads/MasalaThreadedWorkRequest.fwd.hh>
+#include <base/managers/threads/thread_pool/MasalaThreadPool.fwd.hh>
 
 // STL headers:
 #include <mutex>

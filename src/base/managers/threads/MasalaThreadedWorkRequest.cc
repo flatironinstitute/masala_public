@@ -32,7 +32,6 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
-#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers
 #include <string>

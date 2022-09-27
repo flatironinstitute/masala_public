@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/threads/MasalaThreadedWorkExecutionSummary.cc
-/// @brief A class that will store a summary of what work was done in threads,
-/// how long it took, and how many threads were actually assigned to the work.
+/// @file src/base/managers/threads/thread_pool/MasalaThreadPool.cc
+/// @brief A container for a set of threads.  Controls launching, destroying,
+/// or renumbering threads in a threadsafe way.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
+#include <base/managers/threads/thread_pool/MasalaThreadPool.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -40,45 +40,26 @@ namespace masala {
 namespace base {
 namespace managers {
 namespace threads {
-
-////////////////////////////////////////////////////////////////////////////////
-// CONSTRUCTION AND DESTRUCTION:
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Options constructor.
-/// @param[in] status The status for the work done.
-/// @param[in] nthreads_actual The number of threads that were
-/// actually used for carrying out the work.
-/// @param[in] execution_time The time, in microseconds, that
-/// execution took.
-MasalaThreadedWorkExecutionSummary::MasalaThreadedWorkExecutionSummary(
-    MasalaThreadedWorkStatus const status,
-    base::Size const nthreads_actual,
-    base::Real const execution_time_microseconds
-) :
-    base::MasalaObject(),
-    work_status_(status),
-    nthreads_actual_(nthreads_actual),
-    execution_time_microseconds_(execution_time_microseconds)
-{}
+namespace thread_pool {
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Returns "MasalaThreadedWorkExecutionSummary".
+/// @brief Returns "MasalaThreadPool".
 std::string
-MasalaThreadedWorkExecutionSummary::class_name() const {
-    return "MasalaThreadedWorkExecutionSummary";
+MasalaThreadPool::class_name() const {
+    return "MasalaThreadPool";
 }
 
-/// @brief Returns "masala::base::managers::threads".
+/// @brief Returns "masala::base::managers::threads::thread_pool".
 std::string
-MasalaThreadedWorkExecutionSummary::class_namespace() const {
-    return "masala::base::managers::threads";
+MasalaThreadPool::class_namespace() const {
+    return "masala::base::managers::threads::thread_pool";
 }
 
+} // namespace thread_pool
 } // namespace threads
 } // namespace managers
 } // namespace base

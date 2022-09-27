@@ -33,6 +33,7 @@ SOFTWARE.
 // Base headers:
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
 #include <base/managers/threads/MasalaThreadedWorkRequest.hh>
+#include <base/managers/threads/thread_pool/MasalaThreadPool.hh>
 
 // STL headers:
 #include <string>
@@ -107,6 +108,8 @@ MasalaThreadManager::do_work_in_threads(
         )
     );
     TODO TODO TODO
+
+    //return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::WORK_SUCCESSFUL, 0, 0.0 );
 }
 
 /// @brief Get the total number of threads that the thread pool is set
