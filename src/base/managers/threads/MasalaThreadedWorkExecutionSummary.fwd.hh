@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/managers/threads/MasalaThreadedWorkExecutionSummary.hh
+/// @file src/base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh
 /// @brief Forward declarations for a class that will store a summary of what work
 /// was done in threads, how long it took, and how many threads were actually
 /// assigned to the work.
