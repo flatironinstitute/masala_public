@@ -69,19 +69,22 @@ MasalaThreadManager::class_namespace() const {
 }
 
 /// @brief Do a vector of work in threads, without a reservation.
+/// @param[in] request An object describing the work to be done and the
+/// number of requested threads in which to do it.
+/// @returns A summary of what work was done, the number of threads
+/// in which it was actually executed, and how long it took.
 MasalaThreadedWorkExecutionSummary
-MasalaThreadManager::do_work_vector_in_threads(
-    std::vector< std::function< void () > > const & work_vector,
-    MasalaThreadedWorkRequestConfiguration const & settings
+MasalaThreadManager::do_work_in_threads(
+    MasalaThreadedWorkRequest const & request
 ) {
     if( work_vector.empty() ) {
-        write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing nothing." );
+        write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
         return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0 );
     }
     base::Size const n_threads_requested(
-        settings.all_threads_requested() ?
+        request.all_threads_requested() ?
         nthreads_ :
-        settings.n_threads_requested()
+        request.n_threads_requested()
     );
     TODO TODO TODO
 }

@@ -101,10 +101,13 @@ public:
     class_namespace() const override;
 
     /// @brief Do a vector of work in threads, without a reservation.
+    /// @param[in] request An object describing the work to be done and the
+    /// number of requested threads in which to do it.
+    /// @returns A summary of what work was done, the number of threads
+    /// in which it was actually executed, and how long it took.
     MasalaThreadedWorkExecutionSummary
-    do_work_vector_in_threads(
-        std::vector< std::function< void () > > const & work_vector,
-        MasalaThreadedWorkRequestConfiguration const & settings
+    do_work_in_threads(
+        MasalaThreadedWorkRequest const & request
     );
 
 
@@ -113,6 +116,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The total number of threads to launch.
+    base::Size nthreads_ = 1;
 
 };
 
