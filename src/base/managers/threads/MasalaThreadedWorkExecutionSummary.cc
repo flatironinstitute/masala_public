@@ -23,9 +23,8 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/threads/MasalaThreadedWorkExecutionSummary.cc
-/// @brief A base class for all Masala objects.
-/// @details Masala objects all define certain functions, such as write_to_tracer(),
-/// class_name(), and class_namespace().
+/// @brief A class that will store a summary of what work was done in threads,
+/// how long it took, and how many threads were actually assigned to the work.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
