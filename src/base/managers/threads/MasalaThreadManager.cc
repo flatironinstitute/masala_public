@@ -80,10 +80,18 @@ MasalaThreadManager::do_work_in_threads(
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
         return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0, 0.0 );
     }
-    base::Size const n_threads_requested(
-        request.all_threads_requested() ?
-        total_threads_ :
-        request.n_threads_requested()
+
+    // The number of threads to actually request should be:
+    // - all threads if all_threads_requested() == true.
+    // - n_threads_requested() otherwise.
+    // - no more than the number of tasks to do.
+    base::Size const n_threads_to_actually_request(
+        std::min(
+            request.all_threads_requested() ?
+            total_threads_ :
+            request.n_threads_requested(),
+            request.work_vector_size()
+        )
     );
     TODO TODO TODO
 }

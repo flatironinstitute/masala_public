@@ -88,6 +88,9 @@ public:
 	/// @returns True if there's no work in the work vector, false otherwise.
 	bool empty() const;
 
+	/// @brief Get the number of entries in the work vector.
+	base::Size work_vector_size() const;
+
 	/// @brief Are we requesting all threads?
 	bool all_threads_requested() const;
 

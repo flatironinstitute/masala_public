@@ -122,7 +122,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Lock the thread manager (e.g. for resizing thread pools).
-    std::mutex thread_manager_mutex_;
+    mutable std::mutex thread_manager_mutex_;
 
     /// @brief The total number of threads to launch.
     base::Size total_threads_ = 1;

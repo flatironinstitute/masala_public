@@ -70,6 +70,12 @@ MasalaThreadedWorkRequest::empty() const {
     return work_vector_.empty();
 }
 
+/// @brief Get the number of entries in the work vector.
+base::Size
+MasalaThreadedWorkRequest::work_vector_size() const {
+    return work_vector_.size();
+}
+
 /// @brief Are we requesting all threads?
 bool
 MasalaThreadedWorkRequest::all_threads_requested() const {
