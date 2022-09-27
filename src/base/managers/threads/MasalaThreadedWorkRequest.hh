@@ -40,6 +40,7 @@ SOFTWARE.
 // STL headers
 #include <functional>
 #include <vector>
+#include <atomic>
 
 namespace masala {
 namespace base {
@@ -53,6 +54,37 @@ enum class MasalaThreadedWorkRequestMode {
 	REQUEST_SPECIFIED_NUMBER_OF_THREADS, // Keep second-to-last
 	NUM_REQUEST_MODES = REQUEST_SPECIFIED_NUMBER_OF_THREADS // Keep last
 }; // enum class MasalaThreadedWorkRequestMode
+
+/// @brief A struct for a job to be done as part of a vector of work.
+/// @details Contains a function to execute, an atomic_bool indicating whether
+/// the job has been done, and a mutex used for locking the atomic_bool.
+struct MasalaThreadedJob {
+
+public:
+
+	/// @brief Default constructor, deleted.
+	MasalaThreadedJob() = delete;
+
+	/// @brief Initialization constructor.
+	MasalaThreadedJob(
+		std::function< void() > const & work_fxn_in_
+	) :
+		work_function_( work_fxn_in_ ),
+		job_was_completed_(false)
+	{}
+
+public:
+
+	/// @brief The function to do in threads.
+	std::function< void() > work_function_;
+
+	/// @brief An atomic bool indicating whether the work has been done.
+	std::atomic_bool job_was_completed_;
+
+	/// @brief A mutex for locking the atomic bool.
+	std::mutex job_mutex_;
+
+}; // struct MasalaThreadedJob
 
 /// @brief A class that stores a vector of work to do in threads plus configuration
 /// options describing how the work is to be done.
@@ -106,7 +138,7 @@ private:
 
 	/// @brief The vector of work to do in threads.
 	/// @details This work might be done in any order.
-	std::vector< std::function< void () > > work_vector_;
+	std::vector< MasalaThreadedJob > work_vector_;
 
 	/// @brief The mode for requesting threads.
 	MasalaThreadedWorkRequestMode request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
