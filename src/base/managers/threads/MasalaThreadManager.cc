@@ -79,7 +79,7 @@ MasalaThreadManager::do_work_in_threads(
 ) {
     if( work_vector.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
-        return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0 );
+        return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0, 0.0 );
     }
     base::Size const n_threads_requested(
         request.all_threads_requested() ?
