@@ -122,6 +122,22 @@ public:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Given a request containing a vector of work, this function
+    /// can be executed in parallel in order to actually do the work.
+    void
+    threaded_execution_function(
+        MasalaThreadedWorkRequest const & request,
+        std::vector< std::mutex > const & mutexes,
+        std::vector< bool > & jobs_completed,
+        MasalaThreadedWorkExecutionSummary const & summary
+    ) const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 

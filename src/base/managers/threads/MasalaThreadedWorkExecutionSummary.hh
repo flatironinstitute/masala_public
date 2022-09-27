@@ -45,6 +45,7 @@ namespace threads {
 /// @brief An enum for the exit status following a threaded work request.
 enum class MasalaThreadedWorkStatus {
 	INVALID_STATUS = 0, // Keep first
+	WORK_IN_PROGRESS,
 	NO_WORK_DONE,
 	WORK_THREW_EXCEPTION,
 	WORK_SUCCESSFUL, // Keep second-to-last
@@ -64,6 +65,12 @@ public:
 
 	/// @brief Default constructor, deleted.
 	MasalaThreadedWorkExecutionSummary() = delete;
+
+	/// @brief Constructor that initializes nthreads_actual_ and
+	/// execution_time_microseconds_ to zero.  These must be set later.
+	/// @details Initializes status to WORK_IN_PROGRESS.  The idea is that
+	/// this will be updated when execution finishes.
+	MasalaThreadedWorkExecutionSummary() = default;
 
 	/// @brief Options constructor.
 	/// @param[in] status The status for the work done.
@@ -110,15 +117,14 @@ private:
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief The status of the work.  Must be set on construction.
-	MasalaThreadedWorkStatus const work_status_ = MasalaThreadedWorkStatus::INVALID_STATUS;
+	/// @brief The status of the work.
+	MasalaThreadedWorkStatus work_status_ = MasalaThreadedWorkStatus::WORK_IN_PROGRESS;
 
 	/// @brief The number of threads that were actually used for the work (which can
-	/// be less than the number requested).  Must be set on construction.
-	base::Size const nthreads_actual_ = 0;
+	/// be less than the number requested).
+	base::Size nthreads_actual_ = 0;
 
-	/// @brief The wall-time, in microseconds that the work took.  Must be set
-	/// on construction.
+	/// @brief The wall-time, in microseconds that the work took.
 	base::Real execution_time_microseconds_ = 0.0;
 
 }; // class MasalaThreadedWorkExecutionSummary

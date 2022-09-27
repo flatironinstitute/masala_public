@@ -38,6 +38,7 @@ SOFTWARE.
 // STL headers:
 #include <string>
 #include <functional>
+#include <cmath>
 
 namespace masala {
 namespace base {
@@ -109,11 +110,10 @@ MasalaThreadManager::do_work_in_threads(
         )
     );
 
-    // One mutex for each job in the work vector:
-    std::vector< std::mutex > mutexes( request.work_vector_size() );
-
-    // A vector for marking whether jobs are done:
-    std::vector< bool > jobs_completed( request.work_vector_size(), false );
+    // The summary of how the threaded work was actually executed.  During
+    // execution, this stores information about how many threads have actually
+    // been assigned and which threads they are.
+    MasalaThreadedWorkExecutionSummary summary;
 
     // Prepare a parallel function for doing a vector of work:
     std::function< void() > const inner_fxn(
@@ -121,13 +121,14 @@ MasalaThreadManager::do_work_in_threads(
             &MasalaThreadManager::threaded_execution_function,
             this,
             std::cref( request ),
-            std::ref( mutexes ),
-            std::ref( jobs_completed )
+            std::cref( summary )
         )
     );
 
     // Run the function in threads:
-    return execute_function_in_threads( inner_fxn, n_threads_to_actually_request, MasalaThreadManagerAccessKey() );
+    execute_function_in_threads( inner_fxn, n_threads_to_actually_request, MasalaThreadManagerAccessKey(), summary );
+
+    return summary;
 }
 
 /// @brief Get the total number of threads that the thread pool is set
@@ -136,6 +137,59 @@ base::Size
 MasalaThreadManager::total_threads() const {
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
     return total_threads_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a request containing a vector of work, this function
+/// can be executed in parallel in order to actually do the work.
+void
+MasalaThreadManager::threaded_execution_function(
+    MasalaThreadedWorkRequest const & request,
+    MasalaThreadedWorkExecutionSummary const & summary
+) const {
+    // The number of threads actually assigned:
+    base::Size const nthreads_assigned( summary.threads_actual() );
+
+    // The zero-based index of this thread in the set of threads assigned:
+    base::Size const thisthread_index( summary.get_current_thread_index_in_assigned_thread_set() );
+
+    // The number of jobs in the work vector:
+    base::Size const njobs( request.work_vector_size() );
+
+    // Where do we finish looking for work to do?  (We will start one job past this, and wrap around):
+    base::Size const lastjob( std::round( thisthread_index * static_cast< float >( njobs ) / static_cast< float >( nthreads_assigned ) ) );
+
+    // What's the current job that we're considering?
+    base::Size curjob(lastjob);
+
+    do {
+        ++curjob;
+        if( curjob >= njobs ) {
+            curjob = 0;
+        }
+
+        // First, check whether a job is complete without locking the mutex:
+        if( request.job_is_complete( curjob ) ) {
+            continue;
+        }
+
+        // Next, get a mutex lock, and check again.
+        {
+            std::lock_guard< std::mutex > lock( request.mutex( curjob ) );
+            if( request.job_is_complete( curjob ) ) {
+                continue;
+            } else {
+                request.mark_job_complete( curjob );
+            }
+        } // Scope for mutex lock.
+
+        // If we reach here, we want to actually execute the current job:
+        request.do_work( curjob );
+
+    } while( curjob != lastjob );
 }
 
 } // namespace threads
