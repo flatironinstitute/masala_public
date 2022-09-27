@@ -51,10 +51,8 @@ enum class MasalaThreadedWorkStatus {
 	NUM_STATUS_TYPES = WORK_SUCCESSFUL // Keep last
 }; // enum class MasalaThreadedWorkStatus
 
-/// @brief A base class for all Masala derived classes.  This allows the possibility of having a
-/// generic MasalaThreadedWorkExecutionSummary pointer or shared pointer.
-/// @note The MasalaConfigurationManager can access the private member functions (and data) of MasalaThreadedWorkExecutionSummarys.
-/// This allows it to call load_configuration() when first needed.
+/// @brief A class that will store a summary of what work was done in threads,
+/// how long it took, and how many threads were actually assigned to the work.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaThreadedWorkExecutionSummary : public base::MasalaObject {
 
