@@ -37,6 +37,7 @@ SOFTWARE.
 
 // STL headers:
 #include <string>
+#include <functional>
 
 namespace masala {
 namespace base {
@@ -107,9 +108,26 @@ MasalaThreadManager::do_work_in_threads(
             request.work_vector_size()
         )
     );
-    TODO TODO TODO
 
-    //return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::WORK_SUCCESSFUL, 0, 0.0 );
+    // One mutex for each job in the work vector:
+    std::vector< std::mutex > mutexes( request.work_vector_size() );
+
+    // A vector for marking whether jobs are done:
+    std::vector< bool > jobs_completed( request.work_vector_size(), false );
+
+    // Prepare a parallel function for doing a vector of work:
+    std::function< void() > const inner_fxn(
+        std::bind(
+            &MasalaThreadManager::threaded_execution_function,
+            this,
+            std::cref( request ),
+            std::ref( mutexes ),
+            std::ref( jobs_completed )
+        )
+    );
+
+    // Run the function in threads:
+    return execute_function_in_threads( inner_fxn, n_threads_to_actually_request, MasalaThreadManagerAccessKey() );
 }
 
 /// @brief Get the total number of threads that the thread pool is set
