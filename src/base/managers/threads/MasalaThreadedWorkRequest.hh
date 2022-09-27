@@ -37,10 +37,22 @@ SOFTWARE.
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
 
+// STL headers
+#include <functional>
+#include <vector>
+
 namespace masala {
 namespace base {
 namespace managers {
 namespace threads {
+
+/// @brief An enum specifying how we'll request threads.
+enum class MasalaThreadedWorkRequestMode {
+	INVALID_REQUEST_MODE = 0, // Keep first
+	REQUEST_ALL_THREADS,
+	REQUEST_SPECIFIED_NUMBER_OF_THREADS, // Keep second-to-last
+	NUM_REQUEST_MODES = REQUEST_SPECIFIED_NUMBER_OF_THREADS // Keep last
+}; // enum class MasalaThreadedWorkRequestMode
 
 /// @brief A class that stores a vector of work to do in threads plus configuration
 /// options describing how the work is to be done.
@@ -72,11 +84,32 @@ public:
 	/// @brief Returns "masala::base::managers::threads".
 	std::string class_namespace() const override;
 
+	/// @brief Is the vector of work to do empty?
+	/// @returns True if there's no work in the work vector, false otherwise.
+	bool empty() const;
+
+	/// @brief Are we requesting all threads?
+	bool all_threads_requested() const;
+
+	/// @brief How many threads have been requested?
+	/// @details Throws unless mode is REQUEST_SPECIFIED_NUMBER_OF_THREADS.
+	base::Size n_threads_requested() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The vector of work to do in threads.
+	/// @details This work might be done in any order.
+	std::vector< std::function< void () > > work_vector_;
+
+	/// @brief The mode for requesting threads.
+	MasalaThreadedWorkRequestMode request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
+
+	/// @brief The number of threads requested.
+	base::Size n_threads_requested_ = 1;
 
 }; // class MasalaThreadedWorkRequest
 

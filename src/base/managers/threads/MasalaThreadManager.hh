@@ -38,11 +38,10 @@ SOFTWARE.
 
 // Base headers:
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh>
-#include <base/managers/threads/MasalaThreadedWorkRequestConfiguration.fwd.hh>
+#include <base/managers/threads/MasalaThreadedWorkRequest.fwd.hh>
 
 // STL headers:
 #include <mutex>
-#include <functional>
 
 namespace masala {
 namespace base {
@@ -110,14 +109,22 @@ public:
         MasalaThreadedWorkRequest const & request
     );
 
+    /// @brief Get the total number of threads that the thread pool is set
+    /// to run.  (May not have been launched yet.)
+    base::Size
+    total_threads() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Lock the thread manager (e.g. for resizing thread pools).
+    std::mutex thread_manager_mutex_;
+
     /// @brief The total number of threads to launch.
-    base::Size nthreads_ = 1;
+    base::Size total_threads_ = 1;
 
 };
 

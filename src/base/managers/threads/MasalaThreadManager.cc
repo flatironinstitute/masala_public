@@ -33,7 +33,7 @@ SOFTWARE.
 // Base headers:
 #include <base/types.hh>
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
-#include <base/managers/threads/MasalaThreadedWorkRequestConfiguration.hh>
+#include <base/managers/threads/MasalaThreadedWorkRequest.hh>
 
 // STL headers:
 #include <string>
@@ -77,16 +77,24 @@ MasalaThreadedWorkExecutionSummary
 MasalaThreadManager::do_work_in_threads(
     MasalaThreadedWorkRequest const & request
 ) {
-    if( work_vector.empty() ) {
+    if( request.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
         return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0, 0.0 );
     }
     base::Size const n_threads_requested(
         request.all_threads_requested() ?
-        nthreads_ :
+        total_threads_ :
         request.n_threads_requested()
     );
     TODO TODO TODO
+}
+
+/// @brief Get the total number of threads that the thread pool is set
+/// to run.  (May not have been launched yet.)
+base::Size
+MasalaThreadManager::total_threads() const {
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+    return total_threads_;
 }
 
 } // namespace threads

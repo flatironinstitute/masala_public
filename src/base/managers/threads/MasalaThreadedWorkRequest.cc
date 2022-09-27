@@ -63,6 +63,32 @@ MasalaThreadedWorkRequest::class_namespace() const {
     return "masala::base::managers::threads";
 }
 
+/// @brief Is the vector of work to do empty?
+/// @returns True if there's no work in the work vector, false otherwise.
+bool
+MasalaThreadedWorkRequest::empty() const {
+    return work_vector_.empty();
+}
+
+/// @brief Are we requesting all threads?
+bool
+MasalaThreadedWorkRequest::all_threads_requested() const {
+    return request_mode_ == MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
+}
+
+/// @brief How many threads have been requested?
+/// @details Throws unless mode is REQUEST_SPECIFIED_NUMBER_OF_THREADS.
+base::Size
+MasalaThreadedWorkRequest::n_threads_requested() const {
+    CHECK_OR_THROW_FOR_CLASS(
+        request_mode_ == MasalaThreadedWorkRequestMode::REQUEST_SPECIFIED_NUMBER_OF_THREADS,
+        "n_threads_requested",
+        "The request mode is not set to REQUEST_SPECIFIED_NUMBER_OF_THREADS, yet the number "
+        "of threads was requested!"
+    );
+    return n_threads_requested_;
+}
+
 } // namespace threads
 } // namespace managers
 } // namespace base
