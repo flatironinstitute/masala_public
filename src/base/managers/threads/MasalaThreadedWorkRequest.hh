@@ -41,6 +41,7 @@ SOFTWARE.
 #include <functional>
 #include <vector>
 #include <atomic>
+#include <mutex>
 
 namespace masala {
 namespace base {
@@ -66,12 +67,7 @@ public:
 	MasalaThreadedJob() = delete;
 
 	/// @brief Initialization constructor.
-	MasalaThreadedJob(
-		std::function< void() > const & work_fxn_in_
-	) :
-		work_function_( work_fxn_in_ ),
-		job_was_completed_(false)
-	{}
+	MasalaThreadedJob( std::function< void() > const & work_fxn_in_ );
 
 public:
 

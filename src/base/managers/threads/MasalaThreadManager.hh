@@ -130,8 +130,6 @@ private:
     void
     threaded_execution_function(
         MasalaThreadedWorkRequest const & request,
-        std::vector< std::mutex > const & mutexes,
-        std::vector< bool > & jobs_completed,
         MasalaThreadedWorkExecutionSummary const & summary
     ) const;
 

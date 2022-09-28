@@ -63,9 +63,6 @@ public:
 // CONSTRUCTION AND DESTRUCTION:
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor, deleted.
-	MasalaThreadedWorkExecutionSummary() = delete;
-
 	/// @brief Constructor that initializes nthreads_actual_ and
 	/// execution_time_microseconds_ to zero.  These must be set later.
 	/// @details Initializes status to WORK_IN_PROGRESS.  The idea is that
