@@ -44,6 +44,15 @@ namespace managers {
 namespace threads {
 namespace thread_pool {
 
+/// @brief An enum class for the states of the thread pool.
+enum class MasalaThreadPoolState {
+	INVALID_STATE = 0, // Keep this first.
+	THREADS_NOT_LAUNCHED,
+	THREADS_READY,
+	THREADS_SPINNING_DOWN, // Keep this second-to-last.
+	NUM_STATES = THREADS_SPINNING_DOWN // Keep this last.
+};
+
 /// @brief A largely empty class with a private constructor and the
 /// MasalaThreadManager as its only friend, needed for construction
 /// of a MasalaThreadPool.  This ensures that only the thread manager
@@ -134,6 +143,15 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Lock the thread pool when altering state.
+	mutable std::mutex thread_pool_mutex_;
+
+	/// @brief The state of the object.
+	MasalaThreadPoolState thread_pool_state_ = MasalaThreadPoolState::THREADS_NOT_LAUNCHED;
+
+	/// @brief The threads in this thread pool.
+	std::vector< MasalaThreadSP > threads_;
 
 }; // class MasalaThreadPool
 

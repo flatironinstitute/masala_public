@@ -171,9 +171,7 @@ MasalaThreadManager::execute_function_in_threads(
     MasalaThreadManagerAccessKey const & access_key,
     MasalaThreadedWorkExecutionSummary & summary
 ) const {
-    if( !thread_pool_->threads_were_launched() ) {
-        thread_pool_->launch_threads( total_threads_ );
-    }
+    thread_pool_->launch_threads_if_needed();
     thread_pool_->execute_function_in_threads( fxn, threads_to_request, summary );
 } // MasalaThreadManager::execute_function_in_threads()
 
