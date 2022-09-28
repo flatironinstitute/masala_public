@@ -43,6 +43,7 @@ SOFTWARE.
 #include <base/managers/threads/thread_pool/MasalaThreadPool.fwd.hh>
 
 // STL headers:
+#include <functional>
 #include <mutex>
 #include <atomic>
 
@@ -61,7 +62,7 @@ class MasalaThreadManagerAccessKey : public base::MasalaObject {
 
 	// We make the MasalaThreadManager a friend so that it alone can instantiate
 	// this private-constructor key class.
-	friend class base::managers::threads::MasalaThreadManager;
+	friend class MasalaThreadManager;
 
 private:
 	/// @brief Default constructor, private.
@@ -156,7 +157,7 @@ public:
     MasalaThreadedWorkExecutionSummary
     do_work_in_threads(
         MasalaThreadedWorkRequest & request
-    );
+    ) const;
 
     /// @brief Given a function, run it in a given number of threads.
     /// @note Calling this function requires a MasalaThreadManagerAccessKey.
@@ -191,7 +192,7 @@ private:
     threaded_execution_function(
         MasalaThreadedWorkRequest & request,
         MasalaThreadedWorkExecutionSummary const & summary
-    );
+    ) const;
 
 private:
 

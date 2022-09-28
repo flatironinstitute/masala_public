@@ -35,6 +35,7 @@ namespace base {
 namespace managers {
 namespace threads {
 
+    class MasalaThreadManagerAccessKey;
     class MasalaThreadManager;
 
     /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow

@@ -37,7 +37,6 @@ SOFTWARE.
 
 // STL headers:
 #include <string>
-#include <functional>
 #include <cmath>
 
 namespace masala {
@@ -112,7 +111,7 @@ MasalaThreadManager::class_namespace() const {
 MasalaThreadedWorkExecutionSummary
 MasalaThreadManager::do_work_in_threads(
     MasalaThreadedWorkRequest & request
-) {
+) const {
     if( request.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
         return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0, 0.0 );
@@ -196,7 +195,7 @@ void
 MasalaThreadManager::threaded_execution_function(
     MasalaThreadedWorkRequest & request,
     MasalaThreadedWorkExecutionSummary const & summary
-) {
+) const {
     // The number of threads actually assigned:
     base::Size const nthreads_assigned( summary.nthreads_actual() );
 
