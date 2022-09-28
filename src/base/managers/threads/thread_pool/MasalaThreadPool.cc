@@ -42,9 +42,39 @@ namespace managers {
 namespace threads {
 namespace thread_pool {
 
+////////////////////////////////////////////////////////////////////////////////
+// MasalaThreadPoolCreationKey PUBLIC MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Returns "MasalaThreadPoolCreationKey".
+std::string
+MasalaThreadPoolCreationKey::class_name() const {
+    return "MasalaThreadPoolCreationKey";
+}
+
+/// @brief Returns "masala::base::managers::threads::thread_pool".
+std::string
+MasalaThreadPoolCreationKey::class_namespace() const {
+    return "masala::base::managers::threads::thread_pool";
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
+// MasalaThreadPool CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Keyed constructor.
+/// @details The MasalaThreadPoolCreationKey class has a private constructor,
+/// and has the MasalaThreadManager as its only friend.  This ensures that only
+/// the thread manager can create thread pools (or can control what other classes
+/// can create thread pools).
+MasalaThreadPool::MasalaThreadPool(
+    MasalaThreadPoolCreationKey const & 
+) :
+    base::MasalaObject()
+{}
+
+////////////////////////////////////////////////////////////////////////////////
+// MasalaThreadPool PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Returns "MasalaThreadPool".

@@ -38,6 +38,8 @@ namespace managers {
 namespace threads {
 namespace thread_pool {
 
+	class MasalaThreadPoolCreationKey;
+
 	class MasalaThreadPool;
 
 	/// @brief We will use the convention that an class name followed by SP

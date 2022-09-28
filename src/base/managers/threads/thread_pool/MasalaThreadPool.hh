@@ -34,6 +34,7 @@ SOFTWARE.
 #include <base/managers/threads/thread_pool/MasalaThreadPool.fwd.hh>
 
 // Base headers:
+#include <base/managers/threads/MasalaThreadManager.fwd.hh>
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
 
@@ -42,6 +43,48 @@ namespace base {
 namespace managers {
 namespace threads {
 namespace thread_pool {
+
+/// @brief A largely empty class with a private constructor and the
+/// MasalaThreadManager as its only friend, needed for construction
+/// of a MasalaThreadPool.  This ensures that only the thread manager
+/// can create a thread pool.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class MasalaThreadPoolCreationKey : public base::MasalaObject {
+
+	// We make the MasalaThreadManager a friend so that it alone can instantiate
+	// this private-constructor key class.
+	friend class base::managers::threads::MasalaThreadManager;
+
+private:
+	/// @brief Default constructor, private.
+	MasalaThreadPoolCreationKey() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Copy constructor, deleted.
+	MasalaThreadPoolCreationKey( MasalaThreadPoolCreationKey const & ) = delete;
+
+	/// @brief Assignment operator, deleted.
+	MasalaThreadPoolCreationKey & operator=( MasalaThreadPoolCreationKey const & ) = delete;
+
+	/// @brief Destructor.
+	~MasalaThreadPoolCreationKey() override = default;
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Returns "MasalaThreadPoolCreationKey".
+	std::string class_name() const override;
+
+	/// @brief Returns "masala::base::managers::threads::thread_pool".
+	std::string class_namespace() const override;
+
+}; // class MasalaThreadPoolCreationKey
 
 /// @brief A container for a set of threads.  Controls launching, destroying,
 /// or renumbering threads in a threadsafe way.
@@ -54,8 +97,15 @@ public:
 // CONSTRUCTION AND DESTRUCTION:
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.
-	MasalaThreadPool() = default;
+	/// @brief Default constructor, deleted.
+	MasalaThreadPool() = delete;
+
+	/// @brief Keyed constructor.
+	/// @details The MasalaThreadPoolCreationKey class has a private constructor,
+	/// and has the MasalaThreadManager as its only friend.  This ensures that only
+	/// the thread manager can create thread pools (or can control what other classes
+	/// can create thread pools).
+	MasalaThreadPool( MasalaThreadPoolCreationKey const & key );
 
 	/// @brief Copy constructor, deleted.
 	MasalaThreadPool( MasalaThreadPool const & ) = delete;
@@ -66,8 +116,7 @@ public:
 		MasalaThreadPool const &
 	) = delete;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
+	/// @brief Destructor.
 	~MasalaThreadPool() override = default;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +126,7 @@ public:
 	/// @brief Returns "MasalaThreadPool".
 	std::string class_name() const override;
 
-	/// @brief Returns "masala::base::managers::threads".
+	/// @brief Returns "masala::base::managers::threads::thread_pool".
 	std::string class_namespace() const override;
 
 private:

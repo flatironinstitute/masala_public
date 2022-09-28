@@ -51,6 +51,49 @@ namespace base {
 namespace managers {
 namespace threads {
 
+/// @brief A largely empty class with a private constructor and the
+/// MasalaThreadManager as its only friend, needed for accessing the
+/// advanced API functions of the MasalaThreadManager.  This ensures
+/// that the MasalaThreadManager can control what can access these
+/// functions.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class MasalaThreadManagerAccessKey : public base::MasalaObject {
+
+	// We make the MasalaThreadManager a friend so that it alone can instantiate
+	// this private-constructor key class.
+	friend class base::managers::threads::MasalaThreadManager;
+
+private:
+	/// @brief Default constructor, private.
+	MasalaThreadManagerAccessKey() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Copy constructor, deleted.
+	MasalaThreadManagerAccessKey( MasalaThreadManagerAccessKey const & ) = delete;
+
+	/// @brief Assignment operator, deleted.
+	MasalaThreadManagerAccessKey & operator=( MasalaThreadManagerAccessKey const & ) = delete;
+
+	/// @brief Destructor.
+	~MasalaThreadManagerAccessKey() override = default;
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Returns "MasalaThreadManagerAccessKey".
+	std::string class_name() const override;
+
+	/// @brief Returns "masala::base::managers::threads".
+	std::string class_namespace() const override;
+
+}; // class MasalaThreadManagerAccessKey
+
 
 /// @brief A static singleton for managing a thread pool, and execution of code
 /// in parallel threads.
@@ -115,6 +158,22 @@ public:
         MasalaThreadedWorkRequest & request
     );
 
+    /// @brief Given a function, run it in a given number of threads.
+    /// @note Calling this function requires a MasalaThreadManagerAccessKey.
+    /// This is an (empty) class with a private constructor, and the
+    /// MasalaThreadManager is its only friend.  This is a means by which
+    /// access to this advanced API is restricted to avoid unsafe thread
+    /// practices.  For most purposes, you want to create a MasalaThreadedWorkRequest
+    /// containing a vector of work to do, and pass it to the do_work_in_threads()
+    /// function.
+    void
+    execute_function_in_threads(
+        std::function< void() > const & fxn,
+        base::Size const threads_to_request,
+        MasalaThreadManagerAccessKey const & access_key,
+        MasalaThreadedWorkExecutionSummary & summary
+    ) const;
+
     /// @brief Get the total number of threads that the thread pool is set
     /// to run.  (May not have been launched yet.)
     base::Size
@@ -132,7 +191,7 @@ private:
     threaded_execution_function(
         MasalaThreadedWorkRequest & request,
         MasalaThreadedWorkExecutionSummary const & summary
-    ) const;
+    );
 
 private:
 

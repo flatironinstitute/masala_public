@@ -53,7 +53,24 @@ MasalaThreadManager::get_instance() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PRIVATE CONSTRUCTOR
+// MasalaThreadManagerAccessKey PUBLIC MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Returns "MasalaThreadManagerAccessKey".
+std::string
+MasalaThreadManagerAccessKey::class_name() const {
+    return "MasalaThreadPoolCreationKey";
+}
+
+/// @brief Returns "masala::base::managers::threads".
+std::string
+MasalaThreadManagerAccessKey::class_namespace() const {
+    return "masala::base::managers::threads";
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// MasalaThreadManager PRIVATE CONSTRUCTOR
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Private constructor: object can only be instantiated with getInstance().
@@ -61,12 +78,16 @@ MasalaThreadManager::get_instance() {
 /// work is first assigned to threads (lazy thread launching).
 MasalaThreadManager::MasalaThreadManager() :
     base::MasalaObject(),
-    thread_pool_( std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >() )
+    thread_pool_(
+        std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
+            base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
+        )
+    )
 {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
+// MasalaThreadManager PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the name of this object.
@@ -126,10 +147,36 @@ MasalaThreadManager::do_work_in_threads(
     );
 
     // Run the function in threads:
-    execute_function_in_threads( inner_fxn, n_threads_to_actually_request, MasalaThreadManagerAccessKey(), summary );
+    execute_function_in_threads(
+        inner_fxn,
+        n_threads_to_actually_request,
+        MasalaThreadManagerAccessKey(),
+        summary
+    );
 
     return summary;
-}
+} // MasalaThreadManager::do_work_in_threads()
+
+/// @brief Given a function, run it in a given number of threads.
+/// @note Calling this function requires a MasalaThreadManagerAccessKey.
+/// This is an (empty) class with a private constructor, and the
+/// MasalaThreadManager is its only friend.  This is a means by which
+/// access to this advanced API is restricted to avoid unsafe thread
+/// practices.  For most purposes, you want to create a MasalaThreadedWorkRequest
+/// containing a vector of work to do, and pass it to the do_work_in_threads()
+/// function.
+void
+MasalaThreadManager::execute_function_in_threads(
+    std::function< void() > const & fxn,
+    base::Size const threads_to_request,
+    MasalaThreadManagerAccessKey const & access_key,
+    MasalaThreadedWorkExecutionSummary & summary
+) const {
+    if( !thread_pool_->threads_were_launched() ) {
+        thread_pool_->launch_threads( total_threads_ );
+    }
+    thread_pool_->execute_function_in_threads( fxn, threads_to_request, summary );
+} // MasalaThreadManager::execute_function_in_threads()
 
 /// @brief Get the total number of threads that the thread pool is set
 /// to run.  (May not have been launched yet.)
@@ -140,7 +187,7 @@ MasalaThreadManager::total_threads() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PRIVATE MEMBER FUNCTIONS
+// MasalaThreadManager PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Given a request containing a vector of work, this function
@@ -149,7 +196,7 @@ void
 MasalaThreadManager::threaded_execution_function(
     MasalaThreadedWorkRequest & request,
     MasalaThreadedWorkExecutionSummary const & summary
-) const {
+) {
     // The number of threads actually assigned:
     base::Size const nthreads_assigned( summary.nthreads_actual() );
 
