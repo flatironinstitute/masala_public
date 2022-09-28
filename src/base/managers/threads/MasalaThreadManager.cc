@@ -90,7 +90,7 @@ MasalaThreadManager::class_namespace() const {
 /// in which it was actually executed, and how long it took.
 MasalaThreadedWorkExecutionSummary
 MasalaThreadManager::do_work_in_threads(
-    MasalaThreadedWorkRequest const & request
+    MasalaThreadedWorkRequest & request
 ) {
     if( request.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
@@ -120,7 +120,7 @@ MasalaThreadManager::do_work_in_threads(
         std::bind(
             &MasalaThreadManager::threaded_execution_function,
             this,
-            std::cref( request ),
+            std::ref( request ),
             std::cref( summary )
         )
     );
@@ -147,11 +147,11 @@ MasalaThreadManager::total_threads() const {
 /// can be executed in parallel in order to actually do the work.
 void
 MasalaThreadManager::threaded_execution_function(
-    MasalaThreadedWorkRequest const & request,
+    MasalaThreadedWorkRequest & request,
     MasalaThreadedWorkExecutionSummary const & summary
 ) const {
     // The number of threads actually assigned:
-    base::Size const nthreads_assigned( summary.threads_actual() );
+    base::Size const nthreads_assigned( summary.nthreads_actual() );
 
     // The zero-based index of this thread in the set of threads assigned:
     base::Size const thisthread_index( summary.get_current_thread_index_in_assigned_thread_set() );
@@ -178,7 +178,7 @@ MasalaThreadManager::threaded_execution_function(
 
         // Next, get a mutex lock, and check again.
         {
-            std::lock_guard< std::mutex > lock( request.mutex( curjob ) );
+            std::lock_guard< std::mutex > lock( request.job_mutex( curjob ) );
             if( request.job_is_complete( curjob ) ) {
                 continue;
             } else {
@@ -187,7 +187,7 @@ MasalaThreadManager::threaded_execution_function(
         } // Scope for mutex lock.
 
         // If we reach here, we want to actually execute the current job:
-        request.do_work( curjob );
+        request.run_job( curjob );
 
     } while( curjob != lastjob );
 }

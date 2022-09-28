@@ -106,6 +106,71 @@ MasalaThreadedWorkRequest::n_threads_requested() const {
     return n_threads_requested_;
 }
 
+/// @brief Has a particular job completed?
+/// @details Does not lock the job mutex for the check.
+bool
+MasalaThreadedWorkRequest::job_is_complete(
+    base::Size const job_index
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        job_index < work_vector_.size(), "job_is_complete",
+        "The requested job index (" + std::to_string(job_index) + ") is not within the "
+        "work vector (size " + std::to_string( work_vector_.size() ) + ")."
+    );
+
+    return work_vector_[job_index].job_was_completed_.load(); //Atomic operation.
+}
+
+/// @brief Indicate that a particular job is complete.
+/// @details Does not lock the job mutex when modifying
+/// the atomic_bool.  The proper workflow is to check the
+/// atomic bool, obtain a mutex lock (by calling job_mutex),
+/// check again, mark the job complete, release the mutex
+/// lock, and then run the job.
+void
+MasalaThreadedWorkRequest::mark_job_complete(
+    base::Size const job_index
+) {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        job_index < work_vector_.size(), "mark_job_complete",
+        "The requested job index (" + std::to_string(job_index) + ") is not within the "
+        "work vector (size " + std::to_string( work_vector_.size() ) + ")."
+    );
+
+    work_vector_[job_index].job_was_completed_.store(true); //Atomic operation.
+}
+
+/// @brief Access the mutex for a particular job.
+/// @details Used for obtaining a mutex lock.  Note that the mutex is
+/// intended for checking and flipping the status of the job completion
+/// atomic_bool, not for locking the job while work is being done.
+/// @note The mutex access is nonconst, despite this being a const function.
+/// The mutex is mutable to allow a lock to be obtained.
+std::mutex &
+MasalaThreadedWorkRequest::job_mutex(
+    base::Size const job_index
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        job_index < work_vector_.size(), "job_mutex",
+        "The requested job index (" + std::to_string(job_index) + ") is not within the "
+        "work vector (size " + std::to_string( work_vector_.size() ) + ")."
+    );
+    return work_vector_[job_index].job_mutex_;
+}
+
+/// @brief Execute the Nth work function.
+void
+MasalaThreadedWorkRequest::run_job(
+    base::Size const job_index
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        job_index < work_vector_.size(), "run_job",
+        "The requested job index (" + std::to_string(job_index) + ") is not within the "
+        "work vector (size " + std::to_string( work_vector_.size() ) + ")."
+    );
+    work_vector_[job_index].work_function_();
+}
+
 } // namespace threads
 } // namespace managers
 } // namespace base

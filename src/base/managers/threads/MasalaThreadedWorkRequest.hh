@@ -78,7 +78,7 @@ public:
 	std::atomic_bool job_was_completed_;
 
 	/// @brief A mutex for locking the atomic bool.
-	std::mutex job_mutex_;
+	mutable std::mutex job_mutex_;
 
 }; // struct MasalaThreadedJob
 
@@ -125,6 +125,35 @@ public:
 	/// @brief How many threads have been requested?
 	/// @details Throws unless mode is REQUEST_SPECIFIED_NUMBER_OF_THREADS.
 	base::Size n_threads_requested() const;
+
+	/// @brief Has a particular job completed?
+    /// @details Does not lock the job mutex for the check.
+    bool
+    job_is_complete(
+        base::Size const job_index
+    ) const;
+
+	/// @brief Indicate that a particular job is complete.
+	/// @details Does not lock the job mutex when modifying
+	/// the atomic_bool.  The proper workflow is to check the
+	/// atomic bool, obtain a mutex lock (by calling job_mutex),
+	/// check again, mark the job complete, release the mutex
+	/// lock, and then run the job.
+	void
+	mark_job_complete(
+		base::Size const job_index
+	);
+
+	/// @brief Access the mutex for a particular job.
+	/// @details Used for obtaining a mutex lock.  Note that the mutex is
+	/// intended for checking and flipping the status of the job completion
+	/// atomic_bool, not for locking the job while work is being done.
+	/// @note The mutex access is nonconst, despite this being a const function.
+	/// The mutex is mutable to allow a lock to be obtained.
+	std::mutex & job_mutex( base::Size const job_index ) const;
+
+	/// @brief Execute the Nth work function.
+	void run_job( base::Size const job_index ) const;
 
 private:
 
