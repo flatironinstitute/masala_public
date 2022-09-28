@@ -35,8 +35,13 @@ SOFTWARE.
 
 // Base headers:
 #include <base/managers/threads/MasalaThreadManager.fwd.hh>
+#include <base/managers/threads/thread_pool/MasalaThread.fwd.hh>
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
+
+// STL headers:
+#include <mutex>
+#include <vector>
 
 namespace masala {
 namespace base {
