@@ -66,9 +66,11 @@ MasalaThreadCreationKey::class_namespace() const {
 /// and has the MasalaThreadPool as its only friend.  This ensures that only
 /// the thread pool can launch threads.
 MasalaThread::MasalaThread(
+    base::Size const thread_index,
     MasalaThreadCreationKey const & 
 ) :
-    base::MasalaObject()
+    base::MasalaObject(),
+    thread_index_(thread_index)
 {}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,18 +89,9 @@ MasalaThread::class_namespace() const {
     return "masala::base::managers::threads::thread_pool";
 }
 
-/// @brief Set the index of this thread.
-void MasalaThread::set_thread_index(
-    base::Size const thread_index
-) {
-    std::lock_guard< std::mutex > lock( thread_mutex_ );
-    thread_index_ = thread_index;
-}
-
 /// @brief Get the index of this thread.
 base::Size
 MasalaThread::thread_index() const {
-    std::lock_guard< std::mutex > lock( thread_mutex_ );
     return thread_index_;
 }
 

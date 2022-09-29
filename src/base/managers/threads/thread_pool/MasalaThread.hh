@@ -105,7 +105,7 @@ public:
 	/// @details The MasalaThreadCreationKey class has a private constructor,
 	/// and has the MasalaThreadPool as its only friend.  This ensures that only
 	/// the thread pool can launch threads.
-	MasalaThread( MasalaThreadCreationKey const & key );
+	MasalaThread( base::Size const thread_index, MasalaThreadCreationKey const & key );
 
 	/// @brief Copy constructor, deleted.
 	MasalaThread( MasalaThread const & ) = delete;
@@ -129,9 +129,6 @@ public:
 	/// @brief Returns "masala::base::managers::threads::thread_pool".
 	std::string class_namespace() const override;
 
-	/// @brief Set the index of this thread.
-	void set_thread_index( base::Size const thread_index );
-
 	/// @brief Get the index of this thread.
 	base::Size thread_index() const;
 
@@ -145,7 +142,8 @@ private:
 	mutable std::mutex thread_mutex_;
 
 	/// @brief The index of this thread in the thread pool.
-	base::Size thread_index_ = 0;
+	/// @details Must be set on creation.
+	base::Size const thread_index_ = 0;
 
 }; // class MasalaThread
 
