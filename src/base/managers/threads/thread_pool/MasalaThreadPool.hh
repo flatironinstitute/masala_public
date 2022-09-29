@@ -150,7 +150,7 @@ public:
 	/// thread count is greater than number launched, we launch more.  If it is
 	/// less than number launched, we annotate threads for pruning and prune them
 	/// when they become idle.
-	void launch_threads_if_needed( base::Size const desired_thread_count ) const;
+	void launch_threads_if_needed( base::Size const desired_thread_count );
 
 private:
 
