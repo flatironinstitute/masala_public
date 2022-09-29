@@ -112,7 +112,7 @@ MasalaThreadPool::launch_threads_if_needed(
             case MasalaThreadPoolState::THREADS_READY :
             {
                 if( desired_thread_count > num_active_threads_ ) {
-                    DEBUG_MODE_CHECK_OR_THROW( num_inactive_threads_ == 0, "launch_threads_if_needed", "Program error: in mode THREADS_READY, yet inactive threads were found!" );
+                    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( num_inactive_threads_ == 0, "launch_threads_if_needed", "Program error: in mode THREADS_READY, yet inactive threads were found!" );
                     launch_threads( desired_thread_count - num_active_threads_ );
                 } else if( desired_thread_count < num_active_threads_ ) {
                     increment_inactive_threads( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
