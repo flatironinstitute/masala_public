@@ -81,18 +81,36 @@ MasalaThread::MasalaThread(
 std::string
 MasalaThread::class_name() const {
     return "MasalaThread";
-}
+} // MasalaThread::class_name()
 
 /// @brief Returns "masala::base::managers::threads::thread_pool".
 std::string
 MasalaThread::class_namespace() const {
     return "masala::base::managers::threads::thread_pool";
-}
+} // MasalaThread::class_namespace()
 
 /// @brief Get the index of this thread.
 base::Size
 MasalaThread::thread_index() const {
     return thread_index_;
+} // MasalaThread::thread_index()
+
+/// @brief Access the mutex for this thread.
+std::mutex &
+MasalaThread::thread_mutex() const {
+    return thread_mutex_;
+} // MasalaThread::thread_mutex()
+
+/// @brief Set whether this thread is forced to idle.
+/// @note Be sure to lock the thread mutex before calling this function!
+void
+MasalaThread::set_forced_idle(
+    bool const setting
+) {
+    forced_idle_ = setting;
+    if( setting == false ) {
+        cv_for_wakeup_.notify_one();
+    }
 }
 
 } // namespace thread_pool

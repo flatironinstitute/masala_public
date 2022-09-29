@@ -38,7 +38,10 @@ SOFTWARE.
 #include <base/types.hh>
 
 // STL headers:
+#include <condition_variable>
 #include <mutex>
+#include <functional>
+#include <atomic>
 
 namespace masala {
 namespace base {
@@ -132,6 +135,22 @@ public:
 	/// @brief Get the index of this thread.
 	base::Size thread_index() const;
 
+	/// @brief Access the mutex for this thread.
+	std::mutex & thread_mutex() const;
+
+	/// @brief Is this thread idle?
+	/// @note Be sure to lock the thread mutex before calling this function!
+	/// @details Idle is defined as having nullptr for the function to execute.
+	inline bool is_idle() const { return function_ == nullptr; }
+
+	/// @brief Is this thread being forced to idle?
+	/// @note Be sure to lock the thread mutex before calling this function!
+	inline bool forced_idle() const { return forced_idle_; }
+
+	/// @brief Set whether this thread is forced to idle.
+	/// @note Be sure to lock the thread mutex before calling this function!
+	void set_forced_idle( bool const setting );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,9 +160,19 @@ private:
 	/// @brief A mutex for locking this thread.
 	mutable std::mutex thread_mutex_;
 
+	/// @brief Are we locked in idle mode?
+	bool forced_idle_ = false;
+
 	/// @brief The index of this thread in the thread pool.
 	/// @details Must be set on creation.
 	base::Size const thread_index_ = 0;
+
+	/// @brief A (raw) pointer to the function to execute in this thread.
+	/// @details Can be nullptr.
+	std::function< void() > * function_ = nullptr;
+
+	/// @brief A condition var used to wake this thread to do work.
+	std::condition_variable cv_for_wakeup_;
 
 }; // class MasalaThread
 

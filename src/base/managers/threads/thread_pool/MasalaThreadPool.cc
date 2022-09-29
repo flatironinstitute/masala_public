@@ -32,10 +32,12 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
 #include <base/managers/threads/thread_pool/MasalaThread.hh>
 
 // STL headers
 #include <string>
+#include <condition_variable>
 
 namespace masala {
 namespace base {
@@ -140,6 +142,60 @@ MasalaThreadPool::launch_threads_if_needed(
         }
     }
 } // MasalaThreadPool::launch_threads_if_needed()
+
+/// @brief Given a function, run it in up to the requested number of threads.
+/// @note The actual number of threads in which it runs might be less than
+/// the requested number.
+void
+MasalaThreadPool::execute_function_in_threads(
+    std::function< void() > const & fxn,
+    base::Size const threads_to_request,
+    masala::base::managers::threads::MasalaThreadedWorkExecutionSummary & summary
+) {
+    CHECK_OR_THROW_FOR_CLASS( threads_to_request > 0, "execute_function_in_threads", "The number of threads requested must be greater than zero." );
+
+    std::vector< MasalaThreadSP > assigned_threads;
+    assigned_threads.reserve( threads_.size() );
+    std::mutex job_completion_mutex;
+    std::unique_lock< std::mutex > condition_lock( job_completion_mutex );
+    std::condition_variable condition_var;
+    base::Size num_jobs_completed(0);
+
+    // Assign work to other threads (under mutex lock):
+    {
+        std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+        if( threads_to_request > 1 ) {
+            for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ++it ) {
+                MasalaThread & curthread( **it );
+                std::lock_guard< std::mutex > thread_lock( curthread.thread_mutex() );
+                if( curthread.is_idle() && !curthread.forced_idle() ) {
+                    curthread.set_forced_idle( true );
+                    curthread.set_function( fxn, job_completion_mutex, condition_var, num_jobs_completed );
+                    assigned_threads.push_back( *it );
+                }
+            }
+        }
+
+        summary.set_assigned_child_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
+
+        // At this point, it is safe to begin exection of the work in threads.
+        if( !assigned_threads.empty() ) {
+            for( auto & thread : assigned_threads ) {
+                thread->set_forced_idle( false );
+            }
+        }
+    } // Mutex lock scope.
+
+    // Also execute the function in this thread.
+    fxn();
+
+    if( assigned_threads.size() > 0 ) {
+        // If other threads are working, wait for them.
+        base::Size const nthread( assigned_threads.size() );
+        condition_var.wait( condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+    }
+
+} // MasalaThreadPool::execute_function_in_threads
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS:

@@ -35,6 +35,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/managers/threads/MasalaThreadManager.fwd.hh>
+#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh>
 #include <base/managers/threads/thread_pool/MasalaThread.fwd.hh>
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
@@ -42,6 +43,7 @@ SOFTWARE.
 // STL headers:
 #include <mutex>
 #include <vector>
+#include <functional>
 
 namespace masala {
 namespace base {
@@ -151,6 +153,16 @@ public:
 	/// less than number launched, we annotate threads for pruning and prune them
 	/// when they become idle.
 	void launch_threads_if_needed( base::Size const desired_thread_count );
+
+	/// @brief Given a function, run it in up to the requested number of threads.
+	/// @note The actual number of threads in which it runs might be less than
+	/// the requested number.
+	void
+	execute_function_in_threads(
+		std::function< void() > const & fxn,
+		base::Size const threads_to_request,
+		masala::base::managers::threads::MasalaThreadedWorkExecutionSummary & summary
+	);
 
 private:
 
