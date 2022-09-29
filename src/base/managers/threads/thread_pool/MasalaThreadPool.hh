@@ -204,7 +204,13 @@ private:
 	base::Size num_inactive_threads_ = 0;
 
 	/// @brief The next thread index that has not yet been assigned to a thread.
-	base::Size next_thread_index_ = 0;
+	/// @note Thread numbering starts at 1.  Thread zero is the master thread.
+	/// Also note that these numbers are (a) local to this thread pool (so that
+	/// if ever there were multiple thread pools, you could have the same index
+	/// in the different thread pools), and (b) not recycled (so if thread 5 is
+	/// spun down and then a new thread is created, it will be given a higher
+	/// number, and "5" will be retired).
+	base::Size next_thread_index_ = 1;
 
 }; // class MasalaThreadPool
 
