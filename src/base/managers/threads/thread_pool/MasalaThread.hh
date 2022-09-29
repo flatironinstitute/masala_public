@@ -129,12 +129,23 @@ public:
 	/// @brief Returns "masala::base::managers::threads::thread_pool".
 	std::string class_namespace() const override;
 
+	/// @brief Set the index of this thread.
+	void set_thread_index( base::Size const thread_index );
+
+	/// @brief Get the index of this thread.
+	base::Size thread_index() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief A mutex for locking this thread.
+	mutable std::mutex thread_mutex_;
+
+	/// @brief The index of this thread in the thread pool.
+	base::Size thread_index_ = 0;
 
 }; // class MasalaThread
 

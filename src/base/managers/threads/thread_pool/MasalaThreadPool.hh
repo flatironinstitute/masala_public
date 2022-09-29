@@ -155,6 +155,16 @@ public:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Increase the number of threads in the threadpool by N.
+	/// @details The thread_pool_mutex_ must be locked before calling this function!
+	void launch_threads_mutexlocked( base::Size const n_threads_to_launch );
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -172,6 +182,9 @@ private:
 
 	/// @brief The number of threads that are spinning down (not accepting work).
 	base::Size num_inactive_threads_ = 0;
+
+	/// @brief The next thread index that has not yet been assigned to a thread.
+	base::Size next_thread_index_ = 0;
 
 }; // class MasalaThreadPool
 

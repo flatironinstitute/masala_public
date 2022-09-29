@@ -32,6 +32,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/threads/thread_pool/MasalaThread.hh>
 
 // STL headers
 #include <string>
@@ -106,30 +107,30 @@ MasalaThreadPool::launch_threads_if_needed(
             case MasalaThreadPoolState::THREADS_NOT_LAUNCHED :
             {
                 DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( threads_.empty(), "launch_threads_if_needed", "Program error: threads have been launched, but thread pool status indicates that they have not." );
-                launch_threads( desired_thread_count );
+                launch_threads_mutexlocked( desired_thread_count );
                 thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
             }
             case MasalaThreadPoolState::THREADS_READY :
             {
                 if( desired_thread_count > num_active_threads_ ) {
                     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( num_inactive_threads_ == 0, "launch_threads_if_needed", "Program error: in mode THREADS_READY, yet inactive threads were found!" );
-                    launch_threads( desired_thread_count - num_active_threads_ );
+                    launch_threads_mutexlocked( desired_thread_count - num_active_threads_ );
                 } else if( desired_thread_count < num_active_threads_ ) {
-                    increment_inactive_threads( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
+                    increment_inactive_threads_mutexlocked( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
                     thread_pool_state_ = MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN;
                 }
             }
             case MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN :
             {
                 if( desired_thread_count > num_active_threads_ ) {
-                    decrement_inactive_threads( desired_thread_count - num_active_threads_ ); // Alters num_active_threads_ and num_inactive_threads_.
+                    decrement_inactive_threads_mutexlocked( desired_thread_count - num_active_threads_ ); // Alters num_active_threads_ and num_inactive_threads_.
                     // We may still need to launch more.
                     if( desired_thread_count > num_active_threads_ ) {
-                        launch_threads( desired_thread_count - num_active_threads_ );
+                        launch_threads_mutexlocked( desired_thread_count - num_active_threads_ );
                         thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
                     }
                 } else if( desired_thread_count < num_active_threads_ ) {
-                    increment_inactive_threads( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
+                    increment_inactive_threads_mutexlocked( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
                 }
             }
             case MasalaThreadPoolState::ALL_THREADS_SPINNING_DOWN :
@@ -138,7 +139,28 @@ MasalaThreadPool::launch_threads_if_needed(
             }
         }
     }
-}
+} // MasalaThreadPool::launch_threads_if_needed()
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Increase the number of threads in the threadpool by N.
+/// @details The thread_pool_mutex_ must be locked before calling this function!
+void
+MasalaThreadPool::launch_threads_mutexlocked(
+    base::Size const n_threads_to_launch
+) {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( n_threads_to_launch > 0, "launch_threads_mutexlocked", "The number of threads to launch must be greater than zero." );
+    base::Size const startindex( threads_.size() ), endindex( threads_.size() + n_threads_to_launch );
+    threads_.reserve( endindex );
+    for( base::Size i(startindex); i<endindex; ++i ) {
+        threads_[i] = std::make_shared< MasalaThread >( MasalaThreadCreationKey() );
+        threads_[i]->set_thread_index( next_thread_index_ );
+        ++next_thread_index_;
+    }
+    write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads." );
+} // MasalaThreadPool::launch_threads_mutexlocked()
 
 } // namespace thread_pool
 } // namespace threads

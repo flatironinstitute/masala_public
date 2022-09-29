@@ -87,6 +87,21 @@ MasalaThread::class_namespace() const {
     return "masala::base::managers::threads::thread_pool";
 }
 
+/// @brief Set the index of this thread.
+void MasalaThread::set_thread_index(
+    base::Size const thread_index
+) {
+    std::lock_guard< std::mutex > lock( thread_mutex_ );
+    thread_index_ = thread_index;
+}
+
+/// @brief Get the index of this thread.
+base::Size
+MasalaThread::thread_index() const {
+    std::lock_guard< std::mutex > lock( thread_mutex_ );
+    return thread_index_;
+}
+
 } // namespace thread_pool
 } // namespace threads
 } // namespace managers
