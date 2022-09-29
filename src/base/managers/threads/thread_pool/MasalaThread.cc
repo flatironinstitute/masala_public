@@ -23,8 +23,7 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/threads/thread_pool/MasalaThread.cc
-/// @brief A container for a set of threads.  Controls launching, destroying,
-/// or renumbering threads in a threadsafe way.
+/// @brief A container for a threads.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
