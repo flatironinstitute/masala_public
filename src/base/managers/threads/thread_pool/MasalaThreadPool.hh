@@ -162,6 +162,14 @@ private:
 	/// @details The thread_pool_mutex_ must be locked before calling this function!
 	void launch_threads_mutexlocked( base::Size const n_threads_to_launch );
 
+	/// @brief Mark additional threads as inactive.
+	/// @details The thread_pool_mutex_ must be locked before calling this function!
+	void increment_inactive_threads_mutexlocked( base::Size n_new_inactive_threads );
+
+	/// @brief Unmark some threads as inactive.
+	/// @details The thread_pool_mutex_ must be locked before calling this function!
+	void decrement_inactive_threads_mutexlocked( base::Size n_threads_to_reactivate );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

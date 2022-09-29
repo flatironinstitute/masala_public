@@ -161,6 +161,30 @@ MasalaThreadPool::launch_threads_mutexlocked(
     write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads." );
 } // MasalaThreadPool::launch_threads_mutexlocked()
 
+/// @brief Mark additional threads as inactive.
+/// @details The thread_pool_mutex_ must be locked before calling this function!
+void
+MasalaThreadPool::increment_inactive_threads_mutexlocked(
+    base::Size n_new_inactive_threads
+) {
+    base::Size const actual_n_new_inactive_threads( std::min( num_active_threads_, n_new_inactive_threads ) );
+    num_active_threads_ -= actual_n_new_inactive_threads;
+    num_inactive_threads_ += actual_n_new_inactive_threads;
+    write_to_tracer( "Spinning down " + std::to_string(actual_n_new_inactive_threads) + " threads." );
+} // MasalaThreadPool::increment_inactive_threads_mutexlocked
+
+/// @brief Unmark some threads as inactive.
+/// @details The thread_pool_mutex_ must be locked before calling this function!
+void
+MasalaThreadPool::decrement_inactive_threads_mutexlocked(
+    base::Size n_threads_to_reactivate
+) {
+    base::Size const actual_n_threads_to_reactivate( std::max( num_inactive_threads_, n_threads_to_reactivate ) );
+    num_inactive_threads_ -= actual_n_threads_to_reactivate;
+    num_active_threads_ += actual_n_threads_to_reactivate;
+    write_to_tracer( "Spinning " + std::to_string( actual_n_threads_to_reactivate ) + " threads that had received spin-down signals back up." );
+}
+
 } // namespace thread_pool
 } // namespace threads
 } // namespace managers
