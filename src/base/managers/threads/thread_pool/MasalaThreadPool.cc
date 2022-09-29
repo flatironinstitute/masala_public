@@ -165,13 +165,22 @@ MasalaThreadPool::execute_function_in_threads(
     {
         std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
         if( threads_to_request > 1 ) {
-            for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ++it ) {
+            for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ) {
                 MasalaThread & curthread( **it );
                 std::lock_guard< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
-                    curthread.set_forced_idle( true );
-                    curthread.set_function( fxn, job_completion_mutex, condition_var, num_jobs_completed );
-                    assigned_threads.push_back( *it );
+                    if( num_inactive_threads_ > 0 ) {
+                        write_to_tracer( "Terminating thread " + curthread.thread_index() + "." );
+                        it = threads_.erase(it);
+                        --num_inactive_threads_;
+                    } else {
+                        curthread.set_forced_idle( true );
+                        curthread.set_function( fxn, job_completion_mutex, condition_var, num_jobs_completed );
+                        assigned_threads.push_back( *it );
+                        ++it;
+                    }
+                } else {
+                    ++it;
                 }
             }
         }
