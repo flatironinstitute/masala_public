@@ -146,7 +146,7 @@ public:
 
 	/// @brief Is this thread being forced to idle?
 	/// @note Be sure to lock the thread mutex before calling this function!
-	inline bool forced_idle() const { return forced_idle_; }
+	inline bool forced_idle() const { return forced_idle_.load(); }
 
 	/// @brief Set whether this thread is forced to idle.
 	/// @note Be sure to lock the thread mutex before calling this function!
@@ -166,6 +166,17 @@ public:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The function that the thread actually executes, which wraps
+	/// whatever function is passed in.
+	void
+	wrapper_function_executed_in_thread();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA:
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -176,7 +187,7 @@ private:
 	std::thread contained_thread_;
 
 	/// @brief Are we locked in idle mode?
-	bool forced_idle_ = false;
+	std::atomic_bool forced_idle_;
 
 	/// @brief The index of this thread in the thread pool.
 	/// @details Must be set on creation.

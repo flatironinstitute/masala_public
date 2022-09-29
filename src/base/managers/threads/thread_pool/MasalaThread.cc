@@ -70,7 +70,8 @@ MasalaThread::MasalaThread(
     MasalaThreadCreationKey const & 
 ) :
     base::MasalaObject(),
-    thread_index_(thread_index)
+    thread_index_(thread_index),
+    forced_idle_(false)
 {
     contained_thread_ = std::thread( &MasalaThread::wrapper_function_executed_in_thread, this ); //Launch a thread.
 }
@@ -109,7 +110,7 @@ void
 MasalaThread::set_forced_idle(
     bool const setting
 ) {
-    forced_idle_ = setting;
+    forced_idle_.store( setting );
     if( setting == false ) {
         cv_for_wakeup_.notify_one();
     }
@@ -125,13 +126,66 @@ MasalaThread::set_function(
     std::condition_variable & job_completion_cond_var,
     base::Size & num_jobs_completed
 ) {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( forced_idle_, "set_function", "Program error: must be in the forced-idle state to set the thread function." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( forced_idle_.load(), "set_function", "Program error: must be in the forced-idle state to set the thread function." );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( function_ == nullptr, "set_function", "Program error: expected function_ to be nullptr." );
     function_ = &function;
     job_completion_mutex_ = &job_completion_mutex;
     job_completion_cond_var_ = &job_completion_cond_var;
     num_jobs_completed_ = &num_jobs_completed;
 } // MasalaThread::set_function()
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief The function that the thread actually executes, which wraps
+/// whatever function is passed in.
+void
+MasalaThread::wrapper_function_executed_in_thread() {
+    write_to_tracer( "Launching thread " + std::to_string(thread_index_) + "." );
+    //base::managers::random::RandomNumberManager::get_instance()->initialize_thread( thread_index_ );
+
+    do {
+        std::unique_lock< std::mutex > unique_lock( thread_mutex_, std::defer_lock ); // Mutex is still unlocked.
+        if( !(
+                /*forced_termination_ ||*/
+                (!(forced_idle_.load()) && function_ != nullptr)
+            )
+        ) {
+            cv_for_wakeup_.wait( unique_lock, [this]{ return( !( /*forced_termination_ ||*/ (!(forced_idle_.load()) && function_ != nullptr ) )); } );
+        } // Wait for either the terminations signal, or for the function to be non-null (and the state to be non-idle).  When this is the case, the mutex will be locked.
+
+        // if( forced_termination_.load() ) {
+        //     // We are spinning down.
+        //     break;
+        // }
+
+        if( !(forced_idle_.load()) && function_ != nullptr ) {
+            // We have work to do!
+            (*function_)(); // Do the work.
+
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+                job_completion_mutex_ != nullptr && job_completion_cond_var_ != nullptr && num_jobs_completed_ != nullptr,
+                "wrapper_function_executed_in_thread", "Program error: one or more control variable pointers were null."
+            );
+
+            {
+                std::lock_guard< std::mutex > lock( *job_completion_mutex_ );
+                ++(*num_jobs_completed_);
+                job_completion_cond_var_->notify_one(); // Signal that this thread is now free.
+
+                {
+                    std::lock_guard< std::mutex > lock2( thread_mutex_ );
+                    function_ = nullptr;
+                    job_completion_mutex_ = nullptr;
+                    job_completion_cond_var_ = nullptr;
+                    num_jobs_completed_ = nullptr;
+                } // Scope for lock guard 2.
+            } // Scope for lock guard 1.
+
+        }
+    } while(true); //Loop until we break.
+} // MasalaThread::wrapper_function_executed_in_thread()
 
 } // namespace thread_pool
 } // namespace threads
