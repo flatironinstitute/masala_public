@@ -157,8 +157,8 @@ MasalaThreadPool::execute_function_in_threads(
     std::vector< MasalaThreadSP > assigned_threads;
     assigned_threads.reserve( threads_.size() );
     std::mutex job_completion_mutex;
-    std::unique_lock< std::mutex > condition_lock( job_completion_mutex );
-    std::condition_variable condition_var;
+    std::unique_lock< std::mutex > job_completion_condition_lock( job_completion_mutex );
+    std::condition_variable job_completion_condition_var;
     base::Size num_jobs_completed(0);
 
     // Assign work to other threads (under mutex lock):
@@ -170,12 +170,12 @@ MasalaThreadPool::execute_function_in_threads(
                 std::lock_guard< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
                     if( num_inactive_threads_ > 0 ) {
-                        write_to_tracer( "Terminating thread " + curthread.thread_index() + "." );
+                        write_to_tracer( "Terminating thread " + std::to_string(curthread.thread_index()) + "." );
                         it = threads_.erase(it);
                         --num_inactive_threads_;
                     } else {
                         curthread.set_forced_idle( true );
-                        curthread.set_function( fxn, job_completion_mutex, condition_var, num_jobs_completed );
+                        curthread.set_function( fxn, job_completion_mutex, job_completion_condition_var, num_jobs_completed );
                         assigned_threads.push_back( *it );
                         ++it;
                     }
@@ -201,7 +201,7 @@ MasalaThreadPool::execute_function_in_threads(
     if( assigned_threads.size() > 0 ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        condition_var.wait( condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+        job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
     }
 
 } // MasalaThreadPool::execute_function_in_threads

@@ -151,6 +151,17 @@ public:
 	/// @note Be sure to lock the thread mutex before calling this function!
 	void set_forced_idle( bool const setting );
 
+	/// @brief Set the function that this thread will execute.
+	/// @details Must be in the forced idle state to set this.
+	/// @note Be sure to lock the thread mutex before calling this function!
+	void
+	set_function(
+		std::function< void() > const & function,
+		std::mutex & job_completion_mutex,
+		std::condition_variable & job_completion_cond_var,
+		base::Size & num_jobs_completed
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,10 +180,22 @@ private:
 
 	/// @brief A (raw) pointer to the function to execute in this thread.
 	/// @details Can be nullptr.
-	std::function< void() > * function_ = nullptr;
+	std::function< void() > const * function_ = nullptr;
 
 	/// @brief A condition var used to wake this thread to do work.
 	std::condition_variable cv_for_wakeup_;
+
+	/// @brief Pointer to mutex used for indicating that the work assigned to
+    /// this thread has been completed.
+    std::mutex * job_completion_mutex_ = nullptr;
+
+    /// @brief Pointer to mutex used for indicating that the work assigned to
+    /// this thread has been completed.
+    std::condition_variable * job_completion_cond_var_ = nullptr;
+
+    /// @brief Pointer to counter used for indicating that the work assigned to
+    /// this thread has been completed.
+    base::Size * num_jobs_completed_ = nullptr;
 
 }; // class MasalaThread
 

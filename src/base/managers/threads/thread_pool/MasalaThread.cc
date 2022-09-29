@@ -111,7 +111,25 @@ MasalaThread::set_forced_idle(
     if( setting == false ) {
         cv_for_wakeup_.notify_one();
     }
-}
+} // MasalaThread::set_forced_idle()
+
+/// @brief Set the function that this thread will execute.
+/// @details Must be in the forced idle state to set this.
+/// @note Be sure to lock the thread mutex before calling this function!
+void
+MasalaThread::set_function(
+    std::function< void() > const & function,
+    std::mutex & job_completion_mutex,
+    std::condition_variable & job_completion_cond_var,
+    base::Size & num_jobs_completed
+) {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( forced_idle_, "set_function", "Program error: must be in the forced-idle state to set the thread function." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( function_ == nullptr, "set_function", "Program error: expected function_ to be nullptr." );
+    function_ = &function;
+    job_completion_mutex_ = &job_completion_mutex;
+    job_completion_cond_var_ = &job_completion_cond_var;
+    num_jobs_completed_ = &num_jobs_completed;
+} // MasalaThread::set_function()
 
 } // namespace thread_pool
 } // namespace threads
