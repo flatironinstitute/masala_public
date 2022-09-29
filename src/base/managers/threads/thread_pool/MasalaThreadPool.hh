@@ -54,8 +54,9 @@ enum class MasalaThreadPoolState {
 	INVALID_STATE = 0, // Keep this first.
 	THREADS_NOT_LAUNCHED,
 	THREADS_READY,
-	THREADS_SPINNING_DOWN, // Keep this second-to-last.
-	NUM_STATES = THREADS_SPINNING_DOWN // Keep this last.
+	SOME_THREADS_SPINNING_DOWN,
+	ALL_THREADS_SPINNING_DOWN, // Keep this second-to-last.
+	NUM_STATES = ALL_THREADS_SPINNING_DOWN // Keep this last.
 };
 
 /// @brief A largely empty class with a private constructor and the
@@ -143,6 +144,14 @@ public:
 	/// @brief Returns "masala::base::managers::threads::thread_pool".
 	std::string class_namespace() const override;
 
+	/// @brief Check whether threads need to be launched, and launch
+	/// them if necessary.
+	/// @details Obtains a lock of the thread pool mutex as needed.  If desired
+	/// thread count is greater than number launched, we launch more.  If it is
+	/// less than number launched, we annotate threads for pruning and prune them
+	/// when they become idle.
+	void launch_threads_if_needed( base::Size const desired_thread_count ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +166,12 @@ private:
 
 	/// @brief The threads in this thread pool.
 	std::vector< MasalaThreadSP > threads_;
+
+	/// @brief The number of threads that are active (accepting work).
+	base::Size num_active_threads_ = 0;
+
+	/// @brief The number of threads that are spinning down (not accepting work).
+	base::Size num_inactive_threads_ = 0;
 
 }; // class MasalaThreadPool
 

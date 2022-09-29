@@ -89,6 +89,57 @@ MasalaThreadPool::class_namespace() const {
     return "masala::base::managers::threads::thread_pool";
 }
 
+/// @brief Check whether threads need to be launched, and launch
+/// them if necessary.
+/// @details Obtains a lock of the thread pool mutex as needed.  If desired
+/// thread count is greater than number launched, we launch more.  If it is
+/// less than number launched, we annotate threads for pruning and prune them
+/// when they become idle.
+void
+MasalaThreadPool::launch_threads_if_needed(
+    base::Size const desired_thread_count
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( desired_thread_count > 0, "launch_threads_if_needed", "Desired thread count must be positive." );
+    {
+        std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+        switch( thread_pool_state_ ) {
+            case MasalaThreadPoolState::THREADS_NOT_LAUNCHED :
+            {
+                DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( threads_.empty(), "launch_threads_if_needed", "Program error: threads have been launched, but thread pool status indicates that they have not." );
+                launch_threads( desired_thread_count );
+                thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
+            }
+            case MasalaThreadPoolState::THREADS_READY :
+            {
+                if( desired_thread_count > num_active_threads_ ) {
+                    DEBUG_MODE_CHECK_OR_THROW( num_inactive_threads_ == 0, "launch_threads_if_needed", "Program error: in mode THREADS_READY, yet inactive threads were found!" );
+                    launch_threads( desired_thread_count - num_active_threads_ );
+                } else if( desired_thread_count < num_active_threads_ ) {
+                    increment_inactive_threads( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
+                    thread_pool_state_ = MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN;
+                }
+            }
+            case MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN :
+            {
+                if( desired_thread_count > num_active_threads_ ) {
+                    decrement_inactive_threads( desired_thread_count - num_active_threads_ ); // Alters num_active_threads_ and num_inactive_threads_.
+                    // We may still need to launch more.
+                    if( desired_thread_count > num_active_threads_ ) {
+                        launch_threads( desired_thread_count - num_active_threads_ );
+                        thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
+                    }
+                } else if( desired_thread_count < num_active_threads_ ) {
+                    increment_inactive_threads( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
+                }
+            }
+            case MasalaThreadPoolState::ALL_THREADS_SPINNING_DOWN :
+            {
+                MASALA_THROW( class_namespace_and_name(), "launch_threads_if_needed", "Received request for threads after spin-down signal." );
+            }
+        }
+    }
+}
+
 } // namespace thread_pool
 } // namespace threads
 } // namespace managers
