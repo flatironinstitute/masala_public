@@ -40,6 +40,7 @@ SOFTWARE.
 // STL headers:
 #include <condition_variable>
 #include <mutex>
+#include <thread>
 #include <functional>
 #include <atomic>
 
@@ -170,6 +171,9 @@ private:
 
 	/// @brief A mutex for locking this thread.
 	mutable std::mutex thread_mutex_;
+
+	/// @brief The thread that this object contains.
+	std::thread contained_thread_;
 
 	/// @brief Are we locked in idle mode?
 	bool forced_idle_ = false;

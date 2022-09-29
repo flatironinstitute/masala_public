@@ -71,7 +71,9 @@ MasalaThread::MasalaThread(
 ) :
     base::MasalaObject(),
     thread_index_(thread_index)
-{}
+{
+    contained_thread_ = std::thread( &MasalaThread::wrapper_function_executed_in_thread, this ); //Launch a thread.
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThread PUBLIC MEMBER FUNCTIONS
