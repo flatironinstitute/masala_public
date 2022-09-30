@@ -34,10 +34,13 @@ SOFTWARE.
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
 #include <base/managers/threads/MasalaThreadedWorkRequest.hh>
 #include <base/managers/threads/thread_pool/MasalaThreadPool.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 #include <string>
 #include <cmath>
+#include <thread>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -81,7 +84,8 @@ MasalaThreadManager::MasalaThreadManager() :
         std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
             base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
         )
-    )
+    ),
+    master_thread_id_( std::this_thread::get_id() )
 {}
 
 
@@ -102,6 +106,46 @@ std::string
 MasalaThreadManager::class_namespace() const {
     return "masala::base::managers::threads";
 }
+
+/// @brief Given the system ID of a thread, return the whether this thread is
+/// known to the thread manager.
+bool
+MasalaThreadManager::has_system_thread_id(
+    std::thread::id const system_thread_id
+) const {
+    if( system_thread_id == master_thread_id_ ) {
+        return true;
+    }
+    if( thread_pool_ != nullptr ) {
+        return thread_pool_->has_system_thread_id( system_thread_id );
+    }
+    return false;
+} // MasalaThreadManager::has_system_thread_id()
+
+/// @brief Given the system ID of a thread, return the index of the thread as
+/// known to the thread manager.
+/// @details Throws if the thread is not known to or managed by the thread
+/// manager.  Use has_system_thread_id() to check whether a system thread
+/// is known to or managed by the thread manager.
+base::Size
+MasalaThreadManager::get_thread_manager_thread_id_from_system_thread_id(
+    std::thread::id const system_thread_id
+) const {
+    if( system_thread_id == master_thread_id_ ) {
+        return 0;
+    }
+    if( thread_pool_ != nullptr ) {
+        return thread_pool_->get_thread_manager_thread_id_from_system_thread_id( system_thread_id );
+    }
+    // If we reach here, the thread is unknown.
+    std::ostringstream ss;
+    ss << system_thread_id;
+    MASALA_THROW(
+        class_namespace_and_name(), "get_thread_manager_thread_id_from_system_thread_id",
+        "The system thread with ID " + ss.str() + " is not known to the Masala thread manager."
+    );
+    return 0; //Keep older compilers happy.
+} // MasalaThreadManager::get_thread_manager_thread_id_from_system_thread_id()
 
 /// @brief Do a vector of work in threads, without a reservation.
 /// @param[in] request An object describing the work to be done and the

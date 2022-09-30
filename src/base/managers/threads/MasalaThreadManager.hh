@@ -148,6 +148,23 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Given the system ID of a thread, return the whether this thread is
+    /// known to the thread manager.
+    bool
+    has_system_thread_id(
+        std::thread::id const system_thread_id
+    ) const;
+
+    /// @brief Given the system ID of a thread, return the index of the thread as
+    /// known to the thread manager.
+    /// @details Throws if the thread is not known to or managed by the thread
+    /// manager.  Use has_system_thread_id() to check whether a system thread
+    /// is known to or managed by the thread manager.
+    base::Size
+    get_thread_manager_thread_id_from_system_thread_id(
+        std::thread::id const system_thread_id
+    ) const;
+
     /// @brief Do a vector of work in threads, without a reservation.
     /// @param[inout] request An object describing the work to be done and the
     /// number of requested threads in which to do it.  All the work in the
@@ -210,6 +227,9 @@ private:
     /// manager.  Threads are launched internally on first request, and are kept
     /// idling until work is assigned.
     base::managers::threads::thread_pool::MasalaThreadPoolSP thread_pool_;
+
+    /// @brief The system ID of the master thread for this process.  Set on construction.
+    std::thread::id const master_thread_id_;
 
 };
 
