@@ -40,6 +40,7 @@ SOFTWARE.
 #include <string>
 #include <cmath>
 #include <sstream>
+#include <chrono>
 
 namespace masala {
 namespace base {
@@ -193,6 +194,11 @@ MasalaThreadManager::do_work_in_threads(
         )
     );
 
+    // Measure start time.
+    std::chrono::time_point< std::chrono::steady_clock > const starttime(
+        std::chrono::steady_clock::now()
+    );
+
     try {
         // Run the function in threads:
         execute_function_in_threads(
@@ -202,12 +208,22 @@ MasalaThreadManager::do_work_in_threads(
             summary
         );
     } catch( base::error::MasalaException const & err ) {
+        // Measure end time.
+        std::chrono::time_point< std::chrono::steady_clock > const endtime(
+            std::chrono::steady_clock::now()
+        );
+        summary.set_execution_time_microseconds(  std::chrono::duration_cast< std::chrono::microseconds >( endtime-starttime ).count() );
         summary.set_work_exception(err);
         if( throw_on_error ) {
             MASALA_THROW( class_namespace_and_name(), "do_work_in_threads", "Threaded work threw exception:\n" + err.message() );
         }
         return summary;
     } catch( std::exception const & err ) {
+        // Measure end time.
+        std::chrono::time_point< std::chrono::steady_clock > const endtime(
+            std::chrono::steady_clock::now()
+        );
+        summary.set_execution_time_microseconds(  std::chrono::duration_cast< std::chrono::microseconds >( endtime-starttime ).count() );
         summary.set_work_exception( err );
         if( throw_on_error ) {
             MASALA_THROW( class_namespace_and_name(), "do_work_in_threads", "Threaded work threw a non-Masala exception." );
@@ -215,6 +231,12 @@ MasalaThreadManager::do_work_in_threads(
         return summary;
     }
 
+    // Measure end time.
+    std::chrono::time_point< std::chrono::steady_clock > const endtime(
+        std::chrono::steady_clock::now()
+    );
+
+    summary.set_execution_time_microseconds(  std::chrono::duration_cast< std::chrono::microseconds >( endtime-starttime ).count() );
     summary.set_work_successful();
     return summary;
 } // MasalaThreadManager::do_work_in_threads()
