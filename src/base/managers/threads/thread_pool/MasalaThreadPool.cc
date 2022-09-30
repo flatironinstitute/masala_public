@@ -74,7 +74,21 @@ MasalaThreadPool::MasalaThreadPool(
     MasalaThreadPoolCreationKey const & 
 ) :
     base::MasalaObject()
-{}
+{} // MasalaThreadPool::MasalaThreadPool()
+
+/// @brief Destructor.
+/// @details Safely terminates each thread.
+MasalaThreadPool::~MasalaThreadPool() {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it != threads_.end(); ) {
+        write_to_tracer( "Terminating thread " + std::to_string( (*it)->thread_index() ) + "." );
+        {
+            std::lock_guard< std::mutex > lock2( (*it)->thread_mutex() );
+            (*it)->set_forced_idle(true);
+        }
+        it = threads_.erase( it );
+    }
+} //MasalaThreadPool::MasalaThreadPool()
 
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThreadPool PUBLIC MEMBER FUNCTIONS
@@ -165,6 +179,9 @@ MasalaThreadPool::execute_function_in_threads(
     std::condition_variable job_completion_condition_var;
     base::Size num_jobs_completed(0);
 
+    std::vector< MasalaThreadSP > threads_to_delete;
+    threads_to_delete.reserve( threads_.size() );
+
     // Assign work to other threads (under mutex lock):
     {
         std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
@@ -174,7 +191,9 @@ MasalaThreadPool::execute_function_in_threads(
                 std::lock_guard< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
                     if( num_inactive_threads_ > 0 ) {
-                        write_to_tracer( "Terminating thread " + std::to_string(curthread.thread_index()) + "." );
+                        write_to_tracer( "Marking thread " + std::to_string(curthread.thread_index()) + " for termination." );
+                        curthread.set_forced_idle(true);
+                        threads_to_delete.push_back(*it); // Ensures that these threads are taken out of the thread list, but persist until they can be safely deleted when the mutex lock is not held.
                         it = threads_.erase(it);
                         --num_inactive_threads_;
                     } else {
@@ -187,6 +206,11 @@ MasalaThreadPool::execute_function_in_threads(
                     ++it;
                 }
             }
+        }
+
+        if( !threads_to_delete.empty() ) {
+            write_to_tracer( "Terminating threads marked for termination." );
+            threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
         }
 
         summary.set_assigned_child_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.

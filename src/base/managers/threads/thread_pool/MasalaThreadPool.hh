@@ -134,7 +134,8 @@ public:
 	) = delete;
 
 	/// @brief Destructor.
-	~MasalaThreadPool() override = default;
+	/// @details Safely terminates each thread.
+	~MasalaThreadPool() override;
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS:

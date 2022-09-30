@@ -71,9 +71,16 @@ MasalaThread::MasalaThread(
 ) :
     base::MasalaObject(),
     thread_index_(thread_index),
-    forced_idle_(false)
+    forced_idle_(false),
+    forced_termination_(false)
 {
     contained_thread_ = std::thread( &MasalaThread::wrapper_function_executed_in_thread, this ); //Launch a thread.
+}
+
+/// @brief Destructor.
+/// @details Calls terminate_thread().
+MasalaThread::~MasalaThread() {
+    terminate_thread();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,17 +155,17 @@ MasalaThread::wrapper_function_executed_in_thread() {
     do {
         std::unique_lock< std::mutex > unique_lock( thread_mutex_, std::defer_lock ); // Mutex is still unlocked.
         if( !(
-                /*forced_termination_ ||*/
+                forced_termination_ ||
                 (!(forced_idle_.load()) && function_ != nullptr)
             )
         ) {
-            cv_for_wakeup_.wait( unique_lock, [this]{ return( !( /*forced_termination_ ||*/ (!(forced_idle_.load()) && function_ != nullptr ) )); } );
+            cv_for_wakeup_.wait( unique_lock, [this]{ return( !( forced_termination_ || (!(forced_idle_.load()) && function_ != nullptr ) )); } );
         } // Wait for either the terminations signal, or for the function to be non-null (and the state to be non-idle).  When this is the case, the mutex will be locked.
 
-        // if( forced_termination_.load() ) {
-        //     // We are spinning down.
-        //     break;
-        // }
+        if( forced_termination_.load() ) {
+            // We are spinning down.
+            break;
+        }
 
         if( !(forced_idle_.load()) && function_ != nullptr ) {
             // We have work to do!
@@ -185,7 +192,21 @@ MasalaThread::wrapper_function_executed_in_thread() {
 
         }
     } while(true); //Loop until we break.
+
+    write_to_tracer( "Spinning down thread " + std::to_string( thread_index_ ) + "." );
+
 } // MasalaThread::wrapper_function_executed_in_thread()
+
+/// @brief Spins down the std::thread object contained (i.e. prevents it from
+/// accepting new work).
+/// @details Should only be called by this object's destructor.
+void
+MasalaThread::terminate_thread() {
+    CHECK_OR_THROW_FOR_CLASS( forced_idle_, "terminate_thread", "Program error: expected thread to be in the forced idle state!" );
+    forced_termination_.store(true);
+    cv_for_wakeup_.notify_one();
+    contained_thread_.join();
+} // MasalaThread::terminate_thread()
 
 } // namespace thread_pool
 } // namespace threads

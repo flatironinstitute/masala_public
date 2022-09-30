@@ -121,7 +121,10 @@ public:
 	) = delete;
 
 	/// @brief Destructor.
-	~MasalaThread() override = default;
+	/// @details Calls terminate_thread().  Destruction should only occur in a
+	/// context in which the mutex is unlocked, but in which it is guaranteed
+	/// that this thread has no work (preferably in the forced_idle state).
+	~MasalaThread() override;
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS:
@@ -174,6 +177,11 @@ private:
 	void
 	wrapper_function_executed_in_thread();
 
+	/// @brief Spins down the std::thread object contained (i.e. prevents it from
+	/// accepting new work).
+	/// @details Should only be called by this object's destructor, and with the mutex unlocked.
+	void terminate_thread();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +196,10 @@ private:
 
 	/// @brief Are we locked in idle mode?
 	std::atomic_bool forced_idle_;
+
+	/// @brief Is it time to force termination of all threads?
+	/// @details When termination is forced, it prevents a thread from accepting new work.
+	std::atomic_bool forced_termination_;
 
 	/// @brief The index of this thread in the thread pool.
 	/// @details Must be set on creation.
