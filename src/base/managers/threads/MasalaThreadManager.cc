@@ -39,7 +39,6 @@ SOFTWARE.
 // STL headers:
 #include <string>
 #include <cmath>
-#include <thread>
 #include <sstream>
 
 namespace masala {
@@ -246,7 +245,13 @@ MasalaThreadManager::threaded_execution_function(
     base::Size const nthreads_assigned( summary.nthreads_actual() );
 
     // The zero-based index of this thread in the set of threads assigned:
-    base::Size const thisthread_index( summary.get_current_thread_index_in_assigned_thread_set() );
+    base::Size const thisthread_index(
+        summary.get_thread_index_in_assigned_thread_set(
+            get_thread_manager_thread_id_from_system_thread_id(
+                std::this_thread::get_id()
+            )
+        )
+    );
 
     // The number of jobs in the work vector:
     base::Size const njobs( request.work_vector_size() );

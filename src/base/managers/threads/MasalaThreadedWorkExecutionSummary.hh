@@ -111,6 +111,13 @@ public:
 	/// has been assigned to the job.
 	void set_assigned_child_threads( std::vector< thread_pool::MasalaThreadSP > const & threads );
 
+	/// @brief Given the index of a thread manager thread, get the index in the set of threads
+	/// assigned to this task.
+	/// @details For instance, if thread manager threads 0, 5, 6, and 7 are assigned to this task,
+	/// their indices in the set assigned are 0, 1, 2, and 3, respectively.  If I give this function
+	/// thread 6, it should return 2.
+	base::Size get_thread_index_in_assigned_thread_set( base::Size const thread_manager_thread_id ) const;
+
 	/// @brief Get the status of the work.
 	inline MasalaThreadedWorkStatus work_status() const { return work_status_; }
 

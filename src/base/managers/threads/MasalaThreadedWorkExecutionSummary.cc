@@ -36,6 +36,7 @@ SOFTWARE.
 #include <base/managers/threads/MasalaThreadManager.hh>
 
 // STL headers
+#include <algorithm>
 #include <string>
 #include <thread>
 
@@ -98,6 +99,31 @@ MasalaThreadedWorkExecutionSummary::set_assigned_child_threads(
     }
     parent_thread_index_ = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
 } // MasalaThreadedWorkExecutionSummary::set_assigned_child_threads()
+
+/// @brief Given the index of a thread manager thread, get the index in the set of threads
+/// assigned to this task.
+/// @details For instance, if thread manager threads 0, 5, 6, and 7 are assigned to this task,
+/// their indices in the set assigned are 0, 1, 2, and 3, respectively.  If I give this function
+/// thread 6, it should return 2.
+base::Size
+MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set(
+    base::Size const thread_manager_thread_id
+) const {
+    std::vector< base::Size >::const_iterator const it(
+        std::find(
+            assigned_child_thread_indices_.begin(),
+            assigned_child_thread_indices_.end(),
+            thread_manager_thread_id
+        )
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        it != assigned_child_thread_indices_.end(),
+        "get_thread_index_in_assigned_thread_set",
+        "Thread index " + std::to_string( thread_manager_thread_id ) + " is not "
+        "among the threads assigned to this task!"
+    );
+    return (*it);
+}
 
 } // namespace threads
 } // namespace managers
