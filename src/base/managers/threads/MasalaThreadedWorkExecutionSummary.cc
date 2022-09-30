@@ -92,6 +92,7 @@ void
 MasalaThreadedWorkExecutionSummary::set_assigned_child_threads(
     std::vector< thread_pool::MasalaThreadSP > const & threads
 ) {
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_assigned_child_threads", "Cannot alter work status after work has completed." );
     nthreads_actual_ = threads.size() + 1; // The parent thread is also an assigned thread.
     assigned_child_thread_indices_.resize( threads.size() );
     for( base::Size i(1), imax(threads.size()); i<=imax; ++i ) {
@@ -123,6 +124,32 @@ MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set(
         "among the threads assigned to this task!"
     );
     return (*it);
+} //MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set()
+
+/// @brief Inicate that an exception was thrown during execution of the work.
+/// @param err The exception that was thrown.  Copied and stored.
+void
+MasalaThreadedWorkExecutionSummary::set_work_exception(
+    std::exception const & err
+) {
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_work_exception", "Cannot alter work status after work has completed." );
+    work_status_ = MasalaThreadedWorkStatus::WORK_THREW_EXCEPTION;
+    err_ptr_ = std::make_shared< std::exception const >( err );
+} // MasalaThreadedWorkExecutionSummary::set_work_exception()
+
+/// @brief Retrieve the exception thrown during the work.
+/// @returns A const shared pointer to the error, or nullptr if no error.
+/// @note You can try casting this to a MasalaException to see if there's an error message.
+std::shared_ptr< std::exception const >
+MasalaThreadedWorkExecutionSummary::get_work_exception() const {
+    return err_ptr_;
+} // MasalaThreadedWorkExecutionSummary::get_work_exception()
+
+/// @brief Indicate that the work was done successfully.
+void
+MasalaThreadedWorkExecutionSummary::set_work_successful() {
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_work_successful", "Cannot alter work status after work has completed." );
+    work_status_ = MasalaThreadedWorkStatus::WORK_SUCCESSFUL;
 }
 
 } // namespace threads

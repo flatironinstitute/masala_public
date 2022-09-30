@@ -128,6 +128,18 @@ public:
 	/// @brief Get the wall-time, in microseconds that the work took.
 	inline base::Real execution_time_microseconds() const { return execution_time_microseconds_; }
 
+	/// @brief Inicate that an exception was thrown during execution of the work.
+	/// @param err The exception that was thrown.  Copied and stored.
+	void set_work_exception( std::exception const & err );
+
+	/// @brief Retrieve the exception thrown during the work.
+    /// @returns A const shared pointer to the error, or nullptr if no error.
+	/// @note You can try casting this to a MasalaException to see if there's an error message.
+	std::shared_ptr< std::exception const > get_work_exception() const;
+
+	/// @brief Indicate that the work was done successfully.
+	void set_work_successful();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +166,9 @@ private:
 	/// @brief The index of the parent (calling) thread assigned.  This is 0 if it's
 	/// the global master thread for the process, or higher if it's a thread pool thread.
 	base::Size parent_thread_index_ = 0;
+
+	/// @brief A possible error returned by a thread.  Null if no error.
+	std::shared_ptr< std::exception const > err_ptr_ = nullptr;
 
 }; // class MasalaThreadedWorkExecutionSummary
 

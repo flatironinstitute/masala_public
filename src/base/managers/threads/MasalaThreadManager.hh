@@ -170,11 +170,15 @@ public:
     /// @param[inout] request An object describing the work to be done and the
     /// number of requested threads in which to do it.  All the work in the
     /// request will be marked as completed as each job executes.
+    /// @param[in] throw_on_error If true (the default), an exception in the
+    /// threaded work results in a throw.  If false, we simply return a work
+    /// summary indicating error status.
     /// @returns A summary of what work was done, the number of threads
     /// in which it was actually executed, and how long it took.
     MasalaThreadedWorkExecutionSummary
     do_work_in_threads(
-        MasalaThreadedWorkRequest & request
+        MasalaThreadedWorkRequest & request,
+        bool const throw_on_error = true
     ) const;
 
     /// @brief Given a function, run it in a given number of threads.

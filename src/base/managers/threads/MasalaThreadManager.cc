@@ -157,7 +157,8 @@ MasalaThreadManager::get_thread_manager_thread_id_from_system_thread_id(
 /// in which it was actually executed, and how long it took.
 MasalaThreadedWorkExecutionSummary
 MasalaThreadManager::do_work_in_threads(
-    MasalaThreadedWorkRequest & request
+    MasalaThreadedWorkRequest & request,
+    bool const throw_on_error /*= true*/
 ) const {
     if( request.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
@@ -192,14 +193,29 @@ MasalaThreadManager::do_work_in_threads(
         )
     );
 
-    // Run the function in threads:
-    execute_function_in_threads(
-        inner_fxn,
-        n_threads_to_actually_request,
-        MasalaThreadManagerAccessKey(),
-        summary
-    );
+    try {
+        // Run the function in threads:
+        execute_function_in_threads(
+            inner_fxn,
+            n_threads_to_actually_request,
+            MasalaThreadManagerAccessKey(),
+            summary
+        );
+    } catch( base::error::MasalaException const & err ) {
+        summary.set_work_exception(err);
+        if( throw_on_error ) {
+            MASALA_THROW( class_namespace_and_name(), "do_work_in_threads", "Threaded work threw exception:\n" + err.message() );
+        }
+        return summary;
+    } catch( std::exception const & err ) {
+        summary.set_work_exception( err );
+        if( throw_on_error ) {
+            MASALA_THROW( class_namespace_and_name(), "do_work_in_threads", "Threaded work threw a non-Masala exception." );
+        }
+        return summary;
+    }
 
+    summary.set_work_successful();
     return summary;
 } // MasalaThreadManager::do_work_in_threads()
 
