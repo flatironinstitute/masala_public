@@ -37,6 +37,7 @@ SOFTWARE.
 
 // STL headers
 #include <string>
+#include <sstream>
 #include <condition_variable>
 
 namespace masala {
@@ -233,6 +234,43 @@ MasalaThreadPool::execute_function_in_threads(
     }
 
 } // MasalaThreadPool::execute_function_in_threads
+
+/// @brief Given a system thread ID, return whether a thread with that
+/// system ID exists in the thread pool.
+bool
+MasalaThreadPool::has_system_thread_id(
+    std::thread::id const system_thread_id
+) const {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    for( auto const & thread : threads_ ) {
+        if( thread->system_thread_id() == system_thread_id ) {
+            return true;
+        }
+    }
+    return false;
+} // MasalaThreadPool::has_system_thread_id()
+
+/// @brief Given a system thread ID, return the index of the stored thread with that
+/// system ID.  Throws if no such thread exists in the thread pool.
+base::Size
+MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id(
+    std::thread::id const system_thread_id
+) const {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    for( auto const & thread : threads_ ) {
+        if( thread->system_thread_id() == system_thread_id ) {
+            return thread->thread_index();
+        }
+    }
+    // If we reach here, we need to throw, since the thread doesn't exist in the pool.
+    std::ostringstream ss;
+    ss << system_thread_id;
+    MASALA_THROW(
+        class_namespace_and_name(), "get_thread_manager_thread_id_from_system_thread_id",
+        "The system thread with ID " + ss.str() + " is not contained in the thread pool."
+    );
+    return 0; // Keep older compilers happy.
+} // MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id()
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS:

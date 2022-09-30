@@ -44,6 +44,7 @@ SOFTWARE.
 #include <mutex>
 #include <vector>
 #include <functional>
+#include <thread>
 
 namespace masala {
 namespace base {
@@ -164,6 +165,20 @@ public:
 		base::Size const threads_to_request,
 		masala::base::managers::threads::MasalaThreadedWorkExecutionSummary & summary
 	);
+
+	/// @brief Given a system thread ID, return whether a thread with that
+	/// system ID exists in the thread pool.
+	bool
+	has_system_thread_id(
+		std::thread::id const system_thread_id
+	) const;
+
+	/// @brief Given a system thread ID, return the index of the stored thread with that
+	/// system ID.  Throws if no such thread exists in the thread pool.
+	base::Size
+	get_thread_manager_thread_id_from_system_thread_id(
+		std::thread::id const system_thread_id
+	) const;
 
 private:
 

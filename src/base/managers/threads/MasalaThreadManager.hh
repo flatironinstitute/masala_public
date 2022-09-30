@@ -46,6 +46,7 @@ SOFTWARE.
 #include <functional>
 #include <mutex>
 #include <atomic>
+#include <thread>
 
 namespace masala {
 namespace base {

@@ -137,7 +137,14 @@ public:
 	std::string class_namespace() const override;
 
 	/// @brief Get the index of this thread.
+	/// @details This is the internal index used by the thread pool.  Numbering
+	/// starts at 1, since thread 0 is the master thread for the process.  Thread
+	/// indices are retired after use, so if you have a 4-thread thread pool, delete
+	/// thread 2, and then launch a new thread, the new thread's index is 5.
 	base::Size thread_index() const;
+
+	/// @brief Get the thread ID used by the system for the contained thread.
+	std::thread::id system_thread_id() const;
 
 	/// @brief Access the mutex for this thread.
 	std::mutex & thread_mutex() const;
@@ -193,6 +200,9 @@ private:
 
 	/// @brief The thread that this object contains.
 	std::thread contained_thread_;
+
+	/// @brief The system ID of the thread that this object contains, set on construction.
+	std::thread::id system_thread_id_;
 
 	/// @brief Are we locked in idle mode?
 	std::atomic_bool forced_idle_;

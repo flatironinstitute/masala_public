@@ -75,6 +75,7 @@ MasalaThread::MasalaThread(
     forced_termination_(false)
 {
     contained_thread_ = std::thread( &MasalaThread::wrapper_function_executed_in_thread, this ); //Launch a thread.
+    system_thread_id_ = contained_thread_.get_id();
 }
 
 /// @brief Destructor.
@@ -104,6 +105,12 @@ base::Size
 MasalaThread::thread_index() const {
     return thread_index_;
 } // MasalaThread::thread_index()
+
+/// @brief Get the thread ID used by the system for the contained thread.
+std::thread::id
+MasalaThread::system_thread_id() const {
+    return system_thread_id_;
+} // MasalaThread::system_thread_id()
 
 /// @brief Access the mutex for this thread.
 std::mutex &

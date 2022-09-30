@@ -113,6 +113,8 @@ bool
 MasalaThreadManager::has_system_thread_id(
     std::thread::id const system_thread_id
 ) const {
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+
     if( system_thread_id == master_thread_id_ ) {
         return true;
     }
@@ -131,6 +133,8 @@ base::Size
 MasalaThreadManager::get_thread_manager_thread_id_from_system_thread_id(
     std::thread::id const system_thread_id
 ) const {
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+
     if( system_thread_id == master_thread_id_ ) {
         return 0;
     }
