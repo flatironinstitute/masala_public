@@ -35,7 +35,11 @@ SOFTWARE.
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/managers/threads/thread_pool/MasalaThread.fwd.hh>
 #include <base/types.hh>
+
+// STL headers:
+#include <vector>
 
 namespace masala {
 namespace base {
@@ -98,6 +102,15 @@ public:
 	/// @brief Returns "masala::base::managers::threads".
 	std::string class_namespace() const override;
 
+	/// @brief Allow the MasalaThreadPool to record which threads have been assigned to this
+	/// job.  We will store:
+	/// - Indices of the threads, based on the thread pool's numbering.
+	/// - Indices of the threads, based on internal numbering.  (For instance, if we got threads
+	/// 0, 5, 6, and 7, internally we would refer to these as threads 0, 1, 2, and 3).
+	/// @note It is assumed that the thread which calls this function is the parent thread that
+	/// has been assigned to the job.
+	void set_assigned_child_threads( std::vector< thread_pool::MasalaThreadSP > const & threads );
+
 	/// @brief Get the status of the work.
 	inline MasalaThreadedWorkStatus work_status() const { return work_status_; }
 
@@ -117,12 +130,23 @@ private:
 	/// @brief The status of the work.
 	MasalaThreadedWorkStatus work_status_ = MasalaThreadedWorkStatus::WORK_IN_PROGRESS;
 
+	/// @brief The wall-time, in microseconds that the work took.
+	base::Real execution_time_microseconds_ = 0.0;
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA that are set by the set_assigned_child_threads function:
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief The number of threads that were actually used for the work (which can
 	/// be less than the number requested).
 	base::Size nthreads_actual_ = 0;
 
-	/// @brief The wall-time, in microseconds that the work took.
-	base::Real execution_time_microseconds_ = 0.0;
+	/// @brief The indices of the child threads assigned.
+	std::vector< base::Size > assigned_child_thread_indices_;
+
+	/// @brief The index of the parent (calling) thread assigned.  This is 0 if it's
+	/// the global master thread for the process, or higher if it's a thread pool thread.
+	base::Size parent_thread_index_ = 0;
 
 }; // class MasalaThreadedWorkExecutionSummary
 

@@ -32,9 +32,12 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/threads/thread_pool/MasalaThread.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
 
 // STL headers
 #include <string>
+#include <thread>
 
 namespace masala {
 namespace base {
@@ -58,8 +61,8 @@ MasalaThreadedWorkExecutionSummary::MasalaThreadedWorkExecutionSummary(
 ) :
     base::MasalaObject(),
     work_status_(status),
-    nthreads_actual_(nthreads_actual),
-    execution_time_microseconds_(execution_time_microseconds)
+    execution_time_microseconds_(execution_time_microseconds),
+    nthreads_actual_(nthreads_actual)
 {}
 
 
@@ -71,13 +74,30 @@ MasalaThreadedWorkExecutionSummary::MasalaThreadedWorkExecutionSummary(
 std::string
 MasalaThreadedWorkExecutionSummary::class_name() const {
     return "MasalaThreadedWorkExecutionSummary";
-}
+} // MasalaThreadedWorkExecutionSummary::class_name()
 
 /// @brief Returns "masala::base::managers::threads".
 std::string
 MasalaThreadedWorkExecutionSummary::class_namespace() const {
     return "masala::base::managers::threads";
-}
+} // MasalaThreadedWorkExecutionSummary::class_namespace()
+
+/// @brief Allow the MasalaThreadPool to record which threads have been assigned to this
+/// job.  We will store:
+/// - Indices of the threads, based on the thread pool's numbering.
+/// - Indices of the threads, based on internal numbering.  (For instance, if we got threads
+/// 0, 5, 6, and 7, internally we would refer to these as threads 0, 1, 2, and 3).
+void
+MasalaThreadedWorkExecutionSummary::set_assigned_child_threads(
+    std::vector< thread_pool::MasalaThreadSP > const & threads
+) {
+    nthreads_actual_ = threads.size() + 1; // The parent thread is also an assigned thread.
+    assigned_child_thread_indices_.resize( threads.size() );
+    for( base::Size i(1), imax(threads.size()); i<=imax; ++i ) {
+        assigned_child_thread_indices_[i] = threads[i]->thread_index();
+    }
+    parent_thread_index_ = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
+} // MasalaThreadedWorkExecutionSummary::set_assigned_child_threads()
 
 } // namespace threads
 } // namespace managers
