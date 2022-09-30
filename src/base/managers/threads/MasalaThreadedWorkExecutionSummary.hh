@@ -125,6 +125,9 @@ public:
 	/// be less than the number requested).
 	inline base::Size nthreads_actual() const { return nthreads_actual_; }
 
+	/// @brief Set the execution time in microseconds.
+	void set_execution_time_microseconds( base::Real const execution_time_microseconds );
+
 	/// @brief Get the wall-time, in microseconds that the work took.
 	inline base::Real execution_time_microseconds() const { return execution_time_microseconds_; }
 

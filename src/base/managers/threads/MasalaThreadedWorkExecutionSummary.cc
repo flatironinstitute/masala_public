@@ -126,6 +126,16 @@ MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set(
     return (*it);
 } //MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set()
 
+/// @brief Set the execution time in microseconds.
+void
+MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds(
+    base::Real const execution_time_microseconds
+) {
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_work_exception", "Cannot set execution time after work has completed." );
+    CHECK_OR_THROW_FOR_CLASS( execution_time_microseconds_ >= 0.0, "set_execution_time_microseconds", "Cannot set a negative execution time." );
+    execution_time_microseconds_ = execution_time_microseconds;
+}
+
 /// @brief Inicate that an exception was thrown during execution of the work.
 /// @param err The exception that was thrown.  Copied and stored.
 void
