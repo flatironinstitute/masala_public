@@ -136,15 +136,23 @@ public:
 	/// @brief Set the execution time in microseconds.
 	void set_execution_time_microseconds( base::Real const execution_time_microseconds );
 
-	/// @brief Set the execution time in microseconds of each assigned thread.
-	void set_execution_time_microseconds_individual_threads( std::vector< base::Real > const & execution_times_microseconds );
-
 	/// @brief Get the wall-time, in microseconds, that the work took.
 	inline
 	base::Real
 	execution_time_microseconds() const {
 		return execution_time_microseconds_;
 	}
+
+	/// @brief Set the execution time in microseconds of an assigned thread.
+	/// @param[in] thread_index_in_assigned_set The index of the thread for which we're setting
+	/// execution time in the set of threads assigned to this block of work.
+	/// @param[in] execution_time_microseconds The execution time, in microseconds, for the work
+	/// done in this thread.
+	void
+	set_execution_time_microseconds_individual_thread(
+		base::Size const thread_index_in_assigned_set,
+		base::Real const execution_time_microseconds
+	);
 
 	/// @brief Get the time, in microseconds, that each assigned thread spent on the work.
 	/// @details The vector is indexed by thread index.  Use get_thread_manager_thread_index()

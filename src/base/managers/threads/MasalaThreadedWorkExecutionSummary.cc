@@ -98,6 +98,8 @@ MasalaThreadedWorkExecutionSummary::set_assigned_threads(
     CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_assigned_threads", "Cannot alter work status after work has completed." );
     nthreads_actual_ = threads.size() + 1; // The parent thread is also an assigned thread.
     assigned_thread_indices_.resize( threads.size() + 1 );
+    execution_time_microseconds_individual_threads_.clear();
+    execution_time_microseconds_individual_threads_.resize( threads.size() + 1, 0.0 ); //Initialize times to zero.
     assigned_thread_indices_[0] = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
     for( base::Size i(0), imax(threads.size()); i<imax; ++i ) {
         assigned_thread_indices_[i+1] = threads[i]->thread_index();
@@ -158,19 +160,20 @@ MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds(
     execution_time_microseconds_ = execution_time_microseconds;
 }
 
-/// @brief Set the execution time in microseconds of each assigned thread.
+/// @brief Set the execution time in microseconds of an assigned thread.
+/// @param[in] thread_index_in_assigned_set The index of the thread for which we're setting
+/// execution time in the set of threads assigned to this block of work.
+/// @param[in] execution_time_microseconds The execution time, in microseconds, for the work
+/// done in this thread.
 void
-MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds_individual_threads(
-    std::vector< base::Real > const & execution_times_microseconds
+MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds_individual_thread(
+    base::Size const thread_index_in_assigned_set,
+    base::Real const execution_time_microseconds
 ) {
-    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_execution_time_microseconds_individual_threads", "Cannot set execution times for individual threads after work has completed." );
-    CHECK_OR_THROW_FOR_CLASS(
-        assigned_thread_indices_.size() == execution_times_microseconds.size(),
-        "set_execution_time_microseconds_individual_threads",
-        "The number of assigned times does not match the number of threads."
-    );
-    execution_time_microseconds_individual_threads_ = execution_times_microseconds;
-}
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( thread_index_in_assigned_set < assigned_thread_indices_.size(), "set_execution_time_microseconds_individual_thread", "Index " + std::to_string( thread_index_in_assigned_set ) + " is out of range: " + std::to_string( assigned_thread_indices_.size() ) + " threads are in the assigned set." );
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_execution_time_microseconds_individual_thread", "Cannot set execution times for individual threads after work has completed." );
+    execution_time_microseconds_individual_threads_[thread_index_in_assigned_set] = execution_time_microseconds;
+} // MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds_individual_thread()
 
 
 /// @brief Inicate that an exception was thrown during execution of the work.
