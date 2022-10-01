@@ -213,7 +213,7 @@ private:
     void
     threaded_execution_function(
         MasalaThreadedWorkRequest & request,
-        MasalaThreadedWorkExecutionSummary const & summary
+        MasalaThreadedWorkExecutionSummary & summary
     ) const;
 
 private:

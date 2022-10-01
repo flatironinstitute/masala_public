@@ -147,16 +147,18 @@ public:
 	/// @param[in] thread_index_in_assigned_set The index of the thread for which we're setting
 	/// execution time in the set of threads assigned to this block of work.
 	/// @param[in] execution_time_microseconds The execution time, in microseconds, for the work
-	/// done in this thread.
+	/// done in this thread.  Adds to current value
 	void
-	set_execution_time_microseconds_individual_thread(
+	increment_execution_time_microseconds_individual_thread(
 		base::Size const thread_index_in_assigned_set,
 		base::Real const execution_time_microseconds
 	);
 
 	/// @brief Get the time, in microseconds, that each assigned thread spent on the work.
 	/// @details The vector is indexed by thread index.  Use get_thread_manager_thread_index()
-	/// to convert indices in the assigned thread set into global indices.	
+	/// to convert indices in the assigned thread set into global indices.
+	/// @note This is the time that each thread was actually doing work, omitting any time spent
+	/// looking for work to do.
 	inline
 	std::vector< base::Real > const &
 	execution_time_microseconds_individual_threads() const {

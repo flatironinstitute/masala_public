@@ -190,7 +190,7 @@ MasalaThreadManager::do_work_in_threads(
             &MasalaThreadManager::threaded_execution_function,
             this,
             std::ref( request ),
-            std::cref( summary )
+            std::ref( summary )
         )
     );
 
@@ -277,7 +277,7 @@ MasalaThreadManager::total_threads() const {
 void
 MasalaThreadManager::threaded_execution_function(
     MasalaThreadedWorkRequest & request,
-    MasalaThreadedWorkExecutionSummary const & summary
+    MasalaThreadedWorkExecutionSummary & summary
 ) const {
     // The number of threads actually assigned:
     base::Size const nthreads_assigned( summary.nthreads_actual() );
@@ -322,7 +322,16 @@ MasalaThreadManager::threaded_execution_function(
         } // Scope for mutex lock.
 
         // If we reach here, we want to actually execute the current job:
+        std::chrono::time_point< std::chrono::steady_clock > const starttime( std::chrono::steady_clock::now() );
         request.run_job( curjob );
+        std::chrono::time_point< std::chrono::steady_clock > const endtime( std::chrono::steady_clock::now() );
+        
+        // Increment the time done to do some work.  Note that each thread is writing to a different index
+        // in the storage vector, so this is threadsafe with no mutex locking.
+        summary.increment_execution_time_microseconds_individual_thread(
+            thisthread_index,
+            std::chrono::duration_cast< std::chrono::microseconds >( endtime-starttime ).count()
+        );
 
     } while( curjob != lastjob );
 }
