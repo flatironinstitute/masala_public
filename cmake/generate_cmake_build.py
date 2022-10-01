@@ -184,6 +184,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n)\n")
     if len( appslist ) > 0 :
         for app in appslist :
@@ -192,6 +193,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write("TARGET_LINK_LIBRARIES(" + appname )
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
 if len(api_cclist) > 0 :
@@ -217,6 +219,7 @@ if len(api_cclist) > 0 :
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
         fhandle.write( "\n\tPUBLIC " + lib_name )
+        fhandle.write( "\n\tPRIVATE Threads::Threads" )
         fhandle.write("\n)\n")
 
 print( "Wrote " + output_file + "." )
