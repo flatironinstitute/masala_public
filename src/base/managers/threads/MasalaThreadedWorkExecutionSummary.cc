@@ -88,18 +88,21 @@ MasalaThreadedWorkExecutionSummary::class_namespace() const {
 /// - Indices of the threads, based on the thread pool's numbering.
 /// - Indices of the threads, based on internal numbering.  (For instance, if we got threads
 /// 0, 5, 6, and 7, internally we would refer to these as threads 0, 1, 2, and 3).
+/// @note It is assumed that the thread which calls this function is the parent thread that
+/// has been assigned to the job.  It is set as thread zero, and the rest of the threads are
+/// given positive internal indices.
 void
-MasalaThreadedWorkExecutionSummary::set_assigned_child_threads(
+MasalaThreadedWorkExecutionSummary::set_assigned_threads(
     std::vector< thread_pool::MasalaThreadSP > const & threads
 ) {
-    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_assigned_child_threads", "Cannot alter work status after work has completed." );
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_assigned_threads", "Cannot alter work status after work has completed." );
     nthreads_actual_ = threads.size() + 1; // The parent thread is also an assigned thread.
-    assigned_child_thread_indices_.resize( threads.size() );
-    for( base::Size i(1), imax(threads.size()); i<=imax; ++i ) {
-        assigned_child_thread_indices_[i] = threads[i]->thread_index();
+    assigned_thread_indices_.resize( threads.size() + 1 );
+    assigned_thread_indices_[0] = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
+    for( base::Size i(0), imax(threads.size()); i<imax; ++i ) {
+        assigned_thread_indices_[i+1] = threads[i]->thread_index();
     }
-    parent_thread_index_ = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
-} // MasalaThreadedWorkExecutionSummary::set_assigned_child_threads()
+} // MasalaThreadedWorkExecutionSummary::set_assigned_threads()
 
 /// @brief Given the index of a thread manager thread, get the index in the set of threads
 /// assigned to this task.
@@ -112,19 +115,38 @@ MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set(
 ) const {
     std::vector< base::Size >::const_iterator const it(
         std::find(
-            assigned_child_thread_indices_.begin(),
-            assigned_child_thread_indices_.end(),
+            assigned_thread_indices_.begin(),
+            assigned_thread_indices_.end(),
             thread_manager_thread_id
         )
     );
     CHECK_OR_THROW_FOR_CLASS(
-        it != assigned_child_thread_indices_.end(),
+        it != assigned_thread_indices_.end(),
         "get_thread_index_in_assigned_thread_set",
         "Thread index " + std::to_string( thread_manager_thread_id ) + " is not "
         "among the threads assigned to this task!"
     );
     return (*it);
 } //MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set()
+
+/// @brief Given a thread index in the assigned thread set, get the thread index used by the
+/// thread manager.
+/// @details For instance, if thread manager threads 0, 5, 6, and 7 are assigned to this task,
+/// their indices in the set assigned are 0, 1, 2, and 3, respectively.  If I give this function
+/// thread 2, it should return 6.
+base::Size
+MasalaThreadedWorkExecutionSummary::get_thread_manager_thread_index(
+    base::Size const index_in_assigned_thread_set
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        index_in_assigned_thread_set < assigned_thread_indices_.size(),
+        "get_thread_manager_thread_index",
+        "Thread " + std::to_string( index_in_assigned_thread_set ) + " in the assigned "
+        "set was requested, but only " + std::to_string( assigned_thread_indices_.size() ) +
+        " threads are in the assigned set."
+    );
+    return assigned_thread_indices_[index_in_assigned_thread_set];
+}
 
 /// @brief Set the execution time in microseconds.
 void
@@ -135,6 +157,21 @@ MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds(
     CHECK_OR_THROW_FOR_CLASS( execution_time_microseconds_ >= 0.0, "set_execution_time_microseconds", "Cannot set a negative execution time." );
     execution_time_microseconds_ = execution_time_microseconds;
 }
+
+/// @brief Set the execution time in microseconds of each assigned thread.
+void
+MasalaThreadedWorkExecutionSummary::set_execution_time_microseconds_individual_threads(
+    std::vector< base::Real > const & execution_times_microseconds
+) {
+    CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_execution_time_microseconds_individual_threads", "Cannot set execution times for individual threads after work has completed." );
+    CHECK_OR_THROW_FOR_CLASS(
+        assigned_thread_indices_.size() == execution_times_microseconds.size(),
+        "set_execution_time_microseconds_individual_threads",
+        "The number of assigned times does not match the number of threads."
+    );
+    execution_time_microseconds_individual_threads_ = execution_times_microseconds;
+}
+
 
 /// @brief Inicate that an exception was thrown during execution of the work.
 /// @param err The exception that was thrown.  Copied and stored.

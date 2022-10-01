@@ -214,7 +214,7 @@ MasalaThreadPool::execute_function_in_threads(
             threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
         }
 
-        summary.set_assigned_child_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
+        summary.set_assigned_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
 
         // At this point, it is safe to begin exection of the work in threads.
         if( !assigned_threads.empty() ) {

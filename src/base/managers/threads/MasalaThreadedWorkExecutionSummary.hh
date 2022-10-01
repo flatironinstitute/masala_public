@@ -108,8 +108,9 @@ public:
 	/// - Indices of the threads, based on internal numbering.  (For instance, if we got threads
 	/// 0, 5, 6, and 7, internally we would refer to these as threads 0, 1, 2, and 3).
 	/// @note It is assumed that the thread which calls this function is the parent thread that
-	/// has been assigned to the job.
-	void set_assigned_child_threads( std::vector< thread_pool::MasalaThreadSP > const & threads );
+	/// has been assigned to the job.  It is set as thread zero, and the rest of the threads are
+	/// given positive internal indices.
+	void set_assigned_threads( std::vector< thread_pool::MasalaThreadSP > const & threads );
 
 	/// @brief Given the index of a thread manager thread, get the index in the set of threads
 	/// assigned to this task.
@@ -117,6 +118,13 @@ public:
 	/// their indices in the set assigned are 0, 1, 2, and 3, respectively.  If I give this function
 	/// thread 6, it should return 2.
 	base::Size get_thread_index_in_assigned_thread_set( base::Size const thread_manager_thread_id ) const;
+
+	/// @brief Given a thread index in the assigned thread set, get the thread index used by the
+	/// thread manager.
+	/// @details For instance, if thread manager threads 0, 5, 6, and 7 are assigned to this task,
+	/// their indices in the set assigned are 0, 1, 2, and 3, respectively.  If I give this function
+	/// thread 2, it should return 6.
+	base::Size get_thread_manager_thread_index( base::Size const index_in_assigned_thread_set ) const;
 
 	/// @brief Get the status of the work.
 	inline MasalaThreadedWorkStatus work_status() const { return work_status_; }
@@ -128,8 +136,24 @@ public:
 	/// @brief Set the execution time in microseconds.
 	void set_execution_time_microseconds( base::Real const execution_time_microseconds );
 
-	/// @brief Get the wall-time, in microseconds that the work took.
-	inline base::Real execution_time_microseconds() const { return execution_time_microseconds_; }
+	/// @brief Set the execution time in microseconds of each assigned thread.
+	void set_execution_time_microseconds_individual_threads( std::vector< base::Real > const & execution_times_microseconds );
+
+	/// @brief Get the wall-time, in microseconds, that the work took.
+	inline
+	base::Real
+	execution_time_microseconds() const {
+		return execution_time_microseconds_;
+	}
+
+	/// @brief Get the time, in microseconds, that each assigned thread spent on the work.
+	/// @details The vector is indexed by thread index.  Use get_thread_manager_thread_index()
+	/// to convert indices in the assigned thread set into global indices.	
+	inline
+	std::vector< base::Real > const &
+	execution_time_microseconds_individual_threads() const {
+		return execution_time_microseconds_individual_threads_;
+	}
 
 	/// @brief Inicate that an exception was thrown during execution of the work.
 	/// @param err The exception that was thrown.  Copied and stored.
@@ -155,6 +179,9 @@ private:
 	/// @brief The wall-time, in microseconds that the work took.
 	base::Real execution_time_microseconds_ = 0.0;
 
+	/// @brief The total time spent on the task by each assigned thread, in microseconds.
+	std::vector< base::Real > execution_time_microseconds_individual_threads_;
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA that are set by the set_assigned_child_threads function:
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,12 +190,8 @@ private:
 	/// be less than the number requested).
 	base::Size nthreads_actual_ = 0;
 
-	/// @brief The indices of the child threads assigned.
-	std::vector< base::Size > assigned_child_thread_indices_;
-
-	/// @brief The index of the parent (calling) thread assigned.  This is 0 if it's
-	/// the global master thread for the process, or higher if it's a thread pool thread.
-	base::Size parent_thread_index_ = 0;
+	/// @brief The indices of the threads assigned.  The parent thread is the 0th entry.
+	std::vector< base::Size > assigned_thread_indices_;
 
 	/// @brief A possible error returned by a thread.  Null if no error.
 	std::shared_ptr< std::exception const > err_ptr_ = nullptr;
