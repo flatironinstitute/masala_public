@@ -37,6 +37,7 @@ SOFTWARE.
 
 // Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
+#include <base/types.hh>
 
 // STL headers
 #include <string>
