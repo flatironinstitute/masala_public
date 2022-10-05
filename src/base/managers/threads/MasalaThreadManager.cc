@@ -31,10 +31,12 @@ SOFTWARE.
 #include <base/managers/threads/MasalaThreadManager.hh>
 
 // Base headers:
+#include <base/managers/threads/MasalaThreadManagerConfiguration.hh>
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
 #include <base/managers/threads/MasalaThreadedWorkRequest.hh>
 #include <base/managers/threads/thread_pool/MasalaThreadPool.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/configuration/MasalaConfigurationManager.hh>
 
 // STL headers:
 #include <string>
@@ -80,6 +82,7 @@ MasalaThreadManagerAccessKey::class_namespace() const {
 /// work is first assigned to threads (lazy thread launching).
 MasalaThreadManager::MasalaThreadManager() :
     base::MasalaObject(),
+    configuration_( OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MasalaThreadManager, MasalaThreadManagerConfiguration ) ),
     thread_pool_(
         std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
             base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
@@ -271,6 +274,23 @@ MasalaThreadManager::total_threads() const {
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThreadManager PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a configuration object for this object.
+/// @details Can trigger read from disk.  Private since it intended to be called only the first time
+/// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+/// implementation throws.  Must be implemented by derived classes that have configurations.
+/// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
+/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
+/// class.  This version creates a MasalaThreadManagerConfiguration object.
+base::managers::configuration::ConfigurationBaseCSP
+MasalaThreadManager::load_configuration(
+    masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+) const {
+
+    write_to_tracer( "Loading default MasalaThreadManager configuration." );
+
+    return std::make_shared< MasalaThreadManagerConfiguration >( passkey );
+}
 
 /// @brief Given a request containing a vector of work, this function
 /// can be executed in parallel in order to actually do the work.

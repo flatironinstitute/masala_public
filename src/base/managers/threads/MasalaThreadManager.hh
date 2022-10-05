@@ -35,6 +35,7 @@ SOFTWARE.
 
 // Forward declarations:
 #include <base/managers/threads/MasalaThreadManager.fwd.hh>
+#include <base/managers/threads/MasalaThreadManagerConfiguration.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -208,6 +209,18 @@ private:
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Create a configuration object for this object.
+    /// @details Can trigger read from disk.  Private since it intended to be called only the first time
+    /// that configuration settings are requested, by the MasalaConfigurationManager.  The base class
+    /// implementation throws.  Must be implemented by derived classes that have configurations.
+    /// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
+    /// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
+    /// class.  This version creates a MasalaThreadManagerConfiguration object.
+    base::managers::configuration::ConfigurationBaseCSP
+    load_configuration(
+        masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
+    ) const override;
+
     /// @brief Given a request containing a vector of work, this function
     /// can be executed in parallel in order to actually do the work.
     void
@@ -224,6 +237,9 @@ private:
 
     /// @brief Lock the thread manager (e.g. for resizing thread pools).
     mutable std::mutex thread_manager_mutex_;
+
+    /// @brief The default configuration for the thread manager.
+    MasalaThreadManagerConfigurationCSP configuration_;
 
     /// @brief The total number of threads to launch.
     base::Size total_threads_ = 1;
