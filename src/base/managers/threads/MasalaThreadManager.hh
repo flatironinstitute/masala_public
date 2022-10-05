@@ -202,6 +202,15 @@ public:
     /// to run.  (May not have been launched yet.)
     base::Size
     total_threads() const;
+    
+    /// @brief Set the number of threads in the thread pool.
+    /// @details Does nothing if this matches the number running.  Launches
+    /// threads if this is greater than the number running.  Signals that
+    /// threads should spin down if this is less than the number running (in
+    /// which case they finish their work before spinning down).
+    /// @note A value of 0 means launch one thread for each hardware thread on
+    /// the node.
+    void set_total_threads( base::Size const desired_threadcount );
 
 private:
 

@@ -43,6 +43,7 @@ SOFTWARE.
 #include <cmath>
 #include <sstream>
 #include <chrono>
+#include <thread>
 
 namespace masala {
 namespace base {
@@ -86,12 +87,23 @@ MasalaThreadManager::MasalaThreadManager() :
     total_threads_( configuration_->default_total_threads() ),
     thread_pool_(
         std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
-            base::managers::threads::thread_pool::MasalaThreadPoolCreationKey(),
-            total_threads_
+            base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
         )
     ),
     master_thread_id_( std::this_thread::get_id() )
-{}
+{
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+    if( total_threads_ == 0 ) {
+        total_threads_ == std::thread::hardware_concurrency();
+        if( total_threads_ == 0 ) {
+            write_to_tracer(
+                "Warning!  Could not determine number of hardware threads on node.  "
+                "Setting thread count to 1."
+            );
+            total_threads_ = 1;
+        }
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +273,10 @@ MasalaThreadManager::execute_function_in_threads(
     MasalaThreadManagerAccessKey const & access_key,
     MasalaThreadedWorkExecutionSummary & summary
 ) const {
-    thread_pool_->launch_threads_if_needed( total_threads_ );
+    {
+        std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+        thread_pool_->launch_threads_if_needed( total_threads_ );
+    }
     thread_pool_->execute_function_in_threads( fxn, threads_to_request, summary );
 } // MasalaThreadManager::execute_function_in_threads()
 
@@ -271,6 +286,34 @@ base::Size
 MasalaThreadManager::total_threads() const {
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
     return total_threads_;
+}
+
+/// @brief Set the number of threads in the thread pool.
+/// @details Does nothing if this matches the number running.  Launches
+/// threads if this is greater than the number running.  Signals that
+/// threads should spin down if this is less than the number running (in
+/// which case they finish their work before spinning down).
+/// @note A value of 0 means launch one thread for each hardware thread on
+/// the node.
+void
+MasalaThreadManager::set_total_threads(
+    base::Size const desired_threadcount
+) {
+    base::Size actual_desired( desired_threadcount );
+    if( actual_desired == 0 ) {
+        actual_desired == std::thread::hardware_concurrency();
+        if( actual_desired == 0 ) {
+            write_to_tracer(
+                "Warning!  Could not determine number of hardware threads on node.  "
+                "Setting thread count to 1."
+            );
+            actual_desired = 1;
+        }
+    }
+
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+    total_threads_ = actual_desired;
+    thread_pool_->launch_threads_if_needed( total_threads_ );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
