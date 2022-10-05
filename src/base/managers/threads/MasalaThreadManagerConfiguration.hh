@@ -88,12 +88,23 @@ public:
 // Getters
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get the number of threads to hold in the thread pool, by default.
+    /// @details The thread pool will be one smaller than this, since the
+    /// master thread of the process is counted.  A value of 0 means to launch
+    /// one thread per hardware thread on the node.
+    inline base::Size default_total_threads() const { return default_total_threads_; }
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // Data
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The number of threads to hold in the thread pool, by default.
+    /// @details The thread pool will be one smaller than this, since the
+    /// master thread of the process is counted.  A value of 0 means to launch
+    /// one thread per hardware thread on the node.
+    base::Size default_total_threads_ = 1;
 
 };
 

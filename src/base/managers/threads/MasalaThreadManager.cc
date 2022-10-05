@@ -83,9 +83,11 @@ MasalaThreadManagerAccessKey::class_namespace() const {
 MasalaThreadManager::MasalaThreadManager() :
     base::MasalaObject(),
     configuration_( OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MasalaThreadManager, MasalaThreadManagerConfiguration ) ),
+    total_threads_( configuration_->default_total_threads() ),
     thread_pool_(
         std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
-            base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
+            base::managers::threads::thread_pool::MasalaThreadPoolCreationKey(),
+            total_threads_
         )
     ),
     master_thread_id_( std::this_thread::get_id() )
