@@ -252,7 +252,7 @@ if len(testslist) > 0 :
                 for dentry in depend_list :
                     fhandle.write( "\n\tPUBLIC " + dentry )
                 fhandle.write( "\n\tPRIVATE Threads::Threads" )
-                fhandle.write( "\n\tPRIVATE Catch2::Catch2WithMain" )
+                #fhandle.write( "\n\tPRIVATE Catch2::Catch2WithMain" )
                 fhandle.write("\n)\n")
 
             # testrunner = "run_" + testlibname

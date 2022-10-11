@@ -72,7 +72,6 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 # )
 
 # Build the core API.
-FIND_PACKAGE( Catch2 2 REQUIRED )
 INCLUDE( ../build/cmake_generated/core_api.cmake )
 
 # Build tests for core.

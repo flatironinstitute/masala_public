@@ -26,8 +26,10 @@ SOFTWARE.
 /// @brief Unit tests for the Pose class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
+#define CATCH_CONFIG_MAIN
+
 // Unit testing library (Catch2) headers:
-#include <external/catch2/include/catch.hpp>
+#include <external/catch2/single_include/catch2/catch.hpp>
 
 // Unit headers:
 #include <core/pose/Pose.hh>
