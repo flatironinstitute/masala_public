@@ -241,7 +241,7 @@ if len(testslist) > 0 :
     assert output_file_tests != None
     with open( output_file_tests, 'w' ) as fhandle:
         if len(testslist) > 0 :
-            fhandle.write( "ADD_LIBRARY(" + testlibname + " SHARED" )
+            fhandle.write( "ADD_EXECUTABLE(" + testlibname + " " )
             for entry in testslist:
                 fhandle.write( "\n\t" + entry )
             fhandle.write( "\n)\n" )
@@ -252,6 +252,19 @@ if len(testslist) > 0 :
                 for dentry in depend_list :
                     fhandle.write( "\n\tPUBLIC " + dentry )
                 fhandle.write( "\n\tPRIVATE Threads::Threads" )
+                fhandle.write( "\n\tPRIVATE Catch2::Catch2WithMain" )
                 fhandle.write("\n)\n")
+
+            # testrunner = "run_" + testlibname
+            # fhandle.write("\nADD_EXECUTABLE( " + testrunner + " test.cpp )\n" )
+            # fhandle.write("TARGET_LINK_LIBRARIES( " + testrunner )
+            # fhandle.write( "\n\tPUBLIC " + testlibname )
+            # fhandle.write( "\n\tPUBLIC " + lib_name )
+            # for dentry in depend_list :
+            #     fhandle.write( "\n\tPUBLIC " + dentry )
+            # fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            # fhandle.write( "\n\tPRIVATE Catch2::Catch2" )
+            # fhandle.write("\n)\n")
+
 
 print( "Wrote " + output_file + "." )

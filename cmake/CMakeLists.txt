@@ -34,6 +34,7 @@ SET( CMAKE_MACOSX_RPATH 1 )
 SET( CMAKE_SKIP_BUILD_RPATH FALSE )
 SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
 SET( THREADS_PREFER_PTHREAD_FLAG ON )
+SET( Catch2_DIR ../catch2_build )
 FIND_PACKAGE( Threads REQUIRED )
 
 # Set header file locations:
@@ -71,9 +72,10 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 # )
 
 # Build the core API.
+FIND_PACKAGE( Catch2 2 REQUIRED )
 INCLUDE( ../build/cmake_generated/core_api.cmake )
 
-# Optionally, build tests for core.
+# Build tests for core.
 INCLUDE( ../build/cmake_generated/core_tests.cmake )
 
 # Compile the API for base, numeric, and core libraries:
