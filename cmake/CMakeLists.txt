@@ -45,10 +45,10 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake NONE
+    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake cmake_generated/base_tests.cmake
 )
 # execute_process(
-#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake NONE
+#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
 # )
 execute_process(
     COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
@@ -71,14 +71,12 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 #     VERBATIM
 # )
 
-# Build the core API.
+# Build the base, numeric, and core APIs.
+#INCLUDE( ../build/cmake_generated/base_api.cmake )
+#INCLUDE( ../build/cmake_generated/numeric_api.cmake )
 INCLUDE( ../build/cmake_generated/core_api.cmake )
 
-# Build tests for core.
+# Build tests for base, numeric, and core.
+INCLUDE( ../build/cmake_generated/base_tests.cmake )
+#INCLUDE( ../build/cmake_generated/numeric_tests.cmake )
 INCLUDE( ../build/cmake_generated/core_tests.cmake )
-
-# Compile the API for base, numeric, and core libraries:
-# TODO TODO TODO
-
-# Link the API for base, numeric, and core libraries:
-# TODO TODO TODO
