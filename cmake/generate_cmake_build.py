@@ -246,25 +246,13 @@ if len(testslist) > 0 :
                 fhandle.write( "\n\t" + entry )
             fhandle.write( "\n)\n" )
             fhandle.write( "SET_TARGET_PROPERTIES(" + testlibname + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
-            if len(depend_list) > 0 :
-                fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
-                fhandle.write( "\n\tPUBLIC " + lib_name )
-                for dentry in depend_list :
-                    fhandle.write( "\n\tPUBLIC " + dentry )
-                fhandle.write( "\n\tPRIVATE Threads::Threads" )
-                #fhandle.write( "\n\tPRIVATE Catch2::Catch2WithMain" )
-                fhandle.write("\n)\n")
 
-            # testrunner = "run_" + testlibname
-            # fhandle.write("\nADD_EXECUTABLE( " + testrunner + " test.cpp )\n" )
-            # fhandle.write("TARGET_LINK_LIBRARIES( " + testrunner )
-            # fhandle.write( "\n\tPUBLIC " + testlibname )
-            # fhandle.write( "\n\tPUBLIC " + lib_name )
-            # for dentry in depend_list :
-            #     fhandle.write( "\n\tPUBLIC " + dentry )
-            # fhandle.write( "\n\tPRIVATE Threads::Threads" )
-            # fhandle.write( "\n\tPRIVATE Catch2::Catch2" )
-            # fhandle.write("\n)\n")
+            fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
+            fhandle.write( "\n\tPUBLIC " + lib_name )
+            for dentry in depend_list :
+                fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            fhandle.write("\n)\n")
 
 
 print( "Wrote " + output_file + "." )
