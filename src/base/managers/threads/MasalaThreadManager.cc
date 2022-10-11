@@ -312,8 +312,11 @@ MasalaThreadManager::set_total_threads(
     }
 
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+    base::Size const total_before( total_threads_ );
     total_threads_ = actual_desired;
-    thread_pool_->launch_threads_if_needed( total_threads_ );
+    if( total_threads_ > total_before ) {
+        thread_pool_->launch_threads_if_needed( total_threads_ - total_before );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
