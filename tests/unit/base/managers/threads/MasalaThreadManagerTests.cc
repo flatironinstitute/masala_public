@@ -43,7 +43,7 @@ TEST_CASE( "Launch threads.", "[base::managers::threads::MasalaThreadManager][mu
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
-        tm->set_total_threads(8);
+        tm->set_total_threads(2);
     }() );
 }
 
