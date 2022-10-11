@@ -44,13 +44,13 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake NONE
 )
 # execute_process(
-#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake
+#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake NONE
 # )
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
 )
 
 # Build the base, numeric, and core libraries:
@@ -70,7 +70,11 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 #     VERBATIM
 # )
 
+# Build the core API.
 INCLUDE( ../build/cmake_generated/core_api.cmake )
+
+# Optionally, build tests for core.
+INCLUDE( ../build/cmake_generated/core_tests.cmake )
 
 # Compile the API for base, numeric, and core libraries:
 # TODO TODO TODO
