@@ -313,7 +313,7 @@ MasalaThreadManager::set_total_threads(
 
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
     total_threads_ = actual_desired;
-    thread_pool_->launch_threads_if_needed( total_threads_ );
+    thread_pool_->launch_threads_if_needed( total_threads_ - 1 ); // Minus one since we have one parent thread.
 }
 
 ////////////////////////////////////////////////////////////////////////////////

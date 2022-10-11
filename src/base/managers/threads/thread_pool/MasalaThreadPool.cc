@@ -124,12 +124,14 @@ MasalaThreadPool::launch_threads_if_needed(
             case MasalaThreadPoolState::INVALID_STATE :
             {
                 MASALA_THROW( class_namespace_and_name(), "launch_threads_if_needed", "Program error: thread pool is in an invalid state!" );
+                break;
             }
             case MasalaThreadPoolState::THREADS_NOT_LAUNCHED :
             {
                 DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( threads_.empty(), "launch_threads_if_needed", "Program error: threads have been launched, but thread pool status indicates that they have not." );
                 launch_threads_mutexlocked( desired_thread_count );
                 thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
+                break;
             }
             case MasalaThreadPoolState::THREADS_READY :
             {
@@ -140,6 +142,7 @@ MasalaThreadPool::launch_threads_if_needed(
                     increment_inactive_threads_mutexlocked( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
                     thread_pool_state_ = MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN;
                 }
+                break;
             }
             case MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN :
             {
@@ -153,10 +156,12 @@ MasalaThreadPool::launch_threads_if_needed(
                 } else if( desired_thread_count < num_active_threads_ ) {
                     increment_inactive_threads_mutexlocked( num_active_threads_ - desired_thread_count ); // Alters num_active_threads_ and num_inactive_threads_.
                 }
+                break;
             }
             case MasalaThreadPoolState::ALL_THREADS_SPINNING_DOWN :
             {
                 MASALA_THROW( class_namespace_and_name(), "launch_threads_if_needed", "Received request for threads after spin-down signal." );
+                break;
             }
         }
     }
@@ -293,7 +298,9 @@ MasalaThreadPool::launch_threads_mutexlocked(
         ++next_thread_index_;
     }
     write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads.  "
-        "A total of " + std::to_string(threads_.size() + 1) + " are now running."
+        "A total of " + std::to_string(threads_.size()) + " child thread"
+        + ( threads_.size() == 1 ? " is " : "s are " ) +
+        "now running in the thread pool (not counting the parent thread)."
     );
 } // MasalaThreadPool::launch_threads_mutexlocked()
 
