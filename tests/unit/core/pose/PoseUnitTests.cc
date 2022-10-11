@@ -38,7 +38,7 @@ namespace unit {
 namespace core {
 namespace pose {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][Instantiation]" ) {
+TEST_CASE( "Instantiate a pose", "[core::pose::Pose][instantiation]" ) {
     REQUIRE_NOTHROW([&](){
         masala::core::pose::PoseSP mypose( std::make_shared< masala::core::pose::Pose >() );
         mypose->write_to_tracer( "Instantiated a pose." );
