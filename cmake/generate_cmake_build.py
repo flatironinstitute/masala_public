@@ -240,9 +240,9 @@ if len(api_cclist) > 0 :
 if len(testslist) > 0 :
     assert output_file_tests != None
     with open( output_file_tests, 'w' ) as fhandle:
-        if len(cclist) > 0 :
+        if len(testslist) > 0 :
             fhandle.write( "ADD_LIBRARY(" + testlibname + " SHARED" )
-            for entry in cclist:
+            for entry in testslist:
                 fhandle.write( "\n\t" + entry )
             fhandle.write( "\n)\n" )
             fhandle.write( "SET_TARGET_PROPERTIES(" + testlibname + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
