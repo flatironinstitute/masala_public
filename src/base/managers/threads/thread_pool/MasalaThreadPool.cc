@@ -286,7 +286,7 @@ MasalaThreadPool::launch_threads_mutexlocked(
     base::Size const startindex( threads_.size() ), endindex( threads_.size() + n_threads_to_launch );
     threads_.reserve( endindex );
     for( base::Size i(startindex); i<endindex; ++i ) {
-        threads_[i] = std::make_shared< MasalaThread >( next_thread_index_, MasalaThreadCreationKey() );
+        threads_.push_back( std::make_shared< MasalaThread >( next_thread_index_, MasalaThreadCreationKey() ) );
         ++next_thread_index_;
     }
     write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads." );
