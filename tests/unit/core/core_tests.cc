@@ -22,31 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file tests/unit/core/pose/PoseUnitTests.cc
-/// @brief Unit tests for the Pose class.
+/// @file tests/unit/core/core_tests.cc
+/// @brief Define main() function for testing.
+/// @details The CATCH_CONFIG_MAIN macro must be invoked once in the unit
+/// testing application generated with the Catch2 library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#define CATCH_CONFIG_MAIN
 
 // Unit testing library (Catch2) headers:
 #include <external/catch2/single_include/catch2/catch.hpp>
-
-// Unit headers:
-#include <core/pose/Pose.hh>
-
-namespace masala {
-namespace tests {
-namespace unit {
-namespace core {
-namespace pose {
-
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][Instantiation]" ) {
-    REQUIRE_NOTHROW([&](){
-        masala::core::pose::PoseSP mypose( std::make_shared< masala::core::pose::Pose >() );
-        mypose->write_to_tracer( "Instantiated a pose." );
-    }() );
-}
-
-} // namespace pose
-} // namespace core
-} // namespace unit
-} // namespace tests
-} // namespace masala
