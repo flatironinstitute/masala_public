@@ -282,14 +282,19 @@ void
 MasalaThreadPool::launch_threads_mutexlocked(
     base::Size const n_threads_to_launch
 ) {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( n_threads_to_launch > 0, "launch_threads_mutexlocked", "The number of threads to launch must be greater than zero." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        n_threads_to_launch > 0, "launch_threads_mutexlocked", "The number of threads to "
+        "launch must be greater than zero."
+    );
     base::Size const startindex( threads_.size() ), endindex( threads_.size() + n_threads_to_launch );
     threads_.reserve( endindex );
     for( base::Size i(startindex); i<endindex; ++i ) {
         threads_.push_back( std::make_shared< MasalaThread >( next_thread_index_, MasalaThreadCreationKey() ) );
         ++next_thread_index_;
     }
-    write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads." );
+    write_to_tracer( "Launched " + std::to_string( n_threads_to_launch ) + " new threads.  "
+        "A total of " + std::to_string(threads_.size() + 1) + " are now running."
+    );
 } // MasalaThreadPool::launch_threads_mutexlocked()
 
 /// @brief Mark additional threads as inactive.
