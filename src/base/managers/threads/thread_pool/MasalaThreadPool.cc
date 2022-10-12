@@ -152,6 +152,8 @@ MasalaThreadPool::launch_threads_if_needed(
                     // We may still need to launch more.
                     if( desired_thread_count > num_active_threads_ ) {
                         launch_threads_mutexlocked( desired_thread_count - num_active_threads_ );
+                    }
+                    if( num_inactive_threads_ == 0 ) {
                         thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
                     }
                 } else if( desired_thread_count < num_active_threads_ ) {
@@ -323,7 +325,7 @@ void
 MasalaThreadPool::decrement_inactive_threads_mutexlocked(
     base::Size n_threads_to_reactivate
 ) {
-    base::Size const actual_n_threads_to_reactivate( std::max( num_inactive_threads_, n_threads_to_reactivate ) );
+    base::Size const actual_n_threads_to_reactivate( std::min( num_inactive_threads_, n_threads_to_reactivate ) );
     num_inactive_threads_ -= actual_n_threads_to_reactivate;
     num_active_threads_ += actual_n_threads_to_reactivate;
     write_to_tracer( "Spinning " + std::to_string( actual_n_threads_to_reactivate ) + " threads that had received spin-down signals back up." );
