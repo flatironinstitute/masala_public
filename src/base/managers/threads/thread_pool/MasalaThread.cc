@@ -160,7 +160,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
     //base::managers::random::RandomNumberManager::get_instance()->initialize_thread( thread_index_ );
 
     do {
-        std::unique_lock< std::mutex > unique_lock( thread_mutex_, std::defer_lock ); // Mutex is still unlocked.
+        std::unique_lock< std::mutex > unique_lock( thread_mutex_ ); // Mutex is still unlocked.
         if( !(
                 forced_termination_ ||
                 (!(forced_idle_.load()) && function_ != nullptr)
