@@ -39,20 +39,21 @@ namespace base {
 namespace managers {
 namespace threads {
 
-TEST_CASE( "Launch one thread.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
+TEST_CASE( "Launch one child thread.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
         tm->set_total_threads(2);
+        tm->set_total_threads(1);
     }() );
 }
 
-TEST_CASE( "Launch eight threads.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
+TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
-        tm->set_total_threads(8);
-        for( base::Size i(1); i < 1000; ++i ) {}
+        tm->set_total_threads(3);
+        tm->set_total_threads(1);
     }() );
 }
 
