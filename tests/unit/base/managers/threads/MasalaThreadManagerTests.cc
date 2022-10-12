@@ -83,6 +83,7 @@ thread_function1(
 TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
     using namespace masala::base::managers::threads;
     std::vector< masala::base::Size > vec(4);
+    MasalaThreadedWorkExecutionSummary summary;
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
@@ -93,7 +94,7 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
         }
 
         tm->set_total_threads(4);
-        tm->do_work_in_threads( request );
+        summary = tm->do_work_in_threads( request );
         tm->set_total_threads(1);
     }() );
 
