@@ -183,20 +183,21 @@ MasalaThread::wrapper_function_executed_in_thread() {
                 "wrapper_function_executed_in_thread", "Program error: one or more control variable pointers were null."
             );
 
+            std::condition_variable * temp_cond_variable_ptr = job_completion_cond_var_;
+
             {
                 std::lock_guard< std::mutex > lock( *job_completion_mutex_ );
                 ++(*num_jobs_completed_);
+                {
+                    std::lock_guard< std::mutex > lock2( thread_mutex_ );
+                    function_ = nullptr;
+                    job_completion_mutex_ = nullptr;
+                    job_completion_cond_var_ = nullptr;
+                    num_jobs_completed_ = nullptr;
+                } // Scope for lock guard 2.
             } // Scope for lock guard 1.
 
-            job_completion_cond_var_->notify_one(); // Signal that this thread is now free.
-
-            {
-                std::lock_guard< std::mutex > lock2( thread_mutex_ );
-                function_ = nullptr;
-                job_completion_mutex_ = nullptr;
-                job_completion_cond_var_ = nullptr;
-                num_jobs_completed_ = nullptr;
-            } // Scope for lock guard 2.
+            temp_cond_variable_ptr->notify_one(); // Signal that this thread is now free.
         }
     } while(true); //Loop until we break.
 
