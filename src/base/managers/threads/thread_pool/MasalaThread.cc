@@ -186,8 +186,6 @@ MasalaThread::wrapper_function_executed_in_thread() {
             {
                 std::lock_guard< std::mutex > lock( *job_completion_mutex_ );
                 ++(*num_jobs_completed_);
-                job_completion_cond_var_->notify_one(); // Signal that this thread is now free.
-
                 {
                     std::lock_guard< std::mutex > lock2( thread_mutex_ );
                     function_ = nullptr;
@@ -197,6 +195,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
                 } // Scope for lock guard 2.
             } // Scope for lock guard 1.
 
+            job_completion_cond_var_->notify_one(); // Signal that this thread is now free.
         }
     } while(true); //Loop until we break.
 
