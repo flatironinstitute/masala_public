@@ -94,7 +94,7 @@ MasalaThreadManager::MasalaThreadManager() :
 {
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
     if( total_threads_ == 0 ) {
-        total_threads_ == std::thread::hardware_concurrency();
+        total_threads_ = std::thread::hardware_concurrency();
         if( total_threads_ == 0 ) {
             write_to_tracer(
                 "Warning!  Could not determine number of hardware threads on node.  "
@@ -301,7 +301,7 @@ MasalaThreadManager::set_total_threads(
 ) {
     base::Size actual_desired( desired_threadcount );
     if( actual_desired == 0 ) {
-        actual_desired == std::thread::hardware_concurrency();
+        actual_desired = std::thread::hardware_concurrency();
         if( actual_desired == 0 ) {
             write_to_tracer(
                 "Warning!  Could not determine number of hardware threads on node.  "
