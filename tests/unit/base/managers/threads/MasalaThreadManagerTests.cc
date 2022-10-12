@@ -112,6 +112,9 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
         tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
     }
 
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Execution time (us):\t" + std::to_string( summary.execution_time_microseconds() ) );
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Number of assigned threads:\t" + std::to_string( summary.nthreads_actual() ) );
+
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
         tm->set_total_threads(1);
