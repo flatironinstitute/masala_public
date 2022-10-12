@@ -67,8 +67,8 @@ TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadM
 }
 
 /// @brief A thread function for the "Do some work in four threads total" test case.
-/// @details Figures out one million times 1, 2, 3, or 4 in the worst possible way (by adding
-/// 1, 2, 3, or 4 a million times) and stores the result in a 4-vector.
+/// @details Figures out one billion times 1, 2, 3, or 4 in the worst possible way (by adding
+/// 1, 2, 3, or 4 one billion times) and stores the result in a 4-vector.
 void
 thread_function1(
     std::vector< masala::base::Size > & results,
@@ -76,7 +76,7 @@ thread_function1(
 ) {
     results[job_index] = 0;
     masala::base::Size const increment( job_index + 1 );
-    for( masala::base::Size i(1); i <= 1000000; ++i ) {
+    for( masala::base::Size i(1); i <= 1000000000; ++i ) {
         results[job_index] += increment;
     }
 }
@@ -106,7 +106,7 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
     //Check that the work was done properly:
     tracer->write_to_tracer( "MasalaThreadManagerTests", "Vector output:" );
     for( masala::base::Size i(0); i<4; ++i ) {
-        CHECK( vec[i] == (i+1)*1000000 );
+        CHECK( vec[i] == (i+1)*1000000000 );
         tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
     }
 }
