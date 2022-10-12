@@ -243,9 +243,7 @@ MasalaThreadPool::execute_function_in_threads(
     if( assigned_threads.size() > 0 ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        for( base::Size i(1); i<=nthread; ++i ) {
-            job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, i]{ return num_jobs_completed >= i; } );
-        }
+        job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
     }
 
 } // MasalaThreadPool::execute_function_in_threads
