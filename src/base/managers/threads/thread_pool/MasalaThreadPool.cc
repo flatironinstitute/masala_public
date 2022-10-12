@@ -117,7 +117,6 @@ void
 MasalaThreadPool::launch_threads_if_needed(
     base::Size const desired_thread_count
 ) {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( desired_thread_count > 0, "launch_threads_if_needed", "Desired thread count must be positive." );
     {
         std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
         switch( thread_pool_state_ ) {
