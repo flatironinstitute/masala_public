@@ -69,6 +69,14 @@ public:
 	/// @brief Initialization constructor.
 	MasalaThreadedJob( std::function< void() > const & work_fxn_in_ );
 
+	/// @brief Copy constructor.
+	/// @details Must be explicitly defined due to mutex.
+	MasalaThreadedJob( MasalaThreadedJob const & );
+
+	/// @brief Assignment operator.
+	/// @details Must be explicitly defined due to mutex.
+	MasalaThreadedJob & operator=( MasalaThreadedJob const & );
+
 public:
 
 	/// @brief The function to do in threads.
@@ -94,6 +102,10 @@ public:
 
 	/// @brief Default constructor.
 	MasalaThreadedWorkRequest() = default;
+
+	/// @brief Constructor specifying number of threads to request.
+	/// @details A value of 0 means request all.
+	MasalaThreadedWorkRequest( base::Size const threads_to_request );
 
 	/// @brief Copy constructor.
 	MasalaThreadedWorkRequest( MasalaThreadedWorkRequest const & ) = default;
@@ -125,6 +137,20 @@ public:
 	/// @brief How many threads have been requested?
 	/// @details Throws unless mode is REQUEST_SPECIFIED_NUMBER_OF_THREADS.
 	base::Size n_threads_requested() const;
+
+	/// @brief Set the number of threads to request.
+	/// @details A value of 0 means request all available.
+	void set_n_threads_to_request( base::Size const threads_to_request );
+
+	/// @brief Set the number of threads to request to ALL.
+	void set_request_all_threads();
+
+	/// @brief Ensure that the work vector is large enough for at least N jobs.
+	void reserve( base::Size const jobs_to_reserve );
+
+	/// @brief Add a job to the list of jobs to do.
+	/// @details Inputs is a function bundled with its arguments.  Must be threadsafe.
+	void add_job( std::function< void() > const & function_in );
 
 	/// @brief Has a particular job completed?
     /// @details Does not lock the job mutex for the check.
@@ -169,7 +195,7 @@ private:
 	MasalaThreadedWorkRequestMode request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
 
 	/// @brief The number of threads requested.
-	base::Size n_threads_requested_ = 1;
+	base::Size n_threads_requested_ = 0;
 
 }; // class MasalaThreadedWorkRequest
 

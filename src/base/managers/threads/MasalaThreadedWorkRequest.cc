@@ -53,10 +53,39 @@ MasalaThreadedJob::MasalaThreadedJob(
     job_was_completed_(false)
 {}
 
+/// @brief Copy constructor.
+/// @details Must be explicitly defined due to mutex.
+MasalaThreadedJob::MasalaThreadedJob(
+    MasalaThreadedJob const & src
+) {
+    (*this) = src;
+}
+
+/// @brief Assignment operator.
+/// @details Must be explicitly defined due to mutex.
+MasalaThreadedJob &
+MasalaThreadedJob::operator=(
+    MasalaThreadedJob const & src
+) {
+    std::lock_guard< std::mutex >( src.job_mutex_ );
+    work_function_ = src.work_function_;
+    job_was_completed_.store( src.job_was_completed_.load() );
+    return *this;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION:
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Constructor specifying number of threads to request.
+/// @details A value of 0 means request all.
+MasalaThreadedWorkRequest::MasalaThreadedWorkRequest(
+    base::Size const threads_to_request
+) :
+    base::MasalaObject()
+{
+    set_n_threads_to_request( threads_to_request );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -104,6 +133,45 @@ MasalaThreadedWorkRequest::n_threads_requested() const {
         "of threads was requested!"
     );
     return n_threads_requested_;
+}
+
+/// @brief Set the number of threads to request.
+/// @details A value of 0 means request all available.
+void
+MasalaThreadedWorkRequest::set_n_threads_to_request(
+    base::Size const threads_to_request
+) {
+    if( threads_to_request == 0 ) {
+        request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
+        n_threads_requested_ = 0;
+    } else {
+        request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_SPECIFIED_NUMBER_OF_THREADS;
+        n_threads_requested_ = threads_to_request;
+    }
+}
+
+/// @brief Set the number of threads to request to ALL.
+void
+MasalaThreadedWorkRequest::set_request_all_threads() {
+    request_mode_ = MasalaThreadedWorkRequestMode::REQUEST_ALL_THREADS;
+    n_threads_requested_ = 0;
+}
+
+/// @brief Ensure that the work vector is large enough for at least N jobs.
+void
+MasalaThreadedWorkRequest::reserve(
+    base::Size const jobs_to_reserve
+) {
+    work_vector_.reserve(jobs_to_reserve);
+}
+
+/// @brief Add a job to the list of jobs to do.
+/// @details Inputs is a function bundled with its arguments.  Must be threadsafe.
+void
+MasalaThreadedWorkRequest::add_job(
+    std::function< void() > const & function_in
+) {
+    work_vector_.push_back( MasalaThreadedJob( function_in ) );
 }
 
 /// @brief Has a particular job completed?
