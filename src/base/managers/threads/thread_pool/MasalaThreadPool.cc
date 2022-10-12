@@ -151,7 +151,9 @@ MasalaThreadPool::launch_threads_if_needed(
                     decrement_inactive_threads_mutexlocked( desired_thread_count - num_active_threads_ ); // Alters num_active_threads_ and num_inactive_threads_.
                     // We may still need to launch more.
                     if( desired_thread_count > num_active_threads_ ) {
-                        launch_threads_mutexlocked( desired_thread_count - num_active_threads_ );
+                        base::Size const n_to_launch( desired_thread_count - num_active_threads_ );
+                        launch_threads_mutexlocked( n_to_launch );
+                        num_active_threads_ += n_to_launch;
                     }
                     if( num_inactive_threads_ == 0 ) {
                         thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
