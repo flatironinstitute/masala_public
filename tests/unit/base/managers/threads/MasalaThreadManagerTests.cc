@@ -36,6 +36,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers:
 #include <vector>
@@ -82,8 +83,12 @@ thread_function1(
 
 TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
     using namespace masala::base::managers::threads;
+    using namespace masala::base::managers::tracer;
+
     std::vector< masala::base::Size > vec(4);
     MasalaThreadedWorkExecutionSummary summary;
+
+    MasalaTracerManagerHandle const tracer( MasalaTracerManager::get_instance() );
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
@@ -99,8 +104,10 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
     }() );
 
     //Check that the work was done properly:
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Vector output:" );
     for( masala::base::Size i(0); i<4; ++i ) {
         CHECK( vec[i] == (i+1)*1000000 );
+        tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
     }
 }
 

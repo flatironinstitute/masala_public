@@ -129,6 +129,8 @@ MasalaThreadPool::launch_threads_if_needed(
             {
                 DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( threads_.empty(), "launch_threads_if_needed", "Program error: threads have been launched, but thread pool status indicates that they have not." );
                 launch_threads_mutexlocked( desired_thread_count );
+                num_active_threads_ = desired_thread_count;
+                num_inactive_threads_ = 0;
                 thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
                 break;
             }
