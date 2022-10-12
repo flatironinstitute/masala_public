@@ -31,6 +31,14 @@ SOFTWARE.
 
 // Unit headers:
 #include <base/managers/threads/MasalaThreadManager.hh>
+#include <base/managers/threads/MasalaThreadedWorkRequest.hh>
+#include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
+
+// Base headers:
+#include <base/types.hh>
+
+// STL headers:
+#include <vector>
 
 namespace masala {
 namespace tests {
@@ -55,6 +63,44 @@ TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadM
         tm->set_total_threads(3);
         tm->set_total_threads(1);
     }() );
+}
+
+/// @brief A thread function for the "Do some work in four threads total" test case.
+/// @details Figures out one million times 1, 2, 3, or 4 in the worst possible way (by adding
+/// 1, 2, 3, or 4 a million times) and stores the result in a 4-vector.
+void
+thread_function1(
+    std::vector< masala::base::Size > & results,
+    masala::base::Size const job_index
+) {
+    results[job_index] = 0;
+    masala::base::Size const increment( job_index + 1 );
+    for( masala::base::Size i(1); i <= 1000000; ++i ) {
+        results[job_index] += increment;
+    }
+}
+
+TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
+    using namespace masala::base::managers::threads;
+    std::vector< masala::base::Size > vec(4);
+
+    REQUIRE_NOTHROW([&](){
+        MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        MasalaThreadedWorkRequest request(4);
+        request.reserve(4);
+        for( masala::base::Size i(0); i<4; ++i ) {
+            request.add_job( std::bind( thread_function1, std::ref(vec), i ) );
+        }
+
+        tm->set_total_threads(4);
+        tm->do_work_in_threads( request );
+        tm->set_total_threads(1);
+    }() );
+
+    //Check that the work was done properly:
+    for( masala::base::Size i(0); i<4; ++i ) {
+        CHECK( vec[i] == (i+1)*1000000 );
+    }
 }
 
 } // namespace threads
