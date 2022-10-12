@@ -103,7 +103,6 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
 
         tm->set_total_threads(4);
         summary = tm->do_work_in_threads( request );
-        tm->set_total_threads(1);
     }() );
 
     //Check that the work was done properly:
@@ -112,6 +111,11 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
         CHECK( vec[i] == (i+1)*100000000 );
         tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
     }
+
+    REQUIRE_NOTHROW([&](){
+        MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        tm->set_total_threads(1);
+    }() );
 }
 
 } // namespace threads
