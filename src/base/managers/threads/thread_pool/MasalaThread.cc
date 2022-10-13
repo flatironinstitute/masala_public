@@ -176,9 +176,11 @@ MasalaThread::wrapper_function_executed_in_thread() {
         }
 
         if( !(forced_idle_.load()) && function_ != nullptr ) {
+            unique_lock.unlock();
             // We have work to do!
             (*function_)(); // Do the work.
 
+            unique_lock.lock();
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
                 job_completion_mutex_ != nullptr && job_completion_cond_var_ != nullptr && num_jobs_completed_ != nullptr,
                 "wrapper_function_executed_in_thread", "Program error: one or more control variable pointers were null."
@@ -189,7 +191,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
             {
                 std::unique_lock< std::mutex > unique_lock2( *job_completion_mutex_);
                 ++(*num_jobs_completed_);
-                //std::cout << "NUM JOBS: " << *num_jobs_completed_ << std::endl;
+                //std::cout << "NUM JOBS: " << *num_jobs_completed_ << "\tTHREAD:\t" << thread_index_ << std::endl;
                 function_ = nullptr;
                 job_completion_cond_var_ = nullptr;
                 num_jobs_completed_ = nullptr;

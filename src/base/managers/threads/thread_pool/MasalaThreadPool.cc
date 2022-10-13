@@ -84,7 +84,7 @@ MasalaThreadPool::~MasalaThreadPool() {
     for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it != threads_.end(); ) {
         write_to_tracer( "Terminating thread " + std::to_string( (*it)->thread_index() ) + "." );
         {
-            std::lock_guard< std::mutex > lock2( (*it)->thread_mutex() );
+            std::unique_lock< std::mutex > lock2( (*it)->thread_mutex() );
             (*it)->set_forced_idle(true);
         }
         it = threads_.erase( it );
@@ -199,7 +199,7 @@ MasalaThreadPool::execute_function_in_threads(
         if( threads_to_request > 1 ) {
             for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ) {
                 MasalaThread & curthread( **it );
-                std::lock_guard< std::mutex > thread_lock( curthread.thread_mutex() );
+                std::unique_lock< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
                     if( thread_pool_state_ == MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN && num_inactive_threads_ > 0 ) {
                         write_to_tracer( "Marking thread " + std::to_string(curthread.thread_index()) + " for termination." );
