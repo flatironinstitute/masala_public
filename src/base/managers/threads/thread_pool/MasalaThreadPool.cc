@@ -188,7 +188,8 @@ MasalaThreadPool::execute_function_in_threads(
     std::mutex job_completion_mutex;
     std::unique_lock< std::mutex > job_completion_condition_lock( job_completion_mutex );
     std::condition_variable job_completion_condition_var;
-    base::Size num_jobs_completed(0);
+    std::atomic_ulong num_jobs_completed(0);
+    std::mutex num_jobs_completed_mutex;
 
     std::vector< MasalaThreadSP > threads_to_delete;
     threads_to_delete.reserve( threads_.size() );
@@ -212,7 +213,7 @@ MasalaThreadPool::execute_function_in_threads(
                         }
                     } else {
                         curthread.set_forced_idle( true );
-                        curthread.set_function( fxn, job_completion_mutex, job_completion_condition_var, num_jobs_completed );
+                        curthread.set_function( fxn, job_completion_condition_var, num_jobs_completed, num_jobs_completed_mutex );
                         assigned_threads.push_back( *it );
                         ++it;
                     }
@@ -240,10 +241,16 @@ MasalaThreadPool::execute_function_in_threads(
     // Also execute the function in this thread.
     fxn();
 
-    if( assigned_threads.size() > 0 ) {
+    if( assigned_threads.size() > 0 && num_jobs_completed < assigned_threads.size() ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+        num_jobs_completed_mutex.lock(); // Do not use a lock guard here, since we need to unlock.
+        if( num_jobs_completed < nthread ) {
+            num_jobs_completed_mutex.unlock();
+            job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+        } else {
+            num_jobs_completed_mutex.unlock();
+        }
     }
 
 } // MasalaThreadPool::execute_function_in_threads

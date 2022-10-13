@@ -168,9 +168,9 @@ public:
 	void
 	set_function(
 		std::function< void() > const & function,
-		std::mutex & job_completion_mutex,
 		std::condition_variable & job_completion_cond_var,
-		base::Size & num_jobs_completed
+		std::atomic_ulong & num_jobs_completed,
+		std::mutex & num_jobs_completed_mutex
 	);
 
 private:
@@ -222,17 +222,16 @@ private:
 	/// @brief A condition var used to wake this thread to do work.
 	std::condition_variable cv_for_wakeup_;
 
-	/// @brief Pointer to mutex used for indicating that the work assigned to
-    /// this thread has been completed.
-    std::mutex * job_completion_mutex_ = nullptr;
-
     /// @brief Pointer to mutex used for indicating that the work assigned to
     /// this thread has been completed.
     std::condition_variable * job_completion_cond_var_ = nullptr;
 
     /// @brief Pointer to counter used for indicating that the work assigned to
     /// this thread has been completed.
-    base::Size * num_jobs_completed_ = nullptr;
+    std::atomic_ulong * num_jobs_completed_ = nullptr;
+
+	/// @brief A mutex for the number of jobs completed.
+	std::mutex * num_jobs_completed_mutex_ = nullptr;
 
 }; // class MasalaThread
 
