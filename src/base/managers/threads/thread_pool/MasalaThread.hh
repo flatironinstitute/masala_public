@@ -170,7 +170,7 @@ public:
 		std::function< void() > const & function,
 		std::condition_variable & job_completion_cond_var,
 		std::atomic_ulong & num_jobs_completed,
-		std::mutex & num_jobs_completed_mutex
+		std::mutex & job_completion_mutex
 	);
 
 private:
@@ -231,7 +231,7 @@ private:
     std::atomic_ulong * num_jobs_completed_ = nullptr;
 
 	/// @brief A mutex for the number of jobs completed.
-	std::mutex * num_jobs_completed_mutex_ = nullptr;
+	std::mutex * job_completion_mutex_ = nullptr;
 
 }; // class MasalaThread
 

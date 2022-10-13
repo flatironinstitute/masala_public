@@ -138,14 +138,14 @@ MasalaThread::set_function(
     std::function< void() > const & function,
     std::condition_variable & job_completion_cond_var,
     std::atomic_ulong & num_jobs_completed,
-    std::mutex & num_jobs_completed_mutex
+    std::mutex & job_completion_mutex
 ) {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( forced_idle_.load(), "set_function", "Program error: must be in the forced-idle state to set the thread function." );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( function_ == nullptr, "set_function", "Program error: expected function_ to be nullptr." );
     function_ = &function;
     job_completion_cond_var_ = &job_completion_cond_var;
     num_jobs_completed_ = &num_jobs_completed;
-    num_jobs_completed_mutex_ = &num_jobs_completed_mutex;
+    job_completion_mutex_ = &job_completion_mutex;
 } // MasalaThread::set_function()
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,20 +179,19 @@ MasalaThread::wrapper_function_executed_in_thread() {
             (*function_)(); // Do the work.
 
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
-                num_jobs_completed_mutex_ != nullptr && job_completion_cond_var_ != nullptr && num_jobs_completed_ != nullptr,
+                job_completion_mutex_ != nullptr && job_completion_cond_var_ != nullptr && num_jobs_completed_ != nullptr,
                 "wrapper_function_executed_in_thread", "Program error: one or more control variable pointers were null."
             );
 
             std::condition_variable * temp_cond_variable_ptr = job_completion_cond_var_;
 
             {
-                std::lock_guard< std::mutex > lock( *num_jobs_completed_mutex_);
+                std::lock_guard< std::mutex > lock( *job_completion_mutex_);
                 ++(*num_jobs_completed_);
                 function_ = nullptr;
                 job_completion_cond_var_ = nullptr;
                 num_jobs_completed_ = nullptr;
             } // Scope for lock guard 1.
-
             temp_cond_variable_ptr->notify_one(); // Signal that this thread is now free.
         }
     } while(true); //Loop until we break.

@@ -187,9 +187,9 @@ MasalaThreadPool::execute_function_in_threads(
     assigned_threads.reserve( threads_.size() );
     std::mutex job_completion_mutex;
     std::unique_lock< std::mutex > job_completion_condition_lock( job_completion_mutex );
+    job_completion_condition_lock.unlock();
     std::condition_variable job_completion_condition_var;
     std::atomic_ulong num_jobs_completed(0);
-    std::mutex num_jobs_completed_mutex;
 
     std::vector< MasalaThreadSP > threads_to_delete;
     threads_to_delete.reserve( threads_.size() );
@@ -213,7 +213,7 @@ MasalaThreadPool::execute_function_in_threads(
                         }
                     } else {
                         curthread.set_forced_idle( true );
-                        curthread.set_function( fxn, job_completion_condition_var, num_jobs_completed, num_jobs_completed_mutex );
+                        curthread.set_function( fxn, job_completion_condition_var, num_jobs_completed, job_completion_mutex );
                         assigned_threads.push_back( *it );
                         ++it;
                     }
@@ -244,12 +244,9 @@ MasalaThreadPool::execute_function_in_threads(
     if( assigned_threads.size() > 0 && num_jobs_completed < assigned_threads.size() ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        num_jobs_completed_mutex.lock(); // Do not use a lock guard here, since we need to unlock.
+        job_completion_condition_lock.lock();
         if( num_jobs_completed < nthread ) {
-            num_jobs_completed_mutex.unlock();
             job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
-        } else {
-            num_jobs_completed_mutex.unlock();
         }
     }
 
