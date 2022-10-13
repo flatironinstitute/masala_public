@@ -34,6 +34,7 @@ SOFTWARE.
 
 // STL headers
 #include <string>
+//#include <iostream>
 
 namespace masala {
 namespace base {
@@ -186,12 +187,13 @@ MasalaThread::wrapper_function_executed_in_thread() {
             std::condition_variable * temp_cond_variable_ptr = job_completion_cond_var_;
 
             {
-                std::lock_guard< std::mutex > lock( *job_completion_mutex_);
+                std::unique_lock< std::mutex > unique_lock2( *job_completion_mutex_);
                 ++(*num_jobs_completed_);
+                //std::cout << "NUM JOBS: " << *num_jobs_completed_ << std::endl;
                 function_ = nullptr;
                 job_completion_cond_var_ = nullptr;
                 num_jobs_completed_ = nullptr;
-            } // Scope for lock guard 1.
+            } // Scope for lock guard 2.
             unique_lock.unlock();
             temp_cond_variable_ptr->notify_one(); // Signal that this thread is now free.
         }
