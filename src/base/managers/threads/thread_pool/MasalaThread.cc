@@ -193,7 +193,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
                 num_jobs_completed_ = nullptr;
             } // Scope for lock guard 1.
             unique_lock.unlock();
-            temp_cond_variable_ptr->notify_all(); // Signal that this thread is now free.
+            temp_cond_variable_ptr->notify_one(); // Signal that this thread is now free.
         }
     } while(true); //Loop until we break.
 
