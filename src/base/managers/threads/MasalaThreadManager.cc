@@ -37,6 +37,7 @@ SOFTWARE.
 #include <base/managers/threads/thread_pool/MasalaThreadPool.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers:
 #include <string>
@@ -52,21 +53,12 @@ namespace managers {
 namespace threads {
 
 
-static std::atomic_bool was_initialized(false);
-
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaThreadManagerHandle
 MasalaThreadManager::get_instance() {
     static MasalaThreadManager thread_manager;
-    was_initialized.store(true);
     return &thread_manager;
 }
-
-/// @brief Has the thread manager spun up yet?
-bool
-MasalaThreadManager::thread_manager_was_initialized() {
-    return was_initialized.load();
-} //MasalaThreadManager::thread_manager_was_initialized()
 
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThreadManagerAccessKey PUBLIC MEMBER FUNCTIONS:
@@ -114,6 +106,7 @@ MasalaThreadManager::MasalaThreadManager() :
             total_threads_ = 1;
         }
     }
+    base::managers::tracer::MasalaTracerManager::get_instance()->register_thread_id( master_thread_id_, 0 );
 }
 
 

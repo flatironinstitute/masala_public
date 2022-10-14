@@ -108,9 +108,6 @@ public:
     /// @brief Instantiate the static singleton and get a handle to it.
     static MasalaThreadManagerHandle get_instance();
 
-    /// @brief Has the thread manager spun up yet?
-    static bool thread_manager_was_initialized();
-
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

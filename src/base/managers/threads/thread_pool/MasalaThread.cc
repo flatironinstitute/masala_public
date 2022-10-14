@@ -31,6 +31,7 @@ SOFTWARE.
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 // STL headers
 #include <string>
@@ -77,6 +78,7 @@ MasalaThread::MasalaThread(
 {
     contained_thread_ = std::thread( &MasalaThread::wrapper_function_executed_in_thread, this ); //Launch a thread.
     system_thread_id_ = contained_thread_.get_id();
+    base::managers::tracer::MasalaTracerManager::get_instance()->register_thread_id( system_thread_id_, thread_index );
 }
 
 /// @brief Destructor.
@@ -216,6 +218,7 @@ MasalaThread::terminate_thread() {
     forced_termination_.store(true);
     cv_for_wakeup_.notify_one();
     contained_thread_.join();
+    base::managers::tracer::MasalaTracerManager::get_instance()->unregister_thread_id( system_thread_id_ );
 } // MasalaThread::terminate_thread()
 
 } // namespace thread_pool
