@@ -128,7 +128,7 @@ MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set(
         "Thread index " + std::to_string( thread_manager_thread_id ) + " is not "
         "among the threads assigned to this task!"
     );
-    return (*it);
+    return static_cast< base::Size >( it - assigned_thread_indices_.begin() );
 } //MasalaThreadedWorkExecutionSummary::get_thread_index_in_assigned_thread_set()
 
 /// @brief Given a thread index in the assigned thread set, get the thread index used by the
