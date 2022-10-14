@@ -111,8 +111,11 @@ MasalaTracerManager::write_to_tracer(
     std::string const & message,
     bool const skip_check /*= false*/
 ) const {
-    base::Size const this_thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
-    //base::Size const this_thread_id(0);
+    base::Size const this_thread_id(
+        base::managers::threads::MasalaThreadManager::thread_manager_was_initialized() ?
+        base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() :
+        0
+    );
 
     std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 

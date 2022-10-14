@@ -44,18 +44,29 @@ SOFTWARE.
 #include <sstream>
 #include <chrono>
 #include <thread>
+#include <atomic>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace threads {
 
+
+static std::atomic_bool was_initialized(false);
+
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaThreadManagerHandle
 MasalaThreadManager::get_instance() {
-    static MasalaThreadManager config_manager;
-    return &config_manager;
+    static MasalaThreadManager thread_manager;
+    was_initialized.store(true);
+    return &thread_manager;
 }
+
+/// @brief Has the thread manager spun up yet?
+bool
+MasalaThreadManager::thread_manager_was_initialized() {
+    return was_initialized.load();
+} //MasalaThreadManager::thread_manager_was_initialized()
 
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThreadManagerAccessKey PUBLIC MEMBER FUNCTIONS:
