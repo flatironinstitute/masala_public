@@ -197,11 +197,14 @@ MasalaThreadPool::execute_function_in_threads(
     {
         std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
         if( threads_to_request > 1 ) {
+            base::Size assigned_thread_count(0);
             for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ) {
                 MasalaThread & curthread( **it );
                 std::unique_lock< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
+
                     if( thread_pool_state_ == MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN && num_inactive_threads_ > 0 ) {
+                        // Purge threads that are spinning down and which aren't working:
                         write_to_tracer( "Marking thread " + std::to_string(curthread.thread_index()) + " for termination." );
                         curthread.set_forced_idle(true);
                         threads_to_delete.push_back(*it); // Ensures that these threads are taken out of the thread list, but persist until they can be safely deleted when the mutex lock is not held.
@@ -211,9 +214,13 @@ MasalaThreadPool::execute_function_in_threads(
                             thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
                         }
                     } else {
-                        curthread.set_forced_idle( true );
-                        curthread.set_function( fxn, job_completion_condition_var, num_jobs_completed, job_completion_mutex );
-                        assigned_threads.push_back( *it );
+                        // Assign work to remaining threads:
+                        if( assigned_thread_count + 1 < threads_to_request ) { // +1 because this thread will also be assigned.
+                            curthread.set_forced_idle( true );
+                            curthread.set_function( fxn, job_completion_condition_var, num_jobs_completed, job_completion_mutex );
+                            assigned_threads.push_back( *it );
+                            ++assigned_thread_count;
+                        }
                         ++it;
                     }
                 } else {
@@ -232,6 +239,7 @@ MasalaThreadPool::execute_function_in_threads(
         // At this point, it is safe to begin exection of the work in threads.
         if( !assigned_threads.empty() ) {
             for( auto & thread : assigned_threads ) {
+                std::unique_lock< std::mutex > thread_lock( thread->thread_mutex() );
                 thread->set_forced_idle( false );
             }
         }
