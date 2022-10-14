@@ -68,7 +68,8 @@ TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadM
 
 /// @brief A thread function for the "Do some work in four threads total" test case.
 /// @details Figures out one billion times 1, 2, 3, or 4 in the worst possible way (by adding
-/// 1, 2, 3, or 4 one billion times) and stores the result in a 4-vector.
+/// 1, 2, 3, or 4 one billion times) and stores the result in the first four entries of a vector.
+/// @note Recycled to do the same for the 5th through 8th entries of an 8-vector.
 void
 thread_function1(
     std::vector< masala::base::Size > & results,
@@ -115,6 +116,57 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
 
     tracer->write_to_tracer( "MasalaThreadManagerTests", "Execution time (us):\t" + std::to_string( summary.execution_time_microseconds() ) );
     tracer->write_to_tracer( "MasalaThreadManagerTests", "Number of assigned threads:\t" + std::to_string( summary.nthreads_actual() ) );
+    CHECK( summary.nthreads_actual() == 4 );
+
+    REQUIRE_NOTHROW([&](){
+        MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        tm->set_total_threads(1);
+    }() );
+}
+
+TEST_CASE( "Do some work that recycles four threads total.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
+    using namespace masala::base::managers::threads;
+    using namespace masala::base::managers::tracer;
+
+    std::vector< masala::base::Size > vec(8);
+    MasalaThreadedWorkExecutionSummary summary1, summary2;
+
+    MasalaTracerManagerHandle const tracer( MasalaTracerManager::get_instance() );
+
+    REQUIRE_NOTHROW([&](){
+        MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        MasalaThreadedWorkRequest request1(4);
+        request1.set_n_threads_to_request(2); //Do this job in only two threads.
+        request1.reserve(4);
+        for( masala::base::Size i(0); i<4; ++i ) {
+            request1.add_job( std::bind( thread_function1, std::ref(vec), i ) );
+        }
+        tm->set_total_threads(4);
+        summary1 = tm->do_work_in_threads( request1 );
+
+        MasalaThreadedWorkRequest request2(4);
+        request2.set_request_all_threads();
+        request2.reserve(4);
+        for( masala::base::Size i(0); i<4; ++i ) {
+            request2.add_job( std::bind( thread_function1, std::ref(vec), i+4 ) );
+        }
+        summary2 = tm->do_work_in_threads( request2 );
+    }() );
+
+    //Check that the work was done properly:
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Vector output:" );
+    for( masala::base::Size i(0); i<8; ++i ) {
+        CHECK( vec[i] == (i+1)*20000000 );
+        tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
+    }
+
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Execution time 1 (us):\t" + std::to_string( summary1.execution_time_microseconds() ) );
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Number of assigned threads 1:\t" + std::to_string( summary1.nthreads_actual() ) );
+    CHECK( summary1.nthreads_actual() == 2 );
+
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Execution time 2 (us):\t" + std::to_string( summary2.execution_time_microseconds() ) );
+    tracer->write_to_tracer( "MasalaThreadManagerTests", "Number of assigned threads 2:\t" + std::to_string( summary2.nthreads_actual() ) );
+    CHECK( summary2.nthreads_actual() == 4 );
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
