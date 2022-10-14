@@ -81,6 +81,7 @@ MasalaThreadPool::MasalaThreadPool(
 /// @details Safely terminates each thread.
 MasalaThreadPool::~MasalaThreadPool() {
     std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    thread_pool_state_ = MasalaThreadPoolState::ALL_THREADS_SPINNING_DOWN;
     for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it != threads_.end(); ) {
         write_to_tracer( "Terminating thread " + std::to_string( (*it)->thread_index() ) + "." );
         {
@@ -203,14 +204,17 @@ MasalaThreadPool::execute_function_in_threads(
                 std::unique_lock< std::mutex > thread_lock( curthread.thread_mutex() );
                 if( curthread.is_idle() && !curthread.forced_idle() ) {
 
-                    if( thread_pool_state_ == MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN && num_inactive_threads_ > 0 ) {
+                    if(
+                        thread_pool_state_ == MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN &&
+                        num_inactive_threads_ > 0
+                    ) {
                         // Purge threads that are spinning down and which aren't working:
                         write_to_tracer( "Marking thread " + std::to_string(curthread.thread_index()) + " for termination." );
                         curthread.set_forced_idle(true);
                         threads_to_delete.push_back(*it); // Ensures that these threads are taken out of the thread list, but persist until they can be safely deleted when the mutex lock is not held.
                         it = threads_.erase(it);
                         --num_inactive_threads_;
-                        if( num_active_threads_ == 0 ) {
+                        if( num_inactive_threads_ == 0 ) {
                             thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
                         }
                     } else {
@@ -254,7 +258,46 @@ MasalaThreadPool::execute_function_in_threads(
         job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
     }
 
-} // MasalaThreadPool::execute_function_in_threads
+    // Clean up threads (i.e. terminate) that have spindown signals (under lock guard):
+    clean_up_threads_spinning_down();
+
+} // MasalaThreadPool::execute_function_in_threads()
+
+/// @brief Clean up threads (i.e. terminate) marked for deletion.
+void
+MasalaThreadPool::clean_up_threads_spinning_down() {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    if(
+        thread_pool_state_ == MasalaThreadPoolState::SOME_THREADS_SPINNING_DOWN &&
+        num_inactive_threads_ > 0
+    ) {
+        std::vector< MasalaThreadSP > threads_to_delete;
+        threads_to_delete.reserve( threads_.size() );
+
+        // Make a list of threads to delete:
+        for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it!=threads_.end(); ) {
+            MasalaThread & curthread( **it );
+            std::unique_lock< std::mutex > thread_lock( curthread.thread_mutex() );
+            if( (!curthread.is_idle()) || curthread.forced_idle() ) continue; // Don't spin down threads that are working or are being manipulated.
+            write_to_tracer( "Marking thread " + std::to_string(curthread.thread_index()) + " for termination." );
+            curthread.set_forced_idle(true);
+            threads_to_delete.push_back(*it); // Ensures that these threads are taken out of the thread list, but persist until they can be safely deleted when the mutex lock is not held.
+            it = threads_.erase(it);
+            --num_inactive_threads_;
+            if( num_inactive_threads_ == 0 ) {
+                thread_pool_state_ = MasalaThreadPoolState::THREADS_READY;
+                break;
+            }
+        }
+
+        // Actually delete threads.  (Note that MasalaThread destructor triggers thread joining).
+        if( !threads_to_delete.empty() ) {
+            write_to_tracer( "Terminating threads marked for termination." );
+            threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
+        }
+    }
+
+} //MasalaThreadPool::clean_up_threads_spinning_down()
 
 /// @brief Given a system thread ID, return whether a thread with that
 /// system ID exists in the thread pool.

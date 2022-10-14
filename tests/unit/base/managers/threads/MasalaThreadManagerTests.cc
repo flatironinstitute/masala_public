@@ -66,6 +66,17 @@ TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadM
     }() );
 }
 
+TEST_CASE( "Launch three child threads then launch four.", "[base::managers::threads::MasalaThreadManager][multi-threading][instantiation]" ) {
+    using namespace masala::base::managers::threads;
+    REQUIRE_NOTHROW([&](){
+        MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        tm->set_total_threads(3);
+        tm->set_total_threads(1);
+        tm->set_total_threads(4);
+        tm->set_total_threads(1);
+    }() );
+}
+
 /// @brief A thread function for the "Do some work in four threads total" test case.
 /// @details Figures out forty million times 1, 2, 3, or 4 in the worst possible way (by adding
 /// 1, 2, 3, or 4 forty million times) and stores the result in the first four entries of a vector.

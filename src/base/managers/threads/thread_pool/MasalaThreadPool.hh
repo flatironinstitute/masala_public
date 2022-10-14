@@ -166,6 +166,10 @@ public:
 		masala::base::managers::threads::MasalaThreadedWorkExecutionSummary & summary
 	);
 
+	/// @brief Clean up threads (i.e. terminate) marked for deletion.
+	void
+	clean_up_threads_spinning_down();
+
 	/// @brief Given a system thread ID, return whether a thread with that
 	/// system ID exists in the thread pool.
 	bool
