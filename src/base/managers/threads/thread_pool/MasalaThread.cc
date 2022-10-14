@@ -157,17 +157,18 @@ MasalaThread::set_function(
 /// whatever function is passed in.
 void
 MasalaThread::wrapper_function_executed_in_thread() {
+    std::unique_lock< std::mutex > unique_lock( thread_mutex_ ); //Locked
     write_to_tracer( "Launching thread " + std::to_string(thread_index_) + "." );
     //base::managers::random::RandomNumberManager::get_instance()->initialize_thread( thread_index_ );
 
     do {
-        std::unique_lock< std::mutex > unique_lock( thread_mutex_ ); // Mutex is still unlocked.
         if( !(
                 forced_termination_ ||
                 (!(forced_idle_.load()) && function_ != nullptr)
             )
         ) {
-            cv_for_wakeup_.wait( unique_lock, [this]{ return( !( forced_termination_ || (!(forced_idle_.load()) && function_ != nullptr ) )); } );
+            //std::cout << "PING " << thread_index_ << std::endl;
+            cv_for_wakeup_.wait( unique_lock, [this]{ return( forced_termination_ || (!(forced_idle_.load()) && function_ != nullptr ) ); } );
         } // Wait for either the terminations signal, or for the function to be non-null (and the state to be non-idle).  When this is the case, the mutex will be locked.
 
         if( forced_termination_.load() ) {
@@ -198,6 +199,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
             } // Scope for lock guard 2.
             unique_lock.unlock();
             temp_cond_variable_ptr->notify_one(); // Signal that this thread is now free.
+            unique_lock.lock();
         }
     } while(true); //Loop until we break.
 
