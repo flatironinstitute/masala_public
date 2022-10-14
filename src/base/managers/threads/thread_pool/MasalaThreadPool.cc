@@ -245,8 +245,11 @@ MasalaThreadPool::execute_function_in_threads(
         }
 
         if( !threads_to_delete.empty() ) {
-            write_to_tracer( "Terminating threads marked for termination." );
             threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
+            write_to_tracer( "Terminated threads marked for termination.  A total of " +
+                std::to_string(threads_.size()) + " child thread" + ( threads_.size() == 1 ? " remains" : "s remain" ) +
+                " in the thread pool (not counting the parent thread)."
+            );
         }
 
         summary.set_assigned_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
@@ -303,8 +306,11 @@ MasalaThreadPool::clean_up_threads_spinning_down() {
 
         // Actually delete threads.  (Note that MasalaThread destructor triggers thread joining).
         if( !threads_to_delete.empty() ) {
-            write_to_tracer( "Terminating threads marked for termination." );
             threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
+            write_to_tracer( "Terminated threads marked for termination.  A total of " + std::to_string(threads_.size()) +
+                " child thread" + ( threads_.size() == 1 ? " remains" : "s remain" ) + " in the thread "
+                "pool (not counting the parent thread)."
+            );
         }
     }
 
