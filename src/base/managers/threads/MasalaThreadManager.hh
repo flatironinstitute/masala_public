@@ -202,6 +202,12 @@ public:
     /// to run.  (May not have been launched yet.)
     base::Size
     total_threads() const;
+
+    /// @brief Get the total number of threads that are actually running.
+    /// @details Includes the parent thread (i.e. one more than the number
+    /// in the thread pool).
+    base::Size
+    actual_threads_running() const;
     
     /// @brief Set the number of threads in the thread pool.
     /// @details Does nothing if this matches the number running.  Launches

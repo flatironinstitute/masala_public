@@ -288,6 +288,15 @@ MasalaThreadManager::total_threads() const {
     return total_threads_;
 }
 
+/// @brief Get the total number of threads that are actually running.
+/// @details Includes the parent thread (i.e. one more than the number
+/// in the thread pool).
+base::Size
+MasalaThreadManager::actual_threads_running() const {
+    std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+    return thread_pool_->actual_threads_running() + 1;
+}
+
 /// @brief Set the number of threads in the thread pool.
 /// @details Does nothing if this matches the number running.  Launches
 /// threads if this is greater than the number running.  Signals that

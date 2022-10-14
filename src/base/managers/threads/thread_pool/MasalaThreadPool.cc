@@ -175,6 +175,15 @@ MasalaThreadPool::launch_threads_if_needed(
     }
 } // MasalaThreadPool::launch_threads_if_needed()
 
+/// @brief Get the number of threads actually running.
+/// @details Includes any threads that have received spindown signals but
+/// which have not yet spun down.
+base::Size
+MasalaThreadPool::actual_threads_running() const {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    return threads_.size();
+} // MasalaThreadPool::actual_threads_running()
+
 /// @brief Given a function, run it in up to the requested number of threads.
 /// @note The actual number of threads in which it runs might be less than
 /// the requested number.

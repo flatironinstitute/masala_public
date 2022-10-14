@@ -52,8 +52,11 @@ TEST_CASE( "Launch one child thread.", "[base::managers::threads::MasalaThreadMa
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        CHECK( tm->actual_threads_running() == 1 );
         tm->set_total_threads(2);
+        CHECK( tm->actual_threads_running() == 2 );
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
     }() );
 }
 
@@ -61,8 +64,11 @@ TEST_CASE( "Launch two child threads.", "[base::managers::threads::MasalaThreadM
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        CHECK( tm->actual_threads_running() == 1 );
         tm->set_total_threads(3);
+        CHECK( tm->actual_threads_running() == 3 );
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
     }() );
 }
 
@@ -70,10 +76,15 @@ TEST_CASE( "Launch three child threads then launch four.", "[base::managers::thr
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        CHECK( tm->actual_threads_running() == 1 );
         tm->set_total_threads(4);
+        CHECK( tm->actual_threads_running() == 4 );
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
         tm->set_total_threads(5);
+        CHECK( tm->actual_threads_running() == 5 );
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
     }() );
 }
 
@@ -108,6 +119,7 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        CHECK( tm->actual_threads_running() == 1 );
         MasalaThreadedWorkRequest request(4);
         request.reserve(4);
         for( masala::base::Size i(0); i<4; ++i ) {
@@ -115,6 +127,7 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
         }
 
         tm->set_total_threads(4);
+        CHECK( tm->actual_threads_running() == 4 );
         summary = tm->do_work_in_threads( request );
     }() );
 
@@ -146,6 +159,7 @@ TEST_CASE( "Do some work that recycles four threads total.", "[base::managers::t
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        CHECK( tm->actual_threads_running() == 1 );
         MasalaThreadedWorkRequest request1(4);
         request1.set_n_threads_to_request(2); //Do this job in only two threads.
         request1.reserve(4);
@@ -153,6 +167,7 @@ TEST_CASE( "Do some work that recycles four threads total.", "[base::managers::t
             request1.add_job( std::bind( thread_function1, std::ref(vec), i ) );
         }
         tm->set_total_threads(4);
+        CHECK( tm->actual_threads_running() == 4 );
         summary1 = tm->do_work_in_threads( request1 );
 
         MasalaThreadedWorkRequest request2(4);
@@ -161,7 +176,9 @@ TEST_CASE( "Do some work that recycles four threads total.", "[base::managers::t
         for( masala::base::Size i(0); i<4; ++i ) {
             request2.add_job( std::bind( thread_function1, std::ref(vec), i+4 ) );
         }
+        CHECK( tm->actual_threads_running() == 4 );
         summary2 = tm->do_work_in_threads( request2 );
+        CHECK( tm->actual_threads_running() == 4 );
     }() );
 
     //Check that the work was done properly:
@@ -182,6 +199,7 @@ TEST_CASE( "Do some work that recycles four threads total.", "[base::managers::t
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
     }() );
 }
 

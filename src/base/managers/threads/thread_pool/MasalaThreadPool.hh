@@ -156,6 +156,11 @@ public:
 	/// when they become idle.
 	void launch_threads_if_needed( base::Size const desired_thread_count );
 
+	/// @brief Get the number of threads actually running.
+	/// @details Includes any threads that have received spindown signals but
+	/// which have not yet spun down.
+	base::Size actual_threads_running() const;
+
 	/// @brief Given a function, run it in up to the requested number of threads.
 	/// @note The actual number of threads in which it runs might be less than
 	/// the requested number.
