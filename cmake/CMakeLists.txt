@@ -28,11 +28,15 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 # Set project attributes:
 PROJECT( Masala VERSION 0.1 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 SET( MODE debug )
+SET( CMAKE_BUILD_TYPE Debug )
 SET( LINK_TYPE SHARED )
 SET( LINK_EXTERNAL_LIBS stdc++ )
 SET( CMAKE_MACOSX_RPATH 1 )
 SET( CMAKE_SKIP_BUILD_RPATH FALSE )
 SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
+SET( THREADS_PREFER_PTHREAD_FLAG ON )
+SET( Catch2_DIR ../catch2_build )
+FIND_PACKAGE( Threads REQUIRED )
 
 # Set header file locations:
 INCLUDE_DIRECTORIES( SYSTEM ../ ../src/ )
@@ -42,13 +46,13 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py base ../src/base cmake_generated/base.cmake cmake_generated/base_api.cmake cmake_generated/base_tests.cmake
 )
 # execute_process(
-#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake
+#     COMMAND python3 ../cmake/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
 # )
 execute_process(
-    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake
+    COMMAND python3 ../cmake/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
 )
 
 # Build the base, numeric, and core libraries:
@@ -68,10 +72,12 @@ INCLUDE( ../build/cmake_generated/core.cmake )
 #     VERBATIM
 # )
 
+# Build the base, numeric, and core APIs.
+#INCLUDE( ../build/cmake_generated/base_api.cmake )
+#INCLUDE( ../build/cmake_generated/numeric_api.cmake )
 INCLUDE( ../build/cmake_generated/core_api.cmake )
 
-# Compile the API for base, numeric, and core libraries:
-# TODO TODO TODO
-
-# Link the API for base, numeric, and core libraries:
-# TODO TODO TODO
+# Build tests for base, numeric, and core.
+INCLUDE( ../build/cmake_generated/base_tests.cmake )
+#INCLUDE( ../build/cmake_generated/numeric_tests.cmake )
+INCLUDE( ../build/cmake_generated/core_tests.cmake )

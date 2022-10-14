@@ -25,7 +25,7 @@
 ## has to be compiled in a given library.  This also generates the cmake files for the
 ## associated API libraries.
 ## @details Recursively goes through directories and finds .cc files to compile.  Usage:
-##          python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file>
+##          python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for cmake file for test, or NONE>
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 from sys import argv
@@ -156,12 +156,15 @@ def get_library_dependencies( dirname : str ) -> list :
         return dlist
     return []
 
-assert len(argv) == 5, errmsg + "Incorrect number of arguments.  Usage is python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file>."
+assert len(argv) == 6, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file> <output path and filename for cmake file for test, or NONE>."
 
 lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
 output_file_api = argv[4]
+output_file_tests = argv[5]
+if output_file_tests == "NONE" :
+    output_file_tests = None
 
 cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, source_dir, True )
 depend_list = get_library_dependencies( source_dir )
@@ -172,6 +175,17 @@ if path.isdir( appsdir ) :
     appslist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, appsdir, False )
 else :
     appslist = []
+
+testsdir = "../tests/unit/" + lib_name
+testlibname = lib_name + "_tests"
+if output_file_tests != None :
+    assert path.isdir( testsdir )
+    print( "\tChecking " + testsdir + " for tests." )
+    testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, testsdir, False )
+else :
+    testslist = []
+
+print( testslist )
 
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
@@ -184,6 +198,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n)\n")
     if len( appslist ) > 0 :
         for app in appslist :
@@ -192,6 +207,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write("TARGET_LINK_LIBRARIES(" + appname )
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
 if len(api_cclist) > 0 :
@@ -213,10 +229,30 @@ if len(api_cclist) > 0 :
         fhandle.write( "\n)\n" )
         fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + "_api PROPERTIES VERSION ${PROJECT_VERSION})\n" )
         fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name + "_api" )
+        fhandle.write( "\n\tPUBLIC " + lib_name )
         if len(depend_list) > 0 :
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
-        fhandle.write( "\n\tPUBLIC " + lib_name )
+        fhandle.write( "\n\tPRIVATE Threads::Threads" )
         fhandle.write("\n)\n")
+
+
+if len(testslist) > 0 :
+    assert output_file_tests != None
+    with open( output_file_tests, 'w' ) as fhandle:
+        if len(testslist) > 0 :
+            fhandle.write( "ADD_EXECUTABLE(" + testlibname + " " )
+            for entry in testslist:
+                fhandle.write( "\n\t" + entry )
+            fhandle.write( "\n)\n" )
+            fhandle.write( "SET_TARGET_PROPERTIES(" + testlibname + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
+
+            fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
+            fhandle.write( "\n\tPUBLIC " + lib_name )
+            for dentry in depend_list :
+                fhandle.write( "\n\tPUBLIC " + dentry )
+            fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            fhandle.write("\n)\n")
+
 
 print( "Wrote " + output_file + "." )

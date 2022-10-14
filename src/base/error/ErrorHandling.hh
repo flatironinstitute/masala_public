@@ -36,6 +36,7 @@ SOFTWARE.
 // STL headers
 #include <exception>
 #include <string>
+#include <atomic>
 
 namespace masala {
 namespace base {
@@ -55,8 +56,15 @@ public:
 	/// @brief Message constructor.
 	MasalaException( std::string const & message );
 
-	/// @brief Default constructor.
-	~MasalaException() = default;
+	/// @brief Copy constructor.
+	MasalaException( MasalaException const & src );
+
+	/// @brief Assignment operator.
+	MasalaException & operator=( MasalaException const & src );
+
+	/// @brief Destructor.
+	/// @details Ensures that message is printed if exception is unhandled.
+	~MasalaException();
 
 public:
 
@@ -70,7 +78,10 @@ public:
 private:
 
 	/// @brief The error message, set by the constructor.
-	std::string const message_;
+	std::string message_;
+
+	/// @brief Has the message been printed?
+	mutable std::atomic_bool message_was_printed_;
 		
 };
 

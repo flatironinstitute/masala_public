@@ -36,10 +36,12 @@ SOFTWARE.
 #include <base/managers/tracer/MasalaTracerManager.fwd.hh>
 
 // Base headers:
+#include <base/types.hh>
 
 // STL headers:
 #include <map>
 #include <mutex>
+#include <thread>
 
 namespace masala {
 namespace base {
@@ -122,6 +124,15 @@ public:
         bool const skip_check = false
     ) const;
 
+    /// @brief Get the string for the current thread's ID.
+    std::string get_thread_id_string() const;
+
+    /// @brief Register thread ID with the tracer manager.
+    void register_thread_id( std::thread::id const system_thread_id, base::Size const masala_thread_id );
+
+    /// @brief Unregister thread ID with the tracer manager.
+    void unregister_thread_id( std::thread::id const system_thread_id );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +149,12 @@ private:
 
     /// @brief List of tracers that are either explicitly enabled or explicitly disabled.
     std::map< std::string, bool > explicitly_enabled_or_disabled_tracers_;
+
+    /// @brief A mutex for the list of threads that this object knows about.
+    mutable std::mutex thread_map_mutex_;
+
+    /// @brief List of threads that this object knows about.
+    std::map< std::thread::id, base::Size > thread_map_;
 
 };
 

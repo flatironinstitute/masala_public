@@ -120,7 +120,7 @@ BasicPDBReader::add_atoms_from_file_lines(
     std::vector< std::string > const & file_lines,
     std::vector< bool > & atom_lines_read
 ) const {
-    for( masala::core::Size i(0), imax(file_lines.size()); i<=imax; ++i ) {
+    for( masala::core::Size i(0), imax(file_lines.size()); i<imax; ++i ) {
         if( atom_lines_read[i] ) continue;
         std::string const & curline( file_lines[i] );
         if( curline.size() < 6 ) continue; //Skip short lines.

@@ -22,38 +22,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/MasalaObject.fwd.hh
-/// @brief Forward declarations for a base class for all Masala derived classes.  This
-/// allows the possibility of having a generic MasalaObject pointer or shared pointer.
+/// @file src/base/managers/threads/MasalaThreadedWorkRequest.fwd.hh
+/// @brief Forward declarations for a class that stores a vector of work
+/// to do in threads plus configuration options describing how the work
+/// is to be done.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_MasalaObject_fwd_hh
-#define Masala_src_base_MasalaObject_fwd_hh
+#ifndef Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh
+#define Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
 namespace masala {
 namespace base {
+namespace managers {
+namespace threads {
 
-	class MasalaObject;
+	class MasalaThreadedWorkRequest;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a std::shared_ptr for objects of that class.
-	using MasalaObjectSP = std::shared_ptr< MasalaObject >;
+	using MasalaThreadedWorkRequestSP = std::shared_ptr< MasalaThreadedWorkRequest >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaObjectCSP = std::shared_ptr< MasalaObject const >;
+	using MasalaThreadedWorkRequestCSP = std::shared_ptr< MasalaThreadedWorkRequest const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a std::weak_ptr for objects of that class.
-	using MasalaObjectWP = std::weak_ptr< MasalaObject >;
+	using MasalaThreadedWorkRequestWP = std::weak_ptr< MasalaThreadedWorkRequest >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaObjectCWP = std::weak_ptr< MasalaObject const >;
+	using MasalaThreadedWorkRequestCWP = std::weak_ptr< MasalaThreadedWorkRequest const >;
 
+} // namespace threads
+} // namespace managers
 } // namespace base
 } // namesapce masala
 
-#endif //Masala_src_base_MasalaObject_fwd_hh
+#endif //Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh

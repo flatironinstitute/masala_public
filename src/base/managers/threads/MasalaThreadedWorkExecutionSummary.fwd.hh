@@ -22,38 +22,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/base/MasalaObject.fwd.hh
-/// @brief Forward declarations for a base class for all Masala derived classes.  This
-/// allows the possibility of having a generic MasalaObject pointer or shared pointer.
+/// @file src/base/managers/threads/MasalaThreadedWorkExecutionSummary.fwd.hh
+/// @brief Forward declarations for a class that will store a summary of what work
+/// was done in threads, how long it took, and how many threads were actually
+/// assigned to the work.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_MasalaObject_fwd_hh
-#define Masala_src_base_MasalaObject_fwd_hh
+#ifndef Masala_src_base_managers_threads_MasalaThreadedWorkExecutionSummary_fwd_hh
+#define Masala_src_base_managers_threads_MasalaThreadedWorkExecutionSummary_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
 namespace masala {
 namespace base {
+namespace managers {
+namespace threads {
 
-	class MasalaObject;
+	class MasalaThreadedWorkExecutionSummary;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a std::shared_ptr for objects of that class.
-	using MasalaObjectSP = std::shared_ptr< MasalaObject >;
+	using MasalaThreadedWorkExecutionSummarySP = std::shared_ptr< MasalaThreadedWorkExecutionSummary >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaObjectCSP = std::shared_ptr< MasalaObject const >;
+	using MasalaThreadedWorkExecutionSummaryCSP = std::shared_ptr< MasalaThreadedWorkExecutionSummary const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a std::weak_ptr for objects of that class.
-	using MasalaObjectWP = std::weak_ptr< MasalaObject >;
+	using MasalaThreadedWorkExecutionSummaryWP = std::weak_ptr< MasalaThreadedWorkExecutionSummary >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaObjectCWP = std::weak_ptr< MasalaObject const >;
+	using MasalaThreadedWorkExecutionSummaryCWP = std::weak_ptr< MasalaThreadedWorkExecutionSummary const >;
 
+} // namespace threads
+} // namespace managers
 } // namespace base
 } // namesapce masala
 
-#endif //Masala_src_base_MasalaObject_fwd_hh
+#endif //Masala_src_base_managers_threads_MasalaThreadedWorkExecutionSummary_fwd_hh

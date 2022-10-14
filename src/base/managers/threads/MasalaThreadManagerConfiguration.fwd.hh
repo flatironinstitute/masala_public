@@ -22,31 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file tests/unit/core/pose/PoseUnitTests.cc
-/// @brief Unit tests for the Pose class.
+/// @file src/base/managers/threads/MasalaThreadManagerConfiguration.fwd.hh
+/// @brief Forward declarations for a container of configuration settings for the
+/// MasalaThreadManager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Unit testing library (Catch2) headers:
-#include <external/catch2/single_include/catch2/catch.hpp>
+#ifndef Masala_src_base_managers_threads_MasalaThreadManagerConfiguration_fwd_hh
+#define Masala_src_base_managers_threads_MasalaThreadManagerConfiguration_fwd_hh
 
-// Unit headers:
-#include <core/pose/Pose.hh>
+// STL headers
+#include <memory>
 
 namespace masala {
-namespace tests {
-namespace unit {
-namespace core {
-namespace pose {
+namespace base {
+namespace managers {
+namespace threads {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][instantiation]" ) {
-    REQUIRE_NOTHROW([&](){
-        masala::core::pose::PoseSP mypose( std::make_shared< masala::core::pose::Pose >() );
-        mypose->write_to_tracer( "Instantiated a pose." );
-    }() );
-}
+    class MasalaThreadManagerConfiguration;
 
-} // namespace pose
-} // namespace core
-} // namespace unit
-} // namespace tests
+    using MasalaThreadManagerConfigurationSP = std::shared_ptr< MasalaThreadManagerConfiguration >;
+    using MasalaThreadManagerConfigurationCSP = std::shared_ptr< MasalaThreadManagerConfiguration const >;
+    using MasalaThreadManagerConfigurationWP = std::weak_ptr< MasalaThreadManagerConfiguration >;
+    using MasalaThreadManagerConfigurationCWP = std::weak_ptr< MasalaThreadManagerConfiguration const>;
+
+} // namespace threads
+} // namespace managers
+} // namespace base
 } // namespace masala
+
+#endif //Masala_src_base_managers_threads_MasalaThreadManagerConfiguration_fwd_hh

@@ -27,8 +27,11 @@ SOFTWARE.
 /// the std::exception class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-/// Headers.
+// Unit header.
 #include <base/error/ErrorHandling.hh>
+
+// Base headers.
+#include <base/managers/tracer/MasalaTracerManager.hh>
 
 namespace masala {
 namespace base {
@@ -43,8 +46,38 @@ MasalaException::MasalaException(
 	std::string const & message
 ) :
 	std::exception(),
-	message_(message)
+	message_(message),
+	message_was_printed_(false)
 {}
+
+/// @brief Copy constructor.
+MasalaException::MasalaException(
+	MasalaException const & src
+) :
+	std::exception(src)
+{
+	message_was_printed_.store( src.message_was_printed_.load() );
+	message_ = src.message_;
+}
+
+/// @brief Assignment operator.
+MasalaException &
+MasalaException::operator=(
+	MasalaException const & src
+) {
+	std::exception::operator=(src);
+	message_was_printed_.store( src.message_was_printed_.load() );
+	message_ = src.message_;
+	return *this;
+}
+
+/// @brief Destructor.
+/// @details Ensures that message is printed if exception is unhandled.
+MasalaException::~MasalaException() {
+	if( !message_was_printed_ ) {
+		base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( "MasalaException", "UNHANDLED EXCEPTION: " + message_ );
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
@@ -53,6 +86,7 @@ MasalaException::MasalaException(
 /// @brief Access the error message.
 std::string const &
 MasalaException::message() const {
+	message_was_printed_ = true;
 	return message_;
 }
 

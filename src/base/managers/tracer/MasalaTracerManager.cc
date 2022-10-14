@@ -129,10 +129,41 @@ MasalaTracerManager::write_to_tracer(
     // Write the message to the tracer.
     std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
     for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
-        std::cout << tracer_name << ": " << splitlines[i] << "\n";
+        std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
     }
     std::cout.flush();
 }
+
+/// @brief Get the string for the current thread's ID.
+std::string
+MasalaTracerManager::get_thread_id_string() const {
+    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+    std::map< std::thread::id, base::Size >::const_iterator it( thread_map_.find( std::this_thread::get_id() ) );
+    if( it == thread_map_.end() ) {
+        return "?";
+    }
+    return std::to_string( it->second );
+} // MasalaTracerManager::get_thread_id_string()
+
+/// @brief Register thread ID with the tracer manager.
+void
+MasalaTracerManager::register_thread_id(
+    std::thread::id const system_thread_id,
+    base::Size const masala_thread_id
+) {   
+    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+    thread_map_[system_thread_id] = masala_thread_id;
+} // MasalaTracerManager::register_thread_id()
+
+/// @brief Unregister thread ID with the tracer manager.
+void
+MasalaTracerManager::unregister_thread_id(
+    std::thread::id const system_thread_id
+) {
+    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+    std::map< std::thread::id, base::Size >::iterator it( thread_map_.find( system_thread_id ) );
+    thread_map_.erase(it);
+} // MasalaTracerManager::unregister_thread_id()
 
 } // namespace tracer
 } // namespace managers

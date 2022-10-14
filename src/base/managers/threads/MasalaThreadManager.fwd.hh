@@ -22,31 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file tests/unit/core/pose/PoseUnitTests.cc
-/// @brief Unit tests for the Pose class.
+/// @file src/base/managers/threads/MasalaThreadManager.fwd.hh
+/// @brief Forward declarations for a static singleton for managing a thread
+/// pool, and execution of code in parallel threads.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Unit testing library (Catch2) headers:
-#include <external/catch2/single_include/catch2/catch.hpp>
-
-// Unit headers:
-#include <core/pose/Pose.hh>
+#ifndef Masala_src_base_managers_threads_MasalaThreadManager_fwd_hh
+#define Masala_src_base_managers_threads_MasalaThreadManager_fwd_hh
 
 namespace masala {
-namespace tests {
-namespace unit {
-namespace core {
-namespace pose {
+namespace base {
+namespace managers {
+namespace threads {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][instantiation]" ) {
-    REQUIRE_NOTHROW([&](){
-        masala::core::pose::PoseSP mypose( std::make_shared< masala::core::pose::Pose >() );
-        mypose->write_to_tracer( "Instantiated a pose." );
-    }() );
-}
+    class MasalaThreadManagerAccessKey;
+    class MasalaThreadManager;
 
-} // namespace pose
-} // namespace core
-} // namespace unit
-} // namespace tests
+    /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow
+    /// lazy loading of data.
+    using MasalaThreadManagerHandle = MasalaThreadManager *;
+
+} // namespace threads
+} // namespace managers
+} // namespace base
 } // namespace masala
+
+#endif // Masala_src_base_managers_threads_MasalaThreadManager_fwd_hh
