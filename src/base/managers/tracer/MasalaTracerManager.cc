@@ -32,6 +32,7 @@ SOFTWARE.
 // Base headers:
 #include <base/types.hh>
 #include <base/utility/string/string_manipulation.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
 
 // STL headers:
 #include <string>
@@ -110,6 +111,9 @@ MasalaTracerManager::write_to_tracer(
     std::string const & message,
     bool const skip_check /*= false*/
 ) const {
+    base::Size const this_thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
+    //base::Size const this_thread_id(0);
+
     std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 
     // Check whether the tracer is enabled:
@@ -129,7 +133,7 @@ MasalaTracerManager::write_to_tracer(
     // Write the message to the tracer.
     std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
     for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
-        std::cout << tracer_name << ": " << splitlines[i] << "\n";
+        std::cout << tracer_name << "{" << this_thread_id << "}: " << splitlines[i] << "\n";
     }
     std::cout.flush();
 }
