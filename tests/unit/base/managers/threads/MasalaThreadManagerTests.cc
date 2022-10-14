@@ -144,7 +144,12 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
 
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
+        tm->set_total_threads(2);
+        CHECK( tm->actual_threads_running() == 2 );
+        tm->set_total_threads(3);
+        CHECK( tm->actual_threads_running() == 3 );
         tm->set_total_threads(1);
+        CHECK( tm->actual_threads_running() == 1 );
     }() );
 }
 
