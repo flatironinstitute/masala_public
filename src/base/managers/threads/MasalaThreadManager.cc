@@ -124,6 +124,21 @@ MasalaThreadManager::class_namespace() const {
     return "masala::base::managers::threads";
 }
 
+/// @brief Return the whether the current thread is known to the thread manager.
+bool
+MasalaThreadManager::this_thread_is_a_masala_thread() const {
+    return has_system_thread_id( std::this_thread::get_id() );
+} // MasalaThreadManager::this_thread_is_a_masala_thread()
+
+/// @brief Get the ID of the current thread.
+/// @details Throws if the thread is not known to or managed by the thread
+/// manager.  Use this_thread_is_a_masala_thread() to check whether the current
+/// thread is known to or managed by the thread manager.
+base::Size
+MasalaThreadManager::get_thread_manager_thread_id() const {
+    return get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
+} // MasalaThreadManager::get_thread_manager_thread_id()
+
 /// @brief Given the system ID of a thread, return the whether this thread is
 /// known to the thread manager.
 bool

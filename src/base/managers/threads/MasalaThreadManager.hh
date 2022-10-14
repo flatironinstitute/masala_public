@@ -150,6 +150,15 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Return the whether the current thread is known to the thread manager.
+    bool this_thread_is_a_masala_thread() const;
+
+    /// @brief Get the ID of the current thread.
+    /// @details Throws if the thread is not known to or managed by the thread
+    /// manager.  Use this_thread_is_a_masala_thread() to check whether the current
+    /// thread is known to or managed by the thread manager.
+    base::Size get_thread_manager_thread_id() const;
+
     /// @brief Given the system ID of a thread, return the whether this thread is
     /// known to the thread manager.
     bool
