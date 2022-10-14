@@ -70,9 +70,9 @@ TEST_CASE( "Launch three child threads then launch four.", "[base::managers::thr
     using namespace masala::base::managers::threads;
     REQUIRE_NOTHROW([&](){
         MasalaThreadManagerHandle tm = MasalaThreadManager::get_instance();
-        tm->set_total_threads(3);
-        tm->set_total_threads(1);
         tm->set_total_threads(4);
+        tm->set_total_threads(1);
+        tm->set_total_threads(5);
         tm->set_total_threads(1);
     }() );
 }

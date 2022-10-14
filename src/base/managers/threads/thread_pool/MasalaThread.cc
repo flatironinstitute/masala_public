@@ -203,7 +203,7 @@ MasalaThread::wrapper_function_executed_in_thread() {
         }
     } while(true); //Loop until we break.
 
-    write_to_tracer( "Spinning down thread " + std::to_string( thread_index_ ) + "." );
+    write_to_tracer( "Terminating thread " + std::to_string( thread_index_ ) + "." );
 
 } // MasalaThread::wrapper_function_executed_in_thread()
 
