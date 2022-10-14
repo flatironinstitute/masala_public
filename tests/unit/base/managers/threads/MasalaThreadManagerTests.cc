@@ -76,7 +76,7 @@ thread_function1(
 ) {
     results[job_index] = 0;
     masala::base::Size const increment( job_index + 1 );
-    for( masala::base::Size i(1); i <= 100000000; ++i ) {
+    for( masala::base::Size i(1); i <= 20000000; ++i ) {
         results[job_index] += increment;
     }
     masala::base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer(
@@ -109,7 +109,7 @@ TEST_CASE( "Do some work in four threads total.", "[base::managers::threads::Mas
     //Check that the work was done properly:
     tracer->write_to_tracer( "MasalaThreadManagerTests", "Vector output:" );
     for( masala::base::Size i(0); i<4; ++i ) {
-        CHECK( vec[i] == (i+1)*100000000 );
+        CHECK( vec[i] == (i+1)*20000000 );
         tracer->write_to_tracer( "MasalaThreadManagerTests", std::to_string(vec[i]) );
     }
 
