@@ -80,7 +80,8 @@ thread_function1(
         results[job_index] += increment;
     }
     masala::base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer(
-        "MasalaThreadManagerTests", "Completed work for job " + std::to_string(job_index) + "."
+        "MasalaThreadManagerTests", "Completed work for job " + std::to_string(job_index) +
+        " in thread " + std::to_string( masala::base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() ) ) + "."
     );
 }
 
