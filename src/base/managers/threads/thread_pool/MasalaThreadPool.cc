@@ -307,7 +307,7 @@ MasalaThreadPool::clean_up_threads_spinning_down() {
         // Actually delete threads.  (Note that MasalaThread destructor triggers thread joining).
         if( !threads_to_delete.empty() ) {
             threads_to_delete.clear(); // Since these are the only owning pointers for these MasalaThread objects, this triggers their destruction.  Their destructors call the thread termination code.
-            write_to_tracer( "Terminated threads marked for termination.  A total of " + std::to_string(threads_.size()) +
+            write_to_tracer( "Threads spinning down marked for termination.  A total of " + std::to_string(threads_.size()) +
                 " child thread" + ( threads_.size() == 1 ? " remains" : "s remain" ) + " in the thread "
                 "pool (not counting the parent thread)."
             );
