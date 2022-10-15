@@ -35,7 +35,6 @@ SOFTWARE.
 
 // STL headers
 #include <string>
-//#include <iostream>
 
 namespace masala {
 namespace base {
@@ -169,7 +168,6 @@ MasalaThread::wrapper_function_executed_in_thread() {
                 (!(forced_idle_.load()) && function_ != nullptr)
             )
         ) {
-            //std::cout << "PING " << thread_index_ << std::endl;
             cv_for_wakeup_.wait( unique_lock, [this]{ return( forced_termination_ || (!(forced_idle_.load()) && function_ != nullptr ) ); } );
         } // Wait for either the terminations signal, or for the function to be non-null (and the state to be non-idle).  When this is the case, the mutex will be locked.
 
@@ -194,7 +192,6 @@ MasalaThread::wrapper_function_executed_in_thread() {
             {
                 std::unique_lock< std::mutex > unique_lock2( *job_completion_mutex_);
                 ++(*num_jobs_completed_);
-                //std::cout << "NUM JOBS: " << *num_jobs_completed_ << "\tTHREAD:\t" << thread_index_ << std::endl;
                 function_ = nullptr;
                 job_completion_cond_var_ = nullptr;
                 num_jobs_completed_ = nullptr;
