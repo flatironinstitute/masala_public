@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core_api/base_classes/selectors/atom_selector/AtomSelector.hh
+/// @file src/core_api/base_classes/selectors/atom_selectors/AtomSelector.hh
 /// @brief Header for a pure virtual base class for AtomSelectors.
 /// @details AtomSelectors select atoms in a pose based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_selectors_atom_selector_AtomSelector_hh
-#define Masala_src_core_api_base_classes_selectors_atom_selector_AtomSelector_hh
+#ifndef Masala_src_core_api_base_classes_selectors_atom_selectors_AtomSelector_hh
+#define Masala_src_core_api_base_classes_selectors_atom_selectors_AtomSelector_hh
 
 // Parent class:
 #include <core_api/base_classes/selectors/Selector.hh>
@@ -95,6 +95,6 @@ public:
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala
 
-#endif // Masala_src_core_api_base_classes_selectors_atom_selector_AtomSelector_hh
+#endif // Masala_src_core_api_base_classes_selectors_atom_selectors_AtomSelector_hh

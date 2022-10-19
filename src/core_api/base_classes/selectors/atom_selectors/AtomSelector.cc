@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core_api/base_classes/selectors/atom_selector/AtomSelector.cc
+/// @file src/core_api/base_classes/selectors/atom_selectors/AtomSelector.cc
 /// @brief Function implementations for a pure virtual base class for AtomSelectors.
 /// @details AtomSelectors select atoms in a pose based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
@@ -59,4 +59,4 @@ AtomSelector::generate_selection(
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala
