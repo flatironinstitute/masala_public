@@ -38,6 +38,10 @@ SOFTWARE.
 // Base headers:
 #include <base/MasalaObject.hh>
 
+// Core API headers:
+#include <core_api/base_classes/selectors/Selection.fwd.hh>
+#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+
 namespace masala {
 namespace core_api {
 namespace base_classes {
@@ -60,6 +64,20 @@ public:
 
 	/// @brief Destructor.
 	~Selector() override = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given the current pose, generate the selection.
+	/// @details Pure virtual function.  Must be implemented by sub-classes.
+	virtual
+	SelectionCSP
+	generate_selection(
+		core_api::auto_generated_api::pose::Pose_API const & pose
+	) const = 0;
 
 }; // class Selector
 
