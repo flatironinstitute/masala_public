@@ -92,6 +92,25 @@ MasalaObject::write_to_tracer(
     }
 }
 
+/// @brief Get a list of categories that this object could be sorted into.
+/// @details This is for auto-generation of hierarchical documentation and user interfaces.
+/// Categories could be something like std::vector< std::string >{ "Manipulators", "Proteins", "Design" }.
+/// An object may be in more than one category.  The default behaviour, overridable by sub-
+/// classes, is to provide an empty list.
+std::vector< std::vector< std::string > >
+MasalaObject::get_categories() const {
+    return std::vector< std::vector < std::string > >();
+}
+
+/// @brief Get a list of keywords associated with this object.
+/// @details This is also for auto-generation of documentation or user interfaces, to allow
+/// discoverability of functionality.  Unlike categories, which are hierarchical, keywords
+/// have no hierarchy.  The default implementation produces an empty list.
+std::set< std::string >
+MasalaObject::get_keywords() const {
+    return std::set< std::string >();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
