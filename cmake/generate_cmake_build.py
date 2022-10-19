@@ -117,6 +117,9 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname:str, dirname : str, skip
         if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
             # Skip directories like core_apps.  Apps are compiled separately into executables.
             return [], []
+    else :
+        if dirname.endswith( libname + "/auto_generated_api" ) or dirname.endswith( libname + "/auto_generated_api/" ) :
+            return []
     outlist = []
     if skip_apps == True :
         outlist_apis = []
@@ -167,6 +170,7 @@ if output_file_tests == "NONE" :
     output_file_tests = None
 
 cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, source_dir, True )
+api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", source_dir + "_api", False ) )
 depend_list = get_library_dependencies( source_dir )
 
 appsdir = source_dir + "/" + lib_name + "_apps"
@@ -184,8 +188,6 @@ if output_file_tests != None :
     testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, testsdir, False )
 else :
     testslist = []
-
-print( testslist )
 
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
