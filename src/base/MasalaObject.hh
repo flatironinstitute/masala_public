@@ -59,8 +59,7 @@ public:
 	/// @brief Copy constructor.
 	MasalaObject( MasalaObject const & ) = default;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
+	/// @brief Virtual destructor.
 	virtual ~MasalaObject() = default;
 
 	/// @brief Every class can name itself.
