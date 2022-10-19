@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core_api/base_classes/selectors/atom_selector/AnnotatedRegionSelector.cc
+/// @file src/core_api/base_classes/selectors/annotated_region_selectors/AnnotatedRegionSelector.cc
 /// @brief Function implementations for a pure virtual base class for AnnotatedRegionSelectors.
 /// @details AnnotatedRegionSelectors select atoms in a pose based on regional annotations.
 /// @note Since this class does not implement class_name() or class_namespace()
@@ -59,4 +59,4 @@ AnnotatedRegionSelector::generate_selection(
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala

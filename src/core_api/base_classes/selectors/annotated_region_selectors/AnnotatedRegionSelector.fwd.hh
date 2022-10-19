@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core_api/base_classes/selectors/atom_selector/AnnotatedRegionSelector.fwd.hh
+/// @file src/core_api/base_classes/selectors/annotated_region_selectors/AnnotatedRegionSelector.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for AnnotatedRegionSelectors.
 /// @details AnnotatedRegionSelectors select atoms in a pose based on annotated regions.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_selectors_atom_selector_AnnotatedRegionSelector_fwd_hh
-#define Masala_src_core_api_base_classes_selectors_atom_selector_AnnotatedRegionSelector_fwd_hh
+#ifndef Masala_src_core_api_base_classes_selectors_annotated_region_selectors_AnnotatedRegionSelector_fwd_hh
+#define Masala_src_core_api_base_classes_selectors_annotated_region_selectors_AnnotatedRegionSelector_fwd_hh
 
 #include <memory> // For std::shared_ptr
 
@@ -62,6 +62,6 @@ namespace annotated_region_selectors {
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala
 
-#endif // Masala_src_core_api_base_classes_selectors_atom_selector_AnnotatedRegionSelector_fwd_hh
+#endif // Masala_src_core_api_base_classes_selectors_annotated_region_selectors_AnnotatedRegionSelector_fwd_hh
