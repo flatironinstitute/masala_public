@@ -43,7 +43,7 @@ namespace core_api {
 namespace base_classes {
 namespace selectors {
 
-/// @brief Header for a pure virtual base class for Selectors.
+/// @brief A pure virtual base class for Selectors.
 /// @details Selectors select something (atoms, residues, etc.).
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
