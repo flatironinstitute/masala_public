@@ -163,6 +163,9 @@ public:
         MasalaPluginCreatorCSP const & creator
     );
 
+    // /// @brief Get a list of all plugins.
+    // std::vector< std::string > get_all_plugin_list() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,12 +220,12 @@ private:
     std::map< std::string, std::set< MasalaPluginCreatorCSP > > plugins_by_keyword_;
 
     /// @brief Find plugins by category.
-    /// @details Categories are comma-separated lists.  For instance:
-    /// "Selector"
-    /// "Selector,AtomSelector"
-    /// "Selector,AtomSelector,AnnotatedRegionSelector"
+    /// @details Categories are vectors of strings.  For instance:
+    /// {"Selector"}
+    /// {"Selector","AtomSelector"}
+    /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
     /// A plugin in a nested category is also put into the higher categories.
-    std::map< std::string, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
 
 };
 

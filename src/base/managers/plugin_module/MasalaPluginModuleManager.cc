@@ -224,21 +224,15 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
                 "The hierarchy wasn't defined for one of the categories for a plugin!"
             );
             
-            std::ostringstream ss;
-            bool first(true);
+            std::vector< std::string > ss;
             for( std::string const & category : categories ) {
-                if( first ) {
-                    first = false;
-                } else {
-                    ss << ",";
-                }
-                ss << category;
+                ss.push_back( category );
                 
-                std::map< std::string, std::set< MasalaPluginCreatorCSP > >::iterator it(
-                    plugins_by_hierarchical_category_.find( ss.str() )
+                std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
+                    plugins_by_hierarchical_category_.find( ss )
                 );
                 if( it == plugins_by_hierarchical_category_.end() ) {
-                    plugins_by_hierarchical_category_[ss.str()] = std::set< MasalaPluginCreatorCSP >{ creator };
+                    plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
                 } else {
                     it->second.insert( creator );
                 }
@@ -300,18 +294,16 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
     // Remove from hierarchical categories:
     std::vector< std::vector< std::string > > const set_of_categories( creator->get_plugin_object_categories() );
     for( auto const & categories : set_of_categories ) {
-        std::ostringstream ss;
-        bool first(true);
+        std::vector< std::string > ss;
         for( std::string const & category : categories ) {
-            if( first ) { first = false; }
-            else { ss << ","; }
-            ss << category;
+            ss.push_back( category );
 
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss.str() ) > 0,
-                "remove_plugin_mutex_locked", "Program error! Could not find category \"" + ss.str() +
-                "\" in hierarchical category map."
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+                "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
+                base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
+                "category map."
             );
-            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_[ ss.str() ] );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_[ ss ] );
             bool found( false );
             for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
                 if( (**it) == (*creator) ) {
@@ -322,10 +314,10 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
             }
             CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
                 "Program error!  Could not find plugin \"" + plugin_object_name + "\" in hierarchical "
-                "category \"" + ss.str() + "\"."
+                "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
             );
             if( myset.empty() ) {
-                plugins_by_hierarchical_category_.erase( ss.str() );
+                plugins_by_hierarchical_category_.erase( ss );
             }
         }
     }
