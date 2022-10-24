@@ -38,11 +38,14 @@ SOFTWARE.
 
 // Base headers:
 #include <base/types.hh>
+#include <base/api/names_from_types.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
 
 // STL headers:
 #include <map>
 #include <mutex>
+#include <vector>
+#include <set>
 
 namespace masala {
 namespace base {
@@ -98,6 +101,71 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Query whether any plugin in a vector is already known to the manager.
+    bool
+    has_any_plugin(
+        std::vector< MasalaPluginCreator const & > const & creators
+    ) const;
+
+    /// @brief Query whether any plugin in a set is already known to the manager.
+    bool
+    has_any_plugin(
+        std::set< MasalaPluginCreator const & > const & creators
+    ) const;
+
+    /// @brief Query whether a plugin is already known to the manager.
+    bool
+    has_plugin(
+        MasalaPluginCreator const & creator
+    ) const;
+
+    /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
+    /// @details Warns about any plugin that has already been added (and does not replace),
+    /// but does not throw.
+    void
+    add_plugins(
+        std::vector< MasalaPluginCreator const & > const & creators
+    );
+
+    /// @brief Add a set of plugins to the list of plugins that the manager knows about.
+    /// @details Warns about any plugin that has already been added (and does not replace),
+    /// but does not throw.
+    void
+    add_plugins(
+        std::set< MasalaPluginCreator const & > const & creators
+    );
+    
+    /// @brief Add a plugin to the list of plugins that the manager knows about.
+    /// @details Throws if the plugin has already been added.  Call has_plugin()
+    /// first to query wiether the plugin has already been added.
+    void
+    add_plugin(
+        MasalaPluginCreator const & creator
+    );
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Check whether a plugin is already known to the list of plugins stored in
+    /// the manager.  Returns true if the plugin is known and false otherwise.
+    /// @details Assumes that the plugin_map_mutex_ has been locked!
+    bool
+    has_plugin_mutex_locked(
+        MasalaPluginCreator const & creator
+    ) const;
+
+    /// @brief Add a plugin to the list of plugins that the manager knows about.  Assumes
+    /// that the plugin_map_mutex_ has already been locked!
+    /// @details Throws if the plugin has already been added.  Call has_plugin()
+    /// first to query wiether the plugin has already been added.
+    void
+    add_plugin_mutex_locked(
+        MasalaPluginCreator const & creator
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,8 +176,10 @@ private:
     mutable std::mutex plugin_map_mutex_;
 
     /// @brief List of plugins that this object knows about.
-    /// @details Maps plugin names to plugin creator objects.
-    std::map< std::string, MasalaPluginCreatorCSP > plugin_map_;
+    /// @details Plugins are stored as a map of string to creator, where the string is
+    /// the concatenation of the plugin types (separated by commas) and the plugin name
+    /// (preceded by a colon).  For instance, "Selector,AtomSelector:ElementAtomSelector".
+    std::map< std::string, MasalaPluginCreator > all_plugin_map_;
 
 };
 

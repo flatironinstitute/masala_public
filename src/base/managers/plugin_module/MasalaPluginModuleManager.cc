@@ -32,6 +32,8 @@ SOFTWARE.
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 #include <string>
@@ -64,6 +66,105 @@ MasalaPluginModuleManager::class_name() const {
 std::string
 MasalaPluginModuleManager::class_namespace() const {
     return "masala::base::managers::plugin_module";
+}
+
+/// @brief Query whether any plugin in a vector is already known to the manager.
+bool
+MasalaPluginModuleManager::has_any_plugin(
+    std::vector< MasalaPluginCreator const & > const & creators
+) const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        if( has_plugin_mutex_locked( creator ) ) return true;
+    }
+    return false;
+}
+
+/// @brief Query whether any plugin in a set is already known to the manager.
+bool
+MasalaPluginModuleManager::has_any_plugin(
+    std::set< MasalaPluginCreator const & > const & creators
+) const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        if( has_plugin_mutex_locked( creator ) ) return true;
+    }
+    return false;
+}
+
+/// @brief Query whether a plugin is already known to the manager.
+bool
+MasalaPluginModuleManager::has_plugin(
+    MasalaPluginCreator const & creator
+) const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    return has_plugin_mutex_locked( creator );
+}
+
+/// @brief Add a vector of plugins to the list of plugins that the manager knows about.
+/// @details Warns about any plugin that has already been added (and does not replace),
+/// but does not throw.
+void
+MasalaPluginModuleManager::add_plugins(
+    std::vector< MasalaPluginCreator const & > const & creators
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        add_plugin_mutex_locked( creator );
+    }
+}
+
+/// @brief Add a set of plugins to the list of plugins that the manager knows about.
+/// @details Warns about any plugin that has already been added (and does not replace),
+/// but does not throw.
+void
+MasalaPluginModuleManager::add_plugins(
+    std::set< MasalaPluginCreator const & > const & creators
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        add_plugin_mutex_locked( creator );
+    }
+}
+    
+/// @brief Add a plugin to the list of plugins that the manager knows about.
+/// @details Throws if the plugin has already been added.  Call has_plugin()
+/// first to query wiether the plugin has already been added.
+void
+MasalaPluginModuleManager::add_plugin(
+    MasalaPluginCreator const & creator
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    add_plugin_mutex_locked( creator );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check whether a plugin is already known to the list of plugins stored in
+/// the manager.  Returns true if the plugin is known and false otherwise.
+/// @details Assumes that the plugin_map_mutex_ has been locked!
+bool
+MasalaPluginModuleManager::has_plugin_mutex_locked(
+    MasalaPluginCreator const & creator
+) const {
+    return( all_plugin_map_.find( creator.get_plugin_object_manager_key() ) != all_plugin_map_.end() );
+}
+
+/// @brief Add a plugin to the list of plugins that the manager knows about.  Assumes
+/// that the plugin_map_mutex_ has already been locked!
+/// @details Throws if the plugin has already been added.  Call has_plugin()
+/// first to query wiether the plugin has already been added.
+void
+MasalaPluginModuleManager::add_plugin_mutex_locked(
+    MasalaPluginCreator const & creator
+) {
+    CHECK_OR_THROW_FOR_CLASS(
+        !has_plugin_mutex_locked(creator), "add_plugin_mutex_locked",
+        "Plugin \"" + creator.get_plugin_object_name() + "\" has already been added to the plugin manager."
+    );
+    all_plugin_map_[creator.get_plugin_object_manager_key()] = creator;
 }
 
 } // namespace plugin_module
