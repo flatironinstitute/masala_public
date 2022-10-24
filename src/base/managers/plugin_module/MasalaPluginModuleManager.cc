@@ -173,6 +173,39 @@ MasalaPluginModuleManager::remove_plugin(
     remove_plugin_mutex_locked( creator );
 }
 
+/// @brief Get a list of all plugins.
+std::vector< std::string >
+MasalaPluginModuleManager::get_all_plugin_list() const {
+    std::vector< std::string > all_plugins;
+    all_plugins.reserve( all_plugin_map_.size() );
+    for( auto const & entry : all_plugin_map_ ) {
+        all_plugins.push_back( entry.first );
+    }
+    return all_plugins;
+}
+
+/// @brief Get a list of all hierarchical categories.
+std::vector< std::vector< std::string > >
+MasalaPluginModuleManager::get_all_categories() const {
+    std::vector< std::vector< std::string > > outvec;
+    outvec.reserve( plugins_by_hierarchical_category_.size() );
+    for( auto const & entry : plugins_by_hierarchical_category_ ) {
+        outvec.push_back( entry.first );
+    }
+    return outvec;
+}
+
+/// @brief Get a list of all keywords.
+std::vector< std::string >
+MasalaPluginModuleManager::get_all_keywords() const {
+    std::vector< std::string > outvec;
+    outvec.reserve( plugins_by_keyword_.size() );
+    for( auto const & entry : plugins_by_keyword_ ) {
+        outvec.push_back( entry.first );
+    }
+    return outvec;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

@@ -163,8 +163,14 @@ public:
         MasalaPluginCreatorCSP const & creator
     );
 
-    // /// @brief Get a list of all plugins.
-    // std::vector< std::string > get_all_plugin_list() const;
+    /// @brief Get a list of all plugins.
+    std::vector< std::string > get_all_plugin_list() const;
+
+    /// @brief Get a list of all hierarchical categories.
+    std::vector< std::vector< std::string > > get_all_categories() const;
+
+    /// @brief Get a list of all keywords.
+    std::vector< std::string > get_all_keywords() const;
 
 private:
 
