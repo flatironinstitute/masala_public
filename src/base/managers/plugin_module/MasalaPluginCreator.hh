@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /// @file src/base/managers/plugin_module/MasalaPluginCreator.hh
-/// @brief Forward declarations for a pure virtual base class for creators
+/// @brief Headers for a pure virtual base class for creators
 /// for plugin modules.
 /// @details This allows plugins to be defined in other libraries and
 /// registered at runtime with the central manager class, without the code
@@ -44,10 +44,10 @@ namespace base {
 namespace managers {
 namespace plugin_module {
 
-/// @brief A base class for all Masala derived classes.  This allows the possibility of having a
-/// generic MasalaPluginCreator pointer or shared pointer.
-/// @note The MasalaConfigurationManager can access the private member functions (and data) of MasalaPluginCreators.
-/// This allows it to call load_configuration() when first needed.
+/// @brief A pure virtual base class for creators for plugin modules.
+/// @details This allows plugins to be defined in other libraries and
+/// registered at runtime with the central manager class, without the code
+/// in this library having to know about the particular plugins available.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaPluginCreator : public masala::base::MasalaObject {
 
