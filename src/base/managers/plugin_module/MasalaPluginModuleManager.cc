@@ -70,6 +70,16 @@ MasalaPluginModuleManager::class_namespace() const {
     return "masala::base::managers::plugin_module";
 }
 
+/// @brief Completely reset the manager.
+/// @details Unregisters all plugins.
+void
+MasalaPluginModuleManager::reset() {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    plugins_by_hierarchical_category_.clear();
+    plugins_by_keyword_.clear();
+    all_plugin_map_.clear();
+}
+
 /// @brief Query whether any plugin in a vector is already known to the manager.
 bool
 MasalaPluginModuleManager::has_any_plugin(

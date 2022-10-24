@@ -102,6 +102,10 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Completely reset the manager.
+    /// @details Unregisters all plugins.
+    void reset();
+
     /// @brief Query whether any plugin in a vector is already known to the manager.
     bool
     has_any_plugin(
