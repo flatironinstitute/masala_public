@@ -120,16 +120,14 @@ public:
     ) const;
 
     /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
-    /// @details Warns about any plugin that has already been added (and does not replace),
-    /// but does not throw.
+    /// @details Throws if any plugin has already been added.
     void
     add_plugins(
         std::vector< MasalaPluginCreatorCSP > const & creators
     );
 
     /// @brief Add a set of plugins to the list of plugins that the manager knows about.
-    /// @details Warns about any plugin that has already been added (and does not replace),
-    /// but does not throw.
+    /// @details Throws if any plugin has already been added.
     void
     add_plugins(
         std::set< MasalaPluginCreatorCSP > const & creators
@@ -163,6 +161,14 @@ private:
     /// first to query wiether the plugin has already been added.
     void
     add_plugin_mutex_locked(
+        MasalaPluginCreatorCSP const & creator
+    );
+
+    /// @brief Remove a plugin to the list of plugins that the manager knows about.  Assumes
+    /// that the plugin_map_mutex_ has already been locked!
+    /// @details Throws if the plugin has already been removed.
+    void
+    remove_plugin_mutex_locked(
         MasalaPluginCreatorCSP const & creator
     );
 

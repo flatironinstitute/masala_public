@@ -48,6 +48,15 @@ namespace plugin_module {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Comparison operator.
+bool
+MasalaPluginCreator::operator==(
+	MasalaPluginCreator const & other
+) const {
+	return get_plugin_object_name() == other.get_plugin_object_name() &&
+		get_plugin_object_manager_key() == other.get_plugin_object_manager_key();
+} // MasalaPluginCreator::operator==()
 	
 /// @brief Get the map key for the class of object that this creator creates.
 /// @details The map key is the concatenated vector of base class names (separated by commas)

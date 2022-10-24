@@ -104,8 +104,7 @@ MasalaPluginModuleManager::has_plugin(
 }
 
 /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
-/// @details Warns about any plugin that has already been added (and does not replace),
-/// but does not throw.
+/// @details Throws if any plugin has already been added.
 void
 MasalaPluginModuleManager::add_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
@@ -117,8 +116,7 @@ MasalaPluginModuleManager::add_plugins(
 }
 
 /// @brief Add a set of plugins to the list of plugins that the manager knows about.
-/// @details Warns about any plugin that has already been added (and does not replace),
-/// but does not throw.
+/// @details Throws if any plugin has already been added.
 void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
@@ -214,7 +212,90 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
     }
 
     write_to_tracer( "Added plugin \"" + plugin_object_name + "\"." );
-}
+} // MasalaPluginModuleManager::add_plugin_mutex_locked()
+
+/// @brief Remove a plugin to the list of plugins that the manager knows about.  Assumes
+/// that the plugin_map_mutex_ has already been locked!
+/// @details Throws if the plugin has already been removed.
+void
+MasalaPluginModuleManager::remove_plugin_mutex_locked(
+    MasalaPluginCreatorCSP const & creator
+) {
+    std::string const plugin_object_name( creator->get_plugin_object_name() );
+
+    CHECK_OR_THROW_FOR_CLASS(
+        has_plugin_mutex_locked(creator), "remove_plugin_mutex_locked",
+        "Plugin \"" + plugin_object_name + "\" is not present in the plugin manager."
+    );
+
+    std::map< std::string, MasalaPluginCreatorCSP >::iterator it(
+        all_plugin_map_.find( creator->get_plugin_object_manager_key() )
+    );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != all_plugin_map_.end(), "remove_plugin_mutex_locked",
+        "Program error!  Unable to find plugin to remove."
+    );
+    all_plugin_map_.erase(it);
+
+    // Remove from keywords:
+    std::vector< std::string > const keywords( creator->get_plugin_object_keywords() );
+    if( !keywords.empty() ) {
+        for( std::string const & keyword : keywords ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_keyword_.count(keyword) > 0, "remove_plugin_mutex_locked",
+                "Program error!  Unable to find keyword \"" + keyword + "\"!"
+            );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_keyword_[keyword] );
+            bool found(false);
+            for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
+                if( (**it) == (*creator) ) {
+                    found = true;
+                    myset.erase( it );
+                    break;
+                }
+            }
+            CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
+                "Program error!  Could not find plugin \"" + plugin_object_name + "\" in keyword "
+                "category \"" + keyword + "\"."
+            );
+            if( myset.empty() ) {
+                plugins_by_keyword_.erase( keyword );
+            }
+        }
+    }
+
+    // Remove from hierarchical categories:
+    std::vector< std::vector< std::string > > const set_of_categories( creator->get_plugin_object_categories() );
+    for( auto const & categories : set_of_categories ) {
+        std::ostringstream ss;
+        bool first(true);
+        for( std::string const & category : categories ) {
+            if( first ) { first = false; }
+            else { ss << ","; }
+            ss << category;
+
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss.str() ) > 0,
+                "remove_plugin_mutex_locked", "Program error! Could not find category \"" + ss.str() +
+                "\" in hierarchical category map."
+            );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_[ ss.str() ] );
+            bool found( false );
+            for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
+                if( (**it) == (*creator) ) {
+                    found = true;
+                    myset.erase( it );
+                    break;
+                }
+            }
+            CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
+                "Program error!  Could not find plugin \"" + plugin_object_name + "\" in hierarchical "
+                "category \"" + ss.str() + "\"."
+            );
+            if( myset.empty() ) {
+                plugins_by_hierarchical_category_.erase( ss.str() );
+            }
+        }
+    }
+
+} // MasalaPluginModuleManager::remove_plugin_mutex_locked()
 
 } // namespace plugin_module
 } // namespace managers

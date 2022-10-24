@@ -74,6 +74,9 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Comparison operator.
+	bool operator==( MasalaPluginCreator const & other ) const;
+
 	/// @brief Create an object of the desired type.
 	/// @details Must be implemented by derived classes.
 	virtual
