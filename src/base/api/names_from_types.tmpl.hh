@@ -41,7 +41,17 @@ namespace base {
 namespace api {
 
     template< typename T >
-    struct type {};
+    struct type {
+
+        /// @brief  Comparison operator.
+        /// @return True if T is the same type as Tprime; false otherwise.
+        template < typename Tprime >
+        bool
+        operator==( type<Tprime> const & other ) {
+            return std::is_same<T, Tprime>::value;
+        }
+
+    };
 
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
