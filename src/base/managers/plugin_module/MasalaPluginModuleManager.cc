@@ -138,6 +138,41 @@ MasalaPluginModuleManager::add_plugin(
     add_plugin_mutex_locked( creator );
 }
 
+/// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
+/// @details Throws if the plugin is not registered
+void
+MasalaPluginModuleManager::remove_plugins(
+    std::vector< MasalaPluginCreatorCSP > const & creators
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        remove_plugin_mutex_locked( creator );
+    }
+}
+
+/// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
+/// @details Throws if the plugin is not registered
+void
+MasalaPluginModuleManager::remove_plugins(
+    std::set< MasalaPluginCreatorCSP > const & creators
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    for( auto const & creator : creators ) {
+        remove_plugin_mutex_locked( creator );
+    }
+}
+    
+/// @brief Remove a plugin from the list of plugins that the manager knows about.
+/// @details Throws if the plugin is not registered.  Call has_plugin()
+/// first to query wiether the plugin has already been added.
+void
+MasalaPluginModuleManager::remove_plugin(
+    MasalaPluginCreatorCSP const & creator
+) {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    remove_plugin_mutex_locked( creator );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

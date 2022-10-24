@@ -141,6 +141,28 @@ public:
         MasalaPluginCreatorCSP const & creator
     );
 
+    /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
+    /// @details Throws if the plugin is not registered
+    void
+    remove_plugins(
+        std::vector< MasalaPluginCreatorCSP > const & creators
+    );
+
+    /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
+    /// @details Throws if the plugin is not registered
+    void
+    remove_plugins(
+        std::set< MasalaPluginCreatorCSP > const & creators
+    );
+    
+    /// @brief Remove a plugin from the list of plugins that the manager knows about.
+    /// @details Throws if the plugin is not registered.  Call has_plugin()
+    /// first to query wiether the plugin has already been added.
+    void
+    remove_plugin(
+        MasalaPluginCreatorCSP const & creator
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
