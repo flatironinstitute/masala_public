@@ -42,6 +42,9 @@ SOFTWARE.
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 
+// STL headers:
+#include <vector>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -76,6 +79,28 @@ public:
 	virtual
 	masala::base::managers::plugin_module::MasalaPluginSP
 	create_plugin_object() const = 0;
+
+	/// @brief Return the names of the base classes for this type of plugin object.
+	/// @details For example, Selector, AtomSelector, etc.
+	virtual
+	std::vector< std::string >
+	get_plugin_object_base_class_names() const = 0; 
+
+	/// @brief Get The name of the class of object that this creator creates.
+	virtual
+	std::string
+	get_plugin_object_name() const = 0;
+
+	/// @brief Get the namespace of the class of object that this creator creates.
+	virtual
+	std::string
+	get_plugin_object_namespace() const = 0;
+	
+	/// @brief Get the map key for the class of object that this creator creates.
+	/// @details The map key is the concatenated vector of base class names (separated by commas)
+	/// followed by a colon and then the object name.
+	std::string
+	get_plugin_object_manager_key() const;
 
 }; // class MasalaPluginCreator
 
