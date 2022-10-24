@@ -109,7 +109,7 @@ private:
 
     /// @brief List of plugins that this object knows about.
     /// @details Maps plugin names to plugin creator objects.
-    std::map< std::string, MasalaPluginCreatorCOP > plugin_map_;
+    std::map< std::string, MasalaPluginCreatorCSP > plugin_map_;
 
 };
 
