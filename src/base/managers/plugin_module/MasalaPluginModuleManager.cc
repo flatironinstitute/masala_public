@@ -34,9 +34,11 @@ SOFTWARE.
 #include <base/types.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 // STL headers:
 #include <string>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -168,13 +170,37 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
     );
     all_plugin_map_[creator->get_plugin_object_manager_key()] = creator;
 
-    /// @brief Add keywords:
+    // Add keywords:
     std::vector< std::string > keywords( creator->get_plugin_object_keywords() );
     if( !keywords.empty() ) {
         for( std::string const & keyword : keywords ) {
             std::map< std::string, std::set< MasalaPluginCreatorCSP > >::iterator it( plugins_by_keyword_.find(keyword) );
             if( it == plugins_by_keyword_.end() ) {
                 plugins_by_keyword_[keyword] = std::set< MasalaPluginCreatorCSP >{ creator };
+            } else {
+                it->second.insert( creator );
+            }
+        }
+    }
+
+    // Add categories:
+    std::vector< std::string > categories( creator->get_plugin_object_base_class_names() );
+    if( !categories.empty() ) {
+        std::ostringstream ss;
+        bool first(true);
+        for( std::string const & category : categories ) {
+            if( first ) {
+                first = false;
+            } else {
+                ss << ",";
+            }
+            ss << category;
+            
+            std::map< std::string, std::set< MasalaPluginCreatorCSP > >::iterator it(
+                plugins_by_hierarchical_category_.find( ss.str() )
+            );
+            if( it == plugins_by_hierarchical_category_.end() ) {
+                plugins_by_hierarchical_category_[ss.str()] = std::set< MasalaPluginCreatorCSP >{ creator };
             } else {
                 it->second.insert( creator );
             }

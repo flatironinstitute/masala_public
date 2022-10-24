@@ -188,6 +188,14 @@ private:
     /// removed from the all_plugin_map_ should be removed from this map.
     std::map< std::string, std::set< MasalaPluginCreatorCSP > > plugins_by_keyword_;
 
+    /// @brief Find plugins by category.
+    /// @details Categories are comma-separated lists.  For instance:
+    /// "Selector"
+    /// "Selector,AtomSelector"
+    /// "Selector,AtomSelector,AnnotatedRegionSelector"
+    /// A plugin in a nested category is also put into the higher categories.
+    std::map< std::string, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
+
 };
 
 } // namespace plugin_module
