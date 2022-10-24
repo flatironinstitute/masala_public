@@ -78,6 +78,14 @@ MasalaPluginModuleManager::reset() {
     plugins_by_hierarchical_category_.clear();
     plugins_by_keyword_.clear();
     all_plugin_map_.clear();
+    write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
+}
+
+/// @brief Get the number of registered plugins.
+base::Size
+MasalaPluginModuleManager::total_plugins() const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    return all_plugin_map_.size();
 }
 
 /// @brief Query whether any plugin in a vector is already known to the manager.
@@ -428,7 +436,7 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
             }
         }
     }
-
+    write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );
 } // MasalaPluginModuleManager::remove_plugin_mutex_locked()
 
 } // namespace plugin_module

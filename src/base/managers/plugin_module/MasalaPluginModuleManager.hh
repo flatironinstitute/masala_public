@@ -106,6 +106,9 @@ public:
     /// @details Unregisters all plugins.
     void reset();
 
+    /// @brief Get the number of registered plugins.
+    base::Size total_plugins() const;
+
     /// @brief Query whether any plugin in a vector is already known to the manager.
     bool
     has_any_plugin(
