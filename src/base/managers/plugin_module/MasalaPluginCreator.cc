@@ -55,13 +55,19 @@ namespace plugin_module {
 std::string
 MasalaPluginCreator::get_plugin_object_manager_key() const {
 	std::stringstream ss;
-	std::vector< std::string > const baseclasses( get_plugin_object_base_class_names() );
+	std::vector< std::vector< std::string > > const categories( get_plugin_object_categories() );
 	CHECK_OR_THROW_FOR_CLASS(
-		!baseclasses.empty(), "get_plugin_object_manager_key",
-		"No base classes were specified for plugin object type \"" + get_plugin_object_name() + "\"."
+		!categories.empty(), "get_plugin_object_manager_key",
+		"No categories were specified for plugin object type \"" + get_plugin_object_name() + "\"."
 	);
-	for( base::Size i(0), imax(baseclasses.size()); i<imax; ++i ) {
-		ss << baseclasses[i];
+	std::vector< std::string > const & firstcategory( categories[0] );
+	CHECK_OR_THROW_FOR_CLASS(
+		!firstcategory.empty(), "get_plugin_object_manager_key",
+		"No hierarchical category relationship was specified for the first category for "
+		"plugin object type \"" + get_plugin_object_name() + "\"."
+	);
+	for( base::Size i(0), imax(firstcategory.size()); i<imax; ++i ) {
+		ss << firstcategory[i];
 		if( imax > 1 && i < imax - 1 ) {
 			ss << ",";
 		} else {

@@ -80,11 +80,14 @@ public:
 	masala::base::managers::plugin_module::MasalaPluginSP
 	create_plugin_object() const = 0;
 
-	/// @brief Return the names of the base classes for this type of plugin object.
+	/// @brief Return the names of the categories for this type of plugin object.
 	/// @details For example, Selector, AtomSelector, etc.
+	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector).
+	/// A plugin can be in more than one hierarchical category, but must be in at least one.  The
+	/// first one is used as the primary key.
 	virtual
-	std::vector< std::string >
-	get_plugin_object_base_class_names() const = 0; 
+	std::vector< std::vector< std::string > >
+	get_plugin_object_categories() const = 0; 
 
 	/// @brief Return keywords associated with this plugin module.  For instance,
 	/// "protein", "design", "metalloprotein".
