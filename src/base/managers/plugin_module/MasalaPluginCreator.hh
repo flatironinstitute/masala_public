@@ -39,6 +39,9 @@ SOFTWARE.
 // Forward declarations:
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
 
+// Base headers:
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -71,7 +74,7 @@ public:
 	/// @brief Create an object of the desired type.
 	/// @details Must be implemented by derived classes.
 	virtual
-	masala::base::MasalaObjectSP
+	masala::base::managers::plugin_module::MasalaPluginSP
 	create_plugin_object() const = 0;
 
 }; // class MasalaPluginCreator

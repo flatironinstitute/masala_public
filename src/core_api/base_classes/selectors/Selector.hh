@@ -35,8 +35,8 @@ SOFTWARE.
 // Forward declarations:
 #include <core_api/base_classes/selectors/Selector.fwd.hh>
 
-// Base headers:
-#include <base/MasalaObject.hh>
+// Parent header:
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Core API headers:
 #include <core_api/base_classes/selectors/Selection.fwd.hh>
@@ -52,7 +52,7 @@ namespace selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Selector : public base::MasalaObject {
+class Selector : public base::managers::plugin_module::MasalaPlugin {
 
 public:
 
