@@ -38,10 +38,10 @@ SOFTWARE.
 #include <base/managers/configuration/ConfigurationBase.fwd.hh>
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
 
 // STL headers:
 #include <vector>
-#include <set>
 
 namespace masala {
 namespace base {
@@ -116,19 +116,25 @@ public:
 		std::string const & message
 	) const;
 
+	/// @brief Get a creator object for objects of this type.
+	/// @details By default, returns nullptr.  Can be overridden by derived classes.
+	virtual
+	masala::base::managers::plugin_module::MasalaPluginCreatorCSP
+	get_creator() const;
+
 	/// @brief Get a list of categories that this object could be sorted into.
 	/// @details This is for auto-generation of hierarchical documentation and user interfaces.
 	/// Categories could be something like std::vector< std::string >{ "Manipulators", "Proteins", "Design" }.
-	/// An object may be in more than one category.  The default behaviour, overridable by sub-
-	/// classes, is to provide an empty list.
+	/// An object may be in more than one category.  Uses lists from the creator.  Returns an empty list if
+	/// no creator.
 	std::vector< std::vector< std::string > >
 	get_categories() const;
 
 	/// @brief Get a list of keywords associated with this object.
 	/// @details This is also for auto-generation of documentation or user interfaces, to allow
 	/// discoverability of functionality.  Unlike categories, which are hierarchical, keywords
-	/// have no hierarchy.  The default implementation produces an empty list.
-	std::set< std::string >
+	/// have no hierarchy.  Uses lists from the creator.  Returns an empty list if no creator.
+	std::vector< std::string >
 	get_keywords() const;
 
 protected:
