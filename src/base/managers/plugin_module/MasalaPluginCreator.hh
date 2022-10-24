@@ -107,6 +107,10 @@ public:
 	virtual
 	std::string
 	get_plugin_object_namespace() const = 0;
+
+	/// @brief Get the namespace and name of the class of object that this creator creates.
+	std::string
+	get_plugin_object_namespace_and_name() const;
 	
 	/// @brief Get the map key for the class of object that this creator creates.
 	/// @details The map key is the concatenated vector of base class names (separated by commas)

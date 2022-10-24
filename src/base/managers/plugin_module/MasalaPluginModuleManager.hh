@@ -40,6 +40,7 @@ SOFTWARE.
 #include <base/types.hh>
 #include <base/api/names_from_types.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -171,6 +172,22 @@ public:
 
     /// @brief Get a list of all keywords.
     std::vector< std::string > get_all_keywords() const;
+
+    /// @brief Create a plugin object instance by category and plugin name.
+    /// @note Since names must be unique, the plugin_name should include namespace.
+    MasalaPluginSP
+    create_plugin_object_instance(
+        std::vector< std::string > const & category,
+        std::string const & plugin_name
+    ) const;
+
+    /// @brief Create a plugin object instance by keyword and plugin name.
+    /// @note Since names must be unique, the plugin_name should include namespace.
+    MasalaPluginSP
+    create_plugin_object_instance(
+        std::string const & keyword,
+        std::string const & plugin_name
+    ) const;
 
 private:
 

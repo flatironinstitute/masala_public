@@ -54,9 +54,15 @@ bool
 MasalaPluginCreator::operator==(
 	MasalaPluginCreator const & other
 ) const {
-	return get_plugin_object_name() == other.get_plugin_object_name() &&
+	return get_plugin_object_namespace_and_name() == other.get_plugin_object_namespace_and_name() &&
 		get_plugin_object_manager_key() == other.get_plugin_object_manager_key();
 } // MasalaPluginCreator::operator==()
+
+/// @brief Get the namespace and name of the class of object that this creator creates.
+std::string
+MasalaPluginCreator::get_plugin_object_namespace_and_name() const {
+	return get_plugin_object_namespace() + "::" + get_plugin_object_name();
+}
 	
 /// @brief Get the map key for the class of object that this creator creates.
 /// @details The map key is the concatenated vector of base class names (separated by commas)
@@ -67,13 +73,13 @@ MasalaPluginCreator::get_plugin_object_manager_key() const {
 	std::vector< std::vector< std::string > > const categories( get_plugin_object_categories() );
 	CHECK_OR_THROW_FOR_CLASS(
 		!categories.empty(), "get_plugin_object_manager_key",
-		"No categories were specified for plugin object type \"" + get_plugin_object_name() + "\"."
+		"No categories were specified for plugin object type \"" + get_plugin_object_namespace_and_name() + "\"."
 	);
 	std::vector< std::string > const & firstcategory( categories[0] );
 	CHECK_OR_THROW_FOR_CLASS(
 		!firstcategory.empty(), "get_plugin_object_manager_key",
 		"No hierarchical category relationship was specified for the first category for "
-		"plugin object type \"" + get_plugin_object_name() + "\"."
+		"plugin object type \"" + get_plugin_object_namespace_and_name() + "\"."
 	);
 	for( base::Size i(0), imax(firstcategory.size()); i<imax; ++i ) {
 		ss << firstcategory[i];
@@ -83,7 +89,7 @@ MasalaPluginCreator::get_plugin_object_manager_key() const {
 			ss << ":";
 		}
 	}
-	ss << get_plugin_object_name();
+	ss << get_plugin_object_namespace_and_name();
 	return ss.str();
 } // MasalaPluginCreator::get_plugin_object_manager_key()
 

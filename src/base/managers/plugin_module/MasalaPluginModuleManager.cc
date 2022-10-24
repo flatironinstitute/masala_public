@@ -178,8 +178,11 @@ std::vector< std::string >
 MasalaPluginModuleManager::get_all_plugin_list() const {
     std::vector< std::string > all_plugins;
     all_plugins.reserve( all_plugin_map_.size() );
-    for( auto const & entry : all_plugin_map_ ) {
-        all_plugins.push_back( entry.first );
+    {
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        for( auto const & entry : all_plugin_map_ ) {
+            all_plugins.push_back( entry.first );
+        }
     }
     return all_plugins;
 }
@@ -189,8 +192,11 @@ std::vector< std::vector< std::string > >
 MasalaPluginModuleManager::get_all_categories() const {
     std::vector< std::vector< std::string > > outvec;
     outvec.reserve( plugins_by_hierarchical_category_.size() );
-    for( auto const & entry : plugins_by_hierarchical_category_ ) {
-        outvec.push_back( entry.first );
+    {
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        for( auto const & entry : plugins_by_hierarchical_category_ ) {
+            outvec.push_back( entry.first );
+        }
     }
     return outvec;
 }
@@ -200,10 +206,68 @@ std::vector< std::string >
 MasalaPluginModuleManager::get_all_keywords() const {
     std::vector< std::string > outvec;
     outvec.reserve( plugins_by_keyword_.size() );
-    for( auto const & entry : plugins_by_keyword_ ) {
-        outvec.push_back( entry.first );
+    {
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        for( auto const & entry : plugins_by_keyword_ ) {
+            outvec.push_back( entry.first );
+        }
     }
     return outvec;
+}
+
+/// @brief Create a plugin object instance by category and plugin name.
+/// @note Since names must be unique, the plugin_name should include namespace.
+MasalaPluginSP
+MasalaPluginModuleManager::create_plugin_object_instance(
+    std::vector< std::string > const & category,
+    std::string const & plugin_name
+) const {    
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        plugins_by_hierarchical_category_.find( category )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_hierarchical_category_.end(), "create_plugin_object_instance",
+        "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
+        " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
+    );
+    std::set< MasalaPluginCreatorCSP > const & myset( it->second );
+    for( auto const & entry : myset ) {
+        if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            return entry->create_plugin_object();
+        }
+    }
+    MASALA_THROW( class_namespace_and_name(), "create_plugin_object_instance", "Could not find a plugin "
+        "with name \"" + plugin_name + "\" in category [ " + base::utility::container::container_to_string( category, ", " )
+        + " ]."
+    );
+    return nullptr;
+}
+
+/// @brief Create a plugin object instance by keyword and plugin name.
+/// @note Since names must be unique, the plugin_name should include namespace.
+MasalaPluginSP
+MasalaPluginModuleManager::create_plugin_object_instance(
+    std::string const & keyword,
+    std::string const & plugin_name
+) const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    std::map< std::string, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        plugins_by_keyword_.find( keyword )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_keyword_.end(), "create_plugin_object_instance",
+        "Could not find plugin keyword \"" + keyword +
+        "\" when attempting to create a plugin instance of type \"" + plugin_name + "\"."
+    );
+    std::set< MasalaPluginCreatorCSP > const & myset( it->second );
+    for( auto const & entry : myset ) {
+        if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            return entry->create_plugin_object();
+        }
+    }
+    MASALA_THROW( class_namespace_and_name(), "create_plugin_object_instance", "Could not find a plugin "
+        "with name \"" + plugin_name + "\" and keyword \"" + keyword + "\"."
+    );
+    return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +292,7 @@ void
 MasalaPluginModuleManager::add_plugin_mutex_locked(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::string const plugin_object_name( creator->get_plugin_object_name() );
+    std::string const plugin_object_name( creator->get_plugin_object_namespace_and_name() );
 
     CHECK_OR_THROW_FOR_CLASS(
         !has_plugin_mutex_locked(creator), "add_plugin_mutex_locked",
@@ -283,7 +347,7 @@ void
 MasalaPluginModuleManager::remove_plugin_mutex_locked(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::string const plugin_object_name( creator->get_plugin_object_name() );
+    std::string const plugin_object_name( creator->get_plugin_object_namespace_and_name() );
 
     CHECK_OR_THROW_FOR_CLASS(
         has_plugin_mutex_locked(creator), "remove_plugin_mutex_locked",
