@@ -86,6 +86,12 @@ public:
 	std::vector< std::string >
 	get_plugin_object_base_class_names() const = 0; 
 
+	/// @brief Return keywords associated with this plugin module.  For instance,
+	/// "protein", "design", "metalloprotein".
+	virtual
+	std::vector< std::string >
+	get_plugin_object_keywords() const = 0;
+
 	/// @brief Get The name of the class of object that this creator creates.
 	virtual
 	std::string

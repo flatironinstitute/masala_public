@@ -104,19 +104,19 @@ public:
     /// @brief Query whether any plugin in a vector is already known to the manager.
     bool
     has_any_plugin(
-        std::vector< MasalaPluginCreator const & > const & creators
+        std::vector< MasalaPluginCreatorCSP > const & creators
     ) const;
 
     /// @brief Query whether any plugin in a set is already known to the manager.
     bool
     has_any_plugin(
-        std::set< MasalaPluginCreator const & > const & creators
+        std::set< MasalaPluginCreatorCSP > const & creators
     ) const;
 
     /// @brief Query whether a plugin is already known to the manager.
     bool
     has_plugin(
-        MasalaPluginCreator const & creator
+        MasalaPluginCreatorCSP const & creator
     ) const;
 
     /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
@@ -124,7 +124,7 @@ public:
     /// but does not throw.
     void
     add_plugins(
-        std::vector< MasalaPluginCreator const & > const & creators
+        std::vector< MasalaPluginCreatorCSP > const & creators
     );
 
     /// @brief Add a set of plugins to the list of plugins that the manager knows about.
@@ -132,7 +132,7 @@ public:
     /// but does not throw.
     void
     add_plugins(
-        std::set< MasalaPluginCreator const & > const & creators
+        std::set< MasalaPluginCreatorCSP > const & creators
     );
     
     /// @brief Add a plugin to the list of plugins that the manager knows about.
@@ -140,7 +140,7 @@ public:
     /// first to query wiether the plugin has already been added.
     void
     add_plugin(
-        MasalaPluginCreator const & creator
+        MasalaPluginCreatorCSP const & creator
     );
 
 private:
@@ -154,7 +154,7 @@ private:
     /// @details Assumes that the plugin_map_mutex_ has been locked!
     bool
     has_plugin_mutex_locked(
-        MasalaPluginCreator const & creator
+        MasalaPluginCreatorCSP const & creator
     ) const;
 
     /// @brief Add a plugin to the list of plugins that the manager knows about.  Assumes
@@ -163,7 +163,7 @@ private:
     /// first to query wiether the plugin has already been added.
     void
     add_plugin_mutex_locked(
-        MasalaPluginCreator const & creator
+        MasalaPluginCreatorCSP const & creator
     );
 
 private:
@@ -179,7 +179,14 @@ private:
     /// @details Plugins are stored as a map of string to creator, where the string is
     /// the concatenation of the plugin types (separated by commas) and the plugin name
     /// (preceded by a colon).  For instance, "Selector,AtomSelector:ElementAtomSelector".
-    std::map< std::string, MasalaPluginCreator > all_plugin_map_;
+    std::map< std::string, MasalaPluginCreatorCSP > all_plugin_map_;
+
+    /// @brief Find plugins by keyword.
+    /// @details Keywords can be things that are outside of the hierarchy, like "proteins"
+    /// or "RNA" or "design" or "structure prediction".
+    /// @note Anything added to this map should be added to the all_plugin_map_.  Anything
+    /// removed from the all_plugin_map_ should be removed from this map.
+    std::map< std::string, std::set< MasalaPluginCreatorCSP > > plugins_by_keyword_;
 
 };
 

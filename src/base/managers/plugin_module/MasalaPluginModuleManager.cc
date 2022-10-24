@@ -71,7 +71,7 @@ MasalaPluginModuleManager::class_namespace() const {
 /// @brief Query whether any plugin in a vector is already known to the manager.
 bool
 MasalaPluginModuleManager::has_any_plugin(
-    std::vector< MasalaPluginCreator const & > const & creators
+    std::vector< MasalaPluginCreatorCSP > const & creators
 ) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     for( auto const & creator : creators ) {
@@ -83,7 +83,7 @@ MasalaPluginModuleManager::has_any_plugin(
 /// @brief Query whether any plugin in a set is already known to the manager.
 bool
 MasalaPluginModuleManager::has_any_plugin(
-    std::set< MasalaPluginCreator const & > const & creators
+    std::set< MasalaPluginCreatorCSP > const & creators
 ) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     for( auto const & creator : creators ) {
@@ -95,7 +95,7 @@ MasalaPluginModuleManager::has_any_plugin(
 /// @brief Query whether a plugin is already known to the manager.
 bool
 MasalaPluginModuleManager::has_plugin(
-    MasalaPluginCreator const & creator
+    MasalaPluginCreatorCSP const & creator
 ) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     return has_plugin_mutex_locked( creator );
@@ -106,7 +106,7 @@ MasalaPluginModuleManager::has_plugin(
 /// but does not throw.
 void
 MasalaPluginModuleManager::add_plugins(
-    std::vector< MasalaPluginCreator const & > const & creators
+    std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     for( auto const & creator : creators ) {
@@ -119,7 +119,7 @@ MasalaPluginModuleManager::add_plugins(
 /// but does not throw.
 void
 MasalaPluginModuleManager::add_plugins(
-    std::set< MasalaPluginCreator const & > const & creators
+    std::set< MasalaPluginCreatorCSP > const & creators
 ) {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     for( auto const & creator : creators ) {
@@ -132,7 +132,7 @@ MasalaPluginModuleManager::add_plugins(
 /// first to query wiether the plugin has already been added.
 void
 MasalaPluginModuleManager::add_plugin(
-    MasalaPluginCreator const & creator
+    MasalaPluginCreatorCSP const & creator
 ) {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     add_plugin_mutex_locked( creator );
@@ -147,9 +147,9 @@ MasalaPluginModuleManager::add_plugin(
 /// @details Assumes that the plugin_map_mutex_ has been locked!
 bool
 MasalaPluginModuleManager::has_plugin_mutex_locked(
-    MasalaPluginCreator const & creator
+    MasalaPluginCreatorCSP const & creator
 ) const {
-    return( all_plugin_map_.find( creator.get_plugin_object_manager_key() ) != all_plugin_map_.end() );
+    return( all_plugin_map_.find( creator->get_plugin_object_manager_key() ) != all_plugin_map_.end() );
 }
 
 /// @brief Add a plugin to the list of plugins that the manager knows about.  Assumes
@@ -158,13 +158,30 @@ MasalaPluginModuleManager::has_plugin_mutex_locked(
 /// first to query wiether the plugin has already been added.
 void
 MasalaPluginModuleManager::add_plugin_mutex_locked(
-    MasalaPluginCreator const & creator
+    MasalaPluginCreatorCSP const & creator
 ) {
+    std::string const plugin_object_name( creator->get_plugin_object_name() );
+
     CHECK_OR_THROW_FOR_CLASS(
         !has_plugin_mutex_locked(creator), "add_plugin_mutex_locked",
-        "Plugin \"" + creator.get_plugin_object_name() + "\" has already been added to the plugin manager."
+        "Plugin \"" + plugin_object_name + "\" has already been added to the plugin manager."
     );
-    all_plugin_map_[creator.get_plugin_object_manager_key()] = creator;
+    all_plugin_map_[creator->get_plugin_object_manager_key()] = creator;
+
+    /// @brief Add keywords:
+    std::vector< std::string > keywords( creator->get_plugin_object_keywords() );
+    if( !keywords.empty() ) {
+        for( std::string const & keyword : keywords ) {
+            std::map< std::string, std::set< MasalaPluginCreatorCSP > >::iterator it( plugins_by_keyword_.find(keyword) );
+            if( it == plugins_by_keyword_.end() ) {
+                plugins_by_keyword_[keyword] = std::set< MasalaPluginCreatorCSP >{ creator };
+            } else {
+                it->second.insert( creator );
+            }
+        }
+    }
+
+    write_to_tracer( "Added plugin \"" + plugin_object_name + "\"." );
 }
 
 } // namespace plugin_module
