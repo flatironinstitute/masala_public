@@ -162,16 +162,17 @@ TEST_CASE( "Register and unregister two plugins", "[base::managers::plugin_manag
     CHECK( masala::base::utility::container::has_value( all_keywords, "non-canonical" ) );
 
     {
+        // Check that the plugins are sorted into categories correctly:
         std::vector< std::string > const protein_plugins( pm->get_list_of_plugins_by_keyword( "protein", false) );
         std::vector< std::string > const peptide_plugins( pm->get_list_of_plugins_by_keyword( "peptide", false ) );
-        std::vector< std::string > const design_plugins( pm->get_list_of_plugins_by_keyword( "design", false ) );
+        std::vector< std::string > const design_plugins( pm->get_list_of_plugins_by_keyword( "design", true ) );
         CHECK( protein_plugins.size() == 1 );
         CHECK( masala::base::utility::container::has_value( protein_plugins, "DummyPlugin1" ));
         CHECK( peptide_plugins.size() == 1 );
         CHECK( masala::base::utility::container::has_value( peptide_plugins, "DummyPlugin2" ));
         CHECK( design_plugins.size() == 2 );
-        CHECK( masala::base::utility::container::has_value( design_plugins, "DummyPlugin1" ));
-        CHECK( masala::base::utility::container::has_value( design_plugins, "DummyPlugin2" ));
+        CHECK( masala::base::utility::container::has_value( design_plugins, "masala::tests::unit::base::managers::plugin_module::DummyPlugin1" ));
+        CHECK( masala::base::utility::container::has_value( design_plugins, "masala::tests::unit::base::managers::plugin_module::DummyPlugin2" ));
     }
 
     REQUIRE_NOTHROW([&](){
