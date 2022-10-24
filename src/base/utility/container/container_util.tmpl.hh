@@ -31,6 +31,7 @@ SOFTWARE.
 
 // STL headers
 #include <algorithm>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -42,6 +43,20 @@ namespace container {
     bool
     has_value( C const & container, T const & value ) {
         return std::find( container.begin(), container.end(), value ) != container.end();
+    }
+
+    /// @brief Convert a vector to a string separated by a delimiter.
+    template< class C >
+    std::string
+    container_to_string( C const & container, std::string const & delimiter ) {
+        std::ostringstream ss;
+        bool first(true);
+        for( auto const & entry : container ) {
+            if( first ) { first = false; }
+            else { ss << delimiter; }
+            ss << entry;
+        }
+        return ss.str();
     }
 
 } // namespace container
