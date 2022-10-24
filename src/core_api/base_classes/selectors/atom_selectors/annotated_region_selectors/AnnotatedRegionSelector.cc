@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core_api/base_classes/selectors/annotated_region_selectors/AnnotatedRegionSelector.cc
+/// @file src/core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelector.cc
 /// @brief Function implementations for a pure virtual base class for AnnotatedRegionSelectors.
 /// @details AnnotatedRegionSelectors select atoms in a pose based on regional annotations.
 /// @note Since this class does not implement class_name() or class_namespace()
@@ -30,15 +30,16 @@ SOFTWARE.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit headers:
-#include <core_api/base_classes/selectors/annotated_region_selectors/AnnotatedRegionSelector.hh>
+#include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelector.hh>
 
 // Core-API headers:
-#include <core_api/base_classes/selectors/annotated_region_selectors/AnnotatedRegionSelection.hh>
+#include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelection.hh>
 
 namespace masala {
 namespace core_api {
 namespace base_classes {
 namespace selectors {
+namespace atom_selectors {
 namespace annotated_region_selectors {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +57,7 @@ AnnotatedRegionSelector::generate_selection(
 }
 
 } // namespace annotated_region_selectors
+} // namespace atom_selectors
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
