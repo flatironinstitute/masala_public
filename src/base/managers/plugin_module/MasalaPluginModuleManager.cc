@@ -233,6 +233,26 @@ MasalaPluginModuleManager::get_all_keywords() const {
     return outvec;
 }
 
+/// @brief Get a list of plugins by keyword.
+std::vector< std::string >
+MasalaPluginModuleManager::get_list_of_plugins_by_keyword(
+    std::string const & keyword,
+    bool const include_namespace /*= true*/
+) const {
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    auto const & it( plugins_by_keyword_.find( keyword ) );
+    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_keyword_.end(), "get_list_of_plugins_by_keyword",
+        "Keyword \"" + keyword + "\" not found!"
+    );
+    auto const & myset( it->second );
+    std::vector< std::string > outvec;
+    outvec.reserve( myset.size() );
+    for( auto const & entry : myset ) {
+        outvec.push_back( include_namespace ? entry->get_plugin_object_namespace_and_name() : entry->get_plugin_object_name() );
+    }
+    return outvec;
+}
+
 /// @brief Create a plugin object instance by category and plugin name.
 /// @note Since names must be unique, the plugin_name should include namespace.
 MasalaPluginSP

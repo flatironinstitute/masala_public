@@ -180,6 +180,13 @@ public:
     /// @brief Get a list of all keywords.
     std::vector< std::string > get_all_keywords() const;
 
+    /// @brief Get a list of plugins by keyword.
+    std::vector< std::string >
+    get_list_of_plugins_by_keyword(
+        std::string const & keyword,
+        bool const include_namespace = true
+    ) const;
+
     /// @brief Create a plugin object instance by category and plugin name.
     /// @note Since names must be unique, the plugin_name should include namespace.
     MasalaPluginSP
