@@ -1,3 +1,4 @@
 build/
 bin/
+headers/
 src/*/auto_generated_api/*
