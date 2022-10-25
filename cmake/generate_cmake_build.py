@@ -159,12 +159,14 @@ def get_library_dependencies( dirname : str ) -> list :
         return dlist
     return []
 
-assert len(argv) == 6, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file> <output path and filename for cmake file for test, or NONE>."
+assert len(argv) == 6, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file or NONE> <output path and filename for cmake file for test, or NONE>."
 
 lib_name = argv[1]
 source_dir = argv[2]
 output_file = argv[3]
 output_file_api = argv[4]
+if output_file_api == "NONE" :
+    output_file_api = None
 output_file_tests = argv[5]
 if output_file_tests == "NONE" :
     output_file_tests = None
@@ -212,7 +214,7 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
-if len(api_cclist) > 0 :
+if len(api_cclist) > 0 and output_file_api != None :
     with open( output_file_api, 'w' ) as fhandle :
         fhandle.write( "ADD_CUSTOM_COMMAND(\n" )
         fhandle.write( "\tDEPENDS generate_" + lib_name + "_api POST_BUILD\n" )
