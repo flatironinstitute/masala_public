@@ -54,4 +54,20 @@ for file in files :
         print( "\tCreated directory " + newfile_path + "." )
     print( "\t" + file + " -> " + newfile )
     copyfile( file, newfile )
+
+    if file.endswith(".fwd.hh") and file[ len( source_dir + "/" + lib_name ) : ].startswith( "/auto_generated_api" ) :
+        original_lib_name = lib_name[:-4] # If the library is "core_api", the original library is "core".
+        path_and_file = file[ len( source_dir + "/" + lib_name + "/auto_generated_api/" ) : ]
+        original_path = path.dirname( path_and_file )
+        original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "Pose_API.fwd.hh", the original file is "Pose.fwd.hh".
+        original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
+        #print( "NEED " + original_fwd_declaration )
+
+        new_original_file = dest_dir + original_fwd_declaration[ len(source_dir) : ]
+        new_original_file_path = path.dirname( new_original_file )
+        if path.isdir( new_original_file_path ) == False :
+            makedirs( new_original_file_path )
+            print( "\tCreated directory " + new_original_file_path + "." )
+        print( "\t" + original_fwd_declaration + " -> " + new_original_file )
+        copyfile( original_fwd_declaration, new_original_file )
     
