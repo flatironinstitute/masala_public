@@ -28,7 +28,8 @@
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 from sys import argv
-from os import path, listdir
+from os import path, makedirs
+from shutil import copyfile
 import glob
 
 errmsg = "Error in copy_headers.py: "
@@ -44,7 +45,13 @@ assert path.isdir( dest_dir )
 assert path.isdir( source_dir + "/" + lib_name )
 
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
-#print(files)
+print( "Copying Masala header files from " + source_dir + "/" + lib_name + "/ directory to " + dest_dir + "/ directory." )
 for file in files :
     newfile = dest_dir + file[ len(source_dir) : ]
+    newfile_path = path.dirname( newfile )
+    if path.isdir( newfile_path ) == False :
+        makedirs( newfile_path )
+        print( "\tCreated directory " + newfile_path + "." )
     print( "\t" + file + " -> " + newfile )
+    copyfile( file, newfile )
+    
