@@ -25,6 +25,11 @@ SOFTWARE.
 /// @file src/core/chemistry/atoms/AtomInstance.fwd.hh
 /// @brief Forward declarations for a class contiaining a description of the properties of
 /// a particular atom.
+/// @note This stores element type, formal charge, partial charge,
+/// hybridization state... everything EXCEPT atomic coordinates.
+/// This class is not threadsafe.  Protocols ought not to have
+/// multiple threads operating on the same atom (or should implement
+/// suitable mutex locking to allow this).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
