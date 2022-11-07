@@ -46,4 +46,5 @@ assert path.isdir( source_dir + "/" + lib_name )
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
 #print(files)
 for file in files :
-    print( file )
+    newfile = dest_dir + file[ len(source_dir) : ]
+    print( "\t" + file + " -> " + newfile )

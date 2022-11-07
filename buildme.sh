@@ -6,8 +6,7 @@ cmake ../cmake/
 make -j `nproc` && echo "Build completed." || echo "Build errors!  Check output log."
 cd ..
 mkdir headers && echo "Created headers/ directory." || echo "Directory headers/ already exists."
-cd headers && rm -r *
-python3 ../cmake/copy_headers.py base ../src ./
+rm -r headers/*
+python3 ./cmake/copy_headers.py base src headers
 #python3 ../cmake/copy_headers.py numeric_api
-python3 ../cmake/copy_headers.py core_api ../src ./
-cd ..
+python3 ./cmake/copy_headers.py core_api src headers
