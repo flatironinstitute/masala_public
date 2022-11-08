@@ -79,6 +79,7 @@ public:
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
+	/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
 	/// @param[in] input_parameter0_name The name for the input parameter.
 	/// @param[in] input_parameter0_description The description of the input parameter.
 	/// @param[in] output_parameter_name The name for what the work function returns.
@@ -88,13 +89,14 @@ public:
 		std::string const & work_function_name,
 		std::string const & work_function_description,
 		bool const is_const,
+		bool const returns_this_ref,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description,
 		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
 		std::function< T0( T1 ) > const & work_function
 	) :
-		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
+		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const, returns_this_ref ),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_( output_parameter_name ),

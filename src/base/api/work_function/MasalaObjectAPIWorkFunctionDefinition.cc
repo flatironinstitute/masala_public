@@ -46,15 +46,18 @@ namespace work_function {
 /// @param[in] work_function_description The description of the work function that
 ///			   we are describing here.
 /// @param[in] is_const Is this work function a const function?
+/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
 MasalaObjectAPIWorkFunctionDefinition::MasalaObjectAPIWorkFunctionDefinition(
     std::string const & work_function_name,
     std::string const & work_function_description,
-    bool const is_const
+    bool const is_const,
+    bool const returns_this_ref
 ) :
     masala::base::MasalaObject(),
     work_function_name_(work_function_name),
     work_function_description_(work_function_description),
-    is_const_(is_const)
+    is_const_(is_const),
+    returns_this_ref_(returns_this_ref)
 {}
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -181,14 +181,14 @@ AtomInstanceConstIterator::get_api_definition() {
         // Functions:
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
-                "operator++", "Increment the iterator.", false,
+                "operator++", "Increment the iterator.", false, true,
                 "incremented_iterator", "A reference to the incremented iterator (this object).",
                 std::bind( &AtomInstanceConstIterator::operator++, this )
             )
         );
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
-                "operator--", "Decrement the iterator.", false,
+                "operator--", "Decrement the iterator.", false, true,
                 "decremented_iterator", "A reference to the decremented iterator (this object).",
                 std::bind( &AtomInstanceConstIterator::operator--, this )
             )
@@ -202,7 +202,7 @@ AtomInstanceConstIterator::get_api_definition() {
         );
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
-                "operator==", "Compare to another AtomInstanceConstIterator.", true,
+                "operator==", "Compare to another AtomInstanceConstIterator.", true, false,
                 "other", "The other AtomInstanceConstIterator, to which we are comparing.",
                 "is_equal", "True if the two iterators point to the same AtomInstance; false otherwise.",
                 std::bind( &AtomInstanceConstIterator::operator==, this, std::placeholders::_1 )
@@ -210,7 +210,7 @@ AtomInstanceConstIterator::get_api_definition() {
         );
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
-                "operator!=", "Check for inequality with another AtomInstanceConstIterator.", true,
+                "operator!=", "Check for inequality with another AtomInstanceConstIterator.", true, false,
                 "other", "The other AtomInstanceConstIterator, to which we are comparing.",
                 "is_unequal", "True if the two iterators point to different AtomInstances; false if they are the same.",
                 std::bind( &AtomInstanceConstIterator::operator!=, this, std::placeholders::_1 )

@@ -72,10 +72,12 @@ public:
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
+	/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
 	MasalaObjectAPIWorkFunctionDefinition(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
-		bool const is_const
+		bool const is_const,
+		bool const returns_this_ref
 	);
 
 	/// @brief Copy constructor.
@@ -136,7 +138,10 @@ private:
 
 	/// @brief Is this work function a const function?
 	/// @details Must be set on construction.
-	bool const is_const_;
+	bool const is_const_ = false;
+
+	/// @brief Does this function return reference (or const reference) to this?
+	bool const returns_this_ref_ = false;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 
