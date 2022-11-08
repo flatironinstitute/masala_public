@@ -35,6 +35,7 @@ SOFTWARE.
 // Core headers:
 #include <core/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
+#include <core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 #include <core/chemistry/MoleculesConfiguration.fwd.hh>

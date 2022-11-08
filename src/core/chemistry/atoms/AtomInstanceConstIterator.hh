@@ -24,6 +24,7 @@ SOFTWARE.
 
 /// @file src/core/chemistry/atoms/AtomInstanceConstIterator.hh
 /// @brief Headers for a const iterator over a set of AtomInstances.
+/// @details Not threadsafe!  Intended for single-thread access.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_AtomInstanceConstIterator_hh
@@ -46,6 +47,7 @@ namespace atoms {
 
 
 /// @brief A const iterator over a set of AtomInstances.
+/// @details Not threadsafe!  Intended for single-thread access.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class AtomInstanceConstIterator : public masala::base::MasalaObject {
 
@@ -56,7 +58,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor, deleted.
-    AtomInstanceConstIterator() = delete;
+    AtomInstanceConstIterator() = default;
 
     /// @brief Constructor from set iterator.
     AtomInstanceConstIterator(
@@ -125,7 +127,11 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief The contained iterator to a nonconst pointer.
     std::set< AtomInstanceSP >::const_iterator iterator_;
+
+    /// @brief The API definition.  Nullptr until generated.
+    base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 };
 

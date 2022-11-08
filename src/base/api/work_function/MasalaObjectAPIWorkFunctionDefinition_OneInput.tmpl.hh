@@ -87,6 +87,7 @@ public:
 	MasalaObjectAPIWorkFunctionDefinition_OneInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
+		bool const is_const,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description,
 		std::string const & output_parameter_name,

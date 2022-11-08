@@ -24,6 +24,7 @@ SOFTWARE.
 
 /// @file src/core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh
 /// @brief Forward declarations for a const iterator over a set of AtomInstances.
+/// @details Not threadsafe!  Intended for single-thread access.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_AtomInstanceConstIterator_fwd_hh

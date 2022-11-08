@@ -34,6 +34,7 @@ SOFTWARE.
 #include <core/pose/Pose.hh>
 #include <core/chemistry/Molecules.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
+#include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
 
 namespace masala {
 namespace core {
@@ -50,6 +51,7 @@ namespace api {
         outvec.emplace_back( std::make_shared< masala::core::pose::Pose >() );
         outvec.emplace_back( std::make_shared< masala::core::chemistry::Molecules >() );
         outvec.emplace_back( std::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
+        outvec.emplace_back( std::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;
