@@ -139,7 +139,7 @@ namespace api {
     /// @brief Manually override for set const iterators.
     template<class T>
     std::string
-    name_from_type( type< std::set< T >::const_iterator > ) {
+    name_from_type( type< typename std::set< T >::const_iterator > ) {
         return "std::set< " + name_from_type( type<T>() ) + " >::const_iterator";
     }
 
