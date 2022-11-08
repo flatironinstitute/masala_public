@@ -241,6 +241,18 @@ Molecules::total_atoms() const {
     return atoms_.size();
 }
 
+/// @brief Begin const iterator for accessing atoms.
+atoms::AtomInstanceConstIterator
+Molecules::atoms_begin() const {
+    return atoms::AtomInstanceConstIterator( atoms_.cbegin() );
+}
+
+/// @brief End const iterator for accessing atoms.
+atoms::AtomInstanceConstIterator
+Molecules::atoms_end() const {
+    return atoms::AtomInstanceConstIterator( atoms_.cend() );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

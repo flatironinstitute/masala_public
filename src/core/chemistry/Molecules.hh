@@ -127,6 +127,14 @@ public:
     /// @brief Get the number of atoms in this molecule.
     core::Size total_atoms() const;
 
+    /// @brief Begin const iterator for accessing atoms.
+    atoms::AtomInstanceConstIterator
+    atoms_begin() const;
+
+    /// @brief End const iterator for accessing atoms.
+    atoms::AtomInstanceConstIterator
+    atoms_end() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
