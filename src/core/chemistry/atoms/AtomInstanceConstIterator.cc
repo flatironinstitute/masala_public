@@ -62,6 +62,20 @@ AtomInstanceConstIterator::AtomInstanceConstIterator(
     iterator_(it)
 {}
 
+/// @brief Clone operator.
+AtomInstanceConstIteratorSP
+AtomInstanceConstIterator::clone() const {
+    return std::make_shared< AtomInstanceConstIterator >( *this );
+}
+
+/// @brief Deep clone operator.
+AtomInstanceConstIteratorSP
+AtomInstanceConstIterator::deep_clone() const {
+    AtomInstanceConstIteratorSP new_obj( std::make_shared< AtomInstanceConstIterator >() );
+    new_obj->iterator_ = iterator_;
+    return new_obj;
+}
+
 /// @brief Returns "AtomInstanceConstIterator".
 std::string
 AtomInstanceConstIterator::class_name() const {
@@ -209,7 +223,7 @@ AtomInstanceConstIterator::get_api_definition() {
                 std::bind( &AtomInstanceConstIterator::ptr, this )
             )
         );
-        
+
         api_definition_ = api_definition;
     }
     return api_definition_;

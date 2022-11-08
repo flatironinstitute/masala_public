@@ -68,6 +68,12 @@ public:
     /// @brief Copy constructor.
     AtomInstanceConstIterator( AtomInstanceConstIterator const & ) = default;
 
+    /// @brief Clone operator.
+    AtomInstanceConstIteratorSP clone() const;
+
+    /// @brief Deep clone operator.
+    AtomInstanceConstIteratorSP deep_clone() const;
+
     /// @brief Default destructor.
     ~AtomInstanceConstIterator() override = default;
 

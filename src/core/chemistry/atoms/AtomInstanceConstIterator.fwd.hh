@@ -39,6 +39,11 @@ namespace atoms {
 
     class AtomInstanceConstIterator;
 
+    using AtomInstanceConstIteratorSP = std::shared_ptr< AtomInstanceConstIterator >;
+    using AtomInstanceConstIteratorCSP = std::shared_ptr< AtomInstanceConstIterator const >;
+    using AtomInstanceConstIteratorWP = std::weak_ptr< AtomInstanceConstIterator >;
+    using AtomInstanceConstIteratorCWP = std::weak_ptr< AtomInstanceConstIterator const >;
+
 } // namespace atoms
 } // namespace chemistry
 } // namespace core
