@@ -209,6 +209,8 @@ AtomInstanceConstIterator::get_api_definition() {
                 std::bind( &AtomInstanceConstIterator::ptr, this )
             )
         );
+        
+        api_definition_ = api_definition;
     }
     return api_definition_;
 }
