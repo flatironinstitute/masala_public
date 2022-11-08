@@ -367,6 +367,11 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         else :
             has_output = False
 
+        if ( "Returns_This_Ref" in fxn ) and ( fxn["Returns_This_Ref"] == True ) :
+            returns_this_ref = True
+        else :
+            returns_this_ref = False
+
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
@@ -385,7 +390,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
-            outstring += "\n" + tabchar + ")" + conststr + " {\n"
+            outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
 
@@ -403,7 +408,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         #     ismasalaAPIobj = True
 
         outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True :
+        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
             if ismasalaAPIptr :
                 outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We\n"
                 outstring += tabchar + "// cast away the constness of the object, but effectively restore it by encapsulating\n"
@@ -412,7 +417,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += tabchar + "// with the nonconst object.\n"
             outstring += tabchar + "return "
 
-            if( ismasalaAPIptr ) :
+            if ismasalaAPIptr :
                 dummy = []
                 outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
@@ -429,9 +434,11 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 else :
                     outstring += " "
         outstring += ")"
-        if ismasalaAPIptr :
+        if ismasalaAPIptr and returns_this_ref == False :
             outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
         outstring += ";\n"
+        if returns_this_ref == True :
+            outstring += tabchar + "return *this;\n"
         outstring += "}"
     return outstring
 
