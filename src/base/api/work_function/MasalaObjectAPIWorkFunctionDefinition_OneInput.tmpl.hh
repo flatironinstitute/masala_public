@@ -138,6 +138,9 @@ public:
 			<< " " << work_function_name() << "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " )"
 			<< (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
+		if( returns_this_ref() ) {
+			ss << "Note that this function returns a reference to the original object (*this)." << std::endl;
+		}
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
@@ -152,6 +155,7 @@ public:
 		json_api["Work_Function_Name"] = work_function_name();
 		json_api["Work_Function_Description"] = work_function_description();
 		json_api["Is_Const"] = is_const();
+		json_api["Returns_This_Ref"] = returns_this_ref();
 
 		//Inputs:
 		json_api["Work_Function_N_Inputs"] = 1;

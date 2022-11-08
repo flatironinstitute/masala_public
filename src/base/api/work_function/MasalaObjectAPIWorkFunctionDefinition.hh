@@ -122,6 +122,9 @@ public:
 	/// @brief Get whether this work function is a const function.
 	bool is_const() const;
 
+	/// @brief Does this function return reference (or const reference) to this?
+	bool returns_this_ref() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

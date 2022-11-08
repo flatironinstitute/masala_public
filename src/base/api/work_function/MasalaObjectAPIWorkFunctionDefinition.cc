@@ -82,6 +82,12 @@ MasalaObjectAPIWorkFunctionDefinition::is_const() const {
     return is_const_;
 }
 
+/// @brief Does this function return reference (or const reference) to this?
+bool
+MasalaObjectAPIWorkFunctionDefinition::returns_this_ref() const {
+    return returns_this_ref_;
+}
+
 } // namespace work_function
 } // namespace api
 } // namespace base
