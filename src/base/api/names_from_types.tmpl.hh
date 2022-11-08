@@ -35,6 +35,7 @@ SOFTWARE.
 // STL headers
 #include <string>
 #include <memory>
+#include <set>
 
 namespace masala {
 namespace base {
@@ -105,6 +106,34 @@ namespace api {
     std::string
     name_from_type(type<std::weak_ptr<T const>>) {
         return "std::weak_ptr< " + name_from_type(type<T>()) + " const >";
+    }
+
+    /// @brief Manually override for sets.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T >> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " >";
+    }
+
+    /// @brief Manually override for const sets.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T > const> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " > const";
+    }
+
+    /// @brief Manually override for sets of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T const >> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " const >";
+    }
+
+    /// @brief Manually override for const sets of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T const > const> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " const > const";
     }
 
     /// @brief Manually override for void.
