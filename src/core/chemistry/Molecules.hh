@@ -124,6 +124,9 @@ public:
         std::array< masala::core::Real, 3 > const & coords
     );
 
+    /// @brief Get the number of atoms in this molecule.
+    core::Size total_atoms() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
