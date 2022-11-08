@@ -54,6 +54,14 @@ namespace atoms {
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Constructor from set iterator.
+AtomInstanceConstIterator::AtomInstanceConstIterator(
+    std::set< AtomInstanceSP >::const_iterator const & it
+) :
+    base::MasalaObject(),
+    iterator_(it)
+{}
+
 /// @brief Returns "AtomInstanceConstIterator".
 std::string
 AtomInstanceConstIterator::class_name() const {
@@ -138,23 +146,23 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
 
-        api_definition->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput < AtomInstanceConstIterator > >(
-                "AtomInstanceConstIterator", "Constructs an empty iterator.  Do not use!  The pointer is nullptr!"
-            )
-        );
+        // api_definition->add_constructor(
+        //     std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput < AtomInstanceConstIterator > >(
+        //         "AtomInstanceConstIterator", "Constructs an empty iterator.  Do not use!  The pointer is nullptr!"
+        //     )
+        // );
         api_definition->add_constructor(
             std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, AtomInstanceConstIterator const & > >(
                 "AtomInstanceConstIterator", "Default copy constructor.",
                 "src", "The AtomInstanceConstIterator from which we are copying."
             )
         );
-        api_definition->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceSP >::const_iterator const & > >(
-                "AtomInstanceConstIterator", "Construct the iterator from a std::set const iterator.",
-                "iterator", "The source std::set< AtomInstanceSP >::const_interator, with which we will initialize this iterator."
-            )
-        );
+        // api_definition->add_constructor(
+        //     std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceSP >::const_iterator const & > >(
+        //         "AtomInstanceConstIterator", "Construct the iterator from a std::set const iterator.",
+        //         "iterator", "The source std::set< AtomInstanceSP >::const_interator, with which we will initialize this iterator."
+        //     )
+        // );
 
         // Functions:
         api_definition->add_work_function(
