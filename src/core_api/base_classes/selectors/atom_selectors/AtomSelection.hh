@@ -38,9 +38,16 @@ SOFTWARE.
 
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelection.fwd.hh>
+#include <core_api/auto_generated_api/chemistry/atoms/AtomInstance_API.fwd.hh>
+
+// Core headers:
+#include <core_api/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
+
+// STL headers:
+#include <vector>
 
 namespace masala {
 namespace core_api {
@@ -66,6 +73,29 @@ public:
 
 	/// @brief Destructor.
 	~AtomSelection() override = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Ensure that an atom selection has enough memory allocated so that it
+	/// can store at least N atoms.
+	/// @details Calls STL vector reserve() function, which suggests memory allocation.
+	void reserve( core_api::Size const n_atoms );
+
+	/// @brief Suggest deallocation of unused storage capacity.
+	/// @details Calls STL vector shrink_to_fit() function, which suggests memory deallocation.
+	void shrink_to_fit();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	std::vector< core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP > atoms_;
 
 }; // class AtomSelection
 

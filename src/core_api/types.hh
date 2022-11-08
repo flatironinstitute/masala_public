@@ -22,39 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/// @file src/core/api/generate_api_classes.cc
-/// @brief Utility functions to generate all of the classes in core that define
-/// an API.  Used for auto-generating the core api.
+/// @file src/core_api/types.hh
+/// @brief A utility file containing some typedefs.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Project header
-#include <core/api/generate_api_classes.hh>
+#ifndef Masala_src_core_api_types_hh
+#define Masala_src_core_api_types_hh
 
-// Core headers
-#include <core/pose/Pose.hh>
-#include <core/chemistry/Molecules.hh>
-#include <core/chemistry/atoms/AtomInstance.hh>
+#include <base/types.hh>
 
 namespace masala {
-namespace core {
-namespace api {
+namespace core_api {
 
-    /// @brief Generate an instance of each of the classes in core that have a defined API, and
-    /// return a vector of owning pointers to these instances.
-    /// @details Used for auto-generating the core API description (as a JSON file).
-    std::vector< masala::base::MasalaObjectSP >
-    generate_api_classes() {
-        std::vector< masala::base::MasalaObjectSP > outvec;
+    typedef base::Size Size;
+    typedef base::Real Real;
 
-        // Add to this vector whenever a class is added with a defined API:
-        outvec.emplace_back( std::make_shared< masala::core::pose::Pose >() );
-        outvec.emplace_back( std::make_shared< masala::core::chemistry::Molecules >() );
-        outvec.emplace_back( std::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
-        // ADD MORE ENTRIES HERE
-
-        return outvec;
-    }
-
-} // namespace api
 } // namespace core
 } // namespace masala
+
+#endif // Masala_src_core_types_hh
