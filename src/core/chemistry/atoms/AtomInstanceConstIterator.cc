@@ -193,13 +193,13 @@ AtomInstanceConstIterator::get_api_definition() {
                 std::bind( &AtomInstanceConstIterator::operator--, this )
             )
         );
-        api_definition->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstance const & > >(
-                "operator*", "Access the AtomInstance (by const reference).",
-                "atom_instance", "A const reference to the AtomInstance object to which the iterator currently points.",
-                std::bind( &AtomInstanceConstIterator::operator*, this )
-            )
-        );
+        // api_definition->add_getter(
+        //     std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstance const & > >(
+        //         "operator*", "Access the AtomInstance (by const reference).",
+        //         "atom_instance", "A const reference to the AtomInstance object to which the iterator currently points.",
+        //         std::bind( &AtomInstanceConstIterator::operator*, this )
+        //     )
+        // );
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
                 "operator==", "Compare to another AtomInstanceConstIterator.", true, false,
