@@ -210,6 +210,20 @@ Molecules::get_api_definition() {
                 std::bind( &Molecules::total_atoms, this )
             )
         );
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_begin", "Get an iterator over atoms, initialized to first atom.",
+                "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
+                std::bind( &Molecules::atoms_begin, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_end", "Get an iterator over atoms, initialized to one past the last atom.",
+                "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
+                std::bind( &Molecules::atoms_end, this )
+            )
+        );
 
         api_definition_ = api_def; // Nonconst to const.
     }
