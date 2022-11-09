@@ -14,8 +14,8 @@
 // Unit header:
 <__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>
 
-// Source class forward header:
-<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>
+// Source class header:
+<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
 
 // Base headers:
 #include <base_api/MasalaObjectAPI.hh>
