@@ -410,7 +410,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( outtype_inner.startswith("masala::") ) :
                 ismasalaAPIptr = True
-        elif outtype.startswith( "masala::" ) :
+        elif outtype.startswith( "masala::" ) and returns_this_ref == False :
             ismasalaAPIobj = True
 
         outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
@@ -423,14 +423,15 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += tabchar + "// with the nonconst object.\n"
             outstring += tabchar + "return "
 
-            if ismasalaAPIptr :
+            if ismasalaAPIptr and returns_this_ref == False :
                 dummy = []
                 outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif ismasalaAPIobj :
                 dummy = []
-                outstring += "std::make_shared< " + outtype + " >( "
+                outstring += correct_masala_types( outtype, dummy ) + "(\n"
+                outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
         else :
             outstring += tabchar
 
@@ -449,7 +450,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         if ismasalaAPIptr and returns_this_ref == False :
             outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
         elif ismasalaAPIobj and returns_this_ref == False :
-            outstring += " )"
+            outstring += " )\n" + tabchar + ")"
         outstring += ";\n"
         if returns_this_ref == True :
             outstring += tabchar + "return *this;\n"
