@@ -428,7 +428,10 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         outstring += "inner_object_->" + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if fxn["Inputs"]["Input_" + str(i)]["Input_Type"].startswith( "masala::" ) :
+                    outstring += " *( " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object() )"
+                else:
+                    outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
                 else :
