@@ -120,6 +120,15 @@ def drop_const( classname: str )-> str :
             outstr += entry
     return outstr
 
+## @brief Add a Masala header to the list of additional headers to include.
+def add_base_class_include( inputclass : str , additional_includes: list ) -> None :
+    if inputclass.startswith( "masala::" ) == False :
+        # Do nothing.
+        return
+    includefile = inputclass[8:].replace( "::", "/" )
+    if includefile not in additional_includes :
+        additional_includes.append(includefile)
+
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
 ## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
@@ -432,6 +441,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 dummy = []
                 outstring += correct_masala_types( outtype, dummy ) + "(\n"
                 outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
+                add_base_class_include( outtype, additional_includes )
         else :
             outstring += tabchar
 
