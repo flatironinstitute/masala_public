@@ -141,15 +141,27 @@ def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
     
     api_classname = ""
     api_filename = ""
+    print ("**inputclass: " + inputclass)
     firstspace = inputclass.find(" ")
-    inputclass_base = inputclass[0:firstspace]
-    inputclass_extension = inputclass[firstspace + 1:]
+    print("**firstspace:", firstspace)
+    if firstspace == -1 :
+        inputclass_base = inputclass
+        print ("**inputclass_base: " + inputclass_base)
+        inputclass_extension = ""
+        print ("**inputclass_extension: " + inputclass_extension)
+    else :
+        inputclass_base = inputclass[0:firstspace]
+        print ("**inputclass_base: " + inputclass_base)
+        inputclass_extension = inputclass[firstspace + 1:]
+        print ("**inputclass_extension: " + inputclass_extension)
     inputclass_split = inputclass_base.split("::")
+    print ("**inputclass_split:", inputclass_split)
     assert len(inputclass_split) > 2
     for i in range(len(inputclass_split)) :
         if i == 0 :
             continue # Skip "masala"
         curstring = inputclass_split[i]
+        print ("****" + curstring)
         api_classname += curstring
         api_filename += curstring
         if i == 1 :
@@ -163,7 +175,9 @@ def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
             api_filename += "/"
     if api_filename not in additional_includes :
         additional_includes.append( api_filename )
-    return api_classname + " " + inputclass_extension
+    if len(inputclass_extension) > 0 :
+        return api_classname + " " + inputclass_extension
+    return api_classname
 
     
 
