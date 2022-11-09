@@ -77,10 +77,13 @@ public:
 	///            we're providing an API definition.
 	/// @param[in] api_class_description The description of the class for which
 	///			   we're providing an API definition.
+	/// @param[in] is_lightweight Is this the API definition for a lightweight
+	/// 		   object that could be stack-allocated?
 	MasalaObjectAPIDefinition(
 		std::string const & api_class_name,
 		std::string const & api_class_namespace,
-		std::string const & api_class_description
+		std::string const & api_class_description,
+		bool const is_lightweight
 	);
 
 
@@ -242,6 +245,10 @@ private:
 
 	/// @brief A list of work functions.
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
+
+	/// @brief Is this the API for a lightweight object that could be stack-allocated?
+	/// @details If so, the API container will store the object directly, not an owning pointer to it.
+	bool is_lightweight_ = false;
 
 
 }; // class MasalaObjectAPIDefinition

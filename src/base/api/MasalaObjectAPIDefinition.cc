@@ -58,15 +58,19 @@ namespace api {
 ///            we're providing an API definition.
 /// @param[in] api_class_description The description of the class for which
 ///			   we're providing an API definition.
+/// @param[in] is_lightweight Is this the API definition for a lightweight
+///            object that could be stack-allocated?
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     std::string const & api_class_name,
     std::string const & api_class_namespace,
-    std::string const & api_class_description
+    std::string const & api_class_description,
+    bool const is_lightweight
 ) :
     masala::base::MasalaObject(),
     api_class_name_( api_class_name ),
     api_class_namespace_( api_class_namespace ),
-    api_class_description_( api_class_description )
+    api_class_description_( api_class_description ),
+    is_lightweight_( is_lightweight )
 {}
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
@@ -143,6 +147,9 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
         }
     }
 
+    ss << "\nPROPERTIES\n";
+    ss << "is_lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
+
     return ss.str();
 }
 
@@ -162,6 +169,10 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["Setters"] = get_json_description_for_setters();
     json_api["Getters"] = get_json_description_for_getters();
     json_api["WorkFunctions"] = get_json_description_for_work_functions();
+
+    json_api["Properties"] = std::map< std::string, bool >{
+        { "is_lightweight", is_lightweight_ }
+    };
 
     return json_ptr;
 }
