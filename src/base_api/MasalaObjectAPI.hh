@@ -38,10 +38,7 @@ SOFTWARE.
 namespace masala {
 namespace base_api {
 
-/// @brief A base class for all Masala derived classes.  This allows the possibility of having a
-/// generic MasalaObject pointer or shared pointer.
-/// @note The MasalaConfigurationManager can access the private member functions (and data) of MasalaObjects.
-/// This allows it to call load_configuration() when first needed.
+/// @brief A base class for Masala API derived classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaObjectAPI : public base::MasalaObject {
 
