@@ -469,14 +469,20 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
 ## @brief Given a list of additional files to include, generate a
 ## string of the inclusions.
-def generate_additional_includes( additional_includes : list, generate_fwd_includes : bool ) -> str :
+def generate_additional_includes( additional_includes : list, generate_fwd_includes : bool, original_api_include: str ) -> str :
     outstr = ""
     if generate_fwd_includes == True :
         fwdstr = ".fwd"
     else :
         fwdstr = ""
+    first = True
     for entry in additional_includes :
-        outstr += "#include <" + entry + fwdstr + ".hh>\n"
+        if entry != original_api_include :
+            if first == True :
+                first = False
+            else :
+                outstr += "\n"
+            outstr += "#include <" + entry + fwdstr + ".hh>"
     return outstr
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
@@ -554,7 +560,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
         .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
-        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True ) )
+        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -595,7 +601,7 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
         .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
-        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False ) )
+        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
