@@ -95,7 +95,7 @@ def read_file( filename : str ) -> list :
 
 ## @brief Determine whether an object is an API type, and if so, access the
 ## class type inside.
-def access_needed_object( classname : str, instancename : str ) -> str :
+def access_needed_object( classname : str, instancename : str, jsonfile : json ) -> str :
     if classname.startswith( "masala::" ) == False :
         if classname.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
@@ -104,6 +104,10 @@ def access_needed_object( classname : str, instancename : str ) -> str :
             if innerclass.startswith("masala::") :
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
+    classtype = classname.split()[0]
+    assert classtype in jsonfile["Elements"]
+    if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
+        return instancename + ".get_inner_object()"
     return "*( " + instancename + ".get_inner_object() )"
 
 ## @brief Given a Masala type that may contain "const", drop the const.
@@ -281,7 +285,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
         outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += " " + access_needed_object( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"] )
+                outstring += " " + access_needed_object( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
                 if i+1 < ninputs :
                     outstring += ","
                 else :
@@ -351,7 +355,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
+def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool ) -> str :
     outstring = ""
     first = True
 
@@ -445,11 +449,19 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         else :
             outstring += tabchar
 
-        outstring += "inner_object_->" + fxn[namepattern + "_Name"] + "("
+        accessor_string = "->"
+        if is_lightweight == True :
+            accessor_string = "."
+        outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
                 if fxn["Inputs"]["Input_" + str(i)]["Input_Type"].startswith( "masala::" ) :
-                    outstring += " *( " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object() )"
+                    inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
+                    assert inputtype in jsonfile["Elements"]
+                    if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
+                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object()"
+                    else :
+                        outstring += " *( " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object() )"
                 else:
                     outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
@@ -599,9 +611,9 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) )
 
     fname = dirname + apiclassname + ".cc"
