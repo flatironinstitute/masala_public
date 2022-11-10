@@ -388,6 +388,14 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]
         outtype = fxn["Output"]["Output_Type"]
+
+        outtype_base = outtype.split()[0]
+        output_is_lightweight = False
+        if outtype_base.startswith( "masala::" ) :
+            assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
+            if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
+                output_is_lightweight = True
+
         if ("Output" in fxn) and (outtype != "void") :
             has_output = True
         else :
@@ -451,7 +459,10 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             elif ismasalaAPIobj :
                 dummy = []
                 outstring += correct_masala_types( outtype, dummy ) + "(\n"
-                outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
+                if output_is_lightweight :
+                    outstring += tabchar + tabchar + outtype + "( "
+                else :
+                    outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
                 add_base_class_include( outtype, additional_includes )
         else :
             outstring += tabchar
