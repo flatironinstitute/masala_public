@@ -74,6 +74,12 @@ public:
     /// @brief Deep clone operator.
     AtomInstanceConstIteratorSP deep_clone() const;
 
+    /// @brief Make this object independent by deep-cloning anything to
+    /// which it holds a shared pointer.
+    /// @details All that this version does is to reset the api_definition_
+    /// shared pointer to nullptr.
+    void make_independent();
+
     /// @brief Default destructor.
     ~AtomInstanceConstIterator() override = default;
 

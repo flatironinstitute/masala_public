@@ -76,6 +76,14 @@ AtomInstanceConstIterator::deep_clone() const {
     return new_obj;
 }
 
+/// @brief Make this object independent by deep-cloning anything to
+/// which it holds a shared pointer.
+/// @details All that this version does is to reset the api_definition_
+/// shared pointer to nullptr.
+void AtomInstanceConstIterator::make_independent() {
+    api_definition_ = nullptr;
+}
+
 /// @brief Returns "AtomInstanceConstIterator".
 std::string
 AtomInstanceConstIterator::class_name() const {
