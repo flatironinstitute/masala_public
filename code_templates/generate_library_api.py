@@ -555,6 +555,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
+        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
         .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
         .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
@@ -568,7 +569,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str ) :
+def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str, is_lightweight: bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -625,6 +626,11 @@ initialize_directory( library_name )
 ccfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.cc" )
 hhfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.hh" )
 fwdfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.fwd.hh" )
+
+lightweight_ccfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.cc" )
+lightweight_hhfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.hh" )
+lightweight_fwdfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.fwd.hh" )
+
 licence_template = read_file( "code_templates/licences/MIT.template" ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
@@ -639,9 +645,14 @@ for element in json_api["Elements"] :
     assert namespace[0] == "masala", "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"masala\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
     assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"masala::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
     dirname = prepare_directory( library_name, namespace )
-    prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-    prepare_header_file( library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
-    prepare_cc_file( library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar )
+    if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
+        prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
+        prepare_header_file( library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
+        prepare_cc_file( library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False )
+    else :
+        prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
+        prepare_header_file( library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar )
+        prepare_cc_file( library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     
