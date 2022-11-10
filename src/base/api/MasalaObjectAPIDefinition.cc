@@ -148,7 +148,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     }
 
     ss << "\nPROPERTIES\n";
-    ss << "is_lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
+    ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
 
     return ss.str();
 }
@@ -171,7 +171,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["WorkFunctions"] = get_json_description_for_work_functions();
 
     json_api["Properties"] = std::map< std::string, bool >{
-        { "is_lightweight", is_lightweight_ }
+        { "Is_Lightweight", is_lightweight_ }
     };
 
     return json_ptr;
