@@ -129,7 +129,8 @@ AtomInstance::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             std::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
-                "An instance of an atom."
+                "An instance of an atom.",
+                false
             )
         );
         api_def->add_constructor(

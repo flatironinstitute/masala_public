@@ -188,7 +188,8 @@ Molecules::get_api_definition() {
             std::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
                 "A container for atoms and chemical bonds, and for data representations "
-                "that allow efficient geometric manipulations."
+                "that allow efficient geometric manipulations.",
+                false
             )
         );
         api_def->add_constructor(
