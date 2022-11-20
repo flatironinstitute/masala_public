@@ -58,7 +58,14 @@ namespace api {
     template <class T>
     std::string
     name_from_type(type<T>) {
+        static_assert(
+            !std::is_enum<T>::value,
+            "Compile-time error in use of name_from_type() function: For enums, the derived \"enum_type\" "
+            "struct must be used insetad of the base \"type\" struct."
+        );
+
         std::shared_ptr<T> tempobj( std::make_shared<T>() );
+
         masala::base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj) );
         if( tempptr != nullptr ) {
             return tempptr->class_namespace() + "::" + tempptr->class_name();
