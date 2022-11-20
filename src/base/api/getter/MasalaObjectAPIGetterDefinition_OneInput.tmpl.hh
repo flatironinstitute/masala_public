@@ -73,7 +73,7 @@ public:
 	/// @brief Default constructor.
 	MasalaObjectAPIGetterDefinition_OneInput() = delete;
 
-	/// @brief Options constructor, to be called by derived classes.
+	/// @brief Options constructor.
 	/// @param[in] getter_function_name The name of the getter function that
 	///			   we are describing here.
 	/// @param[in] getter_function_description The description of the getter function that
@@ -94,6 +94,38 @@ public:
 		std::function< T0( T1 ) > const & getter_function
 	) :
 		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description ),
+		input_parameter0_name_(input_parameter0_name),
+		input_parameter0_description_(input_parameter0_description),
+		output_name_(output_parameter_name),
+		output_description_( output_parameter_description ),
+		getter_function_( getter_function )
+	{}
+
+	/// @brief Options constructor, for custom output types (enums).
+	/// @param[in] getter_function_name The name of the getter function that
+	///			   we are describing here.
+	/// @param[in] getter_function_description The description of the getter function that
+	///			   we are describing here.
+	/// @param[in] input_parameter0_description The name of the input parameter.
+	/// @param[in] input_parameter0_description The description of the input parameter.
+	/// @param[in] output_parameter_name A name for what the getter returns.  (Not used in the
+	///            C++ code; could be used elsewhere.)
+	/// @param[in] output_parameter_description The description of what the getter returns.
+	/// @param[in] output_type_name The name of the output type.
+	/// @param[in] output_type_namespace The namespace of the output type.
+	/// @param[in] getter_function The actual getter function.
+	MasalaObjectAPIGetterDefinition_OneInput(
+		std::string const & getter_function_name,
+		std::string const & getter_function_description,
+		std::string const & input_parameter0_name,
+		std::string const & input_parameter0_description,
+		std::string const & output_parameter_name,
+		std::string const & output_parameter_description,
+		std::string const & output_type_name,
+		std::string const & output_type_namespace,
+		std::function< T0( T1 ) > const & getter_function
+	) :
+		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description, output_type_name, output_type_namespace ),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_(output_parameter_name),
@@ -131,7 +163,10 @@ public:
 	std::string
 	get_getter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Getter:\t" << masala::base::api::name_from_type< T0 >() << " " << getter_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " ) const:" << std::endl;
+    	ss << "Getter:\t"
+			<< ( has_custom_output_type_name() ? get_custom_output_type_namespace_and_name() : masala::base::api::name_from_type(base::api::type<T0>()) )
+			<< " " << getter_function_name()
+			<< "( " << masala::base::api::name_from_type< T1 >() << " ) const:" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
@@ -163,7 +198,7 @@ public:
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = masala::base::api::name_from_type< T0 >();
+		json_output[ "Output_Type" ] = ( has_custom_output_type_name() ? get_custom_output_type_namespace_and_name() : masala::base::api::name_from_type(base::api::type<T0>()) );
 		json_output[ "Output_Description" ] = output_description_;
 		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;

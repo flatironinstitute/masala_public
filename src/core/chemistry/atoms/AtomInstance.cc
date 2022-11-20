@@ -168,6 +168,7 @@ AtomInstance::get_api_definition() {
             std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< ElementTypeEnum > >(
                 "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
                 "element_type_enum", "The element type, represented as an ElementTypeEnum.",
+                "ElementTypeEnum", "masala::core::chemistry::atoms",
                 std::bind( &AtomInstance::element_type_enum, *this )
             )
         );

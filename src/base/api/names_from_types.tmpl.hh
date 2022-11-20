@@ -31,6 +31,7 @@ SOFTWARE.
 
 // Base headers
 #include <base/MasalaObject.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers
 #include <string>
@@ -54,67 +55,28 @@ namespace api {
 
     };
 
-    /// @brief A container for enum types.
-    template< typename T >
-    struct enum_type : public type<T> {
-
-        enum_type() = delete;
-
-        enum_type(
-            std::string const & enum_name,
-            std::string const & enum_namespace
-        ) :
-            type<T>(),
-            enum_name_( enum_name ),
-            enum_namespace_( enum_namespace )
-        {}
-
-        /// @brief  Comparison operator.
-        template < typename Tprime >
-        bool
-        operator==( enum_type<Tprime> const & other ) {
-            return type<T>::operator==(other) &&
-                enum_name_ == other.enum_name_ &&
-                enum_namespace_ == other.enum_namespace_;
-        }
-
-        /// @brief  Comparison operator.
-        template < typename Tprime >
-        bool
-        operator==( type<Tprime> const & other ) {
-            enum_type<Tprime> const * other_ptr( dynamic_cast< enum_type<Tprime> const * >(&other) );
-            if( other_ptr == nullptr ) {
-                return false;
-            }
-            return (*this) == (*other_ptr);
-        }
-
-        /// @brief Get the namespace and name.
-        std::string
-        enum_namespace_and_name() const {
-            return enum_namespace_ + "::" + enum_name_;
-        }
-    
-    private: //Data
-
-        std::string enum_name_;
-        std::string enum_namespace_;
-
-    };
-
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
     std::string
     name_from_type(type<T>) {
-        static_assert(
+        CHECK_OR_THROW(
             !std::is_enum<T>::value,
-            "Compile-time error in use of name_from_type() function: For enums, the derived \"enum_type\" "
-            "struct must be used insetad of the base \"type\" struct."
+            "base::api", "name_from_type",
+            "Error in use of name_from_type() function: this function cannot be used for enums!  "
+            "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
+            "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
+        );
+        if( std::is_enum<T>::value ) {
+            return "ERROR";
+        }
+
+        std::shared_ptr<T> tempobj(
+            std::make_shared<T>()
         );
 
-        std::shared_ptr<T> tempobj( std::make_shared<T>() );
-
-        masala::base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj) );
+        masala::base::MasalaObjectSP tempptr(
+            std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+        );
         if( tempptr != nullptr ) {
             return tempptr->class_namespace() + "::" + tempptr->class_name();
         }
