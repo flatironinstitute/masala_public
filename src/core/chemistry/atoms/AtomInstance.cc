@@ -37,6 +37,7 @@ SOFTWARE.
 
 // Core headers:
 #include <core/chemistry/atoms/data/PDBAtomData.hh>
+#include <core/chemistry/atoms/ElementType.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -111,6 +112,12 @@ AtomInstance::formal_charge() const {
 masala::core::Real
 AtomInstance::partial_charge() const {
     return partial_charge_;
+}
+
+/// @brief Get the element type (enum) for this atom instance.
+ElementTypeEnum
+AtomInstance::element_type() const {
+    return element_type_->element_type();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
