@@ -97,6 +97,9 @@ public:
     /// @details In Daltons.
     inline masala::core::Real atomic_mass_current_isotope() const { return atomic_mass_current_isotope_; }
 
+    /// @brief Get the element type, by enum.
+    inline ElementTypeEnum element_type() const{ return element_type_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
