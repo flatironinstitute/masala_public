@@ -101,18 +101,34 @@ AtomInstanceConstIterator::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-/// @brief Incrementation operator.
+/// @brief Pre-incrementation operator.
 AtomInstanceConstIterator &
 AtomInstanceConstIterator::operator++() {
     ++iterator_;
     return *this;
 }
 
-/// @brief Decrementation operator.
+/// @brief Pre-decrementation operator.
 AtomInstanceConstIterator &
 AtomInstanceConstIterator::operator--() {
     --iterator_;
     return *this;
+}
+
+/// @brief Post-incrementation operator.
+AtomInstanceConstIterator
+AtomInstanceConstIterator::operator++(
+    int const //dummy
+) {
+    return AtomInstanceConstIterator( iterator_++ );
+}
+
+/// @brief Post-decrementation operator.
+AtomInstanceConstIterator
+AtomInstanceConstIterator::operator--(
+    int const //dummy
+) {
+    return AtomInstanceConstIterator( iterator_-- );
 }
 
 /// @brief Const access.
@@ -192,14 +208,14 @@ AtomInstanceConstIterator::get_api_definition() {
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
                 "operator++", "Increment the iterator.", false, true,
                 "incremented_iterator", "A reference to the incremented iterator (this object).",
-                std::bind( &AtomInstanceConstIterator::operator++, this )
+                std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator++ ), this )
             )
         );
         api_definition->add_work_function(
             std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
                 "operator--", "Decrement the iterator.", false, true,
                 "decremented_iterator", "A reference to the decremented iterator (this object).",
-                std::bind( &AtomInstanceConstIterator::operator--, this )
+                std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator-- ), this )
             )
         );
         // api_definition->add_getter(

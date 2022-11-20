@@ -95,13 +95,21 @@ public:
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Incrementation operator.
+    /// @brief Pre-incrementation operator.
     AtomInstanceConstIterator &
     operator++();
 
-    /// @brief Decrementation operator.
+    /// @brief Pre-decrementation operator.
     AtomInstanceConstIterator &
     operator--();
+
+    /// @brief Post-incrementation operator.
+    AtomInstanceConstIterator
+    operator++( int const dummy );
+
+    /// @brief Post-decrementation operator.
+    AtomInstanceConstIterator
+    operator--( int const dummy );
 
     /// @brief Const access.
     AtomInstance const &
