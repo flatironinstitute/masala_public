@@ -44,6 +44,45 @@ assert path.isdir( source_dir )
 assert path.isdir( dest_dir )
 assert path.isdir( source_dir + "/" + lib_name )
 
+## @brief Determine whether an auto-generated API file defines an API for a lightweight,
+## stack-allocated class (True) or for a heavyweight, heap-allocated class (False).
+## @details Used to determine whether header files should be copied for the
+## stack-allocated class.
+def is_lightweight( filename : str ) -> bool :
+    hhname = filename.replace(".fwd.hh", ".hh")
+    with open( hhname, 'r' ) as filehandle:
+        filelines = filehandle.readlines()
+    is_lightweight = None
+    for line in filelines:
+        linestripped = line.strip()
+        if linestripped.endswith( "inner_object_;" ) :
+            linesplit = linestripped.split()
+            assert len(linesplit) == 2
+            if linesplit[0].endswith("SP") :
+                is_lightweight = False
+                break
+            else :
+                is_lightweight = True
+                break
+    assert is_lightweight is not None, "Error in parsing file " + hhname + " to determine whether this is a lightweight API."
+    return is_lightweight
+
+## @brief Get a list of all of the .fwd.hh files included by a header file.
+def get_fwd_files( filename : str, source_dir : str ) -> list :
+    returnlist = []
+    with open( filename, 'r' ) as filehandle:
+        filelines = filehandle.readlines()
+    for line in filelines :
+        linestripped = line.strip()
+        if linestripped.startswith("#include"):
+            linesplit = linestripped.replace("<", " ").replace(">", " ").split()
+            assert len(linesplit) >= 2
+            if linesplit[1].endswith(".fwd.hh") :
+                returnlist.append( source_dir + "/"+ linesplit[1] )
+    print(returnlist)
+    return returnlist
+
+
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
 print( "Copying Masala header files from " + source_dir + "/" + lib_name + "/ directory to " + dest_dir + "/ directory." )
 for file in files :
@@ -61,13 +100,27 @@ for file in files :
         original_path = path.dirname( path_and_file )
         original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "Pose_API.fwd.hh", the original file is "Pose.fwd.hh".
         original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
+        if is_lightweight( file ) == True :
+            original_hh_file = path.basename( path_and_file )[ : -11 ] + ".hh"
+            original_hh_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_hh_file
+            files_to_copy = get_fwd_files( original_hh_declaration, source_dir )
+        else :
+            original_hh_file = None
+            original_hh_declaration = None
+            files_to_copy = []
         #print( "NEED " + original_fwd_declaration )
 
-        new_original_file = dest_dir + original_fwd_declaration[ len(source_dir) : ]
-        new_original_file_path = path.dirname( new_original_file )
-        if path.isdir( new_original_file_path ) == False :
-            makedirs( new_original_file_path )
-            print( "\tCreated directory " + new_original_file_path + "." )
-        print( "\t" + original_fwd_declaration + " -> " + new_original_file )
-        copyfile( original_fwd_declaration, new_original_file )
+        files_to_copy.append( original_fwd_declaration )
+        if original_hh_declaration is not None :
+            files_to_copy.append( original_hh_declaration )
+
+        for f2 in files_to_copy:
+            new_original_file = dest_dir + f2[ len(source_dir) : ]
+            new_original_file_path = path.dirname( new_original_file )
+            if path.isdir( new_original_file_path ) == False :
+                makedirs( new_original_file_path )
+                print( "\tCreated directory " + new_original_file_path + "." )
+            if path.exists( new_original_file ) == False :
+                print( "\t" + f2 + " -> " + new_original_file )
+                copyfile( f2, new_original_file )
     
