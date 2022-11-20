@@ -116,7 +116,7 @@ AtomInstance::partial_charge() const {
 
 /// @brief Get the element type (enum) for this atom instance.
 ElementTypeEnum
-AtomInstance::element_type() const {
+AtomInstance::element_type_enum() const {
     return element_type_->element_type();
 }
 
@@ -162,6 +162,13 @@ AtomInstance::get_api_definition() {
             std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Real > >(
                 "partial_charge", "Get the partial charge on this atom.  Partial charges are real values.",
                 "partial_charge", "The partial charge on this atom.", std::bind( &AtomInstance::partial_charge, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< ElementTypeEnum > >(
+                "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
+                "element_type_enum", "The element type, represented as an ElementTypeEnum.",
+                std::bind( &AtomInstance::element_type_enum, *this )
             )
         );
 

@@ -123,7 +123,7 @@ public:
     masala::core::Real partial_charge() const;
 
     /// @brief Get the element type (enum) for this atom instance.
-    ElementTypeEnum element_type() const;
+    ElementTypeEnum element_type_enum() const;
 
 public:
 
