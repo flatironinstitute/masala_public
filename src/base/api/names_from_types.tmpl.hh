@@ -59,16 +59,12 @@ namespace api {
     template <class T>
     std::string
     name_from_type(type<T>) {
-        CHECK_OR_THROW(
+        static_assert(
             !std::is_enum<T>::value,
-            "base::api", "name_from_type",
             "Error in use of name_from_type() function: this function cannot be used for enums!  "
             "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
             "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
         );
-        if( std::is_enum<T>::value ) {
-            return "ERROR";
-        }
 
         std::shared_ptr<T> tempobj(
             std::make_shared<T>()
