@@ -59,22 +59,24 @@ namespace api {
     template <class T>
     std::string
     name_from_type(type<T>) {
-        static_assert(
-            !std::is_enum<T>::value,
+        CHECK_OR_THROW(
+            !std::is_enum<T>::value, "base::api", "name_from_type",
             "Error in use of name_from_type() function: this function cannot be used for enums!  "
             "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
             "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
         );
 
-        std::shared_ptr<T> tempobj(
-            std::make_shared<T>()
-        );
+        if constexpr( std::is_class<T>::value ) {
+            std::shared_ptr<T> tempobj(
+                std::make_shared<T>()
+            );
 
-        masala::base::MasalaObjectSP tempptr(
-            std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
-        );
-        if( tempptr != nullptr ) {
-            return tempptr->class_namespace() + "::" + tempptr->class_name();
+            masala::base::MasalaObjectSP tempptr(
+                std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+            );
+            if( tempptr != nullptr ) {
+                return tempptr->class_namespace() + "::" + tempptr->class_name();
+            }
         }
         return typeid(T).name();
     }
