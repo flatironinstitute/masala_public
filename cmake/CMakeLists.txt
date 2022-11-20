@@ -27,8 +27,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
 PROJECT( Masala VERSION 0.1 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
-SET( MODE debug )
-SET( CMAKE_BUILD_TYPE Debug )
+#SET( MODE debug )
+#SET( CMAKE_BUILD_TYPE Debug )
+SET( MODE release )
+SET( CMAKE_BUILD_TYPE Release )
 SET( LINK_TYPE SHARED )
 SET( LINK_EXTERNAL_LIBS stdc++ )
 SET( CMAKE_MACOSX_RPATH 1 )
