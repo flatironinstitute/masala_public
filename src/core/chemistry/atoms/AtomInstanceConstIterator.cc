@@ -205,17 +205,33 @@ AtomInstanceConstIterator::get_api_definition() {
 
         // Functions:
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
-                "operator++", "Increment the iterator.", false, true,
+            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
+                "operator++", "Increment the iterator.  (Pre-incrementation operator.)", false, true,
                 "incremented_iterator", "A reference to the incremented iterator (this object).",
                 std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator++ ), this )
             )
         );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator const & > >(
-                "operator--", "Decrement the iterator.", false, true,
+            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
+                "operator--", "Decrement the iterator.  (Pre-decrementation operator.)", false, true,
                 "decremented_iterator", "A reference to the decremented iterator (this object).",
                 std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator-- ), this )
+            )
+        );
+        api_definition->add_work_function(
+            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
+                "operator++", "Increment the iterator.  (Post-incrementation operator.)", false, false,
+                "dummy", "A dummy integer, used to distinguish this function from the pre-incrementation override.",
+                "original_iterator", "A copy of the iterator PRIOR to incrementation.",
+                std::bind( static_cast< AtomInstanceConstIterator (AtomInstanceConstIterator::*)( int ) >( &AtomInstanceConstIterator::operator++ ), this, std::placeholders::_1 )
+            )
+        );
+        api_definition->add_work_function(
+            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
+                "operator--", "Decrement the iterator.  (Post-decrementation operator.)", false, false,
+                "dummy", "A dummy integer, used to distinguish this function from the pre-decrementation override.",
+                "original_iterator", "A copy of the iterator PRIOR to decrementation.",
+                std::bind( static_cast< AtomInstanceConstIterator (AtomInstanceConstIterator::*)( int ) >( &AtomInstanceConstIterator::operator-- ), this, std::placeholders::_1 )
             )
         );
         // api_definition->add_getter(
