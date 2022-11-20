@@ -54,6 +54,54 @@ namespace api {
 
     };
 
+    /// @brief A container for enum types.
+    template< typename T >
+    struct enum_type : public type<T> {
+
+        enum_type() = delete;
+
+        enum_type(
+            std::string const & enum_name,
+            std::string const & enum_namespace
+        ) :
+            type<T>(),
+            enum_name_( enum_name ),
+            enum_namespace_( enum_namespace )
+        {}
+
+        /// @brief  Comparison operator.
+        template < typename Tprime >
+        bool
+        operator==( enum_type<Tprime> const & other ) {
+            return type<T>::operator==(other) &&
+                enum_name_ == other.enum_name_ &&
+                enum_namespace_ == other.enum_namespace_;
+        }
+
+        /// @brief  Comparison operator.
+        template < typename Tprime >
+        bool
+        operator==( type<Tprime> const & other ) {
+            enum_type<Tprime> const * other_ptr( dynamic_cast< enum_type<Tprime> const * >(&other) );
+            if( other_ptr == nullptr ) {
+                return false;
+            }
+            return (*this) == (*other_ptr);
+        }
+
+        /// @brief Get the namespace and name.
+        std::string
+        enum_namespace_and_name() const {
+            return enum_namespace_ + "::" + enum_name_;
+        }
+    
+    private: //Data
+
+        std::string enum_name_;
+        std::string enum_namespace_;
+
+    };
+
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
     std::string
