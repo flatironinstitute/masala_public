@@ -109,7 +109,7 @@ private:
 #endif
 
 #ifdef NDEBUG
-#define DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( ASSERTION, NAMESPACE_AND_CLASS, FUNCTION_NAME, MESSAGE )
+#define DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( ASSERTION, FUNCTION_NAME, MESSAGE )
 #else
 /// @brief A macro for checking an assertion and throwing an error only in debug mode, from within a class.
 /// @note Do not use in constructors!
