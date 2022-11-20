@@ -79,7 +79,6 @@ def get_fwd_files( filename : str, source_dir : str ) -> list :
             assert len(linesplit) >= 2
             if linesplit[1].endswith(".fwd.hh") :
                 returnlist.append( source_dir + "/"+ linesplit[1] )
-    print(returnlist)
     return returnlist
 
 
