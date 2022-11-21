@@ -89,6 +89,9 @@ public:
 	/// @details Calls STL vector shrink_to_fit() function, which suggests memory deallocation.
 	void shrink_to_fit();
 
+	/// @brief Add an atom to the selection
+	void add_atom( core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICSP const & atom_in );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

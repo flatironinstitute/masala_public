@@ -60,6 +60,21 @@ AtomSelection::shrink_to_fit() {
 	atoms_.shrink_to_fit();
 }
 
+/// @brief Add an atom to the selection
+void
+AtomSelection::add_atom(
+	core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICSP const & atom_in
+) {
+	// Do not add if already in vector.
+	for( auto const & entry : atoms_ ) {
+		if( entry.lock() == atom_in ) {
+			return;
+		}
+	}
+	atoms_.push_back( atom_in );
+}
+
+
 } // namespace atom_selectors
 } // namespace selectors
 } // namespace base_classes
