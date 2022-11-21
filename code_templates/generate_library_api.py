@@ -450,7 +450,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( outtype_inner.startswith("masala::") ) :
                 ismasalaAPIptr = True
-        elif outtype.startswith( "masala::" ) and returns_this_ref == False :
+        elif outtype.startswith( "masala::" ) and returns_this_ref == False and output_is_enum == False :
             ismasalaAPIobj = True
 
         outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
