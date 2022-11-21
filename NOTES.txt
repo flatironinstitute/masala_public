@@ -24,3 +24,7 @@
 - [X] In auto-generated code, we need to handle the case of a function that returns a lightweight Masala object directly:
      - [X] Add "stack-allocated" option to API function.
      - [X] If stack-allocated, ensure that we initialize the API container by passing in the object by reference (not an owning pointer to a copy of the object) when making the API object to output.
+- [X] Handle enums in API auto-generated code.
+     - [ ] Need to find additional fwd.hh file where the enum is declared for .hh file.
+     - [ ] Need to fix output type namespace (NOT in auto-generated code) in both .cc and .hh file.
+     - [ ] Need to NOT encapsulate output type in API container in .cc file.
