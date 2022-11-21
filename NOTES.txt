@@ -29,4 +29,4 @@
      - [X] Need to NOT include .hh file for enum types in .cc file.
      - [X] Need to fix output type namespace (NOT in auto-generated code) in both .cc and .hh file.
      - [X] Need to NOT encapsulate output type in API container in .cc file.
-     - [ ] Need to ensure that additional forward declarations are copied.
+     - [X] Need to ensure that additional forward declarations are copied.
