@@ -201,6 +201,7 @@ public:
 		json_output[ "Output_Type" ] = ( has_custom_output_type_name() ? get_custom_output_type_namespace_and_name() : masala::base::api::name_from_type(base::api::type<T0>()) );
 		json_output[ "Output_Description" ] = output_description_;
 		json_output[ "Output_Name" ] = output_name_;
+		json_output[ "Output_Is_Enum" ] = has_custom_output_type_name();
 		json_api["Output"] = json_output;
 
 		return json_api;

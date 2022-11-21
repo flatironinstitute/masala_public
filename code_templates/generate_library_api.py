@@ -139,17 +139,17 @@ def add_base_class_include( inputclass : str , additional_includes: list ) -> No
 ## @note As a side-effect, this populates the additional_includes list with files to include
 ## for the additional API classes.  Each entry added is first checked so that it is not added
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
-def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
+def correct_masala_types( inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
     #print( inputclass )
     if inputclass.startswith( "masala::" ) == False :
         if inputclass.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "std::shared_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
+            return "std::shared_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         # elif inputclass.startswith( "std::weak_ptr" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
-        #     return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
+        #     return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         return inputclass # Do nothing if ths isn't a masala class.
     
     api_classname = ""
@@ -173,12 +173,13 @@ def correct_masala_types( inputclass : str, additional_includes: list ) -> str :
             api_classname += "_api::auto_generated_api"
             api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
-            api_classname += "_API"
-            api_filename += "_API"
+            if is_enum == False :
+                api_classname += "_API"
+                api_filename += "_API"
         else :
             api_classname += "::"
             api_filename += "/"
-    if api_filename not in additional_includes :
+    if is_enum == False and api_filename not in additional_includes :
         additional_includes.append( api_filename )
     if len(inputclass_extension) > 0 :
         return api_classname + " " + inputclass_extension
@@ -332,6 +333,10 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
         ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
             has_output = True
+            if ("Output_Is_Enum" in fxn["Output"]) and (fxn["Output"]["Output_Is_Enum"] == True) :
+                output_is_enum = True
+            else :
+                output_is_enum = False
         else :
             has_output = False
 
@@ -340,7 +345,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
                 outstring += tabchar + "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
             outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
-            outstring += tabchar + correct_masala_types( fxn["Output"]["Output_Type"], additional_includes ) + "\n"
+            outstring += tabchar + correct_masala_types( fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += tabchar + "void\n"
         outstring += tabchar + fxn[namepattern + "_Name"] + "("
@@ -391,10 +396,14 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
+        output_is_enum = False
         if outtype_base.startswith( "masala::" ) :
-            assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
-            if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
-                output_is_lightweight = True
+            if fxn_type == "GETTER" and fxn["Output"]["Output_Is_Enum"] == True :
+                output_is_enum = True
+            else:
+                assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
+                if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
+                    output_is_lightweight = True
 
         if ("Output" in fxn) and (outtype != "void") :
             has_output = True
@@ -411,7 +420,9 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
             outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
-            outstring += correct_masala_types( outtype, additional_includes ) + "\n"
+            if output_is_enum :
+                outstring += "/// (The return value is an enum.)\n"
+            outstring += correct_masala_types( outtype, additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
