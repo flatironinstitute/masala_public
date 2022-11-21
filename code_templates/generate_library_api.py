@@ -133,6 +133,45 @@ def add_base_class_include( inputclass : str , additional_includes: list ) -> No
     if includefile not in additional_includes :
         additional_includes.append(includefile)
 
+## @brief Given a class namespace and name, get a directory name.
+def directory_and_name_from_namespace_and_name( namespace_and_name : str ) :
+    namesplit = namespace_and_name.replace("::", " ").split()
+    dirname = ""
+    assert len(namesplit) > 2
+    assert namesplit[0] == "masala"
+    for i in range( 1, len(namesplit) - 1 ) :
+        dirname += namesplit[i]
+        if i < len(namesplit) - 2 :
+            dirname += "/"
+    return dirname, namesplit[len(namesplit) -1]
+
+## @brief Given an enum class, find the forward header that defines it.
+def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_name : str ) -> None :
+    enum_directory, enum_name = directory_and_name_from_namespace_and_name( enum_namespace_and_name )
+
+    print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
+    found = False
+    for filename in os.listdir( "src/" + enum_directory ) :
+        if filename.endswith(".fwd.hh") == False :
+            continue
+        with open( "src/" + enum_directory + "/" + filename, 'r' ) as filehandle:
+            filelines = filehandle.readlines()
+        for line in filelines :
+            if line.find( "enum" ) != -1 :
+                linesplit = line.split()
+                if len(linesplit) < 3 :
+                    continue
+                for i in range( len(linesplit)-2 ) :
+                    if linesplit[i] == "enum" :
+                        if linesplit[i+1] == "class" and linesplit[i+2] == enum_name :
+                            found = True
+                            fname_sans_end = enum_directory + "/" + filename[:-7]
+                            if fname_sans_end not in additional_includes :
+                                additional_includes.append(fname_sans_end)
+                            break
+    assert found == True, "Could not find file that defines enum class " + enum_name + "."
+
+
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
 ## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
@@ -336,6 +375,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
             has_output = True
             if ("Output_Is_Enum" in fxn["Output"]) and (fxn["Output"]["Output_Is_Enum"] == True) :
                 output_is_enum = True
+                find_enum_fwd_declarations( additional_includes, fxn["Output"]["Output_Type"] )
             else :
                 output_is_enum = False
         else :
