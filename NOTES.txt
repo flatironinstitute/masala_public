@@ -13,14 +13,14 @@
 - [X] Add app to generate API description from class list.
 - [X] Add Python code to generate API layer from API descriptions.
 - [X] Add script and compilation of API layer to build script.
-     - [ ] Auto-include classes that need to be included.
-     - [ ] Auto-use API classes instead of manually-written classes when API classes are available.
+     - [X] Auto-include classes that need to be included.
+     - [X] Auto-use API classes instead of manually-written classes when API classes are available.
 
 - [ ] Use ViennaCL for linear algebra.
 - [ ] Replace std::set with std::vector.
 
 - [ ] Add list of API classes somewhere --> A manager where API classes get registered.
 
-- [ ] In auto-generated code, we need to handle the case of a function that returns a lightweight Masala object directly:
-     - [ ] Add "stack-allocated" option to API function.
-     - [ ] If stack-allocated, ensure that we initialize the API container by passing in the object by reference (not an owning pointer to a copy of the object) when making the API object to output.
+- [X] In auto-generated code, we need to handle the case of a function that returns a lightweight Masala object directly:
+     - [X] Add "stack-allocated" option to API function.
+     - [X] If stack-allocated, ensure that we initialize the API container by passing in the object by reference (not an owning pointer to a copy of the object) when making the API object to output.
