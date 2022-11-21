@@ -170,8 +170,9 @@ def correct_masala_types( inputclass : str, additional_includes: list, is_enum :
         api_classname += curstring
         api_filename += curstring
         if i == 1 :
-            api_classname += "_api::auto_generated_api"
-            api_filename += "_api/auto_generated_api"
+            if is_enum == False:
+                api_classname += "_api::auto_generated_api"
+                api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
             if is_enum == False :
                 api_classname += "_API"
