@@ -385,7 +385,11 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
             for i in range(ninputs) :
                 outstring += tabchar + "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
-            outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
+            outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"]
+            if output_is_enum :
+                outstring += "  (The return value is an enum.)\n"
+            else :
+                outstring += "\n"
             outstring += tabchar + correct_masala_types( fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += tabchar + "void\n"
@@ -460,9 +464,11 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             for i in range(ninputs) :
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
-            outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
+            outstring += "/// @returns " + fxn["Output"]["Output_Description"]
             if output_is_enum :
                 outstring += "/// (The return value is an enum.)\n"
+            else :
+                outstring += "\n"
             outstring += correct_masala_types( outtype, additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += "void\n"
