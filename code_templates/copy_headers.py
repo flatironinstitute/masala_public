@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## @file cmake/copy_headers.py
+## @file code_templates/copy_headers.py
 ## @brief Used during the build process to copy the headers to a directory for redistribution.
 ##        Only headers that are exposed to outside code should be copied.
 ## @details Recursively goes through directories and finds .hh files to copy.  Usage:
