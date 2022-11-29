@@ -68,8 +68,8 @@ def initialize_directory( library_name : str ) -> None :
 ## generated API directory with directory structure matching the
 ## namespace.  If the directory already exists, do nothing.
 ## @returns The directory name, for reuse later.
-def prepare_directory( libname : str, namespace : list ) -> str :
-    assert namespace[0] == "masala"
+def prepare_directory( projname : str, libname : str, namespace : list ) -> str :
+    assert namespace[0] == projname
     assert namespace[1] == libname
     dirname = "src/" + libname + "_api/auto_generated_api/"
     for i in range( 2, len(namespace) ) :
@@ -95,13 +95,13 @@ def read_file( filename : str ) -> list :
 
 ## @brief Determine whether an object is an API type, and if so, access the
 ## class type inside.
-def access_needed_object( classname : str, instancename : str, jsonfile : json ) -> str :
-    if classname.startswith( "masala::" ) == False :
+def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
+    if classname.startswith( project_name + "::" ) == False :
         if classname.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             innerclass = classname[firstchevron+1:lastchevron].strip()
-            if innerclass.startswith("masala::") :
+            if innerclass.startswith( project_name + "::" ) :
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
     classtype = classname.split()[0]
@@ -125,8 +125,8 @@ def drop_const( classname: str )-> str :
     return outstr
 
 ## @brief Add a Masala header to the list of additional headers to include.
-def add_base_class_include( inputclass : str , additional_includes: list ) -> None :
-    if inputclass.startswith( "masala::" ) == False :
+def add_base_class_include( project_name : str, inputclass : str , additional_includes: list ) -> None :
+    if inputclass.startswith( project_name + "::" ) == False :
         # Do nothing.
         return
     includefile = inputclass[8:].replace( "::", "/" )
@@ -178,17 +178,17 @@ def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_n
 ## @note As a side-effect, this populates the additional_includes list with files to include
 ## for the additional API classes.  Each entry added is first checked so that it is not added
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
-def correct_masala_types( inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
+def correct_masala_types( project_name: str, inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
     #print( inputclass )
-    if inputclass.startswith( "masala::" ) == False :
+    if inputclass.startswith( project_name + "::" ) == False :
         if inputclass.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "std::shared_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+            return "std::shared_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         # elif inputclass.startswith( "std::weak_ptr" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
-        #     return "std::weak_ptr< " + correct_masala_types( inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        #     return "std::weak_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         return inputclass # Do nothing if ths isn't a masala class.
     
     api_classname = ""
@@ -274,7 +274,7 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 
 ## @brief Generate the prototypes for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
+def generate_constructor_prototypes(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
     outstring = ""
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
@@ -291,7 +291,7 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
         outstring += tabchar + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + correct_masala_types( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
@@ -299,7 +299,7 @@ def generate_constructor_prototypes(classname: str, jsonfile: json, tabchar: str
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight: bool ) -> str :
     outstring = ""
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
@@ -316,7 +316,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
         outstring += constructor["Constructor_Name"] + "_API::" + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + correct_masala_types( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + ") :\n"
         else :
             outstring += ") :\n"
@@ -329,7 +329,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
             outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += " " + access_needed_object( constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
+                outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
                 if i+1 < ninputs :
                     outstring += ","
                 else :
@@ -348,7 +348,7 @@ def generate_constructor_implementations(classname: str, jsonfile: json, tabchar
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
+def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
     outstring = ""
     first = True
 
@@ -390,7 +390,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
                 outstring += "  (The return value is an enum.)\n"
             else :
                 outstring += "\n"
-            outstring += tabchar + correct_masala_types( fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
+            outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += tabchar + "void\n"
         outstring += tabchar + fxn[namepattern + "_Name"] + "("
@@ -402,7 +402,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + correct_masala_types( fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ")" + conststr + ";"
         else :
             outstring += ")" + conststr + ";"
@@ -412,7 +412,7 @@ def generate_function_prototypes( classname: str, jsonfile: json, tabchar: str, 
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_implementations( classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_function_implementations( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool ) -> str :
     outstring = ""
     first = True
 
@@ -442,7 +442,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
         output_is_enum = False
-        if outtype_base.startswith( "masala::" ) :
+        if outtype_base.startswith( project_name + "::" ) :
             if fxn_type == "GETTER" and fxn["Output"]["Output_Is_Enum"] == True :
                 output_is_enum = True
             else:
@@ -469,7 +469,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
                 outstring += "/// (The return value is an enum.)\n"
             else :
                 outstring += "\n"
-            outstring += correct_masala_types( outtype, additional_includes, is_enum=output_is_enum ) + "\n"
+            outstring += correct_masala_types( project_name, outtype, additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
@@ -481,7 +481,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + correct_masala_types( fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
@@ -494,9 +494,9 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
-            if( outtype_inner.startswith("masala::") ) :
+            if( outtype_inner.startswith( project_name + "::" ) ) :
                 ismasalaAPIptr = True
-        elif outtype.startswith( "masala::" ) and returns_this_ref == False and output_is_enum == False :
+        elif outtype.startswith( project_name + "::" ) and returns_this_ref == False and output_is_enum == False :
             ismasalaAPIobj = True
 
         outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
@@ -511,17 +511,17 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
 
             if ismasalaAPIptr and returns_this_ref == False :
                 dummy = []
-                outstring += "std::make_shared< " + correct_masala_types( outtype_inner, dummy ) + " >(\n"
+                outstring += "std::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif ismasalaAPIobj :
                 dummy = []
-                outstring += correct_masala_types( outtype, dummy ) + "(\n"
+                outstring += correct_masala_types( project_name, outtype, dummy ) + "(\n"
                 if output_is_lightweight :
                     outstring += tabchar + tabchar + outtype + "( "
                 else :
                     outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
-                add_base_class_include( outtype, additional_includes )
+                add_base_class_include( project_name, outtype, additional_includes )
         else :
             outstring += tabchar
 
@@ -531,7 +531,7 @@ def generate_function_implementations( classname: str, jsonfile: json, tabchar: 
         outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                if fxn["Inputs"]["Input_" + str(i)]["Input_Type"].startswith( "masala::" ) :
+                if fxn["Inputs"]["Input_" + str(i)]["Input_Type"].startswith( project_name + "::" ) :
                     inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
                     assert inputtype in jsonfile["Elements"]
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
@@ -609,7 +609,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar: str ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar: str ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = "Masala_" + libraryname + "_api_auto_generated_api_"
@@ -644,10 +644,10 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
+        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) )
 
@@ -657,7 +657,7 @@ def prepare_header_file( libraryname : str, classname : str, namespace : list, d
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str, is_lightweight: bool ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str, is_lightweight: bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -686,10 +686,10 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) )
 
     fname = dirname + apiclassname + ".cc"
@@ -730,17 +730,17 @@ for element in json_api["Elements"] :
     #print( namespace_string, name_string )
     #print( namespace )
     assert len(namespace) > 2
-    assert namespace[0] == "masala", "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"masala\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"masala::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    dirname = prepare_directory( library_name, namespace )
+    assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+    assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+    dirname = prepare_directory( project_name, library_name, namespace )
     if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
         prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-        prepare_header_file( library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False )
+        prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
+        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False )
     else :
         prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-        prepare_header_file( library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True )
+        prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar )
+        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     
