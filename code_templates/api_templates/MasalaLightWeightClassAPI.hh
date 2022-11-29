@@ -31,7 +31,7 @@
 <__DOXYGEN_BRIEF_DESCRIPTION__>
 <__DOXYGEN_DETAILED_DESCRIPTION__>
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
-class <__SOURCE_CLASS_API_NAME__> : public base_api::MasalaObjectAPI {
+class <__SOURCE_CLASS_API_NAME__> : public masala::base_api::MasalaObjectAPI {
 
 public:
 
