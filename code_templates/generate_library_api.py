@@ -68,8 +68,8 @@ def initialize_directory( library_name : str ) -> None :
 ## generated API directory with directory structure matching the
 ## namespace.  If the directory already exists, do nothing.
 ## @returns The directory name, for reuse later.
-def prepare_directory( projname : str, libname : str, namespace : list ) -> str :
-    assert namespace[0] == projname
+def prepare_directory( project_name : str, libname : str, namespace : list ) -> str :
+    assert namespace[0] == project_name
     assert namespace[1] == libname
     dirname = "src/" + libname + "_api/auto_generated_api/"
     for i in range( 2, len(namespace) ) :
@@ -98,8 +98,8 @@ def read_file( filename : str ) -> list :
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
     if classname.startswith( project_name + "::" ) == False :
         if classname.startswith( "std::shared_ptr" ) :
-            firstchevron = inputclass.find( "<" )
-            lastchevron = inputclass.rfind( ">" )
+            firstchevron = classname.find( "<" )
+            lastchevron = classname.rfind( ">" )
             innerclass = classname[firstchevron+1:lastchevron].strip()
             if innerclass.startswith( project_name + "::" ) :
                 return instancename + "->get_inner_object()"
