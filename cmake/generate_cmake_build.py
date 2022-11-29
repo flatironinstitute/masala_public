@@ -221,10 +221,10 @@ if len(api_cclist) > 0 and output_file_api != None :
         fhandle.write( "\tOUTPUT\n" )
         for entry in api_cclist :
             fhandle.write( "\t\t" + entry + "\n" )
-        fhandle.write( "\tCOMMAND echo \"Generating JSON description of core API.\"\n" )
+        fhandle.write( "\tCOMMAND echo \"Generating JSON description of " + lib_name + " API.\"\n" )
         fhandle.write( "\tCOMMAND ./generate_" + lib_name + "_api\n" )
-        fhandle.write( "\tCOMMAND echo \"Auto-generating core API C++ code.\"\n" )
-        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build\"\n")
+        fhandle.write( "\tCOMMAND echo \"Auto-generating " + lib_name + " API C++ code.\"\n" )
+        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py "  + lib_name + " build/" + lib_name + "_api.json && cd build\"\n")
         fhandle.write( "\tVERBATIM\n)\n\n" )
 
         fhandle.write( "ADD_LIBRARY(" + lib_name + "_api SHARED" )
