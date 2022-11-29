@@ -56,12 +56,12 @@ def is_masala_class( project_name : str, classname : str ) -> bool :
     return False
 
 ## @brief Returns true if a class is a masala API class (i.e. follows pattern
-## "masala::*_api::auto_generated_api::" ).
+## "masala::*_api::" ).
 def is_masala_api_class( classname : str ) -> bool :
     if classname.startswith( "masala::" ) == False :
         return False
     classname_split = classname.split()[0].replace("::", " ").split()
-    if len(classname_split) > 2 and classname_split[1].endswith("_api") and classname_split[2] == "auto_generated_api" :
+    if len(classname_split) > 2 and classname_split[1].endswith("_api") :
         return True
     return False
 
