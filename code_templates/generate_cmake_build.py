@@ -159,15 +159,16 @@ def get_library_dependencies( dirname : str ) -> list :
         return dlist
     return []
 
-assert len(argv) == 6, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file or NONE> <output path and filename for cmake file for test, or NONE>."
+assert len(argv) == 7, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <project name> <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file or NONE> <output path and filename for cmake file for test, or NONE>."
 
-lib_name = argv[1]
-source_dir = argv[2]
-output_file = argv[3]
-output_file_api = argv[4]
+project_name = argv[1]
+lib_name = argv[2]
+source_dir = argv[3]
+output_file = argv[4]
+output_file_api = argv[5]
 if output_file_api == "NONE" :
     output_file_api = None
-output_file_tests = argv[5]
+output_file_tests = argv[6]
 if output_file_tests == "NONE" :
     output_file_tests = None
 
@@ -224,7 +225,7 @@ if len(api_cclist) > 0 and output_file_api != None :
         fhandle.write( "\tCOMMAND echo \"Generating JSON description of " + lib_name + " API.\"\n" )
         fhandle.write( "\tCOMMAND ./generate_" + lib_name + "_api\n" )
         fhandle.write( "\tCOMMAND echo \"Auto-generating " + lib_name + " API C++ code.\"\n" )
-        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py "  + lib_name + " build/" + lib_name + "_api.json && cd build\"\n")
+        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py " + project_name + " "  + lib_name + " build/" + lib_name + "_api.json && cd build\"\n")
         fhandle.write( "\tVERBATIM\n)\n\n" )
 
         fhandle.write( "ADD_LIBRARY(" + lib_name + "_api SHARED" )

@@ -42,8 +42,8 @@ from copy import copy
 ## @returns Source library name, JSON API definition file.  Throws if
 ## these two options aren't provided.
 def get_options() -> tuple :
-    assert len(argv) == 3, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <source library name> <json api definition file>"
-    return (argv[1], argv[2])
+    assert len(argv) == 4, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <source library name> <json api definition file>"
+    return (argv[1], argv[2], argv[3])
 
 ## @brief Initialize the auto_generated_api directory, creating it if it does
 ## not exist and deleting anything in it if it does.
@@ -703,8 +703,8 @@ def prepare_cc_file( libraryname : str, classname : str, namespace : list, dirna
 ################################################################################
 
 # Get options
-library_name, api_def_file = get_options()
-print( "\tGenerating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
+project_name, library_name, api_def_file = get_options()
+print( "\tGenerating API for project " + project_name + ", library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
 
 # Read JSON
 with open( api_def_file, 'r' ) as jfile :

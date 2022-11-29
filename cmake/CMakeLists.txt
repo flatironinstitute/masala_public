@@ -48,13 +48,13 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../code_templates/generate_cmake_build.py base ../src/base cmake_generated/base.cmake NONE cmake_generated/base_tests.cmake
+    COMMAND python3 ../code_templates/generate_cmake_build.py masala base ../src/base cmake_generated/base.cmake NONE cmake_generated/base_tests.cmake
 )
 # execute_process(
-#     COMMAND python3 ../code_templates/generate_cmake_build.py numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
+#     COMMAND python3 ../code_templates/generate_cmake_build.py masala numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
 # )
 execute_process(
-    COMMAND python3 ../code_templates/generate_cmake_build.py core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
+    COMMAND python3 ../code_templates/generate_cmake_build.py masala core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
 )
 
 # Build the base, numeric, and core libraries:
