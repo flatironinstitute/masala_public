@@ -33,6 +33,9 @@ SOFTWARE.
 // Unit header:
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelection.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace core_api {
 namespace base_classes {
@@ -42,6 +45,18 @@ namespace atom_selectors {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of this class ("AtomSelection").
+std::string
+AtomSelection::class_name() const {
+	return "AtomSelection";
+}
+
+/// @brief Get the namespace of this class ("masala::core_api::base_classes::selectors::atom_selectors").
+std::string
+AtomSelection::class_namespace() const {
+	return "masala::core_api::base_classes::selectors::atom_selectors";
+}
 
 /// @brief Ensure that an atom selection has enough memory allocated so that it
 /// can store at least N atoms.

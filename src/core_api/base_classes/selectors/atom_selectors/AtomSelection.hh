@@ -80,6 +80,12 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the name of this class ("AtomSelection").
+	std::string class_name() const override;
+
+	/// @brief Get the namespace of this class ("masala::core_api::base_classes::selectors::atom_selectors").
+	std::string class_namespace() const override;
+
 	/// @brief Ensure that an atom selection has enough memory allocated so that it
 	/// can store at least N atoms.
 	/// @details Calls STL vector reserve() function, which suggests memory allocation.
