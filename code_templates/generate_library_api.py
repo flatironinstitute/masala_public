@@ -332,7 +332,7 @@ def generate_constructor_implementations(project_name: str, classname: str, json
             outstring += ") :\n"
         
         # Initialization:
-        outstring += tabchar + "base_api::MasalaObjectAPI(),\n"
+        outstring += tabchar + "masala::base_api::MasalaObjectAPI(),\n"
         if is_lightweight == True :
             outstring += tabchar + "inner_object_("
         else:
