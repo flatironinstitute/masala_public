@@ -31,7 +31,7 @@
 <__SOURCE_CLASS_API_NAME__>::<__SOURCE_CLASS_API_NAME__>(
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & inner_object
 ) :
-    base_api::MasalaObjectAPI(),
+    masala::base_api::MasalaObjectAPI(),
     inner_object_( inner_object )
 {}
 
