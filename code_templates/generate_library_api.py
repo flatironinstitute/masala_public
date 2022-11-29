@@ -45,6 +45,12 @@ def get_options() -> tuple :
     assert len(argv) == 4, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <source library name> <json api definition file>"
     return (argv[1], argv[2], argv[3])
 
+## @brief Returns true if a class starts with "masala::" or with project_name + "::"
+def is_masala_class( project_name : str, classname : str ) -> bool :
+    if classname.startswith( "masala::" ) : return True
+    if classname.startswith( project_name + "::" ) : return True
+    return False
+
 ## @brief Initialize the auto_generated_api directory, creating it if it does
 ## not exist and deleting anything in it if it does.
 ## @brief Puts a README.txt file in the directory indicating that it is auto-
@@ -96,12 +102,12 @@ def read_file( filename : str ) -> list :
 ## @brief Determine whether an object is an API type, and if so, access the
 ## class type inside.
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
-    if classname.startswith( project_name + "::" ) == False :
+    if is_masala_class( project_name, classname ) == False :
         if classname.startswith( "std::shared_ptr" ) :
             firstchevron = classname.find( "<" )
             lastchevron = classname.rfind( ">" )
             innerclass = classname[firstchevron+1:lastchevron].strip()
-            if innerclass.startswith( project_name + "::" ) :
+            if is_masala_class( project_name, innerclass ) :
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
     classtype = classname.split()[0]
@@ -126,10 +132,10 @@ def drop_const( classname: str )-> str :
 
 ## @brief Add a Masala header to the list of additional headers to include.
 def add_base_class_include( project_name : str, inputclass : str , additional_includes: list ) -> None :
-    if inputclass.startswith( project_name + "::" ) == False :
+    if is_masala_class( project_name, inputclass ) == False :
         # Do nothing.
         return
-    includefile = inputclass[8:].replace( "::", "/" )
+    includefile = inputclass[ inputclass.find("::") + 2 : ].replace( "::", "/" )
     if includefile not in additional_includes :
         additional_includes.append(includefile)
 
@@ -180,7 +186,7 @@ def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_n
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
 def correct_masala_types( project_name: str, inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
     #print( inputclass )
-    if inputclass.startswith( project_name + "::" ) == False :
+    if is_masala_class( project_name, inputclass ) == False :
         if inputclass.startswith( "std::shared_ptr" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
@@ -450,7 +456,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
         output_is_enum = False
-        if outtype_base.startswith( project_name + "::" ) :
+        if is_masala_class( project_name, outtype_base )  :
             if fxn_type == "GETTER" and fxn["Output"]["Output_Is_Enum"] == True :
                 output_is_enum = True
             else:
@@ -497,9 +503,9 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
-            if( outtype_inner.startswith( project_name + "::" ) ) :
+            if( is_masala_class( project_name, outtype_inner )  ) :
                 ismasalaAPIptr = True
-        elif outtype.startswith( project_name + "::" ) and returns_this_ref == False and output_is_enum == False :
+        elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
             ismasalaAPIobj = True
 
         outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
@@ -534,7 +540,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                if fxn["Inputs"]["Input_" + str(i)]["Input_Type"].startswith( project_name + "::" ) :
+                if is_masala_class( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"] ) :
                     inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
                     assert inputtype in jsonfile["Elements"]
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
