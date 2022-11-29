@@ -45,8 +45,12 @@ def get_options() -> tuple :
     assert len(argv) == 4, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <source library name> <json api definition file>"
     return (argv[1], argv[2], argv[3])
 
-## @brief Returns true if a class starts with "masala::" or with project_name + "::"
+## @brief Returns true if a class starts with "masala::" or with project_name + "::".
+## Always returns false if this is an API class.
 def is_masala_class( project_name : str, classname : str ) -> bool :
+    classname_split = classname.replace("::", " ").split()
+    if len( classname_split ) > 2 and classname_split[1].endswith( "_api" ) and classname_split[2] == "auto_generated_api" :
+        return False
     if classname.startswith( "masala::" ) : return True
     if classname.startswith( project_name + "::" ) : return True
     return False
@@ -542,7 +546,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
             for i in range(ninputs) :
                 if is_masala_class( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"] ) :
                     inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
-                    assert inputtype in jsonfile["Elements"]
+                    assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                         outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object()"
                     else :
