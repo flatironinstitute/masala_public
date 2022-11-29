@@ -189,6 +189,7 @@ if output_file_tests != None :
     assert path.isdir( testsdir )
     print( "\tChecking " + testsdir + " for tests." )
     testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, testsdir, False )
+    test_depend_list = get_library_dependencies( testsdir )
 else :
     testslist = []
 
@@ -254,7 +255,7 @@ if len(testslist) > 0 :
 
             fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
             fhandle.write( "\n\tPUBLIC " + lib_name )
-            for dentry in depend_list :
+            for dentry in test_depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n)\n")
