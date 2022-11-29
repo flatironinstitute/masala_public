@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## @file cmake/generate_cmake_build.py
+## @file code_templates/generate_cmake_build.py
 ## @brief Used during the build process to generate the cmake files for all the stuff that
 ## has to be compiled in a given library.  This also generates the cmake files for the
 ## associated API libraries.
