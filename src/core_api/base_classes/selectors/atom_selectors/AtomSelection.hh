@@ -98,6 +98,9 @@ public:
 	/// @brief Add an atom to the selection
 	void add_atom( core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICSP const & atom_in );
 
+	/// @brief Get the number of selected atoms in this selection.
+	core_api::Size num_selected_atoms() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

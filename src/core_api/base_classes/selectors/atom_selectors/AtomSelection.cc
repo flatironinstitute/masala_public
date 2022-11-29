@@ -89,6 +89,11 @@ AtomSelection::add_atom(
 	atoms_.push_back( atom_in );
 }
 
+/// @brief Get the number of selected atoms in this selection.
+core_api::Size
+AtomSelection::num_selected_atoms() const {
+	return atoms_.size();
+}
 
 } // namespace atom_selectors
 } // namespace selectors
