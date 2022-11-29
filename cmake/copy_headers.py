@@ -83,6 +83,7 @@ def get_fwd_files( filename : str, source_dir : str ) -> list :
 
 
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
+files.extend( glob.glob( source_dir + "/" + lib_name + "/*.hh", recursive=False ) )
 print( "Copying Masala header files from " + source_dir + "/" + lib_name + "/ directory to " + dest_dir + "/ directory." )
 for file in files :
     newfile = dest_dir + file[ len(source_dir) : ]
