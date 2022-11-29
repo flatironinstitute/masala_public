@@ -437,7 +437,15 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
             outstring += "\n\n"
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]
-        outtype = fxn["Output"]["Output_Type"]
+        if ("Output" in fxn) :
+            outtype = fxn["Output"]["Output_Type"]
+            if outtype != "void" :
+                has_output = True
+            else :
+                has_output = False
+        else :
+            outtype = "void"
+            has_output = False
 
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
@@ -449,11 +457,6 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                 assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
                 if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
                     output_is_lightweight = True
-
-        if ("Output" in fxn) and (outtype != "void") :
-            has_output = True
-        else :
-            has_output = False
 
         if ( "Returns_This_Ref" in fxn ) and ( fxn["Returns_This_Ref"] == True ) :
             returns_this_ref = True
