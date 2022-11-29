@@ -49,7 +49,7 @@ def get_options() -> tuple :
 ## Always returns false if this is an API class.
 def is_masala_class( project_name : str, classname : str ) -> bool :
     classname_split = classname.replace("::", " ").split()
-    if len( classname_split ) > 2 and classname_split[1].endswith( "_api" ) and classname_split[2] == "auto_generated_api" :
+    if len( classname_split ) > 2 and classname_split[1].endswith( "_api" ) :
         return False
     if classname.startswith( "masala::" ) : return True
     if classname.startswith( project_name + "::" ) : return True
