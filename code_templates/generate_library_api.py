@@ -55,6 +55,16 @@ def is_masala_class( project_name : str, classname : str ) -> bool :
     if classname.startswith( project_name + "::" ) : return True
     return False
 
+## @brief Returns true if a class is a masala API class (i.e. follows pattern
+## "masala::*_api::auto_generated_api::" ).
+def is_masala_api_class( classname : str ) -> bool :
+    if classname.startswith( "masala::" ) == False :
+        return False
+    classname_split = classname.split()[0].replace("::", " ").split()
+    if len(classname_split) > 2 and classname_split[1].endswith("_api") and classname_split[2] == "auto_generated_api" :
+        return True
+    return False
+
 ## @brief Initialize the auto_generated_api directory, creating it if it does
 ## not exist and deleting anything in it if it does.
 ## @brief Puts a README.txt file in the directory indicating that it is auto-
@@ -181,6 +191,18 @@ def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_n
                             break
     assert found == True, "Could not find file that defines enum class " + enum_name + "."
 
+## @brief Given an API class, figure out the file to include.
+## @note Return value does not include extension.
+def include_file_from_masala_api_class( inputclass : str ) -> str :
+    assert inputclass.startswith( "masala::" ), "Expected " + inputclass + " to start with masala::, but it did not!"
+    inputclass_split = inputclass.split()[0].replace("::", " ").split()
+    assert len(inputclass_split) > 1
+    outfile = ""
+    for i in range(1,len(inputclass_split)) :
+        if i > 1 :
+            outfile += "/"
+        outfile += inputclass_split[i]
+    return outfile
 
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
@@ -199,6 +221,8 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
         #     return "std::weak_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        if is_masala_api_class( inputclass ) :
+            additional_includes.append( include_file_from_masala_api_class( inputclass ) )
         return inputclass # Do nothing if ths isn't a masala class.
     
     api_classname = ""
