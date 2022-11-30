@@ -41,6 +41,50 @@ namespace core {
 namespace chemistry {
 namespace atoms {
 
+////////////////////////////////////////////////////////////////////////////////
+// ELEMENT FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given an element enum, get the element name.
+/// @returns "UNKNOWN" for out-of-range values.
+std::string
+element_name_from_enum(
+    ElementTypeEnum const element_type
+) {
+    if( static_cast<signed long>(element_type) < 0 || element_type > ElementTypeEnum::NUM_KNOWN_ELEMENTS ) {
+        return "UNKNOWN";
+    }
+    static std::vector< std::string > const element_names{
+        "UNKNOWN",
+         "H", "He",
+        "Li", "Be",  "B",  "C",  "N",  "O",  "F", "Ne",
+        "Na", "Mg", "Al", "Si",  "P",  "S", "Cl", "Ar",
+         "K", "Ca", "Sc", "Ti",  "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
+        "Rb", "Sr",  "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te",  "I", "Xe",
+        "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta",  "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
+        "Fr", "Ra", "Ac", "Th", "Pa",  "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"
+    };
+    return element_names[static_cast< unsigned long >(element_type)];
+}
+
+/// @brief Given an element name, get the element enum.
+/// @returns INVALID_ELEMENT_TYPE for names that can't be parsed.
+ElementTypeEnum
+element_enum_from_name(
+    std::string const & element_name
+) {
+    for( core::Size i(1); i<=static_cast<core::Size>(ElementTypeEnum::NUM_KNOWN_ELEMENTS); ++i ) {
+        if( element_name == element_name_from_enum( static_cast<ElementTypeEnum>(i) ) ) {
+            return static_cast<ElementTypeEnum>(i);
+        }
+    }
+    return ElementTypeEnum::INVALID_ELEMENT_TYPE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// ElementType class:
+////////////////////////////////////////////////////////////////////////////////
+
 /// @brief Returns "ElementType".
 std::string
 ElementType::class_name() const {

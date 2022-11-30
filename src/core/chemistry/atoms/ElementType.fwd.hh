@@ -193,6 +193,20 @@ namespace atoms {
 
     };
 
+    /// @brief Given an element enum, get the element name.
+    /// @returns "UNKNOWN" for out-of-range values.
+    std::string
+    element_name_from_enum(
+        ElementTypeEnum const element_type
+    );
+
+    /// @brief Given an element name, get the element enum.
+    /// @returns INVALID_ELEMENT_TYPE for names that can't be parsed.
+    ElementTypeEnum
+    element_enum_from_name(
+        std::string const & element_name
+    );
+
 } // namespace atoms
 } // namespace chemistry
 } // namespace core

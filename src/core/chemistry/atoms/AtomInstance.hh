@@ -25,6 +25,11 @@ SOFTWARE.
 /// @file src/core/chemistry/atoms/AtomInstance.hh
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
+/// @note This stores element type, formal charge, partial charge,
+/// hybridization state... everything EXCEPT atomic coordinates.
+/// This class is not threadsafe.  Protocols ought not to have
+/// multiple threads operating on the same atom (or should implement
+/// suitable mutex locking to allow this).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_AtomInstance_hh
@@ -53,6 +58,9 @@ namespace atoms {
 /// a particular atom.
 /// @note This stores element type, formal charge, partial charge,
 /// hybridization state... everything EXCEPT atomic coordinates.
+/// This class is not threadsafe.  Protocols ought not to have
+/// multiple threads operating on the same atom (or should implement
+/// suitable mutex locking to allow this).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class AtomInstance : public masala::base::MasalaObject {
 
@@ -105,9 +113,27 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get the formal charge for this atom instance.
+    signed int formal_charge() const;
+
+    /// @brief Get the partial charge for this atom instance.
+    masala::core::Real partial_charge() const;
+
+    /// @brief Get the element type (enum) for this atom instance.
+    ElementTypeEnum element_type_enum() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the API definition for an atom instance.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 private:
 
@@ -130,6 +156,9 @@ private:
     /// @brief Optional additional data attached to this atom.
     /// @details Intended to store things like PDB name, PDB index, etc.
     std::set< data::AtomDataSP > additional_atom_data_;
+
+    /// @brief An API definition for this object.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 };
 

@@ -31,26 +31,52 @@ SOFTWARE.
 
 // Base headers
 #include <base/MasalaObject.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers
 #include <string>
 #include <memory>
+#include <set>
 
 namespace masala {
 namespace base {
 namespace api {
 
     template< typename T >
-    struct type {};
+    struct type {
+
+        /// @brief  Comparison operator.
+        /// @return True if T is the same type as Tprime; false otherwise.
+        template < typename Tprime >
+        bool
+        operator==( type<Tprime> const & other ) {
+            return std::is_same<T, Tprime>::value;
+        }
+
+    };
 
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
     std::string
     name_from_type(type<T>) {
-        std::shared_ptr<T> tempobj( std::make_shared<T>() );
-        masala::base::MasalaObjectSP tempptr( std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj) );
-        if( tempptr != nullptr ) {
-            return tempptr->class_namespace() + "::" + tempptr->class_name();
+        CHECK_OR_THROW(
+            !std::is_enum<T>::value, "base::api", "name_from_type",
+            "Error in use of name_from_type() function: this function cannot be used for enums!  "
+            "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
+            "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
+        );
+
+        if constexpr( std::is_class<T>::value ) {
+            std::shared_ptr<T> tempobj(
+                std::make_shared<T>()
+            );
+
+            masala::base::MasalaObjectSP tempptr(
+                std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+            );
+            if( tempptr != nullptr ) {
+                return tempptr->class_namespace() + "::" + tempptr->class_name();
+            }
         }
         return typeid(T).name();
     }
@@ -96,6 +122,41 @@ namespace api {
     name_from_type(type<std::weak_ptr<T const>>) {
         return "std::weak_ptr< " + name_from_type(type<T>()) + " const >";
     }
+
+    /// @brief Manually override for sets.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T >> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " >";
+    }
+
+    /// @brief Manually override for const sets.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T > const> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " > const";
+    }
+
+    /// @brief Manually override for sets of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T const >> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " const >";
+    }
+
+    /// @brief Manually override for const sets of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::set< T const > const> ) {
+        return "std::set< " + name_from_type( type<T>() ) + " const > const";
+    }
+
+    /// @brief Manually override for set const iterators.
+    // template<class T>
+    // std::string
+    // name_from_type( type< typename std::set< T >::const_iterator > ) {
+    //     return "std::set< " + name_from_type( type<T>() ) + " >::const_iterator";
+    // }
 
     /// @brief Manually override for void.
     template<>

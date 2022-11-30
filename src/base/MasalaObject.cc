@@ -34,6 +34,7 @@ SOFTWARE.
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.hh>
 
 // STL headers
 #include <string>
@@ -90,6 +91,40 @@ MasalaObject::write_to_tracer(
     if( tracer_handle->tracer_is_enabled( tracername ) ) {
         tracer_handle->write_to_tracer( tracername, message, true );
     }
+}
+
+/// @brief Get a creator object for objects of this type.
+/// @details By default, returns nullptr.  Can be overridden by derived classes.
+masala::base::managers::plugin_module::MasalaPluginCreatorCSP
+MasalaObject::get_creator() const {
+    return nullptr;
+}
+
+/// @brief Get a list of categories that this object could be sorted into.
+/// @details This is for auto-generation of hierarchical documentation and user interfaces.
+/// Categories could be something like std::vector< std::string >{ "Manipulators", "Proteins", "Design" }.
+/// An object may be in more than one category.  Uses lists from the creator.  Returns an empty list if
+/// no creator.
+std::vector< std::vector< std::string > >
+MasalaObject::get_categories() const {
+    masala::base::managers::plugin_module::MasalaPluginCreatorCSP creator( get_creator() );
+    if( creator != nullptr ) {
+        return creator->get_plugin_object_categories();
+    }
+    return std::vector< std::vector < std::string > >();
+}
+
+/// @brief Get a list of keywords associated with this object.
+/// @details This is also for auto-generation of documentation or user interfaces, to allow
+/// discoverability of functionality.  Unlike categories, which are hierarchical, keywords
+/// have no hierarchy.  Uses lists from the creator.  Returns an empty list if no creator.
+std::vector< std::string >
+MasalaObject::get_keywords() const {
+    masala::base::managers::plugin_module::MasalaPluginCreatorCSP creator( get_creator() );
+    if( creator != nullptr ) {
+        return creator->get_plugin_object_keywords();
+    }
+    return std::vector< std::string >();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

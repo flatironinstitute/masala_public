@@ -79,6 +79,7 @@ public:
 	/// @param[in] work_function_description The description of the work function that
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
+	/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
 	/// @param[in] input_parameter0_name The name for the input parameter.
 	/// @param[in] input_parameter0_description The description of the input parameter.
 	/// @param[in] output_parameter_name The name for what the work function returns.
@@ -87,13 +88,15 @@ public:
 	MasalaObjectAPIWorkFunctionDefinition_OneInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
+		bool const is_const,
+		bool const returns_this_ref,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description,
 		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
 		std::function< T0( T1 ) > const & work_function
 	) :
-		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const ),
+		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const, returns_this_ref ),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_( output_parameter_name ),
@@ -131,8 +134,13 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << masala::base::api::name_from_type< T0 >() << " " << work_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " )" << (is_const() ? " const" : "" ) << ":" << std::endl;
+    	ss << "WorkFunction:\t" << masala::base::api::name_from_type( base::api::type<T0>() )
+			<< " " << work_function_name() << "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " )"
+			<< (is_const() ? " const" : "" ) << ":" << std::endl;
 		ss << work_function_description() << std::endl;
+		if( returns_this_ref() ) {
+			ss << "Note that this function returns a reference to the original object (*this)." << std::endl;
+		}
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
@@ -147,13 +155,14 @@ public:
 		json_api["Work_Function_Name"] = work_function_name();
 		json_api["Work_Function_Description"] = work_function_description();
 		json_api["Is_Const"] = is_const();
+		json_api["Returns_This_Ref"] = returns_this_ref();
 
 		//Inputs:
 		json_api["Work_Function_N_Inputs"] = 1;
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;
-		json_input0["Input_Type"] = masala::base::api::name_from_type< T1 >();
+		json_input0["Input_Type"] = masala::base::api::name_from_type( base::api::type<T1>() );
 		json_input0["Input_Description"] = input_parameter0_description_;
 		json_input0["Input_Name"] = input_parameter0_name_;
 
@@ -163,7 +172,7 @@ public:
 
 		// Outputs:
 		nlohmann::json json_output;
-		json_output[ "Output_Type" ] = masala::base::api::name_from_type< T0 >();
+		json_output[ "Output_Type" ] = masala::base::api::name_from_type( base::api::type<T0>() );
 		json_output[ "Output_Description" ] = output_description_;
 		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;

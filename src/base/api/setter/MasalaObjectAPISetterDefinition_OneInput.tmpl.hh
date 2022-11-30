@@ -123,7 +123,7 @@ public:
 	std::string
 	get_setter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Setter:\tvoid " << setter_function_name() << "( " << masala::base::api::name_from_type< T1 >() << " ):" << std::endl;
+    	ss << "Setter:\tvoid " << setter_function_name() << "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " ):" << std::endl;
 		ss << setter_function_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		return ss.str();
@@ -144,7 +144,7 @@ public:
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;
-		json_input0["Input_Type"] = masala::base::api::name_from_type< T1 >();
+		json_input0["Input_Type"] = masala::base::api::name_from_type( base::api::type<T1>() );
 		json_input0["Input_Description"] = input_parameter0_description_;
 		json_input0["Input_Name"] = input_parameter0_name_;
 

@@ -31,6 +31,7 @@ SOFTWARE.
 
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
+#include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 #include <core/chemistry/MoleculesConfiguration.hh>
@@ -44,6 +45,7 @@ SOFTWARE.
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -176,6 +178,7 @@ base::api::MasalaObjectAPIDefinitionCWP
 Molecules::get_api_definition() {
     using namespace base::api;
     using namespace base::api::constructor;
+    using namespace base::api::getter;
 
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
@@ -185,7 +188,8 @@ Molecules::get_api_definition() {
             std::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
                 "A container for atoms and chemical bonds, and for data representations "
-                "that allow efficient geometric manipulations."
+                "that allow efficient geometric manipulations.",
+                false
             )
         );
         api_def->add_constructor(
@@ -199,6 +203,29 @@ Molecules::get_api_definition() {
                 "src", "The input Molecules object to copy."
             )
         );
+
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+                "total_atoms", "Gets the total number of atoms in this Molecules object.",
+                "total_atoms", "The number of atoms in the Molecules object.",
+                std::bind( &Molecules::total_atoms, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_begin", "Get an iterator over atoms, initialized to first atom.",
+                "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
+                std::bind( &Molecules::atoms_begin, this )
+            )
+        );
+        api_def->add_getter(
+            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_end", "Get an iterator over atoms, initialized to one past the last atom.",
+                "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
+                std::bind( &Molecules::atoms_end, this )
+            )
+        );
+
         api_definition_ = api_def; // Nonconst to const.
     }
     return api_definition_;
@@ -222,6 +249,24 @@ Molecules::add_atom(
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
     //update_additional_representations_from_master();
+}
+
+/// @brief Get the number of atoms in this molecule.
+core::Size
+Molecules::total_atoms() const {
+    return atoms_.size();
+}
+
+/// @brief Begin const iterator for accessing atoms.
+atoms::AtomInstanceConstIterator
+Molecules::atoms_begin() const {
+    return atoms::AtomInstanceConstIterator( atoms_.cbegin() );
+}
+
+/// @brief End const iterator for accessing atoms.
+atoms::AtomInstanceConstIterator
+Molecules::atoms_end() const {
+    return atoms::AtomInstanceConstIterator( atoms_.cend() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

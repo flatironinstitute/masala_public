@@ -54,6 +54,27 @@ MasalaObjectAPIGetterDefinition::MasalaObjectAPIGetterDefinition(
     getter_function_description_(getter_function_description)
 {}
 
+/// @brief Options constructor, to be called by derived classes in cases in which we have a
+/// custom output type (e.g. enums).
+/// @param[in] getter_function_name The name of the getter function that
+///			   we are describing here.
+/// @param[in] getter_function_description The description of the getter function that
+///			   we are describing here.
+/// @param[in] output_type_name The name of the output type.
+/// @param[in] output_type_namespace The namespace of the output type.
+MasalaObjectAPIGetterDefinition::MasalaObjectAPIGetterDefinition(
+    std::string const & getter_function_name,
+    std::string const & getter_function_description,
+    std::string const & output_type_name,
+    std::string const & output_type_namespace
+) :
+    masala::base::MasalaObject(),
+    getter_function_name_(getter_function_name),
+    getter_function_description_(getter_function_description),
+    custom_output_type_name_( output_type_name ),
+    custom_output_type_namespace_( output_type_namespace )
+{}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +89,18 @@ MasalaObjectAPIGetterDefinition::getter_function_name() const {
 std::string const &
 MasalaObjectAPIGetterDefinition::getter_function_description() const {
     return getter_function_description_;
+}
+
+/// @brief Does this class define a custom output type name?
+bool
+MasalaObjectAPIGetterDefinition::has_custom_output_type_name() const {
+    return !custom_output_type_name_.empty();
+}
+
+/// @brief Get the custom output type name and namespace.
+std::string
+MasalaObjectAPIGetterDefinition::get_custom_output_type_namespace_and_name() const {
+    return custom_output_type_namespace_ + "::" + custom_output_type_name_;
 }
 
 } // namespace getter

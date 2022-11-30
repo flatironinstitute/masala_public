@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## @file cmake/generate_cmake_build.py
+## @file code_templates/generate_cmake_build.py
 ## @brief Used during the build process to generate the cmake files for all the stuff that
 ## has to be compiled in a given library.  This also generates the cmake files for the
 ## associated API libraries.
@@ -117,6 +117,9 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname:str, dirname : str, skip
         if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
             # Skip directories like core_apps.  Apps are compiled separately into executables.
             return [], []
+    else :
+        if dirname.endswith( libname + "/auto_generated_api" ) or dirname.endswith( libname + "/auto_generated_api/" ) :
+            return []
     outlist = []
     if skip_apps == True :
         outlist_apis = []
@@ -156,17 +159,21 @@ def get_library_dependencies( dirname : str ) -> list :
         return dlist
     return []
 
-assert len(argv) == 6, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file> <output path and filename for cmake file for test, or NONE>."
+assert len(argv) == 7, errmsg + "Incorrect number of arguments.   python3 generate_cmake_build.py <project name> <library name> <source dir> <output path and filename for cmake file> <output path and filename for API cmake file or NONE> <output path and filename for cmake file for test, or NONE>."
 
-lib_name = argv[1]
-source_dir = argv[2]
-output_file = argv[3]
-output_file_api = argv[4]
-output_file_tests = argv[5]
+project_name = argv[1]
+lib_name = argv[2]
+source_dir = argv[3]
+output_file = argv[4]
+output_file_api = argv[5]
+if output_file_api == "NONE" :
+    output_file_api = None
+output_file_tests = argv[6]
 if output_file_tests == "NONE" :
     output_file_tests = None
 
 cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, source_dir, True )
+api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", source_dir + "_api", False ) )
 depend_list = get_library_dependencies( source_dir )
 
 appsdir = source_dir + "/" + lib_name + "_apps"
@@ -182,10 +189,9 @@ if output_file_tests != None :
     assert path.isdir( testsdir )
     print( "\tChecking " + testsdir + " for tests." )
     testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, testsdir, False )
+    test_depend_list = get_library_dependencies( testsdir )
 else :
     testslist = []
-
-print( testslist )
 
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
@@ -210,17 +216,17 @@ with open( output_file, 'w' ) as fhandle:
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
 
-if len(api_cclist) > 0 :
+if len(api_cclist) > 0 and output_file_api != None :
     with open( output_file_api, 'w' ) as fhandle :
         fhandle.write( "ADD_CUSTOM_COMMAND(\n" )
         fhandle.write( "\tDEPENDS generate_" + lib_name + "_api POST_BUILD\n" )
         fhandle.write( "\tOUTPUT\n" )
         for entry in api_cclist :
             fhandle.write( "\t\t" + entry + "\n" )
-        fhandle.write( "\tCOMMAND echo \"Generating JSON description of core API.\"\n" )
+        fhandle.write( "\tCOMMAND echo \"Generating JSON description of " + lib_name + " API.\"\n" )
         fhandle.write( "\tCOMMAND ./generate_" + lib_name + "_api\n" )
-        fhandle.write( "\tCOMMAND echo \"Auto-generating core API C++ code.\"\n" )
-        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py core build/core_api.json && cd build\"\n")
+        fhandle.write( "\tCOMMAND echo \"Auto-generating " + lib_name + " API C++ code.\"\n" )
+        fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py " + project_name + " "  + lib_name + " build/" + lib_name + "_api.json && cd build\"\n")
         fhandle.write( "\tVERBATIM\n)\n\n" )
 
         fhandle.write( "ADD_LIBRARY(" + lib_name + "_api SHARED" )
@@ -249,7 +255,7 @@ if len(testslist) > 0 :
 
             fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
             fhandle.write( "\n\tPUBLIC " + lib_name )
-            for dentry in depend_list :
+            for dentry in test_depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
             fhandle.write("\n)\n")
