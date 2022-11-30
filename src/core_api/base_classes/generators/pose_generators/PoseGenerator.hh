@@ -32,6 +32,7 @@
 
 // Forward declarations:
 #include <core_api/base_classes/generators/pose_generators/PoseGenerator.fwd.hh>
+#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -64,6 +65,17 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief All generators must implement a generate_object() function that
+	/// creates a new instance of a Masala object of a given type.  PoseGenerators
+	/// call generate_pose() and return a shared pointer to a Pose object.
+	base::MasalaObjectSP
+	generate_object() const override;
+
+	/// @brief All pose generators must implement a generate_pose() function which
+	/// returns a shared pointer to a new Pose instance.
+	virtual
+	core_api::auto_generated_api::pose::Pose_APISP
+	generate_pose() const = 0;
 
 }; // class PoseGenerator
 

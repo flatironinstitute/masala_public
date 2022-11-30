@@ -63,6 +63,12 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief All generators must implement a generate_object() function that
+	/// creates a new instance of a Masala object of a given type.
+	virtual
+	base::MasalaObjectSP
+	generate_object() const = 0;
+
 }; // class Generator
 
 } // namespace selectors

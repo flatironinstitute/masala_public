@@ -27,6 +27,9 @@
 // Unit headers:
 #include <core_api/base_classes/generators/pose_generators/PoseGenerator.hh>
 
+// Core API headers:
+#include <core_api/auto_generated_api/pose/Pose_API.hh>
+
 namespace masala {
 namespace core_api {
 namespace base_classes {
@@ -36,6 +39,14 @@ namespace pose_generators {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief All generators must implement a generate_object() function that
+/// creates a new instance of a Masala object of a given type.  PoseGenerators
+/// call generate_pose() and return a shared pointer to a Pose object.
+base::MasalaObjectSP
+PoseGenerator::generate_object() const {
+    return generate_pose();
+}
 
 } // namespace pose_generators
 } // namespace generators
