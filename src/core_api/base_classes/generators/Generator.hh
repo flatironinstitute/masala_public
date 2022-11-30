@@ -33,9 +33,6 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
-// Core API headers:
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
-
 namespace masala {
 namespace core_api {
 namespace base_classes {
