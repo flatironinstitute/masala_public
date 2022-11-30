@@ -728,6 +728,18 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         filehandle.write(ccfile)
     print( "\tWrote \"" + fname + "\"."  )
 
+## @brief Given the project name, capitalize it.
+def capitalize_project_name( project_name: str ) -> str :
+    namesplit = project_name.split()
+    outname = ""
+    for word in namesplit :
+        if outname != "" :
+            outname += " "
+        if len(word) > 0 :
+            outname += word[0].capitalize()
+        if len(word) > 1 :
+            outname += word[1:]
+    return outname
 
 ################################################################################
 ## Program entry point
@@ -750,7 +762,8 @@ lightweight_ccfile_template = read_file( "code_templates/api_templates/MasalaLig
 lightweight_hhfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.hh" )
 lightweight_fwdfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.fwd.hh" )
 
-licence_template = read_file( "code_templates/licences/MIT.template" ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
+project_name_capitalized = capitalize_project_name( project_name )
+licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
 for element in json_api["Elements"] :
