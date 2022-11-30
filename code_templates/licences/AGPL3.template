@@ -1,6 +1,5 @@
-/*
-    Masala
-    Copyright (C) 2022 Vikram K. Mulligan
+    <__PROJECT_NAME__>
+    Copyright (C) <__YEAR__> <__COPYRIGHT_HOLDER__>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -14,24 +13,3 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-/// @file src/core_api/types.hh
-/// @brief A utility file containing some typedefs.
-/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-
-#ifndef Masala_src_core_api_types_hh
-#define Masala_src_core_api_types_hh
-
-#include <base/types.hh>
-
-namespace masala {
-namespace core_api {
-
-    typedef base::Size Size;
-    typedef base::Real Real;
-
-} // namespace core
-} // namespace masala
-
-#endif // Masala_src_core_types_hh
