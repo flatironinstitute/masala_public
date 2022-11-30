@@ -26,7 +26,7 @@
 #ifndef Masala_src_core_api_base_classes_selectors_degree_of_freedom_selectors_DegreeOfFreedomSelector_fwd_hh
 #define Masala_src_core_api_base_classes_selectors_degree_of_freedom_selectors_DegreeOfFreedomSelector_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -37,20 +37,20 @@ namespace degree_of_freedom_selectors {
 	class DegreeOfFreedomSelector;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using DegreeOfFreedomSelectorSP = std::shared_ptr< DegreeOfFreedomSelector >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using DegreeOfFreedomSelectorSP = MASALA_SHARED_POINTER< DegreeOfFreedomSelector >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using DegreeOfFreedomSelectorCSP = std::shared_ptr< DegreeOfFreedomSelector const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using DegreeOfFreedomSelectorCSP = MASALA_SHARED_POINTER< DegreeOfFreedomSelector const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using DegreeOfFreedomSelectorWP = std::weak_ptr< DegreeOfFreedomSelector >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using DegreeOfFreedomSelectorWP = MASALA_WEAK_POINTER< DegreeOfFreedomSelector >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using DegreeOfFreedomSelectorCWP = std::weak_ptr< DegreeOfFreedomSelector const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using DegreeOfFreedomSelectorCWP = MASALA_WEAK_POINTER< DegreeOfFreedomSelector const >;
 
 } // namespace degree_of_freedom_selectors
 } // namespace selectors

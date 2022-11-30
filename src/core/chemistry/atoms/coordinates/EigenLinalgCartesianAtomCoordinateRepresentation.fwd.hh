@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentation_fwd_hh
 #define Masala_src_core_chemistry_atoms_coordinates_EigenLinalgCartesianAtomCoordinateRepresentation_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -34,10 +34,10 @@ namespace coordinates {
 
     class EigenLinalgCartesianAtomCoordinateRepresentation;
 
-    using EigenLinalgCartesianAtomCoordinateRepresentationSP = std::shared_ptr< EigenLinalgCartesianAtomCoordinateRepresentation >;
-    using EigenLinalgCartesianAtomCoordinateRepresentationCSP = std::shared_ptr< EigenLinalgCartesianAtomCoordinateRepresentation const >;
-    using EigenLinalgCartesianAtomCoordinateRepresentationWP = std::weak_ptr< EigenLinalgCartesianAtomCoordinateRepresentation >;
-    using EigenLinalgCartesianAtomCoordinateRepresentationCWP = std::weak_ptr< EigenLinalgCartesianAtomCoordinateRepresentation const >;
+    using EigenLinalgCartesianAtomCoordinateRepresentationSP = MASALA_SHARED_POINTER< EigenLinalgCartesianAtomCoordinateRepresentation >;
+    using EigenLinalgCartesianAtomCoordinateRepresentationCSP = MASALA_SHARED_POINTER< EigenLinalgCartesianAtomCoordinateRepresentation const >;
+    using EigenLinalgCartesianAtomCoordinateRepresentationWP = MASALA_WEAK_POINTER< EigenLinalgCartesianAtomCoordinateRepresentation >;
+    using EigenLinalgCartesianAtomCoordinateRepresentationCWP = MASALA_WEAK_POINTER< EigenLinalgCartesianAtomCoordinateRepresentation const >;
 
 } // namespace coordinates
 } // namespace atoms

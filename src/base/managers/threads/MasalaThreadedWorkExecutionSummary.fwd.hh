@@ -25,7 +25,7 @@
 #ifndef Masala_src_base_managers_threads_MasalaThreadedWorkExecutionSummary_fwd_hh
 #define Masala_src_base_managers_threads_MasalaThreadedWorkExecutionSummary_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -35,20 +35,20 @@ namespace threads {
 	class MasalaThreadedWorkExecutionSummary;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaThreadedWorkExecutionSummarySP = std::shared_ptr< MasalaThreadedWorkExecutionSummary >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaThreadedWorkExecutionSummarySP = MASALA_SHARED_POINTER< MasalaThreadedWorkExecutionSummary >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaThreadedWorkExecutionSummaryCSP = std::shared_ptr< MasalaThreadedWorkExecutionSummary const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaThreadedWorkExecutionSummaryCSP = MASALA_SHARED_POINTER< MasalaThreadedWorkExecutionSummary const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaThreadedWorkExecutionSummaryWP = std::weak_ptr< MasalaThreadedWorkExecutionSummary >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaThreadedWorkExecutionSummaryWP = MASALA_WEAK_POINTER< MasalaThreadedWorkExecutionSummary >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaThreadedWorkExecutionSummaryCWP = std::weak_ptr< MasalaThreadedWorkExecutionSummary const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaThreadedWorkExecutionSummaryCWP = MASALA_WEAK_POINTER< MasalaThreadedWorkExecutionSummary const >;
 
 } // namespace threads
 } // namespace managers

@@ -29,7 +29,7 @@
 
 // STL headers
 #include <string>
-#include <memory>
+#include <base/managers/memory/util.hh>
 #include <set>
 
 namespace masala {
@@ -61,7 +61,7 @@ namespace api {
         );
 
         if constexpr( std::is_class<T>::value ) {
-            std::shared_ptr<T> tempobj(
+            MASALA_SHARED_POINTER<T> tempobj(
                 std::make_shared<T>()
             );
 
@@ -92,29 +92,29 @@ namespace api {
     /// @brief Manually override for shared pointers.
     template<class T>
     std::string
-    name_from_type(type<std::shared_ptr<T>>) {
-        return "std::shared_ptr< " + name_from_type(type<T>()) + " >";
+    name_from_type(type<MASALA_SHARED_POINTER<T>>) {
+        return "MASALA_SHARED_POINTER< " + name_from_type(type<T>()) + " >";
     }
 
     /// @brief Manually override for const shared pointers.
     template<class T>
     std::string
-    name_from_type(type<std::shared_ptr<T const>>) {
-        return "std::shared_ptr< " + name_from_type(type<T>()) + " const >";
+    name_from_type(type<MASALA_SHARED_POINTER<T const>>) {
+        return "MASALA_SHARED_POINTER< " + name_from_type(type<T>()) + " const >";
     }
 
     /// @brief Manually override for weak pointers.
     template<class T>
     std::string
-    name_from_type(type<std::weak_ptr<T>>) {
-        return "std::weak_ptr< " + name_from_type(type<T>()) + " >";
+    name_from_type(type<MASALA_WEAK_POINTER<T>>) {
+        return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " >";
     }
 
     /// @brief Manually override for const weak pointers.
     template<class T>
     std::string
-    name_from_type(type<std::weak_ptr<T const>>) {
-        return "std::weak_ptr< " + name_from_type(type<T>()) + " const >";
+    name_from_type(type<MASALA_WEAK_POINTER<T const>>) {
+        return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " const >";
     }
 
     /// @brief Manually override for sets.

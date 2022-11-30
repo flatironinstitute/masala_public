@@ -27,7 +27,7 @@
 #ifndef Masala_src_base_managers_plugin_module_MasalaPluginCreator_fwd_hh
 #define Masala_src_base_managers_plugin_module_MasalaPluginCreator_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -37,20 +37,20 @@ namespace plugin_module {
 	class MasalaPluginCreator;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaPluginCreatorSP = std::shared_ptr< MasalaPluginCreator >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaPluginCreatorSP = MASALA_SHARED_POINTER< MasalaPluginCreator >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaPluginCreatorCSP = std::shared_ptr< MasalaPluginCreator const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaPluginCreatorCSP = MASALA_SHARED_POINTER< MasalaPluginCreator const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaPluginCreatorWP = std::weak_ptr< MasalaPluginCreator >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaPluginCreatorWP = MASALA_WEAK_POINTER< MasalaPluginCreator >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaPluginCreatorCWP = std::weak_ptr< MasalaPluginCreator const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaPluginCreatorCWP = MASALA_WEAK_POINTER< MasalaPluginCreator const >;
 
 } // namespace plugin_module	
 } // namespace managers

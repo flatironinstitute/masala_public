@@ -23,7 +23,7 @@
 #ifndef Masala_src_core_chemistry_atoms_ElementType_fwd_hh
 #define Masala_src_core_chemistry_atoms_ElementType_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -32,10 +32,10 @@ namespace atoms {
 
     class ElementType;
 
-    using ElementTypeSP = std::shared_ptr< ElementType >;
-    using ElementTypeCSP = std::shared_ptr< ElementType const >;
-    using ElementTypeWP = std::weak_ptr< ElementType >;
-    using ElementTypeCWP = std::weak_ptr< ElementType const >;
+    using ElementTypeSP = MASALA_SHARED_POINTER< ElementType >;
+    using ElementTypeCSP = MASALA_SHARED_POINTER< ElementType const >;
+    using ElementTypeWP = MASALA_WEAK_POINTER< ElementType >;
+    using ElementTypeCWP = MASALA_WEAK_POINTER< ElementType const >;
 
     /// @brief The element type, as an enum.
     /// @details We use the atomic symbol, and explicitly associate with it the

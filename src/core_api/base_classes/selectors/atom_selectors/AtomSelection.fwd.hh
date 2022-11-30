@@ -27,7 +27,7 @@
 #ifndef Masala_src_core_api_base_classes_selectors_atom_selectors_AtomSelection_fwd_hh
 #define Masala_src_core_api_base_classes_selectors_atom_selectors_AtomSelection_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -38,20 +38,20 @@ namespace atom_selectors {
 	class AtomSelection;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using AtomSelectionSP = std::shared_ptr< AtomSelection >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using AtomSelectionSP = MASALA_SHARED_POINTER< AtomSelection >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using AtomSelectionCSP = std::shared_ptr< AtomSelection const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using AtomSelectionCSP = MASALA_SHARED_POINTER< AtomSelection const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using AtomSelectionWP = std::weak_ptr< AtomSelection >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using AtomSelectionWP = MASALA_WEAK_POINTER< AtomSelection >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using AtomSelectionCWP = std::weak_ptr< AtomSelection const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using AtomSelectionCWP = MASALA_WEAK_POINTER< AtomSelection const >;
 
 } // namespace atom_selectors
 } // namespace selectors

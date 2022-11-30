@@ -184,7 +184,7 @@ MasalaThreadedWorkExecutionSummary::set_work_exception(
 /// @brief Retrieve the exception thrown during the work.
 /// @returns A const shared pointer to the error, or nullptr if no error.
 /// @note You can try casting this to a MasalaException to see if there's an error message.
-std::shared_ptr< std::exception const >
+MASALA_SHARED_POINTER< std::exception const >
 MasalaThreadedWorkExecutionSummary::get_work_exception() const {
     return err_ptr_;
 } // MasalaThreadedWorkExecutionSummary::get_work_exception()

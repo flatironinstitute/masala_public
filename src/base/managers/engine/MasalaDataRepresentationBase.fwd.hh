@@ -24,7 +24,7 @@
 #ifndef Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
 #define Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace base {
@@ -33,10 +33,10 @@ namespace engine {
 
     class MasalaDataRepresentationBase;
 
-    using MasalaDataRepresentationBaseSP = std::shared_ptr< MasalaDataRepresentationBase >;
-    using MasalaDataRepresentationBaseCSP = std::shared_ptr< MasalaDataRepresentationBase const >;
-    using MasalaDataRepresentationBaseWP = std::weak_ptr< MasalaDataRepresentationBase >;
-    using MasalaDataRepresentationBaseCWP = std::weak_ptr< MasalaDataRepresentationBase const >;
+    using MasalaDataRepresentationBaseSP = MASALA_SHARED_POINTER< MasalaDataRepresentationBase >;
+    using MasalaDataRepresentationBaseCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationBase const >;
+    using MasalaDataRepresentationBaseWP = MASALA_WEAK_POINTER< MasalaDataRepresentationBase >;
+    using MasalaDataRepresentationBaseCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationBase const >;
 
 
 } // namespace engine

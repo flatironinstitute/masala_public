@@ -27,7 +27,7 @@
 #ifndef Masala_src_base_managers_engine_MasalaEngineBase_fwd_hh
 #define Masala_src_base_managers_engine_MasalaEngineBase_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -37,20 +37,20 @@ namespace engine {
 	class MasalaEngineBase;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaEngineBaseSP = std::shared_ptr< MasalaEngineBase >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaEngineBaseSP = MASALA_SHARED_POINTER< MasalaEngineBase >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaEngineBaseCSP = std::shared_ptr< MasalaEngineBase const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaEngineBaseCSP = MASALA_SHARED_POINTER< MasalaEngineBase const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaEngineBaseWP = std::weak_ptr< MasalaEngineBase >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaEngineBaseWP = MASALA_WEAK_POINTER< MasalaEngineBase >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaEngineBaseCWP = std::weak_ptr< MasalaEngineBase const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaEngineBaseCWP = MASALA_WEAK_POINTER< MasalaEngineBase const >;
 
 } // namespace engine
 } // namespace managers

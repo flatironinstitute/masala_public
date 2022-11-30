@@ -23,7 +23,7 @@
 #ifndef Masala_src_base_api_MasalaObjectAPI_fwd_hh
 #define Masala_src_base_api_MasalaObjectAPI_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base_api {
@@ -31,20 +31,20 @@ namespace base_api {
 	class MasalaObjectAPI;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaObjectAPISP = std::shared_ptr< MasalaObjectAPI >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaObjectAPISP = MASALA_SHARED_POINTER< MasalaObjectAPI >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaObjectAPICSP = std::shared_ptr< MasalaObjectAPI const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaObjectAPICSP = MASALA_SHARED_POINTER< MasalaObjectAPI const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaObjectAPIWP = std::weak_ptr< MasalaObjectAPI >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaObjectAPIWP = MASALA_WEAK_POINTER< MasalaObjectAPI >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaObjectAPICWP = std::weak_ptr< MasalaObjectAPI const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaObjectAPICWP = MASALA_WEAK_POINTER< MasalaObjectAPI const >;
 
 } // namespace base_api
 } // namesapce masala

@@ -25,7 +25,7 @@
 #define Masala_src_core_chemistry_MoleculesConfiguration_fwd_hh
 
 // STL headers
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -33,10 +33,10 @@ namespace chemistry {
 
     class MoleculesConfiguration;
 
-    using MoleculesConfigurationSP = std::shared_ptr< MoleculesConfiguration >;
-    using MoleculesConfigurationCSP = std::shared_ptr< MoleculesConfiguration const >;
-    using MoleculesConfigurationWP = std::weak_ptr< MoleculesConfiguration >;
-    using MoleculesConfigurationCWP = std::weak_ptr< MoleculesConfiguration const>;
+    using MoleculesConfigurationSP = MASALA_SHARED_POINTER< MoleculesConfiguration >;
+    using MoleculesConfigurationCSP = MASALA_SHARED_POINTER< MoleculesConfiguration const >;
+    using MoleculesConfigurationWP = MASALA_WEAK_POINTER< MoleculesConfiguration >;
+    using MoleculesConfigurationCWP = MASALA_WEAK_POINTER< MoleculesConfiguration const>;
 
 } // namespace chemistry
 } // namespace core

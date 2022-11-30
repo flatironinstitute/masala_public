@@ -25,7 +25,7 @@
 #define Masala_src_base_managers_threads_MasalaThreadManagerConfiguration_fwd_hh
 
 // STL headers
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace base {
@@ -34,10 +34,10 @@ namespace threads {
 
     class MasalaThreadManagerConfiguration;
 
-    using MasalaThreadManagerConfigurationSP = std::shared_ptr< MasalaThreadManagerConfiguration >;
-    using MasalaThreadManagerConfigurationCSP = std::shared_ptr< MasalaThreadManagerConfiguration const >;
-    using MasalaThreadManagerConfigurationWP = std::weak_ptr< MasalaThreadManagerConfiguration >;
-    using MasalaThreadManagerConfigurationCWP = std::weak_ptr< MasalaThreadManagerConfiguration const>;
+    using MasalaThreadManagerConfigurationSP = MASALA_SHARED_POINTER< MasalaThreadManagerConfiguration >;
+    using MasalaThreadManagerConfigurationCSP = MASALA_SHARED_POINTER< MasalaThreadManagerConfiguration const >;
+    using MasalaThreadManagerConfigurationWP = MASALA_WEAK_POINTER< MasalaThreadManagerConfiguration >;
+    using MasalaThreadManagerConfigurationCWP = MASALA_WEAK_POINTER< MasalaThreadManagerConfiguration const>;
 
 } // namespace threads
 } // namespace managers

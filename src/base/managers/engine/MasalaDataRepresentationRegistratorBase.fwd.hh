@@ -23,7 +23,7 @@
 #ifndef Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_fwd_hh
 #define Masala_src_base_managers_engine_MasalaDataRepresentationRegistratorBase_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {

@@ -25,7 +25,7 @@
 #define Masala_src_base_managers_configuration_ConfigurationBase_fwd_hh
 
 // STL headers
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace base {
@@ -34,10 +34,10 @@ namespace configuration {
 
     class ConfigurationBase;
 
-    using ConfigurationBaseSP = std::shared_ptr< ConfigurationBase >;
-    using ConfigurationBaseCSP = std::shared_ptr< ConfigurationBase const >;
-    using ConfigurationBaseWP = std::weak_ptr< ConfigurationBase >;
-    using ConfigurationBaseCWP = std::weak_ptr< ConfigurationBase const>;
+    using ConfigurationBaseSP = MASALA_SHARED_POINTER< ConfigurationBase >;
+    using ConfigurationBaseCSP = MASALA_SHARED_POINTER< ConfigurationBase const >;
+    using ConfigurationBaseWP = MASALA_WEAK_POINTER< ConfigurationBase >;
+    using ConfigurationBaseCWP = MASALA_WEAK_POINTER< ConfigurationBase const>;
 
 } // namespace configuration
 } // namespace managers

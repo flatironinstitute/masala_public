@@ -109,7 +109,7 @@ public:
 	/// @brief Get a JSON object describing the API for a module.
 	/// @details Note that this does not cache the generated JSON object, but generates it anew
 	/// each time.
-	std::shared_ptr< nlohmann::json >
+	MASALA_SHARED_POINTER< nlohmann::json >
 	get_json_description() const;
 
 	/// @brief Begin iterator for the constructors.

@@ -27,7 +27,7 @@
 #ifndef Masala_src_core_api_base_classes_generators_Generator_fwd_hh
 #define Masala_src_core_api_base_classes_generators_Generator_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -37,20 +37,20 @@ namespace generators {
 	class Generator;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using GeneratorSP = std::shared_ptr< Generator >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using GeneratorSP = MASALA_SHARED_POINTER< Generator >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using GeneratorCSP = std::shared_ptr< Generator const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using GeneratorCSP = MASALA_SHARED_POINTER< Generator const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using GeneratorWP = std::weak_ptr< Generator >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using GeneratorWP = MASALA_WEAK_POINTER< Generator >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using GeneratorCWP = std::weak_ptr< Generator const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using GeneratorCWP = MASALA_WEAK_POINTER< Generator const >;
 
 } // namespace generators
 } // namespace base_classes

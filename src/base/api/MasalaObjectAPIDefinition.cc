@@ -150,9 +150,9 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
 /// @brief Get a JSON object describing the API for a module.
 /// @details Note that this does not cache the generated JSON object, but generates it anew
 /// each time.
-std::shared_ptr< nlohmann::json >
+MASALA_SHARED_POINTER< nlohmann::json >
 MasalaObjectAPIDefinition::get_json_description() const {
-    std::shared_ptr< nlohmann::json > json_ptr( std::make_shared< nlohmann::json >() );
+    MASALA_SHARED_POINTER< nlohmann::json > json_ptr( std::make_shared< nlohmann::json >() );
     nlohmann::json & json_api( *json_ptr );
 
     json_api["Title"] = "API description";

@@ -27,7 +27,7 @@
 #ifndef Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_fwd_hh
 #define Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -38,20 +38,20 @@ namespace pose_generators {
 	class PoseGenerator;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using PoseGeneratorSP = std::shared_ptr< PoseGenerator >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using PoseGeneratorSP = MASALA_SHARED_POINTER< PoseGenerator >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using PoseGeneratorCSP = std::shared_ptr< PoseGenerator const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using PoseGeneratorCSP = MASALA_SHARED_POINTER< PoseGenerator const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using PoseGeneratorWP = std::weak_ptr< PoseGenerator >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using PoseGeneratorWP = MASALA_WEAK_POINTER< PoseGenerator >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using PoseGeneratorCWP = std::weak_ptr< PoseGenerator const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using PoseGeneratorCWP = MASALA_WEAK_POINTER< PoseGenerator const >;
 
 } // namespace pose_generators
 } // namespace generators

@@ -27,7 +27,7 @@
 #ifndef Masala_src_core_api_base_classes_selectors_atom_selectors_annotated_region_selectors_AnnotatedRegionSelection_fwd_hh
 #define Masala_src_core_api_base_classes_selectors_atom_selectors_annotated_region_selectors_AnnotatedRegionSelection_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -39,20 +39,20 @@ namespace annotated_region_selectors {
 	class AnnotatedRegionSelection;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using AnnotatedRegionSelectionSP = std::shared_ptr< AnnotatedRegionSelection >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using AnnotatedRegionSelectionSP = MASALA_SHARED_POINTER< AnnotatedRegionSelection >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using AnnotatedRegionSelectionCSP = std::shared_ptr< AnnotatedRegionSelection const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using AnnotatedRegionSelectionCSP = MASALA_SHARED_POINTER< AnnotatedRegionSelection const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using AnnotatedRegionSelectionWP = std::weak_ptr< AnnotatedRegionSelection >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using AnnotatedRegionSelectionWP = MASALA_WEAK_POINTER< AnnotatedRegionSelection >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using AnnotatedRegionSelectionCWP = std::weak_ptr< AnnotatedRegionSelection const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using AnnotatedRegionSelectionCWP = MASALA_WEAK_POINTER< AnnotatedRegionSelection const >;
 
 } // namespace annotated_region_selectors
 } // namespace atom_selectors

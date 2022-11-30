@@ -111,7 +111,7 @@ def read_file( filename : str ) -> list :
 ## class type inside.
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
     if is_masala_class( project_name, classname ) == False :
-        if classname.startswith( "std::shared_ptr" ) :
+        if classname.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = classname.find( "<" )
             lastchevron = classname.rfind( ">" )
             innerclass = classname[firstchevron+1:lastchevron].strip()
@@ -207,14 +207,14 @@ def include_file_from_masala_api_class( inputclass : str ) -> str :
 def correct_masala_types( project_name: str, inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
     #print( inputclass )
     if is_masala_class( project_name, inputclass ) == False :
-        if inputclass.startswith( "std::shared_ptr" ) :
+        if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "std::shared_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
-        # elif inputclass.startswith( "std::weak_ptr" ) :
+            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
-        #     return "std::weak_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        #     return "std::MASALA_WEAK_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         if is_masala_api_class( inputclass ) :
             additional_includes.append( include_file_from_masala_api_class( inputclass ) )
         return inputclass # Do nothing if ths isn't a masala class.
@@ -521,7 +521,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
         ismasalaAPIptr = False
         ismasalaAPIobj = False
-        if outtype.startswith( "std::shared_ptr" ) :
+        if outtype.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()

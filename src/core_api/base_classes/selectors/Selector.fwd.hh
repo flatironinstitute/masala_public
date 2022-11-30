@@ -26,7 +26,7 @@
 #ifndef Masala_src_core_api_base_classes_selectors_Selector_fwd_hh
 #define Masala_src_core_api_base_classes_selectors_Selector_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core_api {
@@ -36,20 +36,20 @@ namespace selectors {
 	class Selector;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using SelectorSP = std::shared_ptr< Selector >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using SelectorSP = MASALA_SHARED_POINTER< Selector >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using SelectorCSP = std::shared_ptr< Selector const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using SelectorCSP = MASALA_SHARED_POINTER< Selector const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using SelectorWP = std::weak_ptr< Selector >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using SelectorWP = MASALA_WEAK_POINTER< Selector >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using SelectorCWP = std::weak_ptr< Selector const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using SelectorCWP = MASALA_WEAK_POINTER< Selector const >;
 
 } // namespace selectors
 } // namespace base_classes

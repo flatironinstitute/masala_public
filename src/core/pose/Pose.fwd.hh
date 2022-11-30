@@ -25,7 +25,7 @@
 #ifndef Masala_src_core_pose_Pose_fwd_hh
 #define Masala_src_core_pose_Pose_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -33,10 +33,10 @@ namespace pose {
 
     class Pose;
 
-    using PoseSP = std::shared_ptr< Pose >;
-    using PoseCSP = std::shared_ptr< Pose const >;
-    using PoseWP = std::weak_ptr< Pose >;
-    using PoseCWP = std::weak_ptr< Pose const >;
+    using PoseSP = MASALA_SHARED_POINTER< Pose >;
+    using PoseCSP = MASALA_SHARED_POINTER< Pose const >;
+    using PoseWP = MASALA_WEAK_POINTER< Pose >;
+    using PoseCWP = MASALA_WEAK_POINTER< Pose const >;
 
 } // namespace pose
 } // namespace core

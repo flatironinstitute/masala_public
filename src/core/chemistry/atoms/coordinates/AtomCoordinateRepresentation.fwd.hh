@@ -25,7 +25,7 @@
 #ifndef Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh
 #define Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -35,10 +35,10 @@ namespace coordinates {
 
     class AtomCoordinateRepresentation;
 
-    using AtomCoordinateRepresentationSP = std::shared_ptr< AtomCoordinateRepresentation >;
-    using AtomCoordinateRepresentationCSP = std::shared_ptr< AtomCoordinateRepresentation const >;
-    using AtomCoordinateRepresentationWP = std::weak_ptr< AtomCoordinateRepresentation >;
-    using AtomCoordinateRepresentationCWP = std::weak_ptr< AtomCoordinateRepresentation const >;
+    using AtomCoordinateRepresentationSP = MASALA_SHARED_POINTER< AtomCoordinateRepresentation >;
+    using AtomCoordinateRepresentationCSP = MASALA_SHARED_POINTER< AtomCoordinateRepresentation const >;
+    using AtomCoordinateRepresentationWP = MASALA_WEAK_POINTER< AtomCoordinateRepresentation >;
+    using AtomCoordinateRepresentationCWP = MASALA_WEAK_POINTER< AtomCoordinateRepresentation const >;
 
 } // namespace coordinates
 } // namespace atoms

@@ -23,7 +23,7 @@
 #ifndef Masala_src_core_chemistry_Molecules_fwd_hh
 #define Masala_src_core_chemistry_Molecules_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -31,10 +31,10 @@ namespace chemistry {
 
     class Molecules;
 
-    using MoleculesSP = std::shared_ptr< Molecules >;
-    using MoleculesCSP = std::shared_ptr< Molecules const >;
-    using MoleculesWP = std::weak_ptr< Molecules >;
-    using MoleculesCWP = std::weak_ptr< Molecules const >;
+    using MoleculesSP = MASALA_SHARED_POINTER< Molecules >;
+    using MoleculesCSP = MASALA_SHARED_POINTER< Molecules const >;
+    using MoleculesWP = MASALA_WEAK_POINTER< Molecules >;
+    using MoleculesCWP = MASALA_WEAK_POINTER< Molecules const >;
 
 } // namespace chemistry
 } // namespace core
