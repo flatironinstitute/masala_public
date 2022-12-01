@@ -139,7 +139,7 @@ public:
 	/// @brief Create an instance of this class using the constructor.
 	MASALA_SHARED_POINTER< T0 >
 	create_object() const {
-		return MASALA_MAKE_SHARED( T0 );
+		return std::make_shared< T0 >();
 	}
 
 private:
