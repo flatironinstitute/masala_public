@@ -54,7 +54,7 @@
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::clone() const {
     std::lock_guard< std::mutex > lock( api_mutex_ );
-    return MASALA_MAKE_SHARED( <__SOURCE_CLASS_API_NAME__>, *this );
+    return std::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
 }
 
 /// @brief Deep clone operation: make a copy of this object and return
