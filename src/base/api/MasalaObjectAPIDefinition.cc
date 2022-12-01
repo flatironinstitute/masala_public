@@ -152,7 +152,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
 /// each time.
 MASALA_SHARED_POINTER< nlohmann::json >
 MasalaObjectAPIDefinition::get_json_description() const {
-    MASALA_SHARED_POINTER< nlohmann::json > json_ptr( std::make_shared< nlohmann::json >() );
+    MASALA_SHARED_POINTER< nlohmann::json > json_ptr( MASALA_MAKE_SHARED( nlohmann::json ) );
     nlohmann::json & json_api( *json_ptr );
 
     json_api["Title"] = "API description";
