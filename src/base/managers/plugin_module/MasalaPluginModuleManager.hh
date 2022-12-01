@@ -175,9 +175,21 @@ public:
     std::vector< std::string > get_all_keywords() const;
 
     /// @brief Get a list of plugins by keyword.
+    /// @returns The name(s) of the plugin classes.  If include_namespace is
+    /// true (the default), then the full namespace and name is returned.
     std::vector< std::string >
     get_list_of_plugins_by_keyword(
         std::string const & keyword,
+        bool const include_namespace = true
+    ) const;
+
+    /// @brief Get a list of plugins that have multiple keywords.
+    /// @details The plugins that get returned must have ALL keywords.
+    /// @returns The name(s) of the plugin classes.  If include_namespace is
+    /// true (the default), then the full namespace and name is returned.
+    std::vector< std::string >
+    get_list_of_plugins_by_keywords(
+        std::vector< std::string > const & keywords,
         bool const include_namespace = true
     ) const;
 

@@ -228,6 +228,8 @@ MasalaPluginModuleManager::get_all_keywords() const {
 }
 
 /// @brief Get a list of plugins by keyword.
+/// @returns The name(s) of the plugin classes.  If include_namespace is
+/// true (the default), then the full namespace and name is returned.
 std::vector< std::string >
 MasalaPluginModuleManager::get_list_of_plugins_by_keyword(
     std::string const & keyword,
@@ -244,6 +246,50 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keyword(
     for( auto const & entry : myset ) {
         outvec.push_back( include_namespace ? entry->get_plugin_object_namespace_and_name() : entry->get_plugin_object_name() );
     }
+    return outvec;
+}
+
+/// @brief Get a list of plugins that have multiple keywords.
+/// @details The plugins that get returned must have ALL keywords.
+/// @returns The name(s) of the plugin classes.  If include_namespace is
+/// true (the default), then the full namespace and name is returned.
+std::vector< std::string >
+MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
+    std::vector< std::string > const & keywords,
+    bool const include_namespace /*= true*/
+) const {
+    CHECK_OR_THROW_FOR_CLASS(
+        !keywords.empty(), "get_list_of_plugins_by_keywords",
+        "No keywords were provided to this function!"
+    );
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    auto const & it( plugins_by_keyword_.find( keywords[0] ) );
+    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_keyword_.end(), "get_list_of_plugins_by_keywords",
+        "Keyword \"" + keywords[0] + "\" not found!"
+    );
+    auto const & myset( it->second );
+    std::vector< std::string > outvec;
+    outvec.reserve( myset.size() );
+    for( auto const & entry : myset ) {
+        std::vector< std::string > const curkeywords( entry->get_keywords() );
+        bool all_found(true);
+        // Check whether the rest of the keywords are here.
+        for( base::Size i(1); i<=keywords.size(); ++i ) {
+            if( !base::utility::container::has_value(curkeywords, keywords[i]) ) {
+                all_found = false;
+                break;
+            }
+        }
+        if( !all_found ) {
+            continue;
+        }
+        outvec.push_back( include_namespace ? entry->get_plugin_object_namespace_and_name() : entry->get_plugin_object_name() );
+    }
+    CHECK_OR_THROW_FOR_CLASS(
+        !outvec.empty(), "get_list_of_plugins_by_keywords",
+        "No plugins were found containing all specified keywords."
+    );
+    outvec.shrink_to_fit();
     return outvec;
 }
 
