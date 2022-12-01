@@ -49,13 +49,13 @@ MasalaThreadManagerConfiguration::MasalaThreadManagerConfiguration(
 /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
 MasalaThreadManagerConfigurationSP
 MasalaThreadManagerConfiguration::clone() const {
-    return std::make_shared< MasalaThreadManagerConfiguration >(*this);
+    return MASALA_MAKE_SHARED( MasalaThreadManagerConfiguration, *this);
 }
 
 /// @brief Deep clone operation: make an independent copy of this object and return a shared_ptr to the copy.
 MasalaThreadManagerConfigurationSP
 MasalaThreadManagerConfiguration::deep_clone() const {
-    return std::make_shared< MasalaThreadManagerConfiguration >(*this);
+    return MASALA_MAKE_SHARED( MasalaThreadManagerConfiguration, *this);
 }
 
 /// @brief Returns "MasalaThreadManagerConfiguration".

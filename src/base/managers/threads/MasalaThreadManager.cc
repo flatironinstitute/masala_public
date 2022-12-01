@@ -83,7 +83,8 @@ MasalaThreadManager::MasalaThreadManager() :
     configuration_( OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MasalaThreadManager, MasalaThreadManagerConfiguration ) ),
     total_threads_( configuration_->default_total_threads() ),
     thread_pool_(
-        std::make_shared< base::managers::threads::thread_pool::MasalaThreadPool >(
+        MASALA_MAKE_SHARED(
+            base::managers::threads::thread_pool::MasalaThreadPool,
             base::managers::threads::thread_pool::MasalaThreadPoolCreationKey()
         )
     ),
@@ -357,7 +358,7 @@ MasalaThreadManager::load_configuration(
 
     write_to_tracer( "Loading default MasalaThreadManager configuration." );
 
-    return std::make_shared< MasalaThreadManagerConfiguration >( passkey );
+    return MASALA_MAKE_SHARED( MasalaThreadManagerConfiguration, passkey );
 }
 
 /// @brief Given a request containing a vector of work, this function
