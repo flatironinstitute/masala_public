@@ -62,7 +62,7 @@ class DummyPlugin1Creator : public ::masala::base::managers::plugin_module::Masa
 public:
 
     ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return std::make_shared< DummyPlugin1 >(); }
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin1 >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
@@ -109,7 +109,7 @@ class DummyPlugin2Creator : public ::masala::base::managers::plugin_module::Masa
 public:
 
     ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return std::make_shared< DummyPlugin2 >(); }
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin2 >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
@@ -141,8 +141,8 @@ TEST_CASE( "Register and unregister two plugins", "[base::managers::plugin_manag
 
     masala::base::managers::plugin_module::MasalaPluginModuleManagerHandle pm(  masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance() );
     REQUIRE_NOTHROW([&](){
-        pm->add_plugin( std::make_shared< DummyPlugin1Creator >() );
-        pm->add_plugin( std::make_shared< DummyPlugin2Creator >() );
+        pm->add_plugin( masala::make_shared< DummyPlugin1Creator >() );
+        pm->add_plugin( masala::make_shared< DummyPlugin2Creator >() );
     }() );
 
     CHECK( pm->total_plugins() == 2 );

@@ -54,21 +54,21 @@ AtomInstance::AtomInstance(
     std::string const & pdb_element_name
 ) :
     masala::base::MasalaObject(),
-    additional_atom_data_{ std::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
+    additional_atom_data_{ masala::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
 {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 AtomInstanceSP
 AtomInstance::clone() const {
-    return std::make_shared< AtomInstance >( *this );
+    return masala::make_shared< AtomInstance >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 AtomInstanceSP
 AtomInstance::deep_clone() const {
-    AtomInstanceSP AtomInstance_copy( std::make_shared< AtomInstance >( *this ) );
+    AtomInstanceSP AtomInstance_copy( masala::make_shared< AtomInstance >( *this ) );
     AtomInstance_copy->make_independent();
     return AtomInstance_copy;
 }
@@ -128,38 +128,38 @@ AtomInstance::get_api_definition() {
     if( api_definition_ == nullptr ) {
 
         MasalaObjectAPIDefinitionSP api_def(
-            std::make_shared< MasalaObjectAPIDefinition >(
+            masala::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
                 "An instance of an atom.",
                 false
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< AtomInstance > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< AtomInstance > >(
                 class_name(), "Construct an empty instance of an AtomIstance object, with no options."
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< AtomInstance, AtomInstance const & > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< AtomInstance, AtomInstance const & > >(
                 class_name(), "AtomInstance object copy constructor.",
                 "src", "The input AtomInstance object to copy."
             )
         );
 
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(
                 "formal_charge", "Get the formal charge on this atom.  Formal charges are integer values.",
                 "formal_charge", "The formal charge on this atom.", std::bind( &AtomInstance::formal_charge, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Real > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Real > >(
                 "partial_charge", "Get the partial charge on this atom.  Partial charges are real values.",
                 "partial_charge", "The partial charge on this atom.", std::bind( &AtomInstance::partial_charge, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< ElementTypeEnum > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< ElementTypeEnum > >(
                 "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
                 "element_type_enum", "The element type, represented as an ElementTypeEnum.",
                 "ElementTypeEnum", "masala::core::chemistry::atoms",

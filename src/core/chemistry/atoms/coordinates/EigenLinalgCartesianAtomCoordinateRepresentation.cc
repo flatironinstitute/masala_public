@@ -47,7 +47,7 @@ namespace coordinates {
 /// to the copy.
 AtomCoordinateRepresentationSP
 EigenLinalgCartesianAtomCoordinateRepresentation::clone() const {
-    return std::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
+    return masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
 }
 
 /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".

@@ -47,21 +47,21 @@ namespace pose {
 /// @details Ensures that the molecules_ object always exists.
 Pose::Pose() :
     masala::base::MasalaObject(),
-    molecules_( std::make_shared< masala::core::chemistry::Molecules >() )
+    molecules_( masala::make_shared< masala::core::chemistry::Molecules >() )
 {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 PoseSP
 Pose::clone() const {
-    return std::make_shared< Pose >( *this );
+    return masala::make_shared< Pose >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 PoseSP
 Pose::deep_clone() const {
-    PoseSP newpose( std::make_shared< Pose >( *this ) );
+    PoseSP newpose( masala::make_shared< Pose >( *this ) );
     newpose->make_independent();
     return newpose;
 }
@@ -181,7 +181,7 @@ Pose::get_api_definition() {
     if( api_definition_ == nullptr ) {
 
         MasalaObjectAPIDefinitionSP api_def(
-            std::make_shared< MasalaObjectAPIDefinition >(
+            masala::make_shared< MasalaObjectAPIDefinition >(
                 class_name_static(),
                 class_namespace_static(),
                 "The Pose class stores information about the geometry, chemical properties, annotations, "
@@ -193,13 +193,13 @@ Pose::get_api_definition() {
 
         // Constructors:
         api_def->add_constructor(
-            std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
                 class_name_static(),
                 "Creates an empty Pose, initializing it only with an empty Molecules object."
             )
         );
         api_def->add_constructor(
-            std::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
                 class_name_static(),
                 "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
                 "make_independent() is subsequently called.",
@@ -212,7 +212,7 @@ Pose::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
                 "molecules_shared_ptr",
                 "Access the Molecules object within the Pose, by shared pointer.",
                 "molecules", "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
@@ -221,7 +221,7 @@ Pose::get_api_definition() {
             )
         );
         // api_def->add_getter(
-        //     std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
+        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
         //         "molecules_weak_ptr",
         //         "Access the Molecules object within the Pose, by weak pointer.",
         //         "molecules", "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
@@ -230,7 +230,7 @@ Pose::get_api_definition() {
         //     )
         // );
         // api_def->add_getter(
-        //     std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
+        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
         //         "molecules",
         //         "Access the Molecules object within the Pose.",
         //         "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "

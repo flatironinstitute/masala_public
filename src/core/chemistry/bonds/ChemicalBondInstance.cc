@@ -39,14 +39,14 @@ namespace bonds {
 /// to the copy.
 ChemicalBondInstanceSP
 ChemicalBondInstance::clone() const {
-    return std::make_shared< ChemicalBondInstance >( *this );
+    return masala::make_shared< ChemicalBondInstance >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 ChemicalBondInstanceSP
 ChemicalBondInstance::deep_clone() const {
-    ChemicalBondInstanceSP ChemicalBondInstance_copy( std::make_shared< ChemicalBondInstance >( *this ) );
+    ChemicalBondInstanceSP ChemicalBondInstance_copy( masala::make_shared< ChemicalBondInstance >( *this ) );
     ChemicalBondInstance_copy->make_independent();
     return ChemicalBondInstance_copy;
 }

@@ -101,7 +101,7 @@ Molecules::operator=(
 MoleculesSP
 Molecules::clone() const {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-    return std::make_shared< Molecules >( *this );
+    return masala::make_shared< Molecules >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
@@ -111,7 +111,7 @@ Molecules::deep_clone() const {
     MoleculesSP molecules_copy;
     {   // Scope for lock guard.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-        molecules_copy = std::make_shared< Molecules >( *this );
+        molecules_copy = masala::make_shared< Molecules >( *this );
     }
     molecules_copy->make_independent();
     return molecules_copy;
@@ -179,7 +179,7 @@ Molecules::get_api_definition() {
     if( api_definition_ == nullptr ) {
 
         MasalaObjectAPIDefinitionSP api_def(
-            std::make_shared< MasalaObjectAPIDefinition >(
+            masala::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
                 "A container for atoms and chemical bonds, and for data representations "
                 "that allow efficient geometric manipulations.",
@@ -187,33 +187,33 @@ Molecules::get_api_definition() {
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
                 class_name(), "Construct an empty instance of a Molecules object, with no options."
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
                 class_name(), "Molecules object copy constructor.",
                 "src", "The input Molecules object to copy."
             )
         );
 
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
                 "total_atoms", "Gets the total number of atoms in this Molecules object.",
                 "total_atoms", "The number of atoms in the Molecules object.",
                 std::bind( &Molecules::total_atoms, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_begin", "Get an iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_begin, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_end", "Get an iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_end, this )
@@ -301,7 +301,7 @@ Molecules::load_configuration(
 
     write_to_tracer( "Loading default Molecules configuration." );
 
-    return std::make_shared< MoleculesConfiguration >( passkey );
+    return masala::make_shared< MoleculesConfiguration >( passkey );
 }
 
 } // namespace chemistry

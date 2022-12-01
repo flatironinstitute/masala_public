@@ -178,7 +178,7 @@ MasalaThreadedWorkExecutionSummary::set_work_exception(
 ) {
     CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_work_exception", "Cannot alter work status after work has completed." );
     work_status_ = MasalaThreadedWorkStatus::WORK_THREW_EXCEPTION;
-    err_ptr_ = std::make_shared< std::exception const >( err );
+    err_ptr_ = masala::make_shared< std::exception const >( err );
 } // MasalaThreadedWorkExecutionSummary::set_work_exception()
 
 /// @brief Retrieve the exception thrown during the work.

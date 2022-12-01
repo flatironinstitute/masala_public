@@ -42,10 +42,10 @@ namespace api {
         std::vector< masala::base::MasalaObjectSP > outvec;
 
         // Add to this vector whenever a class is added with a defined API:
-        outvec.emplace_back( std::make_shared< masala::core::pose::Pose >() );
-        outvec.emplace_back( std::make_shared< masala::core::chemistry::Molecules >() );
-        outvec.emplace_back( std::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
-        outvec.emplace_back( std::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );
+        outvec.emplace_back( masala::make_shared< masala::core::pose::Pose >() );
+        outvec.emplace_back( masala::make_shared< masala::core::chemistry::Molecules >() );
+        outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
+        outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;

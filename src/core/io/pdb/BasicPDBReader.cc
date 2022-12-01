@@ -48,14 +48,14 @@ namespace pdb {
 /// to the copy.
 BasicPDBReaderSP
 BasicPDBReader::clone() const {
-    return std::make_shared< BasicPDBReader >( *this );
+    return masala::make_shared< BasicPDBReader >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 BasicPDBReaderSP
 BasicPDBReader::deep_clone() const {
-    BasicPDBReaderSP reader_copy( std::make_shared< BasicPDBReader >( *this ) );
+    BasicPDBReaderSP reader_copy( masala::make_shared< BasicPDBReader >( *this ) );
     reader_copy->make_independent();
     return reader_copy;
 }
@@ -88,7 +88,7 @@ core::pose::PoseSP
 BasicPDBReader::pose_from_pdb_file_contents(
     std::vector< std::string > const & file_lines
 ) const {
-    masala::core::pose::PoseSP pose( std::make_shared< masala::core::pose::Pose >() );
+    masala::core::pose::PoseSP pose( masala::make_shared< masala::core::pose::Pose >() );
 
     std::vector< bool > atom_lines_read( file_lines.size(), false ); // Allows us to skip re-parsing the same lines.
 
@@ -143,7 +143,7 @@ BasicPDBReader::add_atoms_from_file_lines(
         };
 
         // The new atom.
-        masala::core::chemistry::atoms::AtomInstanceSP newatom( std::make_shared< masala::core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
+        masala::core::chemistry::atoms::AtomInstanceSP newatom( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
         pose.molecules_nonconst().add_atom( newatom, coords );
     }
 }

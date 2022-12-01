@@ -20,7 +20,7 @@
 /// @brief Utility functions and definitions for allocating memory.
 /// @details Defines Masala shared and weak pointers (currently as MASALA_SHARED_POINTER
 /// and MASALA_WEAK_POINTER).  Also defines MASALA_MAKE_SHARED macro (which currently
-/// just invokes std::make_shared).
+/// just invokes masala::make_shared).
 /// @note By defining these in one place, it is easy at a later time to
 /// switch Masala to use a different memory allocation system, should a
 /// better one come along.
@@ -45,6 +45,10 @@ namespace memory {
 } // namespace memory
 } // namespace managers
 } // namespace base
+
+    // Allows use of masala::make_shared as a shorthand for base::managers::memory::make_shared:
+    using base::managers::memory::make_shared;
+
 } // namespace masala
 
 template < typename T >
@@ -52,7 +56,5 @@ using MASALA_SHARED_POINTER = masala::base::managers::memory::shared_ptr<T>;
 
 template< typename T >
 using MASALA_WEAK_POINTER = masala::base::managers::memory::weak_ptr<T>;
-
-#define MASALA_MAKE_SHARED( T, ... ) masala::base::managers::memory::make_shared< T >( __VA_ARGS__ )
 
 #endif // Masala_src_base_managers_memory_util_hh

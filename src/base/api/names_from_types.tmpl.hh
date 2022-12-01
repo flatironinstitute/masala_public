@@ -62,7 +62,7 @@ namespace api {
 
         if constexpr( std::is_class<T>::value ) {
             MASALA_SHARED_POINTER<T> tempobj(
-                std::make_shared<T>()
+                masala::make_shared<T>()
             );
 
             masala::base::MasalaObjectSP tempptr(

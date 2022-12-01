@@ -354,7 +354,7 @@ def generate_constructor_implementations(project_name: str, classname: str, json
         if is_lightweight == True :
             outstring += tabchar + "inner_object_("
         else:
-            outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
+            outstring += tabchar + "inner_object_( masala::make_shared< " + classname + " >("
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
@@ -542,7 +542,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
             if ismasalaAPIptr and returns_this_ref == False :
                 dummy = []
-                outstring += "std::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
+                outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif ismasalaAPIobj :
@@ -551,7 +551,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                 if output_is_lightweight :
                     outstring += tabchar + tabchar + outtype + "( "
                 else :
-                    outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
+                    outstring += tabchar + tabchar + "masala::make_shared< " + outtype + " >( "
                 add_base_class_include( project_name, outtype, additional_includes )
         else :
             outstring += tabchar
