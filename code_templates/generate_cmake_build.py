@@ -167,7 +167,8 @@ if output_file_tests == "NONE" :
     output_file_tests = None
 
 cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, source_dir, True )
-api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", source_dir + "_api", False ) )
+if output_file_api is not None :
+    api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", source_dir + "_api", False ) )
 depend_list = get_library_dependencies( source_dir )
 
 appsdir = source_dir + "/" + lib_name + "_apps"
