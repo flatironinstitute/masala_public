@@ -271,10 +271,10 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
     std::vector< std::string > outvec;
     outvec.reserve( myset.size() );
     for( auto const & entry : myset ) {
-        std::vector< std::string > const curkeywords( entry->get_keywords() );
+        std::vector< std::string > const curkeywords( entry->get_plugin_object_keywords() );
         bool all_found(true);
         // Check whether the rest of the keywords are here.
-        for( base::Size i(1); i<=keywords.size(); ++i ) {
+        for( base::Size i(1); i<keywords.size(); ++i ) {
             if( !base::utility::container::has_value(curkeywords, keywords[i]) ) {
                 all_found = false;
                 break;
