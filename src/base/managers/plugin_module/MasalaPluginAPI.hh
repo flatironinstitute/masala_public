@@ -24,7 +24,7 @@
 #define Masala_src_base_managers_plugin_module_MasalaPluginAPI_hh
 
 // Forward declarations:
-#include <base/MasalaPluginAPI.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObjectAPI.hh>
