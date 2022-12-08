@@ -34,9 +34,9 @@ lib_name = argv[1]
 source_dir = argv[2]
 dest_dir = argv[3]
 
-assert path.isdir( source_dir )
-assert path.isdir( dest_dir )
-assert path.isdir( source_dir + "/" + lib_name )
+assert path.isdir( source_dir ), source_dir + " is not a directory."
+assert path.isdir( dest_dir ), dest_dir + " is not a directory."
+assert path.isdir( source_dir + "/" + lib_name ), source_dir + "/" + lib_name + " is not a directory."
 
 ## @brief Determine whether an auto-generated API file defines an API for a lightweight,
 ## stack-allocated class (True) or for a heavyweight, heap-allocated class (False).
