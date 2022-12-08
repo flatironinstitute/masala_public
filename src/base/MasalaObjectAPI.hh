@@ -16,21 +16,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base_api/MasalaObjectAPI.hh
+/// @file src/base/MasalaObjectAPI.hh
 /// @brief A base class for all Masala derived API classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaObjectAPI_hh
-#define Masala_src_base_api_MasalaObjectAPI_hh
+#ifndef Masala_src_base_MasalaObjectAPI_hh
+#define Masala_src_base_MasalaObjectAPI_hh
 
 // Forward declarations:
-#include <base_api/MasalaObjectAPI.fwd.hh>
+#include <base/MasalaObjectAPI.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
 
 namespace masala {
-namespace base_api {
+namespace base {
 
 /// @brief A base class for Masala API derived classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -66,7 +66,7 @@ public:
 
 }; // class MasalaObjectAPI
 
-} // namespace base_api
+} // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_MasalaObjectAPI_hh
+#endif //Masala_src_base_MasalaObjectAPI_hh

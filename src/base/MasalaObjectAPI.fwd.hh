@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base_api/MasalaObject.hh
+/// @file src/base/MasalaObjectAPI.hh
 /// @brief Forward declarations for a base class for all Masala API derived classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaObjectAPI_fwd_hh
-#define Masala_src_base_api_MasalaObjectAPI_fwd_hh
+#ifndef Masala_src_base_MasalaObjectAPI_fwd_hh
+#define Masala_src_base_MasalaObjectAPI_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace base_api {
+namespace base {
 
 	class MasalaObjectAPI;
 
@@ -46,7 +46,7 @@ namespace base_api {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using MasalaObjectAPICWP = MASALA_WEAK_POINTER< MasalaObjectAPI const >;
 
-} // namespace base_api
+} // namespace base
 } // namesapce masala
 
-#endif //Masala_src_base_api_MasalaObjectAPI_fwd_hh
+#endif //Masala_src_base_MasalaObjectAPI_fwd_hh
