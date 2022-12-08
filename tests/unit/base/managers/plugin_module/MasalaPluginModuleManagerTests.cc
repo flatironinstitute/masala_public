@@ -26,6 +26,7 @@
 // Unit headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 
 // Base headers:
@@ -51,8 +52,47 @@ public:
     static std::string class_name_static() { return "DummyPlugin1"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
-    std::string class_name() const { return class_name_static(); }
-    std::string class_namespace() const { return class_namespace_static(); }
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+
+    void store_word( std::string const & word_in ) { word_ = word_in; }
+    std::string const & word() const { return word_; }
+
+private:
+
+    std::string word_;
+
+};
+
+/// @brief Dummy API class for testing.
+class DummyPlugin1API : public ::masala::base::managers::plugin_module::MasalaPluginAPI {
+
+public:
+
+    DummyPlugin1API() :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( masala::make_shared< DummyPlugin1 >() )
+    {}
+
+    static std::string class_name_static() { return "DummyPlugin1API"; }
+    static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
+
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+    std::string inner_class_name() const override { return DummyPlugin1::class_name_static(); }
+    std::string inner_class_namespace() const override { return DummyPlugin1::class_namespace_static(); }
+
+    void store_word( std::string const & word_in ) {
+        inner_object_->store_word(word_in);
+    }
+
+    std::string const & word() const {
+        return inner_object_->word();
+    }
+
+private:
+
+    MASALA_SHARED_POINTER< DummyPlugin1 > inner_object_;
 
 };
 
@@ -61,8 +101,8 @@ class DummyPlugin1Creator : public ::masala::base::managers::plugin_module::Masa
 
 public:
 
-    ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return masala::make_shared< DummyPlugin1 >(); }
+    ::masala::base::managers::plugin_module::MasalaPluginAPISP
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin1API >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
@@ -103,13 +143,37 @@ public:
 
 };
 
+/// @brief Dummy API class 2 for testing.
+class DummyPlugin2API : public ::masala::base::managers::plugin_module::MasalaPluginAPI {
+
+public:
+
+    DummyPlugin2API() :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( masala::make_shared< DummyPlugin2 >() )
+    {}
+
+    static std::string class_name_static() { return "DummyPlugin2API"; }
+    static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
+
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+    std::string inner_class_name() const override { return DummyPlugin2::class_name_static(); }
+    std::string inner_class_namespace() const override { return DummyPlugin2::class_namespace_static(); }
+
+private:
+
+    MASALA_SHARED_POINTER< DummyPlugin2 > inner_object_;
+
+};
+
 /// @brief Creator class for the dummy class.
 class DummyPlugin2Creator : public ::masala::base::managers::plugin_module::MasalaPluginCreator {
 
 public:
 
-    ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return masala::make_shared< DummyPlugin2 >(); }
+    ::masala::base::managers::plugin_module::MasalaPluginAPISP
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin2API >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
