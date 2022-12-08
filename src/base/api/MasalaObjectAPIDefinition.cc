@@ -54,17 +54,21 @@ namespace api {
 ///			   we're providing an API definition.
 /// @param[in] is_lightweight Is this the API definition for a lightweight
 ///            object that could be stack-allocated?
+/// @param[in] is_plugin_class Is this a plugin class that could be registered
+///			   with the plugin manager?
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     std::string const & api_class_name,
     std::string const & api_class_namespace,
     std::string const & api_class_description,
-    bool const is_lightweight
+    bool const is_lightweight,
+    bool const is_plugin_class
 ) :
     masala::base::MasalaObject(),
     api_class_name_( api_class_name ),
     api_class_namespace_( api_class_namespace ),
     api_class_description_( api_class_description ),
-    is_lightweight_( is_lightweight )
+    is_lightweight_( is_lightweight ),
+    is_plugin_class_( is_plugin_class )
 {}
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
@@ -143,6 +147,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
 
     ss << "\nPROPERTIES\n";
     ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
+    ss << "Is_Plugin_Class:\t" << ( is_plugin_class_ ? "TRUE" : "FALSE" ) << "\n";
 
     return ss.str();
 }
@@ -165,7 +170,8 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["WorkFunctions"] = get_json_description_for_work_functions();
 
     json_api["Properties"] = std::map< std::string, bool >{
-        { "Is_Lightweight", is_lightweight_ }
+        { "Is_Lightweight", is_lightweight_ },
+        { "Is_Plugin_Class", is_plugin_class_ }
     };
 
     return json_ptr;

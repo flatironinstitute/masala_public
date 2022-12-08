@@ -73,11 +73,14 @@ public:
 	///			   we're providing an API definition.
 	/// @param[in] is_lightweight Is this the API definition for a lightweight
 	/// 		   object that could be stack-allocated?
+	/// @param[in] is_plugin_class Is this a plugin class that could be registered
+	///			   with the plugin manager?
 	MasalaObjectAPIDefinition(
 		std::string const & api_class_name,
 		std::string const & api_class_namespace,
 		std::string const & api_class_description,
-		bool const is_lightweight
+		bool const is_lightweight,
+		bool const is_plugin_class
 	);
 
 
@@ -184,6 +187,15 @@ public:
 		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 	);
 
+	/// @brief Is this the API for a lightweight object that could be stack-allocated?
+	/// @details If so, the API container will store the object directly, not an owning pointer to it. 
+	inline bool is_lightweight() const { return is_lightweight_; }
+
+	/// @brief Is this a plugin class that could be registered with the plugin manager?
+	/// @details If so, in addition to the API container, an API container creator (suitable for
+	/// registering with the plugin manager) will be auto-generated.
+	inline bool is_plugin_class() const { return is_plugin_class_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -243,6 +255,11 @@ private:
 	/// @brief Is this the API for a lightweight object that could be stack-allocated?
 	/// @details If so, the API container will store the object directly, not an owning pointer to it.
 	bool is_lightweight_ = false;
+
+	/// @brief Is this a plugin class that could be registered with the plugin manager?
+	/// @details If so, in addition to the API container, an API container creator (suitable for
+	/// registering with the plugin manager) will be auto-generated.
+	bool is_plugin_class_ = false;
 
 
 }; // class MasalaObjectAPIDefinition
