@@ -36,8 +36,6 @@ namespace base {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaObjectAPI : public base::MasalaObject {
 
-	friend class masala::base::managers::configuration::MasalaConfigurationManager;
-
 public:
 
 	/// @brief Default constructor.
