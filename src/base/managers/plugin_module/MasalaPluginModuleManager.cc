@@ -294,8 +294,9 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
 }
 
 /// @brief Create a plugin object instance by category and plugin name.
+/// @details Actually creates an API container for a plugin object.
 /// @note Since names must be unique, the plugin_name should include namespace.
-MasalaPluginSP
+MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::vector< std::string > const & category,
     std::string const & plugin_name
@@ -322,8 +323,9 @@ MasalaPluginModuleManager::create_plugin_object_instance(
 }
 
 /// @brief Create a plugin object instance by keyword and plugin name.
+/// @details Actually creates an API container for a plugin object.
 /// @note Since names must be unique, the plugin_name should include namespace.
-MasalaPluginSP
+MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::string const & keyword,
     std::string const & plugin_name
