@@ -44,8 +44,7 @@ public:
 	/// @brief Copy constructor.
 	MasalaObjectAPI( MasalaObjectAPI const & ) = default;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
+	/// @brief Destructor.
 	virtual ~MasalaObjectAPI() = default;
 
 public:
