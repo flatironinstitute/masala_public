@@ -131,7 +131,7 @@ AtomInstance::get_api_definition() {
             masala::make_shared< MasalaObjectAPIDefinition >(
                 class_name(), class_namespace(),
                 "An instance of an atom.",
-                false
+                false, false
             )
         );
         api_def->add_constructor(
