@@ -66,9 +66,10 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     using namespace base::managers::plugin_module;
     MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
     is_plugin_class_ = ( this_object_cast != nullptr );
-    // if( is_plugin_class_ ) {
-        
-    // }
+    if( is_plugin_class_ ) {
+        plugin_categories_ = this_object_cast->get_categories();
+        plugin_keywords_ = this_object_cast->get_keywords();
+    }
 }
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
@@ -149,6 +150,36 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
     ss << "Is_Plugin_Class:\t" << ( is_plugin_class_ ? "TRUE" : "FALSE" ) << "\n";
 
+    if( is_plugin_class_ ) {
+        ss << "\nPLUGIN_CATEGORIES:\n";
+        for( auto const & category : plugin_categories_ ) {
+            bool first( true );
+            for( auto const & level : category ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << level;
+            }
+            ss << "\n";
+        }
+
+        ss << "\nPLUGIN_KEYWORDS:\n";
+        {
+            bool first( true );
+            for( auto const & keyword : plugin_keywords_ ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << keyword;
+            }
+            ss << "\n";
+        }
+    }
+
     return ss.str();
 }
 
@@ -173,6 +204,11 @@ MasalaObjectAPIDefinition::get_json_description() const {
         { "Is_Lightweight", is_lightweight_ },
         { "Is_Plugin_Class", is_plugin_class_ }
     };
+
+    if( is_plugin_class_ ) {
+        json_api[ "Plugin_Categories" ] = plugin_categories_;
+        json_api[ "Plugin_Keywords" ] = plugin_keywords_;
+    } 
 
     return json_ptr;
 }
@@ -279,6 +315,21 @@ MasalaObjectAPIDefinition::add_work_function(
     masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
     work_functions_.emplace_back( work_function_in );
+}
+
+/// @brief Get the categories that this object is in, if it is a plugin object.
+/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+/// An object can be in more than one category.
+std::vector< std::vector< std::string > > const &
+MasalaObjectAPIDefinition::plugin_categories() const {
+    return plugin_categories_;
+}
+
+/// @brief Get the keywords for this object, if it is a plugin object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::plugin_keywords() const {
+    return plugin_keywords_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

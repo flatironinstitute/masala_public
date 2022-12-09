@@ -188,6 +188,17 @@ public:
 	/// registering with the plugin manager) will be auto-generated.
 	inline bool is_plugin_class() const { return is_plugin_class_; }
 
+	/// @brief Get the categories that this object is in, if it is a plugin object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > const &
+	plugin_categories() const;
+
+	/// @brief Get the keywords for this object, if it is a plugin object.
+	std::vector< std::string > const &
+	plugin_keywords() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +264,14 @@ private:
 	/// registering with the plugin manager) will be auto-generated.
 	bool is_plugin_class_ = false;
 
+	/// @brief The categories that this object is in, if it is a plugin object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > plugin_categories_;
+
+	/// @brief The keywords for this object, if it is a plugin object.
+	std::vector< std::string > plugin_keywords_;
 
 }; // class MasalaObjectAPIDefinition
 
