@@ -61,6 +61,23 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get the category or categories for this plugin class.
+    /// @details Pure virtual; must be implemented by derived classes.
+    /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
+    /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
+    /// in more than one hierarchical category (in which case there would be more than one
+    /// entry in the outher vector), but must be in at least one.  The first one is used as
+    /// the primary key.
+    virtual
+    std::vector< std::vector< std::string > >
+    get_categories() const = 0;
+
+    /// @brief Get the keywords for this plugin class.
+    /// @details Pure virtual; must be implemented by derived classes.
+    virtual
+    std::vector< std::string >
+    get_keywords() const = 0;
+
 }; // class MasalaPlugin
 
 } // namespace plugin_module	
