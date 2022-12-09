@@ -54,7 +54,7 @@ public:
 	create_plugin_object() const override;
 
 	/// @brief Return the names of the categories for this type of plugin object.
-	/// @returns In this case, returns <__PLUGIN_CATEGORIES__>.
+	/// @returns In this case, returns { <__PLUGIN_CATEGORIES__> }.
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector).
 	/// A plugin can be in more than one hierarchical category, but must be in at least one.  The
 	/// first one is used as the primary key.
@@ -62,7 +62,7 @@ public:
 	get_plugin_object_categories() const override; 
 
 	/// @brief Return keywords associated with this plugin module.
-	/// @returns This override returns <__PLUGIN_KEYWORDS__>
+	/// @returns This override returns { <__PLUGIN_KEYWORDS__> }.
 	std::vector< std::string >
 	get_plugin_object_keywords() const override;
 
@@ -81,7 +81,7 @@ public:
 	std::string class_name() const override;
 
 	/// @brief Get the class namespace for this class (the creator class).
-	/// @returns Returns "standard_masala_plugins::selectors::atom_selectors".
+	/// @returns Returns "<__CREATOR_CLASS_API_NAMESPACE__>".
 	std::string class_namespace() const override;
 
 }; // class <__CREATOR_CLASS_API_NAME__>
