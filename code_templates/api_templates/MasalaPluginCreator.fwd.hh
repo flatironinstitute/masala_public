@@ -1,7 +1,8 @@
 <__COMMENTED_LICENCE__>
 
 <__DOXYGEN_CREATOR_FILE_PATH_AND_FWD_FILE_NAME__>
-/// @brief Creators for <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class.
+/// @brief Forward declaration for the creator for the
+/// <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class.
 /// @details Creators are needed to allow the Masala plugin system to use objects
 /// defined in plugin libraries.
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
