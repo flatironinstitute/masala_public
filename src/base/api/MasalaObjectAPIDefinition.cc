@@ -30,6 +30,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -46,30 +47,29 @@ namespace api {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Options constructor.
-/// @param[in] api_class_name The name of the class for which we're
-///            providing an API definition.
-/// @param[in] api_class_namespace The namespace of the class for which
-///            we're providing an API definition.
+/// @param[in] this_object The object for which we're generating a description.
 /// @param[in] api_class_description The description of the class for which
 ///			   we're providing an API definition.
 /// @param[in] is_lightweight Is this the API definition for a lightweight
-///            object that could be stack-allocated?
-/// @param[in] is_plugin_class Is this a plugin class that could be registered
-///			   with the plugin manager?
+/// 		   object that could be stack-allocated?
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
-    std::string const & api_class_name,
-    std::string const & api_class_namespace,
+    base::MasalaObject const & this_object,
     std::string const & api_class_description,
-    bool const is_lightweight,
-    bool const is_plugin_class
+    bool const is_lightweight
 ) :
     masala::base::MasalaObject(),
-    api_class_name_( api_class_name ),
-    api_class_namespace_( api_class_namespace ),
+    api_class_name_( this_object.class_name() ),
+    api_class_namespace_( this_object.class_namespace() ),
     api_class_description_( api_class_description ),
-    is_lightweight_( is_lightweight ),
-    is_plugin_class_( is_plugin_class )
-{}
+    is_lightweight_( is_lightweight )
+{
+    using namespace base::managers::plugin_module;
+    MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
+    is_plugin_class_ = ( this_object_cast != nullptr );
+    // if( is_plugin_class_ ) {
+        
+    // }
+}
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
 std::string

@@ -65,24 +65,16 @@ public:
 	MasalaObjectAPIDefinition() = delete;
 
 	/// @brief Options constructor.
-	/// @param[in] api_class_name The name of the class for which we're
-	///            providing an API definition.
-	/// @param[in] api_class_namespace The namespace of the class for which
-	///            we're providing an API definition.
+	/// @param[in] this_object The object for which we're generating a description.
 	/// @param[in] api_class_description The description of the class for which
 	///			   we're providing an API definition.
 	/// @param[in] is_lightweight Is this the API definition for a lightweight
 	/// 		   object that could be stack-allocated?
-	/// @param[in] is_plugin_class Is this a plugin class that could be registered
-	///			   with the plugin manager?
 	MasalaObjectAPIDefinition(
-		std::string const & api_class_name,
-		std::string const & api_class_namespace,
+		base::MasalaObject const & this_object,
 		std::string const & api_class_description,
-		bool const is_lightweight,
-		bool const is_plugin_class
+		bool const is_lightweight
 	);
-
 
 	/// @brief Copy constructor.
 	MasalaObjectAPIDefinition( MasalaObjectAPIDefinition const & ) = default;
