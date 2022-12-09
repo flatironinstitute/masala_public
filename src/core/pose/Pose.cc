@@ -182,12 +182,11 @@ Pose::get_api_definition() {
 
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
-                class_name_static(),
-                class_namespace_static(),
+                *this,
                 "The Pose class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
                 "molecule or group of molecules.",
-                false, false
+                false
             )
         );
 

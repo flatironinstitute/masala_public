@@ -172,10 +172,10 @@ AtomInstanceConstIterator::get_api_definition() {
     if( api_definition_ == nullptr ) {
         MasalaObjectAPIDefinitionSP api_definition(
             masala::make_shared< MasalaObjectAPIDefinition >(
-                class_name(), class_namespace(),
+                *this,
                 "A const iterator over a set of AtomInstance objects.  This custom iterator is needed to allow iteration over "
                 "const AtomInstance objects from a set containing non-const shared pointers.",
-                true, false
+                true
             )
         );
 
