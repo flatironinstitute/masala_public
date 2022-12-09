@@ -55,6 +55,19 @@ public:
     std::string class_name() const override { return class_name_static(); }
     std::string class_namespace() const override { return class_namespace_static(); }
 
+    std::vector< std::string > get_keywords() const override {
+        return std::vector< std::string > {
+            "protein", "design", "canonical"
+        };
+    }
+
+    std::vector< std::vector< std::string > > get_categories() const override {
+        return std::vector< std::vector< std::string > > {
+            { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
+            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" },
+        };
+    }
+
     void store_word( std::string const & word_in ) { word_ = word_in; }
     std::string const & word() const { return word_; }
 
@@ -108,7 +121,7 @@ public:
     get_plugin_object_categories() const override {
         static std::vector< std::vector< std::string > > const categories {
             { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
-            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" },
+            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" }
         };
         return categories;
     }
@@ -140,6 +153,19 @@ public:
 
     std::string class_name() const { return class_name_static(); }
     std::string class_namespace() const { return class_namespace_static(); }
+
+    std::vector< std::string > get_keywords() const override {
+        return std::vector< std::string > {
+            "peptide", "design", "non-canonical"
+        };
+    }
+
+    std::vector< std::vector< std::string > > get_categories() const override {
+        return std::vector< std::vector< std::string > > {
+            { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
+            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" },
+        };
+    }
 
 };
 
@@ -179,7 +205,7 @@ public:
     get_plugin_object_categories() const override {
         static std::vector< std::vector< std::string > > const categories {
             { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
-            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" },
+            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" }
         };
         return categories;
     }
