@@ -10,10 +10,10 @@
 /// get_api_definition() function.
 
 // Header:
-#include <selectors/atom_selectors/ElementTypeAtomSelectorCreator.hh>
+<__CREATOR_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>
 
 // Project headers:
-#include <selectors/atom_selectors/ElementTypeAtomSelector.hh>
+<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>
 
 // STL headers:
 #include <string>
