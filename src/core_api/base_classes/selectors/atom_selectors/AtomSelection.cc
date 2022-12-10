@@ -52,6 +52,32 @@ AtomSelection::class_namespace() const {
 	return "masala::core_api::base_classes::selectors::atom_selectors";
 }
 
+/// @brief Get the category or categories for this plugin class.
+/// @returns { { "Selection", "AtomSelection" } }
+/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
+/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
+/// in more than one hierarchical category (in which case there would be more than one
+/// entry in the outher vector), but must be in at least one.  The first one is used as
+/// the primary key.
+std::vector< std::vector< std::string > >
+AtomSelection::get_categories() const {
+	return std::vector< std::vector< std::string > > {
+		{ "Selection", "AtomSelection" }
+	};
+}
+
+/// @brief Get the keywords for this plugin class.
+/// @returns { "masala", "core", "selection", "atom_selection" }
+std::vector< std::string >
+AtomSelection::get_keywords() const {
+	return std::vector< std::string > {
+		"masala",
+		"core",
+		"selection",
+		"atom_selection"
+	};
+}
+
 /// @brief Ensure that an atom selection has enough memory allocated so that it
 /// can store at least N atoms.
 /// @details Calls STL vector reserve() function, which suggests memory allocation.
