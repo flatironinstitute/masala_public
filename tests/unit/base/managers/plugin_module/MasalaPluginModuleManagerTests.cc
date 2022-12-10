@@ -151,8 +151,8 @@ public:
     static std::string class_name_static() { return "DummyPlugin2"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
-    std::string class_name() const { return class_name_static(); }
-    std::string class_namespace() const { return class_namespace_static(); }
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
 
     std::vector< std::string > get_keywords() const override {
         return std::vector< std::string > {
