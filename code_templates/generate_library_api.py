@@ -640,7 +640,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar: str ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = "Masala_" + libraryname + "_api_auto_generated_api_"
@@ -651,6 +651,13 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         if i > 1 :
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
+
+    if is_plugin_class == True :
+        api_base_class_include = "#include <base/managers/plugin_module/MasalaPluginAPI.hh>"
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class_include = "#include <base/MasalaObjectAPI.hh>"
+        api_base_class = "masala::base::MasalaObjectAPI"
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
@@ -680,7 +687,9 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
         .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
-        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) )
+        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
+        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
+        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -688,7 +697,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str, is_lightweight: bool ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -698,6 +707,11 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
+
+    if is_plugin_class == True :
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class = "masala::base::MasalaObjectAPI"
 
     additional_includes = []
 
@@ -721,7 +735,8 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) )
+        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
+        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
@@ -777,14 +792,15 @@ for element in json_api["Elements"] :
     assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
     assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
     dirname = prepare_directory( project_name, library_name, namespace )
+    is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
     if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
         prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False )
+        prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
     else :
         prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True )
+        prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     

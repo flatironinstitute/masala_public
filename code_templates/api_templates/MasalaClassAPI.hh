@@ -17,7 +17,7 @@
 <__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>
 
 // Base headers:
-#include <base/MasalaObjectAPI.hh>
+<__INCLUDE_BASE_API_CLASS_HH_FILE__>
 
 // Forward declarations for additional API headers:
 <__CPP_ADDITIONAL_FWD_INCLUDES__>
@@ -30,7 +30,7 @@
 <__DOXYGEN_BRIEF_DESCRIPTION__>
 <__DOXYGEN_DETAILED_DESCRIPTION__>
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
-class <__SOURCE_CLASS_API_NAME__> : public masala::base::MasalaObjectAPI {
+class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
 
 public:
 
