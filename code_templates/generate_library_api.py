@@ -327,9 +327,15 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool, is_plugin_class : bool ) -> str :
     outstring = ""
     first = True
+
+    if is_plugin_class == True :
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class = "masala::base::MasalaObjectAPI"
+
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
         #print(constructor)
         if first :
@@ -350,7 +356,7 @@ def generate_constructor_implementations(project_name: str, classname: str, json
             outstring += ") :\n"
         
         # Initialization:
-        outstring += tabchar + "masala::base::MasalaObjectAPI(),\n"
+        outstring += tabchar + api_base_class + "(),\n"
         if is_lightweight == True :
             outstring += tabchar + "inner_object_("
         else:
@@ -731,7 +737,7 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_plugin_class=is_plugin_class) ) \
         .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
