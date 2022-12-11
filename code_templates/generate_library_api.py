@@ -765,20 +765,19 @@ def capitalize_project_name( project_name: str ) -> str :
 ## @brief Given library name, class name, class namespace, and project name, return the name of the
 ## creator class, the namespace of the creator class, and the filename (without extension) of the
 ## creator class source classes.
-def determine_creator_name_namespace_filename( library_name : str, name_string : str, namespace : str, project_name : str ) -> tuple :
+def determine_creator_name_namespace_filename( library_name : str, name_string : str, namespace : list, project_name : str ) -> tuple :
     creator_name = name_string + "Creator"
     creator_namespace = project_name + "::" + library_name + "_api::auto_generated_api"
     creator_filename_no_extension = "src/" + library_name + "_api/auto_generated_api"
-    namespace_split = namespace.replace("::", ' ').split()
-    assert len(namespace_split) >= 2
-    for i in range( len(namespace_split) ) :
+    assert len(namespace) >= 2
+    for i in range( len(namespace) ) :
         if i == 0 :
-            assert namespace_split[i] == project_name
+            assert namespace[i] == project_name
         elif i == 1 :
-            assert namespace_split[i] == library_name
+            assert namespace[i] == library_name
         else :
-            creator_namespace += "::" + namespace_split[i]
-            creator_filename_no_extension += "/" + namespace_split[i]
+            creator_namespace += "::" + namespace[i]
+            creator_filename_no_extension += "/" + namespace[i]
     creator_filename_no_extension += "/" + creator_name
     return creator_name, creator_namespace, creator_filename_no_extension
 
