@@ -644,7 +644,8 @@ def prepare_creator_forward_declarations( \
         .replace( "<__CPP_CREATOR_FWD_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
-        
+        .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
+        .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif //" + header_guard_string )
 
     with open( creator_filename + ".fwd.hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_fwdfile )
