@@ -807,6 +807,12 @@ for element in json_api["Elements"] :
         prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
         prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
         prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
+    
+    # if is_plugin_class == True :
+    #     creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace )
+    #     prepare_creator_forward_declarations( creator_name, creator_namespace, creator_filename, json_api, name_string, namespace  )
+    #     prepare_creator_header_file( creator_name, creator_namespace, creator_filename, json_api, name_string, namespace  )
+    #     prepare_creator_cc_file( creator_name, creator_namespace, creator_filename, json_api, name_string, namespace  )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     
