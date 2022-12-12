@@ -636,6 +636,24 @@ def generate_plugin_categories( \
         outstr += " }"
     return outstr
 
+## @brief Generate the keywords for a plugin class, from the JSON description.
+def generate_plugin_keywords( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json
+    ) -> str :
+
+    outstr = ""
+    keywords = json_api["Elements"][ namespace_string + "::" + name_string ]["Plugin_Keywords"]
+    first = True
+    for entry in keywords :
+        if first == True :
+            first = False
+        else :
+            outstr += ", "
+        outstr += "\"" + entry + "\""
+    return outstr
+
 ## @brief Auto-generate the forward declaration file (***Creator.fwd.hh) for the creator for a plugin class.
 def prepare_creator_forward_declarations( \
     plugin_creator_fwdfile_template : str, \
@@ -711,6 +729,7 @@ def prepare_creator_header_file( \
         .replace( "<__CPP_CREATOR_HH_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
         .replace( "<__CREATOR_INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + creator_filename + ".fwd.hh>  " ) \
         .replace( "<__PLUGIN_CATEGORIES__>", generate_plugin_categories( name_string, original_class_namespace_string, json_api ) ) \
+        .replace( "<__PLUGIN_KEYWORDS__>", generate_plugin_keywords( name_string, original_class_namespace_string, json_api ) ) \
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
