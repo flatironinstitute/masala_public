@@ -710,6 +710,7 @@ def prepare_creator_header_file( \
     ) -> None :
 
     original_class_namespace_string = ""
+    creator_namespace_string = ""
 
     header_guard_string = capitalize_project_name(project_name) + "_" + library_name + "_api_auto_generated_api_"
     for i in range( len(namespace) ):
@@ -719,6 +720,14 @@ def prepare_creator_header_file( \
         if i > 1 :
             header_guard_string += namespace[i] + "_"
     header_guard_string += creator_name + "_hh"
+
+    first = True
+    for entry in creator_namespace :
+        if first == True :
+            first = False
+        else :
+            creator_namespace_string += "::"
+        creator_namespace_string += entry
 
     plugin_creator_hhfile = \
         plugin_creator_hhfile_template \
@@ -732,7 +741,10 @@ def prepare_creator_header_file( \
         .replace( "<__PLUGIN_KEYWORDS__>", generate_plugin_keywords( name_string, original_class_namespace_string, json_api ) ) \
         .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
+        .replace( "<__SOURCE_CLASS_NAME__>", name_string ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
+        .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
