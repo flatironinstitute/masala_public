@@ -100,5 +100,6 @@
         "future": "cpp",
         "hash_map": "cpp",
         "typeindex": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }
