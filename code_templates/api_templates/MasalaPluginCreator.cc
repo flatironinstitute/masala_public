@@ -66,7 +66,7 @@ std::string
 /// @returns This override returns <__SOURCE_CLASS_NAMESPACE__>.
 std::string
 <__CREATOR_CLASS_API_NAME__>::get_plugin_object_namespace() const {
-	return <__SOURCE_CLASS_NAMESPACE__>;
+	return "<__SOURCE_CLASS_NAMESPACE__>";
 }
 
 /// @brief Get the class name.
