@@ -106,6 +106,12 @@ def apiname_or_creatorname_from_filename( fname : str, do_creator : bool ) -> st
             newname += "/" + fname_entries[i]
     return newname
 
+## @brief Recursively scan a header file that defines a class to determine whether the class is
+## a descendant of masala::base::managers::plugin_module::MasalaPlugin.
+def is_plugin_class( headerfile : str ) -> bool :
+    TODO TODO TODO TODO
+    return True
+
 ## @brief Scan all directories and subdirectories in a path, and make a list of all .cc and .hh files.
 ## @details If skip_apps is true, we also check for .cc files that contain API definitions, and
 ## report those in a second list.  If skip_apps is false, we do not do this.
@@ -128,12 +134,17 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname:str, dirname : str, skip
                 outlist.append( concatname )
             if (skip_apps == True) and \
                     fname.endswith( ".cc" ) and \
-                    (concatname != "../src/base/MasalaObject.cc") and \
-                    (has_api_definition(fname, concatname)) :
-                apiname = apiname_or_creatorname_from_filename( concatname, False )
-                outlist_apis.append( apiname + ".cc" )
-                outlist_apis.append( apiname + ".hh" )
-                outlist_apis.append( apiname + ".fwd.hh" )
+                    (concatname != "../src/base/MasalaObject.cc") :
+                if has_api_definition(fname, concatname) :
+                    apiname = apiname_or_creatorname_from_filename( concatname, False )
+                    outlist_apis.append( apiname + ".cc" )
+                    outlist_apis.append( apiname + ".hh" )
+                    outlist_apis.append( apiname + ".fwd.hh" )
+                    if is_plugin_class( fname[:-3] + ".hh" ) :
+                        creatorname = apiname_or_creatorname_from_filename( concatname, True )
+                        outlist_apis.append( creatorname + ".cc" )
+                        outlist_apis.append( creatorname + ".hh" )
+                        outlist_apis.append( creatorname + ".fwd.hh" )
         elif path.isdir( concatname ) :
             if skip_apps == True :
                 outlist2, outlist2_apis = get_all_cc_and_hh_files_in_dir_and_subdirs( libname, concatname, skip_apps )
