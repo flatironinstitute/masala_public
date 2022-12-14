@@ -96,6 +96,8 @@ def parent_class_file_from_class_name( parent_class_name : str, libname : str ) 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
 ## a descendant of masala::base::managers::plugin_module::MasalaPlugin.
 def is_plugin_class( headerfile : str, libname : str ) -> bool :
+    #return False
+    print( "\tChecking " + headerfile + " for plugin parent class." )
     assert headerfile.startswith( "../src/" ) or headerfile.startswith( "../headers/" )
     with open( headerfile, 'r' ) as fhandle:
         file_contents = fhandle.read()
@@ -108,6 +110,7 @@ def is_plugin_class( headerfile : str, libname : str ) -> bool :
         class_declaration_position = file_contents.find( "class " + classname + ":" )
         if class_declaration_position == -1 :
             assert file_contents.find( "class " + classname ) != -1, "Could not find class declaration for class \"" + classname + "\" in file " + headerfile + "!"
+            print( "\t\tFound no plugin parent class.  Will NOT auto-generate Creator class." )
             return False # This class has no parent.
         else :
             parent_index = 3
@@ -116,6 +119,7 @@ def is_plugin_class( headerfile : str, libname : str ) -> bool :
     
     parent_class_name = file_contents[class_declaration_position:].split()[parent_index]
     if parent_class_name == "masala::base::managers::plugin_module::MasalaPlugin" or parent_class_name == "base::managers::plugin_module::MasalaPlugin" :
+        print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
         return True
 
     parent_class_file = parent_class_file_from_class_name( parent_class_name, libname )
