@@ -46,7 +46,7 @@ namespace selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Selector : public base::managers::plugin_module::MasalaPlugin {
+class Selector : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 

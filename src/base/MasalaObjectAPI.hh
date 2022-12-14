@@ -34,7 +34,7 @@ namespace base {
 
 /// @brief A base class for Masala API derived classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPI : public base::MasalaObject {
+class MasalaObjectAPI : public masala::base::MasalaObject {
 
 public:
 

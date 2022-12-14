@@ -49,7 +49,7 @@ namespace annotated_region_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AnnotatedRegionSelection : public core_api::base_classes::selectors::atom_selectors::AtomSelection {
+class AnnotatedRegionSelection : public masala::core_api::base_classes::selectors::atom_selectors::AtomSelection {
 
 public:
 

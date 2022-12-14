@@ -44,7 +44,7 @@ namespace generators {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Generator : public base::managers::plugin_module::MasalaPlugin {
+class Generator : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 

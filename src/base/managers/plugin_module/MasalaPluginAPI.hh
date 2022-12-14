@@ -36,7 +36,7 @@ namespace plugin_module {
 
 /// @brief A base class for Masala API derived classes for plugins.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaPluginAPI : public base::MasalaObjectAPI {
+class MasalaPluginAPI : public masala::base::MasalaObjectAPI {
 
 public:
 

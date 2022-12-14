@@ -86,7 +86,7 @@ public:
 
 /// @brief A class that stores a vector of work to do in threads plus configuration
 /// options describing how the work is to be done.
-class MasalaThreadedWorkRequest : public base::MasalaObject {
+class MasalaThreadedWorkRequest : public masala::base::MasalaObject {
 
 public:
 

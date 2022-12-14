@@ -49,7 +49,7 @@ namespace thread_pool {
 /// of a MasalaThread.  This ensures that only the thread pool
 /// can create a thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadCreationKey : public base::MasalaObject {
+class MasalaThreadCreationKey : public masala::base::MasalaObject {
 
 	// We make the MasalaThreadPool a friend so that it alone can instantiate
 	// this private-constructor key class.
@@ -88,7 +88,7 @@ public:
 
 /// @brief A container for a single thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThread : public base::MasalaObject {
+class MasalaThread : public masala::base::MasalaObject {
 
 public:
 

@@ -53,7 +53,7 @@ enum class MasalaThreadedWorkStatus {
 /// @brief A class that will store a summary of what work was done in threads,
 /// how long it took, and how many threads were actually assigned to the work.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadedWorkExecutionSummary : public base::MasalaObject {
+class MasalaThreadedWorkExecutionSummary : public masala::base::MasalaObject {
 
 public:
 

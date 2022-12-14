@@ -53,7 +53,7 @@ namespace atom_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomSelection : public core_api::base_classes::selectors::Selection {
+class AtomSelection : public masala::core_api::base_classes::selectors::Selection {
 
 public:
 

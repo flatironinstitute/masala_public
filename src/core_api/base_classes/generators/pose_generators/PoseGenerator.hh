@@ -46,7 +46,7 @@ namespace pose_generators {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PoseGenerator : public core_api::base_classes::generators::Generator {
+class PoseGenerator : public masala::core_api::base_classes::generators::Generator {
 
 public:
 
