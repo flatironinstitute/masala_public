@@ -83,9 +83,10 @@ def has_api_definition( filename : str, concatname : str ) -> bool :
 
     return True
 
-## @brief From a filename, generate the name of the corresponding api file.
+## @brief From a filename, generate the name of the corresponding api file
+## or creator file.
 ## @details Omits extension.
-def apiname_from_filename( fname: str) -> str :
+def apiname_or_creatorname_from_filename( fname : str, do_creator : bool ) -> str :
     fname_entries = fname.split("/")
     assert len(fname_entries) > 3
     newname = ""
@@ -97,7 +98,10 @@ def apiname_from_filename( fname: str) -> str :
         elif i == len(fname_entries) - 1 :
             entrysplit = fname_entries[i].split(".")
             assert len(entrysplit) == 2
-            newname += "/" + entrysplit[0] + "_API"
+            if do_creator == True :
+                newname += "/" + entrysplit[0] + "Creator"
+            else :
+                newname += "/" + entrysplit[0] + "_API"
         else :
             newname += "/" + fname_entries[i]
     return newname
@@ -126,7 +130,7 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname:str, dirname : str, skip
                     fname.endswith( ".cc" ) and \
                     (concatname != "../src/base/MasalaObject.cc") and \
                     (has_api_definition(fname, concatname)) :
-                apiname = apiname_from_filename( concatname )
+                apiname = apiname_or_creatorname_from_filename( concatname, False )
                 outlist_apis.append( apiname + ".cc" )
                 outlist_apis.append( apiname + ".hh" )
                 outlist_apis.append( apiname + ".fwd.hh" )
