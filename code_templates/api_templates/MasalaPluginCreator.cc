@@ -29,7 +29,7 @@
 /// encapsulated in an API container).
 /// @returns A new instance of an <__SOURCE_CLASS_NAMESPACE_AND_NAME__> API container.
 /// @details Must be implemented by derived classes.
-masala::base::managers::plugin_module::MasalaPluginSP
+masala::base::managers::plugin_module::MasalaPluginAPISP
 <__CREATOR_CLASS_API_NAME__>::create_plugin_object() const {
 	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >();
 }
