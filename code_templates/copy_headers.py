@@ -98,6 +98,18 @@ def get_fwd_files( filename : str, source_dir : str ) -> list :
                 returnlist.append( source_dir + "/"+ linesplit[1] )
     return returnlist
 
+## @brief Copy all the files in a list.
+def copy_files_in_list( files_to_copy : list, source_dir : str ) :
+    for f2 in files_to_copy:
+        new_original_file = dest_dir + f2[ len(source_dir) : ]
+        new_original_file_path = path.dirname( new_original_file )
+        if path.isdir( new_original_file_path ) == False :
+            makedirs( new_original_file_path )
+            print( "\tCreated directory " + new_original_file_path + "." )
+        if path.exists( new_original_file ) == False :
+            print( "\t" + f2 + " -> " + new_original_file )
+            copyfile( f2, new_original_file )
+
 
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
 files.extend( glob.glob( source_dir + "/" + lib_name + "/*.hh", recursive=False ) )
@@ -133,28 +145,14 @@ for file in files :
                 if original_hh_declaration is not None :
                     files_to_copy.append( original_hh_declaration )
 
-            for f2 in files_to_copy:
-                new_original_file = dest_dir + f2[ len(source_dir) : ]
-                new_original_file_path = path.dirname( new_original_file )
-                if path.isdir( new_original_file_path ) == False :
-                    makedirs( new_original_file_path )
-                    print( "\tCreated directory " + new_original_file_path + "." )
-                if path.exists( new_original_file ) == False :
-                    print( "\t" + f2 + " -> " + new_original_file )
-                    copyfile( f2, new_original_file )
+            copy_files_in_list( files_to_copy, source_dir )
+
         elif file.endswith( ".hh" ) :
             iscreator = is_creator( file )
             if iscreator == True :
                 files_to_copy = []
             else :
                 files_to_copy = get_fwd_files( file, source_dir )
-            for f2 in files_to_copy :
-                newfile = dest_dir + f2[ len(source_dir) : ]
-                newfile_path = path.dirname( newfile )
-                if path.isdir( newfile_path ) == False :
-                    makedirs( newfile_path )
-                    print( "\tCreated directory " + newfile_path + "." )
-                if path.exists( newfile ) == False :
-                    print( "\t" + f2 + " -> " + newfile )
-                    copyfile( f2, newfile )
+
+            copy_files_in_list( files_to_copy, source_dir )
     
