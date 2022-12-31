@@ -38,6 +38,29 @@ assert path.isdir( source_dir ), source_dir + " is not a directory."
 assert path.isdir( dest_dir ), dest_dir + " is not a directory."
 assert path.isdir( source_dir + "/" + lib_name ), source_dir + "/" + lib_name + " is not a directory."
 
+## @brief Determine whether an auto-generated API file defines a plugin creator.
+def is_creator( filename : str ) -> bool :
+    basename = path.basename( filename ).split(".")[0]
+    if basename.endswith("Creator") == False :
+        return False
+    hhname = filename.replace(".fwd.hh", ".hh")
+    with open( hhname, 'r' ) as filehandle:
+        filelines = filehandle.readlines()
+    is_creator = None
+    for line in filelines :
+        linesplit = line.strip().split()
+        if len(linesplit) >= 6 and \
+            linesplit[0] == "class" and \
+            linesplit[2] == ":" and \
+            linesplit[3] == "public" :
+            assert is_creator == None, "Error in is_creator() function: More than one class definition found in file " + hhname + "."
+            if linesplit[4] == "masala::base::managers::plugin_module::MasalaPluginCreator" :
+                is_creator = True
+            else :
+                is_creator = False
+    assert is_creator is not None, "Error in is_creator() function: Could not find class definition in file " + hhname + "."
+    return is_creator
+
 ## @brief Determine whether an auto-generated API file defines an API for a lightweight,
 ## stack-allocated class (True) or for a heavyweight, heap-allocated class (False).
 ## @details Used to determine whether header files should be copied for the
@@ -95,7 +118,7 @@ for file in files :
             original_path = path.dirname( path_and_file )
             original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "Pose_API.fwd.hh", the original file is "Pose.fwd.hh".
             original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
-            if is_lightweight( file ) == True :
+            if is_creator( file ) == False and is_lightweight( file ) == True :
                 original_hh_file = path.basename( path_and_file )[ : -11 ] + ".hh"
                 original_hh_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_hh_file
                 files_to_copy = get_fwd_files( original_hh_declaration, source_dir )
