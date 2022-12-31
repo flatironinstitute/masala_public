@@ -103,6 +103,17 @@ def copy_files_in_list( files_to_copy : list, source_dir : str ) :
     for f2 in files_to_copy:
         new_original_file = dest_dir + f2[ len(source_dir) : ]
         new_original_file_path = path.dirname( new_original_file )
+        if path.exists( f2 ) == False :
+            if f2.startswith( "src/" ) :
+                f2short = f2[4:]
+            else :
+                f2short = f2
+            candidates = glob.glob( "headers/*/headers/" + f2short )
+            assert len( candidates ) > 0, "Error in copy_files_in_list: no source found for " + f2 + "!"
+            print("\tSkipping " + f2 + " since the following headers were found from other libraries:")
+            for candidate in candidates:
+                print( "\t\t" + candidate )
+            continue
         if path.isdir( new_original_file_path ) == False :
             makedirs( new_original_file_path )
             print( "\tCreated directory " + new_original_file_path + "." )
