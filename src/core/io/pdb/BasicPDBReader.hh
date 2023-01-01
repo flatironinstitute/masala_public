@@ -101,6 +101,14 @@ public:
         std::vector< std::string > const & file_lines
     ) const;
 
+    /// @brief Given a PDB file name, read the PDB file and generate a Pose.
+    /// @note Warning!  This triggers a read from disk!  This is threadsafe and
+    /// properly managed through the disk manager.
+    masala::core::pose::PoseSP
+    pose_from_pdb_file_on_disk(
+        std::string const & filename
+    ) const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

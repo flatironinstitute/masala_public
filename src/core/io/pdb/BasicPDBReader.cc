@@ -39,6 +39,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/managers/disk/MasalaDiskManager.hh>
 
 // STL headers:
 #include <sstream>
@@ -105,6 +106,18 @@ BasicPDBReader::pose_from_pdb_file_contents(
     return pose;
 }
 
+/// @brief Given a PDB file name, read the PDB file and generate a Pose.
+/// @note Warning!  This triggers a read from disk!  This is threadsafe and
+/// properly managed through the disk manager.
+masala::core::pose::PoseSP
+BasicPDBReader::pose_from_pdb_file_on_disk(
+    std::string const & filename
+) const {
+    return pose_from_pdb_file_contents(
+        base::managers::disk::MasalaDiskManager::get_instance()->read_ascii_file_to_string_vector( filename )
+    );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +164,18 @@ BasicPDBReader::get_api_definition() {
                 "file_lines", "The lines of a PDB file, as a vector of strings (one string per line).",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
                 std::bind( &BasicPDBReader::pose_from_pdb_file_contents, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< core::pose::PoseSP, std::string const & > >(
+                "pose_from_pdb_file_on_disk",
+                "Read a PDB file from disk, and return a pose.  Note that invoking this function triggers a read from "
+                "disk!  However, this function does use the Masala disk manager to ensure that disk reads are "
+                "managed and threadsafe.",
+                true, false,
+                "file_name", "The input PDB file.  This file will be read from disk.",
+                "pose", "A shared pointer to the pose generated from the PDb file contents.",
+                std::bind( &BasicPDBReader::pose_from_pdb_file_on_disk, this, std::placeholders::_1 )
             )
         );
 
