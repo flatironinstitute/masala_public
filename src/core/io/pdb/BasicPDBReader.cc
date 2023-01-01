@@ -19,6 +19,8 @@
 /// @file src/core/chemistry/BasicPDBReader.cc
 /// @brief A class for reading the basic information from a PDB file quickly, and
 /// setting up a minimal pose.
+/// @note This is intended for testing only.  The proper PDB reader will be in the
+/// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
