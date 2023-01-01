@@ -145,6 +145,34 @@ namespace api {
         return "std::set< " + name_from_type( type<T>() ) + " const > const";
     }
 
+    /// @brief Manually override for vectors.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T >> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " >";
+    }
+
+    /// @brief Manually override for const vectors.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T > const> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " > const";
+    }
+
+    /// @brief Manually override for vectors of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T const >> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " const >";
+    }
+
+    /// @brief Manually override for const vectors of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T const > const> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " const > const";
+    }
+
     /// @brief Manually override for set const iterators.
     // template<class T>
     // std::string
