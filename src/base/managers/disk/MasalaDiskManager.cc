@@ -63,6 +63,7 @@ MasalaDiskManager::class_namespace() const {
 }
 
 /// @brief Write a string to an ASCII file.
+/// @details TRIGGERS WRITE TO DISK!
 void
 MasalaDiskManager::write_ascii_file(
     std::string const & file_name,
@@ -72,6 +73,23 @@ MasalaDiskManager::write_ascii_file(
     std::ofstream filehandle( file_name );
     filehandle << file_contents;
     filehandle.close();
+}
+
+/// @brief Read the contents of an ASCII file to a vector of strings.
+std::vector< std::string >
+MasalaDiskManager::read_ascii_file_to_string_vector(
+    std::string const & file_name
+) const {
+    std::vector< std::string > outvec;
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
+    std::ifstream filehandle( file_name );
+    std::string stringbuf;
+    while( !filehandle.eof() ) {
+        outvec.push_back( std::string() );
+        std::getline( filehandle, outvec[outvec.size() - 1] );
+    }
+    filehandle.close();
+    return outvec;
 }
 
 } // namespace disk

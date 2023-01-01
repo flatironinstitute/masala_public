@@ -92,10 +92,17 @@ public:
     class_namespace() const override;
 
     /// @brief Write a string to an ASCII file.
+    /// @details TRIGGERS WRITE TO DISK!
     void
     write_ascii_file(
         std::string const & file_name,
         std::string const & file_contents
+    ) const;
+
+    /// @brief Read the contents of an ASCII file to a vector of strings.
+    std::vector< std::string >
+    read_ascii_file_to_string_vector(
+        std::string const & file_name
     ) const;
 
 private: // Data
