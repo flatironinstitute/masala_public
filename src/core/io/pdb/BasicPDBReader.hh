@@ -101,6 +101,16 @@ public:
         std::vector< std::string > const & file_lines
     ) const;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the BasicPDBReader class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +135,10 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief A description of this object's interface.
+    /// @details Generated on first request.  Persists only as long as this instance
+    /// persists.  Weak pointers are handed out.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 };
 

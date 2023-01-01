@@ -35,6 +35,10 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_parsing.tmpl.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <sstream>
@@ -99,6 +103,61 @@ BasicPDBReader::pose_from_pdb_file_contents(
     // infer_bonds( *pose );
 
     return pose;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the Pose class.
+base::api::MasalaObjectAPIDefinitionCWP
+BasicPDBReader::get_api_definition() {
+    using namespace masala::base::api;
+
+    if( api_definition_ == nullptr ) {
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The BasicPDBReader is intended as a bare-bones means of generating a Pose.  It is "
+                "intended ONLY for testing other classes' functionality.  A full PDB reader will be "
+                "available in the standard_masala_plugins library.",
+                false
+            )
+        );
+
+        // Constructors:
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < BasicPDBReader > > (
+                "BasicPDBReader",
+                "Creates a BasicPDBReader."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < BasicPDBReader, BasicPDBReader const & > > (
+                "BasicPDBReader",
+                "Copy constructor: copies an input BasicPDBReader.",
+                "src", "The input BasicPDBReader to copy.  Unaltered by this operation."
+            )
+        );
+
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput < core::pose::PoseSP, std::vector< std::string > const & > >(
+                "pose_from_pdb_file_contents",
+                "Given the contents of a PDB file as a vector of strings, generate a Pose and return a "
+                "shared pointer to the pose.",
+                true, false,
+                "file_lines", "The lines of a PDB file, as a vector of strings (one string per line).",
+                "pose", "A shared pointer to the pose generated from the PDb file contents.",
+                std::bind( &BasicPDBReader::pose_from_pdb_file_contents, this, std::placeholders::_1 )
+            )
+        );
+
+        api_definition_ = api_def; //Make const.
+    }
+
+    return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
