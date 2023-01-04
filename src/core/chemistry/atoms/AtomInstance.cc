@@ -54,6 +54,7 @@ AtomInstance::AtomInstance(
     std::string const & pdb_element_name
 ) :
     masala::base::MasalaObject(),
+    // TODO TODO TODO element_type_( ),
     additional_atom_data_{ masala::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
 {}
 
