@@ -33,6 +33,7 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 #include <core/chemistry/MoleculesConfiguration.fwd.hh>
+#include <core/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -129,6 +130,12 @@ public:
     /// @brief End const iterator for accessing atoms.
     atoms::AtomInstanceConstIterator
     atoms_end() const;
+
+    /// @brief Access the coordinates for an atom.
+    std::array< masala::core::Real, 3 >
+    get_atom_coordinates(
+        atoms::AtomInstanceConstIterator const atom_iterator
+    ) const;
 
 private:
 

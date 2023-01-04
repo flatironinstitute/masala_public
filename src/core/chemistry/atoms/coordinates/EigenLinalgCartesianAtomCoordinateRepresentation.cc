@@ -100,6 +100,18 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_coordinates_.cols() == atom_instance_to_column_.size(), "add_atom_instance", "Mismatch in map and matrix sizes!" );
 }
 
+/// @brief Get the coordinates of an atom.
+/// @note Must be implemented by derived classes.
+std::array< masala::core::Real, 3 > const
+EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
+    AtomInstanceCSP const & atom
+) const {
+    auto const it( atom_instance_to_column_.find( atom ) );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecules object!" );
+    masala::core::Size const column( it->second );
+    return std::array< masala::core::Real, 3 >{ atom_coordinates_(0, column), atom_coordinates_(1, column), atom_coordinates_(2, column) };
+}
+
 } // namespace coordinates
 } // namespace atoms
 } // namespace chemistry

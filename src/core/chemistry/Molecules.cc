@@ -40,6 +40,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -219,6 +220,14 @@ Molecules::get_api_definition() {
                 std::bind( &Molecules::atoms_end, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_OneInput < std::array< masala::core::Real, 3 >, atoms::AtomInstanceConstIterator const > >(
+                "get_atom_coordinates", "Get the coordinates of a particular atom in a molecules object.",
+                "atom_interator", "An AtomInstanceConstIterator pointing to the atom whose coordinates we wish to obtain.",
+                "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
+                std::bind( &Molecules::get_atom_coordinates, this, std::placeholders::_1 )
+            )
+        );
 
         api_definition_ = api_def; // Nonconst to const.
     }
@@ -261,6 +270,15 @@ Molecules::atoms_begin() const {
 atoms::AtomInstanceConstIterator
 Molecules::atoms_end() const {
     return atoms::AtomInstanceConstIterator( atoms_.cend() );
+}
+
+/// @brief Access the coordinates for an atom.
+std::array< masala::core::Real, 3 >
+Molecules::get_atom_coordinates(
+    atoms::AtomInstanceConstIterator const atom_iterator
+) const {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
