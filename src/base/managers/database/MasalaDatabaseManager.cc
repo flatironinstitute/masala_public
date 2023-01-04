@@ -63,6 +63,20 @@ MasalaDatabaseManager::class_namespace() const {
     return "masala::base::managers::database";
 }
 
+/// @brief Access the element database.
+/// @details Triggers initialization of this database (i.e. read from disk) the
+/// first time this is called.  Initialization is threadsafe.
+masala::base::managers::database::elements::MasalaElementDatabase const &
+MasalaDatabaseManager::element_database() const {
+    {
+        std::lock_guard< std::mutex > lock( masala_database_manager_mutex_ );
+        if( element_database_ == nullptr ) {
+            element_database_ = masala::make_shared< elements::MasalaElementDatabase >();
+        }
+    }
+    return *element_database_;
+}
+
 } // namespace database
 } // namespace managers
 } // namespace base

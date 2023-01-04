@@ -34,6 +34,7 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/database/elements/MasalaElementDatabase.hh>
 
 // STL headers:
 #include <map>
@@ -97,6 +98,12 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Access the element database.
+    /// @details Triggers initialization of this database (i.e. read from disk) the
+    /// first time this is called.  Initialization is threadsafe.
+    masala::base::managers::database::elements::MasalaElementDatabase const &
+    element_database() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,6 +112,16 @@ private:
 
     /// @brief A mutex to lock this object.
     mutable std::mutex masala_database_manager_mutex_;
+
+////////////////////////////////////////////////////////////////////////////////
+// COLLECTIONS OF STORED DATA
+// Each of these is lazily loaded (in a threadsafe manner) on first demand,
+// then const-accessed.
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Element data, loaded lazily and once from the database.
+    /// @details Mutable to allow lazy initialization one time from const function.
+    mutable masala::base::managers::database::elements::MasalaElementDatabaseCSP element_database_ = nullptr;
 
 };
 
