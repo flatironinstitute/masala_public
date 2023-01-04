@@ -65,12 +65,22 @@ namespace api {
                 masala::make_shared<T>()
             );
 
-            masala::base::MasalaObjectSP tempptr(
-                std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
-            );
-            if( tempptr != nullptr ) {
-                return tempptr->class_namespace() + "::" + tempptr->class_name();
+            if constexpr( std::is_const<T>::value ) {
+                masala::base::MasalaObjectCSP tempptr(
+                    std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
+                );
+                if( tempptr != nullptr ) {
+                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+                }
+            } else {
+                masala::base::MasalaObjectSP tempptr(
+                    std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+                );
+                if( tempptr != nullptr ) {
+                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+                }
             }
+            
         }
         return typeid(T).name();
     }
