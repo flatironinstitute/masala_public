@@ -160,7 +160,7 @@ public:
     	ss << "Getter:\t"
 			<< ( has_custom_output_type_name() ? get_custom_output_type_namespace_and_name() : masala::base::api::name_from_type(base::api::type<T0>()) )
 			<< " " << getter_function_name()
-			<< "( " << masala::base::api::name_from_type< T1 >() << " ) const:" << std::endl;
+			<< "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " ) const:" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
@@ -182,7 +182,7 @@ public:
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;
-		json_input0["Input_Type"] = masala::base::api::name_from_type< T1 >();
+		json_input0["Input_Type"] = masala::base::api::name_from_type( base::api::type<T1>() );
 		json_input0["Input_Description"] = input_parameter0_description_;
 		json_input0["Input_Name"] = input_parameter0_name_;
 
