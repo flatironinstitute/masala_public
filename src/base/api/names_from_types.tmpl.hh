@@ -173,6 +173,34 @@ namespace api {
         return "std::vector< " + name_from_type( type<T>() ) + " const > const";
     }
 
+    /// @brief Manually override for arrays.
+    template<class T, std::size_t P >
+    std::string
+    name_from_type( type<std::array< T, P > > ) {
+        return "std::array< " + name_from_type( type<T>() ) + ", " + std::to_string(P) + " >";
+    }
+
+    /// @brief Manually override for const arrays.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T, P > const > ) {
+        return "std::array< " + name_from_type( type<T>() ) + ", " + std::to_string(P) + " > const";
+    }
+
+    /// @brief Manually override for arrays of const elements.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T const, P > > ) {
+        return "std::array< " + name_from_type( type<T>() ) + " const, " + std::to_string(P) + " >";
+    }
+
+    /// @brief Manually override for const arrays of const elements.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T const, P > const > ) {
+        return "std::array< " + name_from_type( type<T>() ) + " const, " + std::to_string(P) + " > const";
+    }
+
     /// @brief Manually override for set const iterators.
     // template<class T>
     // std::string
