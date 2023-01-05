@@ -116,7 +116,9 @@ ElementType::initialize_from_json(
 
     // Element full name:
     initialize_datum_from_json( element_fullname_, "FullName", abbreviation, json, std::string("unknown") );
-
+    initialize_datum_from_json( neutron_count_most_common_isotope_, "NeutronCountMostCommonIsotope", abbreviation, json, base::Size(0) );
+    initialize_datum_from_json( average_atomic_mass_, "AverageAtomicMass", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( atomic_mass_most_common_isotope_, "AverageAtomicMassMostCommonIsotope", abbreviation, json, base::Real(0.0) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +167,9 @@ ElementType::initialize_datum_from_json(
         );
         datum = *it;
     } else {
-        write_to_tracer( "No \"" + key + "\" field found for element " + abbreviation + ".  Using default (\"" + default_value + "\")." );
+        std::stringstream ss;
+        ss << "No \"" << key << "\" field found for element " << abbreviation << ".  Using default (\"" << default_value << "\").";
+        write_to_tracer( ss.str() );
         datum = default_value;
     }
 }
