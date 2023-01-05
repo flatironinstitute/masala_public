@@ -81,15 +81,57 @@ MasalaDiskManager::read_ascii_file_to_string_vector(
     std::string const & file_name
 ) const {
     std::vector< std::string > outvec;
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::ifstream filehandle( file_name );
-    std::string stringbuf;
-    while( !filehandle.eof() ) {
-        outvec.push_back( std::string() );
-        std::getline( filehandle, outvec[outvec.size() - 1] );
+    {
+        std::lock_guard< std::mutex > lock( disk_io_mutex_);
+        std::ifstream filehandle( file_name );
+        while( !filehandle.eof() ) {
+            outvec.push_back( std::string() );
+            std::getline( filehandle, outvec[outvec.size() - 1] );
+        }
+        filehandle.close();
     }
-    filehandle.close();
+    write_to_tracer( "Read \"" + file_name + "\"." );
     return outvec;
+}
+
+/// @brief Read the contents of an ASCII file to a string.
+std::string
+MasalaDiskManager::read_ascii_file_to_string(
+    std::string const & file_name
+) const {
+    std::string outstring;
+    {
+        std::lock_guard< std::mutex > lock( disk_io_mutex_);
+        std::ifstream filehandle( file_name );
+        std::string stringbuf;
+        bool first(true);
+        while( !filehandle.eof() ) {
+            if( first ){
+                first = false;
+            } else {
+                outstring += "\n";
+            }
+            std::getline( filehandle, stringbuf );
+            outstring += stringbuf;
+        }
+        filehandle.close();
+    }
+    write_to_tracer( "Read \"" + file_name + "\"." );
+    return outstring;
+}
+
+/// @brief Read the contents of a JSON file and produce an nlohmann json object.
+nlohmann::json
+MasalaDiskManager::read_json_file(
+    std::string const & file_name
+) const {
+    std::string json_file_contents;
+    {
+        std::lock_guard< std::mutex > lock( disk_io_mutex_);
+        json_file_contents = read_ascii_file_to_string( file_name );
+    }
+    write( "Parsing JSON file \"" + file_name + "\"." );
+    return nlohmann::json::parse( json_file_contents );
 }
 
 } // namespace disk

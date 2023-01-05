@@ -30,6 +30,9 @@
 // Forward declarations:
 #include <base/managers/disk/MasalaDiskManager.fwd.hh>
 
+// External headers:
+#include <nlohmann/json.hpp>
+
 // STL headers:
 #include <mutex>
 
@@ -102,6 +105,18 @@ public:
     /// @brief Read the contents of an ASCII file to a vector of strings.
     std::vector< std::string >
     read_ascii_file_to_string_vector(
+        std::string const & file_name
+    ) const;
+
+    /// @brief Read the contents of an ASCII file to a string.
+    std::string
+    read_ascii_file_to_string(
+        std::string const & file_name
+    ) const;
+
+    /// @brief Read the contents of a JSON file and produce an nlohmann json object.
+    nlohmann::json
+    read_json_file(
         std::string const & file_name
     ) const;
 
