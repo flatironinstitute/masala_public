@@ -24,6 +24,9 @@
 // Project header:
 #include <base/managers/disk/MasalaDiskManager.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // External headers:
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
 
@@ -74,6 +77,7 @@ MasalaDiskManager::write_ascii_file(
 ) const {
     std::lock_guard< std::mutex > lock( disk_io_mutex_);
     std::ofstream filehandle( file_name );
+    CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "write_ascii_file", "Could not open \"" + file_name + "\" for write." );
     filehandle << file_contents;
     filehandle.close();
 }
@@ -87,6 +91,7 @@ MasalaDiskManager::read_ascii_file_to_string_vector(
     {
         std::lock_guard< std::mutex > lock( disk_io_mutex_);
         std::ifstream filehandle( file_name );
+        CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string_vector", "Could not open \"" + file_name + "\" for read." );
         while( !filehandle.eof() ) {
             outvec.push_back( std::string() );
             std::getline( filehandle, outvec[outvec.size() - 1] );
@@ -106,6 +111,7 @@ MasalaDiskManager::read_ascii_file_to_string(
     {
         std::lock_guard< std::mutex > lock( disk_io_mutex_);
         std::ifstream filehandle( file_name );
+        CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string", "Could not open \"" + file_name + "\" for read." );
         std::string stringbuf;
         bool first(true);
         while( !filehandle.eof() ) {
