@@ -31,13 +31,15 @@
 
 // Core headers:
 #include <core/chemistry/atoms/data/PDBAtomData.hh>
-#include <base/managers/database/elements/ElementType.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/managers/database/elements/ElementType.hh>
+#include <base/managers/database/elements/MasalaElementDatabase.hh>
+#include <base/managers/database/MasalaDatabaseManager.hh>
 
 // STL headers:
 #include <string>
@@ -54,7 +56,9 @@ AtomInstance::AtomInstance(
     std::string const & pdb_element_name
 ) :
     masala::base::MasalaObject(),
-    // TODO TODO TODO element_type_( ),
+    element_type_(
+        masala::base::managers::database::MasalaDatabaseManager::get_instance()->element_database().element_type_from_ucase_abbreviation(pdb_element_name)
+    ),
     additional_atom_data_{ masala::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
 {}
 
