@@ -114,20 +114,9 @@ ElementType::initialize_from_json(
     element_type_ = element_type;
     element_abbreviation_ = abbreviation;
 
-    nlohmann::json::const_iterator it;
-
     // Element full name:
-    it = json.find( "FullName" );
-    if( it != json.end() ) {
-        CHECK_OR_THROW_FOR_CLASS(
-            it->is_string(), "initialize_from_json",
-            "Could not parse JSON for element " + abbreviation + ".  \"FullName\" field is not a string."
-        );
-        element_fullname_ = *it;
-    } else {
-        write_to_tracer( "No \"FullName\" field found for element " + abbreviation + ".  Using default (\"unknown\")." );
-        element_fullname_ = "unknown";
-    }
+    initialize_datum_from_json( element_fullname_, "FullName", abbreviation, json, std::string("unknown") );
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +141,33 @@ ElementType::atomic_number() const {
 base::Size
 ElementType::isotope_number_most_common_isotope() const {
     return atomic_number() + neutron_count_most_common_isotope_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Initialize a particular datum from JSON.
+template < class T >
+void
+ElementType::initialize_datum_from_json(
+    T & datum,
+    std::string const & key,
+    std::string const & abbreviation,
+    nlohmann::json const & json,
+    T const & default_value
+) {
+    nlohmann::json::const_iterator it( json.find( key ) );
+    if( it != json.end() ) {
+        CHECK_OR_THROW_FOR_CLASS(
+            it->is_string(), "initialize_datum_from_json",
+            "Could not parse JSON for element " + abbreviation + ".  \"" + key + "\" field is not a string."
+        );
+        datum = *it;
+    } else {
+        write_to_tracer( "No \"" + key + "\" field found for element " + abbreviation + ".  Using default (\"" + default_value + "\")." );
+        datum = default_value;
+    }
 }
 
 } // namespace elements
