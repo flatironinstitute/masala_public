@@ -62,7 +62,10 @@ public:
 
 	/// @brief Public constructor.
 	/// @details Requires authorization key; can only be constructed by the MasalaDatabaseManager.
-	MasalaElementDatabase( base::managers::database::MasalaDatabaseManagerCreationKey const & key );
+	MasalaElementDatabase(
+		base::managers::database::MasalaDatabaseManagerCreationKey const & key,
+		std::string const & database_path
+	);
 
 	/// @brief Copy constructor.
 	MasalaElementDatabase( MasalaElementDatabase const & ) = delete;
@@ -104,7 +107,7 @@ private:
 
 	/// @brief Initialize this object from the Masala database.
 	/// @details Triggers read from disk!
-	void initialize();
+	void initialize( std::string const & database_path );
 
 private:
 

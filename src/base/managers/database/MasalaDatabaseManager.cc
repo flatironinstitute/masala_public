@@ -47,6 +47,17 @@ MasalaDatabaseManager::get_instance() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Private constructor: object can only be instantiated with getInstance().
+MasalaDatabaseManager::MasalaDatabaseManager() :
+    masala::base::MasalaObject()
+{
+    absolute_database_path_ = "../database/"; //TODO FIX THIS!
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +83,9 @@ MasalaDatabaseManager::element_database() const {
     {
         std::lock_guard< std::mutex > lock( masala_database_manager_mutex_ );
         if( element_database_ == nullptr ) {
-            element_database_ = masala::make_shared< elements::MasalaElementDatabase >( MasalaDatabaseManagerCreationKey() );
+            element_database_ = masala::make_shared< elements::MasalaElementDatabase >(
+                MasalaDatabaseManagerCreationKey(), absolute_database_path_
+            );
         }
     }
     return *element_database_;

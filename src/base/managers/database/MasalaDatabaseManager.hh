@@ -65,7 +65,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Private constructor: object can only be instantiated with getInstance().
-    MasalaDatabaseManager() = default;
+    MasalaDatabaseManager();
 
 public:
 
@@ -112,6 +112,11 @@ private:
 
     /// @brief A mutex to lock this object.
     mutable std::mutex masala_database_manager_mutex_;
+
+    /// @brief The location of the Masala database.
+    /// @details This will ultimately be user-configurable, but for now this is hard-coded.
+    /// @note This is an absolute path.
+    std::string absolute_database_path_;
 
 ////////////////////////////////////////////////////////////////////////////////
 // COLLECTIONS OF STORED DATA

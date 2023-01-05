@@ -45,11 +45,12 @@ namespace elements {
 /// @brief Public constructor.
 /// @details Requires authorization key; can only be constructed by the MasalaDatabaseManager.
 MasalaElementDatabase::MasalaElementDatabase(
-    base::managers::database::MasalaDatabaseManagerCreationKey const & /*key*/
+    base::managers::database::MasalaDatabaseManagerCreationKey const & /*key*/,
+    std::string const & database_path
 ) :
     base::MasalaObject()
 {
-    initialize();
+    initialize( database_path );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,8 +107,11 @@ MasalaElementDatabase::element_type_from_ucase_abbreviation(
 /// @brief Initialize this object from the Masala database.
 /// @details Triggers read from disk!
 void
-MasalaElementDatabase::initialize() {
-    write_to_tracer( "Initializing Masala element database." );
+MasalaElementDatabase::initialize(
+	std::string const & database_path
+) {
+    std::string const elements_path( database_path + "/chemistry/elements/elements.json" );
+    write_to_tracer( "Initializing Masala element database from \"" + elements_path + "\"." );
     write_to_tracer( "Completed initialization of Masala element database." );
 }
 
