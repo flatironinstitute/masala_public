@@ -48,7 +48,9 @@ MasalaElementDatabase::MasalaElementDatabase(
     base::managers::database::MasalaDatabaseManagerCreationKey const & /*key*/
 ) :
     base::MasalaObject()
-{}
+{
+    initialize();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -95,6 +97,18 @@ MasalaElementDatabase::element_type_from_ucase_abbreviation(
         "Could not find an element with upper-case abbreviation \"" + ucase_abbreviation + "\"."
     );
     return it->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Initialize this object from the Masala database.
+/// @details Triggers read from disk!
+void
+MasalaElementDatabase::initialize() {
+    write_to_tracer( "Initializing Masala element database." );
+    write_to_tracer( "Completed initialization of Masala element database." );
 }
 
 } // namespace elements
