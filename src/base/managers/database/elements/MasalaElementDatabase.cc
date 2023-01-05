@@ -25,6 +25,10 @@
 // Class headers:
 #include <base/managers/database/elements/MasalaElementDatabase.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+#include <base/utility/string/string_manipulation.hh>
+
 // STL headers:
 #include <string>
 
@@ -56,6 +60,42 @@ MasalaElementDatabase::MasalaElementDatabase(
 	/// @brief Every class can provide its own namespace.  Returns
 	/// "masala::base::managers::database::elements"
 	std::string MasalaElementDatabase::class_namespace() const { return "masala::base::managers::database::elements"; }
+
+/// @brief Given the abbreviation of an element (e.g. "Ca" for calcium), get its full data.
+/// @param[in] abbreviation The short name for an element, with standard capitalization
+/// (e.g. "Ca", "Au", "C", "Zn").
+/// @returns A const shared pointer to the ElementType object for that element.
+ElementTypeCSP
+MasalaElementDatabase::element_type_from_abbreviation(
+    std::string const & abbreviation
+) const {
+    std::map< std::string, ElementTypeCSP >::const_iterator it( canonical_elements_by_abbreviation_.find( abbreviation ) );
+    CHECK_OR_THROW_FOR_CLASS(
+        it != canonical_elements_by_abbreviation_.end(),
+        "element_type_from_abbreviation",
+        "Could not find an element with abbreviation \"" + abbreviation + "\"."
+    );
+    return it->second;
+}
+
+/// @brief Given the abbreviation of an element in upper case (e.g. "CA" for calcium), get
+/// its full data.
+/// @param[in] abbreviation The short name for an element, in uppercase (e.g. "CA", "AU",
+/// "C", "ZN").
+/// @returns A const shared pointer to the ElementType object for that element.
+ElementTypeCSP
+MasalaElementDatabase::element_type_from_ucase_abbreviation(
+    std::string const & abbreviation
+) const {
+    std::string const ucase_abbreviation( base::utility::string::to_uppercase(abbreviation) );
+    std::map< std::string, ElementTypeCSP >::const_iterator it( canonical_elements_by_ucase_abbreviation_.find( ucase_abbreviation ) );
+    CHECK_OR_THROW_FOR_CLASS(
+        it != canonical_elements_by_ucase_abbreviation_.end(),
+        "element_type_from_abbreviation",
+        "Could not find an element with upper-case abbreviation \"" + ucase_abbreviation + "\"."
+    );
+    return it->second;
+}
 
 } // namespace elements
 } // namespace database

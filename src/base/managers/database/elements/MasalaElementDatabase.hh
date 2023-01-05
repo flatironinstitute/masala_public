@@ -32,6 +32,12 @@
 
 // Base headers:
 #include <base/managers/database/MasalaDatabaseManagerCreationKey.fwd.hh>
+#include <base/managers/database/elements/ElementType.fwd.hh>
+
+// STL headers:
+#include <vector>
+#include <string>
+#include <map>
 
 namespace masala {
 namespace base {
@@ -64,6 +70,12 @@ public:
 	/// @brief Destructor.
 	~MasalaElementDatabase() override = default;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Every class can name itself.  Returns "MasalaElementDatabase".
 	std::string class_name() const override;
 
@@ -71,12 +83,39 @@ public:
 	/// "masala::base::managers::database::elements"
 	std::string class_namespace() const override;
 
-public:
+	/// @brief Given the abbreviation of an element (e.g. "Ca" for calcium), get its full data.
+	/// @param[in] abbreviation The short name for an element, with standard capitalization
+	/// (e.g. "Ca", "Au", "C", "Zn").
+	/// @returns A const shared pointer to the ElementType object for that element.
+	ElementTypeCSP element_type_from_abbreviation( std::string const & abbreviation ) const;
+
+	/// @brief Given the abbreviation of an element in upper case (e.g. "CA" for calcium), get
+	/// its full data.
+	/// @param[in] abbreviation The short name for an element, in uppercase (e.g. "CA", "AU",
+	/// "C", "ZN").
+	/// @returns A const shared pointer to the ElementType object for that element.
+	ElementTypeCSP element_type_from_ucase_abbreviation( std::string const & abbreviation ) const;
+
+private:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
+// PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief The standard elements, indexed by atomic number.
+	/// @note Vectors are indexed from zero, but elements start at atomic number 1 (hydrogen).
+	/// For this reason, entry zero in this vector is a special, "unknown" element.
+	std::vector< ElementTypeCSP > canonical_elements_;
+
+	/// @brief A map of standard element abbreviations (e.g. "Ca", "Au", "C", "Zn") to ElementType
+	/// objects storing information about those elements.
+	/// @details Includes "Unk" for unknown.
+	std::map< std::string, ElementTypeCSP > canonical_elements_by_abbreviation_;
+
+	/// @brief A map of uppercase element abbreviations (e.g. "CA", "AU", "C", "ZN") to ElementType
+	/// objects storing information about those elements.
+	/// @details Includes "UNK" for unknown.
+	std::map< std::string, ElementTypeCSP > canonical_elements_by_ucase_abbreviation_;
 
 }; // class MasalaElementDatabase
 
