@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/atoms/ElementType.cc
+/// @file src/base/managers/database/elements/ElementType.cc
 /// @brief A class that describes a particular element.
 /// @details This will be held by the ElementManager, so it can be fairly heavy-weight.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/atoms/ElementType.hh>
+#include <base/managers/database/elements/ElementType.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -31,9 +31,10 @@
 #include <string>
 
 namespace masala {
-namespace core {
-namespace chemistry {
-namespace atoms {
+namespace base {
+namespace managers {
+namespace database {
+namespace elements {
 
 ////////////////////////////////////////////////////////////////////////////////
 // ELEMENT FUNCTIONS
@@ -67,7 +68,7 @@ ElementTypeEnum
 element_enum_from_name(
     std::string const & element_name
 ) {
-    for( core::Size i(1); i<=static_cast<core::Size>(ElementTypeEnum::NUM_KNOWN_ELEMENTS); ++i ) {
+    for( base::Size i(1); i<=static_cast<base::Size>(ElementTypeEnum::NUM_KNOWN_ELEMENTS); ++i ) {
         if( element_name == element_name_from_enum( static_cast<ElementTypeEnum>(i) ) ) {
             return static_cast<ElementTypeEnum>(i);
         }
@@ -97,24 +98,25 @@ ElementType::class_namespace() const {
 
 /// @brief Get the atomic number.
 /// @details Throws if atomic number is out of range!
-core::Size
+base::Size
 ElementType::atomic_number() const {
     CHECK_OR_THROW_FOR_CLASS(
         static_cast<signed long>(element_type_) > 0 && static_cast<signed long>(element_type_) <= static_cast<signed long>(ElementTypeEnum::NUM_KNOWN_ELEMENTS),
         "atomic_number",
-        "Error in masala::core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
+        "Error in masala::base::managers::database::elements::ElementType::atomic_number(): Element type is out of range!"
     );
-    return static_cast< masala::core::Size >( element_type_ );
+    return static_cast< masala::base::Size >( element_type_ );
 }
 
 /// @brief Get the isotope number (the total number of nucleons in the current isotope).
 /// @details Throws if atomic number is out of range!
-core::Size
+base::Size
 ElementType::isotope_number() const {
     return atomic_number() + neutron_count_current_isotope_;
 }
 
-} // namespace atoms
-} // namespace chemistry
-} // namespace core
-} // namespace masala
+} // namespace elements
+} // namespace database
+} // namespace managers
+} // namespace base
+} // namesapce masala

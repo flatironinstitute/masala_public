@@ -16,19 +16,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/atoms/ElementType.fwd.hh
+/// @file src/base/managers/database/elements/ElementType.fwd.hh
 /// @brief Forward declarations for a class that describes a particular element.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_atoms_ElementType_fwd_hh
-#define Masala_src_core_chemistry_atoms_ElementType_fwd_hh
+#ifndef Masala_src_base_managers_database_elements_ElementType_fwd_hh
+#define Masala_src_base_managers_database_elements_ElementType_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
 namespace masala {
-namespace core {
-namespace chemistry {
-namespace atoms {
+namespace base {
+namespace managers {
+namespace database {
+namespace elements {
 
     class ElementType;
 
@@ -39,7 +40,7 @@ namespace atoms {
 
     /// @brief The element type, as an enum.
     /// @details We use the atomic symbol, and explicitly associate with it the
-    /// atomic number.  This enum can be cast to a masala::core::Size to give the atomic number.
+    /// atomic number.  This enum can be cast to a masala::base::Size to give the atomic number.
     /// @note In the comments, I give the IUPAC name (e.g. "sulfur") and then any
     /// variants (e.g. "sulphur") in brackets.
     enum class ElementTypeEnum {
@@ -201,9 +202,10 @@ namespace atoms {
         std::string const & element_name
     );
 
-} // namespace atoms
-} // namespace chemistry
-} // namespace core
-} // namespace masala
+} // namespace elements
+} // namespace database
+} // namespace managers
+} // namespace base
+} // namesapce masala
 
-#endif // Masala_src_core_chemistry_atoms_ElementType_fwd_hh
+#endif // Masala_src_base_managers_database_elements_ElementType_fwd_hh

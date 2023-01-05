@@ -31,7 +31,7 @@
 
 // Core headers:
 #include <core/chemistry/atoms/data/PDBAtomData.hh>
-#include <core/chemistry/atoms/ElementType.hh>
+#include <base/managers/database/elements/ElementType.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -110,7 +110,7 @@ AtomInstance::partial_charge() const {
 }
 
 /// @brief Get the element type (enum) for this atom instance.
-ElementTypeEnum
+masala::base::managers::database::elements::ElementTypeEnum
 AtomInstance::element_type_enum() const {
     return element_type_->element_type();
 }
@@ -160,10 +160,10 @@ AtomInstance::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< ElementTypeEnum > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::managers::database::elements::ElementTypeEnum > >(
                 "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
                 "element_type_enum", "The element type, represented as an ElementTypeEnum.",
-                "ElementTypeEnum", "masala::core::chemistry::atoms",
+                "ElementTypeEnum", "masala::base::managers::database::elements",
                 std::bind( &AtomInstance::element_type_enum, *this )
             )
         );
