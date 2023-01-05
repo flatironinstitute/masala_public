@@ -28,6 +28,12 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_manipulation.hh>
+#include <base/managers/disk/MasalaDiskManager.hh>
+#include <base/managers/database/elements/ElementType.hh>
+#include <base/types.hh>
+
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
 
 // STL headers:
 #include <string>
@@ -112,6 +118,26 @@ MasalaElementDatabase::initialize(
 ) {
     std::string const elements_path( database_path + "/chemistry/elements/elements.json" );
     write_to_tracer( "Initializing Masala element database from \"" + elements_path + "\"." );
+    
+    canonical_elements_.clear();
+    canonical_elements_by_abbreviation_.clear();
+    canonical_elements_by_ucase_abbreviation_.clear();
+
+    nlohmann::json const elements_json( base::managers::disk::MasalaDiskManager::get_instance()->read_json_file( elements_path ) );
+    for( base::Size i(0); i <= static_cast<base::Size>( ElementTypeEnum::NUM_KNOWN_ELEMENTS ); ++i ) {
+        std::string const curname( i == 0 ? "Unk" : element_name_from_enum( static_cast<ElementTypeEnum>(i) ) );
+        ElementTypeSP curelem( masala::make_shared< ElementType >() );
+        nlohmann::json::const_iterator it( elements_json.find( curname ) );
+        if( it == elements_json.end() ) {
+            write_to_tracer( "Warning: No data found for element " + std::to_string(i) + " (" + curname + ").  Using default element properties." );
+        } else {
+            curelem->initialize_from_json( static_cast< ElementTypeEnum >(i), curname, *it );
+        }
+        canonical_elements_.push_back( curelem );
+        canonical_elements_by_abbreviation_[curname] = curelem;
+        canonical_elements_by_ucase_abbreviation_[ base::utility::string::to_uppercase(curname) ] = curelem;
+    }
+
     write_to_tracer( "Completed initialization of Masala element database." );
 }
 

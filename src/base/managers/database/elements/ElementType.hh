@@ -31,6 +31,9 @@
 #include <base/types.hh>
 #include <base/MasalaObject.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
+
 // STL headers:
 
 namespace masala {
@@ -68,6 +71,22 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INITIALIZATION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Initialize the element type from a JSON description.
+    /// @param[in] element_type The atomic number enum for this element.
+    /// @param[in] abbreviation The normally-cased abbreviaton for this element
+    /// type (e.g. "Mg", "Na", "K" ).
+    /// @param[in] json A JSON description of this element type.
+    void
+    initialize_from_json(
+        ElementTypeEnum const element_type,
+        std::string const & abbreviation,
+        nlohmann::json const & json
+    );
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -75,20 +94,21 @@ public:
     /// @details Throws if atomic number is out of range!
     masala::base::Size atomic_number() const;
 
-    /// @brief Get the isotope number (the total number of nucleons in the current isotope).
+    /// @brief Get the isotope number (the total number of nucleons in the isotope) for the
+    /// most common isotope.
     /// @details Throws if atomic number is out of range!
-    masala::base::Size isotope_number() const;
+    base::Size isotope_number_most_common_isotope() const;
 
-    /// @brief Get the number of neturons in the current isotope.
-    inline masala::base::Size neutron_count_current_isotope() const { return neutron_count_current_isotope_; }
+    /// @brief Get the number of neturons in the most common isotope.
+    inline masala::base::Size neutron_count_most_common_isotope() const { return neutron_count_most_common_isotope_; }
 
     /// @brief Get the average atomic mass, across all isotopes weighted by abundance.
     /// @details In Daltons.
     inline masala::base::Real average_atomic_mass() const { return average_atomic_mass_; }
 
-    /// @brief Get the atomic mass of the current isotope.
+    /// @brief Get the atomic mass of the most common isotope.
     /// @details In Daltons.
-    inline masala::base::Real atomic_mass_current_isotope() const { return atomic_mass_current_isotope_; }
+    inline masala::base::Real atomic_mass_most_common_isotope() const { return atomic_mass_most_common_isotope_; }
 
     /// @brief Get the element type, by enum.
     inline ElementTypeEnum element_type() const{ return element_type_; }
@@ -100,18 +120,27 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The element type, as an enum.
-    ElementTypeEnum element_type_ = ElementTypeEnum::C;
+    ElementTypeEnum element_type_ = ElementTypeEnum::UNKNOWN_ELEMENT_TYPE;
 
-    /// @brief The number of neutrons in the current isotope.
-    masala::base::Size neutron_count_current_isotope_ = 6;
+    /// @brief The abbreviation of this element.
+    /// @details This is the standard abbreviation, with normal casing (e.g. "Cu").
+    std::string element_abbreviation_ = "Unk";
+
+    /// @brief The full name of this element, in lowercase (e.g. "copper").
+    /// @details We will use IUPAC spellings ("sulfur", "aluminium", and
+    /// "caesium" instead of "sulphur", "aluminum", and "cesium").
+    std::string element_fullname_ = "unknown";
+
+    /// @brief The number of neutrons in the most common isotope.
+    masala::base::Size neutron_count_most_common_isotope_ = 0;
 
     /// @brief The average atomic mass, across all isotopes weighted by abundance.
     /// @details In Daltons.
-    masala::base::Real average_atomic_mass_ = 12.011;
+    masala::base::Real average_atomic_mass_ = 0.0;
 
-    /// @brief The atomic mass of the current isotope.
+    /// @brief The atomic mass of the most common isotope.
     /// @details In Daltons.
-    masala::base::Real atomic_mass_current_isotope_ = 12.0;
+    masala::base::Real atomic_mass_most_common_isotope_ = 0.0;
 
 };
 

@@ -27,8 +27,12 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers:
 #include <string>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -93,6 +97,40 @@ ElementType::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INITIALIZATION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Initialize the element type from a JSON description.
+/// @param[in] element_type The atomic number enum for this element.
+/// @param[in] abbreviation The normally-cased abbreviaton for this element
+/// type (e.g. "Mg", "Na", "K" ).
+/// @param[in] json A JSON description of this element type.
+void
+ElementType::initialize_from_json(
+    ElementTypeEnum const element_type,
+    std::string const & abbreviation,
+    nlohmann::json const & json
+) {
+    element_type_ = element_type;
+    element_abbreviation_ = abbreviation;
+
+    nlohmann::json::const_iterator it;
+
+    // Element full name:
+    it = json.find( "FullName" );
+    if( it != json.end() ) {
+        CHECK_OR_THROW_FOR_CLASS(
+            it->is_string(), "initialize_from_json",
+            "Could not parse JSON for element " + abbreviation + ".  \"FullName\" field is not a string."
+        );
+        element_fullname_ = *it;
+    } else {
+        write_to_tracer( "No \"FullName\" field found for element " + abbreviation + ".  Using default (\"unknown\")." );
+        element_fullname_ = "unknown";
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -108,11 +146,12 @@ ElementType::atomic_number() const {
     return static_cast< masala::base::Size >( element_type_ );
 }
 
-/// @brief Get the isotope number (the total number of nucleons in the current isotope).
+/// @brief Get the isotope number (the total number of nucleons in the isotope) for the
+/// most common isotope.
 /// @details Throws if atomic number is out of range!
 base::Size
-ElementType::isotope_number() const {
-    return atomic_number() + neutron_count_current_isotope_;
+ElementType::isotope_number_most_common_isotope() const {
+    return atomic_number() + neutron_count_most_common_isotope_;
 }
 
 } // namespace elements

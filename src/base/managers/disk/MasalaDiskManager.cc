@@ -24,6 +24,9 @@
 // Project header:
 #include <base/managers/disk/MasalaDiskManager.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers:
 #include <string>
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
@@ -130,7 +133,7 @@ MasalaDiskManager::read_json_file(
         std::lock_guard< std::mutex > lock( disk_io_mutex_);
         json_file_contents = read_ascii_file_to_string( file_name );
     }
-    write( "Parsing JSON file \"" + file_name + "\"." );
+    write_to_tracer( "Parsing JSON file \"" + file_name + "\"." );
     return nlohmann::json::parse( json_file_contents );
 }
 

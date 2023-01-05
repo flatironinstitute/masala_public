@@ -31,7 +31,7 @@
 #include <base/managers/disk/MasalaDiskManager.fwd.hh>
 
 // External headers:
-#include <nlohmann/json.hpp>
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
 // STL headers:
 #include <mutex>
