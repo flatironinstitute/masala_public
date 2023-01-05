@@ -30,8 +30,8 @@
 // Parent headers:
 #include <base/MasalaObject.hh>
 
-// Friend class:
-#include <base/managers/database/MasalaDatabaseManager.fwd.hh>
+// Base headers:
+#include <base/managers/database/MasalaDatabaseManagerCreationKey.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -41,19 +41,22 @@ namespace elements {
 
 /// @brief Headers for a class stored within the MasalaDatabaseManager, which
 /// manages element data.
+/// @note Can only be created by the MasalaDatabaseManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaElementDatabase : public base::MasalaObject {
 
-	// Friendship to allow the database manager to construct an instance of this object:
-	friend class masala::base::managers::database::MasalaDatabaseManager;
-
-private:
-
-	/// @brief Private constructor.
-	/// @details Can only be constructed by the MasalaDatabaseManager.
-	MasalaElementDatabase() = default;
-
 public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS AND DESTRUCTORS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Default constructor, explicitly deleted.
+	MasalaElementDatabase() = delete;
+
+	/// @brief Public constructor.
+	/// @details Requires authorization key; can only be constructed by the MasalaDatabaseManager.
+	MasalaElementDatabase( base::managers::database::MasalaDatabaseManagerCreationKey const & key );
 
 	/// @brief Copy constructor.
 	MasalaElementDatabase( MasalaElementDatabase const & ) = delete;

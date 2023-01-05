@@ -28,6 +28,7 @@
 // Base headers:
 #include <base/types.hh>
 #include <base/utility/string/string_manipulation.hh>
+#include <base/managers/database/MasalaDatabaseManagerCreationKey.hh>
 
 // STL headers:
 #include <string>
@@ -71,7 +72,7 @@ MasalaDatabaseManager::element_database() const {
     {
         std::lock_guard< std::mutex > lock( masala_database_manager_mutex_ );
         if( element_database_ == nullptr ) {
-            element_database_ = masala::make_shared< elements::MasalaElementDatabase >();
+            element_database_ = masala::make_shared< elements::MasalaElementDatabase >( MasalaDatabaseManagerCreationKey() );
         }
     }
     return *element_database_;
