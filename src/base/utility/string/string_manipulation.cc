@@ -27,6 +27,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
 
+// STL headers
+#include <algorithm>
+
 namespace masala {
 namespace base {
 namespace utility {
@@ -70,6 +73,26 @@ split_by_newlines(
         outvec.push_back( string_in.substr( laststart ) );
     }
     return outvec;
+}
+
+/// @brief Convert a string to uppercase.
+std::string
+to_uppercase(
+    std::string const & input
+) {
+    std::string strcopy( input );
+    std::transform( strcopy.begin(), strcopy.end(), strcopy.begin(), ::toupper );
+    return strcopy;
+}
+
+/// @brief Convert a string to lowercase.
+std::string
+to_lowercase(
+    std::string const & input
+) {
+    std::string strcopy( input );
+    std::transform( strcopy.begin(), strcopy.end(), strcopy.begin(), ::tolower );
+    return strcopy;
 }
 
 } // namespace string

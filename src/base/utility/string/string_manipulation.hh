@@ -38,6 +38,18 @@ namespace string {
         std::string const & string_in
     );
 
+    /// @brief Convert a string to uppercase.
+    std::string
+    to_uppercase(
+        std::string const & input
+    );
+
+    /// @brief Convert a string to lowercase.
+    std::string
+    to_lowercase(
+        std::string const & input
+    );
+
 } // namespace string
 } // namespace utility
 } // namespace base
