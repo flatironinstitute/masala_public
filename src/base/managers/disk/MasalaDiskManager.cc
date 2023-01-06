@@ -134,11 +134,7 @@ nlohmann::json
 MasalaDiskManager::read_json_file(
     std::string const & file_name
 ) const {
-    std::string json_file_contents;
-    {
-        std::lock_guard< std::mutex > lock( disk_io_mutex_);
-        json_file_contents = read_ascii_file_to_string( file_name );
-    }
+    std::string const json_file_contents( read_ascii_file_to_string( file_name ) );
     write_to_tracer( "Parsing JSON file \"" + file_name + "\"." );
     return nlohmann::json::parse( json_file_contents );
 }
