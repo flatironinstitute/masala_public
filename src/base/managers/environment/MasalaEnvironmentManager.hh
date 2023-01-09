@@ -30,6 +30,9 @@
 // Forward declarations:
 #include <base/managers/environment/MasalaEnvironmentManager.fwd.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -90,6 +93,9 @@ public:
     class_namespace() const override;
 
 private: // Data
+
+    /// @brief A mutex for locking this singleton.
+    std::mutex environment_manager_mutex_;
 
 };
 
