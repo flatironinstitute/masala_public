@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/environment/MasalaEnvironmentVariable.fwd.hh
-/// @brief Forward declarations for a template class storing one environment variable.
+/// @brief Forward declarations for a class storing one environment variable.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_environment_MasalaEnvironmentVariable_fwd_hh
@@ -30,28 +30,23 @@ namespace base {
 namespace managers {
 namespace environment {
 
-	template< class T >
 	class MasalaEnvironmentVariable;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	template< class T >
-	using MasalaEnvironmentVariableSP = MASALA_SHARED_POINTER< MasalaEnvironmentVariable<T> >;
+	using MasalaEnvironmentVariableSP = MASALA_SHARED_POINTER< MasalaEnvironmentVariable >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	template< class T >
-	using MasalaEnvironmentVariableCSP = MASALA_SHARED_POINTER< MasalaEnvironmentVariable<T> const >;
+	using MasalaEnvironmentVariableCSP = MASALA_SHARED_POINTER< MasalaEnvironmentVariable const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	template< class T >
-	using MasalaEnvironmentVariableWP = MASALA_WEAK_POINTER< MasalaEnvironmentVariable<T> >;
+	using MasalaEnvironmentVariableWP = MASALA_WEAK_POINTER< MasalaEnvironmentVariable >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	template< class T >
-	using MasalaEnvironmentVariableCWP = MASALA_WEAK_POINTER< MasalaEnvironmentVariable<T> const >;
+	using MasalaEnvironmentVariableCWP = MASALA_WEAK_POINTER< MasalaEnvironmentVariable const >;
 
 } // namesapce environment
 } // namesapce managers

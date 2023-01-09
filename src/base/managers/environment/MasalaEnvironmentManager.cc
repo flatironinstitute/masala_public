@@ -25,6 +25,7 @@
 #include <base/managers/environment/MasalaEnvironmentManager.hh>
 
 // Base headers:
+#include <base/managers/environment/MasalaEnvironmentVariable.hh>
 #include <base/error/ErrorHandling.hh>
 
 // STL headers:
@@ -70,13 +71,35 @@ MasalaEnvironmentManager::class_namespace() const {
 /// and the value of value_receiver is not changed.
 /// @note Triggers read from system environment the first time that a
 /// value is accessed.
-template< class T >
 bool
 MasalaEnvironmentManager::get_environment_variable(
     std::string const & environment_variable_name,
-    T & value_receiver
+    std::string & value_receiver
 ) const {
-    TODO TODO TODO
+    std::lock_guard< std::mutex > lock( environment_manager_mutex_ );
+    std::map< std::string, MasalaEnvironmentVariable const * >::const_iterator it( environment_variables_.find( environment_variable_name ) );
+    if( it == environment_variables_.end() ) {
+        char * envvar_pointer( getenv( environment_variable_name.c_str() ) );
+        if( envvar_pointer == nullptr ) {
+            write_to_tracer( "Environment variable \"" + environment_variable_name + "\" was not set." );
+            environment_variables_[environment_variable_name] = new MasalaEnvironmentVariable( false, "" );
+            return false;
+        } else {
+            std::string const envvar_string( envvar_pointer );
+            write_to_tracer( "Environment variable \"" + environment_variable_name + "\" was found with value \"" + envvar_string + "\"." );
+            environment_variables_[environment_variable_name] = new MasalaEnvironmentVariable( true, envvar_string ); // Store for future reference.
+            value_receiver = envvar_string;
+            return true;
+        }
+    } else {
+        if( it->second->env_var_was_set() ) {
+            value_receiver = it->second->env_var_value();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false; //Keep the compiler happy.
 }
 
 } // namespace environment

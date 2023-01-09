@@ -16,12 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/environment/MasalaEnvironmentVariable.tmpl.hh
-/// @brief Template headers for a template class storing one environment variable.
+/// @file src/base/managers/environment/MasalaEnvironmentVariable..hh
+/// @brief Headers for a class storing one environment variable.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_environment_MasalaEnvironmentVariable_tmpl_hh
-#define Masala_src_base_managers_environment_MasalaEnvironmentVariable_tmpl_hh
+#ifndef Masala_src_base_managers_environment_MasalaEnvironmentVariable_hh
+#define Masala_src_base_managers_environment_MasalaEnvironmentVariable_hh
 
 // Forward declarations:
 #include <base/managers/environment/MasalaEnvironmentVariable.fwd.hh>
@@ -29,18 +29,19 @@
 // Base headers:
 #include <base/managers/environment/MasalaEnvironmentManager.fwd.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/MasalaObject.hh>
 
 // STL headers:
+#include <string>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace environment {
 
-/// @brief A template class storing one environment variable.
+/// @brief A class storing one environment variable.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< class T >
-class MasalaEnvironmentVariable {
+class MasalaEnvironmentVariable : masala::base::MasalaObject {
 
 	friend class masala::base::managers::environment::MasalaEnvironmentManager;
 
@@ -53,10 +54,10 @@ private:
 	/// @details Private, to allow creation only by the environment manager.
 	MasalaEnvironmentVariable(
 		bool const env_var_is_set,
-		T const & env_var_value
+		std::string const & env_var_value
 	) :
 		env_var_is_set_( env_var_is_set ),
-		env_var_value_( env_var_is_set ? env_var_value : T(0) )
+		env_var_value_( env_var_is_set ? env_var_value : "" )
 	{}
 
 public:
@@ -65,7 +66,7 @@ public:
 	MasalaEnvironmentVariable( MasalaEnvironmentVariable const & ) = delete;
 	
 	/// @brief Assignment operator, deleted.
-	operator=( MasalaEnvironmentVariable const & ) = delete;
+	void operator=( MasalaEnvironmentVariable const & ) = delete;
 
 	/// @brief Virtual destructor.
 	~MasalaEnvironmentVariable() override = default;
@@ -88,9 +89,10 @@ public:
 	bool env_var_was_set() const;
 
 	/// @brief Get the value of the environment variable.
-	T env_var_value() const {
+	std::string const &
+	env_var_value() const {
 		CHECK_OR_THROW_FOR_CLASS( env_var_is_set_, "env_var_value", "Attempted to access an environment variable's value that was not set!" );
-		return env_var_value;
+		return env_var_value_;
 	}
 
 private:
@@ -103,7 +105,7 @@ private:
 	bool const env_var_is_set_ = false;
 
 	/// @brief The value of the environment variable.
-	T const env_var_value_;
+	std::string const env_var_value_;
 
 }; // class MasalaEnvironmentVariable
 

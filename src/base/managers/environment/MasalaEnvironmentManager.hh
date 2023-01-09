@@ -31,7 +31,7 @@
 #include <base/managers/environment/MasalaEnvironmentManager.fwd.hh>
 
 // Base headers:
-#include <base/managers/environment/MasalaEnvironmentVariableBase.fwd.hh>
+#include <base/managers/environment/MasalaEnvironmentVariable.fwd.hh>
 
 // STL headers:
 #include <mutex>
@@ -101,11 +101,10 @@ public:
     /// and the value of value_receiver is not changed.
     /// @note Triggers read from system environment the first time that a
     /// value is accessed.
-    template< class T >
     bool
     get_environment_variable(
         std::string const & environment_variable_name,
-        T & value_receiver
+        std::string & value_receiver
     ) const;
 
 private: // Data
@@ -114,7 +113,7 @@ private: // Data
     mutable std::mutex environment_manager_mutex_;
 
     /// @brief A vector of MasalaEnvironmentVariable objects, indexed by environment variable name.
-    mutable std::map< std::string, MasalaEnvironmentVariableBase > environment_variables_;
+    mutable std::map< std::string, MasalaEnvironmentVariable const * > environment_variables_;
 
 };
 
