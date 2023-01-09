@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/environment/MasalaEnvironmentVariable..hh
+/// @file src/base/managers/environment/MasalaEnvironmentVariable.hh
 /// @brief Headers for a class storing one environment variable.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -28,7 +28,6 @@
 
 // Base headers:
 #include <base/managers/environment/MasalaEnvironmentManager.fwd.hh>
-#include <base/error/ErrorHandling.hh>
 #include <base/MasalaObject.hh>
 
 // STL headers:
@@ -55,10 +54,7 @@ private:
 	MasalaEnvironmentVariable(
 		bool const env_var_is_set,
 		std::string const & env_var_value
-	) :
-		env_var_is_set_( env_var_is_set ),
-		env_var_value_( env_var_is_set ? env_var_value : "" )
-	{}
+	);
 
 public:
 
@@ -86,19 +82,12 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get whether the environment variable was set.
-	inline
 	bool
-	env_var_was_set() const {
-		return env_var_is_set_;
-	}
+	env_var_was_set() const;
 
 	/// @brief Get the value of the environment variable.
-	inline
 	std::string const &
-	env_var_value() const {
-		CHECK_OR_THROW_FOR_CLASS( env_var_is_set_, "env_var_value", "Attempted to access an environment variable's value that was not set!" );
-		return env_var_value_;
-	}
+	env_var_value() const;
 
 private:
 
