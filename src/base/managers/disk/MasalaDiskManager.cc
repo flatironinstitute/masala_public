@@ -32,6 +32,7 @@
 
 // STL headers:
 #include <string>
+#include <filesystem> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 
 namespace masala {
@@ -137,6 +138,16 @@ MasalaDiskManager::read_json_file(
     std::string const json_file_contents( read_ascii_file_to_string( file_name ) );
     write_to_tracer( "Parsing JSON file \"" + file_name + "\"." );
     return nlohmann::json::parse( json_file_contents );
+}
+
+/// @brief Given a path, get the absolute path.
+/// @details Does not lock mutex.
+std::string
+MasalaDiskManager::get_absolute_path(
+    std::string const & path_in
+) const {
+    std::filesystem::path curpath( path_in );
+    return std::filesystem::absolute( curpath ).c_str();
 }
 
 } // namespace disk

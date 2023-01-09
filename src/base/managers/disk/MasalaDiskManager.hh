@@ -120,6 +120,13 @@ public:
         std::string const & file_name
     ) const;
 
+    /// @brief Given a path, get the absolute path.
+    /// @details Does not lock mutex.
+    std::string
+    get_absolute_path(
+        std::string const & path_in
+    ) const;
+
 private: // Data
 
     /// @brief A mutex to ensure that one thread at a time does disk i/o.
