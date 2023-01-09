@@ -48,8 +48,32 @@ MasalaEnvironmentManager::get_instance() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Destructor.
+MasalaEnvironmentManager::~MasalaEnvironmentManager() {
+    reset();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reset this object (i.e. delete all the owned MasalaEnvironmentVariables.)
+void
+MasalaEnvironmentManager::reset() {
+    std::lock_guard< std::mutex > lock( environment_manager_mutex_ );
+    for(
+        std::map< std::string, MasalaEnvironmentVariable const * >::iterator it( environment_variables_.begin() );
+        it != environment_variables_.end();
+        ++it
+    ) {
+        delete (it->second);
+    }
+    environment_variables_.clear();
+    write_to_tracer( "Cleared loaded environment variables." );
+}
 
 /// @brief Get the name of this object.
 /// @details Returns "MasalaEnvironmentManager".

@@ -76,14 +76,17 @@ public:
     /// @brief No assignment operator.
     void operator=( MasalaEnvironmentManager const & ) = delete;
 
-    /// @brief Default destructor.
-    ~MasalaEnvironmentManager() = default;
+    /// @brief Destructor.
+    ~MasalaEnvironmentManager() override;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Reset this object (i.e. delete all the owned MasalaEnvironmentVariables.)
+    void reset();
 
     /// @brief Get the name of this object.
     /// @details Returns "MasalaEnvironmentManager".
