@@ -27,8 +27,11 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_manipulation.hh>
 #include <base/managers/database/MasalaDatabaseManagerCreationKey.hh>
+#include <base/managers/environment/MasalaEnvironmentManager.hh>
+#include <base/managers/disk/MasalaDiskManager.hh>
 
 // STL headers:
 #include <string>
@@ -54,7 +57,18 @@ MasalaDatabaseManager::get_instance() {
 MasalaDatabaseManager::MasalaDatabaseManager() :
     masala::base::MasalaObject()
 {
-    absolute_database_path_ = "../database/"; //TODO FIX THIS!
+    std::string masala_path;
+    CHECK_OR_THROW(
+        base::managers::environment::MasalaEnvironmentManager::get_instance()->get_environment_variable( "MASALA_PATH", masala_path ),
+        "masala::base::managers::database::MasalaDatabaseManager",
+        "MasalaDatabaseManager",
+        "The \"MASALA_PATH\" environment variable must be set in order to allow Masala to access its own database."
+    );
+    
+    masala::base::managers::disk::MasalaDiskManagerHandle dm(
+        masala::base::managers::disk::MasalaDiskManager::get_instance()
+    );
+    absolute_database_path_ = dm->get_absolute_path( masala_path + ( masala_path.empty() || masala_path[masala_path.size() - 1] != '/' ? "/database" : "database" ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
