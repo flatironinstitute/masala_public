@@ -30,8 +30,12 @@
 // Forward declarations:
 #include <base/managers/environment/MasalaEnvironmentManager.fwd.hh>
 
+// Base headers:
+#include <base/managers/environment/MasalaEnvironmentVariableBase.fwd.hh>
+
 // STL headers:
 #include <mutex>
+#include <map>
 
 namespace masala {
 namespace base {
@@ -58,7 +62,6 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Private constructor: object can only be instantiated with getInstance().
-    /// @details Triggers read of all environment variables.
     MasalaEnvironmentManager() = default;
 
 public:
@@ -92,10 +95,26 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Get the value of an environment variable.
+    /// @details If the environment variable is set, then value_receiver is
+    /// populated with its value.  If not, then this function returns false,
+    /// and the value of value_receiver is not changed.
+    /// @note Triggers read from system environment the first time that a
+    /// value is accessed.
+    template< class T >
+    bool
+    get_environment_variable(
+        std::string const & environment_variable_name,
+        T & value_receiver
+    ) const;
+
 private: // Data
 
     /// @brief A mutex for locking this singleton.
-    std::mutex environment_manager_mutex_;
+    mutable std::mutex environment_manager_mutex_;
+
+    /// @brief A vector of MasalaEnvironmentVariable objects, indexed by environment variable name.
+    mutable std::map< std::string, MasalaEnvironmentVariableBase > environment_variables_;
 
 };
 

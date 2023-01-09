@@ -64,6 +64,21 @@ MasalaEnvironmentManager::class_namespace() const {
     return "masala::base::managers::environment";
 }
 
+/// @brief Get the value of an environment variable.
+/// @details If the environment variable is set, then value_receiver is
+/// populated with its value.  If not, then this function returns false,
+/// and the value of value_receiver is not changed.
+/// @note Triggers read from system environment the first time that a
+/// value is accessed.
+template< class T >
+bool
+MasalaEnvironmentManager::get_environment_variable(
+    std::string const & environment_variable_name,
+    T & value_receiver
+) const {
+    TODO TODO TODO
+}
+
 } // namespace environment
 } // namespace managers
 } // namespace base
