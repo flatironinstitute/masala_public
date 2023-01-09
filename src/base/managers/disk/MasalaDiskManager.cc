@@ -32,6 +32,7 @@
 
 // STL headers:
 #include <string>
+#include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 
 namespace masala {
 namespace base {
