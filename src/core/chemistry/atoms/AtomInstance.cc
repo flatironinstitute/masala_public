@@ -126,6 +126,12 @@ AtomInstance::van_der_waals_radius() const {
     return element_type_->van_der_waals_radius();
 }
 
+/// @brief Get the default colour for an element of this type.
+std::array< masala::core::Real, 3 > const &
+AtomInstance::element_default_rgb_colour() const {
+    return element_type_->default_rgb_colour();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC API FUNCTION
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +189,13 @@ AtomInstance::get_api_definition() {
                 "van_der_waals_radius", "Gets the van der Waals radius for this atom's element type.",
                 "van_der_waals_radius", "The van der Waals radius, in Angstroms.",
                 std::bind( &AtomInstance::van_der_waals_radius, *this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::array< masala::core::Real, 3 > const & > >(
+                "element_default_rgb_colour", "Gets the default RGB colour for this atom's element type.  RGB colours are 3-arrays of values ranging from 0 to 1.",
+                "element_default_rgb_colour", "The default RGB colour for elements of this type.",
+                std::bind( &AtomInstance::element_default_rgb_colour, *this )
             )
         );
 

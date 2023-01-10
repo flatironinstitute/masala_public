@@ -123,6 +123,10 @@ public:
     /// element type database.
     masala::core::Real van_der_waals_radius() const;
 
+    /// @brief Get the default colour for an element of this type.
+    std::array< masala::core::Real, 3 > const &
+    element_default_rgb_colour() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
