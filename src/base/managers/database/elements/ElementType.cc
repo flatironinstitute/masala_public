@@ -118,6 +118,7 @@ ElementType::initialize_from_json(
     initialize_datum_from_json( element_fullname_, "FullName", abbreviation, json, std::string("unknown") );
     initialize_datum_from_json( neutron_count_most_common_isotope_, "NeutronCountMostCommonIsotope", abbreviation, json, base::Size(0) );
     initialize_datum_from_json( average_atomic_mass_, "AverageAtomicMass", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( average_atomic_mass_uncertainty_, "AverageAtomicMassUncertainty", abbreviation, json, base::Real(0.0) );
     initialize_datum_from_json( atomic_mass_most_common_isotope_, "AverageAtomicMassMostCommonIsotope", abbreviation, json, base::Real(0.0) );
 }
 

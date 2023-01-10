@@ -106,6 +106,10 @@ public:
     /// @details In Daltons.
     inline masala::base::Real average_atomic_mass() const { return average_atomic_mass_; }
 
+    /// @brief Get the average atomic mass uncertainty, across all isotopes weighted by abundance.
+    /// @details In Daltons.
+    inline masala::base::Real average_atomic_mass_uncertainty() const { return average_atomic_mass_uncertainty_; }
+
     /// @brief Get the atomic mass of the most common isotope.
     /// @details In Daltons.
     inline masala::base::Real atomic_mass_most_common_isotope() const { return atomic_mass_most_common_isotope_; }
@@ -153,6 +157,10 @@ private:
     /// @brief The average atomic mass, across all isotopes weighted by abundance.
     /// @details In Daltons.
     masala::base::Real average_atomic_mass_ = 0.0;
+
+    /// @brief The average atomic mass uncertainty, across all isotopes weighted by abundance.
+    /// @details In Daltons.
+    masala::base::Real average_atomic_mass_uncertainty_ = 0.0;
 
     /// @brief The atomic mass of the most common isotope.
     /// @details In Daltons.
