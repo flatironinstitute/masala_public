@@ -121,6 +121,7 @@ ElementType::initialize_from_json(
     initialize_datum_from_json( average_atomic_mass_uncertainty_, "AverageAtomicMassUncertainty", abbreviation, json, base::Real(0.0) );
     initialize_datum_from_json( atomic_mass_most_common_isotope_, "AverageAtomicMassMostCommonIsotope", abbreviation, json, base::Real(0.0) );
     initialize_datum_from_json( van_der_waals_radius_, "vanderWaalsRadius", abbreviation, json, base::Real(2.0) );
+    initialize_datum_from_json( default_rgb_colour_, "ElementColour", abbreviation, json, std::array< base::Real, 3 >{ 0.5, 0.5, 0.5 } );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,9 +166,9 @@ ElementType::initialize_datum_from_json(
     if( it != json.end() ) {
         datum = *it;
     } else {
-        std::stringstream ss;
-        ss << "No \"" << key << "\" field found for element " << abbreviation << ".  Using default (\"" << default_value << "\").";
-        write_to_tracer( ss.str() );
+        //std::stringstream ss;
+        //ss << "No \"" << key << "\" field found for element " << abbreviation << ".  Using default (\"" << default_value << "\").";
+        //write_to_tracer( ss.str() );
         datum = default_value;
     }
 }

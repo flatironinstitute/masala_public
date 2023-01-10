@@ -35,6 +35,7 @@
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
 // STL headers:
+#include <array>
 
 namespace masala {
 namespace base {
@@ -120,6 +121,10 @@ public:
     /// @brief Get the van der Waals radius.
     inline masala::base::Real van_der_waals_radius() const { return van_der_waals_radius_; }
 
+    /// @brief Get the default colour of the element, for GUIs.
+    /// @details Colours are red, green, blue values ranging from 0 to 1.
+    inline std::array< masala::base::Real, 3 > const & default_rgb_colour() const { return default_rgb_colour_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +177,10 @@ private:
     /// @brief The van der Waals radius of the (neutral) element.
     /// @brief In Angstroms.
     masala::base::Real van_der_waals_radius_ = 2.0;
+
+    /// @brief The default colour of the element, for GUIs.
+    /// @details Colours are red, green, blue values ranging from 0 to 1.
+    std::array< masala::base::Real, 3 > default_rgb_colour_ = std::array< masala::base::Real, 3 >{0.5, 0.5, 0.5};
 
 };
 
