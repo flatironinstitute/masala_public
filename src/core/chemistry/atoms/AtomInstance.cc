@@ -178,6 +178,13 @@ AtomInstance::get_api_definition() {
                 std::bind( &AtomInstance::element_type_enum, *this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::Real > >(
+                "van_der_waals_radius", "Gets the van der Waals radius for this atom's element type.",
+                "van_der_waals_radius", "The van der Waals radius, in Angstroms.",
+                std::bind( &AtomInstance::van_der_waals_radius, *this )
+            )
+        );
 
         api_definition_ = api_def; // Nonconst to const.
     }
