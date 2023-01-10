@@ -30,7 +30,14 @@ register_<__LIBNAME__>() {
 /// @brief Unregister all of the plugins in the <__LIBNAME__> library.
 void
 unregister_<__LIBNAME__>() {
+    using namespace base::managers::plugin_module;
+    MasalaPluginModuleManagerHandle pm( MasalaPluginModuleManager::get_instance() );
 
+    pm->remove_plugins(
+        std::vector< MasalaPluginCreatorCSP >{
+            <__PLUGIN_CREATORS_FOR_REGISTRATION__>
+        }
+    );
 }
 
 <__CPP_END_NAMESPACE__>
