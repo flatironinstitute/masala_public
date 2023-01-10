@@ -162,10 +162,6 @@ ElementType::initialize_datum_from_json(
 ) {
     nlohmann::json::const_iterator it( json.find( key ) );
     if( it != json.end() ) {
-        CHECK_OR_THROW_FOR_CLASS(
-            it->is_string(), "initialize_datum_from_json",
-            "Could not parse JSON for element " + abbreviation + ".  \"" + key + "\" field is not a string."
-        );
         datum = *it;
     } else {
         std::stringstream ss;
