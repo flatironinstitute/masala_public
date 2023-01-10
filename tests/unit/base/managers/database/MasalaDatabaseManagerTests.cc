@@ -62,7 +62,7 @@ TEST_CASE( "Load the element database", "[base::managers::database::MasalaDataba
     CHECK( magnesium->atomic_number() == 12 );
     CHECK( std::abs( magnesium->average_atomic_mass() - 24.305  ) < 2.0e-3 );
     CHECK( sulfur->atomic_number() == 16 );
-    CHECK( std::abs( sulfur->average_atomic_mass() - 32.065 ) < 2.0e-3 );
+    CHECK( std::abs( sulfur->average_atomic_mass() - 32.06 ) < 2.0e-3 );
 
 }
 
