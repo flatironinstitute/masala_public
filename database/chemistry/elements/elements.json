@@ -7,121 +7,141 @@
         "FullName": "hydrogen",
         "AtomicNumber": 1,
         "AverageAtomicMass": 1.008,
-        "AverageAtomicMassUncertainty": 0.0002
+        "AverageAtomicMassUncertainty": 0.0002,
+        "vanderWaalsRadius": 1.1
     },
     "He": {
         "FullName": "helium",
         "AtomicNumber": 2,
         "AverageAtomicMass": 4.0026,
-        "AverageAtomicMassUncertainty": 0.0001
+        "AverageAtomicMassUncertainty": 0.0001,
+        "vanderWaalsRadius": 1.4
     },
     "Li": {
         "FullName": "lithium",
         "AtomicNumber": 3,
         "AverageAtomicMass": 6.94,
-        "AverageAtomicMassUncertainty": 0.06
+        "AverageAtomicMassUncertainty": 0.06,
+        "vanderWaalsRadius": 1.81
     },
     "Be": {
         "FullName": "beryllium",
         "AtomicNumber": 4,
         "AverageAtomicMass": 9.0122,
-        "AverageAtomicMassUncertainty": 0.0001
+        "AverageAtomicMassUncertainty": 0.0001,
+        "vanderWaalsRadius": 1.53
     },
     "B": {
         "FullName": "boron",
         "AtomicNumber": 5,
         "AverageAtomicMass": 10.81,
-        "AverageAtomicMassUncertainty": 0.02
+        "AverageAtomicMassUncertainty": 0.02,
+        "vanderWaalsRadius": 1.92
     },
     "C": {
         "FullName": "carbon",
         "AtomicNumber": 6,
         "AverageAtomicMass": 12.011,
-        "AverageAtomicMassUncertainty": 0.002
+        "AverageAtomicMassUncertainty": 0.002,
+        "vanderWaalsRadius": 1.7
     },
     "N": {
         "FullName": "nitrogen",
         "AtomicNumber": 7,
         "AverageAtomicMass": 14.007,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.55
     },
     "O": {
         "FullName": "oxygen",
         "AtomicNumber": 8,
         "AverageAtomicMass": 15.999,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.52
     },
     "F": {
         "FullName": "fluorine",
         "AtomicNumber": 9,
         "AverageAtomicMass": 18.998,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.47
     },
     "Ne": {
         "FullName": "neon",
         "AtomicNumber": 10,
         "AverageAtomicMass": 20.18,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.54
     },
     "Na": {
         "FullName": "sodium",
         "AtomicNumber": 11,
         "AverageAtomicMass": 22.99,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 2.27
     },
     "Mg": {
         "FullName": "magnesium",
         "AtomicNumber": 12,
         "AverageAtomicMass": 24.305,
-        "AverageAtomicMassUncertainty": 0.002
+        "AverageAtomicMassUncertainty": 0.002,
+        "vanderWaalsRadius": 1.73
     },
     "Al": {
         "FullName": "aluminium",
         "AtomicNumber": 13,
         "AverageAtomicMass": 26.982,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.84
     },
     "Si": {
         "FullName": "silicon",
         "AtomicNumber": 14,
         "AverageAtomicMass": 28.085,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 2.1
     },
     "P": {
         "FullName": "phosphorus",
         "AtomicNumber": 15,
         "AverageAtomicMass": 30.974,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.8
     },
     "S": {
         "FullName": "sulfur",
         "AtomicNumber": 16,
         "AverageAtomicMass": 32.06,
-        "AverageAtomicMassUncertainty": 0.02
+        "AverageAtomicMassUncertainty": 0.02,
+        "vanderWaalsRadius": 1.8
     },
     "Cl": {
         "FullName": "chlorine",
         "AtomicNumber": 17,
         "AverageAtomicMass": 35.45,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 1.75
     },
     "Ar": {
         "FullName": "argon",
         "AtomicNumber": 18,
         "AverageAtomicMass": 39.95,
-        "AverageAtomicMassUncertainty": 0.16
+        "AverageAtomicMassUncertainty": 0.16,
+        "vanderWaalsRadius": 1.88
     },
     "K": {
         "FullName": "potassium",
         "AtomicNumber": 19,
         "AverageAtomicMass": 39.098,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 2.75
     },
     "Ca": {
         "FullName": "calcium",
         "AtomicNumber": 20,
         "AverageAtomicMass": 40.078,
-        "AverageAtomicMassUncertainty": 0.004
+        "AverageAtomicMassUncertainty": 0.004,
+        "vanderWaalsRadius": 2.31
     },
     "Sc": {
         "FullName": "scandium",
@@ -187,49 +207,57 @@
         "FullName": "gallium",
         "AtomicNumber": 31,
         "AverageAtomicMass": 69.723,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.87
     },
     "Ge": {
         "FullName": "germanium",
         "AtomicNumber": 32,
         "AverageAtomicMass": 72.63,
-        "AverageAtomicMassUncertainty": 0.008
+        "AverageAtomicMassUncertainty": 0.008,
+        "vanderWaalsRadius": 2.11
     },
     "As": {
         "FullName": "arsenic",
         "AtomicNumber": 33,
         "AverageAtomicMass": 74.922,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 1.85
     },
     "Se": {
         "FullName": "selenium",
         "AtomicNumber": 34,
         "AverageAtomicMass": 78.971,
-        "AverageAtomicMassUncertainty": 0.008
+        "AverageAtomicMassUncertainty": 0.008,
+        "vanderWaalsRadius": 1.9
     },
     "Br": {
         "FullName": "bromine",
         "AtomicNumber": 35,
         "AverageAtomicMass": 79.904,
-        "AverageAtomicMassUncertainty": 0.003
+        "AverageAtomicMassUncertainty": 0.003,
+        "vanderWaalsRadius": 1.83
     },
     "Kr": {
         "FullName": "krypton",
         "AtomicNumber": 36,
         "AverageAtomicMass": 83.798,
-        "AverageAtomicMassUncertainty": 0.002
+        "AverageAtomicMassUncertainty": 0.002,
+        "vanderWaalsRadius": 2.02
     },
     "Rb": {
         "FullName": "rubidium",
         "AtomicNumber": 37,
         "AverageAtomicMass": 85.468,
-        "AverageAtomicMassUncertainty": 0.001
+        "AverageAtomicMassUncertainty": 0.001,
+        "vanderWaalsRadius": 3.03
     },
     "Sr": {
         "FullName": "strontium",
         "AtomicNumber": 38,
         "AverageAtomicMass": 87.62,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.49
     },
     "Y": {
         "FullName": "yttrium",
@@ -294,49 +322,57 @@
         "FullName": "indium",
         "AtomicNumber": 49,
         "AverageAtomicMass": 114.82,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 1.93
     },
     "Sn": {
         "FullName": "tin",
         "AtomicNumber": 50,
         "AverageAtomicMass": 118.71,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.17
     },
     "Sb": {
         "FullName": "antimony",
         "AtomicNumber": 51,
         "AverageAtomicMass": 121.76,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.06
     },
     "Te": {
         "FullName": "tellurium",
         "AtomicNumber": 52,
         "AverageAtomicMass": 127.6,
-        "AverageAtomicMassUncertainty": 0.03
+        "AverageAtomicMassUncertainty": 0.03,
+        "vanderWaalsRadius": 2.06
     },
     "I": {
         "FullName": "iodine",
         "AtomicNumber": 53,
         "AverageAtomicMass": 126.9,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 1.98
     },
     "Xe": {
         "FullName": "xenon",
         "AtomicNumber": 54,
         "AverageAtomicMass": 131.29,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.16
     },
     "Cs": {
         "FullName": "caesium",
         "AtomicNumber": 55,
         "AverageAtomicMass": 132.91,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 3.43
     },
     "Ba": {
         "FullName": "barium",
         "AtomicNumber": 56,
         "AverageAtomicMass": 137.33,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.68
     },
     "La": {
         "FullName": "lanthanum",
@@ -485,44 +521,52 @@
         "FullName": "thallium",
         "AtomicNumber": 81,
         "AverageAtomicMass": 204.38,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 1.96
     },
     "Pb": {
         "FullName": "lead",
         "AtomicNumber": 82,
         "AverageAtomicMass": 207.2,
-        "AverageAtomicMassUncertainty": 1.1
+        "AverageAtomicMassUncertainty": 1.1,
+        "vanderWaalsRadius": 2.02
     },
     "Bi": {
         "FullName": "bismuth",
         "AtomicNumber": 83,
         "AverageAtomicMass": 208.98,
-        "AverageAtomicMassUncertainty": 0.01
+        "AverageAtomicMassUncertainty": 0.01,
+        "vanderWaalsRadius": 2.07
     },
     "Po": {
         "FullName": "polonium",
         "AtomicNumber": 84,
-        "AverageAtomicMass": 208.98243
+        "AverageAtomicMass": 208.98243,
+        "vanderWaalsRadius": 1.97
     },
     "At": {
         "FullName": "astatine",
         "AtomicNumber": 85,
-        "AverageAtomicMass": 210.487325
+        "AverageAtomicMass": 210.487325,
+        "vanderWaalsRadius": 2.02
     },
     "Rn": {
         "FullName": "radon",
         "AtomicNumber": 86,
-        "AverageAtomicMass": 214.33262333333332
+        "AverageAtomicMass": 214.33262333333332,
+        "vanderWaalsRadius": 2.2
     },
     "Fr": {
         "FullName": "francium",
         "AtomicNumber": 87,
-        "AverageAtomicMass": 219.01118
+        "AverageAtomicMass": 219.01118,
+        "vanderWaalsRadius": 3.48
     },
     "Ra": {
         "FullName": "radium",
         "AtomicNumber": 88,
-        "AverageAtomicMass": 226.02541
+        "AverageAtomicMass": 226.02541,
+        "vanderWaalsRadius": 2.83
     },
     "Ac": {
         "FullName": "actinium",
