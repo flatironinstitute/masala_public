@@ -119,6 +119,13 @@ AtomInstance::element_type_enum() const {
     return element_type_->element_type();
 }
 
+/// @brief Get the van der Waals radius for this element from the
+/// element type database.
+masala::core::Real
+AtomInstance::van_der_waals_radius() const {
+    return element_type_->van_der_waals_radius();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC API FUNCTION
 ////////////////////////////////////////////////////////////////////////////////

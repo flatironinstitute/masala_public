@@ -119,6 +119,10 @@ public:
     /// @brief Get the element type (enum) for this atom instance.
     masala::base::managers::database::elements::ElementTypeEnum element_type_enum() const;
 
+    /// @brief Get the van der Waals radius for this element from the
+    /// element type database.
+    masala::core::Real van_der_waals_radius() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
