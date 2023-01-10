@@ -120,6 +120,7 @@ ElementType::initialize_from_json(
     initialize_datum_from_json( average_atomic_mass_, "AverageAtomicMass", abbreviation, json, base::Real(0.0) );
     initialize_datum_from_json( average_atomic_mass_uncertainty_, "AverageAtomicMassUncertainty", abbreviation, json, base::Real(0.0) );
     initialize_datum_from_json( atomic_mass_most_common_isotope_, "AverageAtomicMassMostCommonIsotope", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( van_der_waals_radius_, "vanderWaalsRadius", abbreviation, json, base::Real(2.0) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

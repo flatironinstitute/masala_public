@@ -117,6 +117,9 @@ public:
     /// @brief Get the element type, by enum.
     inline ElementTypeEnum element_type() const{ return element_type_; }
 
+    /// @brief Get the van der Waals radius.
+    inline masala::base::Real van_der_waals_radius() const { return van_der_waals_radius_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +168,10 @@ private:
     /// @brief The atomic mass of the most common isotope.
     /// @details In Daltons.
     masala::base::Real atomic_mass_most_common_isotope_ = 0.0;
+
+    /// @brief The van der Waals radius of the (neutral) element.
+    /// @brief In Angstroms.
+    masala::base::Real van_der_waals_radius_ = 2.0;
 
 };
 
