@@ -72,7 +72,6 @@ MasalaEnvironmentManager::reset() {
         delete (it->second);
     }
     environment_variables_.clear();
-    write_to_tracer( "Cleared loaded environment variables." );
 }
 
 /// @brief Get the name of this object.
