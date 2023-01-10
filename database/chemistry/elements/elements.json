@@ -8,7 +8,12 @@
         "AtomicNumber": 1,
         "AverageAtomicMass": 1.008,
         "AverageAtomicMassUncertainty": 0.0002,
-        "vanderWaalsRadius": 1.1
+        "vanderWaalsRadius": 1.1,
+        "ElementColour": [
+            0.95,
+            0.953,
+            0.96
+        ]
     },
     "He": {
         "FullName": "helium",
@@ -43,28 +48,48 @@
         "AtomicNumber": 6,
         "AverageAtomicMass": 12.011,
         "AverageAtomicMassUncertainty": 0.002,
-        "vanderWaalsRadius": 1.7
+        "vanderWaalsRadius": 1.7,
+        "ElementColour": [
+            0.3,
+            0.31,
+            0.33
+        ]
     },
     "N": {
         "FullName": "nitrogen",
         "AtomicNumber": 7,
         "AverageAtomicMass": 14.007,
         "AverageAtomicMassUncertainty": 0.001,
-        "vanderWaalsRadius": 1.55
+        "vanderWaalsRadius": 1.55,
+        "ElementColour": [
+            0.02,
+            0.03,
+            0.8
+        ]
     },
     "O": {
         "FullName": "oxygen",
         "AtomicNumber": 8,
         "AverageAtomicMass": 15.999,
         "AverageAtomicMassUncertainty": 0.001,
-        "vanderWaalsRadius": 1.52
+        "vanderWaalsRadius": 1.52,
+        "ElementColour": [
+            0.95,
+            0.06,
+            0.04
+        ]
     },
     "F": {
         "FullName": "fluorine",
         "AtomicNumber": 9,
         "AverageAtomicMass": 18.998,
         "AverageAtomicMassUncertainty": 0.001,
-        "vanderWaalsRadius": 1.47
+        "vanderWaalsRadius": 1.47,
+        "ElementColour": [
+            0.35,
+            0.9,
+            0.05
+        ]
     },
     "Ne": {
         "FullName": "neon",
@@ -106,21 +131,36 @@
         "AtomicNumber": 15,
         "AverageAtomicMass": 30.974,
         "AverageAtomicMassUncertainty": 0.001,
-        "vanderWaalsRadius": 1.8
+        "vanderWaalsRadius": 1.8,
+        "ElementColour": [
+            0.8,
+            0.5,
+            0.05
+        ]
     },
     "S": {
         "FullName": "sulfur",
         "AtomicNumber": 16,
         "AverageAtomicMass": 32.06,
         "AverageAtomicMassUncertainty": 0.02,
-        "vanderWaalsRadius": 1.8
+        "vanderWaalsRadius": 1.8,
+        "ElementColour": [
+            0.95,
+            0.88,
+            0.02
+        ]
     },
     "Cl": {
         "FullName": "chlorine",
         "AtomicNumber": 17,
         "AverageAtomicMass": 35.45,
         "AverageAtomicMassUncertainty": 0.01,
-        "vanderWaalsRadius": 1.75
+        "vanderWaalsRadius": 1.75,
+        "ElementColour": [
+            0.25,
+            0.75,
+            0.02
+        ]
     },
     "Ar": {
         "FullName": "argon",
