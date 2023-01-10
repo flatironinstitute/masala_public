@@ -50,6 +50,27 @@ namespace string {
         std::string const & input
     );
 
+    /// @brief Trim whitespace from left.
+    std::string
+    ltrim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
+    /// @brief Trim whitespace from right.
+    std::string
+    rtrim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
+    /// @brief Trim whitespace from both ends of a string.
+    std::string
+    trim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
 } // namespace string
 } // namespace utility
 } // namespace base

@@ -35,6 +35,7 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_parsing.tmpl.hh>
+#include <base/utility/string/string_manipulation.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
@@ -214,11 +215,11 @@ BasicPDBReader::add_atoms_from_file_lines(
 
         // Just parsing out some of the salient information -- not the residue annotations at this time.
         std::string const curline_atomno( curline.substr(6, 5) );
-        std::string const curline_atomname( curline.substr(12, 4) );
+        std::string const curline_atomname( base::utility::string::trim( curline.substr(12, 4) ) );
         std::string const curline_xcoord( curline.substr(30, 8) );
         std::string const curline_ycoord( curline.substr(38, 8) );
         std::string const curline_zcoord( curline.substr(46, 8) );
-        std::string const curline_element( curline.substr(76, 2) );
+        std::string const curline_element( base::utility::string::trim( curline.substr(76, 2) ) );
 
         // Containers:
         signed long const atomno( masala::base::utility::string::parse_string< signed long >( curline_atomno, true ) );
@@ -229,7 +230,11 @@ BasicPDBReader::add_atoms_from_file_lines(
         };
 
         // The new atom.
-        masala::core::chemistry::atoms::AtomInstanceSP newatom( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >( curline_atomname, atomno, curline_element ) );
+        masala::core::chemistry::atoms::AtomInstanceSP newatom(
+            masala::make_shared< masala::core::chemistry::atoms::AtomInstance >(
+                curline_atomname, atomno, curline_element
+            )
+        );
         pose.molecules_nonconst().add_atom( newatom, coords );
     }
 }

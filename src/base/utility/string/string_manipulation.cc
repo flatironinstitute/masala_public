@@ -95,6 +95,51 @@ to_lowercase(
     return strcopy;
 }
 
+/// @brief Trim whitespace from left.
+std::string
+ltrim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    std::string output( input );
+    output.erase(
+        output.begin(),
+        std::find_if(
+            output.begin(), output.end(), [chars_to_trim](unsigned char curchar) {
+                return chars_to_trim.find( curchar ) == chars_to_trim.npos;
+            }
+        )
+    );
+    return output;
+}
+
+/// @brief Trim whitespace from right.
+std::string
+rtrim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    std::string output( input );
+    output.erase(
+        std::find_if(
+            output.rbegin(), output.rend(), [chars_to_trim](unsigned char curchar) {
+                return chars_to_trim.find( curchar ) == chars_to_trim.npos;
+            }
+        ).base(),
+        output.end()
+    );
+    return output;
+}
+
+/// @brief Trim whitespace from both ends of a string.
+std::string
+trim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    return rtrim(ltrim(input, chars_to_trim), chars_to_trim);
+}
+
 } // namespace string
 } // namespace utility
 } // namespace base
