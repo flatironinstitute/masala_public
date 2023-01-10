@@ -996,15 +996,27 @@ def do_generate_registration_function( \
         print( "\tCreating \"" + registration_dirname + "\"." )
     os.makedirs( registration_dirname )
 
-    #Prepare plugin .hh files list:
+    #Prepare plugin .hh files list, plus
+    #list of plugin creators for registration:
     first = True
     plugin_hh_files_includes = ""
+    plugin_creators_for_registration = ""
     for entry in plugins_list :
         if first == True :
             first = False
         else :
             plugin_hh_files_includes += "\n"
+            plugin_creators_for_registration += ",\n\t\t\t"
         plugin_hh_files_includes += "#include <" + entry[2][4:] + ".hh>"
+        first2 = True
+        creator_namespace = ""
+        for entry2 in entry[1] :
+            if first2 == True :
+                first2 = False
+            else :
+                creator_namespace += "::"
+            creator_namespace += entry2
+        plugin_creators_for_registration += "masala::make_shared< " + creator_namespace + "::" + entry[0] + " >"
 
     #Prepare namespace:
     namespace_open = "namespace " + project_name + " {\nnamespace " + library_name + " {\nnamespace auto_generated_api {\nnamespace registration {"
@@ -1021,7 +1033,8 @@ def do_generate_registration_function( \
         .replace( "<__PLUGIN_CREATOR_HH_FILES_INCLUDES__>", plugin_hh_files_includes ) \
         .replace( "<__CPP_NAMESPACE__>", namespace_open ) \
         .replace( "<__CPP_END_NAMESPACE__>", namespace_close ) \
-        .replace( "<__LIBNAME__>", library_name )
+        .replace( "<__LIBNAME__>", library_name ) \
+        .replace( "<__PLUGIN_CREATORS_FOR_REGISTRATION__>", plugin_creators_for_registration )
 
     with open( cc_fname, 'w' ) as filehandle :
         filehandle.write(ccfile)
