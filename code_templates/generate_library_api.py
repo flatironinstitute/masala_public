@@ -1006,32 +1006,33 @@ project_name_capitalized = capitalize_project_name( project_name ).replace( "_",
 licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
-for element in json_api["Elements"] :
-    #print( element )
-    namespace_string = json_api["Elements"][element]["ModuleNamespace"]
-    name_string = json_api["Elements"][element]["Module"]
-    namespace = separate_namespace( namespace_string )
-    #print( namespace_string, name_string )
-    #print( namespace )
-    assert len(namespace) > 2
-    assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    dirname = prepare_directory( project_name, library_name, namespace )
-    is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
-    if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
-        prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
-    else :
-        prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
-    
-    if is_plugin_class == True :
-        creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
-        prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
-        prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
-        prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
+if json_api["Elements"] is not None :
+    for element in json_api["Elements"] :
+        #print( element )
+        namespace_string = json_api["Elements"][element]["ModuleNamespace"]
+        name_string = json_api["Elements"][element]["Module"]
+        namespace = separate_namespace( namespace_string )
+        #print( namespace_string, name_string )
+        #print( namespace )
+        assert len(namespace) > 2
+        assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+        assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+        dirname = prepare_directory( project_name, library_name, namespace )
+        is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
+        if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
+            prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
+        else :
+            prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
+        
+        if is_plugin_class == True :
+            creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
+            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     
