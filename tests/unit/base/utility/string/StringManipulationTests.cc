@@ -44,7 +44,7 @@ TEST_CASE( "Trim strings", "[base::utility::string][utility][string][string_mani
 
     using namespace masala::base::utility::string;
 
-    std::string output1, output2, output3, output4, output5, output6;
+    std::string output1, output2, output3, output4, output5, output6, output7, output8, output9;
 
     REQUIRE_NOTHROW([&](){
         output1 = rtrim("  test one \t");
@@ -53,6 +53,9 @@ TEST_CASE( "Trim strings", "[base::utility::string][utility][string][string_mani
         output4 = rtrim( "  \t\n" );
         output5 = ltrim( "  \t\n" );
         output6 = trim( "  \t\n" );
+        output7 = rtrim( "nothing to\ttrim\nhere" );
+        output8 = rtrim( "nothing to\ttrim\nhere" );
+        output9 = rtrim( "nothing to\ttrim\nhere" );
     }() );
 
     CHECK( output1 == "  test one" );
@@ -61,6 +64,9 @@ TEST_CASE( "Trim strings", "[base::utility::string][utility][string][string_mani
     CHECK( output4 == "" );
     CHECK( output5 == "" );
     CHECK( output6 == "" );
+    CHECK( output7 == "nothing to\ttrim\nhere" );
+    CHECK( output8 == "nothing to\ttrim\nhere" );
+    CHECK( output9 == "nothing to\ttrim\nhere" );
 }
 
 
