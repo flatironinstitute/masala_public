@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/base/masla/plugin_module/MasalaPluginModuleManagerTests.cc
+/// @file tests/unit/base/managers/plugin_module/MasalaPluginModuleManagerTests.cc
 /// @brief Unit tests for the Masala plugin module manager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 

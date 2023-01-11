@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/base/masla/database/MasalaDatabaseManagerTests.cc
+/// @file tests/unit/base/managers/database/MasalaDatabaseManagerTests.cc
 /// @brief Unit tests for the Masala database manager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
