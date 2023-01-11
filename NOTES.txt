@@ -19,7 +19,7 @@
 - [ ] Use ViennaCL for linear algebra.
 - [ ] Replace std::set with std::vector.
 
-- [ ] Add test for string-trimming functions.  Include edge case of strings with only whitespace.
+- [X] Add test for string-trimming functions.  Include edge case of strings with only whitespace.
 
 - [X] Add list of API classes somewhere --> A manager where API classes get registered.
      - [ ] Ensure that plugin classes defined in core (e.g. AtomSelector) get registered.
