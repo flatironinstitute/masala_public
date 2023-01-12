@@ -132,7 +132,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 
 	// Try to register the dynamic library, and handle errors:
 	try {
-		registration_fxn = dlsym( handle, "register_library" );
+		registration_fxn = (void(*)())(dlsym( handle, "register_library" ));
 		char * errormsg;
 		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) != NULL, "load_and_register_plugin_library", std::string( errormsg ) );
 		CHECK_OR_THROW_FOR_CLASS( registration_fxn != nullptr, "load_and_register_plugin_library", "Function pointer was null." );
@@ -151,7 +151,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	}
 	dlerror(); //Clear error message.
 
-	*registration_fxn();
+	(*(registration_fxn))();
 }
 
 /// @brief Iterate through all sub-directories in a directory, and load all
