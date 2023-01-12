@@ -69,6 +69,9 @@ public:
 	/// @brief Access the error message.
 	std::string const & message() const;
 
+	/// @brief Access the error message in standard exception handling.
+	char const* what() const noexcept override;
+
 private:
 
 	/// @brief The error message, set by the constructor.
