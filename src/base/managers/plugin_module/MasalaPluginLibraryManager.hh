@@ -109,6 +109,37 @@ public:
     masala::base::Size
     total_plugin_libraries() const;
 
+    /// @brief Load and register all the plugin modules in a Masala plugin library.
+    /// @details This calls the registration function for the library.  It is expected
+    /// that (a) the function is named with a C-style name (i.e. not C++ mangled by the
+    /// compiler), and (b) the registration function is "void register_library()".
+    /// @note The 'extern "C"' keyword can be used in a function declaration to direct
+    /// the compiler to make that function available with C-style naming in the compiled
+    /// binary.
+    void
+    load_and_register_plugin_library(
+        std::string const & dynamic_link_library_path_and_filename,
+        bool const throw_on_failure=false
+    );
+
+    /// @brief Iterate through all sub-directories in a directory, and load all
+    /// plugins in each subdirectory.  (Not recursive.)  Threadsafe, insofar as
+    /// load_and_register_plugin_library() (which this calls) is threadsafe.
+    /// @details This also registers all plugin modules by calling the appropriate
+    /// registration function for each library.  It is expected that (a) the function
+    /// is named with a C-style name (i.e. not C++ mangled by the compiler), (b) the
+    /// registration function is implemented in libregistration_api.so, libregistration_api.dll,
+    /// or libregistration_api.dylib (depending on whether this is Windows, Linux, or MacOS,
+    /// respectively), and (c) the registration function is "void register_library()".
+    /// @note The 'extern "C"' keyword can be used in a function declaration to direct
+    /// the compiler to make that function available with C-style naming in the compiled
+    /// binary.
+    void
+    load_and_register_plugin_libraries_in_subdirectories(
+        std::string const & path_to_plugin_directory,
+        bool const throw_on_failure=false
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
