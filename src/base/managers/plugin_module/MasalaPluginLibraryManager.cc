@@ -103,9 +103,11 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	bool const throw_on_failure/*=false*/
 ) {
 	std::string const abspath( disk::MasalaDiskManager::get_instance()->get_absolute_path( dynamic_link_library_path_and_filename ) );
-	std::lock_guard< std::mutex > lock( plugin_libraries_mutex_ );
 
 	void * handle; // A handle for the dynamic library.
+	void (*registration_fxn)(); // Pointer to the function that registers plugin modules with the plugin module manager.
+
+	std::lock_guard< std::mutex > lock( plugin_libraries_mutex_ );
 
 	// Try to load the dynamic library, and handle errors:
 	try {
@@ -129,7 +131,6 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	dlerror(); //Clear error message.
 
 	// Try to register the dynamic library, and handle errors:
-	void (*registration_fxn)();
 	try {
 		registration_fxn = dlsym( handle, "register_library" );
 		char * errormsg;
