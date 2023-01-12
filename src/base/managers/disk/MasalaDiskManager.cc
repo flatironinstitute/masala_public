@@ -70,7 +70,7 @@ MasalaDiskManager::class_namespace() const {
 }
 
 /// @brief Write a string to an ASCII file.
-/// @details TRIGGERS WRITE TO DISK!
+/// @details TRIGGERS WRITE TO DISK!  Threadsafe (locks mutex).
 void
 MasalaDiskManager::write_ascii_file(
     std::string const & file_name,
@@ -84,6 +84,7 @@ MasalaDiskManager::write_ascii_file(
 }
 
 /// @brief Read the contents of an ASCII file to a vector of strings.
+/// @details Threadsafe (locks mutex).
 std::vector< std::string >
 MasalaDiskManager::read_ascii_file_to_string_vector(
     std::string const & file_name
@@ -104,6 +105,7 @@ MasalaDiskManager::read_ascii_file_to_string_vector(
 }
 
 /// @brief Read the contents of an ASCII file to a string.
+/// @details Threadsafe (locks mutex).
 std::string
 MasalaDiskManager::read_ascii_file_to_string(
     std::string const & file_name
@@ -131,6 +133,8 @@ MasalaDiskManager::read_ascii_file_to_string(
 }
 
 /// @brief Read the contents of a JSON file and produce an nlohmann json object.
+/// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
+/// locks mutex.  (So this is threadsafe.)
 nlohmann::json
 MasalaDiskManager::read_json_file(
     std::string const & file_name
@@ -141,13 +145,30 @@ MasalaDiskManager::read_json_file(
 }
 
 /// @brief Given a path, get the absolute path.
-/// @details Does not lock mutex.
+/// @details Threadsafe (locks mutex).
 std::string
 MasalaDiskManager::get_absolute_path(
     std::string const & path_in
 ) const {
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
     std::filesystem::path curpath( path_in );
     return std::filesystem::absolute( curpath ).c_str();
+}
+
+/// @brief Given a path (absolute or relative to working directory), get
+/// a vector of absolute paths to subdirectories.
+/// @details Threadsafe (locks mutex).
+std::vector< std::string >
+MasalaDiskManager::get_subdirectories(
+    std::string const & root_directory_path
+) const {
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
+    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( root_directory_path ) ).c_str() );
+    std::vector< std::string > pathlist;
+    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+        pathlist.push_back( std::string( it.path().c_str() ) );
+    }
+    return pathlist;
 }
 
 } // namespace disk
