@@ -139,6 +139,13 @@ public:
         std::string const & root_directory_path
     ) const;
 
+    /// @brief A utility function to get a filename given a path and a filename.
+    /// @details Requires no disk access.  Threadsafe, since no locking.
+    std::string
+    filename_from_path_and_filename(
+        std::string const & path_and_filename
+    ) const;
+
 private: // Data
 
     /// @brief A mutex to ensure that one thread at a time does disk i/o.
