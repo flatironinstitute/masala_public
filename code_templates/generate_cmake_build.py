@@ -221,6 +221,7 @@ cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, proje
 if output_file_api is not None :
     api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", project_name, source_dir + "_api", False ) )
 depend_list = get_library_dependencies( source_dir )
+depend_list.append( "${CMAKE_DL_LIBS}" ) # Needed for dlopen and dlclose functionality.
 
 appsdir = source_dir + "/" + lib_name + "_apps"
 if path.isdir( appsdir ) :
