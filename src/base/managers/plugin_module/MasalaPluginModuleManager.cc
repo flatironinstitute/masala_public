@@ -19,6 +19,9 @@
 /// @file src/base/managers/plugin_module/MasalaPluginModuleManager.cc
 /// @brief A static singleton for managing plugin modules for Masala, such as manipulators,
 /// selectors, metrics, etc.
+/// @details This manages the plugin objects stored in a plugin library.  The plugin libraries
+/// (dynamic-link .dll files in Windows, .so files in Linux, or .dylib files in MacOS) are in
+/// turn managed by the MasalaPluginLibraryManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project header:

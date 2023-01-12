@@ -19,6 +19,9 @@
 /// @file src/base/managers/plugin_module/MasalaPluginModuleManager.fwd.hh
 /// @brief Forward declarations for a static singleton for managing plugin modules
 /// for Masala, such as manipulators, selectors, metrics, etc.
+/// @details This manages the plugin objects stored in a plugin library.  The plugin libraries
+/// (dynamic-link .dll files in Windows, .so files in Linux, or .dylib files in MacOS) are in
+/// turn managed by the MasalaPluginLibraryManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_plugin_module_MasalaPluginModuleManager_fwd_hh
