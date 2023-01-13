@@ -157,7 +157,7 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
     if skip_apps == True :
         if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
             # Skip directories like core_apps.  Apps are compiled separately into executables.
-            return [], []
+            return [], [], False
     else :
         if dirname.endswith( libname + "/auto_generated_api" ) or dirname.endswith( libname + "/auto_generated_api/" ) :
             return []
@@ -185,17 +185,15 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
                         outlist_apis.append( creatorname + ".fwd.hh" )
         elif path.isdir( concatname ) :
             if skip_apps == True :
-                outlist2, outlist2_apis = get_all_cc_and_hh_files_in_dir_and_subdirs( libname, project_name, concatname, skip_apps )
+                outlist2, outlist2_apis, has_plugins = get_all_cc_and_hh_files_in_dir_and_subdirs( libname, project_name, concatname, skip_apps )
+                if has_plugins == True or compile_registration_functions == True :
+                    compile_registration_functions = True
                 outlist.extend(outlist2)
                 outlist_apis.extend(outlist2_apis)
             else :
                 outlist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( libname, project_name, concatname, skip_apps ) )
     if skip_apps == True :
-        if compile_registration_functions == True :
-            TODO TODO TODO
-            CHECK WHETHER REG FILES ARE ALREADY IN outlist_apis
-            ADD THEM IF NOT
-        return outlist, outlist_apis
+        return outlist, outlist_apis, compile_registration_functions
     return outlist
 
 def get_library_dependencies( dirname : str ) -> list :
@@ -223,9 +221,12 @@ output_file_tests = argv[6]
 if output_file_tests == "NONE" :
     output_file_tests = None
 
-cclist, api_cclist = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, project_name, source_dir, True )
+cclist, api_cclist, compile_registration_functions = get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name, project_name, source_dir, True )
 if output_file_api is not None :
     api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", project_name, source_dir + "_api", False ) )
+if compile_registration_functions == True :
+    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_selectors.cc" )
+    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_selectors.hh" )
 depend_list = get_library_dependencies( source_dir )
 depend_list.append( "${CMAKE_DL_LIBS}" ) # Needed for dlopen and dlclose functionality.
 
