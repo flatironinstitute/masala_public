@@ -113,7 +113,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	try {
 		handle = dlopen( abspath.c_str(), RTLD_NOW );
 		char * errormsg;
-		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) != NULL, "load_and_register_plugin_library", std::string( errormsg ) );
+		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) == nullptr, "load_and_register_plugin_library", std::string( errormsg ) );
 		CHECK_OR_THROW_FOR_CLASS( handle != nullptr, "load_and_register_plugin_library", "Pointer handle was null." );
 	} catch( std::exception & except ) {
 		if( throw_on_failure ) {
@@ -134,7 +134,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	try {
 		registration_fxn = (void(*)())(dlsym( handle, "register_library" ));
 		char * errormsg;
-		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) != NULL, "load_and_register_plugin_library", std::string( errormsg ) );
+		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) == nullptr, "load_and_register_plugin_library", std::string( errormsg ) );
 		CHECK_OR_THROW_FOR_CLASS( registration_fxn != nullptr, "load_and_register_plugin_library", "Function pointer was null." );
 	} catch( std::exception & except ) {
 		if( throw_on_failure ) {
