@@ -12,12 +12,15 @@
 // Plugin creator headers:
 <__PLUGIN_CREATOR_HH_FILES_INCLUDES__>
 
+// STL headers:
+#include <vector>
+
 <__CPP_NAMESPACE__>
 
 /// @brief Register all of the plugins in the <__LIBNAME__> library.
 void
 register_<__LIBNAME__>() {
-    using namespace base::managers::plugin_module;
+    using namespace masala::base::managers::plugin_module;
     MasalaPluginModuleManagerHandle pm( MasalaPluginModuleManager::get_instance() );
 
     pm->add_plugins(
@@ -30,7 +33,7 @@ register_<__LIBNAME__>() {
 /// @brief Unregister all of the plugins in the <__LIBNAME__> library.
 void
 unregister_<__LIBNAME__>() {
-    using namespace base::managers::plugin_module;
+    using namespace masala::base::managers::plugin_module;
     MasalaPluginModuleManagerHandle pm( MasalaPluginModuleManager::get_instance() );
 
     pm->remove_plugins(
