@@ -43,7 +43,7 @@ namespace api {
         /// @return True if T is the same type as Tprime; false otherwise.
         template < typename Tprime >
         bool
-        operator==( type<Tprime> const & other ) {
+        operator==( type<Tprime> const & ) {
             return std::is_same<T, Tprime>::value;
         }
 
