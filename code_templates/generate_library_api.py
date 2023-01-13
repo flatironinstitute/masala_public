@@ -1019,8 +1019,8 @@ def do_generate_registration_function( \
         plugin_creators_for_registration += "masala::make_shared< " + creator_namespace + "::" + entry[0] + " >"
 
     #Prepare namespace:
-    namespace_open = "namespace " + project_name + " {\nnamespace " + library_name + " {\nnamespace auto_generated_api {\nnamespace registration {"
-    namespace_close = "} // namespace registration\n} // namespace auto_generated_api\n} // namespace " + library_name + "\n} // namespace " + project_name
+    namespace_open = "namespace " + project_name + " {\nnamespace " + library_name + "_api {\nnamespace auto_generated_api {\nnamespace registration {"
+    namespace_close = "} // namespace registration\n} // namespace auto_generated_api\n} // namespace " + library_name + "_api\n} // namespace " + project_name
 
     #Prepare cc file:
     cc_fname = registration_dirname + "/register_" + library_name + ".cc"
