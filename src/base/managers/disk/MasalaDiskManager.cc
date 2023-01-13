@@ -162,13 +162,32 @@ std::vector< std::string >
 MasalaDiskManager::get_subdirectories(
     std::string const & root_directory_path
 ) const {
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( root_directory_path ) ).c_str() );
     std::vector< std::string > pathlist;
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
+    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( root_directory_path ) ) );
     for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
-        pathlist.push_back( std::string( it.path().c_str() ) );
+        if( it.is_directory() ) {
+            pathlist.push_back( std::string( it.path().c_str() ) );
+        }
     }
     return pathlist;
+}
+
+/// @brief Given a path to a directory, get the path and filename of each
+/// file in that directory.
+std::vector< std::string >
+MasalaDiskManager::get_files(
+    std::string const & directory_path
+) const {
+    std::vector< std::string > filelist;
+    std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
+    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+        if( it.is_regular_file() ) {
+            filelist.push_back( std::string( it.path().c_str() ) );
+        }
+    }
+    return filelist;
 }
 
 /// @brief A utility function to get a filename given a path and a filename.
