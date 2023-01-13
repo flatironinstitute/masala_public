@@ -152,6 +152,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	dlerror(); //Clear error message.
 
 	(*(registration_fxn))();
+    write_to_tracer( "Successfully registered plugins from \"" + dynamic_link_library_path_and_filename + "\"."  );
 }
 
 /// @brief Iterate through all sub-directories in a directory, and load all
