@@ -153,6 +153,7 @@ def apiname_or_creatorname_from_filename( fname : str, do_creator : bool ) -> st
 ## report those in a second list.  If skip_apps is false, we do not do this.
 def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : str, dirname : str, skip_apps : bool ) :
     assert path.isdir( dirname ), errmsg + "Directory " + dirname + " doesn't exist."
+    compile_registration_functions = False
     if skip_apps == True :
         if dirname.endswith( libname + "_apps" ) or dirname.endswith( libname + "_apps/" ) :
             # Skip directories like core_apps.  Apps are compiled separately into executables.
@@ -177,6 +178,7 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
                     outlist_apis.append( apiname + ".hh" )
                     outlist_apis.append( apiname + ".fwd.hh" )
                     if is_plugin_class( concatname[:-3] + ".hh", project_name ) :
+                        compile_registration_functions = True
                         creatorname = apiname_or_creatorname_from_filename( concatname, True )
                         outlist_apis.append( creatorname + ".cc" )
                         outlist_apis.append( creatorname + ".hh" )
@@ -189,6 +191,10 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
             else :
                 outlist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( libname, project_name, concatname, skip_apps ) )
     if skip_apps == True :
+        if compile_registration_functions == True :
+            TODO TODO TODO
+            CHECK WHETHER REG FILES ARE ALREADY IN outlist_apis
+            ADD THEM IF NOT
         return outlist, outlist_apis
     return outlist
 
