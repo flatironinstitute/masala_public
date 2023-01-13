@@ -6,6 +6,9 @@
 /// @note This file is an auto-generated API file.  Do not edit it.  Changes will
 /// be lost on next build from source.
 
+// Unit header:
+<__REGISTER_PLUGINS_HH_FILE_INCLUDE_>
+
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 
