@@ -315,6 +315,7 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     std::set< MasalaPluginCreatorCSP > const & myset( it->second );
     for( auto const & entry : myset ) {
         if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
             return entry->create_plugin_object();
         }
     }
@@ -344,6 +345,7 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     std::set< MasalaPluginCreatorCSP > const & myset( it->second );
     for( auto const & entry : myset ) {
         if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
             return entry->create_plugin_object();
         }
     }
