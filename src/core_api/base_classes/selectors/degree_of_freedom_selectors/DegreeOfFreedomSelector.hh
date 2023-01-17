@@ -32,8 +32,10 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
@@ -70,7 +72,7 @@ public:
 	/// @brief Given the current pose, generate the selection.
 	/// @details Calls generate_degree_of_freedom_selection(), which must be implemented
 	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
+	core::selection::SelectionCSP
 	generate_selection(
 		core_api::auto_generated_api::pose::Pose_API const & pose
 	) const override;

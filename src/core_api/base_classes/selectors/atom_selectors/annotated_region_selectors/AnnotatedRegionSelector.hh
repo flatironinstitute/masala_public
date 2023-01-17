@@ -32,8 +32,10 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
@@ -71,9 +73,9 @@ public:
 	/// @brief Given the current pose, generate the selection.
 	/// @details Calls generate_annotated_region_selection(), which must be implemented
 	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
+	masala::core::selection::SelectionCSP
 	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const override;
 
 	/// @brief Given the current pose, generate the annotated region selection.
@@ -81,7 +83,7 @@ public:
 	virtual
 	AnnotatedRegionSelectionCSP
 	generate_annotated_region_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;
 
 }; // class AnnotatedRegionSelector

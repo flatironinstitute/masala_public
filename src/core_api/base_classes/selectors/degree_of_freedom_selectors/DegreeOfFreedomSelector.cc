@@ -42,7 +42,7 @@ namespace degree_of_freedom_selectors {
 /// @brief Given the current pose, generate the selection.
 /// @details Calls generate_degree_of_freedom_selection(), which must be implemented
 /// by derived classes.
-core_api::base_classes::selectors::SelectionCSP
+core::selection::SelectionCSP
 DegreeOfFreedomSelector::generate_selection(
 	core_api::auto_generated_api::pose::Pose_API const & pose
 ) const {

@@ -32,8 +32,10 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
 namespace masala {
@@ -68,9 +70,9 @@ public:
 	/// @brief Given the current pose, generate the selection.
 	/// @details Pure virtual function.  Must be implemented by sub-classes.
 	virtual
-	SelectionCSP
+	masala::core::selection::SelectionCSP
 	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;
 
 }; // class Selector

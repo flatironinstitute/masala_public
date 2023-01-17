@@ -32,9 +32,11 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+#include <core/selection/atom_selection/AtomSelection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
-#include <core_api/base_classes/selectors/atom_selectors/AtomSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
 namespace masala {
@@ -70,17 +72,17 @@ public:
 	/// @brief Given the current pose, generate the selection.
 	/// @details Calls generate_atom_selection(), which must be implemented
 	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
+	masala::core::selection::SelectionCSP
 	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const override;
 
 	/// @brief Given the current pose, generate the atom selection.
 	/// @details Pure virtual function.
 	virtual
-	AtomSelectionCSP
+	masala::core::selection::atom_selection::AtomSelectionCSP
 	generate_atom_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;
 
 }; // class AtomSelector

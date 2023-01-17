@@ -43,9 +43,9 @@ namespace annotated_region_selectors {
 /// @brief Given the current pose, generate the selection.
 /// @details Calls generate_annotated_region_selection(), which must be implemented
 /// by derived classes.
-core_api::base_classes::selectors::SelectionCSP
+masala::core::selection::SelectionCSP
 AnnotatedRegionSelector::generate_selection(
-	core_api::auto_generated_api::pose::Pose_API const & pose
+	masala::core_api::auto_generated_api::pose::Pose_API const & pose
 ) const {
 	return generate_annotated_region_selection( pose );
 }
