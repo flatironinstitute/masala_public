@@ -61,6 +61,12 @@ public:
     std::string
     inner_class_namespace() const = 0;
 
+    /// @brief Get the API definition for the contained class.
+    /// @details Must be implemented by derived classes.
+    virtual
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition_for_inner_class() = 0;
+
 }; // class MasalaObjectAPI
 
 } // namespace base

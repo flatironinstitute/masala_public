@@ -95,6 +95,8 @@ public:
     std::string inner_class_name() const override { return DummyPlugin1::class_name_static(); }
     std::string inner_class_namespace() const override { return DummyPlugin1::class_namespace_static(); }
 
+    masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition_for_inner_class() override { return inner_object_->get_api_definition(); }
+
     void store_word( std::string const & word_in ) {
         inner_object_->store_word(word_in);
     }
@@ -186,6 +188,8 @@ public:
     std::string class_namespace() const override { return class_namespace_static(); }
     std::string inner_class_name() const override { return DummyPlugin2::class_name_static(); }
     std::string inner_class_namespace() const override { return DummyPlugin2::class_namespace_static(); }
+
+    masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition_for_inner_class() override { return inner_object_->get_api_definition(); }
 
 private:
 
