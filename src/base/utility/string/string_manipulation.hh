@@ -38,6 +38,13 @@ namespace string {
         std::string const & string_in
     );
 
+    /// @brief Split a string by a user-defined character.
+    std::vector< std::string >
+    split_by_character(
+        std::string const & string_in,
+        char const character_for_split
+    );
+
     /// @brief Split a string by a user-defined set of characters.
     /// @details Any of the characters in the second string can indicate a split point.
     std::vector< std::string >
