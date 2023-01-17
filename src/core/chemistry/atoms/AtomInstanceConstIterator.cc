@@ -193,7 +193,7 @@ AtomInstanceConstIterator::get_api_definition() {
         // api_definition->add_constructor(
         //     masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceSP >::const_iterator const & > >(
         //         "AtomInstanceConstIterator", "Construct the iterator from a std::set const iterator.",
-        //         "iterator", "The source std::set< AtomInstanceSP >::const_interator, with which we will initialize this iterator."
+        //         "iterator", "The source std::set< AtomInstanceSP >::const_iterator, with which we will initialize this iterator."
         //     )
         // );
 
