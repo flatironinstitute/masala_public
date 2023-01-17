@@ -41,6 +41,7 @@
 
 // STL headers:
 #include <set>
+#include <mutex>
 
 namespace masala {
 namespace core {
@@ -55,14 +56,32 @@ class AtomSelection : public masala::core::selection::Selection {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	AtomSelection() = default;
 
 	/// @brief Copy constructor.
-	AtomSelection( AtomSelection const & ) = default;
+	AtomSelection( AtomSelection const & src );
+
+	/// @brief Assignment operator.
+	AtomSelection &
+	operator=(
+		AtomSelection const & src
+	);
 
 	/// @brief Destructor.
 	~AtomSelection() override = default;
+
+	/// @brief Create a copy of this object.
+	AtomSelectionSP
+	clone() const;
+
+	/// @brief Create a copy of this object that is independent of the original.
+	AtomSelectionSP
+	deep_clone() const;
 
 public:
 
@@ -75,6 +94,10 @@ public:
 
 	/// @brief Get the namespace of this class ("masala::core::selection::atom_selection").
 	std::string class_namespace() const override;
+
+    /// @brief Get the API definition for this object.
+    base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
     /// @brief Get the category or categories for this plugin class.
     /// @returns { { "Selection", "AtomSelection" } }
@@ -111,7 +134,14 @@ private:
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief A mutex for locking this object.
+    mutable std::mutex whole_object_mutex_;
+
+    /// @brief The selected atoms.
 	std::set< masala::core::chemistry::atoms::AtomInstanceCSP > atoms_;
+
+    /// @brief The API definition for this class.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class AtomSelection
 

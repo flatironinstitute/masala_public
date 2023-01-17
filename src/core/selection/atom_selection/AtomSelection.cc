@@ -27,9 +27,14 @@
 
 // Core headers:
 #include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
 
 // Base headers:
 #include <base/utility/container/container_util.tmpl.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -38,6 +43,38 @@ namespace masala {
 namespace core {
 namespace selection {
 namespace atom_selection {
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+AtomSelection::AtomSelection(
+	AtomSelection const & src
+) :
+	atoms_( src.atoms_ )
+{}
+
+/// @brief Assignment operator.
+AtomSelection &
+AtomSelection::operator=(
+	AtomSelection const & src
+) {
+	atoms_ = src.atoms_;
+	return *this;
+}
+
+/// @brief Create a copy of this object.
+AtomSelectionSP
+AtomSelection::clone() const {
+	return masala::make_shared< AtomSelection >( *this );
+}
+
+/// @brief Create a copy of this object that is independent of the original.
+AtomSelectionSP
+AtomSelection::deep_clone() const {
+	return masala::make_shared< AtomSelection >( *this );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -53,6 +90,70 @@ AtomSelection::class_name() const {
 std::string
 AtomSelection::class_namespace() const {
 	return "masala::core::selection::atom_selection";
+}
+
+/// @brief Get the API definition for this object.
+base::api::MasalaObjectAPIDefinitionCWP
+AtomSelection::get_api_definition() {
+    using namespace base::api;
+    using namespace base::api::constructor;
+    using namespace base::api::getter;
+    using namespace base::api::setter;
+
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+
+	if( api_definition_ == nullptr ) {
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "A container for atoms and chemical bonds, and for data representations "
+                "that allow efficient geometric manipulations.",
+                false
+            )
+        );
+
+        api_def->add_constructor(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< AtomSelection, AtomSelection const & > >(
+                class_name(), "AtomSelection object copy constructor.",
+                "src", "The input AtomSelection object to copy."
+            )
+        );
+
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+                "num_selected_atoms", "Gets the total number of atoms that are in the selection.",
+                "num_selected_atoms", "The number of atoms in the selection.",
+                std::bind( &AtomSelection::num_selected_atoms, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
+                "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
+                "atoms_begin", "Iterator pointing to the first atom in the set stored in the selection.",
+                std::bind( &AtomSelection::atoms_begin, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
+                "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
+                "atoms_end", "Iterator pointing one past the last atom in the set stored in the selection.",
+                std::bind( &AtomSelection::atoms_end, this )
+            )
+        );
+
+        api_def->add_setter(
+            masala::make_shared< MasalaObjectAPISetterDefinition_OneInput < masala::core::chemistry::atoms::AtomInstanceCSP > >(
+                "add_atom", "Add an atom to this selection.",
+                "atom_in", "The atom to add to the selection.",
+                std::bind( &AtomSelection::add_atom, this, std::placeholders::_1 )
+            )
+        );
+
+        api_definition_ = api_def; // Nonconst to const.
+    }
+    return api_definition_;
+
 }
 
 /// @brief Get the category or categories for this plugin class.
@@ -86,6 +187,8 @@ void
 AtomSelection::add_atom(
 	core::chemistry::atoms::AtomInstanceCSP const & atom_in
 ) {
+	std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+
 	// Do not add if already in vector.
 	if( !masala::base::utility::container::has_value( atoms_, atom_in ) ) {
 		atoms_.insert( atom_in );
@@ -95,6 +198,7 @@ AtomSelection::add_atom(
 /// @brief Get the number of selected atoms in this selection.
 masala::core::Size
 AtomSelection::num_selected_atoms() const {
+	std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 	return atoms_.size();
 }
 

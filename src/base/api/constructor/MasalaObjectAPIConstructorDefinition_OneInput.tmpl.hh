@@ -38,6 +38,9 @@
 // Base headers.
 #include <base/api/names_from_types.tmpl.hh>
 
+// External headers.
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers.
 #include <sstream>
 

@@ -29,6 +29,7 @@
 #include <core/chemistry/Molecules.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
+#include <core/selection/atom_selection/AtomSelection.hh>
 #include <core/io/pdb/BasicPDBReader.hh>
 
 namespace masala {
@@ -47,6 +48,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::Molecules >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );
+        outvec.emplace_back( masala::make_shared< masala::core::selection::atom_selection::AtomSelection >() );
         outvec.emplace_back( masala::make_shared< masala::core::io::pdb::BasicPDBReader >() );
         // ADD MORE ENTRIES HERE
 
