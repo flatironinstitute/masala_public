@@ -115,6 +115,18 @@ AtomSelection::num_selected_atoms() const {
 	return atoms_.size();
 }
 
+/// @brief An iterator pointing to the first atom.
+std::vector< masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP >::const_iterator
+AtomSelection::atoms_begin() const {
+	return atoms_.begin();
+}
+
+/// @brief An iterator pointing to the element past the last atom.
+std::vector< masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP >::const_iterator
+AtomSelection::atoms_end() const {
+	return atoms_.end();
+}
+
 } // namespace atom_selectors
 } // namespace selectors
 } // namespace base_classes

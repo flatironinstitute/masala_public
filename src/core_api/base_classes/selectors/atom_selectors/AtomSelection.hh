@@ -103,10 +103,18 @@ public:
 	void shrink_to_fit();
 
 	/// @brief Add an atom to the selection
-	void add_atom( core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICSP const & atom_in );
+	void add_atom( masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICSP const & atom_in );
 
 	/// @brief Get the number of selected atoms in this selection.
 	core_api::Size num_selected_atoms() const;
+
+    /// @brief An iterator pointing to the first atom.
+    std::vector< masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP >::const_iterator
+    atoms_begin() const;
+
+    /// @brief An iterator pointing to the element past the last atom.
+    std::vector< masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP >::const_iterator
+    atoms_end() const;
 
 private:
 
@@ -114,7 +122,7 @@ private:
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-	std::vector< core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP > atoms_;
+	std::vector< masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APICWP > atoms_;
 
 }; // class AtomSelection
 
