@@ -50,7 +50,7 @@ namespace atoms {
 
 /// @brief Constructor from set iterator.
 AtomInstanceConstIterator::AtomInstanceConstIterator(
-    std::set< AtomInstanceSP >::const_iterator const & it
+    std::set< AtomInstanceCSP >::const_iterator const & it
 ) :
     base::MasalaObject(),
     iterator_(it)
@@ -191,9 +191,9 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
         // api_definition->add_constructor(
-        //     masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceSP >::const_iterator const & > >(
+        //     masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceCSP >::const_iterator const & > >(
         //         "AtomInstanceConstIterator", "Construct the iterator from a std::set const iterator.",
-        //         "iterator", "The source std::set< AtomInstanceSP >::const_iterator, with which we will initialize this iterator."
+        //         "iterator", "The source std::set< AtomInstanceCSP >::const_iterator, with which we will initialize this iterator."
         //     )
         // );
 
