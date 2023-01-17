@@ -201,6 +201,10 @@ private:
     /// responsible for keeping track of coordinates given atom smart pointers.
     std::set< masala::core::chemistry::atoms::AtomInstanceSP > atoms_;
 
+    /// @brief A set of const shared pointers to the atoms, for convenience of iterating with
+    /// iterators to AtomInstanceCSPs.
+    std::set< masala::core::chemistry::atoms::AtomInstanceCSP > atoms_const_;
+
     /// @brief The bonds between atoms.
     /// @note This is deliberately a set and not a vector to prevent an arbitrary index
     /// from being handed out or used for bonds.  Iterators are properly used to iterate

@@ -70,6 +70,7 @@ Molecules::Molecules(
     master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
     additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
     atoms_ = src.atoms_;
+    atoms_const_ = src.atoms_const_;
     bonds_ = src.bonds_;
     // Deliberately do not copy api_definition_.
 }
@@ -88,6 +89,7 @@ Molecules::operator=(
         master_coordinates_have_changed_ = src.master_coordinates_have_changed_;
         additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
         atoms_ = src.atoms_;
+        atoms_const_ = src.atoms_const_;
         bonds_ = src.bonds_;
         // api_definition deliberately not copied.
     }
@@ -130,6 +132,7 @@ Molecules::make_independent() {
     master_atom_coordinate_representation_ = old_coordinates->clone();
     std::set< masala::core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
+    atoms_const_.clear();
     for(
         std::set< masala::core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
         it != old_atom_instances.end();
@@ -137,6 +140,7 @@ Molecules::make_independent() {
     ) {
         masala::core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
+        atoms_const_.insert( new_atom );
         master_atom_coordinate_representation_mutex_locked()->replace_atom_instance( *it, new_atom );
     }
 
@@ -208,14 +212,14 @@ Molecules::get_api_definition() {
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
-                "atoms_begin", "Get an iterator over atoms, initialized to first atom.",
+                "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_begin, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
-                "atoms_end", "Get an iterator over atoms, initialized to one past the last atom.",
+                "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_end, this )
             )
@@ -248,6 +252,7 @@ Molecules::add_atom(
 
     // Add the atom:
     atoms_.insert(atom_in);
+    atoms_const_.insert(atom_in);
     master_atom_coordinate_representation_mutex_locked()->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
@@ -263,13 +268,13 @@ Molecules::total_atoms() const {
 /// @brief Begin const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
 Molecules::atoms_begin() const {
-    return atoms::AtomInstanceConstIterator( atoms_.cbegin() );
+    return atoms::AtomInstanceConstIterator( atoms_const_.cbegin() );
 }
 
 /// @brief End const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
 Molecules::atoms_end() const {
-    return atoms::AtomInstanceConstIterator( atoms_.cend() );
+    return atoms::AtomInstanceConstIterator( atoms_const_.cend() );
 }
 
 /// @brief Access the coordinates for an atom.
