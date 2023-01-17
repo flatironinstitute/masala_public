@@ -38,6 +38,14 @@ namespace string {
         std::string const & string_in
     );
 
+    /// @brief Split a string by a user-defined set of characters.
+    /// @details Any of the characters in the second string can indicate a split point.
+    std::vector< std::string >
+    split_by_characters(
+        std::string const & string_in,
+        std::string const & characters_for_split
+    );
+
     /// @brief Convert a string to uppercase.
     std::string
     to_uppercase(

@@ -75,6 +75,48 @@ split_by_newlines(
     return outvec;
 }
 
+/// @brief Split a string by a user-defined set of characters.
+/// @details Any of the characters in the second string can indicate a split point.
+std::vector< std::string >
+split_by_characters(
+    std::string const & string_in,
+    std::string const & characters_for_split
+) {
+    if( string_in.empty() ) {
+        return std::vector< std::string >(); //Empty vector out if empty string in.
+    }
+
+    std::vector< std::string > outvec;
+
+    signed long laststart(0), last_non_return(-1);
+    bool in_split_chars(false);
+
+    for( signed long i(0), imax(string_in.size()); i<imax; ++i ) {
+        if( !in_split_chars ) {
+            if( characters_for_split.find( string_in[i] ) != std::string::npos  ) {
+                in_split_chars = true;
+                last_non_return = i-1;
+                continue;
+            }
+        } else {
+            if( characters_for_split.find( string_in[i] ) == std::string::npos ) {
+                in_split_chars = false;
+                if( !(laststart == 0 && last_non_return == -1) ) {
+                    outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+                }
+                laststart = i;
+                continue;
+            }
+        }
+    }
+    if( last_non_return >= laststart ) {
+        outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+    } else {
+        outvec.push_back( string_in.substr( laststart ) );
+    }
+    return outvec;
+}
+
 /// @brief Convert a string to uppercase.
 std::string
 to_uppercase(
