@@ -95,6 +95,18 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the name of the class for which this object stores an API description.
+	std::string const & api_class_name() const;
+
+	/// @brief Get the namespace of the class for which this object stores an API description.
+	std::string const & api_class_namespace() const;
+
+	/// @brief Get the namespace and name of the class for which this object stores an API description.
+	std::string api_class_namespace_and_name() const;
+
+	/// @brief Get the description of the class for which this object stores an API description.
+	std::string const & api_class_description() const;
+
 	/// @brief Get a human-readable description of the API for a module.
 	/// @details Note that this does not cache the generated string, but generates it anew
 	/// each time.

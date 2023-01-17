@@ -88,6 +88,30 @@ MasalaObjectAPIDefinition::class_namespace() const {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the name of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_name() const {
+    return api_class_name_;
+}
+
+/// @brief Get the namespace of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_namespace() const {
+    return api_class_namespace_;
+}
+
+/// @brief Get the namespace and name of the class for which this object stores an API description.
+std::string
+MasalaObjectAPIDefinition::api_class_namespace_and_name() const {
+    return api_class_namespace_ + "::" + api_class_name_;
+}
+
+/// @brief Get the description of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_description() const {
+    return api_class_description_;
+}
+
 /// @brief Get a human-readable description of the API for a module.
 /// @details Note that this does not cache the generated string, but generates it anew
 /// each time.
