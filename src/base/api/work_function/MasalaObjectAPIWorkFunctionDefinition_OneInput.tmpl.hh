@@ -116,6 +116,14 @@ public:
 		return "masala::base::api::work_function";
 	}
 
+	/// @brief Run the function on an input.
+	T0
+	function(
+		T1 input
+	) const {
+		return work_function_( input );
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
