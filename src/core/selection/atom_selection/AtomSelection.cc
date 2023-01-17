@@ -33,6 +33,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 
@@ -110,6 +111,12 @@ AtomSelection::get_api_definition() {
                 "A container for atoms and chemical bonds, and for data representations "
                 "that allow efficient geometric manipulations.",
                 false
+            )
+        );
+
+        api_def->add_constructor(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< AtomSelection > >(
+                class_name(), "Constructor that makes an empty AtomSelection."
             )
         );
 

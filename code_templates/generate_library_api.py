@@ -517,7 +517,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
@@ -567,14 +567,41 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                if is_masala_class( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"] ) :
-                    inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
+                curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
+                print( "***" + curinputname )
+                
+                input_is_masala_API_ptr = False
+                input_is_masala_class = False
+                if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
+                    firstchevron = curinputname.find("<")
+                    lastchevron = curinputname.rfind(">")
+                    curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
+                    if( is_masala_class( project_name, curinput_inner )  ) :
+                        input_is_masala_API_ptr = True
+                elif is_masala_class( project_name, curinputname ) :
+                    curinput_inner = curinputname
+                    input_is_masala_class = True
+
+                if input_is_masala_class or input_is_masala_API_ptr :
+                    if input_is_masala_API_ptr :
+                        input_point_or_arrow = "->"
+                    else :
+                        input_point_or_arrow = "."
+                    print( "IS_MASALA_CLASS" )
+                    inputtype = curinput_inner.split()[0] 
                     assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object()"
+                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                     else :
-                        outstring += " *( " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object() )"
+                        if input_is_masala_class :
+                            outstring += " *( "
+                        else :
+                            outstring += " "
+                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                        if input_is_masala_class :
+                            outstring += " )"
                 else:
+                    print( "IS_NOT_MASALA_CLASS" )
                     outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
