@@ -568,7 +568,6 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         if ninputs > 0 :
             for i in range(ninputs) :
                 curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
-                print( "***" + curinputname )
                 
                 input_is_masala_API_ptr = False
                 input_is_masala_class = False
@@ -587,7 +586,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                         input_point_or_arrow = "->"
                     else :
                         input_point_or_arrow = "."
-                    print( "IS_MASALA_CLASS" )
+
                     inputtype = curinput_inner.split()[0] 
                     assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
@@ -601,7 +600,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                         if input_is_masala_class :
                             outstring += " )"
                 else:
-                    print( "IS_NOT_MASALA_CLASS" )
+
                     outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","

@@ -225,8 +225,8 @@ cclist, api_cclist, compile_registration_functions = get_all_cc_and_hh_files_in_
 if output_file_api is not None :
     api_cclist.extend( get_all_cc_and_hh_files_in_dir_and_subdirs( lib_name + "_api", project_name, source_dir + "_api", False ) )
 if compile_registration_functions == True :
-    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_selectors.cc" )
-    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_selectors.hh" )
+    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_" + lib_name + ".cc" )
+    api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_" + lib_name + ".hh" )
 depend_list = get_library_dependencies( source_dir )
 depend_list.append( "${CMAKE_DL_LIBS}" ) # Needed for dlopen and dlclose functionality.
 
