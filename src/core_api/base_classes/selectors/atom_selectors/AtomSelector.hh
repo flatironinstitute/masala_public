@@ -33,7 +33,6 @@
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelector.fwd.hh>
 
 // Core headers:
-#include <core/selection/Selection.fwd.hh>
 #include <core/selection/atom_selection/AtomSelection.fwd.hh>
 
 // Core API headers:
