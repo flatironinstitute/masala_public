@@ -134,8 +134,8 @@ for file in files :
     print( "\t" + file + " -> " + newfile )
     copyfile( file, newfile )
     
-    if file[ len( source_dir + "/" + lib_name ) : ].startswith( "/auto_generated_api" ) :
-        if file.endswith(".fwd.hh") :
+    if file.endswith(".fwd.hh") :
+        if file[ len( source_dir + "/" + lib_name ) : ].startswith( "/auto_generated_api" ) :
             original_lib_name = lib_name[:-4] # If the library is "core_api", the original library is "core".
             path_and_file = file[ len( source_dir + "/" + lib_name + "/auto_generated_api/" ) : ]
             original_path = path.dirname( path_and_file )
@@ -158,12 +158,12 @@ for file in files :
 
             copy_files_in_list( files_to_copy, source_dir )
 
-        elif file.endswith( ".hh" ) :
-            iscreator = is_creator( file )
-            if iscreator == True :
-                files_to_copy = []
-            else :
-                files_to_copy = get_fwd_files( file, source_dir )
+    elif file.endswith( ".hh" ) :
+        iscreator = is_creator( file )
+        if iscreator == True :
+            files_to_copy = []
+        else :
+            files_to_copy = get_fwd_files( file, source_dir )
 
-            copy_files_in_list( files_to_copy, source_dir )
+        copy_files_in_list( files_to_copy, source_dir )
     
