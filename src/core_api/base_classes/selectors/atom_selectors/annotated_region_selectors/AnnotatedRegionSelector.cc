@@ -40,15 +40,15 @@ namespace annotated_region_selectors {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Given the current pose, generate the selection.
-/// @details Calls generate_annotated_region_selection(), which must be implemented
-/// by derived classes.
-masala::core::selection::SelectionCSP
-AnnotatedRegionSelector::generate_selection(
-	masala::core_api::auto_generated_api::pose::Pose_API const & pose
-) const {
-	return generate_annotated_region_selection( pose );
-}
+// /// @brief Given the current pose, generate the selection.
+// /// @details Calls generate_annotated_region_selection(), which must be implemented
+// /// by derived classes.
+// masala::core::selection::SelectionCSP
+// AnnotatedRegionSelector::generate_selection(
+// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+// ) const {
+// 	return generate_annotated_region_selection( pose );
+// }
 
 } // namespace annotated_region_selectors
 } // namespace atom_selectors

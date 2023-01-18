@@ -37,6 +37,7 @@
 
 // Core API headers:
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/selection/atom_selection/AtomSelection_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -68,18 +69,18 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Calls generate_atom_selection(), which must be implemented
-	/// by derived classes.
-	masala::core::selection::SelectionCSP
-	generate_selection(
-		masala::core_api::auto_generated_api::pose::Pose_API const & pose
-	) const override;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Calls generate_atom_selection(), which must be implemented
+	// /// by derived classes.
+	// masala::core_api::auto_generated_api::selection::Selection_APICSP
+	// generate_selection(
+	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const override;
 
 	/// @brief Given the current pose, generate the atom selection.
 	/// @details Pure virtual function.
 	virtual
-	masala::core::selection::atom_selection::AtomSelectionCSP
+	masala::core_api::auto_generated_api::selection::atom_selection::AtomSelection_APICSP
 	generate_atom_selection(
 		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;

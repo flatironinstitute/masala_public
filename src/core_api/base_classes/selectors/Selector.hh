@@ -67,13 +67,13 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Pure virtual function.  Must be implemented by sub-classes.
-	virtual
-	masala::core::selection::SelectionCSP
-	generate_selection(
-		masala::core_api::auto_generated_api::pose::Pose_API const & pose
-	) const = 0;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Pure virtual function.  Must be implemented by sub-classes.
+	// virtual
+	// masala::core::selection::SelectionCSP
+	// generate_selection(
+	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const = 0;
 
 }; // class Selector
 
