@@ -200,6 +200,22 @@ public:
         bool const include_namespace = true
     ) const;
 
+    /// @brief Get a list of plugins in a given category.
+    /// @param[in] cateogry The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    /// @param[in] include_namespace If include_namesapce is true (the default), then
+    /// the full namespace and name is returned.
+    /// @note The category is a vector of hierarchical strings.  For instance,
+    /// selector->atomselector is represented as
+    /// std::vector< std::string >{ "Selector", "AtomSelector"}.
+    std::vector< std::string >
+    get_list_of_plugins_by_category(
+        std::vector< std::string > const & category,
+        bool const include_subcategories,
+        bool const include_namespace = true
+    ) const;
+
     /// @brief Create a plugin object instance by category and plugin name.
     /// @details Actually creates an API container for a plugin object.
     /// @note Since names must be unique, the plugin_name should include namespace.

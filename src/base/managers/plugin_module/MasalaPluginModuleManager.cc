@@ -296,6 +296,46 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
     return outvec;
 }
 
+/// @brief Get a list of plugins in a given category.
+/// @param[in] cateogry The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+/// @note The category is a vector of hierarchical strings.  For instance,
+/// selector->atomselector is represented as
+/// std::vector< std::string >{ "Selector", "AtomSelector"}.
+std::vector< std::string >
+MasalaPluginModuleManager::get_list_of_plugins_by_category(
+    std::vector< std::string > const & category,
+    bool const include_subcategories,
+    bool const include_namespace /*= true*/
+) const {
+    CHECK_OR_THROW_FOR_CLASS(
+        !category.empty(), "get_list_of_plugins_by_category",
+        "No category was provided to this function!"
+    );
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it;
+    std::vector< std::string > outvec;
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    if( include_subcategories ) {
+        it = plugins_by_hierarchical_subcategory_.find( category );
+        if( it == plugins_by_hierarchical_subcategory_.end() ) {
+            return outvec;
+        }
+    } else {
+        it = plugins_by_hierarchical_category_.find( category );
+        if( it == plugins_by_hierarchical_category_.end() ) {
+            return outvec;
+        }
+    }
+
+    std::set< MasalaPluginCreatorCSP > const & plugins( it->second );
+    outvec.reserve( plugins.size() );
+    for( auto const & plugin : plugins ) {
+        outvec.push_back( include_namespace ? plugin->get_plugin_object_namespace_and_name() : plugin->get_plugin_object_name() );
+    }
+    return outvec;
+}
+
 /// @brief Create a plugin object instance by category and plugin name.
 /// @details Actually creates an API container for a plugin object.
 /// @note Since names must be unique, the plugin_name should include namespace.
@@ -303,7 +343,7 @@ MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::vector< std::string > const & category,
     std::string const & plugin_name
-) const {    
+) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
         plugins_by_hierarchical_category_.find( category )
