@@ -260,8 +260,8 @@ private:
 
     /// @brief List of plugins that this object knows about.
     /// @details Plugins are stored as a map of string to creator, where the string is
-    /// the concatenation of the plugin types (separated by commas) and the plugin name
-    /// (preceded by a colon).  For instance, "Selector,AtomSelector:ElementAtomSelector".
+    /// the concatenation of the plugin namespace and name.  For instance,
+    /// "standard_masala_plugins::selectors::atom_selectors::ElementAtomSelector".
     std::map< std::string, MasalaPluginCreatorCSP > all_plugin_map_;
 
     /// @brief Find plugins by keyword.
