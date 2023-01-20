@@ -16,6 +16,9 @@
      - [X] Auto-include classes that need to be included.
      - [X] Auto-use API classes instead of manually-written classes when API classes are available.
 
+- [ ] Think about ElementType and where it should go.  Can this be moved to core?
+- [ ] Add a full PDB reader in the standard plugin library.
+
 - [ ] Use ViennaCL for linear algebra.
 - [ ] Replace std::set with std::vector.
 
