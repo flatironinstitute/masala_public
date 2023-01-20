@@ -279,6 +279,14 @@ private:
     /// A plugin in a nested category is also put into the higher categories.
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
 
+    /// @brief Find plugins by subcategory.
+    /// @details Categories are vectors of strings.  For instance:
+    /// {"Selector"}
+    /// {"Selector","AtomSelector"}
+    /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
+    /// A plugin in a nested category is also NOT put into the higher categories in this list.
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_subcategory_;
+
 };
 
 } // namespace plugin_module

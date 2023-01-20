@@ -407,9 +407,11 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
             );
             
             std::vector< std::string > ss;
+            
             for( std::string const & category : categories ) {
                 ss.push_back( category );
                 
+                // Update the map that DOES put plugins in parent categories.
                 std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
                     plugins_by_hierarchical_category_.find( ss )
                 );
@@ -418,6 +420,16 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
                 } else {
                     it->second.insert( creator );
                 }
+            }
+
+            // Update the map that does NOT put plugins in parent categories.
+            std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it2(
+                plugins_by_hierarchical_subcategory_.find( ss )
+            );
+            if( it2 == plugins_by_hierarchical_subcategory_.end() ) {
+                plugins_by_hierarchical_subcategory_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
+            } else {
+                it2->second.insert( creator );
             }
         }
     }
