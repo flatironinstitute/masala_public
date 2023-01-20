@@ -401,18 +401,23 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
     // Add categories:
     std::vector< std::vector< std::string > > set_of_categories( creator->get_plugin_object_categories() );
     if( !set_of_categories.empty() ) {
-        for( auto const & category : set_of_categories ) {
-            CHECK_OR_THROW_FOR_CLASS( !category.empty(), "add_plugin_mutex_locked",
+        for( auto const & categories : set_of_categories ) {
+            CHECK_OR_THROW_FOR_CLASS( !categories.empty(), "add_plugin_mutex_locked",
                 "The hierarchy wasn't defined for one of the categories for a plugin!"
             );
+            
+            std::vector< std::string > ss;
+            for( std::string const & category : categories ) {
+                ss.push_back( category );
                 
-            std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
-                plugins_by_hierarchical_category_.find( category )
-            );
-            if( it == plugins_by_hierarchical_category_.end() ) {
-                plugins_by_hierarchical_category_[ category ] = std::set< MasalaPluginCreatorCSP >{ creator };
-            } else {
-                it->second.insert( creator );
+                std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
+                    plugins_by_hierarchical_category_.find( ss )
+                );
+                if( it == plugins_by_hierarchical_category_.end() ) {
+                    plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
+                } else {
+                    it->second.insert( creator );
+                }
             }
         }
     }

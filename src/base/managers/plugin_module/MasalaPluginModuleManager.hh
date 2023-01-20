@@ -276,7 +276,7 @@ private:
     /// {"Selector"}
     /// {"Selector","AtomSelector"}
     /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
-    /// A plugin in a nested category is NOT also put into the higher categories.
+    /// A plugin in a nested category is also put into the higher categories.
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
 
 };
