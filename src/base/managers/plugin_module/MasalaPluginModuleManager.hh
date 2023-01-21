@@ -217,12 +217,15 @@ public:
     ) const;
 
     /// @brief Create a plugin object instance by category and plugin name.
-    /// @details Actually creates an API container for a plugin object.
+    /// @details Actually creates an API container for a plugin object.  If include_subcategories
+    /// is true, then we load plugins with the given name that are in any sub-category; if false, we
+    /// strictly restrict our search to the given category.
     /// @note Since names must be unique, the plugin_name should include namespace.
     MasalaPluginAPISP
     create_plugin_object_instance(
         std::vector< std::string > const & category,
-        std::string const & plugin_name
+        std::string const & plugin_name,
+        bool const include_subcategories
     ) const;
 
     /// @brief Create a plugin object instance by keyword and plugin name.

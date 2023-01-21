@@ -337,18 +337,25 @@ MasalaPluginModuleManager::get_list_of_plugins_by_category(
 }
 
 /// @brief Create a plugin object instance by category and plugin name.
-/// @details Actually creates an API container for a plugin object.
+/// @details Actually creates an API container for a plugin object.  If include_subcategories
+/// is true, then we load plugins with the given name that are in any sub-category; if false, we
+/// strictly restrict our search to the given category.
 /// @note Since names must be unique, the plugin_name should include namespace.
 MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::vector< std::string > const & category,
-    std::string const & plugin_name
+    std::string const & plugin_name,
+    bool const include_subcategories
 ) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        include_subcategories ?
+        plugins_by_hierarchical_subcategory_.find( category ) :
         plugins_by_hierarchical_category_.find( category )
     );
-    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_hierarchical_category_.end(), "create_plugin_object_instance",
+    CHECK_OR_THROW_FOR_CLASS(
+        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        "create_plugin_object_instance",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
     );
