@@ -26,7 +26,7 @@
 #define Masala_src_base_managers_configuration_MasalaConfigurationManagerAuthorization_fwd_hh
 
 // STL headers
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace base{

@@ -32,8 +32,10 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
@@ -49,7 +51,7 @@ namespace annotated_region_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AnnotatedRegionSelector : public core_api::base_classes::selectors::atom_selectors::AtomSelector {
+class AnnotatedRegionSelector : public masala::core_api::base_classes::selectors::atom_selectors::AtomSelector {
 
 public:
 
@@ -68,20 +70,20 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Calls generate_annotated_region_selection(), which must be implemented
-	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
-	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
-	) const override;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Calls generate_annotated_region_selection(), which must be implemented
+	// /// by derived classes.
+	// masala::core::selection::SelectionCSP
+	// generate_selection(
+	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const override;
 
 	/// @brief Given the current pose, generate the annotated region selection.
 	/// @details Pure virtual function.
 	virtual
 	AnnotatedRegionSelectionCSP
 	generate_annotated_region_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;
 
 }; // class AnnotatedRegionSelector

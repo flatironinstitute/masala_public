@@ -29,7 +29,7 @@
 #ifndef Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
 #define Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -38,10 +38,10 @@ namespace atoms {
 
     class AtomInstance;
 
-    using AtomInstanceSP = std::shared_ptr< AtomInstance >;
-    using AtomInstanceCSP = std::shared_ptr< AtomInstance const >;
-    using AtomInstanceWP = std::weak_ptr< AtomInstance >;
-    using AtomInstanceCWP = std::weak_ptr< AtomInstance const >;
+    using AtomInstanceSP = MASALA_SHARED_POINTER< AtomInstance >;
+    using AtomInstanceCSP = MASALA_SHARED_POINTER< AtomInstance const >;
+    using AtomInstanceWP = MASALA_WEAK_POINTER< AtomInstance >;
+    using AtomInstanceCWP = MASALA_WEAK_POINTER< AtomInstance const >;
 
     /// @brief An enum for the hybridization state of an atom.
     enum class AtomHybridizationState {

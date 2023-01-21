@@ -54,7 +54,7 @@ namespace threads {
 /// that the MasalaThreadManager can control what can access these
 /// functions.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadManagerAccessKey : public base::MasalaObject {
+class MasalaThreadManagerAccessKey : public masala::base::MasalaObject {
 
 	// We make the MasalaThreadManager a friend so that it alone can instantiate
 	// this private-constructor key class.

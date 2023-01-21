@@ -12,17 +12,17 @@
 <__CPP_FWD_HEADER_GUARD__>
 
 // STL headers:
-#include <memory> // For std::shared_ptr and std::weak_ptr.
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER and MASALA_WEAK_POINTER.
 
 <__CPP_NAMESPACE__>
 
     /// @brief Forward declaration.
     class <__SOURCE_CLASS_API_NAME__>;
 
-    using <__SOURCE_CLASS_API_NAME__>SP = std::shared_ptr< <__SOURCE_CLASS_API_NAME__> >;
-    using <__SOURCE_CLASS_API_NAME__>CSP = std::shared_ptr< <__SOURCE_CLASS_API_NAME__> const >;
-    using <__SOURCE_CLASS_API_NAME__>WP = std::weak_ptr< <__SOURCE_CLASS_API_NAME__> >;
-    using <__SOURCE_CLASS_API_NAME__>CWP = std::weak_ptr< <__SOURCE_CLASS_API_NAME__> const >;
+    using <__SOURCE_CLASS_API_NAME__>SP = MASALA_SHARED_POINTER< <__SOURCE_CLASS_API_NAME__> >;
+    using <__SOURCE_CLASS_API_NAME__>CSP = MASALA_SHARED_POINTER< <__SOURCE_CLASS_API_NAME__> const >;
+    using <__SOURCE_CLASS_API_NAME__>WP = MASALA_WEAK_POINTER< <__SOURCE_CLASS_API_NAME__> >;
+    using <__SOURCE_CLASS_API_NAME__>CWP = MASALA_WEAK_POINTER< <__SOURCE_CLASS_API_NAME__> const >;
 
 <__CPP_END_NAMESPACE__>
 

@@ -99,6 +99,8 @@
         "eigen": "cpp",
         "future": "cpp",
         "hash_map": "cpp",
-        "typeindex": "cpp"
-    }
+        "typeindex": "cpp",
+        "alignedvector3": "cpp"
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }

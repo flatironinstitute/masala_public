@@ -19,6 +19,9 @@
 /// @file src/base/managers/plugin_module/MasalaPluginModuleManager.hh
 /// @brief Header for a static singleton for managing plugin modules
 /// for Masala, such as manipulators, selectors, metrics, etc.
+/// @details This manages the plugin objects stored in a plugin library.  The plugin libraries
+/// (dynamic-link .dll files in Windows, .so files in Linux, or .dylib files in MacOS) are in
+/// turn managed by the MasalaPluginLibraryManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_plugin_module_MasalaPluginModuleManager_hh
@@ -34,7 +37,7 @@
 #include <base/types.hh>
 #include <base/api/names_from_types.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
-#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -48,7 +51,11 @@ namespace managers {
 namespace plugin_module {
 
 
-/// @brief A static singleton for managing output to the plugin_module (screen and/or logfile(s)).
+/// @brief A static singleton for managing plugin modules for Masala, such as manipulators,
+/// selectors, metrics, etc.
+/// @details This manages the plugin objects stored in a plugin library.  The plugin libraries
+/// (dynamic-link .dll files in Windows, .so files in Linux, or .dylib files in MacOS) are in
+/// turn managed by the MasalaPluginLibraryManager.
 class MasalaPluginModuleManager : public masala::base::MasalaObject {
 
 public:
@@ -175,23 +182,56 @@ public:
     std::vector< std::string > get_all_keywords() const;
 
     /// @brief Get a list of plugins by keyword.
+    /// @returns The name(s) of the plugin classes.  If include_namespace is
+    /// true (the default), then the full namespace and name is returned.
     std::vector< std::string >
     get_list_of_plugins_by_keyword(
         std::string const & keyword,
         bool const include_namespace = true
     ) const;
 
+    /// @brief Get a list of plugins that have multiple keywords.
+    /// @details The plugins that get returned must have ALL keywords.
+    /// @returns The name(s) of the plugin classes.  If include_namespace is
+    /// true (the default), then the full namespace and name is returned.
+    std::vector< std::string >
+    get_list_of_plugins_by_keywords(
+        std::vector< std::string > const & keywords,
+        bool const include_namespace = true
+    ) const;
+
+    /// @brief Get a list of plugins in a given category.
+    /// @param[in] cateogry The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    /// @param[in] include_namespace If include_namesapce is true (the default), then
+    /// the full namespace and name is returned.
+    /// @note The category is a vector of hierarchical strings.  For instance,
+    /// selector->atomselector is represented as
+    /// std::vector< std::string >{ "Selector", "AtomSelector"}.
+    std::vector< std::string >
+    get_list_of_plugins_by_category(
+        std::vector< std::string > const & category,
+        bool const include_subcategories,
+        bool const include_namespace = true
+    ) const;
+
     /// @brief Create a plugin object instance by category and plugin name.
+    /// @details Actually creates an API container for a plugin object.  If include_subcategories
+    /// is true, then we load plugins with the given name that are in any sub-category; if false, we
+    /// strictly restrict our search to the given category.
     /// @note Since names must be unique, the plugin_name should include namespace.
-    MasalaPluginSP
+    MasalaPluginAPISP
     create_plugin_object_instance(
         std::vector< std::string > const & category,
-        std::string const & plugin_name
+        std::string const & plugin_name,
+        bool const include_subcategories
     ) const;
 
     /// @brief Create a plugin object instance by keyword and plugin name.
+    /// @details Actually creates an API container for a plugin object.
     /// @note Since names must be unique, the plugin_name should include namespace.
-    MasalaPluginSP
+    MasalaPluginAPISP
     create_plugin_object_instance(
         std::string const & keyword,
         std::string const & plugin_name
@@ -228,6 +268,14 @@ private:
         MasalaPluginCreatorCSP const & creator
     );
 
+    /// @brief Check whether a plugin with a given namespace and name is in a set.  Assumes
+    /// that the plugin_map_mutex_ is already locked if the set is owned by the plugin module manager.
+    bool
+    plugin_name_in_set_mutex_locked(
+        std::string const & plugin_namespace_and_name,
+        std::set< MasalaPluginCreatorCSP > const & creator_set
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,8 +287,9 @@ private:
 
     /// @brief List of plugins that this object knows about.
     /// @details Plugins are stored as a map of string to creator, where the string is
-    /// the concatenation of the plugin types (separated by commas) and the plugin name
-    /// (preceded by a colon).  For instance, "Selector,AtomSelector:ElementAtomSelector".
+    /// the concatenation of the plugin types (separated by commas) and the plugin namespace and name
+    /// (preceded by a colon).  For instance,
+    /// "Selector,AtomSelector:standard_masala_plugins::selectors::atom_selectors::ElementAtomSelector".
     std::map< std::string, MasalaPluginCreatorCSP > all_plugin_map_;
 
     /// @brief Find plugins by keyword.
@@ -257,6 +306,14 @@ private:
     /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
     /// A plugin in a nested category is also put into the higher categories.
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
+
+    /// @brief Find plugins by subcategory.
+    /// @details Categories are vectors of strings.  For instance:
+    /// {"Selector"}
+    /// {"Selector","AtomSelector"}
+    /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
+    /// A plugin in a nested category is also NOT put into the higher categories in this list.
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_subcategory_;
 
 };
 

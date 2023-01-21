@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_chemistry_atoms_data_PDBAtomData_fwd_hh
 #define Masala_src_core_chemistry_atoms_data_PDBAtomData_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -34,10 +34,10 @@ namespace data {
 
     class PDBAtomData;
 
-    using PDBAtomDataSP = std::shared_ptr< PDBAtomData >;
-    using PDBAtomDataCSP = std::shared_ptr< PDBAtomData const >;
-    using PDBAtomDataWP = std::weak_ptr< PDBAtomData >;
-    using PDBAtomDataCWP = std::weak_ptr< PDBAtomData const >;
+    using PDBAtomDataSP = MASALA_SHARED_POINTER< PDBAtomData >;
+    using PDBAtomDataCSP = MASALA_SHARED_POINTER< PDBAtomData const >;
+    using PDBAtomDataWP = MASALA_WEAK_POINTER< PDBAtomData >;
+    using PDBAtomDataCWP = MASALA_WEAK_POINTER< PDBAtomData const >;
 
 } // data
 } // atoms

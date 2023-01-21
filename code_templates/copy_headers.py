@@ -34,9 +34,32 @@ lib_name = argv[1]
 source_dir = argv[2]
 dest_dir = argv[3]
 
-assert path.isdir( source_dir )
-assert path.isdir( dest_dir )
-assert path.isdir( source_dir + "/" + lib_name )
+assert path.isdir( source_dir ), source_dir + " is not a directory."
+assert path.isdir( dest_dir ), dest_dir + " is not a directory."
+assert path.isdir( source_dir + "/" + lib_name ), source_dir + "/" + lib_name + " is not a directory."
+
+## @brief Determine whether an auto-generated API file defines a plugin creator.
+def is_creator( filename : str ) -> bool :
+    basename = path.basename( filename ).split(".")[0]
+    if basename.endswith("Creator") == False :
+        return False
+    hhname = filename.replace(".fwd.hh", ".hh")
+    with open( hhname, 'r' ) as filehandle:
+        filelines = filehandle.readlines()
+    is_creator = None
+    for line in filelines :
+        linesplit = line.strip().split()
+        if len(linesplit) >= 6 and \
+            linesplit[0] == "class" and \
+            linesplit[2] == ":" and \
+            linesplit[3] == "public" :
+            assert is_creator == None, "Error in is_creator() function: More than one class definition found in file " + hhname + "."
+            if linesplit[4] == "masala::base::managers::plugin_module::MasalaPluginCreator" :
+                is_creator = True
+            else :
+                is_creator = False
+    assert is_creator is not None, "Error in is_creator() function: Could not find class definition in file " + hhname + "."
+    return is_creator
 
 ## @brief Determine whether an auto-generated API file defines an API for a lightweight,
 ## stack-allocated class (True) or for a heavyweight, heap-allocated class (False).
@@ -75,6 +98,29 @@ def get_fwd_files( filename : str, source_dir : str ) -> list :
                 returnlist.append( source_dir + "/"+ linesplit[1] )
     return returnlist
 
+## @brief Copy all the files in a list.
+def copy_files_in_list( files_to_copy : list, source_dir : str ) :
+    for f2 in files_to_copy:
+        new_original_file = dest_dir + f2[ len(source_dir) : ]
+        new_original_file_path = path.dirname( new_original_file )
+        if path.exists( f2 ) == False :
+            if f2.startswith( "src/" ) :
+                f2short = f2[4:]
+            else :
+                f2short = f2
+            candidates = glob.glob( "headers/*/headers/" + f2short )
+            assert len( candidates ) > 0, "Error in copy_files_in_list: no source found for " + f2 + "!"
+            print("\tSkipping " + f2 + " since the following headers were found from other libraries:")
+            for candidate in candidates:
+                print( "\t\t" + candidate )
+            continue
+        if path.isdir( new_original_file_path ) == False :
+            makedirs( new_original_file_path )
+            print( "\tCreated directory " + new_original_file_path + "." )
+        if path.exists( new_original_file ) == False :
+            print( "\t" + f2 + " -> " + new_original_file )
+            copyfile( f2, new_original_file )
+
 
 files = glob.glob( source_dir + "/" + lib_name + "/**/*.hh", recursive=True )
 files.extend( glob.glob( source_dir + "/" + lib_name + "/*.hh", recursive=False ) )
@@ -88,14 +134,15 @@ for file in files :
     print( "\t" + file + " -> " + newfile )
     copyfile( file, newfile )
     
-    if file[ len( source_dir + "/" + lib_name ) : ].startswith( "/auto_generated_api" ) :
-        if file.endswith(".fwd.hh") :
+    if file.endswith(".fwd.hh") :
+        if file[ len( source_dir + "/" + lib_name ) : ].startswith( "/auto_generated_api" ) :
             original_lib_name = lib_name[:-4] # If the library is "core_api", the original library is "core".
             path_and_file = file[ len( source_dir + "/" + lib_name + "/auto_generated_api/" ) : ]
             original_path = path.dirname( path_and_file )
             original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "Pose_API.fwd.hh", the original file is "Pose.fwd.hh".
             original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
-            if is_lightweight( file ) == True :
+            iscreator = is_creator( file )
+            if iscreator == False and is_lightweight( file ) == True :
                 original_hh_file = path.basename( path_and_file )[ : -11 ] + ".hh"
                 original_hh_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_hh_file
                 files_to_copy = get_fwd_files( original_hh_declaration, source_dir )
@@ -104,28 +151,19 @@ for file in files :
                 original_hh_declaration = None
                 files_to_copy = []
 
-            files_to_copy.append( original_fwd_declaration )
-            if original_hh_declaration is not None :
-                files_to_copy.append( original_hh_declaration )
+            if iscreator == False :
+                files_to_copy.append( original_fwd_declaration )
+                if original_hh_declaration is not None :
+                    files_to_copy.append( original_hh_declaration )
 
-            for f2 in files_to_copy:
-                new_original_file = dest_dir + f2[ len(source_dir) : ]
-                new_original_file_path = path.dirname( new_original_file )
-                if path.isdir( new_original_file_path ) == False :
-                    makedirs( new_original_file_path )
-                    print( "\tCreated directory " + new_original_file_path + "." )
-                if path.exists( new_original_file ) == False :
-                    print( "\t" + f2 + " -> " + new_original_file )
-                    copyfile( f2, new_original_file )
-        elif file.endswith( ".hh" ) :
+            copy_files_in_list( files_to_copy, source_dir )
+
+    elif file.endswith( ".hh" ) :
+        iscreator = is_creator( file )
+        if iscreator == True :
+            files_to_copy = []
+        else :
             files_to_copy = get_fwd_files( file, source_dir )
-            for f2 in files_to_copy :
-                newfile = dest_dir + f2[ len(source_dir) : ]
-                newfile_path = path.dirname( newfile )
-                if path.isdir( newfile_path ) == False :
-                    makedirs( newfile_path )
-                    print( "\tCreated directory " + newfile_path + "." )
-                if path.exists( newfile ) == False :
-                    print( "\t" + f2 + " -> " + newfile )
-                    copyfile( f2, newfile )
+
+        copy_files_in_list( files_to_copy, source_dir )
     

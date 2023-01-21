@@ -34,10 +34,10 @@
 
 // Core headers:
 #include <core/types.hh>
-#include <core/chemistry/atoms/ElementType.fwd.hh>
 #include <core/chemistry/atoms/data/AtomData.fwd.hh>
 
 // Base headers:
+#include <base/managers/database/elements/ElementType.fwd.hh>
 #include <base/MasalaObject.hh>
 
 // STL headers:
@@ -117,7 +117,15 @@ public:
     masala::core::Real partial_charge() const;
 
     /// @brief Get the element type (enum) for this atom instance.
-    ElementTypeEnum element_type_enum() const;
+    masala::base::managers::database::elements::ElementTypeEnum element_type_enum() const;
+
+    /// @brief Get the van der Waals radius for this element from the
+    /// element type database.
+    masala::core::Real van_der_waals_radius() const;
+
+    /// @brief Get the default colour for an element of this type.
+    std::array< masala::core::Real, 3 > const &
+    element_default_rgb_colour() const;
 
 public:
 
@@ -136,7 +144,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The type of element that this atom is.
-    ElementTypeCSP element_type_;
+    masala::base::managers::database::elements::ElementTypeCSP element_type_;
 
     /// @brief This atom's hybridization state.
     AtomHybridizationState hybridization_state_ = AtomHybridizationState::sp3;

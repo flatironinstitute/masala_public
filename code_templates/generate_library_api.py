@@ -30,7 +30,6 @@ from re import split as regex_split
 from sys import argv
 import os
 import shutil
-from copy import copy
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -111,7 +110,7 @@ def read_file( filename : str ) -> list :
 ## class type inside.
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
     if is_masala_class( project_name, classname ) == False :
-        if classname.startswith( "std::shared_ptr" ) :
+        if classname.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = classname.find( "<" )
             lastchevron = classname.rfind( ">" )
             innerclass = classname[firstchevron+1:lastchevron].strip()
@@ -207,14 +206,14 @@ def include_file_from_masala_api_class( inputclass : str ) -> str :
 def correct_masala_types( project_name: str, inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
     #print( inputclass )
     if is_masala_class( project_name, inputclass ) == False :
-        if inputclass.startswith( "std::shared_ptr" ) :
+        if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "std::shared_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
-        # elif inputclass.startswith( "std::weak_ptr" ) :
+            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
-        #     return "std::weak_ptr< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        #     return "std::MASALA_WEAK_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         if is_masala_api_class( inputclass ) :
             additional_includes.append( include_file_from_masala_api_class( inputclass ) )
         return inputclass # Do nothing if ths isn't a masala class.
@@ -327,9 +326,15 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool, is_plugin_class : bool ) -> str :
     outstring = ""
     first = True
+
+    if is_plugin_class == True :
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class = "masala::base::MasalaObjectAPI"
+
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
         #print(constructor)
         if first :
@@ -350,11 +355,11 @@ def generate_constructor_implementations(project_name: str, classname: str, json
             outstring += ") :\n"
         
         # Initialization:
-        outstring += tabchar + "masala::base_api::MasalaObjectAPI(),\n"
+        outstring += tabchar + api_base_class + "(),\n"
         if is_lightweight == True :
             outstring += tabchar + "inner_object_("
         else:
-            outstring += tabchar + "inner_object_( std::make_shared< " + classname + " >("
+            outstring += tabchar + "inner_object_( masala::make_shared< " + classname + " >("
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
@@ -512,7 +517,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
         if ninputs > 0 :
             for i in range(ninputs) :
-                outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
@@ -521,7 +526,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
         ismasalaAPIptr = False
         ismasalaAPIobj = False
-        if outtype.startswith( "std::shared_ptr" ) :
+        if outtype.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
@@ -542,7 +547,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
             if ismasalaAPIptr and returns_this_ref == False :
                 dummy = []
-                outstring += "std::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
+                outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif ismasalaAPIobj :
@@ -551,7 +556,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                 if output_is_lightweight :
                     outstring += tabchar + tabchar + outtype + "( "
                 else :
-                    outstring += tabchar + tabchar + "std::make_shared< " + outtype + " >( "
+                    outstring += tabchar + tabchar + "masala::make_shared< " + outtype + " >( "
                 add_base_class_include( project_name, outtype, additional_includes )
         else :
             outstring += tabchar
@@ -562,14 +567,40 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
-                if is_masala_class( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"] ) :
-                    inputtype = fxn["Inputs"]["Input_" + str(i)]["Input_Type"].split()[0] 
+                curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
+                
+                input_is_masala_API_ptr = False
+                input_is_masala_class = False
+                if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
+                    firstchevron = curinputname.find("<")
+                    lastchevron = curinputname.rfind(">")
+                    curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
+                    if( is_masala_class( project_name, curinput_inner )  ) :
+                        input_is_masala_API_ptr = True
+                elif is_masala_class( project_name, curinputname ) :
+                    curinput_inner = curinputname
+                    input_is_masala_class = True
+
+                if input_is_masala_class or input_is_masala_API_ptr :
+                    if input_is_masala_API_ptr :
+                        input_point_or_arrow = "->"
+                    else :
+                        input_point_or_arrow = "."
+
+                    inputtype = curinput_inner.split()[0] 
                     assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
                     if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object()"
+                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                     else :
-                        outstring += " *( " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + ".get_inner_object() )"
+                        if input_is_masala_class :
+                            outstring += " *( "
+                        else :
+                            outstring += " "
+                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                        if input_is_masala_class :
+                            outstring += " )"
                 else:
+
                     outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
@@ -603,12 +634,207 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
                 outstr += "\n"
             outstr += "#include <" + entry + fwdstr + ".hh>"
     return outstr
+
+## @brief Generate the categories for a plugin class, from the JSON description.
+def generate_plugin_categories( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json
+    ) -> str :
+
+    outstr = ""
+    categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Plugin_Categories"]
+    firstcat = True
+    for category in categories :
+        if firstcat == True :
+            firstcat = False
+        else :
+            outstr += ", "
+        outstr += "{ "
+        first = True
+        for entry in category :
+            if first == True :
+                first = False
+            else :
+                outstr += ", "
+            outstr += "\"" + entry + "\""
+        outstr += " }"
+    return outstr
+
+## @brief Generate the keywords for a plugin class, from the JSON description.
+def generate_plugin_keywords( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json
+    ) -> str :
+
+    outstr = ""
+    keywords = json_api["Elements"][ namespace_string + "::" + name_string ]["Plugin_Keywords"]
+    first = True
+    for entry in keywords :
+        if first == True :
+            first = False
+        else :
+            outstr += ", "
+        outstr += "\"" + entry + "\""
+    return outstr
+
+## @brief Auto-generate the forward declaration file (***Creator.fwd.hh) for the creator for a plugin class.
+def prepare_creator_forward_declarations( \
+    plugin_creator_fwdfile_template : str, \
+    licence : str, \
+    creator_name : str, \
+    creator_namespace : list, \
+    creator_filename : str, \
+    json_api : json, \
+    name_string : str, \
+    namespace : list, \
+    library_name : str, \
+    project_name : str \
+    ) -> None :
+
+    original_class_namespace_string = ""
+
+    header_guard_string = capitalize_project_name(project_name) + "_" + library_name + "_api_auto_generated_api_"
+    for i in range( len(namespace) ):
+        original_class_namespace_string += namespace[i]
+        if i+1<len(namespace) :
+            original_class_namespace_string += "::"
+        if i > 1 :
+            header_guard_string += namespace[i] + "_"
+    header_guard_string += creator_name + "_fwd_hh"
+
+    plugin_creator_fwdfile = \
+        plugin_creator_fwdfile_template \
+        .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
+        .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_FWD_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".fwd.hh" ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
+        .replace( "<__DOXYGEN_AUTHOR_AND_EMAIL__>", "/// @author None (auto-generated by script code_templates/generate_library_api.py)." ) \
+        .replace( "<__CPP_CREATOR_FWD_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
+        .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
+        .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
+        .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
+        .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif //" + header_guard_string )
+
+    with open( creator_filename + ".fwd.hh", 'w' ) as filehandle :
+        filehandle.write( plugin_creator_fwdfile )
+    print( "\tWrote \"" + creator_filename + ".fwd.hh\"." )
+
+## @brief Auto-generate the header file (***Creator.hh) for the creator for a plugin class.
+def prepare_creator_header_file( \
+    plugin_creator_hhfile_template : str, \
+    licence_template : str, \
+    creator_name : str, \
+    creator_namespace : list, \
+    creator_filename : str, \
+    json_api : json, \
+    name_string : str, \
+    namespace : list, \
+    library_name : str, \
+    project_name : str \
+    ) -> None :
+
+    original_class_namespace_string = ""
+    creator_namespace_string = ""
+
+    header_guard_string = capitalize_project_name(project_name) + "_" + library_name + "_api_auto_generated_api_"
+    for i in range( len(namespace) ):
+        original_class_namespace_string += namespace[i]
+        if i+1<len(namespace) :
+            original_class_namespace_string += "::"
+        if i > 1 :
+            header_guard_string += namespace[i] + "_"
+    header_guard_string += creator_name + "_hh"
+
+    first = True
+    for entry in creator_namespace :
+        if first == True :
+            first = False
+        else :
+            creator_namespace_string += "::"
+        creator_namespace_string += entry
+
+    plugin_creator_hhfile = \
+        plugin_creator_hhfile_template \
+        .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
+        .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".hh" ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
+        .replace( "<__DOXYGEN_AUTHOR_AND_EMAIL__>", "/// @author None (auto-generated by script code_templates/generate_library_api.py)." ) \
+        .replace( "<__CPP_CREATOR_HH_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
+        .replace( "<__CREATOR_INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + creator_filename[4:] + ".fwd.hh>  " ) \
+        .replace( "<__PLUGIN_CATEGORIES__>", generate_plugin_categories( name_string, original_class_namespace_string, json_api ) ) \
+        .replace( "<__PLUGIN_KEYWORDS__>", generate_plugin_keywords( name_string, original_class_namespace_string, json_api ) ) \
+        .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
+        .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
+        .replace( "<__SOURCE_CLASS_NAME__>", name_string ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
+        .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
+        .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
+        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string )
+
+    with open( creator_filename + ".hh", 'w' ) as filehandle :
+        filehandle.write( plugin_creator_hhfile )
+    print( "\tWrote \"" + creator_filename + ".hh\"." )
+
+## @brief Auto-generate the cc file (***Creator.cc) for the creator for a plugin class.
+def prepare_creator_cc_file( \
+    plugin_creator_ccfile_template : str, \
+    licence_template : str, \
+    creator_name : str, \
+    creator_namespace : list, \
+    creator_filename : str, \
+    json_api : json, \
+    name_string : str, \
+    namespace : list, \
+    library_name : str, \
+    project_name : str, \
+    api_dirname : str, \
+    ) -> None :
+
+    original_class_namespace_string = ""
+    creator_namespace_string = ""
+    api_dirname_short = api_dirname[4:]
+
+    for i in range( len(namespace) ):
+        original_class_namespace_string += namespace[i]
+        if i+1<len(namespace) :
+            original_class_namespace_string += "::"
+
+    first = True
+    for entry in creator_namespace :
+        if first == True :
+            first = False
+        else :
+            creator_namespace_string += "::"
+        creator_namespace_string += entry
+
+    plugin_creator_ccfile = \
+        plugin_creator_ccfile_template \
+        .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
+        .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".cc" ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
+        .replace( "<__DOXYGEN_AUTHOR_AND_EMAIL__>", "/// @author None (auto-generated by script code_templates/generate_library_api.py)." ) \
+        .replace( "<__CREATOR_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + creator_filename[4:] + ".hh>  " ) \
+        .replace( "<__PLUGIN_CATEGORIES__>", generate_plugin_categories( name_string, original_class_namespace_string, json_api ) ) \
+        .replace( "<__PLUGIN_KEYWORDS__>", generate_plugin_keywords( name_string, original_class_namespace_string, json_api ) ) \
+        .replace( "<__CPP_NAMESPACE__>", generate_cpp_namespace( namespace, True ) ) \
+        .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
+        .replace( "<__SOURCE_CLASS_NAME__>", name_string ) \
+        .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
+        .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
+        .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
+        .replace( "<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + api_dirname_short + name_string + "_API.hh>" ) \
+        .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" )
+
+    with open( creator_filename + ".cc", 'w' ) as filehandle :
+        filehandle.write( plugin_creator_ccfile )
+    print( "\tWrote \"" + creator_filename + ".cc\"." )
     
 ## @brief Auto-generate the forward declaration file (***.fwd.hh) for the class.
 def prepare_forward_declarations( libraryname : str, classname : str, namespace : list, dirname : str, fwdfile_template : str, licence : str ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
-    header_guard_string = "Masala_" + libraryname + "_api_auto_generated_api_"
+    header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
     for i in range( len(namespace) ):
         original_class_namespace_string += namespace[i]
         if i+1<len(namespace) :
@@ -640,10 +866,10 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar: str ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
-    header_guard_string = "Masala_" + libraryname + "_api_auto_generated_api_"
+    header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
     for i in range( len(namespace) ):
         original_class_namespace_string += namespace[i]
         if i+1<len(namespace) :
@@ -651,6 +877,13 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         if i > 1 :
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
+
+    if is_plugin_class == True :
+        api_base_class_include = "#include <base/managers/plugin_module/MasalaPluginAPI.hh>"
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class_include = "#include <base/MasalaObjectAPI.hh>"
+        api_base_class = "masala::base::MasalaObjectAPI"
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
@@ -680,7 +913,9 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
         .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
-        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) )
+        .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
+        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
+        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -688,7 +923,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar: str, is_lightweight: bool ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -698,6 +933,11 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
+
+    if is_plugin_class == True :
+        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    else :
+        api_base_class = "masala::base::MasalaObjectAPI"
 
     additional_includes = []
 
@@ -717,11 +957,12 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_plugin_class=is_plugin_class) ) \
         .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) )
+        .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
+        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
@@ -730,16 +971,123 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
 
 ## @brief Given the project name, capitalize it.
 def capitalize_project_name( project_name: str ) -> str :
-    namesplit = project_name.split()
+    namesplit = project_name.replace("_", " ").split()
     outname = ""
     for word in namesplit :
         if outname != "" :
-            outname += " "
+            outname += "_"
         if len(word) > 0 :
             outname += word[0].capitalize()
         if len(word) > 1 :
             outname += word[1:]
     return outname
+
+## @brief Given library name, class name, class namespace, and project name, return the name of the
+## creator class, the namespace of the creator class (as a list), and the filename (without extension) of the
+## creator class source.
+def determine_creator_name_namespace_filename( library_name : str, name_string : str, namespace : list, project_name : str ) -> tuple :
+    creator_name = name_string + "Creator"
+    creator_namespace = [ project_name, library_name + "_api", "auto_generated_api" ]
+    creator_filename_no_extension = "src/" + library_name + "_api/auto_generated_api"
+    assert len(namespace) >= 2
+    for i in range( len(namespace) ) :
+        if i == 0 :
+            assert namespace[i] == project_name
+        elif i == 1 :
+            assert namespace[i] == library_name
+        else :
+            creator_namespace.append( namespace[i] )
+            creator_filename_no_extension += "/" + namespace[i]
+    creator_filename_no_extension += "/" + creator_name
+    #print( creator_name, creator_namespace, creator_filename_no_extension )
+    return creator_name, creator_namespace, creator_filename_no_extension
+
+
+## @brief If we have plugins, copy the registration file templates and fill them in.
+def do_generate_registration_function( \
+    project_name : str, \
+    library_name : str, \
+    plugins_list : list, \
+    plugin_registration_ccfile_template : str, \
+    plugin_registration_hhfile_template : str, \
+    licence : str \
+    ) -> None :
+
+    #Prepare the directory:
+    registration_dirname = "src/" + library_name  + "_api/auto_generated_api/registration"
+    if os.path.isdir( registration_dirname ) :
+        print( "\tFound directory \"" + registration_dirname + "\".  Clearing contents." )
+        shutil.rmtree( registration_dirname )
+    else :
+        print( "\tCreating \"" + registration_dirname + "\"." )
+    os.makedirs( registration_dirname )
+
+    #Prepare plugin .hh files list, plus
+    #list of plugin creators for registration:
+    first = True
+    plugin_hh_files_includes = ""
+    plugin_creators_for_registration = ""
+    for entry in plugins_list :
+        if first == True :
+            first = False
+        else :
+            plugin_hh_files_includes += "\n"
+            plugin_creators_for_registration += ",\n\t\t\t"
+        plugin_hh_files_includes += "#include <" + entry[2][4:] + ".hh>"
+        first2 = True
+        creator_namespace = ""
+        for entry2 in entry[1] :
+            if first2 == True :
+                first2 = False
+            else :
+                creator_namespace += "::"
+            creator_namespace += entry2
+        plugin_creators_for_registration += "masala::make_shared< " + creator_namespace + "::" + entry[0] + " >()"
+
+    #Prepare namespace:
+    namespace_open = "namespace " + project_name + " {\nnamespace " + library_name + "_api {\nnamespace auto_generated_api {\nnamespace registration {"
+    namespace_close = "} // namespace registration\n} // namespace auto_generated_api\n} // namespace " + library_name + "_api\n} // namespace " + project_name
+
+#   Prepare header guards:
+    header_guard_string = capitalize_project_name(project_name) + "_" + library_name + "_api_auto_generated_api_registration_register_" + library_name + "_hh" 
+
+    #Prepare hh file:
+    hh_fname = registration_dirname + "/register_" + library_name + ".hh"
+
+    hhfile = plugin_registration_hhfile_template \
+        .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
+        .replace( "<__DOXYGEN_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + hh_fname ) \
+        .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Headers for registration functions for the " + library_name + " library plugins." ) \
+        .replace( "<__DOXYGEN_AUTHOR_AND_EMAIL__>", "/// @author None (auto-generated by script code_templates/generate_library_api.py)." ) \
+        .replace( "<__CPP_NAMESPACE__>", namespace_open ) \
+        .replace( "<__CPP_END_NAMESPACE__>", namespace_close ) \
+        .replace( "<__LIBNAME__>", library_name ) \
+        .replace( "<__CPP_HH_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
+        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
+
+    with open( hh_fname, 'w' ) as filehandle :
+        filehandle.write(hhfile)
+    print( "\tWrote \"" + hh_fname + "\"."  )
+
+    #Prepare cc file:
+    cc_fname = registration_dirname + "/register_" + library_name + ".cc"
+
+    ccfile = plugin_registration_ccfile_template \
+        .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
+        .replace( "<__DOXYGEN_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + cc_fname ) \
+        .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Implementations of registration functions for the " + library_name + " library plugins." ) \
+        .replace( "<__DOXYGEN_AUTHOR_AND_EMAIL__>", "/// @author None (auto-generated by script code_templates/generate_library_api.py)." ) \
+        .replace( "<__PLUGIN_CREATOR_HH_FILES_INCLUDES__>", plugin_hh_files_includes ) \
+        .replace( "<__CPP_NAMESPACE__>", namespace_open ) \
+        .replace( "<__CPP_END_NAMESPACE__>", namespace_close ) \
+        .replace( "<__LIBNAME__>", library_name ) \
+        .replace( "<__PLUGIN_CREATORS_FOR_REGISTRATION__>", plugin_creators_for_registration ) \
+        .replace( "<__REGISTER_PLUGINS_HH_FILE_INCLUDE_>", "#include <" + hh_fname[4:] + ">" )
+
+    with open( cc_fname, 'w' ) as filehandle :
+        filehandle.write(ccfile)
+    print( "\tWrote \"" + cc_fname + "\"."  )
+
 
 ################################################################################
 ## Program entry point
@@ -762,29 +1110,52 @@ lightweight_ccfile_template = read_file( "code_templates/api_templates/MasalaLig
 lightweight_hhfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.hh" )
 lightweight_fwdfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.fwd.hh" )
 
-project_name_capitalized = capitalize_project_name( project_name )
+plugin_creator_ccfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.cc" )
+plugin_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.hh" )
+plugin_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.fwd.hh" )
+
+plugin_registration_ccfile_template = read_file( "code_templates/api_templates/register_plugins.cc" )
+plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
+
+project_name_capitalized = capitalize_project_name( project_name ).replace( "_", " " )
 licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
-for element in json_api["Elements"] :
-    #print( element )
-    namespace_string = json_api["Elements"][element]["ModuleNamespace"]
-    name_string = json_api["Elements"][element]["Module"]
-    namespace = separate_namespace( namespace_string )
-    #print( namespace_string, name_string )
-    #print( namespace )
-    assert len(namespace) > 2
-    assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
-    dirname = prepare_directory( project_name, library_name, namespace )
-    if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
-        prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False )
-    else :
-        prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-        prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar )
-        prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True )
+generate_registration_function = False
+plugins_list = []
+
+if json_api["Elements"] is not None :
+    for element in json_api["Elements"] :
+        #print( element )
+        namespace_string = json_api["Elements"][element]["ModuleNamespace"]
+        name_string = json_api["Elements"][element]["Module"]
+        namespace = separate_namespace( namespace_string )
+        #print( namespace_string, name_string )
+        #print( namespace )
+        assert len(namespace) > 2
+        assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+        assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
+        dirname = prepare_directory( project_name, library_name, namespace )
+        is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
+        if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
+            prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
+        else :
+            prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
+        
+        if is_plugin_class == True :
+            generate_registration_function = True
+            creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
+            plugins_list.append( [creator_name,creator_namespace,creator_filename] )
+            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
+    
+    if generate_registration_function == True :
+        do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
     

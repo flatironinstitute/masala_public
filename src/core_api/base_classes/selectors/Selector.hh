@@ -32,8 +32,10 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
 namespace masala {
@@ -46,7 +48,7 @@ namespace selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Selector : public base::managers::plugin_module::MasalaPlugin {
+class Selector : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
@@ -65,13 +67,13 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Pure virtual function.  Must be implemented by sub-classes.
-	virtual
-	SelectionCSP
-	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
-	) const = 0;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Pure virtual function.  Must be implemented by sub-classes.
+	// virtual
+	// masala::core::selection::SelectionCSP
+	// generate_selection(
+	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const = 0;
 
 }; // class Selector
 

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/base/masla/plugin_module/MasalaPluginModuleManagerTests.cc
+/// @file tests/unit/base/managers/plugin_module/MasalaPluginModuleManagerTests.cc
 /// @brief Unit tests for the Masala plugin module manager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -26,6 +26,7 @@
 // Unit headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 
 // Base headers:
@@ -51,8 +52,62 @@ public:
     static std::string class_name_static() { return "DummyPlugin1"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
-    std::string class_name() const { return class_name_static(); }
-    std::string class_namespace() const { return class_namespace_static(); }
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+
+    std::vector< std::string > get_keywords() const override {
+        return std::vector< std::string > {
+            "protein", "design", "canonical"
+        };
+    }
+
+    std::vector< std::vector< std::string > > get_categories() const override {
+        return std::vector< std::vector< std::string > > {
+            { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
+            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" },
+        };
+    }
+
+    void store_word( std::string const & word_in ) { word_ = word_in; }
+    std::string const & word() const { return word_; }
+
+private:
+
+    std::string word_;
+
+};
+
+/// @brief Dummy API class for testing.
+class DummyPlugin1API : public ::masala::base::managers::plugin_module::MasalaPluginAPI {
+
+public:
+
+    DummyPlugin1API() :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( masala::make_shared< DummyPlugin1 >() )
+    {}
+
+    static std::string class_name_static() { return "DummyPlugin1API"; }
+    static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
+
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+    std::string inner_class_name() const override { return DummyPlugin1::class_name_static(); }
+    std::string inner_class_namespace() const override { return DummyPlugin1::class_namespace_static(); }
+
+    masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition_for_inner_class() override { return inner_object_->get_api_definition(); }
+
+    void store_word( std::string const & word_in ) {
+        inner_object_->store_word(word_in);
+    }
+
+    std::string const & word() const {
+        return inner_object_->word();
+    }
+
+private:
+
+    MASALA_SHARED_POINTER< DummyPlugin1 > inner_object_;
 
 };
 
@@ -61,14 +116,14 @@ class DummyPlugin1Creator : public ::masala::base::managers::plugin_module::Masa
 
 public:
 
-    ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return std::make_shared< DummyPlugin1 >(); }
+    ::masala::base::managers::plugin_module::MasalaPluginAPISP
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin1API >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
         static std::vector< std::vector< std::string > > const categories {
             { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
-            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" },
+            { "second_dummy_category", "second_dummy_subcategory", "second_dummy_subsubcategory" }
         };
         return categories;
     }
@@ -98,8 +153,47 @@ public:
     static std::string class_name_static() { return "DummyPlugin2"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
-    std::string class_name() const { return class_name_static(); }
-    std::string class_namespace() const { return class_namespace_static(); }
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+
+    std::vector< std::string > get_keywords() const override {
+        return std::vector< std::string > {
+            "peptide", "design", "non-canonical"
+        };
+    }
+
+    std::vector< std::vector< std::string > > get_categories() const override {
+        return std::vector< std::vector< std::string > > {
+            { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
+            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" },
+        };
+    }
+
+};
+
+/// @brief Dummy API class 2 for testing.
+class DummyPlugin2API : public ::masala::base::managers::plugin_module::MasalaPluginAPI {
+
+public:
+
+    DummyPlugin2API() :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( masala::make_shared< DummyPlugin2 >() )
+    {}
+
+    static std::string class_name_static() { return "DummyPlugin2API"; }
+    static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
+
+    std::string class_name() const override { return class_name_static(); }
+    std::string class_namespace() const override { return class_namespace_static(); }
+    std::string inner_class_name() const override { return DummyPlugin2::class_name_static(); }
+    std::string inner_class_namespace() const override { return DummyPlugin2::class_namespace_static(); }
+
+    masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition_for_inner_class() override { return inner_object_->get_api_definition(); }
+
+private:
+
+    MASALA_SHARED_POINTER< DummyPlugin2 > inner_object_;
 
 };
 
@@ -108,14 +202,14 @@ class DummyPlugin2Creator : public ::masala::base::managers::plugin_module::Masa
 
 public:
 
-    ::masala::base::managers::plugin_module::MasalaPluginSP
-    create_plugin_object() const override { return std::make_shared< DummyPlugin2 >(); }
+    ::masala::base::managers::plugin_module::MasalaPluginAPISP
+    create_plugin_object() const override { return masala::make_shared< DummyPlugin2API >(); }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
         static std::vector< std::vector< std::string > > const categories {
             { "first_dummy_category", "first_dummy_subcategory", "first_dummy_subsubcategory" },
-            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" },
+            { "second_dummy_category", "third_dummy_subcategory", "third_dummy_subsubcategory" }
         };
         return categories;
     }
@@ -141,8 +235,8 @@ TEST_CASE( "Register and unregister two plugins", "[base::managers::plugin_manag
 
     masala::base::managers::plugin_module::MasalaPluginModuleManagerHandle pm(  masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance() );
     REQUIRE_NOTHROW([&](){
-        pm->add_plugin( std::make_shared< DummyPlugin1Creator >() );
-        pm->add_plugin( std::make_shared< DummyPlugin2Creator >() );
+        pm->add_plugin( masala::make_shared< DummyPlugin1Creator >() );
+        pm->add_plugin( masala::make_shared< DummyPlugin2Creator >() );
     }() );
 
     CHECK( pm->total_plugins() == 2 );

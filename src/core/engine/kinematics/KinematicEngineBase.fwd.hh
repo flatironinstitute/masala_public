@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_engine_kinematics_KinematicEngineBase_fwd_hh
 #define Masala_src_core_engine_kinematics_KinematicEngineBase_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace core {
@@ -34,20 +34,20 @@ namespace kinematics {
 	class KinematicEngineBase;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using KinematicEngineBaseSP = std::shared_ptr< KinematicEngineBase >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using KinematicEngineBaseSP = MASALA_SHARED_POINTER< KinematicEngineBase >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using KinematicEngineBaseCSP = std::shared_ptr< KinematicEngineBase const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using KinematicEngineBaseCSP = MASALA_SHARED_POINTER< KinematicEngineBase const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using KinematicEngineBaseWP = std::weak_ptr< KinematicEngineBase >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using KinematicEngineBaseWP = MASALA_WEAK_POINTER< KinematicEngineBase >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using KinematicEngineBaseCWP = std::weak_ptr< KinematicEngineBase const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using KinematicEngineBaseCWP = MASALA_WEAK_POINTER< KinematicEngineBase const >;
 
 } // namespace kinematics
 } // namespace engine

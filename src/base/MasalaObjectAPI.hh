@@ -16,27 +16,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base_api/MasalaObjectAPI.hh
+/// @file src/base/MasalaObjectAPI.hh
 /// @brief A base class for all Masala derived API classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaObjectAPI_hh
-#define Masala_src_base_api_MasalaObjectAPI_hh
+#ifndef Masala_src_base_MasalaObjectAPI_hh
+#define Masala_src_base_MasalaObjectAPI_hh
 
 // Forward declarations:
-#include <base_api/MasalaObjectAPI.fwd.hh>
+#include <base/MasalaObjectAPI.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
 
 namespace masala {
-namespace base_api {
+namespace base {
 
 /// @brief A base class for Masala API derived classes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaObjectAPI : public base::MasalaObject {
-
-	friend class masala::base::managers::configuration::MasalaConfigurationManager;
+class MasalaObjectAPI : public masala::base::MasalaObject {
 
 public:
 
@@ -46,8 +44,7 @@ public:
 	/// @brief Copy constructor.
 	MasalaObjectAPI( MasalaObjectAPI const & ) = default;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
+	/// @brief Destructor.
 	virtual ~MasalaObjectAPI() = default;
 
 public:
@@ -64,9 +61,15 @@ public:
     std::string
     inner_class_namespace() const = 0;
 
+    /// @brief Get the API definition for the contained class.
+    /// @details Must be implemented by derived classes.
+    virtual
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition_for_inner_class() = 0;
+
 }; // class MasalaObjectAPI
 
-} // namespace base_api
+} // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_MasalaObjectAPI_hh
+#endif //Masala_src_base_MasalaObjectAPI_hh

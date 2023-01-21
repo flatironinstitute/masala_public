@@ -65,21 +65,16 @@ public:
 	MasalaObjectAPIDefinition() = delete;
 
 	/// @brief Options constructor.
-	/// @param[in] api_class_name The name of the class for which we're
-	///            providing an API definition.
-	/// @param[in] api_class_namespace The namespace of the class for which
-	///            we're providing an API definition.
+	/// @param[in] this_object The object for which we're generating a description.
 	/// @param[in] api_class_description The description of the class for which
 	///			   we're providing an API definition.
 	/// @param[in] is_lightweight Is this the API definition for a lightweight
 	/// 		   object that could be stack-allocated?
 	MasalaObjectAPIDefinition(
-		std::string const & api_class_name,
-		std::string const & api_class_namespace,
+		base::MasalaObject const & this_object,
 		std::string const & api_class_description,
 		bool const is_lightweight
 	);
-
 
 	/// @brief Copy constructor.
 	MasalaObjectAPIDefinition( MasalaObjectAPIDefinition const & ) = default;
@@ -100,6 +95,18 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the name of the class for which this object stores an API description.
+	std::string const & api_class_name() const;
+
+	/// @brief Get the namespace of the class for which this object stores an API description.
+	std::string const & api_class_namespace() const;
+
+	/// @brief Get the namespace and name of the class for which this object stores an API description.
+	std::string api_class_namespace_and_name() const;
+
+	/// @brief Get the description of the class for which this object stores an API description.
+	std::string const & api_class_description() const;
+
 	/// @brief Get a human-readable description of the API for a module.
 	/// @details Note that this does not cache the generated string, but generates it anew
 	/// each time.
@@ -109,7 +116,7 @@ public:
 	/// @brief Get a JSON object describing the API for a module.
 	/// @details Note that this does not cache the generated JSON object, but generates it anew
 	/// each time.
-	std::shared_ptr< nlohmann::json >
+	MASALA_SHARED_POINTER< nlohmann::json >
 	get_json_description() const;
 
 	/// @brief Begin iterator for the constructors.
@@ -184,6 +191,26 @@ public:
 		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 	);
 
+	/// @brief Is this the API for a lightweight object that could be stack-allocated?
+	/// @details If so, the API container will store the object directly, not an owning pointer to it. 
+	inline bool is_lightweight() const { return is_lightweight_; }
+
+	/// @brief Is this a plugin class that could be registered with the plugin manager?
+	/// @details If so, in addition to the API container, an API container creator (suitable for
+	/// registering with the plugin manager) will be auto-generated.
+	inline bool is_plugin_class() const { return is_plugin_class_; }
+
+	/// @brief Get the categories that this object is in, if it is a plugin object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > const &
+	plugin_categories() const;
+
+	/// @brief Get the keywords for this object, if it is a plugin object.
+	std::vector< std::string > const &
+	plugin_keywords() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +271,19 @@ private:
 	/// @details If so, the API container will store the object directly, not an owning pointer to it.
 	bool is_lightweight_ = false;
 
+	/// @brief Is this a plugin class that could be registered with the plugin manager?
+	/// @details If so, in addition to the API container, an API container creator (suitable for
+	/// registering with the plugin manager) will be auto-generated.
+	bool is_plugin_class_ = false;
+
+	/// @brief The categories that this object is in, if it is a plugin object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > plugin_categories_;
+
+	/// @brief The keywords for this object, if it is a plugin object.
+	std::vector< std::string > plugin_keywords_;
 
 }; // class MasalaObjectAPIDefinition
 

@@ -19,6 +19,9 @@
 /// @file src/base/managers/plugin_module/MasalaPluginModuleManager.cc
 /// @brief A static singleton for managing plugin modules for Masala, such as manipulators,
 /// selectors, metrics, etc.
+/// @details This manages the plugin objects stored in a plugin library.  The plugin libraries
+/// (dynamic-link .dll files in Windows, .so files in Linux, or .dylib files in MacOS) are in
+/// turn managed by the MasalaPluginLibraryManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project header:
@@ -70,6 +73,7 @@ void
 MasalaPluginModuleManager::reset() {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     plugins_by_hierarchical_category_.clear();
+    plugins_by_hierarchical_subcategory_.clear();
     plugins_by_keyword_.clear();
     all_plugin_map_.clear();
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
@@ -203,10 +207,10 @@ MasalaPluginModuleManager::get_all_plugin_list() const {
 std::vector< std::vector< std::string > >
 MasalaPluginModuleManager::get_all_categories() const {
     std::vector< std::vector< std::string > > outvec;
-    outvec.reserve( plugins_by_hierarchical_category_.size() );
+    outvec.reserve( plugins_by_hierarchical_subcategory_.size() );
     {
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-        for( auto const & entry : plugins_by_hierarchical_category_ ) {
+        for( auto const & entry : plugins_by_hierarchical_subcategory_ ) {
             outvec.push_back( entry.first );
         }
     }
@@ -228,6 +232,8 @@ MasalaPluginModuleManager::get_all_keywords() const {
 }
 
 /// @brief Get a list of plugins by keyword.
+/// @returns The name(s) of the plugin classes.  If include_namespace is
+/// true (the default), then the full namespace and name is returned.
 std::vector< std::string >
 MasalaPluginModuleManager::get_list_of_plugins_by_keyword(
     std::string const & keyword,
@@ -247,24 +253,117 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keyword(
     return outvec;
 }
 
+/// @brief Get a list of plugins that have multiple keywords.
+/// @details The plugins that get returned must have ALL keywords.
+/// @returns The name(s) of the plugin classes.  If include_namespace is
+/// true (the default), then the full namespace and name is returned.
+std::vector< std::string >
+MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
+    std::vector< std::string > const & keywords,
+    bool const include_namespace /*= true*/
+) const {
+    CHECK_OR_THROW_FOR_CLASS(
+        !keywords.empty(), "get_list_of_plugins_by_keywords",
+        "No keywords were provided to this function!"
+    );
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    auto const & it( plugins_by_keyword_.find( keywords[0] ) );
+    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_keyword_.end(), "get_list_of_plugins_by_keywords",
+        "Keyword \"" + keywords[0] + "\" not found!"
+    );
+    auto const & myset( it->second );
+    std::vector< std::string > outvec;
+    outvec.reserve( myset.size() );
+    for( auto const & entry : myset ) {
+        std::vector< std::string > const curkeywords( entry->get_plugin_object_keywords() );
+        bool all_found(true);
+        // Check whether the rest of the keywords are here.
+        for( base::Size i(1); i<keywords.size(); ++i ) {
+            if( !base::utility::container::has_value(curkeywords, keywords[i]) ) {
+                all_found = false;
+                break;
+            }
+        }
+        if( !all_found ) {
+            continue;
+        }
+        outvec.push_back( include_namespace ? entry->get_plugin_object_namespace_and_name() : entry->get_plugin_object_name() );
+    }
+    CHECK_OR_THROW_FOR_CLASS(
+        !outvec.empty(), "get_list_of_plugins_by_keywords",
+        "No plugins were found containing all specified keywords."
+    );
+    outvec.shrink_to_fit();
+    return outvec;
+}
+
+/// @brief Get a list of plugins in a given category.
+/// @param[in] cateogry The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+/// @note The category is a vector of hierarchical strings.  For instance,
+/// selector->atomselector is represented as
+/// std::vector< std::string >{ "Selector", "AtomSelector"}.
+std::vector< std::string >
+MasalaPluginModuleManager::get_list_of_plugins_by_category(
+    std::vector< std::string > const & category,
+    bool const include_subcategories,
+    bool const include_namespace /*= true*/
+) const {
+    CHECK_OR_THROW_FOR_CLASS(
+        !category.empty(), "get_list_of_plugins_by_category",
+        "No category was provided to this function!"
+    );
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it;
+    std::vector< std::string > outvec;
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    if( include_subcategories ) {
+        it = plugins_by_hierarchical_subcategory_.find( category );
+        if( it == plugins_by_hierarchical_subcategory_.end() ) {
+            return outvec;
+        }
+    } else {
+        it = plugins_by_hierarchical_category_.find( category );
+        if( it == plugins_by_hierarchical_category_.end() ) {
+            return outvec;
+        }
+    }
+
+    std::set< MasalaPluginCreatorCSP > const & plugins( it->second );
+    outvec.reserve( plugins.size() );
+    for( auto const & plugin : plugins ) {
+        outvec.push_back( include_namespace ? plugin->get_plugin_object_namespace_and_name() : plugin->get_plugin_object_name() );
+    }
+    return outvec;
+}
+
 /// @brief Create a plugin object instance by category and plugin name.
+/// @details Actually creates an API container for a plugin object.  If include_subcategories
+/// is true, then we load plugins with the given name that are in any sub-category; if false, we
+/// strictly restrict our search to the given category.
 /// @note Since names must be unique, the plugin_name should include namespace.
-MasalaPluginSP
+MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::vector< std::string > const & category,
-    std::string const & plugin_name
-) const {    
+    std::string const & plugin_name,
+    bool const include_subcategories
+) const {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        include_subcategories ?
+        plugins_by_hierarchical_subcategory_.find( category ) :
         plugins_by_hierarchical_category_.find( category )
     );
-    CHECK_OR_THROW_FOR_CLASS( it != plugins_by_hierarchical_category_.end(), "create_plugin_object_instance",
+    CHECK_OR_THROW_FOR_CLASS(
+        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        "create_plugin_object_instance",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
     );
     std::set< MasalaPluginCreatorCSP > const & myset( it->second );
     for( auto const & entry : myset ) {
         if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
             return entry->create_plugin_object();
         }
     }
@@ -276,8 +375,9 @@ MasalaPluginModuleManager::create_plugin_object_instance(
 }
 
 /// @brief Create a plugin object instance by keyword and plugin name.
+/// @details Actually creates an API container for a plugin object.
 /// @note Since names must be unique, the plugin_name should include namespace.
-MasalaPluginSP
+MasalaPluginAPISP
 MasalaPluginModuleManager::create_plugin_object_instance(
     std::string const & keyword,
     std::string const & plugin_name
@@ -293,6 +393,7 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     std::set< MasalaPluginCreatorCSP > const & myset( it->second );
     for( auto const & entry : myset ) {
         if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+            write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
             return entry->create_plugin_object();
         }
     }
@@ -354,17 +455,45 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
             );
             
             std::vector< std::string > ss;
+            
             for( std::string const & category : categories ) {
                 ss.push_back( category );
                 
+                // Update the map that DOES put plugins in parent categories.
                 std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
                     plugins_by_hierarchical_category_.find( ss )
                 );
                 if( it == plugins_by_hierarchical_category_.end() ) {
                     plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
                 } else {
+                    std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
+                    CHECK_OR_THROW_FOR_CLASS(
+                        !plugin_name_in_set_mutex_locked( plugin_namespace_and_name, it->second ),
+                        "add_plugin_mutex_locked",
+                        "A plugin with name \"" + plugin_namespace_and_name + "\" is already in category [ "
+                        + masala::base::utility::container::container_to_string( ss, ", " ) + " ].  Duplicate names "
+                        "are not permitted."
+                    );
                     it->second.insert( creator );
                 }
+            }
+
+            // Update the map that does NOT put plugins in parent categories.
+            std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it2(
+                plugins_by_hierarchical_subcategory_.find( ss )
+            );
+            if( it2 == plugins_by_hierarchical_subcategory_.end() ) {
+                plugins_by_hierarchical_subcategory_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
+            } else {
+                std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
+                CHECK_OR_THROW_FOR_CLASS(
+                    !plugin_name_in_set_mutex_locked( plugin_namespace_and_name, it2->second ),
+                    "add_plugin_mutex_locked",
+                    "A plugin with name \"" + plugin_namespace_and_name + "\" is already in category [ "
+                    + masala::base::utility::container::container_to_string( ss, ", " ) + " ].  Duplicate names "
+                    "are not permitted."
+                );
+                it2->second.insert( creator );
             }
         }
     }
@@ -424,15 +553,16 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
     std::vector< std::vector< std::string > > const set_of_categories( creator->get_plugin_object_categories() );
     for( auto const & categories : set_of_categories ) {
         std::vector< std::string > ss;
+        
         for( std::string const & category : categories ) {
             ss.push_back( category );
 
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_subcategory_.count( ss ) > 0,
                 "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
                 base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
                 "category map."
             );
-            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_[ ss ] );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_subcategory_.at(ss) );
             bool found( false );
             for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
                 if( (**it) == (*creator) ) {
@@ -446,12 +576,49 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
                 "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
             );
             if( myset.empty() ) {
-                plugins_by_hierarchical_category_.erase( ss );
+                plugins_by_hierarchical_subcategory_.erase( ss );
             }
+        }
+
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+            "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
+            base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
+            "category map."
+        );
+        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_.at(ss) );
+        bool found( false );
+        for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
+            if( (**it) == (*creator) ) {
+                found = true;
+                myset.erase( it );
+                break;
+            }
+        }
+        CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
+            "Program error!  Could not find plugin \"" + plugin_object_name + "\" in hierarchical "
+            "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
+        );
+        if( myset.empty() ) {
+            plugins_by_hierarchical_category_.erase( ss );
         }
     }
     write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );
 } // MasalaPluginModuleManager::remove_plugin_mutex_locked()
+
+/// @brief Check whether a plugin with a given namespace and name is in a set.  Assumes
+/// that the plugin_map_mutex_ is already locked if the set is owned by the plugin module manager.
+bool
+MasalaPluginModuleManager::plugin_name_in_set_mutex_locked(
+    std::string const & plugin_namespace_and_name,
+    std::set< MasalaPluginCreatorCSP > const & creator_set
+) const {
+    for( auto const & creator : creator_set ) {
+        if( creator->get_plugin_object_namespace_and_name() == plugin_namespace_and_name ) {
+            return true;
+        }
+    }
+    return false;
+} // MasalaPluginModuleManager::plugin_name_in_set_mutex_locked()
 
 } // namespace plugin_module
 } // namespace managers

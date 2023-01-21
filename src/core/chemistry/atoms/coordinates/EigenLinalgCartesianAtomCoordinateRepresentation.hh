@@ -103,6 +103,13 @@ public:
         std::array< masala::core::Real, 3 > const & new_atom_coordinates
     ) override;
 
+    /// @brief Get the coordinates of an atom.
+    /// @note Must be implemented by derived classes.
+    std::array< masala::core::Real, 3 > const
+    get_atom_coordinates(
+        AtomInstanceCSP const & atom
+    ) const override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

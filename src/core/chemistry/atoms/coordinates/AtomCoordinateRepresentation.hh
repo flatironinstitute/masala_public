@@ -98,6 +98,14 @@ public:
         std::array< masala::core::Real, 3 > const & new_atom_coordinates
     ) = 0;
 
+    /// @brief Get the coordinates of an atom.
+    /// @note Must be implemented by derived classes.
+    virtual
+    std::array< masala::core::Real, 3 > const
+    get_atom_coordinates(
+        AtomInstanceCSP const & atom
+    ) const = 0;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

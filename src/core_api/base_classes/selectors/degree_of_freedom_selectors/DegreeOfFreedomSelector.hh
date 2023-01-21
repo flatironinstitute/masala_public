@@ -32,8 +32,10 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/Selection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
 
@@ -48,7 +50,7 @@ namespace degree_of_freedom_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class DegreeOfFreedomSelector : public core_api::base_classes::selectors::Selector {
+class DegreeOfFreedomSelector : public masala::core_api::base_classes::selectors::Selector {
 
 public:
 
@@ -67,13 +69,13 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Calls generate_degree_of_freedom_selection(), which must be implemented
-	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
-	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
-	) const override;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Calls generate_degree_of_freedom_selection(), which must be implemented
+	// /// by derived classes.
+	// core::selection::SelectionCSP
+	// generate_selection(
+	// 	core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const override;
 
 	/// @brief Given the current pose, generate the annotated region selection.
 	/// @details Pure virtual function.

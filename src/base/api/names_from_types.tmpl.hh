@@ -29,7 +29,7 @@
 
 // STL headers
 #include <string>
-#include <memory>
+#include <base/managers/memory/util.hh>
 #include <set>
 
 namespace masala {
@@ -43,7 +43,7 @@ namespace api {
         /// @return True if T is the same type as Tprime; false otherwise.
         template < typename Tprime >
         bool
-        operator==( type<Tprime> const & other ) {
+        operator==( type<Tprime> const & ) {
             return std::is_same<T, Tprime>::value;
         }
 
@@ -61,16 +61,26 @@ namespace api {
         );
 
         if constexpr( std::is_class<T>::value ) {
-            std::shared_ptr<T> tempobj(
-                std::make_shared<T>()
+            MASALA_SHARED_POINTER<T> tempobj(
+                masala::make_shared<T>()
             );
 
-            masala::base::MasalaObjectSP tempptr(
-                std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
-            );
-            if( tempptr != nullptr ) {
-                return tempptr->class_namespace() + "::" + tempptr->class_name();
+            if constexpr( std::is_const<T>::value ) {
+                masala::base::MasalaObjectCSP tempptr(
+                    std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
+                );
+                if( tempptr != nullptr ) {
+                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+                }
+            } else {
+                masala::base::MasalaObjectSP tempptr(
+                    std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+                );
+                if( tempptr != nullptr ) {
+                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+                }
             }
+            
         }
         return typeid(T).name();
     }
@@ -92,29 +102,29 @@ namespace api {
     /// @brief Manually override for shared pointers.
     template<class T>
     std::string
-    name_from_type(type<std::shared_ptr<T>>) {
-        return "std::shared_ptr< " + name_from_type(type<T>()) + " >";
+    name_from_type(type<MASALA_SHARED_POINTER<T>>) {
+        return "MASALA_SHARED_POINTER< " + name_from_type(type<T>()) + " >";
     }
 
     /// @brief Manually override for const shared pointers.
     template<class T>
     std::string
-    name_from_type(type<std::shared_ptr<T const>>) {
-        return "std::shared_ptr< " + name_from_type(type<T>()) + " const >";
+    name_from_type(type<MASALA_SHARED_POINTER<T const>>) {
+        return "MASALA_SHARED_POINTER< " + name_from_type(type<T>()) + " const >";
     }
 
     /// @brief Manually override for weak pointers.
     template<class T>
     std::string
-    name_from_type(type<std::weak_ptr<T>>) {
-        return "std::weak_ptr< " + name_from_type(type<T>()) + " >";
+    name_from_type(type<MASALA_WEAK_POINTER<T>>) {
+        return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " >";
     }
 
     /// @brief Manually override for const weak pointers.
     template<class T>
     std::string
-    name_from_type(type<std::weak_ptr<T const>>) {
-        return "std::weak_ptr< " + name_from_type(type<T>()) + " const >";
+    name_from_type(type<MASALA_WEAK_POINTER<T const>>) {
+        return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " const >";
     }
 
     /// @brief Manually override for sets.
@@ -143,6 +153,62 @@ namespace api {
     std::string
     name_from_type( type<std::set< T const > const> ) {
         return "std::set< " + name_from_type( type<T>() ) + " const > const";
+    }
+
+    /// @brief Manually override for vectors.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T >> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " >";
+    }
+
+    /// @brief Manually override for const vectors.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T > const> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " > const";
+    }
+
+    /// @brief Manually override for vectors of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T const >> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " const >";
+    }
+
+    /// @brief Manually override for const vectors of const elements.
+    template<class T>
+    std::string
+    name_from_type( type<std::vector< T const > const> ) {
+        return "std::vector< " + name_from_type( type<T>() ) + " const > const";
+    }
+
+    /// @brief Manually override for arrays.
+    template<class T, std::size_t P >
+    std::string
+    name_from_type( type<std::array< T, P > > ) {
+        return "std::array< " + name_from_type( type<T>() ) + ", " + std::to_string(P) + " >";
+    }
+
+    /// @brief Manually override for const arrays.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T, P > const > ) {
+        return "std::array< " + name_from_type( type<T>() ) + ", " + std::to_string(P) + " > const";
+    }
+
+    /// @brief Manually override for arrays of const elements.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T const, P > > ) {
+        return "std::array< " + name_from_type( type<T>() ) + " const, " + std::to_string(P) + " >";
+    }
+
+    /// @brief Manually override for const arrays of const elements.
+    template<class T, std::size_t P>
+    std::string
+    name_from_type( type<std::array< T const, P > const > ) {
+        return "std::array< " + name_from_type( type<T>() ) + " const, " + std::to_string(P) + " > const";
     }
 
     /// @brief Manually override for set const iterators.

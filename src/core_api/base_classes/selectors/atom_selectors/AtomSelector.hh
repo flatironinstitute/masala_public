@@ -32,10 +32,12 @@
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelector.fwd.hh>
 
+// Core headers:
+#include <core/selection/atom_selection/AtomSelection.fwd.hh>
+
 // Core API headers:
-#include <core_api/base_classes/selectors/Selection.fwd.hh>
-#include <core_api/base_classes/selectors/atom_selectors/AtomSelection.fwd.hh>
 #include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/selection/atom_selection/AtomSelection_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -48,7 +50,7 @@ namespace atom_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomSelector : public core_api::base_classes::selectors::Selector {
+class AtomSelector : public masala::core_api::base_classes::selectors::Selector {
 
 public:
 
@@ -67,20 +69,20 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given the current pose, generate the selection.
-	/// @details Calls generate_atom_selection(), which must be implemented
-	/// by derived classes.
-	core_api::base_classes::selectors::SelectionCSP
-	generate_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
-	) const override;
+	// /// @brief Given the current pose, generate the selection.
+	// /// @details Calls generate_atom_selection(), which must be implemented
+	// /// by derived classes.
+	// masala::core_api::auto_generated_api::selection::Selection_APICSP
+	// generate_selection(
+	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// ) const override;
 
 	/// @brief Given the current pose, generate the atom selection.
 	/// @details Pure virtual function.
 	virtual
-	AtomSelectionCSP
+	masala::core_api::auto_generated_api::selection::atom_selection::AtomSelection_APICSP
 	generate_atom_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::Pose_API const & pose
 	) const = 0;
 
 }; // class AtomSelector

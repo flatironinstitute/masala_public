@@ -40,6 +40,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -69,6 +70,7 @@ Molecules::Molecules(
     master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
     additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
     atoms_ = src.atoms_;
+    atoms_const_ = src.atoms_const_;
     bonds_ = src.bonds_;
     // Deliberately do not copy api_definition_.
 }
@@ -87,6 +89,7 @@ Molecules::operator=(
         master_coordinates_have_changed_ = src.master_coordinates_have_changed_;
         additional_atom_coordinate_representations_ = src.additional_atom_coordinate_representations_;
         atoms_ = src.atoms_;
+        atoms_const_ = src.atoms_const_;
         bonds_ = src.bonds_;
         // api_definition deliberately not copied.
     }
@@ -101,7 +104,7 @@ Molecules::operator=(
 MoleculesSP
 Molecules::clone() const {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-    return std::make_shared< Molecules >( *this );
+    return masala::make_shared< Molecules >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
@@ -111,7 +114,7 @@ Molecules::deep_clone() const {
     MoleculesSP molecules_copy;
     {   // Scope for lock guard.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-        molecules_copy = std::make_shared< Molecules >( *this );
+        molecules_copy = masala::make_shared< Molecules >( *this );
     }
     molecules_copy->make_independent();
     return molecules_copy;
@@ -129,6 +132,7 @@ Molecules::make_independent() {
     master_atom_coordinate_representation_ = old_coordinates->clone();
     std::set< masala::core::chemistry::atoms::AtomInstanceSP > const old_atom_instances( atoms_ );
     atoms_.clear();
+    atoms_const_.clear();
     for(
         std::set< masala::core::chemistry::atoms::AtomInstanceSP >::const_iterator it( old_atom_instances.begin() );
         it != old_atom_instances.end();
@@ -136,6 +140,7 @@ Molecules::make_independent() {
     ) {
         masala::core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
         atoms_.insert( new_atom );
+        atoms_const_.insert( new_atom );
         master_atom_coordinate_representation_mutex_locked()->replace_atom_instance( *it, new_atom );
     }
 
@@ -179,44 +184,52 @@ Molecules::get_api_definition() {
     if( api_definition_ == nullptr ) {
 
         MasalaObjectAPIDefinitionSP api_def(
-            std::make_shared< MasalaObjectAPIDefinition >(
-                class_name(), class_namespace(),
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
                 "A container for atoms and chemical bonds, and for data representations "
                 "that allow efficient geometric manipulations.",
                 false
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
                 class_name(), "Construct an empty instance of a Molecules object, with no options."
             )
         );
         api_def->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
                 class_name(), "Molecules object copy constructor.",
                 "src", "The input Molecules object to copy."
             )
         );
 
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
                 "total_atoms", "Gets the total number of atoms in this Molecules object.",
                 "total_atoms", "The number of atoms in the Molecules object.",
                 std::bind( &Molecules::total_atoms, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
-                "atoms_begin", "Get an iterator over atoms, initialized to first atom.",
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_begin, this )
             )
         );
         api_def->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
-                "atoms_end", "Get an iterator over atoms, initialized to one past the last atom.",
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
+                "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
                 std::bind( &Molecules::atoms_end, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_OneInput < std::array< masala::core::Real, 3 >, atoms::AtomInstanceConstIterator const > >(
+                "get_atom_coordinates", "Get the coordinates of a particular atom in a molecules object.",
+                "atom_iterator", "An AtomInstanceConstIterator pointing to the atom whose coordinates we wish to obtain.",
+                "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
+                std::bind( &Molecules::get_atom_coordinates, this, std::placeholders::_1 )
             )
         );
 
@@ -239,6 +252,7 @@ Molecules::add_atom(
 
     // Add the atom:
     atoms_.insert(atom_in);
+    atoms_const_.insert(atom_in);
     master_atom_coordinate_representation_mutex_locked()->add_atom_instance( atom_in, coords );
 
     //TODO update anything that needs to be updated (observers, etc.) when an atom is added.
@@ -254,13 +268,22 @@ Molecules::total_atoms() const {
 /// @brief Begin const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
 Molecules::atoms_begin() const {
-    return atoms::AtomInstanceConstIterator( atoms_.cbegin() );
+    return atoms::AtomInstanceConstIterator( atoms_const_.cbegin() );
 }
 
 /// @brief End const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
 Molecules::atoms_end() const {
-    return atoms::AtomInstanceConstIterator( atoms_.cend() );
+    return atoms::AtomInstanceConstIterator( atoms_const_.cend() );
+}
+
+/// @brief Access the coordinates for an atom.
+std::array< masala::core::Real, 3 >
+Molecules::get_atom_coordinates(
+    atoms::AtomInstanceConstIterator const atom_iterator
+) const {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +324,7 @@ Molecules::load_configuration(
 
     write_to_tracer( "Loading default Molecules configuration." );
 
-    return std::make_shared< MoleculesConfiguration >( passkey );
+    return masala::make_shared< MoleculesConfiguration >( passkey );
 }
 
 } // namespace chemistry

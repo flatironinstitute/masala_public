@@ -16,24 +16,29 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/atoms/ElementType.cc
+/// @file src/base/managers/database/elements/ElementType.cc
 /// @brief A class that describes a particular element.
 /// @details This will be held by the ElementManager, so it can be fairly heavy-weight.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/atoms/ElementType.hh>
+#include <base/managers/database/elements/ElementType.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json.hpp>
+
 // STL headers:
 #include <string>
+#include <sstream>
 
 namespace masala {
-namespace core {
-namespace chemistry {
-namespace atoms {
+namespace base {
+namespace managers {
+namespace database {
+namespace elements {
 
 ////////////////////////////////////////////////////////////////////////////////
 // ELEMENT FUNCTIONS
@@ -67,7 +72,7 @@ ElementTypeEnum
 element_enum_from_name(
     std::string const & element_name
 ) {
-    for( core::Size i(1); i<=static_cast<core::Size>(ElementTypeEnum::NUM_KNOWN_ELEMENTS); ++i ) {
+    for( base::Size i(1); i<=static_cast<base::Size>(ElementTypeEnum::NUM_KNOWN_ELEMENTS); ++i ) {
         if( element_name == element_name_from_enum( static_cast<ElementTypeEnum>(i) ) ) {
             return static_cast<ElementTypeEnum>(i);
         }
@@ -92,29 +97,84 @@ ElementType::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INITIALIZATION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Initialize the element type from a JSON description.
+/// @param[in] element_type The atomic number enum for this element.
+/// @param[in] abbreviation The normally-cased abbreviaton for this element
+/// type (e.g. "Mg", "Na", "K" ).
+/// @param[in] json A JSON description of this element type.
+void
+ElementType::initialize_from_json(
+    ElementTypeEnum const element_type,
+    std::string const & abbreviation,
+    nlohmann::json const & json
+) {
+    element_type_ = element_type;
+    element_abbreviation_ = abbreviation;
+
+    // Element full name:
+    initialize_datum_from_json( element_fullname_, "FullName", abbreviation, json, std::string("unknown") );
+    initialize_datum_from_json( neutron_count_most_common_isotope_, "NeutronCountMostCommonIsotope", abbreviation, json, base::Size(0) );
+    initialize_datum_from_json( average_atomic_mass_, "AverageAtomicMass", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( average_atomic_mass_uncertainty_, "AverageAtomicMassUncertainty", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( atomic_mass_most_common_isotope_, "AverageAtomicMassMostCommonIsotope", abbreviation, json, base::Real(0.0) );
+    initialize_datum_from_json( van_der_waals_radius_, "vanderWaalsRadius", abbreviation, json, base::Real(2.0) );
+    initialize_datum_from_json( default_rgb_colour_, "ElementColour", abbreviation, json, std::array< base::Real, 3 >{ 0.5, 0.5, 0.5 } );
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the atomic number.
 /// @details Throws if atomic number is out of range!
-core::Size
+base::Size
 ElementType::atomic_number() const {
     CHECK_OR_THROW_FOR_CLASS(
         static_cast<signed long>(element_type_) > 0 && static_cast<signed long>(element_type_) <= static_cast<signed long>(ElementTypeEnum::NUM_KNOWN_ELEMENTS),
         "atomic_number",
-        "Error in masala::core::chemical::atoms::ElementType::atomic_number(): Element type is out of range!"
+        "Error in masala::base::managers::database::elements::ElementType::atomic_number(): Element type is out of range!"
     );
-    return static_cast< masala::core::Size >( element_type_ );
+    return static_cast< masala::base::Size >( element_type_ );
 }
 
-/// @brief Get the isotope number (the total number of nucleons in the current isotope).
+/// @brief Get the isotope number (the total number of nucleons in the isotope) for the
+/// most common isotope.
 /// @details Throws if atomic number is out of range!
-core::Size
-ElementType::isotope_number() const {
-    return atomic_number() + neutron_count_current_isotope_;
+base::Size
+ElementType::isotope_number_most_common_isotope() const {
+    return atomic_number() + neutron_count_most_common_isotope_;
 }
 
-} // namespace atoms
-} // namespace chemistry
-} // namespace core
-} // namespace masala
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Initialize a particular datum from JSON.
+template < class T >
+void
+ElementType::initialize_datum_from_json(
+    T & datum,
+    std::string const & key,
+    std::string const & abbreviation,
+    nlohmann::json const & json,
+    T const & default_value
+) {
+    nlohmann::json::const_iterator it( json.find( key ) );
+    if( it != json.end() ) {
+        datum = *it;
+    } else {
+        //std::stringstream ss;
+        //ss << "No \"" << key << "\" field found for element " << abbreviation << ".  Using default (\"" << default_value << "\").";
+        //write_to_tracer( ss.str() );
+        datum = default_value;
+    }
+}
+
+} // namespace elements
+} // namespace database
+} // namespace managers
+} // namespace base
+} // namesapce masala

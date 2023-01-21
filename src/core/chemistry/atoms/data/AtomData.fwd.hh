@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_chemistry_atoms_data_AtomData_fwd_hh
 #define Masala_src_core_chemistry_atoms_data_AtomData_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -34,10 +34,10 @@ namespace data {
 
     class AtomData;
 
-    using AtomDataSP = std::shared_ptr< AtomData >;
-    using AtomDataCSP = std::shared_ptr< AtomData const >;
-    using AtomDataWP = std::weak_ptr< AtomData >;
-    using AtomDataCWP = std::weak_ptr< AtomData const >;
+    using AtomDataSP = MASALA_SHARED_POINTER< AtomData >;
+    using AtomDataCSP = MASALA_SHARED_POINTER< AtomData const >;
+    using AtomDataWP = MASALA_WEAK_POINTER< AtomData >;
+    using AtomDataCWP = MASALA_WEAK_POINTER< AtomData const >;
 
 } // namespace data
 } // namespace atoms

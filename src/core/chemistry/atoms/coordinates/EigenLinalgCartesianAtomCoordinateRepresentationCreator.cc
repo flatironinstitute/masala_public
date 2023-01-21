@@ -57,7 +57,7 @@ namespace coordinates {
 /// for which this is a friend class.
 base::managers::engine::MasalaDataRepresentationBaseSP
 EigenLinalgCartesianAtomCoordinateRepresentationCreator::create_data_representation() const {
-    return std::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >();
+    return masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >();
 }
 
 

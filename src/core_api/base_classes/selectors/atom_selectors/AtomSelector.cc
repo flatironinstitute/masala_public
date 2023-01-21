@@ -26,8 +26,8 @@
 // Unit headers:
 #include <core_api/base_classes/selectors/atom_selectors/AtomSelector.hh>
 
-// Core-API headers:
-#include <core_api/base_classes/selectors/atom_selectors/AtomSelection.hh>
+// Core headers:
+#include <core/selection/atom_selection/AtomSelection.hh>
 
 namespace masala {
 namespace core_api {
@@ -39,15 +39,15 @@ namespace atom_selectors {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Given the current pose, generate the selection.
-/// @details Calls generate_atom_selection(), which must be implemented
-/// by derived classes.
-core_api::base_classes::selectors::SelectionCSP
-AtomSelector::generate_selection(
-	core_api::auto_generated_api::pose::Pose_API const & pose
-) const {
-	return generate_atom_selection( pose );
-}
+// /// @brief Given the current pose, generate the selection.
+// /// @details Calls generate_atom_selection(), which must be implemented
+// /// by derived classes.
+// masala::core::selection::SelectionCSP
+// AtomSelector::generate_selection(
+// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+// ) const {
+// 	return generate_atom_selection( pose );
+// }
 
 } // namespace atom_selectors
 } // namespace selectors

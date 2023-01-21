@@ -38,14 +38,14 @@ namespace chemistry {
 /// to the copy.
 MoleculesCollectionSP
 MoleculesCollection::clone() const {
-    return std::make_shared< MoleculesCollection >( *this );
+    return masala::make_shared< MoleculesCollection >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 MoleculesCollectionSP
 MoleculesCollection::deep_clone() const {
-    MoleculesCollectionSP molecules_copy( std::make_shared< MoleculesCollection >( *this ) );
+    MoleculesCollectionSP molecules_copy( masala::make_shared< MoleculesCollection >( *this ) );
     molecules_copy->make_independent();
     return molecules_copy;
 }

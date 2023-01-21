@@ -53,7 +53,7 @@ enum class MasalaThreadedWorkStatus {
 /// @brief A class that will store a summary of what work was done in threads,
 /// how long it took, and how many threads were actually assigned to the work.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadedWorkExecutionSummary : public base::MasalaObject {
+class MasalaThreadedWorkExecutionSummary : public masala::base::MasalaObject {
 
 public:
 
@@ -166,7 +166,7 @@ public:
 	/// @brief Retrieve the exception thrown during the work.
     /// @returns A const shared pointer to the error, or nullptr if no error.
 	/// @note You can try casting this to a MasalaException to see if there's an error message.
-	std::shared_ptr< std::exception const > get_work_exception() const;
+	MASALA_SHARED_POINTER< std::exception const > get_work_exception() const;
 
 	/// @brief Indicate that the work was done successfully.
 	void set_work_successful();
@@ -198,7 +198,7 @@ private:
 	std::vector< base::Size > assigned_thread_indices_;
 
 	/// @brief A possible error returned by a thread.  Null if no error.
-	std::shared_ptr< std::exception const > err_ptr_ = nullptr;
+	MASALA_SHARED_POINTER< std::exception const > err_ptr_ = nullptr;
 
 }; // class MasalaThreadedWorkExecutionSummary
 

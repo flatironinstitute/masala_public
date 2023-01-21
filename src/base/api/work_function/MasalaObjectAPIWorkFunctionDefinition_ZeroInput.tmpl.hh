@@ -110,6 +110,12 @@ public:
 		return "masala::base::api::work_function";
 	}
 
+	/// @brief Run the function.
+	T0
+	function() const {
+		return work_function_();
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

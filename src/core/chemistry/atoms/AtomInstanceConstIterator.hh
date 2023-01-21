@@ -56,7 +56,7 @@ public:
 
     /// @brief Constructor from set iterator.
     AtomInstanceConstIterator(
-        std::set< AtomInstanceSP >::const_iterator const & it
+        std::set< AtomInstanceCSP >::const_iterator const & it
     );
 
     /// @brief Copy constructor.
@@ -142,7 +142,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The contained iterator to a nonconst pointer.
-    std::set< AtomInstanceSP >::const_iterator iterator_;
+    std::set< AtomInstanceCSP >::const_iterator iterator_;
 
     /// @brief The API definition.  Nullptr until generated.
     base::api::MasalaObjectAPIDefinitionCSP api_definition_;

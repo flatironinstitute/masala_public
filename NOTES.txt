@@ -16,10 +16,17 @@
      - [X] Auto-include classes that need to be included.
      - [X] Auto-use API classes instead of manually-written classes when API classes are available.
 
+- [ ] Think about ElementType and where it should go.  Can this be moved to core?
+- [ ] Add a full PDB reader in the standard plugin library.
+
 - [ ] Use ViennaCL for linear algebra.
 - [ ] Replace std::set with std::vector.
 
-- [ ] Add list of API classes somewhere --> A manager where API classes get registered.
+- [X] Add test for string-trimming functions.  Include edge case of strings with only whitespace.
+
+- [X] Add list of API classes somewhere --> A manager where API classes get registered.
+     - [ ] Ensure that plugin classes defined in core (e.g. AtomSelector) get registered.
+- [ ] Get rid of the EigenLinalgCartesianAtomCoordinateRepresentationCreator class.  This should be auto-generated.
 
 - [X] In auto-generated code, we need to handle the case of a function that returns a lightweight Masala object directly:
      - [X] Add "stack-allocated" option to API function.
@@ -30,3 +37,6 @@
      - [X] Need to fix output type namespace (NOT in auto-generated code) in both .cc and .hh file.
      - [X] Need to NOT encapsulate output type in API container in .cc file.
      - [X] Need to ensure that additional forward declarations are copied.
+
+- [ ] Add explicit conversion functions for API classes whose inner objects are related by inheritence.
+     - [ ] Re-enable the selectors' generate_selection() functions.

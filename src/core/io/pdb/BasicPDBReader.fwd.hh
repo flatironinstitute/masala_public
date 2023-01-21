@@ -19,12 +19,14 @@
 /// @file src/core/chemistry/BasicPDBReader.fwd.hh
 /// @brief Forward declarations for a class for reading the basic information
 /// from a PDB file quickly, and setting up a minimal pose.
+/// @note This is intended for testing only.  The proper PDB reader will be in the
+/// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_io_pdb_BasicPDBReader_fwd_hh
 #define Masala_src_core_io_pdb_BasicPDBReader_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -33,10 +35,10 @@ namespace pdb {
 
     class BasicPDBReader;
 
-    using BasicPDBReaderSP = std::shared_ptr< BasicPDBReader >;
-    using BasicPDBReaderCSP = std::shared_ptr< BasicPDBReader const >;
-    using BasicPDBReaderWP = std::weak_ptr< BasicPDBReader >;
-    using BasicPDBReaderCWP = std::weak_ptr< BasicPDBReader const >;
+    using BasicPDBReaderSP = MASALA_SHARED_POINTER< BasicPDBReader >;
+    using BasicPDBReaderCSP = MASALA_SHARED_POINTER< BasicPDBReader const >;
+    using BasicPDBReaderWP = MASALA_WEAK_POINTER< BasicPDBReader >;
+    using BasicPDBReaderCWP = MASALA_WEAK_POINTER< BasicPDBReader const >;
 
 } // namespace pdb
 } // namespace io

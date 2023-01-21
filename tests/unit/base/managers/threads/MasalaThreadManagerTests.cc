@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/base/masla/threads/MasalaThreadManagerTests.cc
+/// @file tests/unit/base/managers/threads/MasalaThreadManagerTests.cc
 /// @brief Unit tests for the Masala thread manager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 

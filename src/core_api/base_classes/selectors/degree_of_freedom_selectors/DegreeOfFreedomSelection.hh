@@ -28,7 +28,7 @@
 #define Masala_src_core_api_base_classes_selectors_degree_of_freedom_selectors_DegreeOfFreedomSelection_hh
 
 // Parent class:
-#include <core_api/base_classes/selectors/Selection.hh>
+#include <core/selection/Selection.hh>
 
 // Forward declarations:
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelection.fwd.hh>
@@ -48,7 +48,7 @@ namespace degree_of_freedom_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class DegreeOfFreedomSelection : public core_api::base_classes::selectors::Selection {
+class DegreeOfFreedomSelection : public masala::core::selection::Selection {
 
 public:
 

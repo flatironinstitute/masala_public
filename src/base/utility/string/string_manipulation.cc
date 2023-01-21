@@ -27,6 +27,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
 
+// STL headers
+#include <algorithm>
+
 namespace masala {
 namespace base {
 namespace utility {
@@ -70,6 +73,154 @@ split_by_newlines(
         outvec.push_back( string_in.substr( laststart ) );
     }
     return outvec;
+}
+
+/// @brief Split a string by a user-defined character.
+std::vector< std::string >
+split_by_character(
+    std::string const & string_in,
+    char const character_for_split
+) {
+    if( string_in.empty() ) {
+        return std::vector< std::string >(); //Empty vector out if empty string in.
+    }
+
+    std::vector< std::string > outvec;
+
+    signed long laststart(0), last_non_return(-1);
+    bool in_specified_char(false);
+
+    for( signed long i(0), imax(string_in.size()); i<imax; ++i ) {
+        if( !in_specified_char ) {
+            if( string_in[i] == character_for_split ) {
+                in_specified_char = true;
+                last_non_return = i-1;
+                continue;
+            }
+        } else {
+            if( string_in[i] != character_for_split ) {
+                in_specified_char = false;
+                if( !(laststart == 0 && last_non_return == -1) ) {
+                    outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+                }
+                laststart = i;
+                continue;
+            }
+        }
+    }
+    if( last_non_return >= laststart ) {
+        outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+    } else {
+        outvec.push_back( string_in.substr( laststart ) );
+    }
+    return outvec;
+}
+
+/// @brief Split a string by a user-defined set of characters.
+/// @details Any of the characters in the second string can indicate a split point.
+std::vector< std::string >
+split_by_characters(
+    std::string const & string_in,
+    std::string const & characters_for_split
+) {
+    if( string_in.empty() ) {
+        return std::vector< std::string >(); //Empty vector out if empty string in.
+    }
+
+    std::vector< std::string > outvec;
+
+    signed long laststart(0), last_non_return(-1);
+    bool in_split_chars(false);
+
+    for( signed long i(0), imax(string_in.size()); i<imax; ++i ) {
+        if( !in_split_chars ) {
+            if( characters_for_split.find( string_in[i] ) != std::string::npos  ) {
+                in_split_chars = true;
+                last_non_return = i-1;
+                continue;
+            }
+        } else {
+            if( characters_for_split.find( string_in[i] ) == std::string::npos ) {
+                in_split_chars = false;
+                if( !(laststart == 0 && last_non_return == -1) ) {
+                    outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+                }
+                laststart = i;
+                continue;
+            }
+        }
+    }
+    if( last_non_return >= laststart ) {
+        outvec.push_back( string_in.substr( laststart, last_non_return - laststart + 1 ) );
+    } else {
+        outvec.push_back( string_in.substr( laststart ) );
+    }
+    return outvec;
+}
+
+/// @brief Convert a string to uppercase.
+std::string
+to_uppercase(
+    std::string const & input
+) {
+    std::string strcopy( input );
+    std::transform( strcopy.begin(), strcopy.end(), strcopy.begin(), ::toupper );
+    return strcopy;
+}
+
+/// @brief Convert a string to lowercase.
+std::string
+to_lowercase(
+    std::string const & input
+) {
+    std::string strcopy( input );
+    std::transform( strcopy.begin(), strcopy.end(), strcopy.begin(), ::tolower );
+    return strcopy;
+}
+
+/// @brief Trim whitespace from left.
+std::string
+ltrim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    std::string output( input );
+    output.erase(
+        output.begin(),
+        std::find_if(
+            output.begin(), output.end(), [chars_to_trim](unsigned char curchar) {
+                return chars_to_trim.find( curchar ) == chars_to_trim.npos;
+            }
+        )
+    );
+    return output;
+}
+
+/// @brief Trim whitespace from right.
+std::string
+rtrim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    std::string output( input );
+    output.erase(
+        std::find_if(
+            output.rbegin(), output.rend(), [chars_to_trim](unsigned char curchar) {
+                return chars_to_trim.find( curchar ) == chars_to_trim.npos;
+            }
+        ).base(),
+        output.end()
+    );
+    return output;
+}
+
+/// @brief Trim whitespace from both ends of a string.
+std::string
+trim(
+    std::string const & input,
+    std::string const & chars_to_trim//=" \t\n\r"
+) {
+    return rtrim(ltrim(input, chars_to_trim), chars_to_trim);
 }
 
 } // namespace string

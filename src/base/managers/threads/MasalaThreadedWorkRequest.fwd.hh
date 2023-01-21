@@ -25,7 +25,7 @@
 #ifndef Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh
 #define Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -35,20 +35,20 @@ namespace threads {
 	class MasalaThreadedWorkRequest;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaThreadedWorkRequestSP = std::shared_ptr< MasalaThreadedWorkRequest >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaThreadedWorkRequestSP = MASALA_SHARED_POINTER< MasalaThreadedWorkRequest >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaThreadedWorkRequestCSP = std::shared_ptr< MasalaThreadedWorkRequest const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaThreadedWorkRequestCSP = MASALA_SHARED_POINTER< MasalaThreadedWorkRequest const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaThreadedWorkRequestWP = std::weak_ptr< MasalaThreadedWorkRequest >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaThreadedWorkRequestWP = MASALA_WEAK_POINTER< MasalaThreadedWorkRequest >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaThreadedWorkRequestCWP = std::weak_ptr< MasalaThreadedWorkRequest const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaThreadedWorkRequestCWP = MASALA_WEAK_POINTER< MasalaThreadedWorkRequest const >;
 
 } // namespace threads
 } // namespace managers

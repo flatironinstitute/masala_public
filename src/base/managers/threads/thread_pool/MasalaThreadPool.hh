@@ -61,7 +61,7 @@ enum class MasalaThreadPoolState {
 /// of a MasalaThreadPool.  This ensures that only the thread manager
 /// can create a thread pool.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadPoolCreationKey : public base::MasalaObject {
+class MasalaThreadPoolCreationKey : public masala::base::MasalaObject {
 
 	// We make the MasalaThreadManager a friend so that it alone can instantiate
 	// this private-constructor key class.
@@ -101,7 +101,7 @@ public:
 /// @brief A container for a set of threads.  Controls launching, destroying,
 /// or renumbering threads in a threadsafe way.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaThreadPool : public base::MasalaObject {
+class MasalaThreadPool : public masala::base::MasalaObject {
 
 public:
 

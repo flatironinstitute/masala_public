@@ -84,6 +84,13 @@ MasalaException::message() const {
 	return message_;
 }
 
+/// @brief Access the error message in standard exception handling.
+char const*
+MasalaException::what() const noexcept {
+	message_was_printed_ = true;
+	return message_.c_str();
+}
+
 } // namespace error
 } // namespace base
 } // namespace masala

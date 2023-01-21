@@ -28,7 +28,7 @@
 #ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_OneInput_fwd_hh
 #define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_OneInput_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -39,24 +39,24 @@ namespace work_function {
 	class MasalaObjectAPIWorkFunctionDefinition_OneInput;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
 	template< typename T0, typename T1 >
-	using MasalaObjectAPIWorkFunctionDefinition_OneInputSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > >;
+	using MasalaObjectAPIWorkFunctionDefinition_OneInputSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
 	template< typename T0, typename T1 >
-	using MasalaObjectAPIWorkFunctionDefinition_OneInputCSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > const >;
+	using MasalaObjectAPIWorkFunctionDefinition_OneInputCSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
 	template< typename T0, typename T1 >
-	using MasalaObjectAPIWorkFunctionDefinition_OneInputWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > >;
+	using MasalaObjectAPIWorkFunctionDefinition_OneInputWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	template< typename T0, typename T1 >
-	using MasalaObjectAPIWorkFunctionDefinition_OneInputCWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > const >;
+	using MasalaObjectAPIWorkFunctionDefinition_OneInputCWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_OneInput< T0, T1 > const >;
 
 } // namespace work_function
 } // namespace api

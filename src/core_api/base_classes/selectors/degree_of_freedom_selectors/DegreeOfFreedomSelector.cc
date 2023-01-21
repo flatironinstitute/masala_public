@@ -39,15 +39,15 @@ namespace degree_of_freedom_selectors {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Given the current pose, generate the selection.
-/// @details Calls generate_degree_of_freedom_selection(), which must be implemented
-/// by derived classes.
-core_api::base_classes::selectors::SelectionCSP
-DegreeOfFreedomSelector::generate_selection(
-	core_api::auto_generated_api::pose::Pose_API const & pose
-) const {
-	return generate_degree_of_freedom_selection( pose );
-}
+// /// @brief Given the current pose, generate the selection.
+// /// @details Calls generate_degree_of_freedom_selection(), which must be implemented
+// /// by derived classes.
+// core::selection::SelectionCSP
+// DegreeOfFreedomSelector::generate_selection(
+// 	core_api::auto_generated_api::pose::Pose_API const & pose
+// ) const {
+// 	return generate_degree_of_freedom_selection( pose );
+// }
 
 } // namespace degree_of_freedom_selectors
 } // namespace selectors

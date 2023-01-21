@@ -34,7 +34,7 @@
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
 
 // Base headers:
-#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
 
 // STL headers:
 #include <vector>
@@ -71,10 +71,11 @@ public:
 	/// @brief Comparison operator.
 	bool operator==( MasalaPluginCreator const & other ) const;
 
-	/// @brief Create an object of the desired type.
+	/// @brief Create an object of the desired type (or, more precisely, an API container
+	/// for an object of a desired type).
 	/// @details Must be implemented by derived classes.
 	virtual
-	masala::base::managers::plugin_module::MasalaPluginSP
+	masala::base::managers::plugin_module::MasalaPluginAPISP
 	create_plugin_object() const = 0;
 
 	/// @brief Return the names of the categories for this type of plugin object.

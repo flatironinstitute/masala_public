@@ -28,7 +28,7 @@
 #define Masala_src_core_api_base_classes_selectors_atom_selectors_annotated_region_selectors_AnnotatedRegionSelection_hh
 
 // Parent class:
-#include <core_api/base_classes/selectors/atom_selectors/AtomSelection.hh>
+#include <core/selection/atom_selection/AtomSelection.hh>
 
 // Forward declarations:
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelection.fwd.hh>
@@ -49,7 +49,7 @@ namespace annotated_region_selectors {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AnnotatedRegionSelection : public core_api::base_classes::selectors::atom_selectors::AtomSelection {
+class AnnotatedRegionSelection : public masala::core::selection::atom_selection::AtomSelection {
 
 public:
 

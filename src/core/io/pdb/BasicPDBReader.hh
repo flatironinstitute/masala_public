@@ -19,6 +19,8 @@
 /// @file src/core/chemistry/BasicPDBReader.hh
 /// @brief A class for reading the basic information from a PDB file quickly, and
 /// setting up a minimal pose.
+/// @note This is intended for testing only.  The proper PDB reader will be in the
+/// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_io_pdb_BasicPDBReader_hh
@@ -44,6 +46,8 @@ namespace pdb {
 
 /// @brief A class for reading the basic information from a PDB file quickly, and
 /// setting up a minimal pose.
+/// @note This is intended for testing only.  The proper PDB reader will be in the
+/// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class BasicPDBReader : public masala::base::MasalaObject {
 
@@ -99,6 +103,24 @@ public:
         std::vector< std::string > const & file_lines
     ) const;
 
+    /// @brief Given a PDB file name, read the PDB file and generate a Pose.
+    /// @note Warning!  This triggers a read from disk!  This is threadsafe and
+    /// properly managed through the disk manager.
+    masala::core::pose::PoseSP
+    pose_from_pdb_file_on_disk(
+        std::string const & filename
+    ) const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the BasicPDBReader class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +145,10 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief A description of this object's interface.
+    /// @details Generated on first request.  Persists only as long as this instance
+    /// persists.  Weak pointers are handed out.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 };
 

@@ -26,7 +26,7 @@
 #ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_fwd_hh
 #define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -36,20 +36,20 @@ namespace work_function {
 	class MasalaObjectAPIWorkFunctionDefinition;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaObjectAPIWorkFunctionDefinitionSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaObjectAPIWorkFunctionDefinitionSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaObjectAPIWorkFunctionDefinitionCSP = std::shared_ptr< MasalaObjectAPIWorkFunctionDefinition const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaObjectAPIWorkFunctionDefinitionCSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaObjectAPIWorkFunctionDefinitionWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaObjectAPIWorkFunctionDefinitionWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaObjectAPIWorkFunctionDefinitionCWP = std::weak_ptr< MasalaObjectAPIWorkFunctionDefinition const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaObjectAPIWorkFunctionDefinitionCWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition const >;
 
 } // namespace work_function
 } // namespace api

@@ -50,7 +50,7 @@ namespace atoms {
 
 /// @brief Constructor from set iterator.
 AtomInstanceConstIterator::AtomInstanceConstIterator(
-    std::set< AtomInstanceSP >::const_iterator const & it
+    std::set< AtomInstanceCSP >::const_iterator const & it
 ) :
     base::MasalaObject(),
     iterator_(it)
@@ -59,13 +59,13 @@ AtomInstanceConstIterator::AtomInstanceConstIterator(
 /// @brief Clone operator.
 AtomInstanceConstIteratorSP
 AtomInstanceConstIterator::clone() const {
-    return std::make_shared< AtomInstanceConstIterator >( *this );
+    return masala::make_shared< AtomInstanceConstIterator >( *this );
 }
 
 /// @brief Deep clone operator.
 AtomInstanceConstIteratorSP
 AtomInstanceConstIterator::deep_clone() const {
-    AtomInstanceConstIteratorSP new_obj( std::make_shared< AtomInstanceConstIterator >() );
+    AtomInstanceConstIteratorSP new_obj( masala::make_shared< AtomInstanceConstIterator >() );
     new_obj->iterator_ = iterator_;
     return new_obj;
 }
@@ -171,8 +171,8 @@ AtomInstanceConstIterator::get_api_definition() {
 
     if( api_definition_ == nullptr ) {
         MasalaObjectAPIDefinitionSP api_definition(
-            std::make_shared< MasalaObjectAPIDefinition >(
-                class_name(), class_namespace(),
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
                 "A const iterator over a set of AtomInstance objects.  This custom iterator is needed to allow iteration over "
                 "const AtomInstance objects from a set containing non-const shared pointers.",
                 true
@@ -180,40 +180,40 @@ AtomInstanceConstIterator::get_api_definition() {
         );
 
         // api_definition->add_constructor(
-        //     std::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput < AtomInstanceConstIterator > >(
+        //     masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput < AtomInstanceConstIterator > >(
         //         "AtomInstanceConstIterator", "Constructs an empty iterator.  Do not use!  The pointer is nullptr!"
         //     )
         // );
         api_definition->add_constructor(
-            std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, AtomInstanceConstIterator const & > >(
+            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, AtomInstanceConstIterator const & > >(
                 "AtomInstanceConstIterator", "Default copy constructor.",
                 "src", "The AtomInstanceConstIterator from which we are copying."
             )
         );
         // api_definition->add_constructor(
-        //     std::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceSP >::const_iterator const & > >(
+        //     masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput < AtomInstanceConstIterator, std::set< AtomInstanceCSP >::const_iterator const & > >(
         //         "AtomInstanceConstIterator", "Construct the iterator from a std::set const iterator.",
-        //         "iterator", "The source std::set< AtomInstanceSP >::const_interator, with which we will initialize this iterator."
+        //         "iterator", "The source std::set< AtomInstanceCSP >::const_iterator, with which we will initialize this iterator."
         //     )
         // );
 
         // Functions:
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
                 "operator++", "Increment the iterator.  (Pre-incrementation operator.)", false, true,
                 "incremented_iterator", "A reference to the incremented iterator (this object).",
                 std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator++ ), this )
             )
         );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< AtomInstanceConstIterator & > >(
                 "operator--", "Decrement the iterator.  (Pre-decrementation operator.)", false, true,
                 "decremented_iterator", "A reference to the decremented iterator (this object).",
                 std::bind( static_cast< AtomInstanceConstIterator & (AtomInstanceConstIterator::*)() >( &AtomInstanceConstIterator::operator-- ), this )
             )
         );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
                 "operator++", "Increment the iterator.  (Post-incrementation operator.)", false, false,
                 "dummy", "A dummy integer, used to distinguish this function from the pre-incrementation override.",
                 "original_iterator", "A copy of the iterator PRIOR to incrementation.",
@@ -221,7 +221,7 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< AtomInstanceConstIterator, int > >(
                 "operator--", "Decrement the iterator.  (Post-decrementation operator.)", false, false,
                 "dummy", "A dummy integer, used to distinguish this function from the pre-decrementation override.",
                 "original_iterator", "A copy of the iterator PRIOR to decrementation.",
@@ -229,14 +229,14 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
         // api_definition->add_getter(
-        //     std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstance const & > >(
+        //     masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstance const & > >(
         //         "operator*", "Access the AtomInstance (by const reference).",
         //         "atom_instance", "A const reference to the AtomInstance object to which the iterator currently points.",
         //         std::bind( &AtomInstanceConstIterator::operator*, this )
         //     )
         // );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
                 "operator==", "Compare to another AtomInstanceConstIterator.", true, false,
                 "other", "The other AtomInstanceConstIterator, to which we are comparing.",
                 "is_equal", "True if the two iterators point to the same AtomInstance; false otherwise.",
@@ -244,7 +244,7 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
         api_definition->add_work_function(
-            std::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
+            masala::make_shared< MasalaObjectAPIWorkFunctionDefinition_OneInput< bool, AtomInstanceConstIterator const & > >(
                 "operator!=", "Check for inequality with another AtomInstanceConstIterator.", true, false,
                 "other", "The other AtomInstanceConstIterator, to which we are comparing.",
                 "is_unequal", "True if the two iterators point to different AtomInstances; false if they are the same.",
@@ -252,7 +252,7 @@ AtomInstanceConstIterator::get_api_definition() {
             )
         );
         api_definition->add_getter(
-            std::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstanceCSP > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstanceCSP > >(
                 "ptr", "Access the AtomInstance (by const shared pointer).",
                 "atom_const_ptr", "A const shared pointer to the AtomInstance object to which the iterator currently points.",
                 std::bind( &AtomInstanceConstIterator::ptr, this )

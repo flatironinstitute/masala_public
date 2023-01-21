@@ -38,6 +38,54 @@ namespace string {
         std::string const & string_in
     );
 
+    /// @brief Split a string by a user-defined character.
+    std::vector< std::string >
+    split_by_character(
+        std::string const & string_in,
+        char const character_for_split
+    );
+
+    /// @brief Split a string by a user-defined set of characters.
+    /// @details Any of the characters in the second string can indicate a split point.
+    std::vector< std::string >
+    split_by_characters(
+        std::string const & string_in,
+        std::string const & characters_for_split
+    );
+
+    /// @brief Convert a string to uppercase.
+    std::string
+    to_uppercase(
+        std::string const & input
+    );
+
+    /// @brief Convert a string to lowercase.
+    std::string
+    to_lowercase(
+        std::string const & input
+    );
+
+    /// @brief Trim whitespace from left.
+    std::string
+    ltrim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
+    /// @brief Trim whitespace from right.
+    std::string
+    rtrim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
+    /// @brief Trim whitespace from both ends of a string.
+    std::string
+    trim(
+        std::string const & input,
+        std::string const & chars_to_trim=" \t\n\r"
+    );
+
 } // namespace string
 } // namespace utility
 } // namespace base

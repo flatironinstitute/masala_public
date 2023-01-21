@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_chemistry_atoms_AtomInstanceConstIterator_fwd_hh
 #define Masala_src_core_chemistry_atoms_AtomInstanceConstIterator_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -33,10 +33,10 @@ namespace atoms {
 
     class AtomInstanceConstIterator;
 
-    using AtomInstanceConstIteratorSP = std::shared_ptr< AtomInstanceConstIterator >;
-    using AtomInstanceConstIteratorCSP = std::shared_ptr< AtomInstanceConstIterator const >;
-    using AtomInstanceConstIteratorWP = std::weak_ptr< AtomInstanceConstIterator >;
-    using AtomInstanceConstIteratorCWP = std::weak_ptr< AtomInstanceConstIterator const >;
+    using AtomInstanceConstIteratorSP = MASALA_SHARED_POINTER< AtomInstanceConstIterator >;
+    using AtomInstanceConstIteratorCSP = MASALA_SHARED_POINTER< AtomInstanceConstIterator const >;
+    using AtomInstanceConstIteratorWP = MASALA_WEAK_POINTER< AtomInstanceConstIterator >;
+    using AtomInstanceConstIteratorCWP = MASALA_WEAK_POINTER< AtomInstanceConstIterator const >;
 
 } // namespace atoms
 } // namespace chemistry

@@ -48,13 +48,13 @@ MoleculesConfiguration::MoleculesConfiguration(
 /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
 MoleculesConfigurationSP
 MoleculesConfiguration::clone() const {
-    return std::make_shared< MoleculesConfiguration >(*this);
+    return masala::make_shared< MoleculesConfiguration >(*this);
 }
 
 /// @brief Deep clone operation: make an independent copy of this object and return a shared_ptr to the copy.
 MoleculesConfigurationSP
 MoleculesConfiguration::deep_clone() const {
-    return std::make_shared< MoleculesConfiguration >(*this);
+    return masala::make_shared< MoleculesConfiguration >(*this);
 }
 
 /// @brief Returns "MoleculesConfiguration".

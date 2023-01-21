@@ -33,6 +33,7 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 #include <core/chemistry/MoleculesConfiguration.fwd.hh>
+#include <core/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -130,6 +131,12 @@ public:
     atoms::AtomInstanceConstIterator
     atoms_end() const;
 
+    /// @brief Access the coordinates for an atom.
+    std::array< masala::core::Real, 3 >
+    get_atom_coordinates(
+        atoms::AtomInstanceConstIterator const atom_iterator
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +200,10 @@ private:
     /// efficient insertions and deletions of atoms.  AtomCoordinateRepresentations are
     /// responsible for keeping track of coordinates given atom smart pointers.
     std::set< masala::core::chemistry::atoms::AtomInstanceSP > atoms_;
+
+    /// @brief A set of const shared pointers to the atoms, for convenience of iterating with
+    /// iterators to AtomInstanceCSPs.
+    std::set< masala::core::chemistry::atoms::AtomInstanceCSP > atoms_const_;
 
     /// @brief The bonds between atoms.
     /// @note This is deliberately a set and not a vector to prevent an arbitrary index

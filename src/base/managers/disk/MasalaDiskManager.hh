@@ -30,6 +30,9 @@
 // Forward declarations:
 #include <base/managers/disk/MasalaDiskManager.fwd.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
+
 // STL headers:
 #include <mutex>
 
@@ -92,10 +95,63 @@ public:
     class_namespace() const override;
 
     /// @brief Write a string to an ASCII file.
+    /// @details TRIGGERS WRITE TO DISK!  Threadsafe (locks mutex).
     void
     write_ascii_file(
         std::string const & file_name,
         std::string const & file_contents
+    ) const;
+
+    /// @brief Read the contents of an ASCII file to a vector of strings.
+    /// @details Threadsafe (locks mutex).
+    std::vector< std::string >
+    read_ascii_file_to_string_vector(
+        std::string const & file_name
+    ) const;
+
+    /// @brief Read the contents of an ASCII file to a string.
+    /// @details Threadsafe (locks mutex).
+    std::string
+    read_ascii_file_to_string(
+        std::string const & file_name
+    ) const;
+
+    /// @brief Read the contents of a JSON file and produce an nlohmann json object.
+    /// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
+    /// locks mutex.  (So this is threadsafe.)
+    nlohmann::json
+    read_json_file(
+        std::string const & file_name
+    ) const;
+
+    /// @brief Given a path, get the absolute path.
+    /// @details Threadsafe (locks mutex).
+    std::string
+    get_absolute_path(
+        std::string const & path_in
+    ) const;
+
+    /// @brief Given a path (absolute or relative to working directory), get
+    /// a vector of absolute paths to subdirectories.
+    /// @details Threadsafe (locks mutex).
+    std::vector< std::string >
+    get_subdirectories(
+        std::string const & root_directory_path
+    ) const;
+
+    /// @brief Given a path to a directory, get the path and filename of each
+    /// file in that directory.
+    /// @details Threadsafe (locks mutex).
+    std::vector< std::string >
+    get_files(
+        std::string const & directory_path
+    ) const;
+
+    /// @brief A utility function to get a filename given a path and a filename.
+    /// @details Requires no disk access.  Threadsafe, since no locking.
+    std::string
+    filename_from_path_and_filename(
+        std::string const & path_and_filename
     ) const;
 
 private: // Data

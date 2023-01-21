@@ -58,14 +58,14 @@ PDBAtomData::PDBAtomData(
 /// to the copy.
 PDBAtomDataSP
 PDBAtomData::clone() const {
-    return std::make_shared< PDBAtomData >( *this );
+    return masala::make_shared< PDBAtomData >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 PDBAtomDataSP
 PDBAtomData::deep_clone() const {
-    PDBAtomDataSP pdbdata_copy( std::make_shared< PDBAtomData >( *this ) );
+    PDBAtomDataSP pdbdata_copy( masala::make_shared< PDBAtomData >( *this ) );
     pdbdata_copy->make_independent();
     return pdbdata_copy;
 }

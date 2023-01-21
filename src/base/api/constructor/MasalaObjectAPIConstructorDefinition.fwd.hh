@@ -26,7 +26,7 @@
 #ifndef Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_fwd_hh
 #define Masala_src_base_api_constructor_MasalaObjectAPIConstructorDefinition_fwd_hh
 
-#include <memory> // For std::shared_ptr
+#include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
@@ -36,20 +36,20 @@ namespace constructor {
 	class MasalaObjectAPIConstructorDefinition;
 
 	/// @brief We will use the convention that an class name followed by SP
-	/// represents a std::shared_ptr for objects of that class.
-	using MasalaObjectAPIConstructorDefinitionSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition >;
+	/// represents a MASALA_SHARED_POINTER for objects of that class.
+	using MasalaObjectAPIConstructorDefinitionSP = MASALA_SHARED_POINTER< MasalaObjectAPIConstructorDefinition >;
 
 	/// @brief We will use the convention that an class name followed by CSP
-	/// represents a std::shared_ptr for const objects of that class.
-	using MasalaObjectAPIConstructorDefinitionCSP = std::shared_ptr< MasalaObjectAPIConstructorDefinition const >;
+	/// represents a MASALA_SHARED_POINTER for const objects of that class.
+	using MasalaObjectAPIConstructorDefinitionCSP = MASALA_SHARED_POINTER< MasalaObjectAPIConstructorDefinition const >;
 
 	/// @brief We will use the convention that an class name followed by WP
-	/// represents a std::weak_ptr for objects of that class.
-	using MasalaObjectAPIConstructorDefinitionWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition >;
+	/// represents a MASALA_WEAK_POINTER for objects of that class.
+	using MasalaObjectAPIConstructorDefinitionWP = MASALA_WEAK_POINTER< MasalaObjectAPIConstructorDefinition >;
 
 	/// @brief We will use the convention that an class name followed by CWP
-	/// represents a std::weak_ptr for const objects of that class.
-	using MasalaObjectAPIConstructorDefinitionCWP = std::weak_ptr< MasalaObjectAPIConstructorDefinition const >;
+	/// represents a MASALA_WEAK_POINTER for const objects of that class.
+	using MasalaObjectAPIConstructorDefinitionCWP = MASALA_WEAK_POINTER< MasalaObjectAPIConstructorDefinition const >;
 
 } // namespace constructor
 } // namespace api

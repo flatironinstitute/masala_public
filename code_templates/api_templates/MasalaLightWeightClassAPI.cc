@@ -31,7 +31,7 @@
 <__SOURCE_CLASS_API_NAME__>::<__SOURCE_CLASS_API_NAME__>(
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & inner_object
 ) :
-    masala::base_api::MasalaObjectAPI(),
+    <__BASE_API_CLASS_NAMESPACE_AND_NAME__>(),
     inner_object_( inner_object )
 {}
 
@@ -52,7 +52,7 @@
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::clone() const {
     std::lock_guard< std::mutex > lock( api_mutex_ );
-    return std::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
+    return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
 }
 
 /// @brief Deep clone operation: make a copy of this object and return
@@ -104,6 +104,13 @@ std::string
 std::string
 <__SOURCE_CLASS_API_NAME__>::inner_class_namespace() const {
     return inner_object_.class_namespace();
+}
+
+/// @brief Get the API definition for the contained class.
+/// @details Must be implemented by derived classes.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+<__SOURCE_CLASS_API_NAME__>::get_api_definition_for_inner_class() {
+    return inner_object_.get_api_definition();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

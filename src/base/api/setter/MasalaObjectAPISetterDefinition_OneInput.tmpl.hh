@@ -105,6 +105,14 @@ public:
 		return "masala::base::api::setter";
 	}
 
+	/// @brief Provide an input to the function.
+	void
+	function(
+		T1 input
+	) const {
+		setter_function_(input);
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -46,26 +47,30 @@ namespace api {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Options constructor.
-/// @param[in] api_class_name The name of the class for which we're
-///            providing an API definition.
-/// @param[in] api_class_namespace The namespace of the class for which
-///            we're providing an API definition.
+/// @param[in] this_object The object for which we're generating a description.
 /// @param[in] api_class_description The description of the class for which
 ///			   we're providing an API definition.
 /// @param[in] is_lightweight Is this the API definition for a lightweight
-///            object that could be stack-allocated?
+/// 		   object that could be stack-allocated?
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
-    std::string const & api_class_name,
-    std::string const & api_class_namespace,
+    base::MasalaObject const & this_object,
     std::string const & api_class_description,
     bool const is_lightweight
 ) :
     masala::base::MasalaObject(),
-    api_class_name_( api_class_name ),
-    api_class_namespace_( api_class_namespace ),
+    api_class_name_( this_object.class_name() ),
+    api_class_namespace_( this_object.class_namespace() ),
     api_class_description_( api_class_description ),
     is_lightweight_( is_lightweight )
-{}
+{
+    using namespace base::managers::plugin_module;
+    MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
+    is_plugin_class_ = ( this_object_cast != nullptr );
+    if( is_plugin_class_ ) {
+        plugin_categories_ = this_object_cast->get_categories();
+        plugin_keywords_ = this_object_cast->get_keywords();
+    }
+}
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
 std::string
@@ -82,6 +87,30 @@ MasalaObjectAPIDefinition::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_name() const {
+    return api_class_name_;
+}
+
+/// @brief Get the namespace of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_namespace() const {
+    return api_class_namespace_;
+}
+
+/// @brief Get the namespace and name of the class for which this object stores an API description.
+std::string
+MasalaObjectAPIDefinition::api_class_namespace_and_name() const {
+    return api_class_namespace_ + "::" + api_class_name_;
+}
+
+/// @brief Get the description of the class for which this object stores an API description.
+std::string const &
+MasalaObjectAPIDefinition::api_class_description() const {
+    return api_class_description_;
+}
 
 /// @brief Get a human-readable description of the API for a module.
 /// @details Note that this does not cache the generated string, but generates it anew
@@ -143,6 +172,37 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
 
     ss << "\nPROPERTIES\n";
     ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
+    ss << "Is_Plugin_Class:\t" << ( is_plugin_class_ ? "TRUE" : "FALSE" ) << "\n";
+
+    if( is_plugin_class_ ) {
+        ss << "\nPLUGIN_CATEGORIES:\n";
+        for( auto const & category : plugin_categories_ ) {
+            bool first( true );
+            for( auto const & level : category ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << level;
+            }
+            ss << "\n";
+        }
+
+        ss << "\nPLUGIN_KEYWORDS:\n";
+        {
+            bool first( true );
+            for( auto const & keyword : plugin_keywords_ ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << keyword;
+            }
+            ss << "\n";
+        }
+    }
 
     return ss.str();
 }
@@ -150,9 +210,9 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
 /// @brief Get a JSON object describing the API for a module.
 /// @details Note that this does not cache the generated JSON object, but generates it anew
 /// each time.
-std::shared_ptr< nlohmann::json >
+MASALA_SHARED_POINTER< nlohmann::json >
 MasalaObjectAPIDefinition::get_json_description() const {
-    std::shared_ptr< nlohmann::json > json_ptr( std::make_shared< nlohmann::json >() );
+    MASALA_SHARED_POINTER< nlohmann::json > json_ptr( masala::make_shared< nlohmann::json >() );
     nlohmann::json & json_api( *json_ptr );
 
     json_api["Title"] = "API description";
@@ -165,8 +225,14 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["WorkFunctions"] = get_json_description_for_work_functions();
 
     json_api["Properties"] = std::map< std::string, bool >{
-        { "Is_Lightweight", is_lightweight_ }
+        { "Is_Lightweight", is_lightweight_ },
+        { "Is_Plugin_Class", is_plugin_class_ }
     };
+
+    if( is_plugin_class_ ) {
+        json_api[ "Plugin_Categories" ] = plugin_categories_;
+        json_api[ "Plugin_Keywords" ] = plugin_keywords_;
+    } 
 
     return json_ptr;
 }
@@ -273,6 +339,21 @@ MasalaObjectAPIDefinition::add_work_function(
     masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
     work_functions_.emplace_back( work_function_in );
+}
+
+/// @brief Get the categories that this object is in, if it is a plugin object.
+/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+/// An object can be in more than one category.
+std::vector< std::vector< std::string > > const &
+MasalaObjectAPIDefinition::plugin_categories() const {
+    return plugin_categories_;
+}
+
+/// @brief Get the keywords for this object, if it is a plugin object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::plugin_keywords() const {
+    return plugin_keywords_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

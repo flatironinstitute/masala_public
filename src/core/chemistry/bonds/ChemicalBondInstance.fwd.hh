@@ -24,7 +24,7 @@
 #ifndef Masala_src_core_chemistry_bonds_ChemicalBondInstance_fwd_hh
 #define Masala_src_core_chemistry_bonds_ChemicalBondInstance_fwd_hh
 
-#include <memory>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
@@ -33,10 +33,10 @@ namespace bonds {
 
     class ChemicalBondInstance;
 
-    using ChemicalBondInstanceSP = std::shared_ptr< ChemicalBondInstance >;
-    using ChemicalBondInstanceCSP = std::shared_ptr< ChemicalBondInstance const >;
-    using ChemicalBondInstanceWP = std::weak_ptr< ChemicalBondInstance >;
-    using ChemicalBondInstanceCWP = std::weak_ptr< ChemicalBondInstance const >;
+    using ChemicalBondInstanceSP = MASALA_SHARED_POINTER< ChemicalBondInstance >;
+    using ChemicalBondInstanceCSP = MASALA_SHARED_POINTER< ChemicalBondInstance const >;
+    using ChemicalBondInstanceWP = MASALA_WEAK_POINTER< ChemicalBondInstance >;
+    using ChemicalBondInstanceCWP = MASALA_WEAK_POINTER< ChemicalBondInstance const >;
 
     /// @brief An enum for the type of bond.
     enum class ChemicalBondType {
