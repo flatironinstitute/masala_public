@@ -553,15 +553,16 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
     std::vector< std::vector< std::string > > const set_of_categories( creator->get_plugin_object_categories() );
     for( auto const & categories : set_of_categories ) {
         std::vector< std::string > ss;
+        
         for( std::string const & category : categories ) {
             ss.push_back( category );
 
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_subcategory_.count( ss ) > 0,
                 "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
                 base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
                 "category map."
             );
-            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_[ ss ] );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_subcategory_.at(ss) );
             bool found( false );
             for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
                 if( (**it) == (*creator) ) {
@@ -575,8 +576,30 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
                 "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
             );
             if( myset.empty() ) {
-                plugins_by_hierarchical_category_.erase( ss );
+                plugins_by_hierarchical_subcategory_.erase( ss );
             }
+        }
+
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+            "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
+            base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
+            "category map."
+        );
+        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_.at(ss) );
+        bool found( false );
+        for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
+            if( (**it) == (*creator) ) {
+                found = true;
+                myset.erase( it );
+                break;
+            }
+        }
+        CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
+            "Program error!  Could not find plugin \"" + plugin_object_name + "\" in hierarchical "
+            "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
+        );
+        if( myset.empty() ) {
+            plugins_by_hierarchical_category_.erase( ss );
         }
     }
     write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );
