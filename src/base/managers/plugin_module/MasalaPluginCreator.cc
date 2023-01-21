@@ -63,7 +63,28 @@ MasalaPluginCreator::get_plugin_object_namespace_and_name() const {
 /// followed by a colon and then the object name.
 std::string
 MasalaPluginCreator::get_plugin_object_manager_key() const {
-	return get_plugin_object_namespace_and_name();
+	std::stringstream ss;
+	std::vector< std::vector< std::string > > const categories( get_plugin_object_categories() );
+	CHECK_OR_THROW_FOR_CLASS(
+		!categories.empty(), "get_plugin_object_manager_key",
+		"No categories were specified for plugin object type \"" + get_plugin_object_namespace_and_name() + "\"."
+	);
+	std::vector< std::string > const & firstcategory( categories[0] );
+	CHECK_OR_THROW_FOR_CLASS(
+		!firstcategory.empty(), "get_plugin_object_manager_key",
+		"No hierarchical category relationship was specified for the first category for "
+		"plugin object type \"" + get_plugin_object_namespace_and_name() + "\"."
+	);
+	for( base::Size i(0), imax(firstcategory.size()); i<imax; ++i ) {
+		ss << firstcategory[i];
+		if( imax > 1 && i < imax - 1 ) {
+			ss << ",";
+		} else {
+			ss << ":";
+		}
+	}
+	ss << get_plugin_object_namespace_and_name();
+	return ss.str();
 } // MasalaPluginCreator::get_plugin_object_manager_key()
 
 } // namespace plugin_module	
