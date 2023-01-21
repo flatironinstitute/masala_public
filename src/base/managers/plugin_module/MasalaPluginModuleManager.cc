@@ -73,6 +73,7 @@ void
 MasalaPluginModuleManager::reset() {
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     plugins_by_hierarchical_category_.clear();
+    plugins_by_hierarchical_subcategory_.clear();
     plugins_by_keyword_.clear();
     all_plugin_map_.clear();
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
@@ -206,10 +207,10 @@ MasalaPluginModuleManager::get_all_plugin_list() const {
 std::vector< std::vector< std::string > >
 MasalaPluginModuleManager::get_all_categories() const {
     std::vector< std::vector< std::string > > outvec;
-    outvec.reserve( plugins_by_hierarchical_category_.size() );
+    outvec.reserve( plugins_by_hierarchical_subcategory_.size() );
     {
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-        for( auto const & entry : plugins_by_hierarchical_category_ ) {
+        for( auto const & entry : plugins_by_hierarchical_subcategory_ ) {
             outvec.push_back( entry.first );
         }
     }
@@ -465,6 +466,14 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
                 if( it == plugins_by_hierarchical_category_.end() ) {
                     plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
                 } else {
+                    std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
+                    CHECK_OR_THROW_FOR_CLASS(
+                        !plugin_name_in_set_mutex_locked( plugin_namespace_and_name, it->second ),
+                        "add_plugin_mutex_locked",
+                        "A plugin with name \"" + plugin_namespace_and_name + "\" is already in category [ "
+                        + masala::base::utility::container::container_to_string( ss, ", " ) + " ].  Duplicate names "
+                        "are not permitted."
+                    );
                     it->second.insert( creator );
                 }
             }
@@ -476,6 +485,14 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
             if( it2 == plugins_by_hierarchical_subcategory_.end() ) {
                 plugins_by_hierarchical_subcategory_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
             } else {
+                std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
+                CHECK_OR_THROW_FOR_CLASS(
+                    !plugin_name_in_set_mutex_locked( plugin_namespace_and_name, it2->second ),
+                    "add_plugin_mutex_locked",
+                    "A plugin with name \"" + plugin_namespace_and_name + "\" is already in category [ "
+                    + masala::base::utility::container::container_to_string( ss, ", " ) + " ].  Duplicate names "
+                    "are not permitted."
+                );
                 it2->second.insert( creator );
             }
         }
@@ -564,6 +581,21 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
     }
     write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );
 } // MasalaPluginModuleManager::remove_plugin_mutex_locked()
+
+/// @brief Check whether a plugin with a given namespace and name is in a set.  Assumes
+/// that the plugin_map_mutex_ is already locked if the set is owned by the plugin module manager.
+bool
+MasalaPluginModuleManager::plugin_name_in_set_mutex_locked(
+    std::string const & plugin_namespace_and_name,
+    std::set< MasalaPluginCreatorCSP > const & creator_set
+) const {
+    for( auto const & creator : creator_set ) {
+        if( creator->get_plugin_object_namespace_and_name() == plugin_namespace_and_name ) {
+            return true;
+        }
+    }
+    return false;
+} // MasalaPluginModuleManager::plugin_name_in_set_mutex_locked()
 
 } // namespace plugin_module
 } // namespace managers

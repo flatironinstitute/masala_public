@@ -268,6 +268,14 @@ private:
         MasalaPluginCreatorCSP const & creator
     );
 
+    /// @brief Check whether a plugin with a given namespace and name is in a set.  Assumes
+    /// that the plugin_map_mutex_ is already locked if the set is owned by the plugin module manager.
+    bool
+    plugin_name_in_set_mutex_locked(
+        std::string const & plugin_namespace_and_name,
+        std::set< MasalaPluginCreatorCSP > const & creator_set
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
