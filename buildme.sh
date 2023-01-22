@@ -9,5 +9,5 @@ mkdir headers && echo "Created headers/ directory." || echo "Directory headers/ 
 rm -r headers/*
 cd headers && ln -s ../external && cd ..
 python3 ./code_templates/copy_headers.py base src headers
-#python3 ../code_templates/copy_headers.py numeric_api
+python3 ./code_templates/copy_headers.py numeric_api src headers
 python3 ./code_templates/copy_headers.py core_api src headers
