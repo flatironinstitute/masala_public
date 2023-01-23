@@ -28,6 +28,13 @@
 // Unit header:
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.hh>
 
+// Numeric API headers:
+#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
+
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 #include <vector>
 #include <string>
@@ -68,6 +75,22 @@ CostFunctionNetworkOptimizer::get_keywords() const {
         "cost_function_network",
 		"numeric"
 	};
+}
+
+/// @brief Run the optimizer on an optimization problem, and produce a solution.
+/// @details Must be implemented by derived classes.
+virtual
+numeric_api::base_classes::optimization::OptimizationSolutionCSP
+CostFunctionNetworkOptimizer::run_optimizer(
+    numeric_api::base_classes::optimization::OptimizationProblem const & problem
+) const {
+    CostFunctionNetworkOptimizationProblem const * problem_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &problenm ) );
+    CHECK_OR_THROW_FOR_CLASS(
+        problem_cast != nullptr,
+        "run_optimizer",
+        "A problem was passed to the run_optimizer function, but it was not a cost function network optimization problem."
+    );
+    return run_cost_function_network_optimizer( *problem_cast );
 }
 
 } // namespace cost_function_network
