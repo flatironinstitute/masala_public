@@ -31,7 +31,7 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <numeric_api/base_classes/optimization/OptimizationProblem.hh>
 
 namespace masala {
 namespace numeric_api {
@@ -45,7 +45,7 @@ namespace cost_function_network {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionNetworkOptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
+class CostFunctionNetworkOptimizationProblem : public masala::numeric_api::base_classes::optimization::OptimizationProblem {
 
 public:
 
