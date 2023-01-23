@@ -30,6 +30,10 @@
 // Forward declarations:
 #include <numeric_api/base_classes/optimization/Optimizer.fwd.hh>
 
+// Numeric API headers:
+#include <numeric_api/base_classes/optimization/OptimizationProblem.fwd.hh>
+#include <numeric_api/base_classes/optimization/OptimizationSolution.fwd.hh>
+
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
@@ -79,6 +83,14 @@ public:
 	/// @returns { "optimizer", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Run the optimizer on an optimization problem, and produce a solution.
+	/// @details Must be implemented by derived classes.
+	virtual
+	OptimizationSolutionCSP
+	run_optimizer(
+		OptimizationProblem const & problem
+	) const = 0;
 
 }; // class Optimizer
 
