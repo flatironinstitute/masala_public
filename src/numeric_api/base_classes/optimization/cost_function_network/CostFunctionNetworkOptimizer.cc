@@ -79,12 +79,11 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 
 /// @brief Run the optimizer on an optimization problem, and produce a solution.
 /// @details Must be implemented by derived classes.
-virtual
 numeric_api::base_classes::optimization::OptimizationSolutionCSP
 CostFunctionNetworkOptimizer::run_optimizer(
     numeric_api::base_classes::optimization::OptimizationProblem const & problem
 ) const {
-    CostFunctionNetworkOptimizationProblem const * problem_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &problenm ) );
+    CostFunctionNetworkOptimizationProblem const * problem_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &problem ) );
     CHECK_OR_THROW_FOR_CLASS(
         problem_cast != nullptr,
         "run_optimizer",

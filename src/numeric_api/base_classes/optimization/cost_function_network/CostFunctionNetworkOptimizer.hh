@@ -98,9 +98,9 @@ public:
 	/// @brief Run the optimizer on a cost function network optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	CostFunctionOptimizationSolutionCSP
+	CostFunctionNetworkOptimizationSolutionCSP
 	run_cost_function_network_optimizer(
-		CostFunctionOptimizationProblem const & problem
+		CostFunctionNetworkOptimizationProblem const & problem
 	) const = 0;
 
 }; // class CostFunctionNetworkOptimizer
