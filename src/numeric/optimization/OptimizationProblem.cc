@@ -127,7 +127,10 @@ OptimizationProblem::get_api_definition() {
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this,
                 "The OptimizationProblem class defines a numerical optimization problem.  This is "
-                "the problem reduced to numbers, with no chemical classes or concepts included.",
+                "the problem reduced to numbers, with no chemical classes or concepts included.  Typically, "
+                "one would not want to instantiate an abstract OptimizationProblem.  Instead, one would "
+                "usually use a particular sub-class defining a particular type of optimization problem, "
+                "such as a CostFunctionNetworkOptimizationProblem.",
                 false
             )
         );
