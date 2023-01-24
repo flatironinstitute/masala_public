@@ -58,6 +58,12 @@ OptimizationProblem::operator=(
     return *this;
 }
 
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+OptimizationProblem::make_independent() {
+    //GNDN
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

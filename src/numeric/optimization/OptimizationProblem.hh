@@ -70,6 +70,10 @@ public:
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
 
+	/// @brief Ensure that all data are unique and not shared
+	/// (i.e. everytihng is deep-cloned.)
+	void make_independent();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

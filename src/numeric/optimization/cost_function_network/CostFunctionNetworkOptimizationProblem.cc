@@ -54,6 +54,7 @@ CostFunctionNetworkOptimizationProblem::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 CostFunctionNetworkOptimizationProblem::make_independent() {
+    masala::numeric::optimization::OptimizationProblem::make_independent();
     //GNDN
 }
 
