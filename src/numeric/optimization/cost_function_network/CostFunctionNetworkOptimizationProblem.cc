@@ -107,7 +107,7 @@ CostFunctionNetworkOptimizationProblem::class_namespace() const {
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the Pose class.
+/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
 masala::base::api::MasalaObjectAPIDefinitionCWP
 CostFunctionNetworkOptimizationProblem::get_api_definition() {
     using namespace masala::base::api;

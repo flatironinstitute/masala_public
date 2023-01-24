@@ -105,7 +105,7 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the Pose class.
+    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
