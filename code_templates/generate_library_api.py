@@ -909,10 +909,19 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
         # Second, prepare the parent class .hh file.
         parentsplit = parent_namespace_and_name.split("::")
         parent_hhfile = "src"
+        parent_api_hhfile = "src"
+        parent_api_namespace_and_name = parentsplit[0]
         assert len(parentsplit) > 2
-        for i in range( 1, len(parentsplit) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
+        for i in range( 1, len(parentsplit) ) :
             parent_hhfile += "/" + parentsplit[i]
+            if i == 2 :
+                parent_api_hhfile += "_api/auto_generated_api"
+                parent_api_namespace_and_name += "_api::auto_generated_api"
+            parent_api_hhfile += "/" + parentsplit[i]
+            parent_api_namespace_and_name += "::" + parentsplit[i]
         parent_hhfile += ".hh"
+        parent_api_hhfile += "_API.hh"
+        parent_api_namespace_and_name += "_API"
 
         # Third, check the parent file for an API definition.
         parent_has_api = False
@@ -924,7 +933,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
         if parent_has_api == True :
-            return ( "#include <" + parent_hhfile[4:] + ">", parent_namespace_and_name)
+            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name)
         else :
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
 
