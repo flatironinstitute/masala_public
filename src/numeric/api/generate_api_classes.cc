@@ -25,6 +25,7 @@
 #include <numeric/api/generate_api_classes.hh>
 
 // Numeric headers
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 namespace masala {
 namespace numeric {
@@ -38,7 +39,7 @@ namespace api {
         std::vector< masala::base::MasalaObjectSP > outvec;
 
         // Add to this vector whenever a class is added with a defined API:
-        //outvec.emplace_back( masala::make_shared< masala::core::pose::Pose >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;

@@ -33,6 +33,9 @@
 // Parent header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -87,7 +90,28 @@ public:
 	/// @returns "masala::numeric::optimization::cost_function_network".
 	std::string
 	class_namespace() const override;
-	
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the Pose class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex for locking this object.
+	std::mutex problem_mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 

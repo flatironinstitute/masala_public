@@ -29,6 +29,11 @@
 #include <vector>
 #include <string>
 
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -78,6 +83,56 @@ CostFunctionNetworkOptimizationProblem::class_name() const {
 std::string
 CostFunctionNetworkOptimizationProblem::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the Pose class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+CostFunctionNetworkOptimizationProblem::get_api_definition() {
+    using namespace masala::base::api;
+
+    if( api_definition_ == nullptr ) {
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The CostFunctionNetworkOptimizationProblem class defines a numerical cost function "
+                "optimization problem.  This is the problem reduced to numbers, with no chemical classes "
+                "or concepts included.",
+                false
+            )
+        );
+
+        // Constructors:
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationProblem > > (
+                class_name(),
+                "Creates an empty CostFunctionNetworkOptimizationProblem."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < CostFunctionNetworkOptimizationProblem, CostFunctionNetworkOptimizationProblem const & > > (
+                class_name(),
+                "Copy constructor: copies an input CostFunctionNetworkOptimizationProblem.",
+                "src", "The input CostFunctionNetworkOptimizationProblem to copy.  Unaltered by this operation."
+            )
+        );
+
+        // Work functions:
+
+
+        // Getters:
+
+
+        // Setters:
+
+        api_definition_ = api_def; //Make const.
+    }
+
+    return api_definition_;
 }
 
 } // namespace cost_function_network
