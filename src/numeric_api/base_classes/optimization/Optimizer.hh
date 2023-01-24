@@ -31,7 +31,7 @@
 #include <numeric_api/base_classes/optimization/Optimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric/optimization/OptimizationProblem.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/OptimizationProblem_API.fwd.hh>
 #include <numeric/optimization/OptimizationSolution.fwd.hh>
 
 // Parent header:
@@ -89,7 +89,7 @@ public:
 	virtual
 	masala::numeric::optimization::OptimizationSolutionCSP
 	run_optimizer(
-		masala::numeric::optimization::OptimizationProblem const & problem
+		masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
 	) const = 0;
 
 }; // class Optimizer

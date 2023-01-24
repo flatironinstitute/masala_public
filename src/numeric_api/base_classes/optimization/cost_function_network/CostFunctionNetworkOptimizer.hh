@@ -92,7 +92,7 @@ public:
 	virtual
 	masala::numeric::optimization::OptimizationSolutionCSP
 	run_optimizer(
-		masala::numeric::optimization::OptimizationProblem const & problem
+		masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
 	) const;
 
 	/// @brief Run the optimizer on a cost function network optimization problem, and produce a solution.
