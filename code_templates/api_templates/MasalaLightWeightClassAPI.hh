@@ -6,8 +6,9 @@
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 /// @note This file is an auto-generated API file.  Do not edit it, but instead
 /// edit the <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class's
-/// get_api_definition() function.  Also note that this is a special case
-/// API object built for a lightweight inner object that could be stack-allocated.
+/// get_api_definition() function.
+/// Also note that this is a special case API object built for a lightweight
+/// inner object that could be stack-allocated.
 
 <__CPP_HH_HEADER_GUARD__>
 
@@ -31,6 +32,8 @@
 <__DOXYGEN_BRIEF_DESCRIPTION__>
 <__DOXYGEN_DETAILED_DESCRIPTION__>
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
+/// @note Note that this is a special case API object built for a lightweight
+/// inner object that could be stack-allocated.
 class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
 
 public:

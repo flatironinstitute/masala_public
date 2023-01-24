@@ -69,19 +69,11 @@ def is_lightweight( filename : str ) -> bool :
     hhname = filename.replace(".fwd.hh", ".hh")
     with open( hhname, 'r' ) as filehandle:
         filelines = filehandle.readlines()
-    is_lightweight = None
+    is_lightweight = False
     for line in filelines:
-        linestripped = line.strip()
-        if linestripped.endswith( "inner_object_;" ) :
-            linesplit = linestripped.split()
-            assert len(linesplit) == 2
-            if linesplit[0].endswith("SP") :
-                is_lightweight = False
-                break
-            else :
-                is_lightweight = True
-                break
-    assert is_lightweight is not None, "Error in parsing file " + hhname + " to determine whether this is a lightweight API."
+        if line == "/// @note Note that this is a special case API object built for a lightweight" :
+            is_lightweight = True
+            break
     return is_lightweight
 
 ## @brief Get a list of all of the .fwd.hh files included by a header file.
