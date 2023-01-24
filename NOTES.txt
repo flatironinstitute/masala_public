@@ -44,3 +44,5 @@
 - [ ] Add API functions for OptimizationProblem and OptimizationSolution.
      - [ ] Allow APIs for pure virtual classes.
      - [ ] Define class inheritence for APIs (see above).
+
+- [ ] Abort compilation with informative error message if Z inherits from Y inherits from X, and X and Z have APIs defined but Y does not.
