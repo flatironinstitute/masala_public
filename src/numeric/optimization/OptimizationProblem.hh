@@ -33,6 +33,9 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -47,11 +50,22 @@ class OptimizationProblem : public masala::base::managers::plugin_module::Masala
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	OptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	OptimizationProblem( OptimizationProblem const & ) = default;
+	/// @details Must be explicitly defined due to mutex.
+	OptimizationProblem( OptimizationProblem const & );
+
+	/// @brief Assignment operator.
+	OptimizationProblem &
+	operator=(
+		OptimizationProblem const &
+	);
 
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
@@ -78,6 +92,32 @@ public:
 	/// @returns { "optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Allow derived classes to access the mutex for this object.
+	/// @note The mutex is mutable, and can be locked from a const function.
+	std::mutex & problem_mutex() const;
+
+	/// @brief Allow derived classes to access the API definition.
+	/// @note Could be nullptr.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex for locking this object.
+	mutable std::mutex problem_mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class OptimizationProblem
 

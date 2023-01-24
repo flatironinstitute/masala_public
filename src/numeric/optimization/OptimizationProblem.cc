@@ -35,6 +35,28 @@ namespace masala {
 namespace numeric {
 namespace optimization {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+/// @details Must be explicitly defined due to mutex.
+OptimizationProblem::OptimizationProblem(
+    OptimizationProblem const & src
+) :
+    masala::base::managers::plugin_module::MasalaPlugin(src)
+    // Nothing else gets copied, by default.
+{}
+
+/// @brief Assignment operator.
+OptimizationProblem &
+OptimizationProblem::operator=(
+    OptimizationProblem const & src
+) {
+    masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    //Nothing else gets assigned, by default.
+    return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -64,6 +86,24 @@ OptimizationProblem::get_keywords() const {
 		"optimization_problem",
 		"numeric"
 	};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Allow derived classes to access the mutex for this object.
+/// @note The mutex is mutable, and can be locked from a const function.
+std::mutex &
+OptimizationProblem::problem_mutex() const {
+    return problem_mutex_;
+}
+
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+OptimizationProblem::api_definition() {
+    return api_definition_;
 }
 
 } // namespace optimization

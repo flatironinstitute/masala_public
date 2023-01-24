@@ -43,23 +43,6 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Copy constructor.
-CostFunctionNetworkOptimizationProblem::CostFunctionNetworkOptimizationProblem(
-    CostFunctionNetworkOptimizationProblem const & src
-) :
-    masala::numeric::optimization::OptimizationProblem( src )
-{}
-
-// @brief Assignment operator.
-CostFunctionNetworkOptimizationProblem &
-CostFunctionNetworkOptimizationProblem::operator=(
-    CostFunctionNetworkOptimizationProblem const & src
-) {
-    using namespace masala::numeric::optimization;
-    OptimizationProblem::operator=( src );
-    return *this;
-}
-
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationProblemSP
 CostFunctionNetworkOptimizationProblem::deep_clone() const {
@@ -128,7 +111,8 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 CostFunctionNetworkOptimizationProblem::get_api_definition() {
     using namespace masala::base::api;
 
-    if( api_definition_ == nullptr ) {
+    if( api_definition() == nullptr ) {
+        std::lock_guard< std::mutex > lock( problem_mutex() );
 
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
@@ -163,10 +147,10 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
         // Setters:
 
-        api_definition_ = api_def; //Make const.
+        api_definition() = api_def; //Make const.
     }
 
-    return api_definition_;
+    return api_definition();
 }
 
 } // namespace cost_function_network

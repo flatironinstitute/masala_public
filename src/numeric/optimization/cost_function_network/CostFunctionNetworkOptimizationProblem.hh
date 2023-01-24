@@ -33,9 +33,6 @@
 // Parent header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
-// STL headers:
-#include <mutex>
-
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -57,11 +54,11 @@ public:
 	CostFunctionNetworkOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & );
+	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & ) = default;
 
 	// @brief Assignment operator.
 	CostFunctionNetworkOptimizationProblem &
-	operator=( CostFunctionNetworkOptimizationProblem const & );
+	operator=( CostFunctionNetworkOptimizationProblem const & ) = default;
 
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationProblem() override = default;
@@ -118,11 +115,6 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief A mutex for locking this object.
-	std::mutex problem_mutex_;
-
-	/// @brief The API definition for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
