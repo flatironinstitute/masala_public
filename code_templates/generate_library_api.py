@@ -30,6 +30,7 @@ from re import split as regex_split
 from sys import argv
 import os
 import shutil
+import re
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -57,6 +58,19 @@ def is_masala_api_class( classname : str ) -> bool :
     if len(classname_split) > 2 and classname_split[1].endswith("_api") :
         return True
     return False
+
+## @brief Read a C++ file and remove comments, returning a string of file contents.
+def slurp_file_and_remove_comments( filename : str ) -> str :
+    with open( filename, 'r' ) as filehandle :
+        filecontents = filehandle.read()
+    
+    # Remove anything between /* and */ or bewteen // and \n
+    # (Shamelessly taken from stackexchange).
+    comments = re.compile( r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"', re.DOTALL | re.MULTILINE )
+
+    return comments.sub( ' ', filecontents )
+    
+
 
 ## @brief Initialize the auto_generated_api directory, creating it if it does
 ## not exist and deleting anything in it if it does.
@@ -866,15 +880,15 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str ] :
     #TODO TODO TODO
 
-    ## First, find the parent class name.
+    # First, find the parent class name.
     assert len(namespace) > 1
     fstring = "src/"
-    for i in range( 1, len(namespace) ) :
+    for i in range( 1, len(namespace) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
         fstring += namespace[i]
         fstring += "/"
     fstring += classname + ".hh"
-    with open( fstring, 'r' ) as fhandle :
-        lines = fhandle.readlines()
+    lines = slurp_file_and_remove_comments(fstring).splitlines()
+    #for line in lines : print(line)
     parent_namespace_and_name = None
     for line in lines :
         linesplit = line.strip().split()
@@ -889,10 +903,32 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             if parent_namespace_and_name.endswith("{") :
                 parent_namespace_and_name = parent_namespace_and_name[:-1]
             print("\t\tFound parent class " + parent_namespace_and_name + ".")
-            continue
+            break
 
+    if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
+        # Second, prepare the parent class .hh file.
+        parentsplit = parent_namespace_and_name.split(":")
+        parent_hhfile = "src"
+        assert len(parentsplit) > 2
+        for i in range( 1, len(parentsplit) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
+            parent_hhfile += "/" + parentsplit[i]
+        parent_hhfile += ".hh"
 
-    ## If we reach here, there's no parent class with an API.
+        # Third, check the parent file for an API definition.
+        parent_has_api = False
+        lines = slurp_file_and_remove_comments(parent_hhfile).split() # Overwrite old lines; split by whitespace.
+        #print(lines)
+        for i in range( 0, len(lines) - 1 ) :
+            if lines[i].endswith("MasalaObjectAPIDefinitionCWP") and ( lines[i+1] == "get_api_definition" or lines[i+1] == "get_api_definition(" or lines[i+1] == "get_api_definition()" ) :
+                parent_has_api = True
+                print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
+                break
+        if parent_has_api == True :
+            return (parent_hhfile[4:], parent_namespace_and_name)
+        else :
+            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
+
+    # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
         return ( "#include <base/managers/plugin_module/MasalaPluginAPI.hh>", \
             "masala::base::managers::plugin_module::MasalaPluginAPI")
