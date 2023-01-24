@@ -25,8 +25,8 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
-#define Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
+#ifndef Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
+#define Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
 
 // Forward declarations:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
@@ -44,10 +44,8 @@ namespace cost_function_network {
 /// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
 /// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
 /// It does not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionNetworkOptimizationSolution : public masala::numeric_api::base_classes::optimization::OptimizationSolution {
+class CostFunctionNetworkOptimizationSolution : public masala::numeric::optimization::OptimizationSolution {
 
 public:
 
@@ -83,6 +81,16 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+	/// @brief Get the name of this class.
+	/// @returns "CostFunctionNetworkOptimizationSolution".
+	std::string
+	class_name() const override;
+
+	/// @brief Get the namespace for this class.
+	/// @returns "masala::numeric::optimization::cost_function_network".
+	std::string
+	class_namespace() const override;
+
 }; // class CostFunctionNetworkOptimizationSolution
 
 } // namespace cost_function_network
@@ -90,4 +98,4 @@ public:
 } // namespace numeric
 } // namesapce masala
 
-#endif // Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
+#endif // Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh

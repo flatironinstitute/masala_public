@@ -21,8 +21,6 @@
 /// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
 /// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
 /// It does not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -67,6 +65,20 @@ CostFunctionNetworkOptimizationSolution::get_keywords() const {
         "cost_function_network_optimization_solution",
 		"numeric"
 	};
+}
+
+/// @brief Get the name of this class.
+/// @returns "CostFunctionNetworkOptimizationSolution".
+std::string
+CostFunctionNetworkOptimizationSolution::class_name() const {
+    return "CostFunctionNetworkOptimizationProblem";
+}
+
+/// @brief Get the namespace for this class.
+/// @returns "masala::numeric::optimization::cost_function_network".
+std::string
+CostFunctionNetworkOptimizationSolution::class_namespace() const {
+    return "masala::numeric::optimization::cost_function_network";
 }
 
 } // namespace cost_function_network

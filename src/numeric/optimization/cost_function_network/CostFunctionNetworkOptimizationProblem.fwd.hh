@@ -20,12 +20,10 @@
 /// @brief Forward declarations for a pure virtual base class for CostFunctionNetworkOptimizationProblems.
 /// @details CostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh
-#define Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh
+#ifndef Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh
+#define Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -57,4 +55,4 @@ namespace cost_function_network {
 } // namespace numeric
 } // namesapce masala
 
-#endif //Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh
+#endif //Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_fwd_hh

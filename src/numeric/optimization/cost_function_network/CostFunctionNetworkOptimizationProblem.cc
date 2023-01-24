@@ -20,8 +20,6 @@
 /// @brief Implementation for a pure virtual base class for CostFunctionNetworkOptimizationProblems.
 /// @details CostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -66,6 +64,20 @@ CostFunctionNetworkOptimizationProblem::get_keywords() const {
 		"cost_function_network_optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the name of this class.
+/// @returns "CostFunctionNetworkOptimizationProblem".
+std::string
+CostFunctionNetworkOptimizationProblem::class_name() const {
+    return "CostFunctionNetworkOptimizationProblem";
+}
+
+/// @brief Get the namespace for this class.
+/// @returns "masala::numeric::optimization::cost_function_network".
+std::string
+CostFunctionNetworkOptimizationProblem::class_namespace() const {
+    return "masala::numeric::optimization::cost_function_network";
 }
 
 } // namespace cost_function_network
