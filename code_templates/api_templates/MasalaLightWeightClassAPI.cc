@@ -138,4 +138,28 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 
 <__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED DATA ACCESS FOR DERIVED CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::inner_object() {
+    return inner_object_;
+}
+
+/// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+/// @note Version for const access.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> const &
+<__SOURCE_CLASS_API_NAME__>::inner_object() const {
+    return inner_object_;
+}
+
+/// @brief Access the base class mutex from derived classes.
+/// @note The mutex is mutable, so this function can be const.
+std::mutex &
+<__SOURCE_CLASS_API_NAME__>::api_mutex() const {
+    return api_mutex_;
+}
+
 <__CPP_END_NAMESPACE__>

@@ -133,6 +133,23 @@ public:
 
 <__CPP_WORK_FUNCTION_PROTOTYPES__>
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED DATA ACCESS FOR DERIVED CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> & inner_object();
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    /// @note Version for const access.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & inner_object() const;
+
+    /// @brief Access the base class mutex from derived classes.
+    /// @note The mutex is mutable, so this function can be const.
+    std::mutex & api_mutex() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
