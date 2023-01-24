@@ -49,20 +49,31 @@ class CostFunctionNetworkOptimizationProblem : public masala::numeric::optimizat
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	CostFunctionNetworkOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & ) = default;
+	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & );
+
+	// @brief Assignment operator.
+	CostFunctionNetworkOptimizationProblem &
+	operator=( CostFunctionNetworkOptimizationProblem const & );
 
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationProblem() override = default;
 
-public:
+	/// @brief Make a fully independent copy of this object.
+	CostFunctionNetworkOptimizationProblemSP
+	deep_clone() const;
 
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
+	/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+	void make_independent();
+
+public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.

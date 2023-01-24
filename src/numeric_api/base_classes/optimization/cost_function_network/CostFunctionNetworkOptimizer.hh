@@ -32,7 +32,7 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.fwd.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
 
 // Parent header:
@@ -100,7 +100,7 @@ public:
 	virtual
 	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutionCSP
 	run_cost_function_network_optimizer(
-		masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem const & problem
+		masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_API const & problem
 	) const = 0;
 
 }; // class CostFunctionNetworkOptimizer

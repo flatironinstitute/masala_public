@@ -39,6 +39,40 @@ namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+CostFunctionNetworkOptimizationProblem::CostFunctionNetworkOptimizationProblem(
+    CostFunctionNetworkOptimizationProblem const & src
+) :
+    masala::numeric::optimization::OptimizationProblem( src )
+{}
+
+// @brief Assignment operator.
+CostFunctionNetworkOptimizationProblem &
+CostFunctionNetworkOptimizationProblem::operator=(
+    CostFunctionNetworkOptimizationProblem const & src
+) {
+    using namespace masala::numeric::optimization;
+    OptimizationProblem::operator=( src );
+    return *this;
+}
+
+/// @brief Make a fully independent copy of this object.
+CostFunctionNetworkOptimizationProblemSP
+CostFunctionNetworkOptimizationProblem::deep_clone() const {
+    CostFunctionNetworkOptimizationProblemSP new_problem( masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this ) );
+    new_problem->make_independent();
+    return new_problem;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+CostFunctionNetworkOptimizationProblem::make_independent() {
+    //GNDN
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
