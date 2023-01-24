@@ -592,13 +592,13 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         if is_lightweight == True :
             accessor_string = "."
             if is_derived == True :
-                object_string = "static_cast< " + classname + conststr + " >( inner_object_ )"
+                object_string = "static_cast< " + classname + conststr + " >( inner_object() )"
             else :
                 object_string = "inner_object_"
         else :
             accessor_string = "->"
             if is_derived == True :
-                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object_ )"
+                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object() )"
             else :
                 object_string = "inner_object_"
         outstring += object_string + accessor_string + fxn[namepattern + "_Name"] + "("
