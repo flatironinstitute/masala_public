@@ -142,7 +142,7 @@ protected:
 
     /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
     /// @note Version for const access.
-    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP const inner_object() const;
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP inner_object() const;
 
     /// @brief Access the base class mutex from derived classes.
     /// @note The mutex is mutable, so this function can be const.

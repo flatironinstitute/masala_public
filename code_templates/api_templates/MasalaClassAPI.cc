@@ -154,7 +154,7 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 
 /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
 /// @note Version for const access.
-<__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP const
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
 <__SOURCE_CLASS_API_NAME__>::inner_object() const {
     return inner_object_;
 }
