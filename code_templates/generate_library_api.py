@@ -473,7 +473,7 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_implementations( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_function_implementations( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool, is_derived : bool ) -> str :
     outstring = ""
     first = True
 
@@ -589,10 +589,19 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         else :
             outstring += tabchar
 
-        accessor_string = "->"
         if is_lightweight == True :
             accessor_string = "."
-        outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
+            if is_derived == True :
+                object_string = "static_cast< " + classname + conststr + " >( inner_object_ )"
+            else :
+                object_string = "inner_object_"
+        else :
+            accessor_string = "->"
+            if is_derived == True :
+                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object_ )"
+            else :
+                object_string = "inner_object_"
+        outstring += object_string + accessor_string + fxn[namepattern + "_Name"] + "("
         if ninputs > 0 :
             for i in range(ninputs) :
                 curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
@@ -1059,9 +1068,9 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class )
 
