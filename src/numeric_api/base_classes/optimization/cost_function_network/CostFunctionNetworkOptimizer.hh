@@ -32,8 +32,8 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
 
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
@@ -90,17 +90,17 @@ public:
 	/// @brief Run the optimizer on an optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	numeric_api::base_classes::optimization::OptimizationSolutionCSP
+	masala::numeric::optimization::OptimizationSolutionCSP
 	run_optimizer(
-		numeric_api::base_classes::optimization::OptimizationProblem const & problem
+		masala::numeric::optimization::OptimizationProblem const & problem
 	) const;
 
 	/// @brief Run the optimizer on a cost function network optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	CostFunctionNetworkOptimizationSolutionCSP
+	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutionCSP
 	run_cost_function_network_optimizer(
-		CostFunctionNetworkOptimizationProblem const & problem
+		masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem const & problem
 	) const = 0;
 
 }; // class CostFunctionNetworkOptimizer

@@ -29,8 +29,8 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.hh>
 
 // Numeric API headers:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -79,10 +79,11 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 
 /// @brief Run the optimizer on an optimization problem, and produce a solution.
 /// @details Must be implemented by derived classes.
-numeric_api::base_classes::optimization::OptimizationSolutionCSP
+masala::numeric::optimization::OptimizationSolutionCSP
 CostFunctionNetworkOptimizer::run_optimizer(
-    numeric_api::base_classes::optimization::OptimizationProblem const & problem
+    masala::numeric::optimization::OptimizationProblem const & problem
 ) const {
+    using namespace masala::numeric::optimization::cost_function_network;
     CostFunctionNetworkOptimizationProblem const * problem_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &problem ) );
     CHECK_OR_THROW_FOR_CLASS(
         problem_cast != nullptr,

@@ -31,8 +31,8 @@
 #include <numeric_api/base_classes/optimization/Optimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric_api/base_classes/optimization/OptimizationProblem.fwd.hh>
-#include <numeric_api/base_classes/optimization/OptimizationSolution.fwd.hh>
+#include <numeric/optimization/OptimizationProblem.fwd.hh>
+#include <numeric/optimization/OptimizationSolution.fwd.hh>
 
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
@@ -87,9 +87,9 @@ public:
 	/// @brief Run the optimizer on an optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	OptimizationSolutionCSP
+	masala::numeric::optimization::OptimizationSolutionCSP
 	run_optimizer(
-		OptimizationProblem const & problem
+		masala::numeric::optimization::OptimizationProblem const & problem
 	) const = 0;
 
 }; // class Optimizer
