@@ -877,8 +877,8 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @brief Figure out the parent class for this API class, and the include file that defines the parent class.
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str ] :
-    #TODO TODO TODO
+## @returns A tuple of ( parent include file string, parent namespace and name string, boolean representing whether this is a class derived from another API class ).
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str, bool ] :
 
     # First, find the parent class name.
     assert len(namespace) > 1
@@ -933,20 +933,20 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
         if parent_has_api == True :
-            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name)
+            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name, True )
         else :
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
         return ( "#include <base/managers/plugin_module/MasalaPluginAPI.hh>", \
-            "masala::base::managers::plugin_module::MasalaPluginAPI")
+            "masala::base::managers::plugin_module::MasalaPluginAPI", False )
     else :
         return ( "#include <base/MasalaObjectAPI.hh>", \
-            "masala::base::MasalaObjectAPI" )
+            "masala::base::MasalaObjectAPI", False )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
@@ -958,7 +958,12 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
 
-    api_base_class_include, api_base_class = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+    api_base_class_include, api_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+
+    if is_derived == False :
+        hhfile_template_to_use = hhfile_template
+    else :
+        hhfile_template_to_use = derived_hhfile_template
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
@@ -966,7 +971,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     additional_includes = []
 
     hhfile = \
-        hhfile_template \
+        hhfile_template_to_use \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + dirname_short + apiclassname + ".hh" ) \
         .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Headers for auto-generated API for\n/// " + namespace_and_source_class + " class." ) \
@@ -998,7 +1003,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -1009,12 +1014,17 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
-    api_base_class_include, api_base_class = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+    api_base_class_include, api_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+
+    if is_derived == False :
+        ccfile_template_to_use = ccfile_template
+    else :
+        ccfile_template_to_use = derived_ccfile_template
 
     additional_includes = []
 
     ccfile = \
-        ccfile_template \
+        ccfile_template_to_use \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + dirname_short + apiclassname + ".cc" ) \
         .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Implementations for auto-generated API for\n/// " + namespace_and_source_class + " class." ) \
@@ -1178,6 +1188,9 @@ ccfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.cc" )
 hhfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.hh" )
 fwdfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.fwd.hh" )
 
+derived_ccfile_template = read_file( "code_templates/api_templates/MasalaDerivedClassAPI.cc" )
+derived_hhfile_template = read_file( "code_templates/api_templates/MasalaDerivedClassAPI.hh" )
+
 lightweight_ccfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.cc" )
 lightweight_hhfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.hh" )
 lightweight_fwdfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.fwd.hh" )
@@ -1211,12 +1224,12 @@ if json_api["Elements"] is not None :
         is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
         if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
         else :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
         
         if is_plugin_class == True :
             generate_registration_function = True
