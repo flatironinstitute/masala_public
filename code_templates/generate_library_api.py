@@ -863,8 +863,34 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @brief Figure out the parent class for this API class, and the include file that defines the parent class.
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple( str, str ) :
-    TODO TODO TODO
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str ] :
+    #TODO TODO TODO
+
+    ## First, find the parent class name.
+    assert len(namespace) > 1
+    fstring = "src/"
+    for i in range( 1, len(namespace) ) :
+        fstring += namespace[i]
+        fstring += "/"
+    fstring += classname + ".hh"
+    with open( fstring, 'r' ) as fhandle :
+        lines = fhandle.readlines()
+    parent_namespace_and_name = None
+    for line in lines :
+        linesplit = line.strip().split()
+        if len(linesplit) > 2 and linesplit[0] == "class" and (linesplit[1] == classname or linesplit[1] == classname + ":") :
+            if linesplit[1] == classname + ":" :
+                startentry = 2
+            else :
+                startentry = 3
+            assert len(linesplit) > startentry + 1
+            assert linesplit[startentry] == "public"
+            parent_namespace_and_name = linesplit[startentry+1]
+            if parent_namespace_and_name.endswith("{") :
+                parent_namespace_and_name = parent_namespace_and_name[:-1]
+            print("\t\tFound parent class " + parent_namespace_and_name + ".")
+            continue
+
 
     ## If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
