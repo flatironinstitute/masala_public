@@ -907,7 +907,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
 
     if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
         # Second, prepare the parent class .hh file.
-        parentsplit = parent_namespace_and_name.split(":")
+        parentsplit = parent_namespace_and_name.split("::")
         parent_hhfile = "src"
         assert len(parentsplit) > 2
         for i in range( 1, len(parentsplit) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
@@ -924,7 +924,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
         if parent_has_api == True :
-            return (parent_hhfile[4:], parent_namespace_and_name)
+            return ( "#include <" + parent_hhfile[4:] + ">", parent_namespace_and_name)
         else :
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
 
