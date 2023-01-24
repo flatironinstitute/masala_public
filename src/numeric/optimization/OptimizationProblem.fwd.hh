@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/OptimizationProblem.fwd.hh
+/// @file src/numeric/optimization/OptimizationProblem.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for OptimizationProblems.
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
@@ -24,14 +24,13 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_fwd_hh
-#define Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_fwd_hh
+#ifndef Masala_src_numeric_optimization_OptimizationProblem_fwd_hh
+#define Masala_src_numeric_optimization_OptimizationProblem_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 
 	class OptimizationProblem;
@@ -53,8 +52,7 @@ namespace optimization {
 	using OptimizationProblemCWP = MASALA_WEAK_POINTER< OptimizationProblem const >;
 
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
 
-#endif //Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_fwd_hh
+#endif //Masala_src_numeric_optimization_OptimizationProblem_fwd_hh

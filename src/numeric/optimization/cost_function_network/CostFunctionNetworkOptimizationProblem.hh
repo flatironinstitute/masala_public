@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh
+/// @file src/numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh
 /// @brief Header for a pure virtual base class for CostFunctionNetworkOptimizationProblems.
 /// @details CostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
@@ -24,18 +24,17 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh
+#ifndef Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh
+#define Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <numeric_api/base_classes/optimization/OptimizationProblem.hh>
+#include <numeric/optimization/OptimizationProblem.hh>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 
@@ -85,8 +84,7 @@ public:
 
 } // namespace cost_function_network
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh
+#endif // Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationProblem_hh

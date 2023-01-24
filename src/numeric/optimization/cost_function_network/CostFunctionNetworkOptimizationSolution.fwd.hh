@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh
+/// @file src/numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for CostFunctionNetworkOptimizationSolutions.
 /// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
 /// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
@@ -25,14 +25,13 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh
+#ifndef Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh
+#define Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 
@@ -57,8 +56,7 @@ namespace cost_function_network {
 
 } // namespace cost_function_network
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
 
-#endif //Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh
+#endif //Masala_src_numeric__optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_fwd_hh

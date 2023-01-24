@@ -16,46 +16,47 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/OptimizationProblem.hh
-/// @brief Header for a pure virtual base class for OptimizationProblems.
-/// @details OptimizationProblems define a numerical optimization problem to be solved
-/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
+/// @file src/numeric/optimization/OptimizationSolution.hh
+/// @brief Header for a pure virtual base class for OptimizationSolutions.
+/// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
+/// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
+/// concepts.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_hh
-#define Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_hh
+#ifndef Masala_src_numeric_optimization_OptimizationSolution_hh
+#define Masala_src_numeric_optimization_OptimizationSolution_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/OptimizationProblem.fwd.hh>
+#include <numeric/optimization/OptimizationSolution.fwd.hh>
 
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 
-/// @brief A pure virtual base class for OptimizationProblems.
-/// @details OptimizationProblems define a numerical optimization problem to be solved
-/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
+/// @brief A pure virtual base class for OptimizationSolutions.
+/// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
+/// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
+/// concepts.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class OptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
+class OptimizationSolution : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
 	/// @brief Default constructor.
-	OptimizationProblem() = default;
+	OptimizationSolution() = default;
 
 	/// @brief Copy constructor.
-	OptimizationProblem( OptimizationProblem const & ) = default;
+	OptimizationSolution( OptimizationSolution const & ) = default;
 
 	/// @brief Destructor.
-	~OptimizationProblem() override = default;
+	~OptimizationSolution() override = default;
 
 public:
 
@@ -65,7 +66,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "OptimizationProblem" } }
+	/// @returns { { "OptimizationSolution" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -75,16 +76,15 @@ public:
 	get_categories() const override;
 
 	/// @brief Get the keywords for this plugin class.  Default for all
-	/// optimization problems; may be overridden by derived classes.
-	/// @returns { "optimization_problem", "numeric" }
+	/// optimization solutions; may be overridden by derived classes.
+	/// @returns { "optimization_solution", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
 
-}; // class OptimizationProblem
+}; // class OptimizationSolution
 
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_OptimizationProblem_hh
+#endif // Masala_src_numeric_optimization_OptimizationSolution_hh

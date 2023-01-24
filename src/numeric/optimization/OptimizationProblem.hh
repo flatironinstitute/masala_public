@@ -16,50 +16,45 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh
-/// @brief Header for a pure virtual base class for CostFunctionNetworkOptimizationSolutions.
-/// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
-/// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
-/// It does not contain any chemistry-specific concepts.
+/// @file src/numeric/optimization/OptimizationProblem.hh
+/// @brief Header for a pure virtual base class for OptimizationProblems.
+/// @details OptimizationProblems define a numerical optimization problem to be solved
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
+#ifndef Masala_src_numeric_optimization_OptimizationProblem_hh
+#define Masala_src_numeric_optimization_OptimizationProblem_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
+#include <numeric/optimization/OptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <numeric_api/base_classes/optimization/OptimizationSolution.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
-namespace cost_function_network {
 
-
-/// @brief A pure virtual base class for CostFunctionNetworkOptimizationSolutions.
-/// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
-/// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
-/// It does not contain any chemistry-specific concepts.
+/// @brief A pure virtual base class for OptimizationProblems.
+/// @details OptimizationProblems define a numerical optimization problem to be solved
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionNetworkOptimizationSolution : public masala::numeric_api::base_classes::optimization::OptimizationSolution {
+class OptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
 	/// @brief Default constructor.
-	CostFunctionNetworkOptimizationSolution() = default;
+	OptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizationSolution( CostFunctionNetworkOptimizationSolution const & ) = default;
+	OptimizationProblem( OptimizationProblem const & ) = default;
 
 	/// @brief Destructor.
-	~CostFunctionNetworkOptimizationSolution() override = default;
+	~OptimizationProblem() override = default;
 
 public:
 
@@ -69,7 +64,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "CostFunctionNetworkOptimizationSolution" } }
+	/// @returns { { "OptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -79,17 +74,15 @@ public:
 	get_categories() const override;
 
 	/// @brief Get the keywords for this plugin class.  Default for all
-	/// optimization solutions; may be overridden by derived classes.
-	/// @returns { "optimization_solution", "cost_function_network_optimization_solution", "numeric" }
+	/// optimization problems; may be overridden by derived classes.
+	/// @returns { "optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
 
-}; // class CostFunctionNetworkOptimizationSolution
+}; // class OptimizationProblem
 
-} // namespace cost_function_network
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
+#endif // Masala_src_numeric_optimization_OptimizationProblem_hh

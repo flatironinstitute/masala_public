@@ -16,27 +16,24 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.cc
-/// @brief Implementation for a pure virtual base class for CostFunctionNetworkOptimizationSolutions.
-/// @details A CostFunctionNetworkOptimizationSolution contains the solution to a particular
-/// CostFunctionNetworkOptimizationProblem, after it is solved by a suitable CostFunctionNetworkOptimizer.
-/// It does not contain any chemistry-specific concepts.
+/// @file src/numeric/optimization/OptimizationProblem.cc
+/// @brief Implementation for a pure virtual base class for OptimizationProblems.
+/// @details OptimizationProblems define a numerical optimization problem to be solved
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
+#include <numeric/optimization/OptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
 #include <string>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
-namespace cost_function_network {
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,33 +42,30 @@ namespace cost_function_network {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "CostFunctionNetworkOptimizationSolution" } }
+/// @returns { { "OptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outher vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-CostFunctionNetworkOptimizationSolution::get_categories() const {
+OptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "CostFunctionNetworkOptimizationSolution" }
+		{ "OptimizationProblem" }
 	};
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
-/// optimization solutions; may be overridden by derived classes.
-/// @returns { "optimization_solution", "cost_function_network_optimization_solution", "numeric" }
+/// optimization problems; may be overridden by derived classes.
+/// @returns { "optimization_problem", "numeric" }
 std::vector< std::string >
-CostFunctionNetworkOptimizationSolution::get_keywords() const {
+OptimizationProblem::get_keywords() const {
 	return std::vector< std::string > {
-		"optimization_solution",
-        "cost_function_network_optimization_solution",
+		"optimization_problem",
 		"numeric"
 	};
 }
 
-} // namespace cost_function_network
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namesapce masala
