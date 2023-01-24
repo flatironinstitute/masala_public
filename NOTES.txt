@@ -40,3 +40,7 @@
 
 - [ ] Add explicit conversion functions for API classes whose inner objects are related by inheritence.
      - [ ] Re-enable the selectors' generate_selection() functions.
+- [ ] Add API functions for CostFunctionNetworkOptimizationSolution.
+- [ ] Add API functions for OptimizationProblem and OptimizationSolution.
+     - [ ] Allow APIs for pure virtual classes.
+     - [ ] Define class inheritence for APIs (see above).
