@@ -563,7 +563,10 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
             ismasalaAPIobj = True
 
-        outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        if is_derived == True :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+        else :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
             if ismasalaAPIptr :
                 outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We\n"
