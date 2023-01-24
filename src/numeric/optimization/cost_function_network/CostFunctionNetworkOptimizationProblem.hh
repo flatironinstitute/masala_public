@@ -115,6 +115,17 @@ public:
 	/// @brief Reset all data in this object.
 	void reset();
 
+	/// @brief Add onebody penalty for a choice at a node.
+	/// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
+	/// If the number of choices at the node is currently less than the node index, the number of
+	/// choices is increased.
+	void
+	set_onebody_penalty(
+		masala::numeric::Size const node_index,
+		masala::numeric::Size const choice_index,
+		masala::numeric::Real const penalty
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
