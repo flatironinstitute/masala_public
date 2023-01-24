@@ -33,6 +33,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -103,6 +104,14 @@ CostFunctionNetworkOptimizationProblem::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network";
 }
 
+/// @brief Reset all data in this object.
+void
+CostFunctionNetworkOptimizationProblem::reset() {
+    n_choices_by_node_index_.clear();
+    single_node_penalties_.clear();
+    pairwise_node_penalties_.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -142,11 +151,15 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
         // Work functions:
 
-
         // Getters:
 
-
         // Setters:
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "
+                "all choices for each node.", std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
+            )
+        );
 
         api_definition() = api_def; //Make const.
     }

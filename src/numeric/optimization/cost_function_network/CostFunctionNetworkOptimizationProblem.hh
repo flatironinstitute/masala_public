@@ -19,7 +19,10 @@
 /// @file src/numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh
 /// @brief Header for a pure virtual base class for CostFunctionNetworkOptimizationProblems.
 /// @details CostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
-/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.  A cost function network problem consists
+/// of N nodes with D_N candidate states per node.  A solution is a selection of one state per node.  For each candidate state,
+/// there is a cost (or bonus) to selecting it, and for each pair of states, there is a possible cost (or bonus) to selecting
+/// both of the pair.  Additional non-pairwise constraints can be added.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -33,6 +36,13 @@
 // Parent header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
+// Numeric headers:
+#include <numeric/types.hh>
+
+// STL headers:
+#include <map>
+#include <utility> //For std::pair.
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -40,7 +50,10 @@ namespace cost_function_network {
 
 /// @brief A pure virtual base class for CostFunctionNetworkOptimizationProblems.
 /// @details CostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
-/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.  A cost function network problem consists
+/// of N nodes with D_N candidate states per node.  A solution is a selection of one state per node.  For each candidate state,
+/// there is a cost (or bonus) to selecting it, and for each pair of states, there is a possible cost (or bonus) to selecting
+/// both of the pair.  Additional non-pairwise constraints can be added.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::OptimizationProblem {
 
@@ -99,6 +112,9 @@ public:
 	std::string
 	class_namespace() const override;
 
+	/// @brief Reset all data in this object.
+	void reset();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +131,20 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief The number of choices at each node index.
+	/// @details Resizes automatically.
+	std::map< masala::numeric::Size, masala::numeric::Size > n_choices_by_node_index_;
+
+	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
+	/// @details Any penalty not specified is assumed to be zero.
+	std::map< masala::numeric::Size, std::map< masala::numeric::Size, masala::numeric::Real > > single_node_penalties_;
+
+	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
+	/// by choice index (corresponding to node indices).
+	std::map<
+		std::pair< masala::numeric::Size, masala::numeric::Size >, //The node indices.
+		std::map< std::pair< masala::numeric::Size, masala::numeric::Size >, masala::numeric::Real > //The choice indices.
+	> pairwise_node_penalties_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
