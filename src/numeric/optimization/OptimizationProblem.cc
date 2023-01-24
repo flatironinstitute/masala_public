@@ -17,15 +17,18 @@
 */
 
 /// @file src/numeric/optimization/OptimizationProblem.cc
-/// @brief Implementation for a pure virtual base class for OptimizationProblems.
+/// @brief Implementation for a base class for OptimizationProblems.
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
 #include <numeric/optimization/OptimizationProblem.hh>
+
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -92,6 +95,71 @@ OptimizationProblem::get_keywords() const {
 		"optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the class name.
+/// @returns "OptimizationProblem".
+std::string
+OptimizationProblem::class_name() const {
+    return "OptimizationProblem";
+}
+
+/// @brief Get the class namespace.
+/// @returns "masala::numeric::optimization".
+std::string
+OptimizationProblem::class_namespace() const {
+    return "masala::numeric::optimization";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the OptimizationProblem class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+OptimizationProblem::get_api_definition() {
+    using namespace masala::base::api;
+
+    if( api_definition_ == nullptr ) {
+        std::lock_guard< std::mutex > lock( problem_mutex_ );
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The OptimizationProblem class defines a numerical optimization problem.  This is "
+                "the problem reduced to numbers, with no chemical classes or concepts included.",
+                false
+            )
+        );
+
+        // Constructors:
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < OptimizationProblem > > (
+                class_name(),
+                "Creates an empty OptimizationProblem.  Cannot be used directly, but can "
+                "be called from constructors of derived classes."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < OptimizationProblem, OptimizationProblem const & > > (
+                class_name(),
+                "Copy constructor: copies an input OptimizationProblem.",
+                "src", "The input OptimizationProblem to copy.  Unaltered by this operation."
+            )
+        );
+
+        // Work functions:
+
+
+        // Getters:
+
+
+        // Setters:
+
+        api_definition_ = api_def; //Make const.
+    }
+
+    return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -17,11 +17,9 @@
 */
 
 /// @file src/numeric/optimization/OptimizationProblem.fwd.hh
-/// @brief Forward declarations for a pure virtual base class for OptimizationProblems.
+/// @brief Forward declarations for a base class for OptimizationProblems.
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_OptimizationProblem_fwd_hh

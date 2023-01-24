@@ -17,11 +17,9 @@
 */
 
 /// @file src/numeric/optimization/OptimizationProblem.hh
-/// @brief Header for a pure virtual base class for OptimizationProblems.
+/// @brief Header for a base class for OptimizationProblems.
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_OptimizationProblem_hh
@@ -40,11 +38,9 @@ namespace masala {
 namespace numeric {
 namespace optimization {
 
-/// @brief A pure virtual base class for OptimizationProblems.
+/// @brief A base class for OptimizationProblems.
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class OptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -96,6 +92,24 @@ public:
 	/// @returns { "optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Get the class name.
+	/// @returns "OptimizationProblem".
+	std::string class_name() const override;
+
+	/// @brief Get the class namespace.
+	/// @returns "masala::numeric::optimization".
+	std::string class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the OptimizationProblem class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
 protected:
 
