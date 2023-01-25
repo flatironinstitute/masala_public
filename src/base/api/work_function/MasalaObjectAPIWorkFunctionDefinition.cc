@@ -52,7 +52,7 @@ MasalaObjectAPIWorkFunctionDefinition::MasalaObjectAPIWorkFunctionDefinition(
     std::string const & work_function_name,
     std::string const & work_function_description,
     bool const is_const,
-    bool const returns_this_ref
+    bool const returns_this_ref,
     bool const is_virtual_non_override_fxn,
     bool const is_override_of_api_virtual_fxn
 ) :
