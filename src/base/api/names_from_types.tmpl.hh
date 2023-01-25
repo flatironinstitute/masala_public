@@ -127,6 +127,38 @@ namespace api {
         return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " const >";
     }
 
+    /// @brief Manually override for pairs.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1, T2 >> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + " >";
+    }
+
+    /// @brief Manually override for const pairs.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1, T2 > const> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + " > const";
+    }
+
+    /// @brief Manually override for pairs of const elements.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1 const, T2 const >> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + " const, "
+            + name_from_type( type<T2>() ) + " const >";
+    }
+
+    /// @brief Manually override for pairs pairs of const elements.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1 const, T2 const > const> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + " const, "
+            + name_from_type( type<T2>() ) + " const > const";
+    }
+
     /// @brief Manually override for sets.
     template<class T>
     std::string
