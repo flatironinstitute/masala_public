@@ -94,8 +94,8 @@ public:
 		input_parameter0_description_(input_parameter0_description),
 		input_parameter1_name_(input_parameter1_name),
 		input_parameter1_description_(input_parameter1_description),
-		input_parameter1_name_(input_parameter2_name),
-		input_parameter1_description_(input_parameter2_description),
+		input_parameter2_name_(input_parameter2_name),
+		input_parameter2_description_(input_parameter2_description),
 		setter_function_( setter_function )
 	{}
 
