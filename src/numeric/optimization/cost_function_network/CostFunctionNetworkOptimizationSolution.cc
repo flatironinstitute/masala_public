@@ -26,6 +26,9 @@
 // Unit header:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
@@ -43,6 +46,17 @@ namespace cost_function_network {
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Constructor that initializes from the problem description.
+/// @details The problem definition is deep-cloned, and a shared pointer to
+/// a copy is stored with the solution.
+CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
+    CostFunctionNetworkOptimizationProblem const & problem_in
+) :
+    masala::numeric::optimization::OptimizationSolution(),
+    problem_( problem_in.deep_clone() )
+{}
+
 
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationSolutionSP
@@ -132,6 +146,14 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationSolution > > (
                 class_name(),
                 "Creates an empty CostFunctionNetworkOptimizationSolution."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblem const & > > (
+                class_name(),
+                "Initialization constructor: initialize the solution from the problem definition.  (The problem definition "
+                "deep-cloned and stored for future reference).",
+                "problem_in", "The problem definition.  Copied but otherwise unaltered by this operation."
             )
         );
         api_def->add_constructor(

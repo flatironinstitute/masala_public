@@ -31,6 +31,9 @@
 // Forward declarations:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+
 // Parent header:
 #include <numeric/optimization/OptimizationSolution.hh>
 
@@ -49,8 +52,19 @@ class CostFunctionNetworkOptimizationSolution : public masala::numeric::optimiza
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	CostFunctionNetworkOptimizationSolution() = default;
+
+	/// @brief Constructor that initializes from the problem description.
+	/// @details The problem definition is deep-cloned, and a shared pointer to
+	/// a copy is stored with the solution.
+	CostFunctionNetworkOptimizationSolution(
+		CostFunctionNetworkOptimizationProblem const & problem_in
+	);
 
 	/// @brief Copy constructor.
 	CostFunctionNetworkOptimizationSolution( CostFunctionNetworkOptimizationSolution const & ) = default;
@@ -111,6 +125,15 @@ public:
     /// @brief Get a description of the API for the CostFunctionNetworkOptimizationSolution class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The problem setup, cloned and stored by const-owning pointer for reference.
+	CostFunctionNetworkOptimizationProblemCSP problem_;
 
 }; // class CostFunctionNetworkOptimizationSolution
 
