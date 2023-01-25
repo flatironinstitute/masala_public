@@ -34,6 +34,7 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
@@ -106,6 +107,61 @@ std::string
 CostFunctionNetworkOptimizationProblem::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the total number of nodes in this problem.
+/// @details This is the index of the highest-numbered node that has been
+/// referred to plus one (since nodes are zero-indexed), NOT the number of
+/// nodes with multiple choices.
+masala::numeric::Size
+CostFunctionNetworkOptimizationProblem::total_nodes() const {
+    if( n_choices_by_node_index_.empty() ) { return 0; }
+    return n_choices_by_node_index_.rbegin()->first + 1; //Maps are sorted; last element is the biggest.
+}
+
+/// @brief Get the total number of nodes in this problem that have at least
+/// two choices associated with them.
+masala::numeric::Size
+CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
+    if( n_choices_by_node_index_.empty() ) { return 0; }
+    numeric::Size accumulator(0);
+    for(
+        std::map< numeric::Size, numeric::Size >::const_iterator it( n_choices_by_node_index_.begin() );
+        it != n_choices_by_node_index_.end();
+        ++it
+    ) {
+        if( it->second > 1 ) {
+            ++accumulator;
+        }
+    }
+    return accumulator;
+}
+
+/// @brief Get the product of the number of choices at each node (the total number
+/// of combinatorial solutions to this cost function network problem).
+/// @note Due to integer overruns, this is a floating-point number, not an integer.
+masala::numeric::Real
+CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
+    if( n_choices_by_node_index_.empty() ) { return 1.0; }
+    numeric::Real product(1.0);
+    for(
+        std::map< numeric::Size, numeric::Size >::const_iterator it( n_choices_by_node_index_.begin() );
+        it != n_choices_by_node_index_.end();
+        ++it
+    ) {
+        if( it->second > 1 ) {
+            product *= static_cast< numeric::Real >( it->second );
+        }
+    }
+    return product;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// SETTERS
+////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Reset all data in this object.
 void
@@ -221,6 +277,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
 
         // Constructors:
+
         api_def->add_constructor(
             masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationProblem > > (
                 class_name(),
@@ -239,7 +296,42 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
         // Getters:
 
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Size > >(
+                "total_nodes", "Get the total number of nodes in this problem.  This is the index of the "
+                "highest-numbered node that has been referred to plus one (since nodes are zero-indexed), "
+                "NOT the number of nodes with multiple choices.",
+
+                "total_nodes", "The total number of nodes in this problem (whether or not they have choices).",
+
+                std::bind( &CostFunctionNetworkOptimizationProblem::total_nodes, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Size > >(
+                "total_variable_nodes", "Get the total number of nodes in this problem that have at least "
+	            "two choices associated with them.",
+
+                "total_variable_nodes", "The total number of nodes in this problem for which choices exist.",
+
+                std::bind( &CostFunctionNetworkOptimizationProblem::total_variable_nodes, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+                "total_combinatorial_solutions", "Get the product of the number of choices at each node "
+                "(the total number of combinatorial solutions to this cost function network problem).  "
+                "Note that due to possible integer overruns, the return value is a floating-point number, "
+                "not an integer.",
+
+                "total_combinatorial_solutions", "The total number of combinatorial solutions to this problem.",
+
+                std::bind( &CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions, this )
+            )
+        );
+
         // Setters:
+
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "

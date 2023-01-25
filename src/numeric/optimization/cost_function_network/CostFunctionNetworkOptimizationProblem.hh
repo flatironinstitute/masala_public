@@ -85,6 +85,10 @@ public:
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
 	/// @returns { { "CostFunctionNetworkOptimizationProblem" } }
@@ -111,6 +115,36 @@ public:
 	/// @returns "masala::numeric::optimization::cost_function_network".
 	std::string
 	class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the total number of nodes in this problem.
+	/// @details This is the index of the highest-numbered node that has been
+	/// referred to plus one (since nodes are zero-indexed), NOT the number of
+	/// nodes with multiple choices.
+	masala::numeric::Size
+	total_nodes() const;
+
+	/// @brief Get the total number of nodes in this problem that have at least
+	/// two choices associated with them.
+	masala::numeric::Size
+	total_variable_nodes() const;
+
+	/// @brief Get the product of the number of choices at each node (the total number
+	/// of combinatorial solutions to this cost function network problem).
+	/// @note Due to integer overruns, this is a floating-point number, not an integer.
+	masala::numeric::Real
+	total_combinatorial_solutions() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// SETTERS
+////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Reset all data in this object.
 	void reset();
