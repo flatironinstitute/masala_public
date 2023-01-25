@@ -451,8 +451,12 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                 outstring += "  (The return value is an enum.)\n"
             else :
                 outstring += "\n"
+            if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
+                outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
+            if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
+                outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
         outstring += tabchar + fxn[namepattern + "_Name"] + "("
 
@@ -461,14 +465,19 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             conststr = ""
 
+        if fxn["Is_Override_Of_Base_API_Virtual_Function"] == True :
+            overridestr = " override"
+        else :
+            overridestr = ""
+
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
-            outstring += "\n" + tabchar + ")" + conststr + ";"
+            outstring += "\n" + tabchar + ")" + conststr + overridestr + ";"
         else :
-            outstring += ")" + conststr + ";"
+            outstring += ")" + conststr + overridestr + ";"
     return outstring
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
