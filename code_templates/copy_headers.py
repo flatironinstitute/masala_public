@@ -71,9 +71,13 @@ def is_lightweight( filename : str ) -> bool :
         filelines = filehandle.readlines()
     is_lightweight = False
     for line in filelines:
-        if line == "/// @note Note that this is a special case API object built for a lightweight" :
+        if line.strip() == "/// @note Note that this is a special case API object built for a lightweight" :
             is_lightweight = True
             break
+    # if is_lightweight == True :
+    #     print( filename + " IS LIGHTWEIGHT" )
+    # else :
+    #     print( filename + " IS NOT LIGHTWEIGHT")
     return is_lightweight
 
 ## @brief Get a list of all of the .fwd.hh files included by a header file.
