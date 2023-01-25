@@ -34,6 +34,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -181,6 +182,15 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "
                 "all choices for each node.", std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< numeric::Size, numeric::Size, numeric::Real > >(
+                "set_onebody_penalty", "Set the one-node penalty for a particular choice index selected at a particular node index.",
+                "node_index", "The index of the node for which we're setting a penalty.",
+                "choice_index", "The index of the choice at this node for which we're setting a penalty.",
+                "penalty", "The value of the penalty (or, if negative, bonus).",
+                std::bind( &CostFunctionNetworkOptimizationProblem::set_onebody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
 
