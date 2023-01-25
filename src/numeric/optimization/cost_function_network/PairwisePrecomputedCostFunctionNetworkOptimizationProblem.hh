@@ -1,0 +1,204 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh
+/// @brief Header for a pure virtual base class for PairwisePrecomputedCostFunctionNetworkOptimizationProblems.
+/// @details PairwisePrecomputedCostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.  A cost function network problem consists
+/// of N nodes with D_N candidate states per node.  A solution is a selection of one state per node.  For each candidate state,
+/// there is a cost (or bonus) to selecting it, and for each pair of states, there is a possible cost (or bonus) to selecting
+/// both of the pair.  Additional non-pairwise constraints can be added.
+/// @note Since this class does not implement class_name() or class_namespace()
+/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#ifndef Masala_src_numeric_optimization_cost_function_network_PairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh
+#define Masala_src_numeric_optimization_cost_function_network_PairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh
+
+// Forward declarations:
+#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.fwd.hh>
+
+// Parent header:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+
+// Numeric headers:
+#include <numeric/types.hh>
+
+// STL headers:
+#include <map>
+#include <utility> //For std::pair.
+
+namespace masala {
+namespace numeric {
+namespace optimization {
+namespace cost_function_network {
+
+/// @brief A pure virtual base class for PairwisePrecomputedCostFunctionNetworkOptimizationProblems.
+/// @details PairwisePrecomputedCostFunctionNetworkOptimizationProblems define a numerical cost function network optimization problem to be solved
+/// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.  A cost function network problem consists
+/// of N nodes with D_N candidate states per node.  A solution is a selection of one state per node.  For each candidate state,
+/// there is a cost (or bonus) to selecting it, and for each pair of states, there is a possible cost (or bonus) to selecting
+/// both of the pair.  Additional non-pairwise constraints can be added.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class PairwisePrecomputedCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem {
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Default constructor.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblem() = default;
+
+	/// @brief Copy constructor.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblem( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+
+	// @brief Assignment operator.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblem &
+	operator=( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+
+	/// @brief Destructor.
+	~PairwisePrecomputedCostFunctionNetworkOptimizationProblem() override = default;
+
+	/// @brief Make a fully independent copy of this object.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblemSP
+	deep_clone() const;
+
+	/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+	void make_independent();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the category or categories for this plugin class.  Default for all
+	/// optimization problems; may be overridden by derived classes.
+	/// @returns { { "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
+	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
+	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
+	/// in more than one hierarchical category (in which case there would be more than one
+	/// entry in the outer vector), but must be in at least one.  The first one is used as
+	/// the primary key.
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the keywords for this plugin class.  Default for all
+	/// optimization problems; may be overridden by derived classes.
+	/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
+	std::vector< std::string >
+	get_keywords() const override;
+
+	/// @brief Get the name of this class.
+	/// @returns "PairwisePrecomputedCostFunctionNetworkOptimizationProblem".
+	std::string
+	class_name() const override;
+
+	/// @brief Get the namespace for this class.
+	/// @returns "masala::numeric::optimization::cost_function_network".
+	std::string
+	class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Reset all data in this object.
+	void
+	reset() override;
+
+	/// @brief Add onebody penalty for a choice at a node.
+	/// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
+	/// If the number of choices at the node is currently less than the node index, the number of
+	/// choices is increased.
+	void
+	set_onebody_penalty(
+		masala::numeric::Size const node_index,
+		masala::numeric::Size const choice_index,
+		masala::numeric::Real const penalty
+	);
+
+    /// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
+    /// pair of node indices.
+    /// @param[in] node_indices A pair of node indices.  The lower index should be first.  (This function will
+    /// throw if it is not, since it makes the choice indices ambiguous).
+    /// @param[in] choice_indices The corresponding pair of choice indices.  The first entry should be the choice
+    /// index for the lower-numbered node, and the second should be the choice index for the higher-numbered node.
+    /// @param[in] penalty The value of the two-node penalty (or, if negative, bonus).
+	/// @details If a node has not yet been listed, it's added to the n_choices_by_node_index_ map.
+	/// If the number of choices at the node is currently less than the node index, the number of
+	/// choices is increased.
+    void
+    set_twobody_penalty(
+        std::pair< masala::numeric::Size, masala::numeric::Size > const & node_indices,
+        std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
+        masala::numeric::Real penalty
+    );
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the PairwisePrecomputedCostFunctionNetworkOptimizationProblem class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
+	/// @details Any penalty not specified is assumed to be zero.
+	std::map< masala::numeric::Size, std::map< masala::numeric::Size, masala::numeric::Real > > single_node_penalties_;
+
+	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
+	/// by choice index (corresponding to node indices).
+	std::map<
+		std::pair< masala::numeric::Size, masala::numeric::Size >, //The node indices.
+		std::map< std::pair< masala::numeric::Size, masala::numeric::Size >, masala::numeric::Real > //The choice indices.
+	> pairwise_node_penalties_;
+
+}; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
+
+} // namespace cost_function_network
+} // namespace optimization
+} // namespace numeric
+} // namesapce masala
+
+#endif // Masala_src_numeric_optimization_cost_function_network_PairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh

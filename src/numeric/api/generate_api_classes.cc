@@ -28,6 +28,7 @@
 #include <numeric/optimization/OptimizationProblem.hh>
 #include <numeric/optimization/OptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 
 namespace masala {
@@ -45,6 +46,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationProblem >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationSolution >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolution >() );
         // ADD MORE ENTRIES HERE
 
