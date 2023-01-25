@@ -265,6 +265,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all choices for each node.",
+                true, false,
                 std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
             )
         );
@@ -277,6 +278,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
                 "min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
                 "been set for this node to a value greater than this, then this does nothing.",
+
+                false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
         );

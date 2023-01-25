@@ -239,7 +239,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "
-                "all choices for each node.", std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset, this )
+                "all choices for each node.", false, true,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset, this )
             )
         );
         api_def->add_setter(
@@ -247,7 +248,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "set_onebody_penalty", "Set the one-node penalty for a particular choice index selected at a particular node index.",
                 "node_index", "The index of the node for which we're setting a penalty.",
                 "choice_index", "The index of the choice at this node for which we're setting a penalty.",
-                "penalty", "The value of the penalty (or, if negative, bonus).",
+                "penalty", "The value of the penalty (or, if negative, bonus).", false, false,
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
@@ -263,6 +264,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "node.",
 
                 "penalty", "The value of the penalty (or, if negative, bonus).",
+
+                false, false,
 
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )

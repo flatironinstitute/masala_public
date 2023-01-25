@@ -153,6 +153,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPISetterDefinition_OneInput < masala::core::chemistry::atoms::AtomInstanceCSP > >(
                 "add_atom", "Add an atom to this selection.",
                 "atom_in", "The atom to add to the selection.",
+                false, false,
                 std::bind( &AtomSelection::add_atom, this, std::placeholders::_1 )
             )
         );
