@@ -464,6 +464,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if i+1 < ninputs :
+                    outstring += ","
             outstring += "\n" + tabchar + ")" + conststr + ";"
         else :
             outstring += ")" + conststr + ";"
@@ -546,6 +548,8 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if i+1 < ninputs :
+                    outstring += ","
             outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
