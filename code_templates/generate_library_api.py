@@ -914,7 +914,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
 ## @returns A tuple of ( parent include file string, parent namespace and name string, boolean representing whether this is a class derived from another API class ).
 def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str, bool ] :
-
+    #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
     fstring = "src/"
@@ -943,8 +943,13 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
     if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
         # Second, prepare the parent class .hh file.
         parentsplit = parent_namespace_and_name.split("::")
-        parent_hhfile = "src"
-        parent_api_hhfile = "src"
+        assert len(parentsplit) > 0
+        if parentsplit[0] == project_name :
+            parent_hhfile = "src"
+            parent_api_hhfile = "src"
+        else :
+            parent_hhfile = "headers/" + parentsplit[0] + "/headers"
+            parent_api_hhfile = "headers/" + parentsplit[0] + "/headers"
         parent_api_namespace_and_name = parentsplit[0]
         assert len(parentsplit) > 2
         for i in range( 1, len(parentsplit) ) :
@@ -960,6 +965,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
 
         # Third, check the parent file for an API definition.
         parent_has_api = False
+        #print( parent_hhfile )
         lines = slurp_file_and_remove_comments(parent_hhfile).split() # Overwrite old lines; split by whitespace.
         #print(lines)
         for i in range( 0, len(lines) - 1 ) :
