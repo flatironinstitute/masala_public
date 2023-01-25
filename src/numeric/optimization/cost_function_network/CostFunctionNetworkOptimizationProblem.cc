@@ -35,6 +35,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 namespace masala {
@@ -114,6 +115,24 @@ CostFunctionNetworkOptimizationProblem::reset() {
     pairwise_node_penalties_.clear();
 }
 
+/// @brief Set the (minimum) number of choices at a node.
+/// @details If the number of choices has already been set to greater than the
+/// specified number, this does nothing.
+void
+CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
+    masala::numeric::Size const node_index,
+    masala::numeric::Size const min_choice_count
+) {
+    std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
+    if( it == n_choices_by_node_index_.end() ) {
+        n_choices_by_node_index_[node_index] = min_choice_count;
+    } else {
+        if( it->second < min_choice_count ) {
+            it->second = min_choice_count;
+        }
+    }
+}
+
 /// @brief Add onebody penalty for a choice at a node.
 /// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
 /// If the number of choices at the node is currently less than the node index, the number of
@@ -165,20 +184,8 @@ CostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     );
 
     // Update the number of choices per node:
-    masala::numeric::Size node_index( node_indices.first );
-    masala::numeric::Size choice_index( choice_indices.first );
-    for( unsigned short i(0); i<2; ++i ) {
-        std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
-        if( it == n_choices_by_node_index_.end() ) {
-            n_choices_by_node_index_[node_index] = choice_index + 1;
-        } else {
-            if( it->second <= choice_index ) {
-                it->second = choice_index + 1;
-            }
-        }
-        node_index = node_indices.second;
-        choice_index = choice_indices.second;
-    }
+    set_minimum_number_of_choices_at_node( node_indices.first, choice_indices.first + 1 );
+    set_minimum_number_of_choices_at_node( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
     std::map< std::pair< numeric::Size, numeric::Size >, std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real > >::iterator it(
@@ -238,6 +245,18 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "
                 "all choices for each node.", std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
             )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< numeric::Size, numeric::Size > >(
+                "set_minimum_number_of_choices_at_node", "Set the (minimum) number of choices at a node.  "
+                "If the number of choices has already been set to greater than the specified number, this does nothing.",
+
+                "node_index", "The index of the node for which we're setting the minimum number of choices.",
+
+                "min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
+                "been set for this node to a value greater than this, then this does nothing.",
+
+                std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
         );
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< numeric::Size, numeric::Size, numeric::Real > >(
