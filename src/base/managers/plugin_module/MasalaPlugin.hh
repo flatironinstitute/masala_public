@@ -66,7 +66,7 @@ public:
     /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
     /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
     /// in more than one hierarchical category (in which case there would be more than one
-    /// entry in the outher vector), but must be in at least one.  The first one is used as
+    /// entry in the outer vector), but must be in at least one.  The first one is used as
     /// the primary key.
     virtual
     std::vector< std::vector< std::string > >
