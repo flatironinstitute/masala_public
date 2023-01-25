@@ -295,6 +295,7 @@ if len(api_cclist) > 0 and output_file_api != None :
                 fhandle.write( "\n\tPUBLIC " + dentry )
         fhandle.write( "\n\tPRIVATE Threads::Threads" )
         fhandle.write("\n)\n")
+    print( "Wrote " + output_file_api + "." )
 
 
 if len(testslist) > 0 :
