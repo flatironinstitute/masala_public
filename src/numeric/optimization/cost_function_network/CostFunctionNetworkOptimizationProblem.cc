@@ -118,6 +118,7 @@ CostFunctionNetworkOptimizationProblem::class_namespace() const {
 /// nodes with multiple choices.
 masala::numeric::Size
 CostFunctionNetworkOptimizationProblem::total_nodes() const {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 0; }
     return n_choices_by_node_index_.rbegin()->first + 1; //Maps are sorted; last element is the biggest.
 }
@@ -126,6 +127,7 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::numeric::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 0; }
     numeric::Size accumulator(0);
     for(
@@ -145,6 +147,7 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 /// @note Due to integer overruns, this is a floating-point number, not an integer.
 masala::numeric::Real
 CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 1.0; }
     numeric::Real product(1.0);
     for(
@@ -179,14 +182,8 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
     masala::numeric::Size const node_index,
     masala::numeric::Size const min_choice_count
 ) {
-    std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
-    if( it == n_choices_by_node_index_.end() ) {
-        n_choices_by_node_index_[node_index] = min_choice_count;
-    } else {
-        if( it->second < min_choice_count ) {
-            it->second = min_choice_count;
-        }
-    }
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count );
 }
 
 /// @brief Add onebody penalty for a choice at a node.
@@ -199,6 +196,7 @@ CostFunctionNetworkOptimizationProblem::set_onebody_penalty(
     masala::numeric::Size const choice_index,
     masala::numeric::Real const penalty
 ) {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
     std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     if( it == n_choices_by_node_index_.end() ) {
         // Update the number of choices per node:
@@ -231,6 +229,8 @@ CostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
     masala::numeric::Real penalty
 ) {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+
     // Sanity check:
     CHECK_OR_THROW_FOR_CLASS(
         node_indices.second > node_indices.first,
@@ -240,8 +240,8 @@ CostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     );
 
     // Update the number of choices per node:
-    set_minimum_number_of_choices_at_node( node_indices.first, choice_indices.first + 1 );
-    set_minimum_number_of_choices_at_node( node_indices.second, choice_indices.second + 1 );
+    set_minimum_number_of_choices_at_node_mutex_locked( node_indices.first, choice_indices.first + 1 );
+    set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
     std::map< std::pair< numeric::Size, numeric::Size >, std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real > >::iterator it(
@@ -381,6 +381,26 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
     return api_definition();
 }
+
+/// @brief Set the (minimum) number of choices at a node.
+/// @details If the number of choices has already been set to greater than the
+/// specified number, this does nothing.
+/// @note This version assumes that the problem mutex has already been set.
+void
+CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mutex_locked(
+    masala::numeric::Size const node_index,
+    masala::numeric::Size const min_choice_count
+) {
+    std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
+    if( it == n_choices_by_node_index_.end() ) {
+        n_choices_by_node_index_[node_index] = min_choice_count;
+    } else {
+        if( it->second < min_choice_count ) {
+            it->second = min_choice_count;
+        }
+    }
+}
+
 
 } // namespace cost_function_network
 } // namespace optimization

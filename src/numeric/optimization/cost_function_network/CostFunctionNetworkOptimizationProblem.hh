@@ -199,6 +199,22 @@ public:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the (minimum) number of choices at a node.
+	/// @details If the number of choices has already been set to greater than the
+	/// specified number, this does nothing.
+	/// @note This version assumes that the problem mutex has already been set.
+	void
+	set_minimum_number_of_choices_at_node_mutex_locked(
+		masala::numeric::Size const node_index,
+		masala::numeric::Size const min_choice_count
+	);
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
