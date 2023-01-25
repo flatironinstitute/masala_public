@@ -161,7 +161,7 @@ BasicPDBReader::get_api_definition() {
                 "pose_from_pdb_file_contents",
                 "Given the contents of a PDB file as a vector of strings, generate a Pose and return a "
                 "shared pointer to the pose.",
-                true, false,
+                true, false, false, false,
                 "file_lines", "The lines of a PDB file, as a vector of strings (one string per line).",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
                 std::bind( &BasicPDBReader::pose_from_pdb_file_contents, this, std::placeholders::_1 )
@@ -173,7 +173,7 @@ BasicPDBReader::get_api_definition() {
                 "Read a PDB file from disk, and return a pose.  Note that invoking this function triggers a read from "
                 "disk!  However, this function does use the Masala disk manager to ensure that disk reads are "
                 "managed and threadsafe.",
-                true, false,
+                true, false, false, false,
                 "file_name", "The input PDB file.  This file will be read from disk.",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
                 std::bind( &BasicPDBReader::pose_from_pdb_file_on_disk, this, std::placeholders::_1 )
