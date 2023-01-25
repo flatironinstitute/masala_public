@@ -207,6 +207,7 @@ Molecules::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
                 "total_atoms", "Gets the total number of atoms in this Molecules object.",
                 "total_atoms", "The number of atoms in the Molecules object.",
+                false, false,
                 std::bind( &Molecules::total_atoms, this )
             )
         );
@@ -214,6 +215,7 @@ Molecules::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
+                false, false,
                 std::bind( &Molecules::atoms_begin, this )
             )
         );
@@ -221,6 +223,7 @@ Molecules::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
+                false, false,
                 std::bind( &Molecules::atoms_end, this )
             )
         );
@@ -229,6 +232,7 @@ Molecules::get_api_definition() {
                 "get_atom_coordinates", "Get the coordinates of a particular atom in a molecules object.",
                 "atom_iterator", "An AtomInstanceConstIterator pointing to the atom whose coordinates we wish to obtain.",
                 "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
+                false, false,
                 std::bind( &Molecules::get_atom_coordinates, this, std::placeholders::_1 )
             )
         );

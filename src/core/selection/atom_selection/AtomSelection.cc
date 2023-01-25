@@ -131,6 +131,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
                 "num_selected_atoms", "Gets the total number of atoms that are in the selection.",
                 "num_selected_atoms", "The number of atoms in the selection.",
+                false, false,
                 std::bind( &AtomSelection::num_selected_atoms, this )
             )
         );
@@ -138,6 +139,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
                 "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the selection.",
+                false, false,
                 std::bind( &AtomSelection::atoms_begin, this )
             )
         );
@@ -145,6 +147,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
                 "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the selection.",
+                false, false,
                 std::bind( &AtomSelection::atoms_end, this )
             )
         );

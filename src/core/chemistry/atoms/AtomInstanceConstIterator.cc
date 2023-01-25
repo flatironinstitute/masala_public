@@ -232,6 +232,7 @@ AtomInstanceConstIterator::get_api_definition() {
         //     masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstance const & > >(
         //         "operator*", "Access the AtomInstance (by const reference).",
         //         "atom_instance", "A const reference to the AtomInstance object to which the iterator currently points.",
+        //         false, false,
         //         std::bind( &AtomInstanceConstIterator::operator*, this )
         //     )
         // );
@@ -255,6 +256,7 @@ AtomInstanceConstIterator::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< AtomInstanceCSP > >(
                 "ptr", "Access the AtomInstance (by const shared pointer).",
                 "atom_const_ptr", "A const shared pointer to the AtomInstance object to which the iterator currently points.",
+                false, false,
                 std::bind( &AtomInstanceConstIterator::ptr, this )
             )
         );

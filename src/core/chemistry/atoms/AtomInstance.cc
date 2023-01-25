@@ -167,34 +167,35 @@ AtomInstance::get_api_definition() {
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(
                 "formal_charge", "Get the formal charge on this atom.  Formal charges are integer values.",
-                "formal_charge", "The formal charge on this atom.", std::bind( &AtomInstance::formal_charge, this )
+                "formal_charge", "The formal charge on this atom.", false, false,
+                std::bind( &AtomInstance::formal_charge, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Real > >(
                 "partial_charge", "Get the partial charge on this atom.  Partial charges are real values.",
-                "partial_charge", "The partial charge on this atom.", std::bind( &AtomInstance::partial_charge, this )
+                "partial_charge", "The partial charge on this atom.", false, false, std::bind( &AtomInstance::partial_charge, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::managers::database::elements::ElementTypeEnum > >(
                 "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
                 "element_type_enum", "The element type, represented as an ElementTypeEnum.",
-                "ElementTypeEnum", "masala::base::managers::database::elements",
+                "ElementTypeEnum", "masala::base::managers::database::elements", false, false,
                 std::bind( &AtomInstance::element_type_enum, *this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::Real > >(
                 "van_der_waals_radius", "Gets the van der Waals radius for this atom's element type.",
-                "van_der_waals_radius", "The van der Waals radius, in Angstroms.",
+                "van_der_waals_radius", "The van der Waals radius, in Angstroms.", false, false,
                 std::bind( &AtomInstance::van_der_waals_radius, *this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::array< masala::core::Real, 3 > const & > >(
                 "element_default_rgb_colour", "Gets the default RGB colour for this atom's element type.  RGB colours are 3-arrays of values ranging from 0 to 1.",
-                "element_default_rgb_colour", "The default RGB colour for elements of this type.",
+                "element_default_rgb_colour", "The default RGB colour for elements of this type.", false, false,
                 std::bind( &AtomInstance::element_default_rgb_colour, *this )
             )
         );

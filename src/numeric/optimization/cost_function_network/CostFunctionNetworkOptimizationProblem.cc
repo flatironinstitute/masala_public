@@ -234,6 +234,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
                 "total_nodes", "The total number of nodes in this problem (whether or not they have choices).",
 
+                false, false,
+
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_nodes, this )
             )
         );
@@ -243,6 +245,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 	            "two choices associated with them.",
 
                 "total_variable_nodes", "The total number of nodes in this problem for which choices exist.",
+
+                false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_variable_nodes, this )
             )
@@ -255,6 +259,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "not an integer.",
 
                 "total_combinatorial_solutions", "The total number of combinatorial solutions to this problem.",
+
+                false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions, this )
             )
