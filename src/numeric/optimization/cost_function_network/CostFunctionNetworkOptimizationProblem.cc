@@ -30,8 +30,8 @@
 #include <string>
 
 // Base headers:
-#include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>

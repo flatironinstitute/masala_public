@@ -26,6 +26,11 @@
 // Unit header:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+
 // STL headers:
 #include <vector>
 #include <string>
@@ -35,6 +40,24 @@ namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Make a fully independent copy of this object.
+CostFunctionNetworkOptimizationSolutionSP
+CostFunctionNetworkOptimizationSolution::deep_clone() const {
+    CostFunctionNetworkOptimizationSolutionSP new_problem( masala::make_shared< CostFunctionNetworkOptimizationSolution >( *this ) );
+    new_problem->make_independent();
+    return new_problem;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+CostFunctionNetworkOptimizationSolution::make_independent() {
+    masala::numeric::optimization::OptimizationSolution::make_independent();
+    //GNDN
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -71,7 +94,7 @@ CostFunctionNetworkOptimizationSolution::get_keywords() const {
 /// @returns "CostFunctionNetworkOptimizationSolution".
 std::string
 CostFunctionNetworkOptimizationSolution::class_name() const {
-    return "CostFunctionNetworkOptimizationProblem";
+    return "CostFunctionNetworkOptimizationSolution";
 }
 
 /// @brief Get the namespace for this class.
@@ -79,6 +102,56 @@ CostFunctionNetworkOptimizationSolution::class_name() const {
 std::string
 CostFunctionNetworkOptimizationSolution::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the CostFunctionNetworkOptimizationSolution class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+CostFunctionNetworkOptimizationSolution::get_api_definition() {
+    using namespace masala::base::api;
+
+    if( api_definition() == nullptr ) {
+        std::lock_guard< std::mutex > lock( solution_mutex() );
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The CostFunctionNetworkOptimizationSolution class stores the solution to a numerical "
+                "cost function optimization problem.  This is the problem reduced to numbers, with no "
+                "chemical classes or concepts included.",
+                false
+            )
+        );
+
+        // Constructors:
+
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationSolution > > (
+                class_name(),
+                "Creates an empty CostFunctionNetworkOptimizationSolution."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationSolution const & > > (
+                class_name(),
+                "Copy constructor: copies an input CostFunctionNetworkOptimizationSolution.",
+                "src", "The input CostFunctionNetworkOptimizationSolution to copy.  Unaltered by this operation."
+            )
+        );
+
+        // Work functions:
+
+        // Getters:
+
+        // Setters:
+
+        api_definition() = api_def; //Make const.
+    }
+
+    return api_definition();
 }
 
 } // namespace cost_function_network

@@ -55,8 +55,19 @@ public:
 	/// @brief Copy constructor.
 	CostFunctionNetworkOptimizationSolution( CostFunctionNetworkOptimizationSolution const & ) = default;
 
+	// @brief Assignment operator.
+	CostFunctionNetworkOptimizationSolution &
+	operator=( CostFunctionNetworkOptimizationSolution const & ) = default;
+
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationSolution() override = default;
+
+	/// @brief Make a fully independent copy of this object.
+	CostFunctionNetworkOptimizationSolutionSP
+	deep_clone() const;
+
+	/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+	void make_independent();
 
 public:
 
@@ -90,6 +101,16 @@ public:
 	/// @returns "masala::numeric::optimization::cost_function_network".
 	std::string
 	class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationSolution class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
 }; // class CostFunctionNetworkOptimizationSolution
 

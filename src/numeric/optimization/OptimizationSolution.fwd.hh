@@ -21,8 +21,6 @@
 /// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
 /// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
 /// concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_OptimizationSolution_fwd_hh

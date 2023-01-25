@@ -21,8 +21,6 @@
 /// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
 /// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
 /// concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -41,6 +39,43 @@ namespace masala {
 namespace numeric {
 namespace optimization {
 
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+/// @details Must be explicitly defined due to mutex.
+OptimizationSolution::OptimizationSolution(
+    OptimizationSolution const & src
+) :
+    masala::base::managers::plugin_module::MasalaPlugin(src)
+    // Nothing else gets copied, by default.
+{}
+
+/// @brief Assignment operator.
+OptimizationSolution &
+OptimizationSolution::operator=(
+    OptimizationSolution const & src
+) {
+    masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    //Nothing else gets assigned, by default.
+    return *this;
+}
+
+/// @brief Make a fully independent copy of this object.
+OptimizationSolutionSP
+OptimizationSolution::deep_clone() const {
+    OptimizationSolutionSP new_object( masala::make_shared< OptimizationSolution >( *this ) );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+OptimizationSolution::make_independent() {
+    //GNDN
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -70,6 +105,20 @@ OptimizationSolution::get_keywords() const {
 		"optimization_solution",
 		"numeric"
 	};
+}
+
+/// @brief Get the class name.
+/// @returns "OptimizationSolution".
+std::string
+OptimizationSolution::class_name() const {
+    return "OptimizationSolution";
+}
+
+/// @brief Get the class namespace.
+/// @returns "masala::numeric::optimization".
+std::string
+OptimizationSolution::class_namespace() const {
+    return "masala::numeric::optimization";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

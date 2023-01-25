@@ -21,8 +21,6 @@
 /// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
 /// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
 /// concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_OptimizationSolution_hh
@@ -45,8 +43,6 @@ namespace optimization {
 /// @details An OptimizationSolution contains the solution to a particular OptimizationProblem,
 /// after it is solved by a suitable Optimizer.  It does not contain any chemistry-specific
 /// concepts.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class OptimizationSolution : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -56,10 +52,25 @@ public:
 	OptimizationSolution() = default;
 
 	/// @brief Copy constructor.
-	OptimizationSolution( OptimizationSolution const & ) = default;
+	/// @details Must be explicitly defined due to mutex.
+	OptimizationSolution( OptimizationSolution const & );
+
+	/// @brief Assignment operator.
+	OptimizationSolution &
+	operator=(
+		OptimizationSolution const &
+	);
 
 	/// @brief Destructor.
 	~OptimizationSolution() override = default;
+
+	/// @brief Make a fully independent copy of this object.
+	OptimizationSolutionSP
+	deep_clone() const;
+
+	/// @brief Ensure that all data are unique and not shared
+	/// (i.e. everytihng is deep-cloned.)
+	void make_independent();
 
 public:
 
@@ -83,6 +94,14 @@ public:
 	/// @returns { "optimization_solution", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Get the class name.
+	/// @returns "OptimizationSolution".
+	std::string class_name() const override;
+
+	/// @brief Get the class namespace.
+	/// @returns "masala::numeric::optimization".
+	std::string class_namespace() const override;
 
 public:
 
