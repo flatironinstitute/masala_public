@@ -65,9 +65,15 @@ public:
 	///			   we are describing here.
 	/// @param[in] setter_function_description The description of the setter function that
 	///			   we are describing here.
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
 	MasalaObjectAPISetterDefinition(
 		std::string const & setter_function_name,
-		std::string const & setter_function_description
+		std::string const & setter_function_description,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn
 	);
 
 	/// @brief Copy constructor.
@@ -109,6 +115,14 @@ public:
 	/// @brief Get the setter function's description.
 	std::string const & setter_function_description() const;
 
+	/// @brief Is this function a virtual function that does NOT override
+	/// a function in a base class that has a defined API?
+	bool is_virtual_non_override_fxn() const;
+
+	/// @brief Is this function an override of a virtual function in a base
+	/// class that has a defined API?
+	bool is_override_of_api_virtual_fxn() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +136,14 @@ private:
 	/// @brief The description of the setter function.
 	/// @details Must be set on construction.
 	std::string const setter_function_description_;
+
+	/// @brief Is this function a virtual function that does NOT override
+	/// a function in a base class that has a defined API?
+	bool is_virtual_non_override_fxn_ = false;
+
+	/// @brief Is this function an override of a virtual function in a base
+	/// class that has a defined API?
+	bool is_override_of_api_virtual_fxn_ = false;
 
 }; // class MasalaObjectAPISetterDefinition
 

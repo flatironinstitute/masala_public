@@ -70,12 +70,24 @@ public:
 	///			   we are describing here.
 	/// @param[in] setter_function_description The description of the setter function that
 	///			   we are describing here.
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
+	/// @param[in] setter_function The setter function, bound with std::bind.
 	MasalaObjectAPISetterDefinition_ZeroInput(
 		std::string const & setter_function_name,
 		std::string const & setter_function_description,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn,
 		std::function< void() > const & setter_function
 	) :
-		MasalaObjectAPISetterDefinition( setter_function_name, setter_function_description ),
+		MasalaObjectAPISetterDefinition(
+			setter_function_name,
+			setter_function_description,
+			is_virtual_non_override_fxn,
+			is_override_of_api_virtual_fxn
+		),
 		setter_function_( setter_function )
 	{}
 
@@ -115,7 +127,7 @@ public:
 	std::string
 	get_setter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Setter:\tvoid " << setter_function_name() << "():" << std::endl;
+    	ss << "Setter:\t" << (is_virtual_non_override_fxn() ? "virtual " : "" ) << "void " << setter_function_name() << "() " << (is_override_of_api_virtual_fxn() ? " override" : "") << ":" << std::endl;
 		ss << setter_function_description() << std::endl;
 		return ss.str();
 	}
@@ -129,6 +141,8 @@ public:
 		json_api["Setter_Name"] = setter_function_name();
 		json_api["Setter_Description"] = setter_function_description();
 		json_api["Is_Const"] = false;
+		json_api["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] = is_virtual_non_override_fxn();
+		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
 
 		//Inputs:
 		json_api["Setter_N_Inputs"] = 0;
