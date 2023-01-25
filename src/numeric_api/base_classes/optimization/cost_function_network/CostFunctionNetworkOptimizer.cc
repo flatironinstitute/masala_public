@@ -31,7 +31,7 @@
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/OptimizationProblem_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.hh>
-#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution_API.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -80,7 +80,7 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 
 /// @brief Run the optimizer on an optimization problem, and produce a solution.
 /// @details Must be implemented by derived classes.
-masala::numeric::optimization::OptimizationSolutionCSP
+masala::numeric_api::auto_generated_api::optimization::OptimizationSolution_APICSP
 CostFunctionNetworkOptimizer::run_optimizer(
     masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
 ) const {

@@ -33,7 +33,7 @@
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.fwd.hh>
-#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution_API.fwd.hh>
 
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
@@ -90,7 +90,7 @@ public:
 	/// @brief Run the optimizer on an optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	masala::numeric::optimization::OptimizationSolutionCSP
+	masala::numeric_api::auto_generated_api::optimization::OptimizationSolution_APICSP
 	run_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
 	) const;
@@ -98,7 +98,7 @@ public:
 	/// @brief Run the optimizer on a cost function network optimization problem, and produce a solution.
 	/// @details Must be implemented by derived classes.
 	virtual
-	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutionCSP
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationSolution_APICSP
 	run_cost_function_network_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_API const & problem
 	) const = 0;
