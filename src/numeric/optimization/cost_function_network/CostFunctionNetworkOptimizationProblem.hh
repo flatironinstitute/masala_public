@@ -147,7 +147,9 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Reset all data in this object.
-	void reset();
+	virtual
+	void
+	reset();
 
 	/// @brief Set the (minimum) number of choices at a node.
     /// @details If the number of choices has already been set to greater than the
@@ -157,34 +159,6 @@ public:
 		masala::numeric::Size const node_index,
 		masala::numeric::Size const min_choice_count
 	);
-
-	/// @brief Add onebody penalty for a choice at a node.
-	/// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
-	/// If the number of choices at the node is currently less than the node index, the number of
-	/// choices is increased.
-	void
-	set_onebody_penalty(
-		masala::numeric::Size const node_index,
-		masala::numeric::Size const choice_index,
-		masala::numeric::Real const penalty
-	);
-
-    /// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
-    /// pair of node indices.
-    /// @param[in] node_indices A pair of node indices.  The lower index should be first.  (This function will
-    /// throw if it is not, since it makes the choice indices ambiguous).
-    /// @param[in] choice_indices The corresponding pair of choice indices.  The first entry should be the choice
-    /// index for the lower-numbered node, and the second should be the choice index for the higher-numbered node.
-    /// @param[in] penalty The value of the two-node penalty (or, if negative, bonus).
-	/// @details If a node has not yet been listed, it's added to the n_choices_by_node_index_ map.
-	/// If the number of choices at the node is currently less than the node index, the number of
-	/// choices is increased.
-    void
-    set_twobody_penalty(
-        std::pair< masala::numeric::Size, masala::numeric::Size > const & node_indices,
-        std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
-        masala::numeric::Real penalty
-    );
 
 public:
 
@@ -196,10 +170,10 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
-private:
+protected:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PRIVATE FUNCTIONS
+// PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the (minimum) number of choices at a node.
@@ -212,6 +186,13 @@ private:
 		masala::numeric::Size const min_choice_count
 	);
 
+	/// @brief Acces the number of choices by node index.
+	inline
+	std::map< masala::numeric::Size, masala::numeric::Size > &
+	n_choices_by_node_index() {
+		return n_choices_by_node_index_;
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -221,17 +202,6 @@ private:
 	/// @brief The number of choices at each node index.
 	/// @details Resizes automatically.
 	std::map< masala::numeric::Size, masala::numeric::Size > n_choices_by_node_index_;
-
-	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
-	/// @details Any penalty not specified is assumed to be zero.
-	std::map< masala::numeric::Size, std::map< masala::numeric::Size, masala::numeric::Real > > single_node_penalties_;
-
-	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
-	/// by choice index (corresponding to node indices).
-	std::map<
-		std::pair< masala::numeric::Size, masala::numeric::Size >, //The node indices.
-		std::map< std::pair< masala::numeric::Size, masala::numeric::Size >, masala::numeric::Real > //The choice indices.
-	> pairwise_node_penalties_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
