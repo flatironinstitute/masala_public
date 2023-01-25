@@ -34,6 +34,9 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -80,6 +83,42 @@ public:
 	/// @returns { "optimization_solution", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the OptimizationSolution class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Allow derived classes to access the mutex for this object.
+	/// @note The mutex is mutable, and can be locked from a const function.
+	std::mutex & solution_mutex() const;
+
+	/// @brief Allow derived classes to access the API definition.
+	/// @note Could be nullptr.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex for locking this object.
+	mutable std::mutex solution_mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class OptimizationSolution
 

@@ -28,6 +28,11 @@
 // Unit header:
 #include <numeric/optimization/OptimizationSolution.hh>
 
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+
 // STL headers:
 #include <vector>
 #include <string>
@@ -65,6 +70,78 @@ OptimizationSolution::get_keywords() const {
 		"optimization_solution",
 		"numeric"
 	};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the OptimizationSolution class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+OptimizationSolution::get_api_definition() {
+    using namespace masala::base::api;
+
+    if( api_definition_ == nullptr ) {
+        std::lock_guard< std::mutex > lock( solution_mutex_ );
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The OptimizationSolution class stores a solution to a numerical optimization problem.  This is "
+                "the solution to the problem reduced to numbers, with no chemical classes or concepts included.  "
+                "Typically, one would not want to instantiate an abstract OptimizationSolution.  Instead, one would "
+                "usually use a particular sub-class defining a particular type of optimization problem, "
+                "such as a CostFunctionNetworkOptimizationSolution.",
+                false
+            )
+        );
+
+        // Constructors:
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < OptimizationSolution > > (
+                class_name(),
+                "Creates an empty OptimizationSolution.  Cannot be used directly, but can "
+                "be called from constructors of derived classes."
+            )
+        );
+        api_def->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < OptimizationSolution, OptimizationSolution const & > > (
+                class_name(),
+                "Copy constructor: copies an input OptimizationSolution.",
+                "src", "The input OptimizationSolution to copy.  Unaltered by this operation."
+            )
+        );
+
+        // Work functions:
+
+
+        // Getters:
+
+
+        // Setters:
+
+        api_definition_ = api_def; //Make const.
+    }
+
+    return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Allow derived classes to access the mutex for this object.
+/// @note The mutex is mutable, and can be locked from a const function.
+std::mutex &
+OptimizationSolution::solution_mutex() const {
+    return solution_mutex_;
+}
+
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+OptimizationSolution::api_definition() {
+    return api_definition_;
 }
 
 } // namespace optimization
