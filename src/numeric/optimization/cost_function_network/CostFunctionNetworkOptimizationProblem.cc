@@ -31,6 +31,7 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/error/ErrorHandling.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
@@ -123,16 +124,70 @@ CostFunctionNetworkOptimizationProblem::set_onebody_penalty(
     masala::numeric::Size const choice_index,
     masala::numeric::Real const penalty
 ) {
-    // Update the number of choices per node:
     std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     if( it == n_choices_by_node_index_.end() ) {
+        // Update the number of choices per node:
         n_choices_by_node_index_[node_index] = choice_index + 1;
+        // Set the one-body penalty:
         single_node_penalties_[node_index] = std::map< masala::numeric::Size, masala::numeric::Real >{ { choice_index, penalty} };
     } else {
+        // Update the number of choices per node:
         if( it->second <= choice_index ) {
             it->second = choice_index + 1;
         }
+        // Set the one-body penalty:
         single_node_penalties_[node_index][choice_index] = penalty;
+    }
+}
+
+/// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
+/// pair of node indices.
+/// @param[in] node_indices A pair of node indices.  The lower index should be first.  (This function will
+/// throw if it is not, since it makes the choice indices ambiguous).
+/// @param[in] choice_indices The corresponding pair of choice indices.  The first entry should be the choice
+/// index for the lower-numbered node, and the second should be the choice index for the higher-numbered node.
+/// @param[in] penalty The value of the two-node penalty (or, if negative, bonus).
+/// @details If a node has not yet been listed, it's added to the n_choices_by_node_index_ map.
+/// If the number of choices at the node is currently less than the node index, the number of
+/// choices is increased.
+void
+CostFunctionNetworkOptimizationProblem::set_twobody_penalty(
+    std::pair< masala::numeric::Size, masala::numeric::Size > const & node_indices,
+    std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
+    masala::numeric::Real penalty
+) {
+    // Sanity check:
+    CHECK_OR_THROW_FOR_CLASS(
+        node_indices.second > node_indices.first,
+        "set_twobody_penalty",
+        "This function requires that the second node index be higher than the first.  Got node_index1="
+        + std::to_string( node_indices.first ) + ", node_index2=" + std::to_string( node_indices.second ) + "."
+    );
+
+    // Update the number of choices per node:
+    masala::numeric::Size node_index( node_indices.first );
+    masala::numeric::Size choice_index( choice_indices.first );
+    for( unsigned short i(0); i<2; ++i ) {
+        std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
+        if( it == n_choices_by_node_index_.end() ) {
+            n_choices_by_node_index_[node_index] = choice_index + 1;
+        } else {
+            if( it->second <= choice_index ) {
+                it->second = choice_index + 1;
+            }
+        }
+        node_index = node_indices.second;
+        choice_index = choice_indices.second;
+    }
+
+    // Update the penalties:
+    std::map< std::pair< numeric::Size, numeric::Size >, std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real > >::iterator it(
+        pairwise_node_penalties_.find( node_indices )
+    );
+    if( it == pairwise_node_penalties_.end() ) {
+        pairwise_node_penalties_[node_indices] = std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real >{ { choice_indices, penalty } };
+    } else {
+        it->second[choice_indices] = penalty;
     }
 }
 
@@ -191,6 +246,22 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "choice_index", "The index of the choice at this node for which we're setting a penalty.",
                 "penalty", "The value of the penalty (or, if negative, bonus).",
                 std::bind( &CostFunctionNetworkOptimizationProblem::set_onebody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< std::pair< numeric::Size, numeric::Size >, std::pair< numeric::Size, numeric::Size >, numeric::Real > >(
+                "set_twobody_penalty", "Set the two-node penalty for a pair of choices at a pair of nodes.",
+
+                "node_indices", "A pair of node indices.  The lower index should be first.  (This function will "
+                "throw if it is not, since it makes the choice indices ambiguous).",
+
+                "choice_indices", "The corresponding pair of choice indices.  The first entry should be the choice "
+                "index for the lower-numbered node, and the second should be the choice index for the higher-numbered "
+                "node.",
+
+                "penalty", "The value of the penalty (or, if negative, bonus).",
+
+                std::bind( &CostFunctionNetworkOptimizationProblem::set_twobody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
 
