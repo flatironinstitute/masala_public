@@ -134,6 +134,20 @@ MasalaObjectAPIGetterDefinition::get_custom_output_type_namespace_and_name() con
     return custom_output_type_namespace_ + "::" + custom_output_type_name_;
 }
 
+/// @brief Is this function a virtual function that does NOT override
+/// a function in a base class that has a defined API?
+bool
+MasalaObjectAPIGetterDefinition::is_virtual_non_override_fxn() const {
+    return is_virtual_non_override_fxn_;
+}
+
+/// @brief Is this function an override of a virtual function in a base
+/// class that has a defined API?
+bool
+MasalaObjectAPIGetterDefinition::is_override_of_api_virtual_fxn() const {
+    return is_override_of_api_virtual_fxn_;
+}
+
 } // namespace getter
 } // namespace api
 } // namespace base

@@ -142,6 +142,14 @@ public:
 	/// @brief Get the custom output type name and namespace.
 	std::string get_custom_output_type_namespace_and_name() const;
 
+	/// @brief Is this function a virtual function that does NOT override
+	/// a function in a base class that has a defined API?
+	bool is_virtual_non_override_fxn() const;
+
+	/// @brief Is this function an override of a virtual function in a base
+	/// class that has a defined API?
+	bool is_override_of_api_virtual_fxn() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
