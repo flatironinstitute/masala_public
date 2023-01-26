@@ -58,10 +58,13 @@ public:
 	OptimizationProblems() = default;
 
 	/// @brief Copy constructor.
-	/// @details Must be explicitly defined due to mutex.
+	/// @details Must be explicitly defined due to mutex.  Copies the pointers to, but does not deep-clone,
+	/// the optimization problems.
 	OptimizationProblems( OptimizationProblems const & );
 
 	/// @brief Assignment operator.
+	/// @details Copies the pointers to, but does not deep-clone,
+	/// the optimization problems.
 	OptimizationProblems &
 	operator=(
 		OptimizationProblems const &

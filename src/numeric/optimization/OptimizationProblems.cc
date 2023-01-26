@@ -34,6 +34,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
+#include <numeric/types.hh>
 #include <numeric/optimization/OptimizationProblem.hh>
 
 // STL headers:
@@ -49,21 +50,26 @@ namespace optimization {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Copy constructor.
-/// @details Must be explicitly defined due to mutex.
+/// @details Must be explicitly defined due to mutex.  Copies the pointers to, but does not deep-clone,
+/// the optimization problems.
 OptimizationProblems::OptimizationProblems(
     OptimizationProblems const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin(src)
-    // Nothing else gets copied, by default.
+    masala::base::managers::plugin_module::MasalaPlugin(src),
+    optimization_problems_( src.optimization_problems_ )
 {}
 
 /// @brief Assignment operator.
+/// @details Copies the pointers to, but does not deep-clone,
+/// the optimization problems.
 OptimizationProblems &
 OptimizationProblems::operator=(
     OptimizationProblems const & src
 ) {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    std::lock_guard< std::mutex > lock2( src.problems_mutex_ );
     masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
-    //Nothing else gets assigned, by default.
+    optimization_problems_ = src.optimization_problems_;
     return *this;
 }
 
@@ -78,7 +84,10 @@ OptimizationProblems::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 OptimizationProblems::make_independent() {
-    //GNDN
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    for( masala::numeric::Size i(1); i<=optimization_problems_.size(); ++i ) {
+        optimization_problems_[i] = optimization_problems_[i]->deep_clone();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
