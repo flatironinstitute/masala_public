@@ -128,8 +128,10 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 OptimizationProblem::get_api_definition() {
     using namespace masala::base::api;
 
+
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+
     if( api_definition_ == nullptr ) {
-        std::lock_guard< std::mutex > lock( problem_mutex_ );
 
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(

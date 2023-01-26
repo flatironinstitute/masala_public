@@ -200,9 +200,10 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
 masala::base::api::MasalaObjectAPIDefinitionCWP
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() {
     using namespace masala::base::api;
+    
+    std::lock_guard< std::mutex > lock( problem_mutex() );
 
     if( api_definition() == nullptr ) {
-        std::lock_guard< std::mutex > lock( problem_mutex() );
 
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(

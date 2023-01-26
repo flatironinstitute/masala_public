@@ -193,8 +193,9 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 CostFunctionNetworkOptimizationProblem::get_api_definition() {
     using namespace masala::base::api;
 
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+
     if( api_definition() == nullptr ) {
-        std::lock_guard< std::mutex > lock( problem_mutex() );
 
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
