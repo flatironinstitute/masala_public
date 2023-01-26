@@ -29,6 +29,12 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/utility/container/container_util.tmpl.hh>
+
+// Numeric headers:
+#include <numeric/optimization/OptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
@@ -167,11 +173,48 @@ OptimizationProblems::get_api_definition() {
 
 
         // Setters:
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "reset", "Resets the container, deleting all contained problems.",
+                true, false, std::bind( &OptimizationProblems::reset, this )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemSP > >(
+                "add_optimization_problem",
+                "Add an optimization problem to the list of optimization problems that this container contains.",
+                "problem_in", "The optimization problem that we are adding to the container.",
+                true, false, std::bind( &OptimizationProblems::add_optimization_problem, this, std::placeholders::_1 )
+            )
+        );
 
         api_definition_ = api_def; //Make const.
     }
 
     return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reset this object, clearing its problem list.
+void
+OptimizationProblems::reset() {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    optimization_problems_.clear();
+}
+
+/// @brief Add an optimization problem to the list of optimization problems
+/// stored in this container.
+/// @details Derived classes should override this to check the type of the
+/// optimization problem stored.
+void
+OptimizationProblems::add_optimization_problem(
+    OptimizationProblemSP problem_in
+) {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    optimization_problems_.emplace_back( problem_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,10 +229,18 @@ OptimizationProblems::problems_mutex() const {
 }
 
 /// @brief Allow derived classes to access the API definition.
-/// @note Could be nullptr.
+/// @note Could be nullptr.  This does NOT lock the mutex.
 masala::base::api::MasalaObjectAPIDefinitionCSP &
 OptimizationProblems::api_definition() {
     return api_definition_;
+}
+
+/// @brief Allow derived classes to access the vector of optimization problems.
+/// @details This does NOT lock the problems_mutex_ mutex.  Calling functions must
+/// do this first.
+std::vector< OptimizationProblemSP > &
+OptimizationProblems::optimization_problems() {
+    return optimization_problems_;
 }
 
 } // namespace optimization

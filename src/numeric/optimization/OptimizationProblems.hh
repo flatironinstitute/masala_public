@@ -31,8 +31,12 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// Numeric headers:
+#include <numeric/optimization/OptimizationProblem.fwd.hh>
+
 // STL headers:
 #include <mutex>
+#include <vector>
 
 namespace masala {
 namespace numeric {
@@ -115,6 +119,27 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Reset this object, clearing its problem list.
+	virtual
+	void
+	reset();
+
+	/// @brief Add an optimization problem to the list of optimization problems
+	/// stored in this container.
+	/// @details Derived classes should override this to check the type of the
+	/// optimization problem stored.
+	virtual
+	void
+	add_optimization_problem(
+		OptimizationProblemSP problem_in
+	);
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,8 +151,13 @@ protected:
 	std::mutex & problems_mutex() const;
 
 	/// @brief Allow derived classes to access the API definition.
-	/// @note Could be nullptr.
+	/// @note Could be nullptr.  This does NOT lock the mutex.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+	/// @brief Allow derived classes to access the vector of optimization problems.
+	/// @details This does NOT lock the problems_mutex_ mutex.  Calling functions must
+	/// do this first.
+	std::vector< OptimizationProblemSP > & optimization_problems();
 
 private:
 
@@ -140,6 +170,9 @@ private:
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief The contained vector of OptimizationProblems
+	std::vector< OptimizationProblemSP > optimization_problems_;
 
 }; // class OptimizationProblems
 
