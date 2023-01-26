@@ -52,3 +52,8 @@
      - [X] Derived class for PrecomputedPairwiseCostFunctionNetworkProblem.  The update function can ALSO be used, for non-pairwise terms.
 
 - [ ] Ensure that optimers return a container of solutions by default, not just a single solution.
+- [ ] Ensure that optimers take a container of problems by default, not just a single problem.
+	- [ ] Derived CostFunctionNetworkOptimizationProblems class.
+            - [ ] Override add_optimization_problem() with type check.
+	- [ ] Derived PrecomputedPairwiseCostFunctionNetworkOptimizationProblems class.
+            - [ ] Override add_optimization_problem() with type check.
