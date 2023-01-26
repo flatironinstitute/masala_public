@@ -132,7 +132,7 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 <__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
 <__SOURCE_CLASS_API_NAME__>::get_inner_object() {
     std::lock_guard< std::mutex > lock_guard( api_mutex() );
-    return static_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & >( inner_object_ );
+    return static_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> & >( inner_object_ );
 }
 
 <__CPP_GETTER_IMPLEMENTATIONS__>
