@@ -130,6 +130,13 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
     return inner_object_;
 }
 
+/// @brief Nonconst access to the inner object.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::get_inner_object() {
+    std::lock_guard< std::mutex > lock_guard( api_mutex_ );
+    return inner_object_;
+}
+
 <__CPP_GETTER_IMPLEMENTATIONS__>
 
 ////////////////////////////////////////////////////////////////////////////////

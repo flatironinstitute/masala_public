@@ -123,6 +123,10 @@ public:
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const &
     get_inner_object() const;
 
+    /// @brief Nonconst access to the inner object.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+    get_inner_object();
+
 <__CPP_GETTER_PROTOTYPES__>
 
 public:
