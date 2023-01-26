@@ -57,3 +57,4 @@
             - [ ] Override add_optimization_problem() with type check.
 	- [ ] Derived PrecomputedPairwiseCostFunctionNetworkOptimizationProblems class.
             - [ ] Override add_optimization_problem() with type check.
+- [ ] Optimizers need settings for repeats, threads to select, GPU.
