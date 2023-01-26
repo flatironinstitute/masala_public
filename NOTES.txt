@@ -47,6 +47,8 @@
 
 - [ ] Abort compilation with informative error message if Z inherits from Y inherits from X, and X and Z have APIs defined but Y does not.
 - [ ] Use the code templates for the lightweight derived API classes.
-- [ ] Framework for on-the-fly CostFunctionNetworkProblems.
-     - [ ] Base class for CostFunctionNetworkProblem, that takes function pointer to a function for updating the cost function given a new selection.
-     - [ ] Derived class for PrecomputedPairwiseCostFunctionNetworkProblem.  The update function can ALSO be used, for non-pairwise terms.
+- [X] Framework for on-the-fly CostFunctionNetworkProblems.
+     - [X] Base class for CostFunctionNetworkProblem, that takes function pointer to a function for updating the cost function given a new selection.
+     - [X] Derived class for PrecomputedPairwiseCostFunctionNetworkProblem.  The update function can ALSO be used, for non-pairwise terms.
+
+- [ ] Ensure that optimers return a container of solutions by default, not just a single solution.
