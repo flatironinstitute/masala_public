@@ -582,11 +582,11 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
             outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
             if ismasalaAPIptr :
-                outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We\n"
-                outstring += tabchar + "// cast away the constness of the object, but effectively restore it by encapsulating\n"
-                outstring += tabchar + "// it in an API object that only allows const access.  This is ONLY allowed in Masala\n"
-                outstring += tabchar + "// code that is auto-generated in a manner that ensures that nothing unsafe is done\n"
-                outstring += tabchar + "// with the nonconst object.\n"
+                outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We might\n"
+                outstring += tabchar + "// cast away the constness of the object, but if we do, we effectively restore it by\n"
+                outstring += tabchar + "// encapsulating it in a const API object (in that case) that only allows const access.\n"
+                outstring += tabchar + "// This is ONLY allowed in Masala code that is auto-generated in a manner that ensures\n"
+                outstring += tabchar + "// that nothing unsafe is done with the nonconst object.\n"
             outstring += tabchar + "return "
 
             if ismasalaAPIptr and returns_this_ref == False :
