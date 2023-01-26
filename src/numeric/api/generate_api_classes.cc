@@ -26,6 +26,7 @@
 
 // Numeric headers
 #include <numeric/optimization/OptimizationProblem.hh>
+#include <numeric/optimization/OptimizationProblems.hh>
 #include <numeric/optimization/OptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 #include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
@@ -44,6 +45,7 @@ namespace api {
 
         // Add to this vector whenever a class is added with a defined API:
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationProblem >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationProblems >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationSolution >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem >() );
