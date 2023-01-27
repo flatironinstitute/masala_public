@@ -45,7 +45,7 @@
      - [ ] Allow APIs for pure virtual classes.
      - [ ] Define class inheritence for APIs (see above).
 
-- [ ] Abort compilation with informative error message if Z inherits from Y inherits from X, and X and Z have APIs defined but Y does not.
+- [ ] Abort compilation with informative error message if Z inherits from Y inherits from X, and X and Z have APIs defined but Y does not.  Or better yet, make the parent search recursive and inherit from the last API class.
 - [ ] Use the code templates for the lightweight derived API classes.
 - [X] Framework for on-the-fly CostFunctionNetworkProblems.
      - [X] Base class for CostFunctionNetworkProblem, that takes function pointer to a function for updating the cost function given a new selection.
