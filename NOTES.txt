@@ -53,8 +53,8 @@
 
 - [ ] Ensure that optimers return a container of solutions by default, not just a single solution.
 - [ ] Ensure that optimers take a container of problems by default, not just a single problem.
-	- [ ] Derived CostFunctionNetworkOptimizationProblems class.
-            - [ ] Override add_optimization_problem() with type check.
-	- [ ] Derived PrecomputedPairwiseCostFunctionNetworkOptimizationProblems class.
-            - [ ] Override add_optimization_problem() with type check.
+	- [X] Derived CostFunctionNetworkOptimizationProblems class.
+            - [X] Override add_optimization_problem() with type check.
+	- [X] Derived PrecomputedPairwiseCostFunctionNetworkOptimizationProblems class.
+            - [X] Override add_optimization_problem() with type check.
 - [ ] Optimizers need settings for repeats, threads to select, GPU.
