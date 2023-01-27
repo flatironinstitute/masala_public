@@ -17,7 +17,7 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems.cc
-/// @brief Implementation for a base class for CostFunctionNetworkOptimizationProblemss.
+/// @brief Implementation for CostFunctionNetworkOptimizationProblems container class.
 /// @details CostFunctionNetworkOptimizationProblemss define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -35,7 +35,7 @@
 
 // Numeric headers:
 #include <numeric/types.hh>
-#include <numeric/optimization/OptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
@@ -85,13 +85,12 @@ CostFunctionNetworkOptimizationProblems::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "optimization_problems", "numeric" }
+/// @returns { "cost_function_network_optimization_problems", "optimization_problems", "numeric" }
 std::vector< std::string >
 CostFunctionNetworkOptimizationProblems::get_keywords() const {
-	return std::vector< std::string > {
-		"optimization_problems",
-		"numeric"
-	};
+	std::vector< std::string > outvec( masala::numeric::optimization::OptimizationProblems::get_keywords() );
+    outvec.push_back( "cost_function_network_optimization_problems" );
+    return outvec;
 }
 
 /// @brief Get the class name.

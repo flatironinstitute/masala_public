@@ -101,7 +101,7 @@ public:
 
 	/// @brief Get the keywords for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { "optimization_problems", "numeric" }
+	/// @returns { "cost_function_network_optimization_problems", "optimization_problems", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
 
