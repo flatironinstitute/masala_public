@@ -32,6 +32,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
+#include <numeric/types.hh>
 #include <numeric/optimization/OptimizationProblem.fwd.hh>
 
 // STL headers:
@@ -142,6 +143,23 @@ public:
 	add_optimization_problem(
 		OptimizationProblemSP problem_in
 	);
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the ith problem in this object, where the index is zero-based.
+	/// @details Does bounds-checking.  Throws if out of range.  Use the
+	/// n_problems() method to check number of problems.
+	OptimizationProblemCSP
+	problem(
+		masala::numeric::Size const index
+	) const;
+
+	/// @brief Get the number of problems stored in this object.
+	masala::numeric::Size n_problems() const;
 
 protected:
 

@@ -31,6 +31,8 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -177,10 +179,6 @@ OptimizationProblems::get_api_definition() {
 
         // Work functions:
 
-
-        // Getters:
-
-
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
@@ -194,6 +192,26 @@ OptimizationProblems::get_api_definition() {
                 "Add an optimization problem to the list of optimization problems that this container contains.",
                 "problem_in", "The optimization problem that we are adding to the container.",
                 true, false, std::bind( &OptimizationProblems::add_optimization_problem, this, std::placeholders::_1 )
+            )
+        );
+
+        // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationProblemCSP, masala::numeric::Size > >(
+                "problem", "Get the problem with the given index.  Throws if index is out of range.",
+                "index", "The index of the problem to get.  (Note that this is zero-based.)",
+                "problem", "A const shared pointer to the problem with the given index.",
+                false, false,
+                std::bind( &OptimizationProblems::problem, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::numeric::Size > >(
+                "n_problems", "Get the number of problems stored in this object.",
+                "n_problems", "The number of problems stored in this object, or one more than th zero-based "
+                "index of the last problem.",
+                false, false,
+                std::bind( &OptimizationProblems::n_problems, this )
             )
         );
 
@@ -224,6 +242,34 @@ OptimizationProblems::add_optimization_problem(
 ) {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
     optimization_problems_.emplace_back( problem_in );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the ith problem in this object, where the index is zero-based.
+/// @details Does bounds-checking.  Throws if out of range.  Use the
+/// n_problems() method to check number of problems.
+OptimizationProblemCSP
+OptimizationProblems::problem(
+    masala::numeric::Size const index
+) const {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS(
+        index < optimization_problems_.size(),
+        "problem",
+        "Could not access problem with index " + std::to_string(index) + ", since only "
+        + std::to_string(optimization_problems_.size()) + " problems are stored in this object."
+    );
+    return optimization_problems_[index];
+}
+
+/// @brief Get the number of problems stored in this object.
+masala::numeric::Size
+OptimizationProblems::n_problems() const {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    return optimization_problems_.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
