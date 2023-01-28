@@ -1,0 +1,129 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/numeric_api/base_classes/optimization/annealing/AnnealingSchedule.hh
+/// @brief Headers for a base class for all annealing schedules.
+/// @details Annealing schedules return temperature as a function of number of calls.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#ifndef Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
+#define Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
+
+// Forward declarations:
+#include <numeric_api/base_classes/optimization/annealing/AnnealingSchedule.fwd.hh>
+
+// Base headers:
+#include <base/MasalaObject.hh>
+
+// Numeric API headers:
+#include <numeric_api/types.hh>
+
+// STL headers:
+#include <atomic>
+
+
+namespace masala {
+namespace numeric_api {
+namespace base_classes {
+namespace optimization {
+namespace annealing {
+
+/// @brief A base class for all annealing schedules.
+/// @details Annealing schedules return temperature as a function of number of calls.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class AnnealingSchedule : public masala::base::MasalaObject {
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Default constructor.
+	AnnealingSchedule();
+
+	/// @brief Copy constructor.
+	AnnealingSchedule( AnnealingSchedule const & );
+
+	/// @brief Assignment operator.
+	AnnealingSchedule & operator=( AnnealingSchedule const & );
+
+	/// @brief Virtual destructor.
+	virtual ~AnnealingSchedule() = default;
+
+	/// @brief Make a copy of this object.
+	virtual
+	AnnealingScheduleSP clone() const = 0;
+
+	/// @brief Make this object wholly independent.
+	/// @details Should be overridden for derived classes.
+	virtual
+	void make_independent();
+
+	/// @brief Make a copy of this object that is wholly independent.
+	/// @details Likely does not need an override for derived classes.
+	virtual
+	AnnealingScheduleSP deep_clone() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Return temperature.
+	virtual
+	masala::numeric_api::Real
+	temperature() = 0;
+
+	/// @brief Return temperature for the Nth timepoint.
+	virtual
+	masala::numeric_api::Real
+	temperature(
+		masala::numeric_api::Size const time_index
+	) const = 0;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the call count.
+	masala::numeric_api::Size call_count() const;
+
+	/// @brief Increment the call count.
+	void increment_call_count();
+
+	/// @brief Reset the call count.
+	void reset();
+
+private:
+
+	/// @brief Number of times the temperature() function has been called.
+	std::atomic< masala::numeric_api::Size > call_count_;
+
+}; // class AnnealingSchedule
+
+} // namespace annealing
+} // namespace optimization
+} // namespace base_classes
+} // namespace numeric_api
+} // namespace masala
+
+#endif //Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
