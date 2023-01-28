@@ -79,6 +79,24 @@ AnnealingSchedule::deep_clone() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the hierarchical categories for this plugin class.
+/// @details The base class implementation returns { { "AnnealingSchedule" } }
+std::vector< std::vector< std::string > >
+AnnealingSchedule::get_categories() const {
+    return std::vector< std::vector< std::string > >{ { "AnnealingSchedule" } };
+}
+
+/// @brief Get the ahierarchical keywords for this plugin class.
+/// @details The base class implementation returns { "annealing_schedule" }
+std::vector< std::string >
+AnnealingSchedule::get_keywords() const {
+    return std::vector< std::string >{ "annealing_schedule" };
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

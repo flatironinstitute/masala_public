@@ -35,6 +35,8 @@
 
 // STL headers:
 #include <atomic>
+#include <vector>
+#include <string>
 
 
 namespace masala {
@@ -79,6 +81,22 @@ public:
 	/// @details Likely does not need an override for derived classes.
 	virtual
 	AnnealingScheduleSP deep_clone() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the hierarchical categories for this plugin class.
+	/// @details The base class implementation returns { { "AnnealingSchedule" } }
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the ahierarchical keywords for this plugin class.
+	/// @details The base class implementation returns { "annealing_schedule" }
+	std::vector< std::string >
+	get_keywords() const override;
 
 public:
 
