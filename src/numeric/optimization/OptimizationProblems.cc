@@ -17,8 +17,8 @@
 */
 
 /// @file src/numeric/optimization/OptimizationProblems.cc
-/// @brief Implementation for a base class for OptimizationProblemss.
-/// @details OptimizationProblemss define a numerical optimization problem to be solved
+/// @brief Implementation for a base class for OptimizationProblems.
+/// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
