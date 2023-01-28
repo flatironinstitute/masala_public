@@ -108,8 +108,9 @@ AnnealingSchedule::call_count() const {
 }
 
 /// @brief Increment the call count.
+/// @note The call count is mutable.
 void
-AnnealingSchedule::increment_call_count() {
+AnnealingSchedule::increment_call_count() const {
     ++call_count_;
 }
 

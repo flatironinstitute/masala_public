@@ -126,7 +126,8 @@ protected:
 	masala::numeric_api::Size call_count() const;
 
 	/// @brief Increment the call count.
-	void increment_call_count();
+	/// @note The call count is mutable.
+	void increment_call_count() const;
 
 	/// @brief Reset the call count.
 	void reset();
