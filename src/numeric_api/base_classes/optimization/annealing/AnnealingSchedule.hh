@@ -28,7 +28,7 @@
 #include <numeric_api/base_classes/optimization/annealing/AnnealingSchedule.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric API headers:
 #include <numeric_api/types.hh>
@@ -46,7 +46,7 @@ namespace annealing {
 /// @brief A base class for all annealing schedules.
 /// @details Annealing schedules return temperature as a function of number of calls.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AnnealingSchedule : public masala::base::MasalaObject {
+class AnnealingSchedule : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 

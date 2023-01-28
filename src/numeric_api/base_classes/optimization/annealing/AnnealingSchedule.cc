@@ -44,7 +44,7 @@ namespace annealing {
 
 /// @brief Default constructor.
 AnnealingSchedule::AnnealingSchedule() :
-    masala::base::MasalaObject(),
+    masala::base::managers::plugin_module::MasalaPlugin(),
     call_count_(0)
 {}
 
@@ -52,7 +52,7 @@ AnnealingSchedule::AnnealingSchedule() :
 AnnealingSchedule::AnnealingSchedule(
     AnnealingSchedule const &src 
 ) :
-    masala::base::MasalaObject( src ),
+    masala::base::managers::plugin_module::MasalaPlugin( src ),
     call_count_( src.call_count_.load() )
 {}
 
