@@ -78,8 +78,6 @@ public:
 	void make_independent();
 
 	/// @brief Make a copy of this object that is wholly independent.
-	/// @details Likely does not need an override for derived classes.
-	virtual
 	AnnealingScheduleSP deep_clone() const;
 
 public:
