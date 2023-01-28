@@ -32,6 +32,7 @@
 
 // Numeric headers:
 #include <numeric/optimization/OptimizationSolution.fwd.hh>
+#include <numeric/types.hh>
 
 // STL headers:
 #include <mutex>
@@ -140,6 +141,23 @@ public:
 	add_optimization_solution(
 		OptimizationSolutionSP solution_in
 	);
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the ith solution in this object, where the index is zero-based.
+	/// @details Does bounds-checking.  Throws if out of range.  Use the
+	/// n_solutions() method to check number of solutions.
+	OptimizationSolutionCSP
+	solution(
+		masala::numeric::Size const index
+	) const;
+
+	/// @brief Get the number of solutions stored in this object.
+	masala::numeric::Size n_solutions() const;
 
 protected:
 

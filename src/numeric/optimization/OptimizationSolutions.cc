@@ -30,6 +30,8 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -176,10 +178,6 @@ OptimizationSolutions::get_api_definition() {
 
         // Work functions:
 
-
-        // Getters:
-
-
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
@@ -193,6 +191,26 @@ OptimizationSolutions::get_api_definition() {
                 "Add an optimization solution to the list of optimization solutions that this container contains.",
                 "solution_in", "The optimization solution that we are adding to the container.",
                 true, false, std::bind( &OptimizationSolutions::add_optimization_solution, this, std::placeholders::_1 )
+            )
+        );
+
+        // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationSolutionCSP, masala::numeric::Size > >(
+                "solution", "Get the solution with the given index.  Throws if index is out of range.",
+                "index", "The index of the solution to get.  (Note that this is zero-based.)",
+                "solution", "A const shared pointer to the solution with the given index.",
+                false, false,
+                std::bind( &OptimizationSolutions::solution, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::numeric::Size > >(
+                "n_solutions", "Get the number of solutions stored in this object.",
+                "n_solutions", "The number of solutions stored in this object, or one more than th zero-based "
+                "index of the last solution.",
+                false, false,
+                std::bind( &OptimizationSolutions::n_solutions, this )
             )
         );
 
@@ -223,6 +241,34 @@ OptimizationSolutions::add_optimization_solution(
 ) {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
     optimization_solutions_.emplace_back( solution_in );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the ith solution in this object, where the index is zero-based.
+/// @details Does bounds-checking.  Throws if out of range.  Use the
+/// n_solutions() method to check number of solutions.
+OptimizationSolutionCSP
+OptimizationSolutions::solution(
+    masala::numeric::Size const index
+) const {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS(
+        index < optimization_solutions_.size(),
+        "solution",
+        "The optimization solution index (" + std::to_string(index) + ") + is out of range.  There are only "
+        + std::to_string( optimization_solutions_.size() ) + " solutions stored in this object."
+    );
+    return optimization_solutions_[index];
+}
+
+/// @brief Get the number of solutions stored in this object.
+masala::numeric::Size
+OptimizationSolutions::n_solutions() const {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    return optimization_solutions_.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
