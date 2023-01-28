@@ -51,6 +51,8 @@
      - [X] Base class for CostFunctionNetworkProblem, that takes function pointer to a function for updating the cost function given a new selection.
      - [X] Derived class for PrecomputedPairwiseCostFunctionNetworkProblem.  The update function can ALSO be used, for non-pairwise terms.
 
+- [ ] Add means of specifying parent class in API definition, and of optionally getting API definition that includes inherited functions.  (Need to think about how.)
+
 - [ ] Ensure that optimers return a container of solutions by default, not just a single solution.
 - [ ] Ensure that optimers take a container of problems by default, not just a single problem.
 	- [X] Derived CostFunctionNetworkOptimizationProblems class.
