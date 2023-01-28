@@ -23,13 +23,13 @@
 #ifndef Masala_src_numeric_api_types_hh
 #define Masala_src_numeric_api_types_hh
 
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 namespace masala {
 namespace numeric_api {
 
-    typedef numeric::Size Size;
-    typedef numeric::Real Real;
+    typedef base::Size Size;
+    typedef base::Real Real;
 
 } // namespace numeric_api
 } // namespace masala
