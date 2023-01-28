@@ -107,7 +107,7 @@ public:
 	/// @brief Return temperature.
 	virtual
 	masala::numeric_api::Real
-	temperature() = 0;
+	temperature() const = 0;
 
 	/// @brief Return temperature for the Nth timepoint.
 	virtual
@@ -134,7 +134,7 @@ protected:
 private:
 
 	/// @brief Number of times the temperature() function has been called.
-	std::atomic< masala::numeric_api::Size > call_count_;
+	mutable std::atomic< masala::numeric_api::Size > call_count_;
 
 }; // class AnnealingSchedule
 
