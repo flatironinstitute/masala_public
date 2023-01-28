@@ -29,8 +29,8 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.hh>
 
 // Numeric API headers:
-#include <numeric_api/auto_generated_api/optimization/OptimizationProblem_API.hh>
-#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.hh>
+#include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution_API.hh>
 
 // Base headers:
@@ -78,20 +78,21 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 	};
 }
 
-/// @brief Run the optimizer on an optimization problem, and produce a solution.
+/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 /// @details Must be implemented by derived classes.
 masala::numeric_api::auto_generated_api::optimization::OptimizationSolution_APICSP
 CostFunctionNetworkOptimizer::run_optimizer(
-    masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
+    masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 ) const {
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
-    CostFunctionNetworkOptimizationProblem_API const * problem_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem_API const * >( &problem ) );
+    CostFunctionNetworkOptimizationProblems_API const * problems_cast( dynamic_cast< CostFunctionNetworkOptimizationProblems_API const * >( &problems ) );
     CHECK_OR_THROW_FOR_CLASS(
-        problem_cast != nullptr,
+        problems_cast != nullptr,
         "run_optimizer",
-        "A problem was passed to the run_optimizer function, but it was not a cost function network optimization problem."
+        "A set of optimization problems was passed to the run_optimizer function, but it was not "
+        "a set of cost function network optimization problems."
     );
-    return run_cost_function_network_optimizer( *problem_cast );
+    return run_cost_function_network_optimizer( *problems_cast );
 }
 
 } // namespace cost_function_network

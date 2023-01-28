@@ -31,7 +31,7 @@
 #include <numeric_api/base_classes/optimization/Optimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric_api/auto_generated_api/optimization/OptimizationProblem_API.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.fwd.hh>
 #include <numeric_api/auto_generated_api/optimization/OptimizationSolution_API.fwd.hh>
 
 // Parent header:
@@ -84,12 +84,12 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
-	/// @brief Run the optimizer on an optimization problem, and produce a solution.
+	/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 	/// @details Must be implemented by derived classes.
 	virtual
 	masala::numeric_api::auto_generated_api::optimization::OptimizationSolution_APICSP
 	run_optimizer(
-		masala::numeric_api::auto_generated_api::optimization::OptimizationProblem_API const & problem
+		masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 	) const = 0;
 
 }; // class Optimizer
