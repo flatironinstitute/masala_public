@@ -62,6 +62,7 @@ AnnealingSchedule::operator=(
     AnnealingSchedule const &src
 ) {
     call_count_ = src.call_count_.load();
+    return *this;
 }
 
 /// @brief Make this object wholly independent.
