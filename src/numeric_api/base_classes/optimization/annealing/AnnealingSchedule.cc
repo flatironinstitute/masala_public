@@ -116,7 +116,7 @@ AnnealingSchedule::increment_call_count() const {
 
 /// @brief Reset the call count.
 void
-AnnealingSchedule::reset() {
+AnnealingSchedule::reset_call_count() {
     call_count_ = 0;
 }
 

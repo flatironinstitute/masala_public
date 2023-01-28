@@ -130,7 +130,7 @@ protected:
 	void increment_call_count() const;
 
 	/// @brief Reset the call count.
-	void reset();
+	void reset_call_count();
 
 private:
 
