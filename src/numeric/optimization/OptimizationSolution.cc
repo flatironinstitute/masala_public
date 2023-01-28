@@ -50,8 +50,10 @@ OptimizationSolution::OptimizationSolution(
     OptimizationSolution const & src
 ) :
     masala::base::managers::plugin_module::MasalaPlugin(src)
+{
+    // std::lock_guard< std::mutex > lock( src.solution_mutex_ );
     // Nothing else gets copied, by default.
-{}
+}
 
 /// @brief Assignment operator.
 OptimizationSolution &
@@ -59,6 +61,9 @@ OptimizationSolution::operator=(
     OptimizationSolution const & src
 ) {
     masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    //std::lock( solution_mutex_, src.solution_mutex_ );
+    //std::lock_guard< std::mutex > lock( solution_mutex_, std::adopt_lock );
+    //std::lock_guard< std::mutex > lock2( src.solution_mutex_, std::adopt_lock );
     //Nothing else gets assigned, by default.
     return *this;
 }
@@ -66,6 +71,7 @@ OptimizationSolution::operator=(
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionSP
 OptimizationSolution::deep_clone() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
     OptimizationSolutionSP new_object( masala::make_shared< OptimizationSolution >( *this ) );
     new_object->make_independent();
     return new_object;
@@ -74,6 +80,7 @@ OptimizationSolution::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 OptimizationSolution::make_independent() {
+    //std::lock_guard< std::mutex > lock( solution_mutex_ );
     //GNDN
 }
 

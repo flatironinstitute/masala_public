@@ -41,8 +41,9 @@
 <__SOURCE_CLASS_API_NAME__>::operator=(
     <__SOURCE_CLASS_API_NAME__> const & src
 ) {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
-    std::lock_guard< std::mutex > lock2( src.api_mutex_ );
+    std::lock( api_mutex_, src.api_mutex_ );
+    std::lock_guard< std::mutex > lock( api_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock2( src.api_mutex_, std::adopt_lock );
     inner_object_ = src.inner_object_;
     return *this;
 }
@@ -60,7 +61,6 @@
 /// (all contents also deep-cloned).
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::deep_clone() const {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
     <__SOURCE_CLASS_API_NAME__>SP object_copy( clone() );
     object_copy->make_independent();
     return object_copy;

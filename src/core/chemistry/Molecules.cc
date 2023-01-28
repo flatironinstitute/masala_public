@@ -81,8 +81,10 @@ Molecules &
 Molecules::operator=(
     Molecules const & src
 ) {
-    { //Scope for lock guard:
-        std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    { //Scope for lock guards:
+        std::lock( whole_object_mutex_, src.whole_object_mutex_ );
+        std::lock_guard< std::mutex > lock1( whole_object_mutex_, std::adopt_lock );
+        std::lock_guard< std::mutex > lock2( src.whole_object_mutex_, std::adopt_lock );
         // mutex deliberately not copied.
         configuration_ = src.configuration_;
         master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;

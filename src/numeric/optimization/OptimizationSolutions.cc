@@ -56,9 +56,11 @@ namespace optimization {
 OptimizationSolutions::OptimizationSolutions(
     OptimizationSolutions const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin(src),
-    optimization_solutions_( src.optimization_solutions_ )
-{}
+    masala::base::managers::plugin_module::MasalaPlugin(src)
+{
+    std::lock_guard< std::mutex > lock( src.solutions_mutex_ );
+    optimization_solutions_ = src.optimization_solutions_;
+}
 
 /// @brief Assignment operator.
 /// @details Copies the pointers to, but does not deep-clone,
@@ -67,8 +69,9 @@ OptimizationSolutions &
 OptimizationSolutions::operator=(
     OptimizationSolutions const & src
 ) {
-    std::lock_guard< std::mutex > lock( solutions_mutex_ );
-    std::lock_guard< std::mutex > lock2( src.solutions_mutex_ );
+    std::lock( solutions_mutex_, src.solutions_mutex_ );
+    std::lock_guard< std::mutex > lock( solutions_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock2( src.solutions_mutex_, std::adopt_lock );
     masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
     optimization_solutions_ = src.optimization_solutions_;
     return *this;
@@ -77,6 +80,7 @@ OptimizationSolutions::operator=(
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionsSP
 OptimizationSolutions::deep_clone() const {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
     OptimizationSolutionsSP new_object( masala::make_shared< OptimizationSolutions >( *this ) );
     new_object->make_independent();
     return new_object;

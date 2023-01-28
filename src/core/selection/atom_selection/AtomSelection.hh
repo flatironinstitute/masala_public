@@ -80,6 +80,7 @@ public:
 	clone() const;
 
 	/// @brief Create a copy of this object that is independent of the original.
+    /// @details Warning: doing so guarantees that the selection points to nothing.
 	AtomSelectionSP
 	deep_clone() const;
 

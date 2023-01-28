@@ -53,15 +53,23 @@ namespace atom_selection {
 AtomSelection::AtomSelection(
 	AtomSelection const & src
 ) :
-	atoms_( src.atoms_ )
-{}
+	masala::core::selection::Selection(src)
+{
+    std::lock_guard< std::mutex > lock( src.whole_object_mutex_ );
+    atoms_ = src.atoms_;
+}
 
 /// @brief Assignment operator.
 AtomSelection &
 AtomSelection::operator=(
 	AtomSelection const & src
 ) {
-	atoms_ = src.atoms_;
+    {
+        std::lock( whole_object_mutex_, src.whole_object_mutex_ );
+        std::lock_guard< std::mutex > lock1( whole_object_mutex_, std::adopt_lock );
+        std::lock_guard< std::mutex > lock2( src.whole_object_mutex_, std::adopt_lock );
+        atoms_ = src.atoms_;
+    }
 	return *this;
 }
 
@@ -72,9 +80,12 @@ AtomSelection::clone() const {
 }
 
 /// @brief Create a copy of this object that is independent of the original.
+/// @details Warning: doing so guarantees that the selection points to nothing.
 AtomSelectionSP
 AtomSelection::deep_clone() const {
-	return masala::make_shared< AtomSelection >( *this );
+	AtomSelectionSP copy( masala::make_shared< AtomSelection >( *this ) );
+    copy->atoms_.clear();
+    return copy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
