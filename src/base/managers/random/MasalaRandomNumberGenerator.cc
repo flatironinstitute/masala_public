@@ -25,13 +25,38 @@
 #include <base/managers/random/MasalaRandomNumberGenerator.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaEngineCreatorBase.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
+
+// STL headers:
+#include <chrono>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace random {
+
+////////////////////////////////////////////////////////////////////////////////
+// NON-CLASS FUNCTIONS FOR CONVENIENCE
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Size
+uniform_size_distribution(
+    base::Size const beginrange,
+    base::Size const endrange,
+) {
+    return MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC STATIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaRandomNumberGeneratorHandle
@@ -39,6 +64,36 @@ MasalaRandomNumberGenerator::get_instance() {
     static thread_local MasalaRandomNumberGenerator random_generator;
     return &random_generator;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Default constructor: object can only be instantiated with getInstance().
+/// @details Sets seed value by time perturbed by thread index.
+MasalaRandomNumberGenerator::MasalaRandomNumberGenerator() :
+    masala::base::MasalaObject()
+{
+    base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
+    base::Size const clock_ticks( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
+    random_engine_.seed( thread_id * 10000 + clock_ticks );
+}
+
+/// @brief Private constructor with seed: object can only be instantiated with getInstance().
+MasalaRandomNumberGenerator::MasalaRandomNumberGenerator(
+    base::Size const seed_value
+) :
+    masala::base::MasalaObject(),
+    random_engine_( seed_value )
+{
+    // Note that we can't use write_to_tracer() from a constructor.
+    masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
+    std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
+    if( tracer_handle->tracer_is_enabled( tracername ) ) {
+        tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seed_value ) + ".", true );
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -56,6 +111,20 @@ MasalaRandomNumberGenerator::class_name() const {
 std::string
 MasalaRandomNumberGenerator::class_namespace() const {
     return "masala::base::managers::random";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// RANDOM NUMBER GENERATING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
+base::Size
+MasalaRandomNumberGenerator::uniform_size_distribution(
+    base::Size const beginrange,
+    base::Size const endrange
+) const {
+    std::uniform_int_distribution< base::Size > int_gen( beginrange, endrange );
+    return int_gen( random_engine_ );
 }
 
 } // namespace random

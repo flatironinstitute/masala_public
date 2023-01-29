@@ -30,18 +30,40 @@
 // Forward declarations:
 #include <base/managers/random/MasalaRandomNumberGenerator.fwd.hh>
 
-// STL headers:
+// Base headers:
+#include <base/types.hh>
 
+// STL headers:
+#include <random>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace random {
 
+////////////////////////////////////////////////////////////////////////////////
+// NON-CLASS FUNCTIONS FOR CONVENIENCE
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Size
+uniform_size_distribution(
+    base::Size const beginrange,
+    base::Size const endrange,
+);
+
 /// @brief A static singleton for generating random numbers, with unique random seeds
 /// for each process and thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaRandomNumberGenerator : public masala::base::MasalaObject {
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC STATIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
 public:
 
@@ -54,8 +76,12 @@ private:
 // PRIVATE CONSTRUCTOR
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Private constructor: object can only be instantiated with getInstance().
-    MasalaRandomNumberGenerator() = default;
+    /// @brief Default constructor: object can only be instantiated with getInstance().
+    /// @details Sets seed value by time perturbed by thread index.
+    MasalaRandomNumberGenerator();
+
+    /// @brief Private constructor with seed: object can only be instantiated with getInstance().
+    MasalaRandomNumberGenerator( base::Size const seed_value );
 
 public:
 
@@ -88,12 +114,27 @@ public:
     std::string
     class_namespace() const override;
 
+////////////////////////////////////////////////////////////////////////////////
+// RANDOM NUMBER GENERATING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
+    base::Size
+    uniform_size_distribution(
+        base::Size const beginrange,
+        base::Size const endrange
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief The actual random generator is the STL's mt19937_64 engine, which uses the
+    /// Mersenne Twister algorithm, has 2^64 = 1.8*10^19 unique seeds and trajectories, and
+    /// has trajectories with repeat lengths of 2^19937 - 1 calls.
+    std::mt19937_64 random_engine_;
 
 };
 
