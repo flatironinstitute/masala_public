@@ -1,0 +1,105 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/base/managers/random/MasalaRandomNumberGenerator.hh
+/// @brief Headers for a static singleton for generating random numbers, with unique random seeds
+/// for each process and thread.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#ifndef Masala_src_base_managers_random_MasalaRandomNumberGenerator_hh
+#define Masala_src_base_managers_random_MasalaRandomNumberGenerator_hh
+
+// Parent header:
+#include <base/MasalaObject.hh>
+
+// Forward declarations:
+#include <base/managers/random/MasalaRandomNumberGenerator.fwd.hh>
+
+// STL headers:
+
+
+namespace masala {
+namespace base {
+namespace managers {
+namespace random {
+
+/// @brief A static singleton for generating random numbers, with unique random seeds
+/// for each process and thread.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class MasalaRandomNumberGenerator : public masala::base::MasalaObject {
+
+public:
+
+    /// @brief Instantiate the static singleton and get a handle to it.
+    static MasalaRandomNumberGeneratorHandle get_instance();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Private constructor: object can only be instantiated with getInstance().
+    MasalaRandomNumberGenerator() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS AND DESTRUCTORS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief No copy constructor.
+    MasalaRandomNumberGenerator( MasalaRandomNumberGenerator const & ) = delete;
+
+    /// @brief No assignment operator.
+    void operator=( MasalaRandomNumberGenerator const & ) = delete;
+
+    /// @brief Default destructor.
+    ~MasalaRandomNumberGenerator() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the name of this object.
+    /// @details Returns "MasalaRandomNumberGenerator".
+    std::string
+    class_name() const override;
+
+    /// @brief Get the namespace of this object.
+    /// @details Returns "masala::base::managers::random".
+    std::string
+    class_namespace() const override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+
+};
+
+} // namespace random
+} // namespace managers
+} // namespace base
+} // namespace masala
+
+#endif // Masala_src_base_managers_random_MasalaRandomNumberGenerator_hh
