@@ -36,8 +36,8 @@ namespace random {
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaRandomNumberGeneratorHandle
 MasalaRandomNumberGenerator::get_instance() {
-    static MasalaRandomNumberGenerator config_manager;
-    return &config_manager;
+    static thread_local MasalaRandomNumberGenerator random_generator;
+    return &random_generator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
