@@ -200,7 +200,8 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 /// @brief Reset all data in this object.
 void
 CostFunctionNetworkOptimizationProblem::reset() {
-    n_choices_by_node_index_.clear();
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    protected_reset();
 }
 
 /// @brief Set the (minimum) number of choices at a node.
@@ -212,7 +213,7 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
     masala::numeric::Size const min_choice_count
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count );
+    set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count ); // Checks that state is not finalized.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -317,8 +318,9 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
-                "reset", "Completely reset the problem description, deleting all choices for each node.",
-                true, false,
+                "reset", "Completely reset the problem description, deleting all choices for each node.  "
+                "Also resets finalization state.",
+                false, true,
                 std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
             )
         );
@@ -357,6 +359,9 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
     masala::numeric::Size const min_choice_count
 ) {
     std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
+    CHECK_OR_THROW_FOR_CLASS( !finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
+        "This object has already been finalized.  Cannot set the minimum number of choices at a node at this point!"
+    );
     if( it == n_choices_by_node_index_.end() ) {
         n_choices_by_node_index_[node_index] = min_choice_count;
     } else {
@@ -364,6 +369,23 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
             it->second = min_choice_count;
         }
     }
+}
+
+/// @brief Access the number of choices by node index.
+/// @note This assumes that the problem mutex has already been set.
+std::map< masala::numeric::Size, masala::numeric::Size > &
+CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
+    CHECK_OR_THROW_FOR_CLASS( !finalized(), "n_choices_by_node_index",
+        "Can only get nonconst access to the number of choices by node index if the problem has not been finalized!"
+    );
+    return n_choices_by_node_index_;
+}
+
+/// @brief Reset this object completely.  Mutex must be locked before calling.
+void 
+CostFunctionNetworkOptimizationProblem::protected_reset() {
+    masala::numeric::optimization::OptimizationProblem::protected_reset();
+    n_choices_by_node_index_.clear();
 }
 
 

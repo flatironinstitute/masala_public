@@ -29,6 +29,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -49,8 +50,8 @@ OptimizationProblem::OptimizationProblem(
 ) :
     masala::base::managers::plugin_module::MasalaPlugin(src)
 {
-    //std::lock_guard< std::mutex > lock( problem_mutex_ );
-    // Nothing else gets copied, by default.
+    std::lock_guard< std::mutex > lock( src.problem_mutex_ );
+    finalized_ = src.finalized_;
 }
 
 /// @brief Assignment operator.
@@ -60,10 +61,10 @@ OptimizationProblem::operator=(
 ) {
     masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
     {
-        //std::lock( problem_mutex_, src.problem_mutex_ );
-        //std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
-        //std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
-        //Nothing else gets assigned, by default.
+        std::lock( problem_mutex_, src.problem_mutex_ );
+        std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
+        std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
+        finalized_ = src.finalized_;
     }
     return *this;
 }
@@ -83,8 +84,8 @@ OptimizationProblem::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 OptimizationProblem::make_independent() {
-    //std::lock_guard< std::mutex > lock( problem_mutex_ );
-    //GNDN
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+    api_definition_ = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +130,13 @@ OptimizationProblem::class_name() const {
 std::string
 OptimizationProblem::class_namespace() const {
     return "masala::numeric::optimization";
+}
+
+/// @brief Reset all data in this object.
+void
+OptimizationProblem::reset() {
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+    protected_reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +188,12 @@ OptimizationProblem::get_api_definition() {
 
 
         // Setters:
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "reset", "Reset this object completely.  (Resets finalization state.)",
+                true, false, std::bind( &OptimizationProblem::reset, this )
+            )
+        );
 
         api_definition_ = api_def; //Make const.
     }

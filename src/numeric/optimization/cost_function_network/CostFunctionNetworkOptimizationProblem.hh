@@ -155,9 +155,8 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Reset all data in this object.
-	virtual
 	void
-	reset();
+	reset() override;
 
 	/// @brief Set the (minimum) number of choices at a node.
     /// @details If the number of choices has already been set to greater than the
@@ -196,11 +195,8 @@ protected:
 
 	/// @brief Access the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
-	inline
 	std::map< masala::numeric::Size, masala::numeric::Size > &
-	n_choices_by_node_index() {
-		return n_choices_by_node_index_;
-	}
+	n_choices_by_node_index();
 
 	/// @brief Const access to the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
@@ -209,6 +205,9 @@ protected:
 	n_choices_by_node_index() const {
 		return n_choices_by_node_index_;
 	}
+
+	/// @brief Reset this object completely.  Mutex must be locked before calling.
+	void protected_reset() override;
 
 private:
 

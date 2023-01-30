@@ -105,6 +105,11 @@ public:
 	/// @returns "masala::numeric::optimization".
 	std::string class_namespace() const override;
 
+	/// @brief Reset all data in this object.
+	virtual
+	void
+	reset();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +134,21 @@ protected:
 	/// @note Could be nullptr.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
 
+	/// @brief Allow derived classes to access whether this object is finalized.
+	/// @note Assumes problem mutex was locked.
+	inline bool finalized() const { return finalized_; }
+
+	/// @brief Allow derived classes to indicate that this object has been finalized.
+	/// @note Derived classes must lock problem mutex before calling this!
+	inline void set_finalized() { finalized_ = true; }
+
+	/// @brief Reset all data in this object.
+	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
+	virtual
+	void
+	protected_reset();
+
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +160,9 @@ private:
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief Has the problem setup been finalized?
+	bool finalized_ = false;
 
 }; // class OptimizationProblem
 
