@@ -53,7 +53,18 @@ namespace random {
 base::Size
 uniform_size_distribution(
     base::Size const beginrange,
-    base::Size const endrange,
+    base::Size const endrange
+);
+
+/// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+signed long int
+uniform_signed_long_int_distribution(
+    signed long int const beginrange,
+    signed long int const endrange
 );
 
 /// @brief A static singleton for generating random numbers, with unique random seeds
@@ -124,6 +135,14 @@ public:
         base::Size const beginrange,
         base::Size const endrange
     ) const;
+
+    /// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
+    signed long int
+    uniform_signed_long_int_distribution(
+        signed long int const beginrange,
+        signed long int const endrange
+    ) const;
+
 
 private:
 
