@@ -117,6 +117,64 @@ uniform_float_distribution() {
     return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 );
 }
 
+/// @brief Generate a real (double-precision floating-point) number drawn from a gaussian distribution
+/// with mean and standard deviation given by mean and stddev, respectively.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+gaussian_real_distribution(
+    base::Real const mean,
+    base::Real const stddev
+) {
+    return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean, stddev );
+}
+
+/// @brief Generate a real (double-precision floating-point) number drawn from a gaussian distribution
+/// with mean 0 and standard deviation 1.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+gaussian_real_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a gaussian distribution
+/// with mean and standard deviation given by mean and stddev, respectively.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+gaussian_float_distribution(
+    float const mean,
+    float const stddev
+) {
+    return MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean, stddev );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a gaussian distribution
+/// with mean 0 and standard deviation 1.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+gaussian_float_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// CLASS MasalaRandomNumberGenerator
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC STATIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
