@@ -280,6 +280,28 @@ MasalaRandomNumberGenerator::uniform_float_distribution(
     return real_gen( random_engine_ );
 }
 
+/// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
+/// with a given mean and standard deviation.
+base::Real
+MasalaRandomNumberGenerator::gaussian_real_distribution(
+    base::Real const mean,
+    base::Real const stddev
+) {
+    std::normal_distribution< base::Real > gaussian_gen( mean, stddev );
+    return gaussian_gen( random_engine_ );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
+/// with a given mean and standard deviation.
+float
+MasalaRandomNumberGenerator::gaussian_float_distribution(
+    float const mean,
+    float const stddev
+) {
+    std::normal_distribution< float > gaussian_gen( mean, stddev );
+    return gaussian_gen( random_engine_ );
+}
+
 } // namespace random
 } // namespace managers
 } // namespace base

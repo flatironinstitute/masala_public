@@ -251,6 +251,22 @@ public:
         float const endrange
     );
 
+    /// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
+    /// with a given mean and standard deviation.
+    base::Real
+    gaussian_real_distribution(
+        base::Real const mean,
+        base::Real const stddev
+    );
+
+    /// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
+    /// with a given mean and standard deviation.
+    float
+    gaussian_float_distribution(
+        float const mean,
+        float const stddev
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
