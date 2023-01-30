@@ -151,45 +151,41 @@ gaussian_float_distribution(
 float
 gaussian_float_distribution();
 
-/// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
-/// with a given mean.
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
 /// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean )
+/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( mean )
 /// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
 /// random generator and call the class member function.
-base::Real
-poisson_real_distribution(
-    base::Real const mean
+base::Size
+poisson_size_distribution(
+    base::Size const mean
 );
 
-/// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
-/// with mean 0.
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
 /// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0 )
+/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( 0 )
 /// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
 /// random generator and call the class member function.
-base::Real
-poisson_real_distribution();
+base::Size
+poisson_size_distribution();
 
-/// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
-/// with a given mean.
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
 /// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean )
+/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( mean )
 /// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
 /// random generator and call the class member function.
-float
-poisson_float_distribution(
-    float const mean
+signed long int
+poisson_singed_long_int_distribution(
+    signed long int const mean
 );
 
-/// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
-/// with mean 0.
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
 /// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( 0 )
+/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( 0 )
 /// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
 /// random generator and call the class member function.
-float
-poisson_float_distribution();
+signed long int
+poisson_singed_long_int_distribution();
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -307,18 +303,18 @@ public:
         float const stddev
     );
 
-    /// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
+    /// @brief Generate an unsigned long integer drawn from a Poisson distribution
     /// with a given mean.
-    base::Real
-    poisson_real_distribution(
-        base::Real const mean
+    base::Size
+    poisson_size_distribution(
+        base::Size const mean
     );
 
-    /// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
+    /// @brief Generate a signed long integer drawn from a Poisson distribution
     /// with a given mean.
-    float
-    poisson_float_distribution(
-        float const mean
+    signed long int
+    poisson_signed_long_int_distribution(
+        signed long int const mean
     );
 
 private:
