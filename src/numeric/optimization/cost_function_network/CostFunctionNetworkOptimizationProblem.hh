@@ -158,6 +158,11 @@ public:
 	void
 	reset() override;
 
+	/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
+	/// the object should now be locked for read only.
+	void
+	finalize() override;
+
 	/// @brief Set the (minimum) number of choices at a node.
     /// @details If the number of choices has already been set to greater than the
     /// specified number, this does nothing.
@@ -208,6 +213,10 @@ protected:
 
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
+
+	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
+	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
+	void protected_finalize() override;
 
 private:
 

@@ -186,13 +186,16 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset
 /// @brief Reset all data in this object.
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset() {
-    {
-        std::lock_guard< std::mutex > lock( problem_mutex() );
-        single_node_penalties_.clear();
-        pairwise_node_penalties_.clear();
-        background_constant_offset_ = 0.0;
-    }
-    CostFunctionNetworkOptimizationProblem::reset();
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset();
+}
+
+/// @brief Indicates that problem setup is complete, locking the one- and two-node penalties
+/// and making the object read-only.
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize() {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 /// @brief Add onebody penalty for a choice at a node.
@@ -332,12 +335,18 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
         );
 
         // Setters:
-
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all one-node and two-node penalties and "
                 "all choices for each node.", false, true,
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset, this )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "finalize", "Indicates that problem setup is complete, locking the one- and two-node penalties and making the object read-only.",
+                false, true,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize, this )
             )
         );
         api_def->add_setter(
@@ -372,6 +381,29 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
     }
 
     return api_definition();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reset this object.  Assumes mutex has been locked.
+/// @details Calls parent protected_reset().
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
+    single_node_penalties_.clear();
+    pairwise_node_penalties_.clear();
+    background_constant_offset_ = 0.0;
+    CostFunctionNetworkOptimizationProblem::protected_reset();
+}
+
+/// @brief Indicates that problem setup is complete, locking the one- and two-node penalties
+/// and making the object read-only.  Must be called from a mutex-locked context.
+/// @details Calls parent protected_finalize().
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
+    // TODO TODO TODO do other finalization here.
+    CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 

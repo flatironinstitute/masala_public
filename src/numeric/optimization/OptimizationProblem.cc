@@ -136,7 +136,16 @@ OptimizationProblem::class_namespace() const {
 void
 OptimizationProblem::reset() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    protected_reset();
+    OptimizationProblem::protected_reset();
+}
+
+/// @brief Finalize this problem: indicate that all problem setup is complete, and
+/// carry out any precomputation necessary for efficient solution.
+/// @details Derived classes should probably override this.
+void
+OptimizationProblem::finalize() {
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+    OptimizationProblem::protected_finalize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +199,13 @@ OptimizationProblem::get_api_definition() {
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "finalize", "Finalize this object completely -- i.e. indicate that all problem setup is complete, and "
+                "the object should now be read-only.  May be overridden by derived classes.",
+                true, false, std::bind( &OptimizationProblem::finalize, this )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Reset this object completely.  (Resets finalization state.)",
                 true, false, std::bind( &OptimizationProblem::reset, this )
             )
@@ -217,6 +233,20 @@ OptimizationProblem::problem_mutex() const {
 masala::base::api::MasalaObjectAPIDefinitionCSP &
 OptimizationProblem::api_definition() {
     return api_definition_;
+}
+
+/// @brief Inner workings of finalize function.  Should be called with locked mutex.
+/// Base class protected_finalize() sets finalized_ to true.
+void
+OptimizationProblem::protected_finalize() {
+    finalized_ = true;
+}
+
+/// @brief Reset all data in this object.
+/// @details Sets state to not finalized.  Mutex must be locked before calling this.
+void
+OptimizationProblem::protected_reset() {
+    finalized_ = false;
 }
 
 } // namespace optimization

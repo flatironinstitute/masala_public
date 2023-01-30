@@ -110,6 +110,11 @@ public:
 	void
 	reset();
 
+	/// @brief Finalize this problem: indicate that all problem setup is complete, and
+	/// carry out any precomputation necessary for efficient solution.
+	/// @details Derived classes should probably override this.
+	virtual void finalize();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,15 +143,13 @@ protected:
 	/// @note Assumes problem mutex was locked.
 	inline bool finalized() const { return finalized_; }
 
-	/// @brief Allow derived classes to indicate that this object has been finalized.
-	/// @note Derived classes must lock problem mutex before calling this!
-	inline void set_finalized() { finalized_ = true; }
+	/// @brief Inner workings of finalize function.  Should be called with locked mutex.
+	/// Base class protected_finalize() sets finalized_ to true.
+	virtual void protected_finalize();
 
 	/// @brief Reset all data in this object.
 	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
-	virtual
-	void
-	protected_reset();
+	virtual void protected_reset();
 
 
 private:

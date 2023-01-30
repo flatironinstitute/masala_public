@@ -148,6 +148,11 @@ public:
 	void
 	reset() override;
 
+	/// @brief Indicates that problem setup is complete, locking the one- and two-node penalties
+	/// and making the object read-only.
+	void
+	finalize() override;
+
 	/// @brief Add onebody penalty for a choice at a node.
 	/// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
 	/// If the number of choices at the node is currently less than the node index, the number of
@@ -186,11 +191,20 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
-private:
+protected:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PRIVATE FUNCTIONS
+// PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Reset this object.  Assumes mutex has been locked.
+	/// @details Calls parent protected_reset().
+	void protected_reset() override;
+
+	/// @brief Indicates that problem setup is complete, locking the one- and two-node penalties
+	/// and making the object read-only.  Must be called from a mutex-locked context.
+	/// @details Calls parent protected_finalize().
+	void protected_finalize() override;
 
 private:
 

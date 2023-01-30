@@ -201,7 +201,15 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 void
 CostFunctionNetworkOptimizationProblem::reset() {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    protected_reset();
+    CostFunctionNetworkOptimizationProblem::protected_reset();
+}
+
+/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
+/// the object should now be locked for read only.
+void
+CostFunctionNetworkOptimizationProblem::finalize() {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 /// @brief Set the (minimum) number of choices at a node.
@@ -240,7 +248,6 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
 
         // Constructors:
-
         api_def->add_constructor(
             masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationProblem > > (
                 class_name(),
@@ -258,7 +265,6 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         // Work functions:
 
         // Getters:
-
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Size > >(
                 "total_nodes", "Get the total number of nodes in this problem.  This is the index of the "
@@ -315,13 +321,19 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
 
         // Setters:
-
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Completely reset the problem description, deleting all choices for each node.  "
                 "Also resets finalization state.",
                 false, true,
                 std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "finalize", "Finalize this object completely -- i.e. indicate that all problem setup is complete, and "
+                "the object should now be read-only.  May be overridden by derived classes.",
+                false, true, std::bind( &CostFunctionNetworkOptimizationProblem::finalize, this )
             )
         );
         api_def->add_setter(
@@ -386,6 +398,13 @@ void
 CostFunctionNetworkOptimizationProblem::protected_reset() {
     masala::numeric::optimization::OptimizationProblem::protected_reset();
     n_choices_by_node_index_.clear();
+}
+
+/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
+/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
+void
+CostFunctionNetworkOptimizationProblem::protected_finalize() {
+    masala::numeric::optimization::OptimizationProblem::protected_finalize();
 }
 
 
