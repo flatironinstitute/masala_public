@@ -112,6 +112,38 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::class_namespace() con
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the fixed background constant offset.
+masala::numeric::Real
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_offset() const {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    return background_constant_offset_;
+}
+
+/// @brief Get the constant offset for nodes.
+/// @details This is the sum of onebody energies for nodes that have exactly
+/// one choice, plus the twobdy energies between those nodes.
+masala::numeric::Real
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {
+    using masala::numeric::Size;
+    using masala::numeric::Real;
+
+    Real accumulator( 0.0 );
+    TODO TODO TODO
+}
+
+/// @brief Get the total constant offset.
+/// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
+masala::numeric::Real
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
+    TODO TODO TODO
+}
+
+ALSO TODO:
+- ADD FINALIZATION STEP IN WHICH WE COMPUTE THE TWOBODY INTERACTIONS OF ALL VARIABLE NODE CHOICES WITH
+SINGLE-CHOICE NODES, TRANSFER THOSE TO THE ONEBODY ENERGIES OF THOSE VARIABLE NODE CHOICES, AND DELETE
+THE CORRESPONDING TWOBODY ENERGIES.
+- CHECK WHETHER THIS OBJECT IS FINALIZED IN SETTERS.
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,9 +151,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::class_namespace() con
 /// @brief Reset all data in this object.
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset() {
+    {
+        std::lock_guard< std::mutex > lock( problem_mutex() );
+        single_node_penalties_.clear();
+        pairwise_node_penalties_.clear();
+        background_constant_offset_ = 0.0;
+    }
     CostFunctionNetworkOptimizationProblem::reset();
-    single_node_penalties_.clear();
-    pairwise_node_penalties_.clear();
 }
 
 /// @brief Add onebody penalty for a choice at a node.

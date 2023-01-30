@@ -122,6 +122,20 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the fixed background constant offset.
+	masala::numeric::Real
+	background_constant_offset() const;
+
+	/// @brief Get the constant offset for nodes.
+	/// @details This is the sum of onebody energies for nodes that have exactly
+	/// one choice, plus the twobdy energies between those nodes.
+	masala::numeric::Real
+	one_choice_node_constant_offset() const;
+
+	/// @brief Get the total constant offset.
+	/// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
+	masala::numeric::Real
+	total_constant_offset() const;
 
 public:
 
@@ -193,6 +207,9 @@ private:
 		std::pair< masala::numeric::Size, masala::numeric::Size >, //The node indices.
 		std::map< std::pair< masala::numeric::Size, masala::numeric::Size >, masala::numeric::Real > //The choice indices.
 	> pairwise_node_penalties_;
+
+	/// @brief A constant offset for the fixed background to a problem.
+	masala::numeric::Real background_constant_offset_ = 0.0;
 
 }; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
 
