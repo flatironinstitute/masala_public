@@ -134,14 +134,14 @@ public:
     uniform_size_distribution(
         base::Size const beginrange,
         base::Size const endrange
-    ) const;
+    );
 
     /// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
     signed long int
     uniform_signed_long_int_distribution(
         signed long int const beginrange,
         signed long int const endrange
-    ) const;
+    );
 
 
 private:

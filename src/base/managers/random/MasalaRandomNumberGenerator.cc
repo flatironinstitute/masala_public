@@ -135,7 +135,7 @@ base::Size
 MasalaRandomNumberGenerator::uniform_size_distribution(
     base::Size const beginrange,
     base::Size const endrange
-) const {
+) {
     std::uniform_int_distribution< base::Size > int_gen( beginrange, endrange );
     return int_gen( random_engine_ );
 }
@@ -145,7 +145,7 @@ signed long int
 MasalaRandomNumberGenerator::uniform_signed_long_int_distribution(
     signed long int const beginrange,
     signed long int const endrange
-) const {
+) {
     std::uniform_int_distribution< signed long int > int_gen( beginrange, endrange );
     return int_gen( random_engine_ );
 }
