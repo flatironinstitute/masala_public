@@ -377,7 +377,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
     // TODO TODO TODO find all twobody energies involving one node with one choice and another node with more than
     // one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
     // twobody energy.
-    CONTINUE HERE
+    CONTINUE HERE;
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
@@ -395,7 +395,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     using masala::numeric::Real;
     using masala::numeric::Size;
 
-    Real accumulator( 0.0 );
+    Real accumulator1( 0.0 ), accumulator2( 0.0 );
     std::set< Size > one_choice_nodes;
 
     std::lock_guard< std::mutex > lock( problem_mutex() );
@@ -414,9 +414,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     ) {
         if( one_choice_nodes.count( it->first ) != 0 ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in single-node energies!" );
-            accumulator += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
+            accumulator1 += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
         }
     }
+
+    write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
     for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.begin() );
         it != pairwise_node_penalties_.end();
@@ -424,11 +426,16 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     ) {
         if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
-            accumulator += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
+            accumulator2 += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
         }
     }
 
-    return accumulator;
+    write_to_tracer( "Sum of two-body energies between nodes with only one choice: " + std::to_string( accumulator2 ) );
+
+    Real total_accumulator( accumulator1 + accumulator2 );
+    write_to_tracer( "Total node background: " + std::to_string( total_accumulator ) );
+
+    return total_accumulator;
 }
 
 
