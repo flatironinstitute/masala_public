@@ -373,11 +373,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
 /// @details Calls parent protected_finalize().
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
-    // TODO TODO TODO do other finalization here.
-    // TODO TODO TODO find all twobody energies involving one node with one choice and another node with more than
-    // one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
-    // twobody energy.
-    CONTINUE HERE;
+    move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
     write_to_tracer( "Finalized problem description." );
@@ -399,11 +395,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     Real accumulator1( 0.0 ), accumulator2( 0.0 );
     std::set< Size > one_choice_nodes;
 
-    std::lock_guard< std::mutex > lock( problem_mutex() );
     for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0, "compute_one_choice_node_constant_offset", "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!" );
         if( it->second == 1 ) {
             one_choice_nodes.insert(it->first);
         }
@@ -437,6 +433,79 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     write_to_tracer( "Total node background: " + std::to_string( total_accumulator ) );
 
     return total_accumulator;
+}
+
+
+/// @brief Find all twobody energies involving one node with one choice and another node with more than
+/// one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
+/// twobody energy.
+/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes() {
+    using masala::numeric::Real;
+    using masala::numeric::Size;
+
+    std::set< Size > one_choice_nodes;
+    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
+        it != n_choices_by_node_index().end();
+        ++it
+    ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0, "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes", "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!" );
+        if( it->second == 1 ) {
+            one_choice_nodes.insert(it->first);
+        }
+    }
+
+    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::iterator it( pairwise_node_penalties_.begin() );
+        it!= pairwise_node_penalties_.end();
+        // no increment here
+    ) {
+        std::pair< Size, Size > const & node_indices( it->first );
+        Size other_node;
+        bool other_node_is_first;
+        if( one_choice_nodes.count( node_indices.first ) != 0 && one_choice_nodes.count( node_indices.second ) == 0 ) {
+            other_node = node_indices.second;
+            other_node_is_first = false;
+        } else if ( one_choice_nodes.count( node_indices.second ) != 0 && one_choice_nodes.count( node_indices.first ) == 0 ) {
+            other_node = node_indices.first;
+            other_node_is_first = true;
+        } else {
+            ++it; //Increment here.
+            continue; // Neither has one choice, or both have one choice.
+        }
+
+        // Ensure that there are onebody energies for the other node.
+        std::map< Size, std::map< Size, Real > >::iterator it_onebodynode( single_node_penalties_.find( other_node ) );
+        if( it_onebodynode == single_node_penalties_.end() ) {
+            single_node_penalties_[ other_node ] = std::map< Size, Real >{};
+            it_onebodynode = single_node_penalties_.find( other_node );
+        }
+        std::map< Size, Real > & onebody_choice_penalties_for_other( it_onebodynode->second );
+
+        // Update the onebody energies for the multi-choice node's choices:
+        for( std::map< std::pair< Size, Size >, Real >::iterator it_twobodychoices( it->second.begin() );
+            it_twobodychoices != it->second.end();
+            ++it_twobodychoices
+        ) {
+            //Sanity check:
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( (other_node_is_first ? it_twobodychoices->first.second : it_twobodychoices->first.first ) == 0,
+                "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes",
+                "Program error: got additional choice for a single-choice node when iterating."
+            );
+
+            Size const choiceindex( other_node_is_first ? it_twobodychoices->first.first : it_twobodychoices->first.second );
+
+            std::map< Size, Real >::iterator it_onebodychoice( onebody_choice_penalties_for_other.find( choiceindex ) );
+            if( it_onebodychoice == onebody_choice_penalties_for_other.end() ) {
+                onebody_choice_penalties_for_other[ choiceindex ] = it_twobodychoices->second;
+            } else {
+                it_onebodychoice->second += it_twobodychoices->second;
+            }
+        }
+
+        // Delete the twobody energy and update the iterator.
+        it = pairwise_node_penalties_.erase(it);
+    }
 }
 
 

@@ -214,9 +214,16 @@ private:
 	/// @brief Calculate the constant offset for nodes.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
-	/// @note This function should be called from a mutex-locked context.
+	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
 	masala::numeric::Real
 	compute_one_choice_node_constant_offset();
+
+	/// @brief Find all twobody energies involving one node with one choice and another node with more than
+    /// one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
+    /// twobody energy.
+	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+	void
+	move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
 
 private:
 
