@@ -139,6 +139,7 @@ void
 OptimizationSolution::set_solution_score(
     masala::numeric::Real const score_in
 ) {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
     solution_score_ = score_in;
 }
 
@@ -149,6 +150,7 @@ OptimizationSolution::set_solution_score(
 /// @brief Get the score for this solution.
 masala::numeric::Real
 OptimizationSolution::solution_score() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
     return solution_score_;
 }
 
