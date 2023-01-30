@@ -134,6 +134,14 @@ public:
 	masala::numeric::Size
 	total_variable_nodes() const;
 
+	/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
+	/// the variable node's index, and the second indicates the number of choices at that node.
+	/// @note Indices in this vector are NOT node indices, since nodes with fewer than two choices are omitted.
+	/// The length of the vector is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted
+	/// in order of node index, though.
+	std::vector< std::pair< masala::numeric::Size, masala::numeric::Size > >
+	n_choices_at_variable_nodes() const;
+
 	/// @brief Get the product of the number of choices at each node (the total number
 	/// of combinatorial solutions to this cost function network problem).
 	/// @note Due to integer overruns, this is a floating-point number, not an integer.

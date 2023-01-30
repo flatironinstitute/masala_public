@@ -142,6 +142,37 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
     return accumulator;
 }
 
+/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
+/// the variable node's index, and the second indicates the number of choices at that node.
+/// @note Indices in this vector are NOT node indices, since nodes with fewer than two choices are omitted.
+/// The length of the vector is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted
+/// in order of node index, though.
+std::vector< std::pair< masala::numeric::Size, masala::numeric::Size > >
+CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
+    using masala::numeric::Size;
+    std::vector< std::pair< Size, Size > > outvec;
+    outvec.reserve( n_choices_by_node_index_.size() );
+    {   // Scope for mutex lock.
+        std::lock_guard< std::mutex > lock( problem_mutex() );
+        for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index_.begin() ); it != n_choices_by_node_index_.end(); ++it ) {
+            if( it->second > 1 ) {
+                outvec.push_back( std::make_pair( it->first, it->second ) );
+            }
+        }
+    }   // Unlock mutex.
+    outvec.shrink_to_fit();
+    std::sort(
+        outvec.begin(), outvec.end(),
+        [](
+            std::pair< Size, Size > const & first, std::pair< Size, Size > const & second
+        ){
+            return first.first < second.first;
+        }
+    );
+
+    return outvec;
+}
+
 /// @brief Get the product of the number of choices at each node (the total number
 /// of combinatorial solutions to this cost function network problem).
 /// @note Due to integer overruns, this is a floating-point number, not an integer.
@@ -250,6 +281,21 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_variable_nodes, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<
+                std::vector< std::pair< numeric::Size, numeric::Size > > >
+            >(
+                "n_choices_at_variable_nodes", "Get a vector of pairs with one entry for each variable node, "
+                "where the first entry in the pair indicates the variable node's index, and the second "
+                "indicates the number of choices at that node.",
+                "n_choices_at_variable_nodes", "A vector of pairs of ( node index, number of choices ) for all "
+                "variable node indices (i.e. nodes with more than one choice).  Indices in this vector are NOT "
+                "node indices, since nodes with fewer than two choices are omitted.  The length of the vector "
+                "is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorte in order "
+                "of node index, though.", false, false,
+                std::bind( &CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes, this )
             )
         );
         api_def->add_getter(
