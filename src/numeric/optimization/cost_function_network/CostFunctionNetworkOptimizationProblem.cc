@@ -293,7 +293,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "n_choices_at_variable_nodes", "A vector of pairs of ( node index, number of choices ) for all "
                 "variable node indices (i.e. nodes with more than one choice).  Indices in this vector are NOT "
                 "node indices, since nodes with fewer than two choices are omitted.  The length of the vector "
-                "is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorte in order "
+                "is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted in order "
                 "of node index, though.", false, false,
                 std::bind( &CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes, this )
             )
