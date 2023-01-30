@@ -380,6 +380,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
     CONTINUE HERE;
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
+    write_to_tracer( "Finalized problem description." );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
