@@ -302,6 +302,26 @@ MasalaRandomNumberGenerator::gaussian_float_distribution(
     return gaussian_gen( random_engine_ );
 }
 
+/// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
+/// with a given mean.
+base::Real
+MasalaRandomNumberGenerator::poisson_real_distribution(
+    base::Real const mean
+) {
+    std::poisson_distribution< base::Real > poisson_gen( mean );
+    return poisson_gen( random_engine_ );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
+/// with a given mean.
+float
+MasalaRandomNumberGenerator::poisson_float_distribution(
+    float const mean
+) {
+    std::poisson_distribution< float > poisson_gen( mean );
+    return poisson_gen( random_engine_ );
+}
+
 } // namespace random
 } // namespace managers
 } // namespace base

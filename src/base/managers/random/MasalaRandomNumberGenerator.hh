@@ -267,6 +267,20 @@ public:
         float const stddev
     );
 
+    /// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
+    /// with a given mean.
+    base::Real
+    poisson_real_distribution(
+        base::Real const mean
+    );
+
+    /// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
+    /// with a given mean.
+    float
+    poisson_float_distribution(
+        float const mean
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
