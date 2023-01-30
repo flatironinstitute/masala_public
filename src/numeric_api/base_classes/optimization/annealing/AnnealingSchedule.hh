@@ -102,12 +102,15 @@ public:
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Set the index of the expected final call to temperature().
-virtual
-void
-set_final_time_index(
-	masala::numeric_api::Size const final_time_index
-) = 0;
+	/// @brief Set the index of the expected final call to temperature().
+	virtual
+	void
+	set_final_time_index(
+		masala::numeric_api::Size const final_time_index
+	) = 0;
+
+	/// @brief Reset the call count.
+	void reset_call_count();
 
 public:
 
@@ -139,9 +142,6 @@ protected:
 	/// @brief Increment the call count.
 	/// @note The call count is mutable.
 	void increment_call_count() const;
-
-	/// @brief Reset the call count.
-	void reset_call_count();
 
 private:
 

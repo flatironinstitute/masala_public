@@ -98,6 +98,16 @@ AnnealingSchedule::get_keywords() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reset the call count.
+void
+AnnealingSchedule::reset_call_count() {
+    call_count_ = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -112,12 +122,6 @@ AnnealingSchedule::call_count() const {
 void
 AnnealingSchedule::increment_call_count() const {
     ++call_count_;
-}
-
-/// @brief Reset the call count.
-void
-AnnealingSchedule::reset_call_count() {
-    call_count_ = 0;
 }
 
 } // namespace annealing
