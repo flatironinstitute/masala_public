@@ -200,6 +200,35 @@ poisson_singed_long_int_distribution() {
     return MasalaRandomNumberGenerator::get_instance()->poisson_signed_long_int_distribution( 0 );
 }
 
+/// @brief Apply the Metropolis criterion.
+/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function directly.
+/// @note The change in energy and k_B * T must be given in the same units.
+/// @returns True to accept a the move that produces this delta_E, false to reject it.
+bool
+apply_metropolis_criterion(
+    base::Real const delta_E,
+    base::Real const kbT
+) {
+    return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
+}
+
+/// @brief Apply the Metropolis criterion (for floating-point values.).
+/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function directly.
+/// @note The change in energy and k_B * T must be given in the same units.
+/// @returns True to accept a the move that produces this delta_E, false to reject it.
+bool
+apply_metropolis_criterion(
+    float const delta_E,
+    float const kbT
+) {
+    return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
