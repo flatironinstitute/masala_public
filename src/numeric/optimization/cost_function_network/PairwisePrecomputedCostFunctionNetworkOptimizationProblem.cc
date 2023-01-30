@@ -376,7 +376,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
     // TODO TODO TODO do other finalization here.
     // TODO TODO TODO find all twobody energies involving one node with one choice and another node with more than
     // one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
-    // twobody energy. 
+    // twobody energy.
+    CONTINUE HERE
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
