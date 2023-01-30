@@ -167,6 +167,54 @@ gaussian_float_distribution() {
     return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 );
 }
 
+/// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
+/// with a given mean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+poisson_real_distribution(
+    base::Real const mean
+) {
+    return MasalaRandomNumberGenerator::get_instance()->poisson_real_distribution( mean );
+}
+
+/// @brief Generate a real (double-precision floating-point) number drawn from a Poisson distribution
+/// with mean 0.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+poisson_real_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->poisson_real_distribution( 0 );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
+/// with a given mean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+poisson_float_distribution(
+    float const mean
+) {
+    return MasalaRandomNumberGenerator::get_instance()->poisson_float_distribution( mean );
+}
+
+/// @brief Generate a single-precision floating-point number drawn from a Poisson distribution
+/// with mean 0.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( 0 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+poisson_float_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->poisson_float_distribution( 0 );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
