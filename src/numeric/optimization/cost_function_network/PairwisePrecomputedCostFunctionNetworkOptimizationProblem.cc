@@ -124,53 +124,24 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_o
 /// @brief Get the constant offset for nodes.
 /// @details This is the sum of onebody energies for nodes that have exactly
 /// one choice, plus the twobdy energies between those nodes.
-/// @note This could be rather slow.
 masala::numeric::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {
-    using masala::numeric::Size;
-    using masala::numeric::Real;
-
-    Real accumulator( 0.0 );
-    std::set< Size > one_choice_nodes;
-
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
-        it != n_choices_by_node_index().end();
-        ++it
-    ) {
-        if( it->second == 1 ) {
-            one_choice_nodes.insert(it->first);
-        }
-    }
-
-    for( std::map< Size, std::map< Size, Real > >::const_iterator it( single_node_penalties_.begin() );
-        it != single_node_penalties_.end();
-        ++it
-    ) {
-        if( one_choice_nodes.count( it->first ) != 0 ) {
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in single-node energies!" );
-            accumulator += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
-        }
-    }
-
-    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.begin() );
-        it != pairwise_node_penalties_.end();
-        ++it
-    ) {
-        if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
-            accumulator += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
-        }
-    }
-
-    return accumulator;
+    CHECK_OR_THROW_FOR_CLASS( finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
+        "to finalize() before this function can be called."
+    );
+    return one_choice_node_constant_offset_;
 }
 
 /// @brief Get the total constant offset.
 /// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
 masala::numeric::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
-    return background_constant_offset() + one_choice_node_constant_offset();
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
+        "to finalize() before this function can be called."
+    );
+    return one_choice_node_constant_offset_ + background_constant_offset_;
 }
 
 // ALSO TODO:
@@ -403,8 +374,62 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
     // TODO TODO TODO do other finalization here.
+    // TODO TODO TODO find all twobody energies involving one node with one choice and another node with more than
+    // one choice.  Transfer all of these to the onebody energies of the variable node, deleting the corresponding
+    // twobody energy. 
+    one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Calculate the constant offset for nodes.
+/// @details This is the sum of onebody energies for nodes that have exactly
+/// one choice, plus the twobdy energies between those nodes.
+/// @note This function should be called from a mutex-locked context.
+masala::numeric::Real
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_node_constant_offset() {
+    using masala::numeric::Real;
+    using masala::numeric::Size;
+
+    Real accumulator( 0.0 );
+    std::set< Size > one_choice_nodes;
+
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
+        it != n_choices_by_node_index().end();
+        ++it
+    ) {
+        if( it->second == 1 ) {
+            one_choice_nodes.insert(it->first);
+        }
+    }
+
+    for( std::map< Size, std::map< Size, Real > >::const_iterator it( single_node_penalties_.begin() );
+        it != single_node_penalties_.end();
+        ++it
+    ) {
+        if( one_choice_nodes.count( it->first ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in single-node energies!" );
+            accumulator += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
+        }
+    }
+
+    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.begin() );
+        it != pairwise_node_penalties_.end();
+        ++it
+    ) {
+        if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
+            accumulator += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
+        }
+    }
+
+    return accumulator;
+}
+
 
 
 } // namespace cost_function_network

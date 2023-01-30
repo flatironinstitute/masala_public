@@ -129,7 +129,6 @@ public:
 	/// @brief Get the constant offset for nodes.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
-	/// @note This could be rather slow.
 	masala::numeric::Real
 	one_choice_node_constant_offset() const;
 
@@ -209,6 +208,19 @@ protected:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Calculate the constant offset for nodes.
+	/// @details This is the sum of onebody energies for nodes that have exactly
+	/// one choice, plus the twobdy energies between those nodes.
+	/// @note This function should be called from a mutex-locked context.
+	masala::numeric::Real
+	compute_one_choice_node_constant_offset();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -225,6 +237,12 @@ private:
 
 	/// @brief A constant offset for the fixed background to a problem.
 	masala::numeric::Real background_constant_offset_ = 0.0;
+
+	/// @brief The constant offset for the nodes with one choice.
+	/// @details This is the sum of onebody energies for nodes that have exactly
+	/// one choice, plus the twobdy energies between those nodes.  Computed at
+	/// finalize() time.
+	masala::numeric::Real one_choice_node_constant_offset_ = 0.0;
 
 }; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
 

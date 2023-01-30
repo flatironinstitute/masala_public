@@ -239,6 +239,9 @@ OptimizationProblem::api_definition() {
 /// Base class protected_finalize() sets finalized_ to true.
 void
 OptimizationProblem::protected_finalize() {
+    CHECK_OR_THROW_FOR_CLASS( !finalized_, "protected_finalize",
+        "This function was called on a problem definition that was already finalized!"
+    );
     finalized_ = true;
 }
 
