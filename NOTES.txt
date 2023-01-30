@@ -67,3 +67,6 @@
 
 - [ ] Add tests for PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
      - [ ] In particular, need tests for move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes() functionality.
+
+- [ ] Fix organization of Optimizer and CostFunctionNetworkOptimizer classes.  We need an abstract base class for their APIs that derived classes' APIs can inherit from...
+- [ ] Same with AnnealingSchedule.
