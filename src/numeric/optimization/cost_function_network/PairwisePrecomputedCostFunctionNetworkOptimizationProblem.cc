@@ -28,6 +28,7 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <set>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -38,6 +39,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -122,27 +124,60 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_o
 /// @brief Get the constant offset for nodes.
 /// @details This is the sum of onebody energies for nodes that have exactly
 /// one choice, plus the twobdy energies between those nodes.
+/// @note This could be rather slow.
 masala::numeric::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {
     using masala::numeric::Size;
     using masala::numeric::Real;
 
     Real accumulator( 0.0 );
-    TODO TODO TODO
+    std::set< Size > one_choice_nodes;
+
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
+        it != n_choices_by_node_index().end();
+        ++it
+    ) {
+        if( it->second == 1 ) {
+            one_choice_nodes.insert(it->first);
+        }
+    }
+
+    for( std::map< Size, std::map< Size, Real > >::const_iterator it( single_node_penalties_.begin() );
+        it != single_node_penalties_.end();
+        ++it
+    ) {
+        if( one_choice_nodes.count( it->first ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in single-node energies!" );
+            accumulator += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
+        }
+    }
+
+    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.begin() );
+        it != pairwise_node_penalties_.end();
+        ++it
+    ) {
+        if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
+            accumulator += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
+        }
+    }
+
+    return accumulator;
 }
 
 /// @brief Get the total constant offset.
 /// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
 masala::numeric::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
-    TODO TODO TODO
+    return background_constant_offset() + one_choice_node_constant_offset();
 }
 
-ALSO TODO:
-- ADD FINALIZATION STEP IN WHICH WE COMPUTE THE TWOBODY INTERACTIONS OF ALL VARIABLE NODE CHOICES WITH
-SINGLE-CHOICE NODES, TRANSFER THOSE TO THE ONEBODY ENERGIES OF THOSE VARIABLE NODE CHOICES, AND DELETE
-THE CORRESPONDING TWOBODY ENERGIES.
-- CHECK WHETHER THIS OBJECT IS FINALIZED IN SETTERS.
+// ALSO TODO:
+// - ADD FINALIZATION STEP IN WHICH WE COMPUTE THE TWOBODY INTERACTIONS OF ALL VARIABLE NODE CHOICES WITH
+// SINGLE-CHOICE NODES, TRANSFER THOSE TO THE ONEBODY ENERGIES OF THOSE VARIABLE NODE CHOICES, AND DELETE
+// THE CORRESPONDING TWOBODY ENERGIES.
+// - CHECK WHETHER THIS OBJECT IS FINALIZED IN SETTERS.
 
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
@@ -270,6 +305,31 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
         // Work functions:
 
         // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+                "background_constant_offset", "Get the fixed background constant offset.",
+                "background_contant_offset", "A fixed, constant value added to all energies for all solutions.  Useful for parts "
+                "of the problem that are not variable.", false, false,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_offset, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+                "one_choice_node_constant_offset", "Get the constant offset for nodes.  This is the sum of onebody energies "
+                "for nodes that have exactly one choice, plus the twobdy energies between those nodes.  Note that this could "
+                "be rather slow.",
+                "one_choice_node_constant_offset", "A fixed, constant value from all nodes with exactly one choice.", false, false,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+                "total_constant_offset", "Get the total (background + node) constant offset.",
+                "total_constant_offset", "This is the sum of background_constant_offset() and one_choice_node_constant_offset().",
+                false, false,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset, this )
+            )
+        );
 
         // Setters:
 

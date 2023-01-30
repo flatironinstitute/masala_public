@@ -129,6 +129,7 @@ public:
 	/// @brief Get the constant offset for nodes.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
+	/// @note This could be rather slow.
 	masala::numeric::Real
 	one_choice_node_constant_offset() const;
 

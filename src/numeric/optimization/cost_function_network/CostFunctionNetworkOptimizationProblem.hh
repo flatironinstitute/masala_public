@@ -194,10 +194,19 @@ protected:
 		masala::numeric::Size const min_choice_count
 	);
 
-	/// @brief Acces the number of choices by node index.
+	/// @brief Access the number of choices by node index.
+	/// @note This assumes that the problem mutex has already been set.
 	inline
 	std::map< masala::numeric::Size, masala::numeric::Size > &
 	n_choices_by_node_index() {
+		return n_choices_by_node_index_;
+	}
+
+	/// @brief Const access to the number of choices by node index.
+	/// @note This assumes that the problem mutex has already been set.
+	inline
+	std::map< masala::numeric::Size, masala::numeric::Size > const &
+	n_choices_by_node_index() const {
 		return n_choices_by_node_index_;
 	}
 
