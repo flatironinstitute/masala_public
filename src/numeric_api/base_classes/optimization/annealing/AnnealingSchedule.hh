@@ -105,13 +105,16 @@ public:
 	/// @brief Return temperature.
 	virtual
 	masala::numeric_api::Real
-	temperature() const = 0;
+	temperature(
+		masala::numeric_api::Size const final_time_index
+	) const = 0;
 
 	/// @brief Return temperature for the Nth timepoint.
 	virtual
 	masala::numeric_api::Real
 	temperature(
-		masala::numeric_api::Size const time_index
+		masala::numeric_api::Size const time_index,
+		masala::numeric_api::Size const final_time_index
 	) const = 0;
 
 protected:
