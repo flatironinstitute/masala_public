@@ -67,6 +67,56 @@ uniform_signed_long_int_distribution(
     return MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange );
 }
 
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution(
+    base::Real const beginrange,
+    base::Real const endrange
+) {
+    return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange );
+}
+
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 );
+}
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution(
+    float const beginrange,
+    float const endrange
+) {
+    return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange );
+}
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution() {
+    return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC STATIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +198,28 @@ MasalaRandomNumberGenerator::uniform_signed_long_int_distribution(
 ) {
     std::uniform_int_distribution< signed long int > int_gen( beginrange, endrange );
     return int_gen( random_engine_ );
+}
+
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [beginrange, endrange).
+base::Real
+MasalaRandomNumberGenerator::uniform_real_distribution(
+    base::Real const beginrange,
+    base::Real const endrange
+) {
+    std::uniform_real_distribution< base::Real > real_gen( beginrange, endrange );
+    return real_gen( random_engine_ );
+}
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [beginrange, endrange).
+float
+MasalaRandomNumberGenerator::uniform_float_distribution(
+    float const beginrange,
+    float const endrange
+) {
+    std::uniform_real_distribution< float > real_gen( beginrange, endrange );
+    return real_gen( random_engine_ );
 }
 
 } // namespace random

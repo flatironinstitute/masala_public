@@ -67,6 +67,48 @@ uniform_signed_long_int_distribution(
     signed long int const endrange
 );
 
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution(
+    base::Real const beginrange,
+    base::Real const endrange
+);
+
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution();
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution(
+    float const beginrange,
+    float const endrange
+);
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution();
+
 /// @brief A static singleton for generating random numbers, with unique random seeds
 /// for each process and thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -143,6 +185,21 @@ public:
         signed long int const endrange
     );
 
+    /// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+    /// interval [beginrange, endrange).
+    base::Real
+    uniform_real_distribution(
+        base::Real const beginrange,
+        base::Real const endrange
+    );
+
+    /// @brief Generate a single-precision floating-point number uniformly drawn from the
+    /// interval [beginrange, endrange).
+    float
+    uniform_float_distribution(
+        float const beginrange,
+        float const endrange
+    );
 
 private:
 
