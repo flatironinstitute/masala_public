@@ -32,6 +32,9 @@
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// Numeric headers:
+#include <numeric/types.hh>
+
 // STL headers:
 #include <mutex>
 
@@ -106,6 +109,24 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the score for this solution.
+	void set_solution_score( masala::numeric::Real const score_in );
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the score for this solution.
+	masala::numeric::Real solution_score() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -138,6 +159,9 @@ private:
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief A score associated with this solution.
+	masala::numeric::Real solution_score_ = 0.0;
 
 }; // class OptimizationSolution
 

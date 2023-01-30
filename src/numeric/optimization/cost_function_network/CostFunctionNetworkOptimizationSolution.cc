@@ -33,6 +33,8 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -168,8 +170,24 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         // Work functions:
 
         // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score", "Get the score associated with this solution.",
+                "solution_score", "The score associated with this solution.",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score, this )
+            )
+        );
 
         // Setters:
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score", "Set the score associated with this solution.",
+                "score_in", "The score to set.",
+                false, false,
+                std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
 
         api_definition() = api_def; //Make const.
     }

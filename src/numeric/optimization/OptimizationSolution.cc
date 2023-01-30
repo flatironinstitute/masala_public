@@ -30,6 +30,8 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -51,8 +53,8 @@ OptimizationSolution::OptimizationSolution(
 ) :
     masala::base::managers::plugin_module::MasalaPlugin(src)
 {
-    // std::lock_guard< std::mutex > lock( src.solution_mutex_ );
-    // Nothing else gets copied, by default.
+    std::lock_guard< std::mutex > lock( src.solution_mutex_ );
+    solution_score_ = src.solution_score_;
 }
 
 /// @brief Assignment operator.
@@ -61,10 +63,10 @@ OptimizationSolution::operator=(
     OptimizationSolution const & src
 ) {
     masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
-    //std::lock( solution_mutex_, src.solution_mutex_ );
-    //std::lock_guard< std::mutex > lock( solution_mutex_, std::adopt_lock );
-    //std::lock_guard< std::mutex > lock2( src.solution_mutex_, std::adopt_lock );
-    //Nothing else gets assigned, by default.
+    std::lock( solution_mutex_, src.solution_mutex_ );
+    std::lock_guard< std::mutex > lock( solution_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock2( src.solution_mutex_, std::adopt_lock );
+    solution_score_ = src.solution_score_;
     return *this;
 }
 
@@ -129,6 +131,28 @@ OptimizationSolution::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the score for this solution.
+void
+OptimizationSolution::set_solution_score(
+    masala::numeric::Real const score_in
+) {
+    solution_score_ = score_in;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the score for this solution.
+masala::numeric::Real
+OptimizationSolution::solution_score() const {
+    return solution_score_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -136,6 +160,8 @@ OptimizationSolution::class_namespace() const {
 masala::base::api::MasalaObjectAPIDefinitionCWP
 OptimizationSolution::get_api_definition() {
     using namespace masala::base::api;
+    using masala::numeric::Real;
+    using masala::numeric::Size;
 
     std::lock_guard< std::mutex > lock( solution_mutex_ );
 
@@ -173,9 +199,24 @@ OptimizationSolution::get_api_definition() {
 
 
         // Getters:
-
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score", "Get the score associated with this solution.",
+                "solution_score", "The score associated with this solution.",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score, this )
+            )
+        );
 
         // Setters:
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score", "Set the score associated with this solution.",
+                "score_in", "The score to set.",
+                false, false,
+                std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
 
         api_definition_ = api_def; //Make const.
     }
