@@ -54,12 +54,16 @@
 - [ ] Add means of specifying parent class in API definition, and of optionally getting API definition that includes inherited functions.  (Need to think about how.)
 
 - ~~Add a storage class for mutexes that ensure that they're not copied when the rest of an object is, so that we don't need to keep defining copy constructors and assignment operators.~~ This is a bad idea, unless I can do it with some sort of macros to ensure that mutexes get locked in copy constructors.  Otherwise, I need explicit copy constructors.
-     - [ ] ~~Default the copy constructors and assignment operators that we have.~~
+     - ~~Default the copy constructors and assignment operators that we have.~~
 
-- [ ] Ensure that optimers return a container of solutions by default, not just a single solution.
-- [ ] Ensure that optimers take a container of problems by default, not just a single problem.
+- [X] Ensure that optimers return a container of solutions by default, not just a single solution.
+- [X] Ensure that optimers take a container of problems by default, not just a single problem.
 	- [X] Derived CostFunctionNetworkOptimizationProblems class.
             - [X] Override add_optimization_problem() with type check.
 	- [X] Derived PrecomputedPairwiseCostFunctionNetworkOptimizationProblems class.
             - [X] Override add_optimization_problem() with type check.
-- [ ] Optimizers need settings for repeats, threads to select, GPU.
+- [X] Optimizers need settings for repeats, threads to select.
+     - [ ] Need settings for GPU.
+
+- [ ] Add tests for PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+     - [ ] In particular, need tests for move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes() functionality.
