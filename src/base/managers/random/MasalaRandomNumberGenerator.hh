@@ -254,6 +254,32 @@ public:
     class_namespace() const override;
 
 ////////////////////////////////////////////////////////////////////////////////
+// METROPOLIS-HASTINGS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Apply the Metropolis criterion.
+    /// @note Incremenets random generator, to avoid knife's-edge cases that could
+    /// otherwise result in trajectory divergence.
+    /// @details The change in energy and k_B * T must be given in the same units.
+    /// @returns True to accept a the move that produces this delta_E, false to reject it.
+    bool
+    apply_metropolis_criterion(
+        base::Real const delta_E,
+        base::Real const kbT
+    );
+
+    /// @brief Apply the Metropolis criterion (for floating-point values.).
+    /// @note Incremenets random generator, to avoid knife's-edge cases that could
+    /// otherwise result in trajectory divergence.
+    /// @details The change in energy and k_B * T must be given in the same units.
+    /// @returns True to accept a the move that produces this delta_E, false to reject it.
+    bool
+    apply_metropolis_criterion(
+        float const delta_E,
+        float const kbT
+    );
+
+////////////////////////////////////////////////////////////////////////////////
 // RANDOM NUMBER GENERATING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
