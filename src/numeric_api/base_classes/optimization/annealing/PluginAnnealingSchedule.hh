@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/annealing/AnnealingSchedule.hh
-/// @brief Headers for a base class for all annealing schedules.
+/// @file src/numeric_api/base_classes/optimization/annealing/PluginAnnealingSchedule.hh
+/// @brief Headers for a base class for all plugin annealing schedules.
 /// @details Annealing schedules return temperature as a function of number of calls.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
-#define Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_annealing_PluginAnnealingSchedule_hh
+#define Masala_src_numeric_api_base_classes_optimization_annealing_PluginAnnealingSchedule_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/annealing/AnnealingSchedule.fwd.hh>
+#include <numeric_api/base_classes/optimization/annealing/PluginAnnealingSchedule.fwd.hh>
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
@@ -45,10 +45,10 @@ namespace base_classes {
 namespace optimization {
 namespace annealing {
 
-/// @brief A base class for all annealing schedules.
+/// @brief A base class for all plugin annealing schedules.
 /// @details Annealing schedules return temperature as a function of number of calls.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AnnealingSchedule : public masala::base::managers::plugin_module::MasalaPlugin {
+class PluginAnnealingSchedule : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
@@ -57,20 +57,20 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	AnnealingSchedule();
+	PluginAnnealingSchedule();
 
 	/// @brief Copy constructor.
-	AnnealingSchedule( AnnealingSchedule const & );
+	PluginAnnealingSchedule( PluginAnnealingSchedule const & );
 
 	/// @brief Assignment operator.
-	AnnealingSchedule & operator=( AnnealingSchedule const & );
+	PluginAnnealingSchedule & operator=( PluginAnnealingSchedule const & );
 
 	/// @brief Virtual destructor.
-	virtual ~AnnealingSchedule() = default;
+	virtual ~PluginAnnealingSchedule() = default;
 
 	/// @brief Make a copy of this object.
 	virtual
-	AnnealingScheduleSP clone() const = 0;
+	PluginAnnealingScheduleSP clone() const = 0;
 
 	/// @brief Make this object wholly independent.
 	/// @details Should be overridden for derived classes.
@@ -78,7 +78,7 @@ public:
 	void make_independent();
 
 	/// @brief Make a copy of this object that is wholly independent.
-	AnnealingScheduleSP deep_clone() const;
+	PluginAnnealingScheduleSP deep_clone() const;
 
 public:
 
@@ -87,7 +87,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the hierarchical categories for this plugin class.
-	/// @details The base class implementation returns { { "AnnealingSchedule" } }
+	/// @details The base class implementation returns { { "PluginAnnealingSchedule" } }
 	std::vector< std::vector< std::string > >
 	get_categories() const override;
 
@@ -148,7 +148,7 @@ private:
 	/// @brief Number of times the temperature() function has been called.
 	mutable std::atomic< masala::numeric_api::Size > call_count_;
 
-}; // class AnnealingSchedule
+}; // class PluginAnnealingSchedule
 
 } // namespace annealing
 } // namespace optimization
@@ -156,4 +156,4 @@ private:
 } // namespace numeric_api
 } // namespace masala
 
-#endif //Masala_src_numeric_api_base_classes_optimization_annealing_AnnealingSchedule_hh
+#endif //Masala_src_numeric_api_base_classes_optimization_annealing_PluginAnnealingSchedule_hh

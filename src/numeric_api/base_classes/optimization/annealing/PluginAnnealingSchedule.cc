@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/annealing/AnnealingSchedule.cc
-/// @brief A base class for all annealing schedules.
+/// @file src/numeric_api/base_classes/optimization/annealing/PluginAnnealingSchedule.cc
+/// @brief A base class for all plugin annealing schedules.
 /// @details Annealing schedules return temperature as a function of number of calls.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <numeric_api/base_classes/optimization/annealing/AnnealingSchedule.hh>
+#include <numeric_api/base_classes/optimization/annealing/PluginAnnealingSchedule.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -43,23 +43,23 @@ namespace annealing {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Default constructor.
-AnnealingSchedule::AnnealingSchedule() :
+PluginAnnealingSchedule::PluginAnnealingSchedule() :
     masala::base::managers::plugin_module::MasalaPlugin(),
     call_count_(0)
 {}
 
 /// @brief Copy constructor.
-AnnealingSchedule::AnnealingSchedule(
-    AnnealingSchedule const &src 
+PluginAnnealingSchedule::PluginAnnealingSchedule(
+    PluginAnnealingSchedule const &src 
 ) :
     masala::base::managers::plugin_module::MasalaPlugin( src ),
     call_count_( src.call_count_.load() )
 {}
 
 /// @brief Assignment operator.
-AnnealingSchedule &
-AnnealingSchedule::operator=(
-    AnnealingSchedule const &src
+PluginAnnealingSchedule &
+PluginAnnealingSchedule::operator=(
+    PluginAnnealingSchedule const &src
 ) {
     call_count_ = src.call_count_.load();
     return *this;
@@ -67,14 +67,14 @@ AnnealingSchedule::operator=(
 
 /// @brief Make this object wholly independent.
 void
-AnnealingSchedule::make_independent() {
+PluginAnnealingSchedule::make_independent() {
     call_count_ = 0;
 }
 
 /// @brief Make a copy of this object that is wholly independent.
-AnnealingScheduleSP
-AnnealingSchedule::deep_clone() const {
-    AnnealingScheduleSP new_object( clone() );
+PluginAnnealingScheduleSP
+PluginAnnealingSchedule::deep_clone() const {
+    PluginAnnealingScheduleSP new_object( clone() );
     new_object->make_independent();
     return new_object;
 }
@@ -84,16 +84,16 @@ AnnealingSchedule::deep_clone() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the hierarchical categories for this plugin class.
-/// @details The base class implementation returns { { "AnnealingSchedule" } }
+/// @details The base class implementation returns { { "PluginAnnealingSchedule" } }
 std::vector< std::vector< std::string > >
-AnnealingSchedule::get_categories() const {
-    return std::vector< std::vector< std::string > >{ { "AnnealingSchedule" } };
+PluginAnnealingSchedule::get_categories() const {
+    return std::vector< std::vector< std::string > >{ { "PluginAnnealingSchedule" } };
 }
 
 /// @brief Get the ahierarchical keywords for this plugin class.
 /// @details The base class implementation returns { "annealing_schedule" }
 std::vector< std::string >
-AnnealingSchedule::get_keywords() const {
+PluginAnnealingSchedule::get_keywords() const {
     return std::vector< std::string >{ "annealing_schedule" };
 }
 
@@ -103,7 +103,7 @@ AnnealingSchedule::get_keywords() const {
 
 /// @brief Reset the call count.
 void
-AnnealingSchedule::reset_call_count() {
+PluginAnnealingSchedule::reset_call_count() {
     call_count_ = 0;
 }
 
@@ -113,14 +113,14 @@ AnnealingSchedule::reset_call_count() {
 
 /// @brief Get the call count.
 masala::numeric_api::Size
-AnnealingSchedule::call_count() const {
+PluginAnnealingSchedule::call_count() const {
     return call_count_.load();
 }
 
 /// @brief Increment the call count.
 /// @note The call count is mutable.
 void
-AnnealingSchedule::increment_call_count() const {
+PluginAnnealingSchedule::increment_call_count() const {
     ++call_count_;
 }
 
