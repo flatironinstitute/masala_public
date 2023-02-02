@@ -33,8 +33,7 @@
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 // STL headers
 #include <string>
@@ -147,19 +146,20 @@ AnnealingScheduleBase::get_api_definition() {
         );
 
         // Constructors
-        api_definition->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput< AnnealingScheduleBase > > (
-                "AnnealingScheduleBase", "Construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
-                "this base class -- i.e. can only be called from derived constructors."
-            )
-        );
-        api_definition->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput< AnnealingScheduleBase, AnnealingScheduleBase const & > > (
-                "AnnealingScheduleBase", "Copy-construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
-                "this base class -- i.e. can only be called from derived constructors.",
-                "src", "The annealing schedule to copy.  Unaltered by this operation."
-            )
-        );
+        ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( AnnealingScheduleBase, api_definition );
+        // api_definition->add_constructor(
+        //     masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput< AnnealingScheduleBase > > (
+        //         "AnnealingScheduleBase", "Construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
+        //         "this base class -- i.e. can only be called from derived constructors."
+        //     )
+        // );
+        // api_definition->add_constructor(
+        //     masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput< AnnealingScheduleBase, AnnealingScheduleBase const & > > (
+        //         "AnnealingScheduleBase", "Copy-construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
+        //         "this base class -- i.e. can only be called from derived constructors.",
+        //         "src", "The annealing schedule to copy.  Unaltered by this operation."
+        //     )
+        // );
 
         api_definition_ = api_definition; // Nonconst to const.
     }
