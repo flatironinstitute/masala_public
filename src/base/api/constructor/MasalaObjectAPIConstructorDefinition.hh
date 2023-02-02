@@ -65,13 +65,9 @@ public:
 	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
-	/// @param[in] is_protected_constructor Should the API's class constructor be
-	///            protected?  This allows the API class to act like a pure virtual
-	///            base class, preventing instantiation.
 	MasalaObjectAPIConstructorDefinition(
 		std::string const & constructor_name,
-		std::string const & constructor_description,
-		bool const is_protected_contructor
+		std::string const & constructor_description
 	);
 
 	/// @brief Copy constructor.
@@ -113,10 +109,6 @@ public:
 	/// @brief Get the constructor's description.
 	std::string const & constructor_description() const;
 
-	/// @brief Should the API's class constructor be protected?
-	/// @details This allows the API class to act like a pure virtual base class, preventing instantiation.
-	bool is_protected_constructor() const;
-
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,10 +122,6 @@ private:
 	/// @brief The description of the constructor.
 	/// @details Must be set on construction.
 	std::string const constructor_description_;
-
-	/// @brief Should the API's class constructor be protected?
-	/// @details This allows the API class to act like a pure virtual base class, preventing instantiation.
-	bool is_protected_constructor_ = false;
 
 }; // class MasalaObjectAPIConstructorDefinition
 

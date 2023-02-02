@@ -74,23 +74,15 @@ public:
 	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
-	/// @param[in] is_protected_constructor Should the API's class constructor be
-	///            protected?  This allows the API class to act like a pure virtual
-	///            base class, preventing instantiation.
 	/// @param[in] input_parameter0_name The name of the input parameter.
 	/// @param[in] input_parameter0_description The description of the input parameter.
 	MasalaObjectAPIConstructorDefinition_OneInput(
 		std::string const & constructor_name,
 		std::string const & constructor_description,
-		bool const is_protected_constructor,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description
 	) :
-		MasalaObjectAPIConstructorDefinition(
-			constructor_name,
-			constructor_description,
-			is_protected_constructor
-		),
+		MasalaObjectAPIConstructorDefinition( constructor_name, constructor_description ),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description)
 	{}
@@ -128,7 +120,6 @@ public:
     	ss << "Constructor:\t" << constructor_name() << "( " << masala::base::api::name_from_type(base::api::type<T1>()) << " ):" << std::endl;
 		ss << constructor_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
-		ss << ""
 		return ss.str();
 	}
 
@@ -141,7 +132,6 @@ public:
 		json_api["Constructor_Name"] = constructor_name();
 		json_api["Constructor_Description"] = constructor_description();
 		json_api["Is_Const"] = false; //Constructors are never const.
-		json_api["Is_Protected"] = is_protected_constructor();
 
 		//Inputs:
 		json_api["Constructor_N_Inputs"] = 1;
