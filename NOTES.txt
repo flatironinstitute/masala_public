@@ -72,6 +72,10 @@
 - [ ] Same with AnnealingSchedule.
 - [ ] Solution to the above:
      - [ ] In the API descriptors, ensure that there's a way to indicate that a base class's API should have a protected constructor, to prevent instantiation (like a pure virtual class).
+          - [ ] Update MasalaObjectAPIConstructorDefinition template classes.
+          - [ ] Update calls to these.  Use Macro for simplicity.
+          - [ ] Update code templates.
+          - [ ] Update generate_library_api.py.
      - [ ] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
      - [ ] Add a base class for AnnealingSchedule (AnnealingScheduleBase) in numeric.
           - [ ] Add a get_api_definition function to it.
