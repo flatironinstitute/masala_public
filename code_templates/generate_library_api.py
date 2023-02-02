@@ -1287,7 +1287,7 @@ if json_api["Elements"] is not None :
             prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
             prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
         
-        if is_plugin_class == True :
+        if is_plugin_class == True and json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
             generate_registration_function = True
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
             plugins_list.append( [creator_name,creator_namespace,creator_filename] )
