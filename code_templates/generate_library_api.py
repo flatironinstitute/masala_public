@@ -1002,7 +1002,12 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             dummy1, dummy2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
             if next_is_plugin == False :
                 root_api_namespace_and_name = parent_api_namespace_and_name
-            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name, root_api_namespace_and_name, True )
+            if parent_api_hhfile.startswith( "src/" ) :
+                parent_api_hhfile = "#include <" + parent_api_hhfile[4:] + ">"
+            else :
+                parent_api_hhfile = "#include <" + parent_api_hhfile[17 + len(parentsplit[0]):] + ">"
+            #print( "****\t" + parent_api_hhfile )
+            return ( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else :
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
 
