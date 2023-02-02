@@ -71,9 +71,7 @@
 - [ ] Fix organization of Optimizer and CostFunctionNetworkOptimizer classes.  We need an abstract base class for their APIs that derived classes' APIs can inherit from...
 - [ ] Same with AnnealingSchedule.
 - [ ] Solution to the above:
-     - [ ] In the API descriptors, ensure that there's a way to indicate that a base class's API should have a protected constructor, to prevent instantiation (like a pure virtual class).
-          - [ ] Update MasalaObjectAPIConstructorDefinition template classes.
-          - [ ] Update calls to these.  Use Macro for simplicity.
+     - [ ] In the API descriptors, ensure that there's a way to indicate that a base class's API should have protected constructors, to prevent instantiation (like a pure virtual class).
           - [ ] Update code templates.
           - [ ] Update generate_library_api.py.
      - [ ] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
