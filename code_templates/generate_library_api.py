@@ -932,7 +932,10 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
     #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
-    fstring = "src/"
+    if namespace[0] == project_name :
+        fstring = "src/"
+    else :
+        fstring = "headers/" + namespace[0] + "/headers/"
     for i in range( 1, len(namespace) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
         fstring += namespace[i]
         fstring += "/"
@@ -980,7 +983,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
 
         # Third, check the parent file for an API definition.
         parent_has_api = False
-        #print( parent_hhfile )
+        #print( "****\t" + parent_hhfile, flush=True )
         lines = slurp_file_and_remove_comments(parent_hhfile).split() # Overwrite old lines; split by whitespace.
         #print(lines)
         for i in range( 0, len(lines) - 1 ) :
@@ -996,7 +999,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             
             #print( "****\t" + parent_classname, parent_namespace )
 
-            dummy1, dummy2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( parentsplit[0], parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            dummy1, dummy2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
             if next_is_plugin == False :
                 root_api_namespace_and_name = parent_api_namespace_and_name
             return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name, root_api_namespace_and_name, True )
