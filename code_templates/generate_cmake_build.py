@@ -96,6 +96,8 @@ def parent_class_file_from_class_name( parent_class_name : str, project_name : s
 
 ## @brief Determine whether the api definition for a class indicates that the class has protected constructors in its API.
 ## @details In this case, the class should have no Creator.
+## @note We can assume that there is definitely a get_api_definition() function, and a masala::make_shared< MasalaObjectAPIDefinition >
+## (or masala::make_shared< masala::base::api::MasalaObjectAPIDefinition > somewhere in the file.
 def api_definition_has_protected_constructors( ccfile : str, project_name : str ) -> bool :
     TODO TODO TODO
 
