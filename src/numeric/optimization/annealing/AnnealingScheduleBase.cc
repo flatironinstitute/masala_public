@@ -21,6 +21,8 @@
 /// intended to be pure virtual, but can't fully be since it has to be instantiated to generate
 /// the API.  But the API has protected constructors.
 /// @details Annealing schedules return temperature as a function of number of calls.
+/// @note DO NOT inherit from this class directly in plugin libraries!  Instead, inherit from
+/// masala::numeric_api::base_classes::optimization::annealing::PluginAnnealingSchedule.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
