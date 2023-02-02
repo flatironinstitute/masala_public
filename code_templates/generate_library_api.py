@@ -1025,7 +1025,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
     if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
-        protected_constructor_comment_start = "/*\n// (Commented out because this API class has protected constructors.)"
+        protected_constructor_comment_start = "/*\n\t// (Commented out because this API class has protected constructors.)"
         protected_constructor_comment_end = "*/"
     else :
         protected_constructor_comment_start = ""
