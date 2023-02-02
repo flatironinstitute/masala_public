@@ -64,28 +64,29 @@ namespace api {
             if constexpr( std::is_abstract<T>::value ) {
                 // If this is an abstract base class, try and see whether it has a class_namespace_and_name_static() function.
                 return T::class_namespace_and_name_static();
-            }
-
-            MASALA_SHARED_POINTER<T> tempobj(
-                masala::make_shared<T>()
-            );
-
-            if constexpr( std::is_const<T>::value ) {
-                masala::base::MasalaObjectCSP tempptr(
-                    std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
-                );
-                if( tempptr != nullptr ) {
-                    return tempptr->class_namespace() + "::" + tempptr->class_name();
-                }
             } else {
-                masala::base::MasalaObjectSP tempptr(
-                    std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+
+                MASALA_SHARED_POINTER<T> tempobj(
+                    masala::make_shared<T>()
                 );
-                if( tempptr != nullptr ) {
-                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+
+                if constexpr( std::is_const<T>::value ) {
+                    masala::base::MasalaObjectCSP tempptr(
+                        std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
+                    );
+                    if( tempptr != nullptr ) {
+                        return tempptr->class_namespace() + "::" + tempptr->class_name();
+                    }
+                } else {
+                    masala::base::MasalaObjectSP tempptr(
+                        std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+                    );
+                    if( tempptr != nullptr ) {
+                        return tempptr->class_namespace() + "::" + tempptr->class_name();
+                    }
                 }
+                
             }
-            
         }
         return typeid(T).name();
     }
