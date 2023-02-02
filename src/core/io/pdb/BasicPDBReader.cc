@@ -136,7 +136,7 @@ BasicPDBReader::get_api_definition() {
                 "The BasicPDBReader is intended as a bare-bones means of generating a Pose.  It is "
                 "intended ONLY for testing other classes' functionality.  A full PDB reader will be "
                 "available in the standard_masala_plugins library.",
-                false
+                false, false
             )
         );
 

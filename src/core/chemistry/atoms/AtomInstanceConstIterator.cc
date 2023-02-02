@@ -175,7 +175,7 @@ AtomInstanceConstIterator::get_api_definition() {
                 *this,
                 "A const iterator over a set of AtomInstance objects.  This custom iterator is needed to allow iteration over "
                 "const AtomInstance objects from a set containing non-const shared pointers.",
-                true
+                true, false
             )
         );
 

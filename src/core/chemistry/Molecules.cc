@@ -190,7 +190,7 @@ Molecules::get_api_definition() {
                 *this,
                 "A container for atoms and chemical bonds, and for data representations "
                 "that allow efficient geometric manipulations.",
-                false
+                false, false
             )
         );
         api_def->add_constructor(

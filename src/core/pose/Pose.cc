@@ -186,7 +186,7 @@ Pose::get_api_definition() {
                 "The Pose class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
                 "molecule or group of molecules.",
-                false
+                false, false
             )
         );
 
