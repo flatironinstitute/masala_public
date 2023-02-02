@@ -70,3 +70,17 @@
 
 - [ ] Fix organization of Optimizer and CostFunctionNetworkOptimizer classes.  We need an abstract base class for their APIs that derived classes' APIs can inherit from...
 - [ ] Same with AnnealingSchedule.
+- [ ] Solution to the above:
+     - [ ] In the API descriptors, ensure that there's a way to indicate that a base class's API should have a protected constructor, to prevent instantiation (like a pure virtual class).
+     - [ ] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
+     - [ ] Add a base class for AnnealingSchedule (AnnealingScheduleBase) in numeric.
+          - [ ] Add a get_api_definition function to it.
+          - [ ] Indicate that the API has a protected constructor.
+     - [ ] Ensure that headers from numeric that are included in numeric_api get copied to the headers library (so that it's possible to inherit from numeric classes in plugin libraries).
+          - [ ] Ensure that AnnealingSchedule class in numeric_api derives from numeric::*::AnnealingScheduleBase (so that we include the AnnealingScheduleBase.hh file from numeric in the header library).
+     - [ ] Address the point above about making the API parent search recursive.
+     - [ ] In the standard Masala plugins library, have the MonteCarloCostFunctionNetworkOptimizer take an AnnealingScheduleBase_API object, not an AnnealingSchedule object.
+     - [ ] In the standard Masala plugins library, have the ConstantAnnealingSchedule (and any other annealing schedules) derive from numeric_api::*::AnnealingSchedule.
+     - [ ] Adjust Optimizer and CostFunctionNetworkOptimizer classes accordingly.
+          - [ ] numeric_api::*::*Optimizer derives from numeric::*::OptimizerBase, which has a get_api_definition.
+          - [ ] numeric_api::*::*CostFunctionNetworkOptimizer derives from numeric::*::CostFunctionNetworkOptimizerBase, which has a get_api_defintion (and which derives from OptimizerBase).
