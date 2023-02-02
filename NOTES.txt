@@ -86,3 +86,10 @@
      - [ ] Adjust Optimizer and CostFunctionNetworkOptimizer classes accordingly.
           - [ ] numeric_api::*::*Optimizer derives from numeric::*::OptimizerBase, which has a get_api_definition.
           - [ ] numeric_api::*::*CostFunctionNetworkOptimizer derives from numeric::*::CostFunctionNetworkOptimizerBase, which has a get_api_defintion (and which derives from OptimizerBase).
+          - [ ] In numeric_api, add:
+               - [ ] PluginOptimizationProblem, PluginOptimizationProblems
+               - [ ] PluginOptimizationSolution, PluginOptimizationSolutions
+               - [ ] PluginCostFunctionNetworkOptimizationProblem, PluginCostFunctionNetworkOptimizationProblems
+               - [ ] PluginCostFunctionNetworkOptimizationSolution, PluginCostFunctionNetworkOptimizationSolutions
+               - [ ] (Maybe?) PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
+               - [ ] (Maybe?) PluginPairwisePrecomputedCostFunctionNetworkOptimizationSolution
