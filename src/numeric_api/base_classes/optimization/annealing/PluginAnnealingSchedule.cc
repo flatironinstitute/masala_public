@@ -44,7 +44,7 @@ namespace annealing {
 
 /// @brief Default constructor.
 PluginAnnealingSchedule::PluginAnnealingSchedule() :
-    masala::base::managers::plugin_module::MasalaPlugin(),
+    masala::numeric::optimization::annealing::AnnealingScheduleBase(),
     call_count_(0)
 {}
 
@@ -52,7 +52,7 @@ PluginAnnealingSchedule::PluginAnnealingSchedule() :
 PluginAnnealingSchedule::PluginAnnealingSchedule(
     PluginAnnealingSchedule const &src 
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin( src ),
+    masala::numeric::optimization::annealing::AnnealingScheduleBase( src ),
     call_count_( src.call_count_.load() )
 {}
 
@@ -63,6 +63,12 @@ PluginAnnealingSchedule::operator=(
 ) {
     call_count_ = src.call_count_.load();
     return *this;
+}
+
+/// @brief Make a copy of this object.
+masala::numeric::optimization::annealing::AnnealingScheduleBaseSP
+PluginAnnealingSchedule::clone() const {
+    return masala::make_shared< PluginAnnealingSchedule >( *this );
 }
 
 /// @brief Make this object wholly independent.

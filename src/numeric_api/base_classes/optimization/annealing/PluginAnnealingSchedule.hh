@@ -28,7 +28,7 @@
 #include <numeric_api/base_classes/optimization/annealing/PluginAnnealingSchedule.fwd.hh>
 
 // Base headers:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <numeric/optimization/annealing/AnnealingScheduleBase.hh>
 
 // Numeric API headers:
 #include <numeric_api/types.hh>
@@ -48,7 +48,7 @@ namespace annealing {
 /// @brief A base class for all plugin annealing schedules.
 /// @details Annealing schedules return temperature as a function of number of calls.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginAnnealingSchedule : public masala::base::managers::plugin_module::MasalaPlugin {
+class PluginAnnealingSchedule : public masala::numeric::optimization::annealing::AnnealingScheduleBase {
 
 public:
 
@@ -69,13 +69,11 @@ public:
 	virtual ~PluginAnnealingSchedule() = default;
 
 	/// @brief Make a copy of this object.
-	virtual
-	PluginAnnealingScheduleSP clone() const = 0;
+	masala::numeric::optimization::annealing::AnnealingScheduleBaseSP clone() const override;
 
 	/// @brief Make this object wholly independent.
 	/// @details Should be overridden for derived classes.
-	virtual
-	void make_independent();
+	void make_independent() override;
 
 	/// @brief Make a copy of this object that is wholly independent.
 	PluginAnnealingScheduleSP deep_clone() const;
