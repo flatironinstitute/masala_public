@@ -44,16 +44,14 @@ namespace annealing {
 
 /// @brief Default constructor.
 PluginAnnealingSchedule::PluginAnnealingSchedule() :
-    masala::numeric::optimization::annealing::AnnealingScheduleBase(),
-    call_count_(0)
+    masala::numeric::optimization::annealing::AnnealingScheduleBase()
 {}
 
 /// @brief Copy constructor.
 PluginAnnealingSchedule::PluginAnnealingSchedule(
     PluginAnnealingSchedule const &src 
 ) :
-    masala::numeric::optimization::annealing::AnnealingScheduleBase( src ),
-    call_count_( src.call_count_.load() )
+    masala::numeric::optimization::annealing::AnnealingScheduleBase( src )
 {}
 
 /// @brief Assignment operator.
@@ -61,7 +59,7 @@ PluginAnnealingSchedule &
 PluginAnnealingSchedule::operator=(
     PluginAnnealingSchedule const &src
 ) {
-    call_count_ = src.call_count_.load();
+    masala::numeric::optimization::annealing::AnnealingScheduleBase::operator=( src );
     return *this;
 }
 
@@ -74,13 +72,13 @@ PluginAnnealingSchedule::clone() const {
 /// @brief Make this object wholly independent.
 void
 PluginAnnealingSchedule::make_independent() {
-    call_count_ = 0;
+    masala::numeric::optimization::annealing::AnnealingScheduleBase::make_independent();
 }
 
 /// @brief Make a copy of this object that is wholly independent.
 PluginAnnealingScheduleSP
 PluginAnnealingSchedule::deep_clone() const {
-    PluginAnnealingScheduleSP new_object( clone() );
+    PluginAnnealingScheduleSP new_object( std::static_pointer_cast< PluginAnnealingSchedule >( clone() ) );
     new_object->make_independent();
     return new_object;
 }
@@ -93,41 +91,14 @@ PluginAnnealingSchedule::deep_clone() const {
 /// @details The base class implementation returns { { "PluginAnnealingSchedule" } }
 std::vector< std::vector< std::string > >
 PluginAnnealingSchedule::get_categories() const {
-    return std::vector< std::vector< std::string > >{ { "PluginAnnealingSchedule" } };
+    return masala::numeric::optimization::annealing::AnnealingScheduleBase::get_categories();
 }
 
 /// @brief Get the ahierarchical keywords for this plugin class.
 /// @details The base class implementation returns { "annealing_schedule" }
 std::vector< std::string >
 PluginAnnealingSchedule::get_keywords() const {
-    return std::vector< std::string >{ "annealing_schedule" };
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC WORK FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Reset the call count.
-void
-PluginAnnealingSchedule::reset_call_count() {
-    call_count_ = 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Get the call count.
-masala::numeric_api::Size
-PluginAnnealingSchedule::call_count() const {
-    return call_count_.load();
-}
-
-/// @brief Increment the call count.
-/// @note The call count is mutable.
-void
-PluginAnnealingSchedule::increment_call_count() const {
-    ++call_count_;
+    return masala::numeric::optimization::annealing::AnnealingScheduleBase::get_keywords();
 }
 
 } // namespace annealing

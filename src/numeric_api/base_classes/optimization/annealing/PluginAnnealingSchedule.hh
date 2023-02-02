@@ -94,57 +94,6 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
-public:
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC SETTERS
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Set the index of the expected final call to temperature().
-	virtual
-	void
-	set_final_time_index(
-		masala::numeric_api::Size const final_time_index
-	) = 0;
-
-	/// @brief Reset the call count.
-	void reset_call_count();
-
-public:
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC WORK FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Return temperature.
-	virtual
-	masala::numeric_api::Real
-	temperature() const = 0;
-
-	/// @brief Return temperature for the Nth timepoint.
-	virtual
-	masala::numeric_api::Real
-	temperature(
-		masala::numeric_api::Size const time_index
-	) const = 0;
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Get the call count.
-	masala::numeric_api::Size call_count() const;
-
-	/// @brief Increment the call count.
-	/// @note The call count is mutable.
-	void increment_call_count() const;
-
-private:
-
-	/// @brief Number of times the temperature() function has been called.
-	mutable std::atomic< masala::numeric_api::Size > call_count_;
 
 }; // class PluginAnnealingSchedule
 
