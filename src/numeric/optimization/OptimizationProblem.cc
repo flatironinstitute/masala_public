@@ -27,8 +27,7 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
@@ -170,31 +169,12 @@ OptimizationProblem::get_api_definition() {
                 "one would not want to instantiate an abstract OptimizationProblem.  Instead, one would "
                 "usually use a particular sub-class defining a particular type of optimization problem, "
                 "such as a CostFunctionNetworkOptimizationProblem.",
-                false, true
+                false, false
             )
         );
 
         // Constructors:
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < OptimizationProblem > > (
-                class_name(),
-                "Creates an empty OptimizationProblem.  Cannot be used directly, but can "
-                "be called from constructors of derived classes."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < OptimizationProblem, OptimizationProblem const & > > (
-                class_name(),
-                "Copy constructor: copies an input OptimizationProblem.",
-                "src", "The input OptimizationProblem to copy.  Unaltered by this operation."
-            )
-        );
-
-        // Work functions:
-
-
-        // Getters:
-
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OptimizationProblem, api_def );
 
         // Setters:
         api_def->add_setter(

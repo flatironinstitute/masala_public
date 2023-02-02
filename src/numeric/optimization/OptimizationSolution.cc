@@ -28,8 +28,7 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
@@ -177,28 +176,12 @@ OptimizationSolution::get_api_definition() {
                 "Typically, one would not want to instantiate an abstract OptimizationSolution.  Instead, one would "
                 "usually use a particular sub-class defining a particular type of optimization problem, "
                 "such as a CostFunctionNetworkOptimizationSolution.",
-                false, true
+                false, false
             )
         );
 
         // Constructors:
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < OptimizationSolution > > (
-                class_name(),
-                "Creates an empty OptimizationSolution.  Cannot be used directly, but can "
-                "be called from constructors of derived classes."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < OptimizationSolution, OptimizationSolution const & > > (
-                class_name(),
-                "Copy constructor: copies an input OptimizationSolution.",
-                "src", "The input OptimizationSolution to copy.  Unaltered by this operation."
-            )
-        );
-
-        // Work functions:
-
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OptimizationSolution, api_def );
 
         // Getters:
         api_def->add_getter(
