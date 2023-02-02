@@ -94,6 +94,11 @@ def parent_class_file_from_class_name( parent_class_name : str, project_name : s
         outstr = "../headers/" + parent_class_name.split("::")[0] + "/headers/" + parent_class_name[ startpos + 2 : ].replace("::", "/") + ".hh"
     return outstr
 
+## @brief Determine whether the api definition for a class indicates that the class has protected constructors in its API.
+## @details In this case, the class should have no Creator.
+def api_definition_has_protected_constructors( ccfile : str, project_name : str ) -> bool :
+    TODO TODO TODO
+
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
 ## a descendant of masala::base::managers::plugin_module::MasalaPlugin.
 def is_plugin_class( headerfile : str, project_name : str ) -> bool :
@@ -177,7 +182,9 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
                     outlist_apis.append( apiname + ".cc" )
                     outlist_apis.append( apiname + ".hh" )
                     outlist_apis.append( apiname + ".fwd.hh" )
-                    if is_plugin_class( concatname[:-3] + ".hh", project_name ) :
+                    if api_definition_has_protected_constructors( concatname[:-3] + ".cc", project_name ) == False and \
+                        is_plugin_class( concatname[:-3] + ".hh", project_name ) == True :
+
                         compile_registration_functions = True
                         creatorname = apiname_or_creatorname_from_filename( concatname, True )
                         outlist_apis.append( creatorname + ".cc" )
