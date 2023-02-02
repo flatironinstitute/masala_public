@@ -317,6 +317,12 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 ## @note The classname input should include namespace.
 def generate_constructor_prototypes(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
     outstring = ""
+
+    if jsonfile["Elements"][classname]["Properties"]["Has_Protected_Constructors"] == True :
+        outstring += "protected:\n\n"
+    else :
+        outstring += "public:\n\n"
+
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
         #print(constructor)

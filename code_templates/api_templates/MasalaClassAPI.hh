@@ -32,13 +32,13 @@
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
 
-public:
-
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
+
+public:
 
     /// @brief Constructor from shared pointer to object.
     /// @details Directly uses the object that is passed in.  Does not clone it.

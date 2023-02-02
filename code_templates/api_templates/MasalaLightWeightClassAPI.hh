@@ -36,13 +36,13 @@
 /// inner object that could be stack-allocated.
 class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
 
-public:
-
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
+
+public:
 
     /// @brief Constructor from object instance.
     /// @details Copies the object passed in.
