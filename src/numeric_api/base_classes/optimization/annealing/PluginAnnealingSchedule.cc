@@ -63,24 +63,10 @@ PluginAnnealingSchedule::operator=(
     return *this;
 }
 
-/// @brief Make a copy of this object.
-masala::numeric::optimization::annealing::AnnealingScheduleBaseSP
-PluginAnnealingSchedule::clone() const {
-    return masala::make_shared< PluginAnnealingSchedule >( *this );
-}
-
 /// @brief Make this object wholly independent.
 void
 PluginAnnealingSchedule::make_independent() {
     masala::numeric::optimization::annealing::AnnealingScheduleBase::make_independent();
-}
-
-/// @brief Make a copy of this object that is wholly independent.
-PluginAnnealingScheduleSP
-PluginAnnealingSchedule::deep_clone() const {
-    PluginAnnealingScheduleSP new_object( std::static_pointer_cast< PluginAnnealingSchedule >( clone() ) );
-    new_object->make_independent();
-    return new_object;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,19 +85,6 @@ PluginAnnealingSchedule::get_categories() const {
 std::vector< std::string >
 PluginAnnealingSchedule::get_keywords() const {
     return masala::numeric::optimization::annealing::AnnealingScheduleBase::get_keywords();
-}
-
-
-/// @brief Get the name of this class ("PluginAnnealingSchedule").
-std::string
-PluginAnnealingSchedule::class_name() const {
-    return "PluginAnnealingSchedule";
-}
-
-    /// @brief Get the namespace of this class ("masala::numeric_api::base_classes::optimization::annealing").
-std::string
-PluginAnnealingSchedule::class_namespace() const {
-    return "masala::numeric_api::base_classes::optimization::annealing";
 }
 
 } // namespace annealing

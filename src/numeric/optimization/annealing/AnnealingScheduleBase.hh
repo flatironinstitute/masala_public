@@ -81,7 +81,7 @@ public:
 	void make_independent();
 
 	/// @brief Make a copy of this object that is wholly independent.
-	AnnealingScheduleBaseSP deep_clone() const;
+	virtual AnnealingScheduleBaseSP deep_clone() const;
 
 public:
 

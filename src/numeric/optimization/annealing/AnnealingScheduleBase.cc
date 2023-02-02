@@ -142,7 +142,6 @@ AnnealingScheduleBase::temperature() const {
 
 /// @brief Return temperature for the Nth timepoint.
 /// @details The base class throws; derived classes should override this.
-
 masala::numeric::Real
 AnnealingScheduleBase::temperature(
     masala::numeric::Size const time_index
