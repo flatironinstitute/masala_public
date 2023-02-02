@@ -28,7 +28,7 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:

@@ -139,7 +139,7 @@ AtomSelection::get_api_definition() {
         );
 
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
                 "num_selected_atoms", "Gets the total number of atoms that are in the selection.",
                 "num_selected_atoms", "The number of atoms in the selection.",
                 false, false,
@@ -218,7 +218,7 @@ AtomSelection::add_atom(
 }
 
 /// @brief Get the number of selected atoms in this selection.
-masala::core::Size
+masala::base::Size
 AtomSelection::num_selected_atoms() const {
 	std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 	return atoms_.size();

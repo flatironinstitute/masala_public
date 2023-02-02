@@ -23,7 +23,7 @@
 
 // Core headers
 #include <core/api/generate_api_classes.hh>
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers
 #include <base/MasalaObject.hh>
@@ -48,7 +48,7 @@ main(
     api_definition["Module"] = "Core";
     nlohmann::json api_entries;
     std::vector< masala::base::MasalaObjectSP > const api_objects( masala::core::api::generate_api_classes() );
-    for( masala::core::Size i(0), imax(api_objects.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(api_objects.size()); i<imax; ++i ) {
         masala::base::api::MasalaObjectAPIDefinitionCSP api_def( api_objects[i]->get_api_definition() );
         api_entries[ api_objects[i]->class_namespace() + "::" + api_objects[i]->class_name() ] = *api_def->get_json_description();
     }

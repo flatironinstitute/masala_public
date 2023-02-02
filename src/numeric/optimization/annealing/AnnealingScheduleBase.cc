@@ -174,7 +174,7 @@ AnnealingScheduleBase::get_api_definition() {
 /// @details The base class throws; derived classes should override this.
 void
 AnnealingScheduleBase::set_final_time_index(
-    masala::numeric::Size const //final_time_index
+    masala::base::Size const //final_time_index
 ) {
     MASALA_THROW( class_namespace_and_name(), "set_final_time_index", "This function is not implemented in the base class.  It must be implemented in derived classes." );
 }
@@ -201,7 +201,7 @@ AnnealingScheduleBase::temperature() const {
 /// @details The base class throws; derived classes should override this.
 masala::numeric::Real
 AnnealingScheduleBase::temperature(
-    masala::numeric::Size const time_index
+    masala::base::Size const time_index
 ) const {
     MASALA_THROW( class_namespace_and_name(), "temperature", "This function is not implemented in the base class.  It must be implemented in derived classes." );
 }
@@ -213,7 +213,7 @@ AnnealingScheduleBase::temperature(
 /// @brief Get the call count.
 /// @note The annealing_schedule_mutex_ should be locked
 /// before calling this function -- it performs no mutex locking itself.
-masala::numeric::Size
+masala::base::Size
 AnnealingScheduleBase::call_count() const {
     return call_count_;
 }

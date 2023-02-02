@@ -37,7 +37,7 @@
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <map>
@@ -158,8 +158,8 @@ public:
 	/// choices is increased.
 	void
 	set_onebody_penalty(
-		masala::numeric::Size const node_index,
-		masala::numeric::Size const choice_index,
+		masala::base::Size const node_index,
+		masala::base::Size const choice_index,
 		masala::numeric::Real const penalty
 	);
 
@@ -175,8 +175,8 @@ public:
 	/// choices is increased.
     void
     set_twobody_penalty(
-        std::pair< masala::numeric::Size, masala::numeric::Size > const & node_indices,
-        std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
+        std::pair< masala::base::Size, masala::base::Size > const & node_indices,
+        std::pair< masala::base::Size, masala::base::Size > const & choice_indices,
         masala::numeric::Real penalty
     );
 
@@ -233,13 +233,13 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::map< masala::numeric::Size, std::map< masala::numeric::Size, masala::numeric::Real > > single_node_penalties_;
+	std::map< masala::base::Size, std::map< masala::base::Size, masala::numeric::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
 	std::map<
-		std::pair< masala::numeric::Size, masala::numeric::Size >, //The node indices.
-		std::map< std::pair< masala::numeric::Size, masala::numeric::Size >, masala::numeric::Real > //The choice indices.
+		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
+		std::map< std::pair< masala::base::Size, masala::base::Size >, masala::numeric::Real > //The choice indices.
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.

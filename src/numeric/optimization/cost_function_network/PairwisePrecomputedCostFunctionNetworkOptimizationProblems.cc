@@ -34,7 +34,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 #include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
 
 // STL headers:

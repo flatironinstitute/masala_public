@@ -77,7 +77,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
     AtomInstanceCSP const & new_instance
 ) {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count( old_instance ) == 1, "replace_atom_instance", "Could not replace atom.  Old atom is not present!" );
-    masala::core::Size const col_index( atom_instance_to_column_.at(old_instance) );
+    masala::base::Size const col_index( atom_instance_to_column_.at(old_instance) );
     atom_instance_to_column_.erase(old_instance);
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
     atom_instance_to_column_[new_instance] = col_index;
@@ -91,7 +91,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     std::array< masala::core::Real, 3 > const & new_atom_coordinates
 ) {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_atom) == 0, "add_atom_instance", "Atom has already been added!" );
-    masala::core::Size const natoms_before( atom_coordinates_.cols() );
+    masala::base::Size const natoms_before( atom_coordinates_.cols() );
     atom_instance_to_column_[ new_atom ] = natoms_before;
     atom_coordinates_.conservativeResize( Eigen::NoChange, natoms_before + 1 );
     atom_coordinates_(0, natoms_before ) = new_atom_coordinates[0]; 
@@ -108,7 +108,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
 ) const {
     auto const it( atom_instance_to_column_.find( atom ) );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecules object!" );
-    masala::core::Size const column( it->second );
+    masala::base::Size const column( it->second );
     return std::array< masala::core::Real, 3 >{ atom_coordinates_(0, column), atom_coordinates_(1, column), atom_coordinates_(2, column) };
 }
 

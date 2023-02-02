@@ -196,7 +196,7 @@ Molecules::get_api_definition() {
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( Molecules, api_def );
 
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
                 "total_atoms", "Gets the total number of atoms in this Molecules object.",
                 "total_atoms", "The number of atoms in the Molecules object.",
                 false, false,
@@ -256,7 +256,7 @@ Molecules::add_atom(
 }
 
 /// @brief Get the number of atoms in this molecule.
-core::Size
+base::Size
 Molecules::total_atoms() const {
     return atoms_.size();
 }

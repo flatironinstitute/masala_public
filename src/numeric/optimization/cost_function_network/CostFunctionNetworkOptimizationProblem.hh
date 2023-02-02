@@ -37,7 +37,7 @@
 #include <numeric/optimization/OptimizationProblem.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <map>
@@ -126,12 +126,12 @@ public:
 	/// @details This is the index of the highest-numbered node that has been
 	/// referred to plus one (since nodes are zero-indexed), NOT the number of
 	/// nodes with multiple choices.
-	masala::numeric::Size
+	masala::base::Size
 	total_nodes() const;
 
 	/// @brief Get the total number of nodes in this problem that have at least
 	/// two choices associated with them.
-	masala::numeric::Size
+	masala::base::Size
 	total_variable_nodes() const;
 
 	/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
@@ -139,7 +139,7 @@ public:
 	/// @note Indices in this vector are NOT node indices, since nodes with fewer than two choices are omitted.
 	/// The length of the vector is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted
 	/// in order of node index, though.
-	std::vector< std::pair< masala::numeric::Size, masala::numeric::Size > >
+	std::vector< std::pair< masala::base::Size, masala::base::Size > >
 	n_choices_at_variable_nodes() const;
 
 	/// @brief Get the product of the number of choices at each node (the total number
@@ -168,8 +168,8 @@ public:
     /// specified number, this does nothing.
 	void
 	set_minimum_number_of_choices_at_node(
-		masala::numeric::Size const node_index,
-		masala::numeric::Size const min_choice_count
+		masala::base::Size const node_index,
+		masala::base::Size const min_choice_count
 	);
 
 public:
@@ -194,19 +194,19 @@ protected:
 	/// @note This version assumes that the problem mutex has already been set.
 	void
 	set_minimum_number_of_choices_at_node_mutex_locked(
-		masala::numeric::Size const node_index,
-		masala::numeric::Size const min_choice_count
+		masala::base::Size const node_index,
+		masala::base::Size const min_choice_count
 	);
 
 	/// @brief Access the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
-	std::map< masala::numeric::Size, masala::numeric::Size > &
+	std::map< masala::base::Size, masala::base::Size > &
 	n_choices_by_node_index();
 
 	/// @brief Const access to the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
 	inline
-	std::map< masala::numeric::Size, masala::numeric::Size > const &
+	std::map< masala::base::Size, masala::base::Size > const &
 	n_choices_by_node_index() const {
 		return n_choices_by_node_index_;
 	}
@@ -226,7 +226,7 @@ private:
 
 	/// @brief The number of choices at each node index.
 	/// @details Resizes automatically.
-	std::map< masala::numeric::Size, masala::numeric::Size > n_choices_by_node_index_;
+	std::map< masala::base::Size, masala::base::Size > n_choices_by_node_index_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 

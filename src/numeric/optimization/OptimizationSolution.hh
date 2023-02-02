@@ -33,7 +33,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <mutex>

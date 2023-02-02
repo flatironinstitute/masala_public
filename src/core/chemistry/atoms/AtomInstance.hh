@@ -33,7 +33,7 @@
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/data/AtomData.fwd.hh>
 
 // Base headers:

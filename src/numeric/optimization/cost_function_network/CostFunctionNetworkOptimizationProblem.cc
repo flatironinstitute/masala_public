@@ -116,7 +116,7 @@ CostFunctionNetworkOptimizationProblem::class_namespace() const {
 /// @details This is the index of the highest-numbered node that has been
 /// referred to plus one (since nodes are zero-indexed), NOT the number of
 /// nodes with multiple choices.
-masala::numeric::Size
+masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_nodes() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 0; }
@@ -125,13 +125,13 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 
 /// @brief Get the total number of nodes in this problem that have at least
 /// two choices associated with them.
-masala::numeric::Size
+masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 0; }
-    numeric::Size accumulator(0);
+    base::Size accumulator(0);
     for(
-        std::map< numeric::Size, numeric::Size >::const_iterator it( n_choices_by_node_index_.begin() );
+        std::map< base::Size, base::Size >::const_iterator it( n_choices_by_node_index_.begin() );
         it != n_choices_by_node_index_.end();
         ++it
     ) {
@@ -147,9 +147,9 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 /// @note Indices in this vector are NOT node indices, since nodes with fewer than two choices are omitted.
 /// The length of the vector is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted
 /// in order of node index, though.
-std::vector< std::pair< masala::numeric::Size, masala::numeric::Size > >
+std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
-    using masala::numeric::Size;
+    using masala::base::Size;
     std::vector< std::pair< Size, Size > > outvec;
     outvec.reserve( n_choices_by_node_index_.size() );
     {   // Scope for mutex lock.
@@ -182,7 +182,7 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
     if( n_choices_by_node_index_.empty() ) { return 1.0; }
     numeric::Real product(1.0);
     for(
-        std::map< numeric::Size, numeric::Size >::const_iterator it( n_choices_by_node_index_.begin() );
+        std::map< base::Size, base::Size >::const_iterator it( n_choices_by_node_index_.begin() );
         it != n_choices_by_node_index_.end();
         ++it
     ) {
@@ -217,8 +217,8 @@ CostFunctionNetworkOptimizationProblem::finalize() {
 /// specified number, this does nothing.
 void
 CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
-    masala::numeric::Size const node_index,
-    masala::numeric::Size const min_choice_count
+    masala::base::Size const node_index,
+    masala::base::Size const min_choice_count
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count ); // Checks that state is not finalized.
@@ -266,7 +266,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Size > >(
                 "total_nodes", "Get the total number of nodes in this problem.  This is the index of the "
                 "highest-numbered node that has been referred to plus one (since nodes are zero-indexed), "
                 "NOT the number of nodes with multiple choices.",
@@ -279,7 +279,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Size > >(
                 "total_variable_nodes", "Get the total number of nodes in this problem that have at least "
 	            "two choices associated with them.",
 
@@ -292,7 +292,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<
-                std::vector< std::pair< numeric::Size, numeric::Size > > >
+                std::vector< std::pair< base::Size, base::Size > > >
             >(
                 "n_choices_at_variable_nodes", "Get a vector of pairs with one entry for each variable node, "
                 "where the first entry in the pair indicates the variable node's index, and the second "
@@ -337,7 +337,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< numeric::Size, numeric::Size > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< base::Size, base::Size > >(
                 "set_minimum_number_of_choices_at_node", "Set the (minimum) number of choices at a node.  "
                 "If the number of choices has already been set to greater than the specified number, this does nothing.",
 
@@ -367,10 +367,10 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 /// @note This version assumes that the problem mutex has already been set.
 void
 CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mutex_locked(
-    masala::numeric::Size const node_index,
-    masala::numeric::Size const min_choice_count
+    masala::base::Size const node_index,
+    masala::base::Size const min_choice_count
 ) {
-    std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     CHECK_OR_THROW_FOR_CLASS( !finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
         "This object has already been finalized.  Cannot set the minimum number of choices at a node at this point!"
     );
@@ -385,7 +385,7 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
 
 /// @brief Access the number of choices by node index.
 /// @note This assumes that the problem mutex has already been set.
-std::map< masala::numeric::Size, masala::numeric::Size > &
+std::map< masala::base::Size, masala::base::Size > &
 CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
     CHECK_OR_THROW_FOR_CLASS( !finalized(), "n_choices_by_node_index",
         "Can only get nonconst access to the number of choices by node index if the problem has not been finalized!"

@@ -32,7 +32,7 @@
 
 // Numeric headers:
 #include <numeric/optimization/OptimizationSolution.fwd.hh>
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <mutex>
@@ -153,11 +153,11 @@ public:
 	/// n_solutions() method to check number of solutions.
 	OptimizationSolutionCSP
 	solution(
-		masala::numeric::Size const index
+		masala::base::Size const index
 	) const;
 
 	/// @brief Get the number of solutions stored in this object.
-	masala::numeric::Size n_solutions() const;
+	masala::base::Size n_solutions() const;
 
 protected:
 

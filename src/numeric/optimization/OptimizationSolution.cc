@@ -163,7 +163,7 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 OptimizationSolution::get_api_definition() {
     using namespace masala::base::api;
     using masala::numeric::Real;
-    using masala::numeric::Size;
+    using masala::base::Size;
 
     std::lock_guard< std::mutex > lock( solution_mutex_ );
 

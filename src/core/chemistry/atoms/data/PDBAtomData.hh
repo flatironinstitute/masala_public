@@ -30,7 +30,7 @@
 #include <core/chemistry/atoms/data/AtomData.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>

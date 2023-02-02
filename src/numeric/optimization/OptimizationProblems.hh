@@ -32,7 +32,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 #include <numeric/optimization/OptimizationProblem.fwd.hh>
 
 // STL headers:
@@ -155,11 +155,11 @@ public:
 	/// n_problems() method to check number of problems.
 	OptimizationProblemCSP
 	problem(
-		masala::numeric::Size const index
+		masala::base::Size const index
 	) const;
 
 	/// @brief Get the number of problems stored in this object.
-	masala::numeric::Size n_problems() const;
+	masala::base::Size n_problems() const;
 
 protected:
 

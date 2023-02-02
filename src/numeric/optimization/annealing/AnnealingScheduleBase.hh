@@ -35,7 +35,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric API headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <vector>
@@ -125,7 +125,7 @@ public:
 	virtual
 	void
 	set_final_time_index(
-		masala::numeric::Size const final_time_index
+		masala::base::Size const final_time_index
 	);
 
 	/// @brief Reset the call count.
@@ -148,7 +148,7 @@ public:
 	virtual
 	masala::numeric::Real
 	temperature(
-		masala::numeric::Size const time_index
+		masala::base::Size const time_index
 	) const;
 
 protected:
@@ -160,7 +160,7 @@ protected:
 	/// @brief Get the call count.
 	/// @note The annealing_schedule_mutex_ should be locked
 	/// before calling this function -- it performs no mutex locking itself.
-	masala::numeric::Size call_count() const;
+	masala::base::Size call_count() const;
 
 	/// @brief Increment the call count.
 	/// @note The call count is mutable.  The annealing_schedule_mutex_ should be locked
@@ -187,7 +187,7 @@ private:
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 	/// @brief Number of times the temperature() function has been called.
-	mutable masala::numeric::Size call_count_;
+	mutable masala::base::Size call_count_;
 
 }; // class AnnealingScheduleBase
 

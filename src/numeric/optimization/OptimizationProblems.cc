@@ -36,7 +36,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 #include <numeric/optimization/OptimizationProblem.hh>
 
 // STL headers:
@@ -91,7 +91,7 @@ OptimizationProblems::deep_clone() const {
 void
 OptimizationProblems::make_independent() {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
-    for( masala::numeric::Size i(1); i<=optimization_problems_.size(); ++i ) {
+    for( masala::base::Size i(1); i<=optimization_problems_.size(); ++i ) {
         optimization_problems_[i] = optimization_problems_[i]->deep_clone();
     }
 }
@@ -201,7 +201,7 @@ OptimizationProblems::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationProblemCSP, masala::numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationProblemCSP, masala::base::Size > >(
                 "problem", "Get the problem with the given index.  Throws if index is out of range.",
                 "index", "The index of the problem to get.  (Note that this is zero-based.)",
                 "problem", "A const shared pointer to the problem with the given index.",
@@ -210,7 +210,7 @@ OptimizationProblems::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "n_problems", "Get the number of problems stored in this object.",
                 "n_problems", "The number of problems stored in this object, or one more than th zero-based "
                 "index of the last problem.",
@@ -257,7 +257,7 @@ OptimizationProblems::add_optimization_problem(
 /// n_problems() method to check number of problems.
 OptimizationProblemCSP
 OptimizationProblems::problem(
-    masala::numeric::Size const index
+    masala::base::Size const index
 ) const {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
     CHECK_OR_THROW_FOR_CLASS(
@@ -270,7 +270,7 @@ OptimizationProblems::problem(
 }
 
 /// @brief Get the number of problems stored in this object.
-masala::numeric::Size
+masala::base::Size
 OptimizationProblems::n_problems() const {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
     return optimization_problems_.size();

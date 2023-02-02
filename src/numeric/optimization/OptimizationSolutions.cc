@@ -35,7 +35,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
-#include <numeric/types.hh>
+#include <base/types.hh>
 #include <numeric/optimization/OptimizationSolution.hh>
 
 // STL headers:
@@ -90,7 +90,7 @@ OptimizationSolutions::deep_clone() const {
 void
 OptimizationSolutions::make_independent() {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
-    for( masala::numeric::Size i(1); i<=optimization_solutions_.size(); ++i ) {
+    for( masala::base::Size i(1); i<=optimization_solutions_.size(); ++i ) {
         optimization_solutions_[i] = optimization_solutions_[i]->deep_clone();
     }
 }
@@ -200,7 +200,7 @@ OptimizationSolutions::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationSolutionCSP, masala::numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationSolutionCSP, masala::base::Size > >(
                 "solution", "Get the solution with the given index.  Throws if index is out of range.",
                 "index", "The index of the solution to get.  (Note that this is zero-based.)",
                 "solution", "A const shared pointer to the solution with the given index.",
@@ -209,7 +209,7 @@ OptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::numeric::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "n_solutions", "Get the number of solutions stored in this object.",
                 "n_solutions", "The number of solutions stored in this object, or one more than th zero-based "
                 "index of the last solution.",
@@ -256,7 +256,7 @@ OptimizationSolutions::add_optimization_solution(
 /// n_solutions() method to check number of solutions.
 OptimizationSolutionCSP
 OptimizationSolutions::solution(
-    masala::numeric::Size const index
+    masala::base::Size const index
 ) const {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
     CHECK_OR_THROW_FOR_CLASS(
@@ -269,7 +269,7 @@ OptimizationSolutions::solution(
 }
 
 /// @brief Get the number of solutions stored in this object.
-masala::numeric::Size
+masala::base::Size
 OptimizationSolutions::n_solutions() const {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
     return optimization_solutions_.size();

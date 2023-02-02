@@ -175,17 +175,17 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize() {
 /// choices is increased.
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
-    masala::numeric::Size const node_index,
-    masala::numeric::Size const choice_index,
+    masala::base::Size const node_index,
+    masala::base::Size const choice_index,
     masala::numeric::Real const penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    std::map< masala::numeric::Size, masala::numeric::Size >::iterator it( n_choices_by_node_index().find(node_index) );
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index().find(node_index) );
     if( it == n_choices_by_node_index().end() ) {
         // Update the number of choices per node:
         n_choices_by_node_index()[node_index] = choice_index + 1;
         // Set the one-body penalty:
-        single_node_penalties_[node_index] = std::map< masala::numeric::Size, masala::numeric::Real >{ { choice_index, penalty} };
+        single_node_penalties_[node_index] = std::map< masala::base::Size, masala::numeric::Real >{ { choice_index, penalty} };
     } else {
         // Update the number of choices per node:
         if( it->second <= choice_index ) {
@@ -208,8 +208,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
 /// choices is increased.
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
-    std::pair< masala::numeric::Size, masala::numeric::Size > const & node_indices,
-    std::pair< masala::numeric::Size, masala::numeric::Size > const & choice_indices,
+    std::pair< masala::base::Size, masala::base::Size > const & node_indices,
+    std::pair< masala::base::Size, masala::base::Size > const & choice_indices,
     masala::numeric::Real penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
@@ -227,11 +227,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
-    std::map< std::pair< numeric::Size, numeric::Size >, std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real > >::iterator it(
+    std::map< std::pair< base::Size, base::Size >, std::map< std::pair< base::Size, base::Size >, numeric::Real > >::iterator it(
         pairwise_node_penalties_.find( node_indices )
     );
     if( it == pairwise_node_penalties_.end() ) {
-        pairwise_node_penalties_[node_indices] = std::map< std::pair< numeric::Size, numeric::Size >, numeric::Real >{ { choice_indices, penalty } };
+        pairwise_node_penalties_[node_indices] = std::map< std::pair< base::Size, base::Size >, numeric::Real >{ { choice_indices, penalty } };
     } else {
         it->second[choice_indices] = penalty;
     }
@@ -321,7 +321,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< numeric::Size, numeric::Size, numeric::Real > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< base::Size, base::Size, numeric::Real > >(
                 "set_onebody_penalty", "Set the one-node penalty for a particular choice index selected at a particular node index.",
                 "node_index", "The index of the node for which we're setting a penalty.",
                 "choice_index", "The index of the choice at this node for which we're setting a penalty.",
@@ -330,7 +330,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< std::pair< numeric::Size, numeric::Size >, std::pair< numeric::Size, numeric::Size >, numeric::Real > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< std::pair< base::Size, base::Size >, std::pair< base::Size, base::Size >, numeric::Real > >(
                 "set_twobody_penalty", "Set the two-node penalty for a pair of choices at a pair of nodes.",
 
                 "node_indices", "A pair of node indices.  The lower index should be first.  (This function will "
@@ -390,7 +390,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
 masala::numeric::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_node_constant_offset() {
     using masala::numeric::Real;
-    using masala::numeric::Size;
+    using masala::base::Size;
 
     Real accumulator1( 0.0 ), accumulator2( 0.0 );
     std::set< Size > one_choice_nodes;
@@ -443,7 +443,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes() {
     using masala::numeric::Real;
-    using masala::numeric::Size;
+    using masala::base::Size;
 
     std::set< Size > one_choice_nodes;
     for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );

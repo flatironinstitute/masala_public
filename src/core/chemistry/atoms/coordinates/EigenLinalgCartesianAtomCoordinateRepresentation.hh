@@ -30,7 +30,7 @@
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // External headers:
@@ -121,7 +121,7 @@ private:
     Eigen::Matrix< masala::core::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
     /// @brief Map of atom index to column index.
-    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::Size > atom_instance_to_column_;
+    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::base::Size > atom_instance_to_column_;
 
 };
 

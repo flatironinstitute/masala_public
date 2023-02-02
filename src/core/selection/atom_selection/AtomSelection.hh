@@ -34,7 +34,7 @@
 #include <core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -119,7 +119,7 @@ public:
 	void add_atom( masala::core::chemistry::atoms::AtomInstanceCSP const & atom_in );
 
 	/// @brief Get the number of selected atoms in this selection.
-	masala::core::Size num_selected_atoms() const;
+	masala::base::Size num_selected_atoms() const;
 
     /// @brief An iterator pointing to the first atom.
     masala::core::chemistry::atoms::AtomInstanceConstIterator

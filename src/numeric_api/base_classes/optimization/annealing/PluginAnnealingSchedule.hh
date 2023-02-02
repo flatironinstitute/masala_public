@@ -31,7 +31,7 @@
 #include <numeric/optimization/annealing/AnnealingScheduleBase.hh>
 
 // Numeric API headers:
-#include <numeric_api/types.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <atomic>
@@ -113,7 +113,7 @@ public:
 	/// @details Pure virtual; derived classes should override this.
 	void
 	set_final_time_index(
-		masala::numeric::Size const final_time_index
+		masala::base::Size const final_time_index
 	) override = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ public:
 	/// @details Pure virtual; derived classes should override this.
 	masala::numeric::Real
 	temperature(
-		masala::numeric::Size const time_index
+		masala::base::Size const time_index
 	) const override = 0;
 
 
