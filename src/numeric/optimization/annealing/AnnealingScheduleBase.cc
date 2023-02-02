@@ -34,6 +34,10 @@
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 
 // STL headers
 #include <string>
@@ -147,19 +151,42 @@ AnnealingScheduleBase::get_api_definition() {
 
         // Constructors
         ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( AnnealingScheduleBase, api_definition );
-        // api_definition->add_constructor(
-        //     masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput< AnnealingScheduleBase > > (
-        //         "AnnealingScheduleBase", "Construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
-        //         "this base class -- i.e. can only be called from derived constructors."
-        //     )
-        // );
-        // api_definition->add_constructor(
-        //     masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput< AnnealingScheduleBase, AnnealingScheduleBase const & > > (
-        //         "AnnealingScheduleBase", "Copy-construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
-        //         "this base class -- i.e. can only be called from derived constructors.",
-        //         "src", "The annealing schedule to copy.  Unaltered by this operation."
-        //     )
-        // );
+
+        //Setters
+        api_definition->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::base::Size > >(
+                "set_final_time_index", "Set the final time index in the annealing schedule.",
+                "final_time_index", "The index of the final timepoint in the annealing schedule.",
+                true, false, std::bind( &AnnealingScheduleBase::set_final_time_index, this, std::placeholders::_1 )
+            )
+        );
+        api_definition->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "reset_call_count", "Reset this object's call count.",
+                true, false, std::bind( &AnnealingScheduleBase::reset_call_count, this )
+            )
+        );
+
+        // Work functions
+        api_definition->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< masala::base::Real > >(
+                "temperature", "Get the temperature at the current timepoint, and increment the timepoint counter",
+                true, false, true, false,
+                "temperature", "The temperature at the current timepoint.",
+                std::bind( static_cast<masala::base::Real(AnnealingScheduleBase::*)() const>( &AnnealingScheduleBase::temperature ), this )
+            )
+        );
+        api_definition->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< masala::base::Real, masala::base::Size > >(
+                "temperature", "Get the temperature at the given timepoint.  This does not increment the "
+                "timepoint counter.",
+                true, false, true, false,
+                "time_index", "The timepoint at which we are getting temperature.",
+                "temperature",
+                "The temperature at the current timepoint.",
+                std::bind( static_cast<masala::base::Real(AnnealingScheduleBase::*)( masala::base::Size const ) const>( &AnnealingScheduleBase::temperature ), this, std::placeholders::_1 )
+            )
+        );
 
         api_definition_ = api_definition; // Nonconst to const.
     }
