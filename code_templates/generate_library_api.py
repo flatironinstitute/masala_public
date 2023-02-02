@@ -984,10 +984,17 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
         # Third, check the parent file for an API definition.
         parent_has_api = False
         #print( "****\t" + parent_hhfile, flush=True )
-        lines = slurp_file_and_remove_comments(parent_hhfile).split() # Overwrite old lines; split by whitespace.
+        lines = slurp_file_and_remove_comments(parent_hhfile).replace("(", " ( ").replace(")", " ) ").replace("=", " = ").replace("0", " 0 ").split() # Overwrite old lines; split by whitespace.
         #print(lines)
-        for i in range( 0, len(lines) - 1 ) :
-            if lines[i].endswith("MasalaObjectAPIDefinitionCWP") and ( lines[i+1] == "get_api_definition" or lines[i+1] == "get_api_definition(" or lines[i+1] == "get_api_definition()" ) :
+        for i in range( 0, len(lines) - 6 ) :
+            if lines[i].endswith("MasalaObjectAPIDefinitionCWP") and \
+                lines[i+1] == "get_api_definition" and \
+                lines[i+2] == "(" and \
+                lines[i+3] == ")" and \
+                lines[i+3] == "override" and \
+                lines[i+5] != "=" and \
+                lines[i+6] != "0":
+
                 parent_has_api = True
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
@@ -1009,7 +1016,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             #print( "****\t" + parent_api_hhfile )
             return ( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else :
-            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
+            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
