@@ -99,6 +99,12 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+	/// @brief Get the name of this class ("AnnealingScheduleBase").
+	std::string class_name() const override;
+
+		/// @brief Get the namespace of this class ("masala::numeric::optimization::annealing").
+	std::string class_namespace() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,11 +112,12 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the index of the expected final call to temperature().
+	/// @details The base class throws; derived classes should override this.
 	virtual
 	void
 	set_final_time_index(
 		masala::numeric::Size const final_time_index
-	) = 0;
+	);
 
 	/// @brief Reset the call count.
 	void reset_call_count();
@@ -122,16 +129,18 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Return temperature.
+	/// @details The base class throws; derived classes should override this.
 	virtual
 	masala::numeric::Real
-	temperature() const = 0;
+	temperature() const;
 
 	/// @brief Return temperature for the Nth timepoint.
+	/// @details The base class throws; derived classes should override this.
 	virtual
 	masala::numeric::Real
 	temperature(
 		masala::numeric::Size const time_index
-	) const = 0;
+	) const;
 
 protected:
 

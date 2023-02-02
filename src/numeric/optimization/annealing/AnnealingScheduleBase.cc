@@ -98,14 +98,56 @@ AnnealingScheduleBase::get_keywords() const {
     return std::vector< std::string >{ "annealing_schedule" };
 }
 
+/// @brief Get the name of this class ("AnnealingScheduleBase").
+std::string
+AnnealingScheduleBase::class_name() const {
+    return "AnnealingScheduleBase";
+}
+
+    /// @brief Get the namespace of this class ("masala::numeric::optimization::annealing").
+std::string
+AnnealingScheduleBase::class_namespace() const {
+    return "masala::numeric::optimization::annealing";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the index of the expected final call to temperature().
+/// @details The base class throws; derived classes should override this.
+void
+AnnealingScheduleBase::set_final_time_index(
+    masala::numeric::Size const //final_time_index
+) {
+    MASALA_THROW( class_namespace_and_name(), "set_final_time_index", "This function is not implemented in the base class.  It must be implemented in derived classes." );
+}
 
 /// @brief Reset the call count.
 void
 AnnealingScheduleBase::reset_call_count() {
     call_count_ = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Return temperature.
+/// @details The base class throws; derived classes should override this.
+masala::numeric::Real
+AnnealingScheduleBase::temperature() const {
+    MASALA_THROW( class_namespace_and_name(), "temperature", "This function is not implemented in the base class.  It must be implemented in derived classes." );
+}
+
+/// @brief Return temperature for the Nth timepoint.
+/// @details The base class throws; derived classes should override this.
+
+masala::numeric::Real
+AnnealingScheduleBase::temperature(
+    masala::numeric::Size const time_index
+) const {
+    MASALA_THROW( class_namespace_and_name(), "temperature", "This function is not implemented in the base class.  It must be implemented in derived classes." );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
