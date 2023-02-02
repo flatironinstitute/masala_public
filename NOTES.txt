@@ -80,7 +80,7 @@
      - [X] Add a base class for AnnealingSchedule (AnnealingScheduleBase) in numeric.
           - [X] Add a get_api_definition function to it.
           - [X] Indicate that the API has a protected constructor.
-     - [ ] Ensure that headers from numeric that are included in numeric_api get copied to the headers library (so that it's possible to inherit from numeric classes in plugin libraries).
+     - [X] Ensure that headers from numeric that are included in numeric_api get copied to the headers library (so that it's possible to inherit from numeric classes in plugin libraries).
           - [X] Ensure that AnnealingSchedule class in numeric_api derives from numeric::*::AnnealingScheduleBase (so that we include the AnnealingScheduleBase.hh file from numeric in the header library).
      - [ ] In the standard Masala plugins library, have the MonteCarloCostFunctionNetworkOptimizer take an AnnealingScheduleBase_API object, not an AnnealingSchedule object.
      - [ ] In the standard Masala plugins library, have the ConstantAnnealingSchedule (and any other annealing schedules) derive from numeric_api::*::AnnealingSchedule.
