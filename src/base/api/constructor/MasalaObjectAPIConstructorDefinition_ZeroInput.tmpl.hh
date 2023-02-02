@@ -72,11 +72,19 @@ public:
 	///			   we are describing here.  Should match the T0 class name.
 	/// @param[in] constructor_description The description of the constructor that
 	///			   we are describing here.
+	/// @param[in] is_protected_constructor Should the API's class constructor be
+	///            protected?  This allows the API class to act like a pure virtual
+	///            base class, preventing instantiation.
 	MasalaObjectAPIConstructorDefinition_ZeroInput(
 		std::string const & constructor_name,
-		std::string const & constructor_description
+		std::string const & constructor_description,
+		bool const is_protected_constructor
 	) :
-		MasalaObjectAPIConstructorDefinition( constructor_name, constructor_description )
+		MasalaObjectAPIConstructorDefinition(
+			constructor_name,
+			constructor_description,
+			is_protected_constructor
+		)
 	{}
 
 	/// @brief Copy constructor.
@@ -123,6 +131,7 @@ public:
 		json_api["Constructor_Name"] = constructor_name();
 		json_api["Constructor_Description"] = constructor_description();
 		json_api["Is_Const"] = false; //Constructors are never const.
+		json_api["Is_Protected"] = is_protected_constructor();
 
 		//Inputs:
 		json_api["Constructor_N_Inputs"] = 0;
