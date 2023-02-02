@@ -74,7 +74,7 @@
      - [X] In the API descriptors, ensure that there's a way to indicate that a base class's API should have protected constructors, to prevent instantiation (like a pure virtual class).
           - [X] Update code templates.
           - [X] Update generate_library_api.py.
-          - [ ] Only add creators if the constructors are not protected.
+          - [X] Only add creators if the constructors are not protected.
      - [ ] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
      - [ ] Add a base class for AnnealingSchedule (AnnealingScheduleBase) in numeric.
           - [ ] Add a get_api_definition function to it.
