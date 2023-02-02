@@ -223,10 +223,10 @@ BasicPDBReader::add_atoms_from_file_lines(
 
         // Containers:
         signed long const atomno( masala::base::utility::string::parse_string< signed long >( curline_atomno, true ) );
-        std::array< masala::core::Real, 3 > coords{
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_xcoord, true ),
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_ycoord, true ),
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_zcoord, true )
+        std::array< masala::base::Real, 3 > coords{
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_xcoord, true ),
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_ycoord, true ),
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_zcoord, true )
         };
 
         // The new atom.

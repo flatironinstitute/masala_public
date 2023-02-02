@@ -123,18 +123,18 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the fixed background constant offset.
-	masala::numeric::Real
+	masala::base::Real
 	background_constant_offset() const;
 
 	/// @brief Get the constant offset for nodes.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
-	masala::numeric::Real
+	masala::base::Real
 	one_choice_node_constant_offset() const;
 
 	/// @brief Get the total constant offset.
 	/// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
-	masala::numeric::Real
+	masala::base::Real
 	total_constant_offset() const;
 
 public:
@@ -160,7 +160,7 @@ public:
 	set_onebody_penalty(
 		masala::base::Size const node_index,
 		masala::base::Size const choice_index,
-		masala::numeric::Real const penalty
+		masala::base::Real const penalty
 	);
 
     /// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
@@ -177,7 +177,7 @@ public:
     set_twobody_penalty(
         std::pair< masala::base::Size, masala::base::Size > const & node_indices,
         std::pair< masala::base::Size, masala::base::Size > const & choice_indices,
-        masala::numeric::Real penalty
+        masala::base::Real penalty
     );
 
 public:
@@ -215,7 +215,7 @@ private:
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
 	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
-	masala::numeric::Real
+	masala::base::Real
 	compute_one_choice_node_constant_offset();
 
 	/// @brief Find all twobody energies involving one node with one choice and another node with more than
@@ -233,23 +233,23 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::map< masala::base::Size, std::map< masala::base::Size, masala::numeric::Real > > single_node_penalties_;
+	std::map< masala::base::Size, std::map< masala::base::Size, masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
 	std::map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		std::map< std::pair< masala::base::Size, masala::base::Size >, masala::numeric::Real > //The choice indices.
+		std::map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real > //The choice indices.
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.
-	masala::numeric::Real background_constant_offset_ = 0.0;
+	masala::base::Real background_constant_offset_ = 0.0;
 
 	/// @brief The constant offset for the nodes with one choice.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.  Computed at
 	/// finalize() time.
-	masala::numeric::Real one_choice_node_constant_offset_ = 0.0;
+	masala::base::Real one_choice_node_constant_offset_ = 0.0;
 
 }; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
 

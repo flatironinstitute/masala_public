@@ -145,7 +145,7 @@ public:
 	/// @brief Get the product of the number of choices at each node (the total number
 	/// of combinatorial solutions to this cost function network problem).
 	/// @note Due to integer overruns, this is a floating-point number, not an integer.
-	masala::numeric::Real
+	masala::base::Real
 	total_combinatorial_solutions() const;
 
 public:

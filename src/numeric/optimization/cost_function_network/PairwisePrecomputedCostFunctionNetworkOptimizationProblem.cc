@@ -115,7 +115,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::class_namespace() con
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the fixed background constant offset.
-masala::numeric::Real
+masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_offset() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     return background_constant_offset_;
@@ -124,7 +124,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_o
 /// @brief Get the constant offset for nodes.
 /// @details This is the sum of onebody energies for nodes that have exactly
 /// one choice, plus the twobdy energies between those nodes.
-masala::numeric::Real
+masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     CHECK_OR_THROW_FOR_CLASS( finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
@@ -135,7 +135,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_const
 
 /// @brief Get the total constant offset.
 /// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
-masala::numeric::Real
+masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     CHECK_OR_THROW_FOR_CLASS( finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
@@ -177,7 +177,7 @@ void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
     masala::base::Size const node_index,
     masala::base::Size const choice_index,
-    masala::numeric::Real const penalty
+    masala::base::Real const penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index().find(node_index) );
@@ -185,7 +185,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
         // Update the number of choices per node:
         n_choices_by_node_index()[node_index] = choice_index + 1;
         // Set the one-body penalty:
-        single_node_penalties_[node_index] = std::map< masala::base::Size, masala::numeric::Real >{ { choice_index, penalty} };
+        single_node_penalties_[node_index] = std::map< masala::base::Size, masala::base::Real >{ { choice_index, penalty} };
     } else {
         // Update the number of choices per node:
         if( it->second <= choice_index ) {
@@ -210,7 +210,7 @@ void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     std::pair< masala::base::Size, masala::base::Size > const & node_indices,
     std::pair< masala::base::Size, masala::base::Size > const & choice_indices,
-    masala::numeric::Real penalty
+    masala::base::Real penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
 
@@ -227,11 +227,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
-    std::map< std::pair< base::Size, base::Size >, std::map< std::pair< base::Size, base::Size >, numeric::Real > >::iterator it(
+    std::map< std::pair< base::Size, base::Size >, std::map< std::pair< base::Size, base::Size >, base::Real > >::iterator it(
         pairwise_node_penalties_.find( node_indices )
     );
     if( it == pairwise_node_penalties_.end() ) {
-        pairwise_node_penalties_[node_indices] = std::map< std::pair< base::Size, base::Size >, numeric::Real >{ { choice_indices, penalty } };
+        pairwise_node_penalties_[node_indices] = std::map< std::pair< base::Size, base::Size >, base::Real >{ { choice_indices, penalty } };
     } else {
         it->second[choice_indices] = penalty;
     }
@@ -280,7 +280,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
 
         // Getters:
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Real > >(
                 "background_constant_offset", "Get the fixed background constant offset.",
                 "background_contant_offset", "A fixed, constant value added to all energies for all solutions.  Useful for parts "
                 "of the problem that are not variable.", false, false,
@@ -288,7 +288,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Real > >(
                 "one_choice_node_constant_offset", "Get the constant offset for nodes.  This is the sum of onebody energies "
                 "for nodes that have exactly one choice, plus the twobdy energies between those nodes.  Note that this could "
                 "be rather slow.",
@@ -297,7 +297,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Real > >(
                 "total_constant_offset", "Get the total (background + node) constant offset.",
                 "total_constant_offset", "This is the sum of background_constant_offset() and one_choice_node_constant_offset().",
                 false, false,
@@ -321,7 +321,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< base::Size, base::Size, numeric::Real > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< base::Size, base::Size, base::Real > >(
                 "set_onebody_penalty", "Set the one-node penalty for a particular choice index selected at a particular node index.",
                 "node_index", "The index of the node for which we're setting a penalty.",
                 "choice_index", "The index of the choice at this node for which we're setting a penalty.",
@@ -330,7 +330,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< std::pair< base::Size, base::Size >, std::pair< base::Size, base::Size >, numeric::Real > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< std::pair< base::Size, base::Size >, std::pair< base::Size, base::Size >, base::Real > >(
                 "set_twobody_penalty", "Set the two-node penalty for a pair of choices at a pair of nodes.",
 
                 "node_indices", "A pair of node indices.  The lower index should be first.  (This function will "
@@ -387,9 +387,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
 /// @details This is the sum of onebody energies for nodes that have exactly
 /// one choice, plus the twobdy energies between those nodes.
 /// @note This function should be called from a mutex-locked context.
-masala::numeric::Real
+masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_node_constant_offset() {
-    using masala::numeric::Real;
+    using masala::base::Real;
     using masala::base::Size;
 
     Real accumulator1( 0.0 ), accumulator2( 0.0 );
@@ -442,7 +442,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
 /// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes() {
-    using masala::numeric::Real;
+    using masala::base::Real;
     using masala::base::Size;
 
     std::set< Size > one_choice_nodes;

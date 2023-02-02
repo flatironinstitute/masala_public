@@ -107,7 +107,7 @@ AtomInstance::formal_charge() const {
 }
 
 /// @brief Get the partial charge for this atom instance.
-masala::core::Real
+masala::base::Real
 AtomInstance::partial_charge() const {
     return partial_charge_;
 }
@@ -120,13 +120,13 @@ AtomInstance::element_type_enum() const {
 
 /// @brief Get the van der Waals radius for this element from the
 /// element type database.
-masala::core::Real
+masala::base::Real
 AtomInstance::van_der_waals_radius() const {
     return element_type_->van_der_waals_radius();
 }
 
 /// @brief Get the default colour for an element of this type.
-std::array< masala::core::Real, 3 > const &
+std::array< masala::base::Real, 3 > const &
 AtomInstance::element_default_rgb_colour() const {
     return element_type_->default_rgb_colour();
 }
@@ -162,7 +162,7 @@ AtomInstance::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Real > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Real > >(
                 "partial_charge", "Get the partial charge on this atom.  Partial charges are real values.",
                 "partial_charge", "The partial charge on this atom.", false, false, std::bind( &AtomInstance::partial_charge, this )
             )
@@ -176,14 +176,14 @@ AtomInstance::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::Real > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Real > >(
                 "van_der_waals_radius", "Gets the van der Waals radius for this atom's element type.",
                 "van_der_waals_radius", "The van der Waals radius, in Angstroms.", false, false,
                 std::bind( &AtomInstance::van_der_waals_radius, *this )
             )
         );
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::array< masala::core::Real, 3 > const & > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::array< masala::base::Real, 3 > const & > >(
                 "element_default_rgb_colour", "Gets the default RGB colour for this atom's element type.  RGB colours are 3-arrays of values ranging from 0 to 1.",
                 "element_default_rgb_colour", "The default RGB colour for elements of this type.", false, false,
                 std::bind( &AtomInstance::element_default_rgb_colour, *this )

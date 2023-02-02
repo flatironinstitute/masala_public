@@ -122,12 +122,12 @@ public:
 
 	/// @brief Return temperature.
 	/// @details Pure virtual; derived classes should override this.
-	masala::numeric::Real
+	masala::base::Real
 	temperature() const override = 0;
 
 	/// @brief Return temperature for the Nth timepoint.
 	/// @details Pure virtual; derived classes should override this.
-	masala::numeric::Real
+	masala::base::Real
 	temperature(
 		masala::base::Size const time_index
 	) const override = 0;

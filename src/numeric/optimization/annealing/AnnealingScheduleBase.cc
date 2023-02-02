@@ -192,14 +192,14 @@ AnnealingScheduleBase::reset_call_count() {
 
 /// @brief Return temperature.
 /// @details The base class throws; derived classes should override this.
-masala::numeric::Real
+masala::base::Real
 AnnealingScheduleBase::temperature() const {
     MASALA_THROW( class_namespace_and_name(), "temperature", "This function is not implemented in the base class.  It must be implemented in derived classes." );
 }
 
 /// @brief Return temperature for the Nth timepoint.
 /// @details The base class throws; derived classes should override this.
-masala::numeric::Real
+masala::base::Real
 AnnealingScheduleBase::temperature(
     masala::base::Size const time_index
 ) const {

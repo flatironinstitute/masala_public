@@ -128,6 +128,8 @@ CostFunctionNetworkOptimizationSolution::class_namespace() const {
 masala::base::api::MasalaObjectAPIDefinitionCWP
 CostFunctionNetworkOptimizationSolution::get_api_definition() {
     using namespace masala::base::api;
+    using base::Real;
+    using base::Size;
 
     std::lock_guard< std::mutex > lock( solution_mutex() );
 

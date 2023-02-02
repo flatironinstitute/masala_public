@@ -140,13 +140,13 @@ public:
 	/// @brief Return temperature.
 	/// @details The base class throws; derived classes should override this.
 	virtual
-	masala::numeric::Real
+	masala::base::Real
 	temperature() const;
 
 	/// @brief Return temperature for the Nth timepoint.
 	/// @details The base class throws; derived classes should override this.
 	virtual
-	masala::numeric::Real
+	masala::base::Real
 	temperature(
 		masala::base::Size const time_index
 	) const;

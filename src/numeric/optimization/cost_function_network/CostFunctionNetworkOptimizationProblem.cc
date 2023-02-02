@@ -176,18 +176,18 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 /// @brief Get the product of the number of choices at each node (the total number
 /// of combinatorial solutions to this cost function network problem).
 /// @note Due to integer overruns, this is a floating-point number, not an integer.
-masala::numeric::Real
+masala::base::Real
 CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
     std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 1.0; }
-    numeric::Real product(1.0);
+    base::Real product(1.0);
     for(
         std::map< base::Size, base::Size >::const_iterator it( n_choices_by_node_index_.begin() );
         it != n_choices_by_node_index_.end();
         ++it
     ) {
         if( it->second > 1 ) {
-            product *= static_cast< numeric::Real >( it->second );
+            product *= static_cast< base::Real >( it->second );
         }
     }
     return product;
@@ -306,7 +306,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< numeric::Real > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< base::Real > >(
                 "total_combinatorial_solutions", "Get the product of the number of choices at each node "
                 "(the total number of combinatorial solutions to this cost function network problem).  "
                 "Note that due to possible integer overruns, the return value is a floating-point number, "

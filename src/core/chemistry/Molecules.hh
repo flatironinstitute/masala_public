@@ -117,7 +117,7 @@ public:
     void
     add_atom(
         masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
-        std::array< masala::core::Real, 3 > const & coords
+        std::array< masala::base::Real, 3 > const & coords
     );
 
     /// @brief Get the number of atoms in this molecule.
@@ -132,7 +132,7 @@ public:
     atoms_end() const;
 
     /// @brief Access the coordinates for an atom.
-    std::array< masala::core::Real, 3 >
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         atoms::AtomInstanceConstIterator const atom_iterator
     ) const;

@@ -137,7 +137,7 @@ OptimizationSolution::class_namespace() const {
 /// @brief Set the score for this solution.
 void
 OptimizationSolution::set_solution_score(
-    masala::numeric::Real const score_in
+    masala::base::Real const score_in
 ) {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
     solution_score_ = score_in;
@@ -148,7 +148,7 @@ OptimizationSolution::set_solution_score(
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the score for this solution.
-masala::numeric::Real
+masala::base::Real
 OptimizationSolution::solution_score() const {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
     return solution_score_;
@@ -162,7 +162,7 @@ OptimizationSolution::solution_score() const {
 masala::base::api::MasalaObjectAPIDefinitionCWP
 OptimizationSolution::get_api_definition() {
     using namespace masala::base::api;
-    using masala::numeric::Real;
+    using masala::base::Real;
     using masala::base::Size;
 
     std::lock_guard< std::mutex > lock( solution_mutex_ );

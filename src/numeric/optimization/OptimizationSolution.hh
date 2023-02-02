@@ -113,7 +113,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the score for this solution.
-	void set_solution_score( masala::numeric::Real const score_in );
+	void set_solution_score( masala::base::Real const score_in );
 
 public:
 
@@ -122,7 +122,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the score for this solution.
-	masala::numeric::Real solution_score() const;
+	masala::base::Real solution_score() const;
 
 public:
 
@@ -161,7 +161,7 @@ private:
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 	/// @brief A score associated with this solution.
-	masala::numeric::Real solution_score_ = 0.0;
+	masala::base::Real solution_score_ = 0.0;
 
 }; // class OptimizationSolution
 
