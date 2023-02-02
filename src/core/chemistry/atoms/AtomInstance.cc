@@ -34,8 +34,7 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/managers/database/elements/ElementType.hh>
 #include <base/managers/database/elements/MasalaElementDatabase.hh>
@@ -152,17 +151,8 @@ AtomInstance::get_api_definition() {
                 false, false
             )
         );
-        api_def->add_constructor(
-            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< AtomInstance > >(
-                class_name(), "Construct an empty instance of an AtomIstance object, with no options."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< AtomInstance, AtomInstance const & > >(
-                class_name(), "AtomInstance object copy constructor.",
-                "src", "The input AtomInstance object to copy."
-            )
-        );
+
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( AtomInstance, api_def );
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(

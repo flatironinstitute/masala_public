@@ -37,8 +37,7 @@
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 
@@ -193,17 +192,8 @@ Molecules::get_api_definition() {
                 false, false
             )
         );
-        api_def->add_constructor(
-            masala::make_shared< MasalaObjectAPIConstructorDefinition_ZeroInput< Molecules > >(
-                class_name(), "Construct an empty instance of a Molecules object, with no options."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< MasalaObjectAPIConstructorDefinition_OneInput< Molecules, Molecules const & > >(
-                class_name(), "Molecules object copy constructor.",
-                "src", "The input Molecules object to copy."
-            )
-        );
+
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( Molecules, api_def );
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(

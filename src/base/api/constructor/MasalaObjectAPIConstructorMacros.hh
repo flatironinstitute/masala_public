@@ -49,6 +49,19 @@ namespace constructor {
             ) \
         );
 
+#define ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( CLASS_NAME, API_DEFINITION ) \
+        API_DEFINITION->add_constructor( \
+            masala::make_shared< masala::base::api::constructor::MasalaObjectAPIConstructorDefinition_ZeroInput< CLASS_NAME > > ( \
+                #CLASS_NAME , "Construct an instance of the " #CLASS_NAME " class." \
+            ) \
+        ); \
+        API_DEFINITION->add_constructor( \
+            masala::make_shared< masala::base::api::constructor::MasalaObjectAPIConstructorDefinition_OneInput< CLASS_NAME, CLASS_NAME const & > > ( \
+                #CLASS_NAME, "Copy-construct the " #CLASS_NAME " class.", \
+                "src", "The " #CLASS_NAME " instance to copy.  Unaltered by this operation." \
+            ) \
+        );
+
 } // namespace constructor
 } // namespace api
 } // namespace base
