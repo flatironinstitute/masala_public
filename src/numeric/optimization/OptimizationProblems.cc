@@ -161,7 +161,7 @@ OptimizationProblems::get_api_definition() {
                 "one would not want to instantiate an abstract OptimizationProblems container.  Instead, one would "
                 "usually use a particular sub-class defining a container for a particular type of optimization problem, "
                 "such as a CostFunctionNetworkOptimizationProblems container.",
-                false
+                false, true
             )
         );
 

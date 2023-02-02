@@ -177,7 +177,7 @@ OptimizationSolution::get_api_definition() {
                 "Typically, one would not want to instantiate an abstract OptimizationSolution.  Instead, one would "
                 "usually use a particular sub-class defining a particular type of optimization problem, "
                 "such as a CostFunctionNetworkOptimizationSolution.",
-                false
+                false, true
             )
         );
 

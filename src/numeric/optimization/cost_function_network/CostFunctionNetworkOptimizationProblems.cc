@@ -126,7 +126,7 @@ CostFunctionNetworkOptimizationProblems::get_api_definition() {
                 "The CostFunctionNetworkOptimizationProblems class defines a container for cost function network "
                 "numerical optimization problems.  These are the problems reduced to numbers, with no chemical "
                 "classes or concepts included.",
-                false
+                false, false
             )
         );
 

@@ -130,7 +130,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblems::get_api_definition()
                 "The PairwisePrecomputedCostFunctionNetworkOptimizationProblems class defines a container for cost function network "
                 "numerical optimization problems that have one- and two-node terms precomputed.  These are the problems reduced to "
                 "numbers, with no chemical classes or concepts included.",
-                false
+                false, false
             )
         );
 

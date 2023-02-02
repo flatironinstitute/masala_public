@@ -243,7 +243,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "The CostFunctionNetworkOptimizationProblem class defines a numerical cost function "
                 "optimization problem.  This is the problem reduced to numbers, with no chemical classes "
                 "or concepts included.",
-                false
+                false, false
             )
         );
 

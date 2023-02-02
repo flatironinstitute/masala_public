@@ -126,7 +126,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 "The CostFunctionNetworkOptimizationSolutions class defines a container for cost function network "
                 "numerical optimization solutions.  These are the solutions reduced to numbers, with no chemical "
                 "classes or concepts included.",
-                false
+                false, false
             )
         );
 

@@ -160,7 +160,7 @@ OptimizationSolutions::get_api_definition() {
                 "one would not want to instantiate an abstract OptimizationSolutions container.  Instead, one would "
                 "usually use a particular sub-class defining a container for a particular type of optimization solution, "
                 "such as a CostFunctionNetworkOptimizationSolutions container.",
-                false
+                false, true
             )
         );
 
