@@ -88,6 +88,24 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Get the name of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAME__>".
+    static
+    std::string
+    class_name_static();
+
+    /// @brief Get the namespace of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+    static
+    std::string
+    class_namespace_static();
+
+    /// @brief Get the namespace and name of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>::<__SOURCE_CLASS_API_NAME__>".
+    static
+    std::string
+    class_namespace_and_name_static();
+
     /// @brief Get the name of the class for which this class provides an API.
     /// @returns Returns "<__SOURCE_CLASS_NAME__>".
     std::string

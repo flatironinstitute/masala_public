@@ -61,6 +61,11 @@ namespace api {
         );
 
         if constexpr( std::is_class<T>::value ) {
+            if constexpr( std::is_abstract<T>::value ) {
+                // If this is an abstract base class, try and see whether it has a class_namespace_and_name_static() function.
+                return T::class_namespace_and_name_static();
+            }
+
             MASALA_SHARED_POINTER<T> tempobj(
                 masala::make_shared<T>()
             );

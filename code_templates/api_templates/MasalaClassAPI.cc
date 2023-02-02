@@ -96,6 +96,30 @@ std::string
     return "<__SOURCE_CLASS_API_NAMESPACE__>";
 }
 
+/// @brief Get the name of this class -- static version.
+/// @returns Returns "<__SOURCE_CLASS_API_NAME__>".
+/*static*/
+std::string
+<__SOURCE_CLASS_API_NAME__>::class_name_static() {
+    return "<__SOURCE_CLASS_API_NAME__>";
+}
+
+/// @brief Get the namespace of this class -- static version.
+/// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+/*static*/
+std::string
+<__SOURCE_CLASS_API_NAME__>::class_namespace_static() {
+    return "<__SOURCE_CLASS_API_NAMESPACE__>";
+}
+
+/// @brief Get the namespace and name of this class -- static version.
+/// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>::<__SOURCE_CLASS_API_NAME__>".
+/*static*/
+std::string
+<__SOURCE_CLASS_API_NAME__>::class_namespace_and_name_static() {
+    return "<__SOURCE_CLASS_API_NAMESPACE__>::<__SOURCE_CLASS_API_NAME__>";
+}
+
 /// @brief Get the name of the class for which this class provides an API.
 /// @returns Returns "<__SOURCE_CLASS_NAME__>".
 std::string
