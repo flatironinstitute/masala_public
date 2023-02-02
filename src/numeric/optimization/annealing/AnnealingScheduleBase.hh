@@ -36,9 +36,9 @@
 #include <numeric/types.hh>
 
 // STL headers:
-#include <atomic>
 #include <vector>
 #include <string>
+#include <mutex>
 
 
 namespace masala {
@@ -73,7 +73,7 @@ public:
 
 	/// @brief Make a copy of this object.
 	virtual
-	AnnealingScheduleBaseSP clone() const = 0;
+	AnnealingScheduleBaseSP clone() const;
 
 	/// @brief Make this object wholly independent.
 	/// @details Should be overridden for derived classes.
@@ -102,8 +102,13 @@ public:
 	/// @brief Get the name of this class ("AnnealingScheduleBase").
 	std::string class_name() const override;
 
-		/// @brief Get the namespace of this class ("masala::numeric::optimization::annealing").
+	/// @brief Get the namespace of this class ("masala::numeric::optimization::annealing").
 	std::string class_namespace() const override;
+
+	/// @brief Get the API definition for this class.
+	/// @details Implemented to ensure that there's a common API class that derived classes' APIs are based on.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 public:
 
@@ -149,16 +154,36 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the call count.
+	/// @note The annealing_schedule_mutex_ should be locked
+	/// before calling this function -- it performs no mutex locking itself.
 	masala::numeric::Size call_count() const;
 
 	/// @brief Increment the call count.
-	/// @note The call count is mutable.
+	/// @note The call count is mutable.  The annealing_schedule_mutex_ should be locked
+	/// before calling this function -- it performs no mutex locking itself.
 	void increment_call_count() const;
+
+	/// @brief Access the mutex in the base class.
+	std::mutex & annealing_schedule_mutex() const;
+	
+	/// @brief Access the API definition in the base class.
+	/// @details Performs no mutex locking.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+	/// @brief Const access to the API definition in the base class.
+	/// @details Performs no mutex locking.
+	masala::base::api::MasalaObjectAPIDefinitionCSP const & api_definition() const;
 
 private:
 
+	/// @brief A mutex for this class.
+	mutable std::mutex annealing_schedule_mutex_;
+
+	/// @brief The API definition.  Could be nullptr.  Not copied.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
 	/// @brief Number of times the temperature() function has been called.
-	mutable std::atomic< masala::numeric::Size > call_count_;
+	mutable masala::numeric::Size call_count_;
 
 }; // class AnnealingScheduleBase
 

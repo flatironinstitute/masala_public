@@ -30,6 +30,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 
 // STL headers
 #include <string>
@@ -53,23 +56,35 @@ AnnealingScheduleBase::AnnealingScheduleBase() :
 AnnealingScheduleBase::AnnealingScheduleBase(
     AnnealingScheduleBase const &src 
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin( src ),
-    call_count_( src.call_count_.load() )
-{}
+    masala::base::managers::plugin_module::MasalaPlugin( src )
+{
+    AnnealingScheduleBase::operator=( src ); 
+}
 
 /// @brief Assignment operator.
 AnnealingScheduleBase &
 AnnealingScheduleBase::operator=(
     AnnealingScheduleBase const &src
 ) {
-    call_count_ = src.call_count_.load();
+    std::lock( annealing_schedule_mutex_, src.annealing_schedule_mutex_ );
+    std::lock_guard< std::mutex > lock_this( annealing_schedule_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock_that( src.annealing_schedule_mutex_, std::adopt_lock );
+    call_count_ = src.call_count_;
     return *this;
+}
+
+/// @brief Make a copy of this object.
+AnnealingScheduleBaseSP
+AnnealingScheduleBase::clone() const {
+    return std::make_shared< AnnealingScheduleBase >( *this );
 }
 
 /// @brief Make this object wholly independent.
 void
 AnnealingScheduleBase::make_independent() {
+    std::lock_guard< std::mutex > lock( annealing_schedule_mutex_ );
     call_count_ = 0;
+    api_definition_ = nullptr;
 }
 
 /// @brief Make a copy of this object that is wholly independent.
@@ -110,6 +125,45 @@ AnnealingScheduleBase::class_namespace() const {
     return "masala::numeric::optimization::annealing";
 }
 
+/// @brief Get the API definition for this class.
+/// @details Implemented to ensure that there's a common API class that derived classes' APIs are based on.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+AnnealingScheduleBase::get_api_definition() {
+    using namespace masala::base::api;
+
+    std::lock_guard< std::mutex > lock( annealing_schedule_mutex_ );
+
+    if( api_definition_ == nullptr ) {
+        MasalaObjectAPIDefinitionSP api_definition(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this, "A base class for annealing schedules.  Annealing schedules return temperature "
+                "as a function of number of calls.  This class is like a pure virtual base class: it cannot "
+                "be instantiated from API layers or higher, since its API definition specifies protected "
+                "constructors.  Only derived classes can be instantiated.",
+                false, true
+            )
+        );
+
+        // Constructors
+        api_definition->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput< AnnealingScheduleBase > > (
+                "AnnealingScheduleBase", "Construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
+                "this base class -- i.e. can only be called from derived constructors."
+            )
+        );
+        api_definition->add_constructor(
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput< AnnealingScheduleBase, AnnealingScheduleBase const & > > (
+                "AnnealingScheduleBase", "Copy-construct an AnnealingScheduleBase.  Protected, to prevent instantiation of "
+                "this base class -- i.e. can only be called from derived constructors.",
+                "src", "The annealing schedule to copy.  Unaltered by this operation."
+            )
+        );
+
+        api_definition_ = api_definition; // Nonconst to const.
+    }
+    return api_definition_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +180,7 @@ AnnealingScheduleBase::set_final_time_index(
 /// @brief Reset the call count.
 void
 AnnealingScheduleBase::reset_call_count() {
+    std::lock_guard< std::mutex > lock( annealing_schedule_mutex_ );
     call_count_ = 0;
 }
 
@@ -154,16 +209,39 @@ AnnealingScheduleBase::temperature(
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the call count.
+/// @note The annealing_schedule_mutex_ should be locked
+/// before calling this function -- it performs no mutex locking itself.
 masala::numeric::Size
 AnnealingScheduleBase::call_count() const {
-    return call_count_.load();
+    return call_count_;
 }
 
 /// @brief Increment the call count.
-/// @note The call count is mutable.
+/// @note The call count is mutable.  The annealing_schedule_mutex_ should be locked
+/// before calling this function -- it performs no mutex locking itself.
 void
 AnnealingScheduleBase::increment_call_count() const {
     ++call_count_;
+}
+
+/// @brief Access the mutex in the base class.
+std::mutex &
+AnnealingScheduleBase::annealing_schedule_mutex() const {
+    return annealing_schedule_mutex_;
+}
+
+/// @brief Access the API definition in the base class.
+/// @details Performs no mutex locking.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+AnnealingScheduleBase::api_definition() {
+    return api_definition_;
+}
+
+/// @brief Const access to the API definition in the base class.
+/// @details Performs no mutex locking.
+masala::base::api::MasalaObjectAPIDefinitionCSP const &
+AnnealingScheduleBase::api_definition() const {
+    return api_definition_;
 }
 
 } // namespace annealing

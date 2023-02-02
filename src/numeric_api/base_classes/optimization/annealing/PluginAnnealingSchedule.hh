@@ -102,6 +102,9 @@ public:
 	/// @details Overridden to make this class pure virtual.
 	std::string class_namespace() const override = 0;
 
+	/// @brief Derived plugin annealing schedules must implement their own API definitions.
+	masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition() override = 0;
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
