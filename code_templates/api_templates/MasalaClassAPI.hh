@@ -54,18 +54,18 @@ public:
         <__SOURCE_CLASS_API_NAME__> const & src
     );
 
-    <__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
     /// @brief Clone operation: make a copy of this object and return
     /// a shared pointer to the copy.
+    virtual
     <__SOURCE_CLASS_API_NAME__>SP
-    clone() const;
+    clone() const<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone operation: make a copy of this object and return
     /// a shared pointer to the copy, where the copy is fully independent
     /// (all contents also deep-cloned).
+    virtual
     <__SOURCE_CLASS_API_NAME__>SP
-    deep_clone() const;
-    <__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
+    deep_clone() const<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone all of the internal data for this object, making it fully
     /// independent of any other object.

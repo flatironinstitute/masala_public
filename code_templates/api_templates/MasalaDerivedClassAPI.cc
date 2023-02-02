@@ -49,7 +49,7 @@
 <__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 /// @brief Clone operation: make a copy of this object and return
 /// a shared pointer to the copy.
-<__SOURCE_CLASS_API_NAME__>SP
+<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::clone() const {
     std::lock_guard< std::mutex > lock( api_mutex() );
     return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
@@ -58,9 +58,9 @@
 /// @brief Deep clone operation: make a copy of this object and return
 /// a shared pointer to the copy, where the copy is fully independent
 /// (all contents also deep-cloned).
-<__SOURCE_CLASS_API_NAME__>SP    
+<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>SP    
 <__SOURCE_CLASS_API_NAME__>::deep_clone() const {
-    <__SOURCE_CLASS_API_NAME__>SP object_copy( clone() );
+    <__SOURCE_CLASS_API_NAME__>SP object_copy( std::static_pointer_cast< <__SOURCE_CLASS_API_NAME__> >( clone() ) );
     object_copy->make_independent();
     return object_copy;
 }

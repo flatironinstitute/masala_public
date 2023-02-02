@@ -927,8 +927,8 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @brief Figure out the parent class for this API class, and the include file that defines the parent class.
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
-## @returns A tuple of ( parent include file string, parent namespace and name string, boolean representing whether this is a class derived from another API class ).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : str, is_plugin_class : str ) -> tuple[ str, str, bool ] :
+## @returns A tuple of ( parent include file string, parent namespace and name string, root API class namespace and name string, boolean representing whether this is a class derived from another API class ).
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list[str], is_plugin_class : bool ) -> tuple[ str, str, bool ] :
     #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
@@ -989,17 +989,31 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
         if parent_has_api == True :
-            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name, True )
+            parent_classname = parentsplit[len(parentsplit) - 1]
+            parent_namespace = []
+            for j in range( len(parentsplit) - 1 ) :
+                parent_namespace.append( parentsplit[j] )
+            
+            #print( "****\t" + parent_classname, parent_namespace )
+
+            dummy1, dummy2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( parentsplit[0], parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            if next_is_plugin == False :
+                root_api_namespace_and_name = parent_api_namespace_and_name
+            return ( "#include <" + parent_api_hhfile[4:] + ">", parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else :
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition." )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
         return ( "#include <base/managers/plugin_module/MasalaPluginAPI.hh>", \
-            "masala::base::managers::plugin_module::MasalaPluginAPI", False )
+            "masala::base::managers::plugin_module::MasalaPluginAPI", \
+            "masala::base::managers::plugin_module::MasalaPluginAPI", \
+            False )
     else :
         return ( "#include <base/MasalaObjectAPI.hh>", \
-            "masala::base::MasalaObjectAPI", False )
+            "masala::base::MasalaObjectAPI", \
+            "masala::base::MasalaObjectAPI", \
+            False )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
 def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
@@ -1014,7 +1028,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
 
-    api_base_class_include, api_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
 
     if is_derived == False :
         hhfile_template_to_use = hhfile_template
@@ -1025,9 +1039,11 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
     if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
+        pure_virtuals_for_protected_constructor_classes = " = 0"
         protected_constructor_comment_start = "/*\n\t// (Commented out because this API class has protected constructors.)"
         protected_constructor_comment_end = "*/"
     else :
+        pure_virtuals_for_protected_constructor_classes = ""
         protected_constructor_comment_start = ""
         protected_constructor_comment_end = ""
 
@@ -1058,9 +1074,12 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
+        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
         .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include ) \
+        .replace( "<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", pure_virtuals_for_protected_constructor_classes ) \
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -1080,13 +1099,13 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
     if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
-        protected_constructor_comment_start = "/*\n// (Commented out because this API class has protected constructors.)"
+        protected_constructor_comment_start = "/*\n// (Commented out because this API class has protected constructors and these functions are pure virtual.)"
         protected_constructor_comment_end = "*/"
     else :
         protected_constructor_comment_start = ""
         protected_constructor_comment_end = ""
 
-    api_base_class_include, api_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
 
     if is_derived == False :
         ccfile_template_to_use = ccfile_template
@@ -1117,6 +1136,7 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
+        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
 
