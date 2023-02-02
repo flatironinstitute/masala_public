@@ -52,16 +52,21 @@ namespace api {
 ///			   we're providing an API definition.
 /// @param[in] is_lightweight Is this the API definition for a lightweight
 /// 		   object that could be stack-allocated?
+/// @param[in] has_protected_constructors Should the API class have protected constructors?
+///            This allows the class to effetively act as a pure virtual base class, that cannot
+///            itself be instantiated.
 MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     base::MasalaObject const & this_object,
     std::string const & api_class_description,
-    bool const is_lightweight
+    bool const is_lightweight,
+    bool const has_protected_constructors
 ) :
     masala::base::MasalaObject(),
     api_class_name_( this_object.class_name() ),
     api_class_namespace_( this_object.class_namespace() ),
     api_class_description_( api_class_description ),
-    is_lightweight_( is_lightweight )
+    is_lightweight_( is_lightweight ),
+    has_protected_constructors_( has_protected_constructors )
 {
     using namespace base::managers::plugin_module;
     MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
@@ -110,6 +115,14 @@ MasalaObjectAPIDefinition::api_class_namespace_and_name() const {
 std::string const &
 MasalaObjectAPIDefinition::api_class_description() const {
     return api_class_description_;
+}
+
+/// @brief Should the API class have protected constructors?
+/// @details This allows the class to effetively act as a pure virtual base class, that cannot
+/// itself be instantiated.
+bool
+MasalaObjectAPIDefinition::has_protected_constructors() const {
+    return has_protected_constructors_;
 }
 
 /// @brief Get a human-readable description of the API for a module.
@@ -171,6 +184,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     }
 
     ss << "\nPROPERTIES\n";
+    ss << "Has_Protected_Constructors:\t" << ( has_protected_constructors_ ? "TRUE" : "FALSE" ) << "\n";
     ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
     ss << "Is_Plugin_Class:\t" << ( is_plugin_class_ ? "TRUE" : "FALSE" ) << "\n";
 
@@ -226,7 +240,8 @@ MasalaObjectAPIDefinition::get_json_description() const {
 
     json_api["Properties"] = std::map< std::string, bool >{
         { "Is_Lightweight", is_lightweight_ },
-        { "Is_Plugin_Class", is_plugin_class_ }
+        { "Is_Plugin_Class", is_plugin_class_ },
+        { "Has_Protected_Constructors", has_protected_constructors_ }
     };
 
     if( is_plugin_class_ ) {

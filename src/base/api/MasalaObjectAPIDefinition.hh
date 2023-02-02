@@ -70,10 +70,14 @@ public:
 	///			   we're providing an API definition.
 	/// @param[in] is_lightweight Is this the API definition for a lightweight
 	/// 		   object that could be stack-allocated?
+	/// @param[in] has_protected_constructors Should the API class have protected constructors?
+	///            This allows the class to effetively act as a pure virtual base class, that cannot
+	///            itself be instantiated.
 	MasalaObjectAPIDefinition(
 		base::MasalaObject const & this_object,
 		std::string const & api_class_description,
-		bool const is_lightweight
+		bool const is_lightweight,
+		bool const has_protected_constructors
 	);
 
 	/// @brief Copy constructor.
@@ -106,6 +110,11 @@ public:
 
 	/// @brief Get the description of the class for which this object stores an API description.
 	std::string const & api_class_description() const;
+
+	/// @brief Should the API class have protected constructors?
+	/// @details This allows the class to effetively act as a pure virtual base class, that cannot
+	/// itself be instantiated.
+	bool has_protected_constructors() const;
 
 	/// @brief Get a human-readable description of the API for a module.
 	/// @details Note that this does not cache the generated string, but generates it anew
@@ -254,6 +263,11 @@ private:
 	/// @brief The description of the class for which we're providing an API definition.
 	/// @details Must be set at construction time.
 	std::string const api_class_description_;
+
+	/// @brief Should the API class have protected constructors?
+	/// @details This allows the class to effetively act as a pure virtual base class, that cannot
+	/// itself be instantiated.
+	bool const has_protected_constructors_ = false;
 
 	/// @brief A list of constructors.
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP> constructors_;
