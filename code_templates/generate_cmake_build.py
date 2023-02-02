@@ -94,6 +94,27 @@ def parent_class_file_from_class_name( parent_class_name : str, project_name : s
         outstr = "../headers/" + parent_class_name.split("::")[0] + "/headers/" + parent_class_name[ startpos + 2 : ].replace("::", "/") + ".hh"
     return outstr
 
+## @brief Get the contents of a C++ function, given file contents stripped of comments.
+## @note The filename is only used for error messages.
+def get_function_contents( filename : str, filecontents : str, function_name : str ) -> str :
+    fxnstart = filecontents.find( function_name )
+    assert fxnstart != -1, "Could not find function \"" + function_name + "() in file " + filename + "!"
+    outstr = ""
+    curly_bracket_count = 0
+    first_curly_bracket_found = False
+    for i in range( fxnstart, len(filecontents) ) :
+        if first_curly_bracket_found and curly_bracket_count == 0 :
+            break
+        outstr += filecontents[i]
+        if filecontents[i] == "{" :
+            first_curly_bracket_found = True
+            curly_bracket_count += 1
+        elif filecontents[i] == "}" :
+            curly_bracket_count -= 1
+    assert first_curly_bracket_found, "Could not parse out function " + function_name + "() in file " + filename + "."
+    #print( "********************\n" + outstr + "\n********************" )
+    return outstr
+
 ## @brief Determine whether the api definition for a class indicates that the class has protected constructors in its API.
 ## @details In this case, the class should have no Creator.
 ## @note We can assume that there is definitely a get_api_definition() function, and a masala::make_shared< MasalaObjectAPIDefinition >
@@ -103,25 +124,26 @@ def api_definition_has_protected_constructors( ccfile : str, project_name : str 
     classname = path.basename( ccfile ).split(".")[0]
     with open( ccfile, 'r' ) as filehandle :
         file_contents = filehandle.read()
-    file_contents = get_function_contents( purge_comments( file_contents ), classname + "::get_api_definition" ).replace( "<", " < " ).replace( ">", " > ").replace( ",", " , ").replace( "(",  " ( ").replace( ")", " ) ").split()
+    file_contents = get_function_contents( ccfile, purge_comments( file_contents ), classname + "::get_api_definition" ).replace( "<", " < " ).replace( ">", " > ").replace( ",", " , ").replace( "(",  " ( ").replace( ")", " ) ").split()
 
     found = False
     in_block = 0
     in_quotes = False
     # Looking for something with the pattern: masala::make_shared < MasalaObjectAPIDefinition > ( ... )
-    for i in range(len(file_contents) -  ) :
+    for i in range(5, len(file_contents) ) :
         if in_block == 0 :
-            if file_contents[i] == "masala::make_shared" and file_contents[i+1] == "<" and \
-                ( file_contents[i+2] == "MasalaObjectAPIDefinition" or file_contents[i+2].endswith( "::MasalaObjectAPIDefinition" ) ) and \
-                file_contents[i+3] == ">" and \
-                file_contents[i+4] == ")" :
+            #print( "****\t" + file_contents[i], flush=True  )
+            if file_contents[i-4] == "masala::make_shared" and file_contents[i-3] == "<" and \
+                ( file_contents[i-2] == "MasalaObjectAPIDefinition" or file_contents[i-2].endswith( "::MasalaObjectAPIDefinition" ) ) and \
+                file_contents[i-1] == ">" and \
+                file_contents[i] == "(" :
                     found = True
                     in_block = 1
-                    i = i + 4
                     continue
         else :
+            #print( "---" + str(in_block) + "\t" + file_contents[i], flush=True  )
             if in_quotes == True :
-                if file_contents[i].startswith( "\"" ) :
+                if file_contents[i].endswith( "\"" ) :
                     in_quotes = False
                     continue
             else : # in_quotes == False
@@ -133,19 +155,19 @@ def api_definition_has_protected_constructors( ccfile : str, project_name : str 
                     continue
                 else :
                     if in_block == 4 :
-                        assert file_contents[i] == "true" or file_contents[i] == "false", "Could not parse file " + ccfile + " to determine whether the API class for " + classname + " has protected constructors."
+                        assert file_contents[i] == "true" or file_contents[i] == "false", "Could not parse file " + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  Expected either \"true\" or \"false\" for protected constructor option, but got \"" + file_contents[i] + "\"."
                         if file_contents[i] == "true" :
                             print( "\t\tFound protected-constructor API definition in class " + classname + ".  Will NOT auto-generate Creator class." )
                             return True
                         else :
                             print( "\t\tFound public-constructor API definition in class " + classname + "." )
                             return False
-        # If we reach here, something has gone wrong.
-        if found == False :
-            explanation = "No \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be found in the " + classname + " ::get_api_definition() function."
-        else :
-            explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be parsed in the " + classname + " ::get_api_definition() function."
-        raise Exception( "Could not parse file "  + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  " + explanation )
+    # If we reach here, something has gone wrong.
+    if found == False :
+        explanation = "No \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be found in the " + classname + " ::get_api_definition() function."
+    else :
+        explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be parsed in the " + classname + " ::get_api_definition() function."
+    raise Exception( "Could not parse file "  + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  " + explanation )
 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
 ## a descendant of masala::base::managers::plugin_module::MasalaPlugin.
