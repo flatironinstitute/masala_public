@@ -101,6 +101,19 @@ PluginAnnealingSchedule::get_keywords() const {
     return masala::numeric::optimization::annealing::AnnealingScheduleBase::get_keywords();
 }
 
+
+/// @brief Get the name of this class ("PluginAnnealingSchedule").
+std::string
+PluginAnnealingSchedule::class_name() const {
+    return "PluginAnnealingSchedule";
+}
+
+    /// @brief Get the namespace of this class ("masala::numeric_api::base_classes::optimization::annealing").
+std::string
+PluginAnnealingSchedule::class_namespace() const {
+    return "masala::numeric_api::base_classes::optimization::annealing";
+}
+
 } // namespace annealing
 } // namespace optimization
 } // namespace base_classes

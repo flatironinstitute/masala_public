@@ -94,6 +94,12 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+	/// @brief Get the name of this class ("PluginAnnealingSchedule").
+	std::string class_name() const override;
+
+		/// @brief Get the namespace of this class ("masala::numeric_api::base_classes::optimization::annealing").
+	std::string class_namespace() const override;
+
 
 }; // class PluginAnnealingSchedule
 
