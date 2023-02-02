@@ -76,7 +76,7 @@
           - [X] Update generate_library_api.py.
           - [X] Only add creators if the constructors are not protected.
      - [ ] Address the point above about making the API parent search recursive.
-     - [ ] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
+     - [X] Add a simple way to add the constructor boilerplate (using macros) to the get_api_definition function.
      - [X] Add a base class for AnnealingSchedule (AnnealingScheduleBase) in numeric.
           - [X] Add a get_api_definition function to it.
           - [X] Indicate that the API has a protected constructor.
