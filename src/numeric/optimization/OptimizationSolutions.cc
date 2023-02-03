@@ -26,12 +26,12 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -41,6 +41,7 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <algorithm>
 
 namespace masala {
 namespace numeric {
@@ -165,22 +166,7 @@ OptimizationSolutions::get_api_definition() {
         );
 
         // Constructors:
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < OptimizationSolutions > > (
-                class_name(),
-                "Creates an empty OptimizationSolutions container.  Cannot be used directly, but can "
-                "be called from constructors of derived classes."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < OptimizationSolutions, OptimizationSolutions const & > > (
-                class_name(),
-                "Copy constructor: copies an input OptimizationSolutions container.",
-                "src", "The input OptimizationSolutions container object to copy.  Unaltered by this operation."
-            )
-        );
-
-        // Work functions:
+        ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( OptimizationSolutions, api_def );
 
         // Setters:
         api_def->add_setter(
@@ -215,6 +201,16 @@ OptimizationSolutions::get_api_definition() {
                 "index of the last solution.",
                 false, false,
                 std::bind( &OptimizationSolutions::n_solutions, this )
+            )
+        );
+        
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
+                "sort_by_score", "Sorts solutions from lowest to highest by the score stored in the solution.",
+                false, false, false, false,
+                "void", "Returns nothing.",
+                std::bind( &OptimizationSolutions::sort_by_score, this )
             )
         );
 
@@ -273,6 +269,21 @@ masala::base::Size
 OptimizationSolutions::n_solutions() const {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
     return optimization_solutions_.size();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Sort all of the solutions stored in this object by score.
+void
+OptimizationSolutions::sort_by_score() {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    std::sort(
+        optimization_solutions_.begin(),
+        optimization_solutions_.end(),
+        []( OptimizationSolutionSP const & a, OptimizationSolutionSP const & b ) { return a->solution_score() < b->solution_score(); }
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
