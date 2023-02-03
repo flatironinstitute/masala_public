@@ -40,6 +40,7 @@
 #include <base/types.hh>
 
 // STL headers:
+#include <atomic>
 #include <map>
 #include <utility> //For std::pair.
 
@@ -183,6 +184,23 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// WORK FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given a candidate solution, compute the score.
+	/// @details The candidate solution is expressed as a vector of choice indices, with
+	/// one entry per variable position, in order of position indices.  (There may not be
+	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This uses the one- and two-node penalties cached in this object to make this
+	/// calculation efficient.
+	masala::base::Real
+	compute_absolute_score(
+		std::vector< base::Size > const & candidate_solution
+	) const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -243,13 +261,13 @@ private:
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.
-	masala::base::Real background_constant_offset_ = 0.0;
+	std::atomic< masala::base::Real > background_constant_offset_ = 0.0;
 
 	/// @brief The constant offset for the nodes with one choice.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.  Computed at
 	/// finalize() time.
-	masala::base::Real one_choice_node_constant_offset_ = 0.0;
+	std::atomic< masala::base::Real > one_choice_node_constant_offset_ = 0.0;
 
 }; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
 
