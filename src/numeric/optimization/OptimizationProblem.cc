@@ -50,7 +50,7 @@ OptimizationProblem::OptimizationProblem(
     masala::base::managers::plugin_module::MasalaPlugin(src)
 {
     std::lock_guard< std::mutex > lock( src.problem_mutex_ );
-    finalized_ = src.finalized_;
+    finalized_ = src.finalized_.load();
 }
 
 /// @brief Assignment operator.
@@ -63,7 +63,7 @@ OptimizationProblem::operator=(
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
         std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
-        finalized_ = src.finalized_;
+        finalized_ = src.finalized_.load();
     }
     return *this;
 }

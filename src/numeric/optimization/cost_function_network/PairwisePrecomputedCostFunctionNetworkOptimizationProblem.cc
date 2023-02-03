@@ -50,6 +50,41 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Default constructor.
+/// @details Needs to be explicit due to use of std::atomic.
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::PairwisePrecomputedCostFunctionNetworkOptimizationProblem() :
+    CostFunctionNetworkOptimizationProblem(),
+    background_constant_offset_(0.0),
+    one_choice_node_constant_offset_(0.0)
+{}
+
+/// @brief Copy constructor.
+/// @details Needs to be explicit due to use of std::atomic.
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::PairwisePrecomputedCostFunctionNetworkOptimizationProblem(
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src
+) :
+    CostFunctionNetworkOptimizationProblem( src )
+{
+    operator=(src);
+}
+
+// @brief Assignment operator.
+/// @details Needs to be explicit due to use of std::atomic.
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem &
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::operator=(
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src
+) {
+    CostFunctionNetworkOptimizationProblem::operator=(src);
+    std::lock( problem_mutex(), src.problem_mutex() );
+    std::lock_guard< std::mutex > lock_this( problem_mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lock_that( src.problem_mutex(), std::adopt_lock );
+    single_node_penalties_ = src.single_node_penalties_;
+    pairwise_node_penalties_ = src.pairwise_node_penalties_;
+    background_constant_offset_ = src.background_constant_offset_.load();
+    one_choice_node_constant_offset_ = src.one_choice_node_constant_offset_.load();
+    return *this;
+}
+
 /// @brief Make a fully independent copy of this object.
 PairwisePrecomputedCostFunctionNetworkOptimizationProblemSP
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::deep_clone() const {

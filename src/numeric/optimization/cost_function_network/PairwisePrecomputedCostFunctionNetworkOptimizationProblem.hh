@@ -65,14 +65,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	PairwisePrecomputedCostFunctionNetworkOptimizationProblem() = default;
+	/// @details Needs to be explicit due to use of std::atomic.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblem();
 
 	/// @brief Copy constructor.
-	PairwisePrecomputedCostFunctionNetworkOptimizationProblem( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	/// @details Needs to be explicit due to use of std::atomic.
+	PairwisePrecomputedCostFunctionNetworkOptimizationProblem( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & );
 
 	// @brief Assignment operator.
+	/// @details Needs to be explicit due to use of std::atomic.
 	PairwisePrecomputedCostFunctionNetworkOptimizationProblem &
-	operator=( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	operator=( PairwisePrecomputedCostFunctionNetworkOptimizationProblem const & );
 
 	/// @brief Destructor.
 	~PairwisePrecomputedCostFunctionNetworkOptimizationProblem() override = default;
