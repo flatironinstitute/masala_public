@@ -175,6 +175,22 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// WORK FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given a candidate solution, compute the score.
+	/// @details The candidate solution is expressed as a vector of choice indices, with
+	/// one entry per variable position, in order of position indices.  (There may not be
+	/// entries for every position, though, since not all positions have at least two choices.)
+	virtual
+	masala::base::Real
+	compute_absolute_score(
+		std::vector< base::Size > const & candidate_solution
+	) const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 

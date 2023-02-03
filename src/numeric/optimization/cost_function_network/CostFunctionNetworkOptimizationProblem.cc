@@ -32,12 +32,12 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -225,6 +225,21 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// WORK FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a candidate solution, compute the score.
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_absolute_score(
+    std::vector< base::Size > const & candidate_solution
+) const {
+    return 0.0; //TODO implement support for non-pairwise problems.
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -248,21 +263,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
 
         // Constructors:
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < CostFunctionNetworkOptimizationProblem > > (
-                class_name(),
-                "Creates an empty CostFunctionNetworkOptimizationProblem."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < CostFunctionNetworkOptimizationProblem, CostFunctionNetworkOptimizationProblem const & > > (
-                class_name(),
-                "Copy constructor: copies an input CostFunctionNetworkOptimizationProblem.",
-                "src", "The input CostFunctionNetworkOptimizationProblem to copy.  Unaltered by this operation."
-            )
-        );
-
-        // Work functions:
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( CostFunctionNetworkOptimizationProblem, api_def );
 
         // Getters:
         api_def->add_getter(
@@ -349,6 +350,21 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
+        );
+
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
+                "compute_absolute_score", "Given a candidate solution, compute the score.  "
+	            "The candidate solution is expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.",
+                true, false, true, false,
+                "candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.  (There may not be "
+                "entries for every position, though, since not all positions have at least two choices.)",
+                "score", "The score for this candidate solution, computed by this function.",
+                std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
+            )
         );
 
         api_definition() = api_def; //Make const.
