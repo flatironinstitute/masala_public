@@ -32,6 +32,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -213,6 +214,31 @@ OptimizationSolutions::get_api_definition() {
                 std::bind( &OptimizationSolutions::sort_by_score, this )
             )
         );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< void > >(
+                "recompute_all_scores", "Recalculate the scores of all solutions stored in this object.  "
+                "This can be useful when, for instance, problems are solved with inexact "
+	            "optimizers that use reduced numerical precision, or which accumulate numerical "
+	            "error through long Monte Carlo trajectories.",
+                false, false, false, false,
+                "void", "Returns nothing.",
+                std::bind( static_cast<void(OptimizationSolutions::*)()>( &OptimizationSolutions::recompute_all_scores ), this )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, masala::base::Real > >(
+                "recompute_all_scores", "Recalculate the scores of all solutions stored in this object.  "
+                "This can be useful when, for instance, problems are solved with inexact "
+	            "optimizers that use reduced numerical precision, or which accumulate numerical "
+	            "error through long Monte Carlo trajectories.  This version throws if any score's "
+                "value changes by more than the old value multiplied by max_fractional_error.",
+                false, false, false, false,
+                "max_fractional_error", "The maximum fractional amount by which each solution's score is "
+                "allowed to change.  Outside this range, the function throws.",
+                "void", "Returns nothing.",
+                std::bind( static_cast<void(OptimizationSolutions::*)( masala::base::Real )>( &OptimizationSolutions::recompute_all_scores ), this, std::placeholders::_1 )
+            )
+        );
 
         api_definition_ = api_def; //Make const.
     }
@@ -283,6 +309,48 @@ OptimizationSolutions::sort_by_score() {
         optimization_solutions_.begin(),
         optimization_solutions_.end(),
         []( OptimizationSolutionSP const & a, OptimizationSolutionSP const & b ) { return a->solution_score() < b->solution_score(); }
+    );
+}
+
+/// @brief Recompute all of the scores for all of the stored solutions.
+/// @details This can be useful when, for instance, problems are solved with inexact
+/// optimizers that use reduced numerical precision, or which accumulate numerical
+/// error through long Monte Carlo trajectories.
+void
+OptimizationSolutions::recompute_all_scores() {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    for( OptimizationSolutionSP const & solution : optimization_solutions_ ) {
+        solution->recompute_score();
+    }
+}
+	
+/// @brief Recompute all of the scores for all of the stored solutions.
+/// @details This can be useful when, for instance, problems are solved with inexact
+/// optimizers that use reduced numerical precision, or which accumulate numerical
+/// error through long Monte Carlo trajectories.
+/// @note This version throws if any score's value changes by more than the old value
+/// multiplied by max_fractional_error.
+void
+OptimizationSolutions::recompute_all_scores(
+    masala::base::Real const max_fractional_error
+) {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    masala::base::Size failed_count(0);
+    for( OptimizationSolutionSP const & solution : optimization_solutions_ ) {
+        masala::base::Real const old_score( solution->solution_score() );
+        solution->recompute_score();
+        masala::base::Real const delta( std::abs( old_score - solution->solution_score() ) );
+        if( delta > max_fractional_error * old_score ) {
+            ++failed_count;
+        }
+    }
+    CHECK_OR_THROW_FOR_CLASS(
+        failed_count == 0,
+        "recompute_all_scores",
+        "A total of " + std::to_string( failed_count ) + " out of " +
+        std::to_string( optimization_solutions_.size() ) + " optimization "
+        "solutions showed solution value changes larger than " +
+        std::to_string(max_fractional_error) + " times the original score."
     );
 }
 
