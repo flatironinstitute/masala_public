@@ -33,6 +33,7 @@
 
 // STL headers:
 #include <mutex>
+#include <atomic>
 
 namespace masala {
 namespace numeric {
@@ -141,7 +142,7 @@ protected:
 
 	/// @brief Allow derived classes to access whether this object is finalized.
 	/// @note Assumes problem mutex was locked.
-	inline bool finalized() const { return finalized_; }
+	inline bool finalized() const { return finalized_.load(); }
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.
 	/// Base class protected_finalize() sets finalized_ to true.
@@ -165,7 +166,7 @@ private:
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 	/// @brief Has the problem setup been finalized?
-	bool finalized_ = false;
+	std::atomic_bool finalized_ = false;
 
 }; // class OptimizationProblem
 
