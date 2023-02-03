@@ -998,25 +998,25 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 parent_has_api = True
                 print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
-        if parent_has_api == True :
-            parent_classname = parentsplit[len(parentsplit) - 1]
-            parent_namespace = []
-            for j in range( len(parentsplit) - 1 ) :
-                parent_namespace.append( parentsplit[j] )
-            
-            #print( "****\t" + parent_classname, parent_namespace )
 
-            dummy1, dummy2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
-            if next_is_plugin == False :
-                root_api_namespace_and_name = parent_api_namespace_and_name
-            if parent_api_hhfile.startswith( "src/" ) :
-                parent_api_hhfile = "#include <" + parent_api_hhfile[4:] + ">"
-            else :
-                parent_api_hhfile = "#include <" + parent_api_hhfile[17 + len(parentsplit[0]):] + ">"
-            #print( "****\t" + parent_api_hhfile )
-            return ( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
+        parent_classname = parentsplit[len(parentsplit) - 1]
+        parent_namespace = []
+        for j in range( len(parentsplit) - 1 ) :
+            parent_namespace.append( parentsplit[j] )
+        if parent_api_hhfile.startswith( "src/" ) :
+            parent_api_hhfile = "#include <" + parent_api_hhfile[4:] + ">"
         else :
+            parent_api_hhfile = "#include <" + parent_api_hhfile[17 + len(parentsplit[0]):] + ">"
+
+        if parent_has_api == True :
+            include2, parent2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
+                root_api_namespace_and_name = parent_api_namespace_and_name
+            return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
+        else : # parent_has_api == False
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
+            include2, parent2, root_api_namespace_and_name, ancestor_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            return( include2, parent2, root_api_namespace_and_name, ancestor_is_plugin )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
