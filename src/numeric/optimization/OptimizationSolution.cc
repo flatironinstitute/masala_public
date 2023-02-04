@@ -262,7 +262,7 @@ OptimizationSolution::get_api_definition() {
                 "set_problem", "Set the problem that gave rise to this solution.",
                 "problem_in", "Const shared pointer to the problem that gave rise to the solution.  Used directly; not cloned.",
                 true, false,
-                std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+                std::bind( &OptimizationSolution::set_problem, this, std::placeholders::_1 )
             ) 
         );
 
