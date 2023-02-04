@@ -301,6 +301,22 @@ OptimizationSolution::api_definition() {
     return api_definition_;
 }
 
+/// @brief Access the problem.
+/// @details Performs no mutex locking.  Should be called from a mutex-locked
+/// context only.  May return nullptr.
+OptimizationProblemCSP &
+OptimizationSolution::protected_problem() {
+	return problem_;
+}
+
+/// @brief Access the problem.  Const version.
+/// @details Performs no mutex locking.  Should be called from a mutex-locked
+/// context only.  May return nullptr.
+OptimizationProblemCSP const &
+OptimizationSolution::protected_problem() const {
+	return problem_;
+}
+
 } // namespace optimization
 } // namespace numeric
 } // namesapce masala

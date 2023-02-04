@@ -173,6 +173,16 @@ protected:
 	/// @note Could be nullptr.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
 
+	/// @brief Access the problem.
+	/// @details Performs no mutex locking.  Should be called from a mutex-locked
+	/// context only.  May return nullptr.
+	OptimizationProblemCSP & protected_problem();
+
+	/// @brief Access the problem.  Const version.
+	/// @details Performs no mutex locking.  Should be called from a mutex-locked
+	/// context only.  May return nullptr.
+	OptimizationProblemCSP const & protected_problem() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +199,7 @@ private:
 	masala::base::Real solution_score_ = 0.0;
 
 	/// @brief The problem that gave rise to this solution.
-	masala::numeric::optimization::OptimizationProblemCSP problem_;
+	OptimizationProblemCSP problem_;
 
 }; // class OptimizationSolution
 
