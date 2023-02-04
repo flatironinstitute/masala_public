@@ -26,6 +26,9 @@
 // Unit header:
 #include <numeric/optimization/OptimizationSolution.hh>
 
+// Numeric headers:
+#include <numeric/optimization/OptimizationProblem.hh>
+
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
@@ -54,6 +57,7 @@ OptimizationSolution::OptimizationSolution(
 {
     std::lock_guard< std::mutex > lock( src.solution_mutex_ );
     solution_score_ = src.solution_score_;
+    problem_ = src.problem_;
 }
 
 /// @brief Assignment operator.
@@ -66,6 +70,7 @@ OptimizationSolution::operator=(
     std::lock_guard< std::mutex > lock( solution_mutex_, std::adopt_lock );
     std::lock_guard< std::mutex > lock2( src.solution_mutex_, std::adopt_lock );
     solution_score_ = src.solution_score_;
+    problem_ = src.problem_;
     return *this;
 }
 
@@ -82,6 +87,9 @@ OptimizationSolution::deep_clone() const {
 void
 OptimizationSolution::make_independent() {
     //std::lock_guard< std::mutex > lock( solution_mutex_ );
+    if( problem_ != nullptr ) {
+        problem_ = problem_->deep_clone();
+    }
     //GNDN
 }
 
