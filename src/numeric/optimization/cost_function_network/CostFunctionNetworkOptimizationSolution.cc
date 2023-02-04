@@ -160,7 +160,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblem const &, std::vector< masala::base::Size > const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblemCSP, std::vector< masala::base::Size > const & > > (
                 class_name(),
                 "Initialization constructor: initialize the solution from the problem definition.  (The problem definition "
                 "deep-cloned and stored for future reference).",
