@@ -34,6 +34,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -180,6 +181,26 @@ OptimizationSolution::problem() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Recompute the score of this solution.
+/// @details The problem_ pointer must be set.
+/// @note The base class recompute_score() function throws.  Derived classes
+/// must override this and provide their own implementations.
+void
+OptimizationSolution::recompute_score() {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( problem_ != nullptr, "recompute_score", "Cannot compute score until a "
+        "problem has been associated with this solution.  Please finish configuring this problem by calling "
+        "set_problem() before calling recompute_score()."
+    );
+    MASALA_THROW( class_namespace_and_name(), "recompute_score", "The recompute_score() function has not been "
+        "implemented for the abstract OptimizationSolution base class.  It must be implemented for derived classes."
+    );
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -243,6 +264,17 @@ OptimizationSolution::get_api_definition() {
                 true, false,
                 std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
             ) 
+        );
+
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput <void> > (
+				"recompute_score", "Recompute the score for this solution.  This is useful, for instance, after "
+				"an optimizer that uses approximate methods or low floating-point precision completes "
+				"its work, to allow scores to be stored with full floating-point precision and accuracy.",
+				false, false, true, false,
+				"void", "Returns nothing", std::bind( &OptimizationSolution::recompute_score, this )
+            )
         );
 
         api_definition_ = api_def; //Make const.
