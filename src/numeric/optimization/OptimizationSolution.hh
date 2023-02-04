@@ -119,7 +119,7 @@ public:
 	void set_solution_score( masala::base::Real const score_in );
 
 	/// @brief Set the problem that gave rise to this solution.
-	/// @details Used directly; not cloned.  Can be overridden by derived classes
+	/// @details Cloned on input.  Can be overridden by derived classes
 	/// to add checks that the problem type is correct.
 	virtual void set_problem( OptimizationProblemCSP const & problem );
 
@@ -172,6 +172,16 @@ protected:
 	/// @brief Allow derived classes to access the API definition.
 	/// @note Could be nullptr.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+	/// @brief Access the solution score from derived classes.
+	/// @details Performs no mutex locking.  Should be called from a mutex-locked
+	/// context only.
+	masala::base::Real & protected_solution_score();
+
+	/// @brief Const access to the solution score from derived classes.
+	/// @details Performs no mutex locking.  Should be called from a mutex-locked
+	/// context only.
+	masala::base::Real const & protected_solution_score() const;
 
 	/// @brief Access the problem.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked

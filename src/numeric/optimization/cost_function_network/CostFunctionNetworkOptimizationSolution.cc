@@ -33,6 +33,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -51,13 +52,17 @@ namespace cost_function_network {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Constructor that initializes from the problem description.
-/// @details The problem definition is stored directly, not cloned.
+/// @details The problem definition is deep-cloned on input.  The solution is represented
+/// as a vector of choice indices, one per variable position (i.e. per position with more than one
+/// choice) in order of indices of variable positions.
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
-    CostFunctionNetworkOptimizationProblemCSP const & problem_in
+    CostFunctionNetworkOptimizationProblemCSP const & problem_in,
+    std::vector< masala::base::Size > const & solution_vector_in
 ) :
     masala::numeric::optimization::OptimizationSolution()
 {
     set_problem( problem_in );
+    set_solution_vector( solution_vector_in );
 }
 
 
@@ -155,11 +160,12 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblem const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblem const &, std::vector< masala::base::Size > const & > > (
                 class_name(),
                 "Initialization constructor: initialize the solution from the problem definition.  (The problem definition "
                 "deep-cloned and stored for future reference).",
-                "problem_in", "The problem definition.  Copied but otherwise unaltered by this operation."
+                "problem_in", "The problem definition.  Deep-cloned but otherwise unaltered by this operation.",
+                "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices."
             )
         );
         api_def->add_constructor(
@@ -205,9 +211,18 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 "set_problem", "Set the problem that gave rise to this solution.",
                 "problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
                 "must be a cost function network optimizatoin problem, and this function will throw if it is "
-                "not.  Used directly; not cloned.",
+                "not.  Deep-cloned on input.",
                 false, true,
                 std::bind( &CostFunctionNetworkOptimizationSolution::set_problem, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::vector< masala::base::Size > const & > >(
+                "set_solution_vector", "Set the solution vector for this problem.",
+                "solution_vector_in", "The solution, expressed as a vector of choice indices where each entry corresponds "
+                "to each successive node with at least two choices, and there's one entry for each multi-choice node.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_vector, this, std::placeholders::_1 )
             ) 
         );
 
@@ -222,8 +237,9 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Set the problem that gave rise to this solution.
-/// @details Used directly; not cloned.  This override checks that the problem
-/// is a CostFunctionNetworkOptimizationProblem.
+/// @details Deep-cloned on input.  This override checks that the problem
+/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
+/// set, the problem must match it.
 void
 CostFunctionNetworkOptimizationSolution::set_problem(
     OptimizationProblemCSP const & problem
@@ -298,11 +314,6 @@ CostFunctionNetworkOptimizationSolution::recompute_score() {
         + std::to_string( solution_vector_.size() ) + " entries."
     );
     protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
-    
-    TODO NEXT:
-    - protected_solution_score() in base class.
-    - Make sure problem is deep-cloned in base class, and update function descriptions and api descriptions.
-    - Add api description for set_solution_vector().
 }
 
 } // namespace cost_function_network

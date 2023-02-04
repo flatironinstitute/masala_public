@@ -60,7 +60,7 @@ public:
 	CostFunctionNetworkOptimizationSolution() = default;
 
 	/// @brief Constructor that initializes from the problem description.
-	/// @details The problem definition is cloned on input.  The solution is represented
+	/// @details The problem definition is deep-cloned on input.  The solution is represented
 	/// as a vector of choice indices, one per variable position (i.e. per position with more than one
 	/// choice) in order of indices of variable positions.
 	CostFunctionNetworkOptimizationSolution(
@@ -135,7 +135,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the problem that gave rise to this solution.
-	/// @details Cloned on input.  This override checks that the problem
+	/// @details Deep-cloned on input.  This override checks that the problem
 	/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
 	/// set, the problem must match it.
 	void set_problem( OptimizationProblemCSP const & problem ) override;

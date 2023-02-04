@@ -153,13 +153,13 @@ OptimizationSolution::set_solution_score(
 
 
 /// @brief Set the problem that gave rise to this solution.
-/// @details Used directly; not cloned.
+/// @details Cloned on input.
 void
 OptimizationSolution::set_problem(
     OptimizationProblemCSP const & problem
 ) {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
-    problem_ = problem;
+    problem_ = ( problem == nullptr ? nullptr : problem->deep_clone() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ OptimizationSolution::get_api_definition() {
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
                 "set_problem", "Set the problem that gave rise to this solution.",
-                "problem_in", "Const shared pointer to the problem that gave rise to the solution.  Used directly; not cloned.",
+                "problem_in", "Const shared pointer to the problem that gave rise to the solution.  Deep-cloned on input.",
                 true, false,
                 std::bind( &OptimizationSolution::set_problem, this, std::placeholders::_1 )
             ) 
@@ -299,6 +299,22 @@ OptimizationSolution::solution_mutex() const {
 masala::base::api::MasalaObjectAPIDefinitionCSP &
 OptimizationSolution::api_definition() {
     return api_definition_;
+}
+
+/// @brief Access the solution score from derived classes.
+/// @details Performs no mutex locking.  Should be called from a mutex-locked
+/// context only.
+masala::base::Real &
+OptimizationSolution::protected_solution_score() {
+	return solution_score_;
+}
+
+/// @brief Const access to the solution score from derived classes.
+/// @details Performs no mutex locking.  Should be called from a mutex-locked
+/// context only.
+masala::base::Real const &
+OptimizationSolution::protected_solution_score() const {
+	return solution_score_;
 }
 
 /// @brief Access the problem.
