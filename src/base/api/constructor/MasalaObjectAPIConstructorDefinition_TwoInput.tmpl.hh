@@ -144,7 +144,7 @@ public:
 		json_api["Is_Const"] = false; //Constructors are never const.
 
 		//Inputs:
-		json_api["Constructor_N_Inputs"] = 1;
+		json_api["Constructor_N_Inputs"] = 2;
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;

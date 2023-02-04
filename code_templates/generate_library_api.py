@@ -338,6 +338,8 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
         outstring += tabchar + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
+                if i > 0 :
+                    outstring += ","
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
@@ -364,6 +366,8 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
         outstring += constructor["Constructor_Name"] + "_API::" + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
+                if i > 0 :
+                    outstring += ","
                 outstring += "\n" + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + ") :\n"
         else :
