@@ -298,6 +298,11 @@ CostFunctionNetworkOptimizationSolution::recompute_score() {
         + std::to_string( solution_vector_.size() ) + " entries."
     );
     protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
+    
+    TODO NEXT:
+    - protected_solution_score() in base class.
+    - Make sure problem is deep-cloned in base class, and update function descriptions and api descriptions.
+    - Add api description for set_solution_vector().
 }
 
 } // namespace cost_function_network
