@@ -172,6 +172,13 @@ OptimizationSolution::solution_score() const {
     return solution_score_;
 }
 
+/// @brief Access the problem.
+OptimizationProblemCSP
+OptimizationSolution::problem() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return problem_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +218,14 @@ OptimizationSolution::get_api_definition() {
                 std::bind( &OptimizationSolution::solution_score, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< OptimizationProblemCSP > >(
+                "problem", "Get the problem associated with this solution.",
+                "problem", "The problem associated with this solution.",
+                false, false,
+                std::bind( &OptimizationSolution::problem, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
@@ -222,7 +237,7 @@ OptimizationSolution::get_api_definition() {
             ) 
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
                 "set_problem", "Set the problem that gave rise to this solution.",
                 "problem_in", "Const shared pointer to the problem that gave rise to the solution.  Used directly; not cloned.",
                 true, false,

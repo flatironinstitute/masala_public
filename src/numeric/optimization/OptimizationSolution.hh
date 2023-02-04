@@ -132,6 +132,9 @@ public:
 	/// @brief Get the score for this solution.
 	masala::base::Real solution_score() const;
 
+	/// @brief Access the problem.
+	OptimizationProblemCSP problem() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
