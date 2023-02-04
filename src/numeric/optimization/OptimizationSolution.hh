@@ -33,6 +33,9 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
+#include <numeric/optimization/OptimizationProblem.fwd.hh>
+
+// Base headers:
 #include <base/types.hh>
 
 // STL headers:
@@ -115,6 +118,11 @@ public:
 	/// @brief Set the score for this solution.
 	void set_solution_score( masala::base::Real const score_in );
 
+	/// @brief Set the problem that gave rise to this solution.
+	/// @details Used directly; not cloned.  Can be overridden by derived classes
+	/// to add checks that the problem type is correct.
+	virtual void set_problem( OptimizationProblemCSP const & problem );
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +170,9 @@ private:
 
 	/// @brief A score associated with this solution.
 	masala::base::Real solution_score_ = 0.0;
+
+	/// @brief The problem that gave rise to this solution.
+	masala::numeric::optimization::OptimizationProblemCSP problem_;
 
 }; // class OptimizationSolution
 
