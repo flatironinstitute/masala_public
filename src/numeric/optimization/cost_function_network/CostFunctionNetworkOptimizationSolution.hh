@@ -60,10 +60,9 @@ public:
 	CostFunctionNetworkOptimizationSolution() = default;
 
 	/// @brief Constructor that initializes from the problem description.
-	/// @details The problem definition is deep-cloned, and a shared pointer to
-	/// a copy is stored with the solution.
+	/// @details The problem definition is stored directly, not cloned.
 	CostFunctionNetworkOptimizationSolution(
-		CostFunctionNetworkOptimizationProblem const & problem_in
+		CostFunctionNetworkOptimizationProblemCSP const & problem_in
 	);
 
 	/// @brief Copy constructor.
@@ -126,14 +125,36 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the problem that gave rise to this solution.
+	/// @details Used directly; not cloned.  This override checks that the problem
+	/// is a CostFunctionNetworkOptimizationProblem.
+	void set_problem( OptimizationProblemCSP const & problem ) override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Recompute the score of this solution.  This is useful, for instance, after
+	/// an optimizer that uses approximate methods or low floating-point precision completes
+	/// its work, to allow scores to be stored with full floating-point precision and accuracy.
+	/// @details The problem_ pointer must be set.
+	/// @note The base class recompute_score() function throws.  This override calls the
+	/// CostFunctionNetworkOptimizationProblem's calculators.
+	void recompute_score() override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief The problem setup, cloned and stored by const-owning pointer for reference.
-	CostFunctionNetworkOptimizationProblemCSP problem_;
 
 }; // class CostFunctionNetworkOptimizationSolution
 

@@ -35,6 +35,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -50,22 +51,22 @@ namespace cost_function_network {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Constructor that initializes from the problem description.
-/// @details The problem definition is deep-cloned, and a shared pointer to
-/// a copy is stored with the solution.
+/// @details The problem definition is stored directly, not cloned.
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
-    CostFunctionNetworkOptimizationProblem const & problem_in
+    CostFunctionNetworkOptimizationProblemCSP const & problem_in
 ) :
-    masala::numeric::optimization::OptimizationSolution(),
-    problem_( problem_in.deep_clone() )
-{}
+    masala::numeric::optimization::OptimizationSolution()
+{
+    set_problem( problem_in );
+}
 
 
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationSolutionSP
 CostFunctionNetworkOptimizationSolution::deep_clone() const {
-    CostFunctionNetworkOptimizationSolutionSP new_problem( masala::make_shared< CostFunctionNetworkOptimizationSolution >( *this ) );
-    new_problem->make_independent();
-    return new_problem;
+    CostFunctionNetworkOptimizationSolutionSP new_solution( masala::make_shared< CostFunctionNetworkOptimizationSolution >( *this ) );
+    new_solution->make_independent();
+    return new_solution;
 }
 
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
@@ -170,6 +171,15 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         );
 
         // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput <void> > (
+				"recompute_score", "Recompute the score for this solution.  This is useful, for instance, after "
+				"an optimizer that uses approximate methods or low floating-point precision completes "
+				"its work, to allow scores to be stored with full floating-point precision and accuracy.",
+				false, false, false, true,
+				"void", "Returns nothing", std::bind( &CostFunctionNetworkOptimizationSolution::recompute_score, this )
+            )
+        );
 
         // Getters:
         api_def->add_getter(
@@ -190,11 +200,70 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
             ) 
         );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
+                "set_problem", "Set the problem that gave rise to this solution.",
+                "problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
+                "must be a cost function network optimizatoin problem, and this function will throw if it is "
+                "not.  Used directly; not cloned.",
+                false, true,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_problem, this, std::placeholders::_1 )
+            ) 
+        );
 
         api_definition() = api_def; //Make const.
     }
 
     return api_definition();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the problem that gave rise to this solution.
+/// @details Used directly; not cloned.  This override checks that the problem
+/// is a CostFunctionNetworkOptimizationProblem.
+void
+CostFunctionNetworkOptimizationSolution::set_problem(
+    OptimizationProblemCSP const & problem
+) {
+    CHECK_OR_THROW_FOR_CLASS(
+        std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( problem ) != nullptr,
+        "set_problem", "A problem was passed to this function that was not a cost function network optimization problem."
+    );
+    OptimizationSolution::set_problem( problem );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Recompute the score of this solution.  This is useful, for instance, after
+/// an optimizer that uses approximate methods or low floating-point precision completes
+/// its work, to allow scores to be stored with full floating-point precision and accuracy.
+/// @details The problem_ pointer must be set.
+/// @note The base class recompute_score() function throws.  This override calls the
+/// CostFunctionNetworkOptimizationProblem's calculators.
+void
+CostFunctionNetworkOptimizationSolution::recompute_score() {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "recompute_score", "Cannot compute score until a "
+        "problem has been associated with this solution.  Please finish configuring this problem by calling "
+        "set_problem() before calling recompute_score()."
+    );
+#ifndef NDEBUG
+    // In debug mode, use dynamic_pointer_cast with a check.
+    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( problem_cast != nullptr, "recompute_score", "Somehow the problem associated with this "
+        "solution was not a CostFunctionNetworkOptimizationProblem.  This should not be possible, and indicates a programming bug."
+    );
+#else
+    // In release mode, use static_pointer_cast.  It shouldn't be possible for the pointer to be nonconst.
+    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+#endif
+
+    set_solution_score( problem_cast->compute_absolute_score( solution_vector_ ) );
 }
 
 } // namespace cost_function_network
