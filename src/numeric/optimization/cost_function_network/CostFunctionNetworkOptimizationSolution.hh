@@ -60,9 +60,12 @@ public:
 	CostFunctionNetworkOptimizationSolution() = default;
 
 	/// @brief Constructor that initializes from the problem description.
-	/// @details The problem definition is stored directly, not cloned.
+	/// @details The problem definition is cloned on input.  The solution is represented
+	/// as a vector of choice indices, one per variable position (i.e. per position with more than one
+	/// choice) in order of indices of variable positions.
 	CostFunctionNetworkOptimizationSolution(
-		CostFunctionNetworkOptimizationProblemCSP const & problem_in
+		CostFunctionNetworkOptimizationProblemCSP const & problem_in,
+		std::vector< masala::base::Size > const & solution_vector_in
 	);
 
 	/// @brief Copy constructor.
@@ -132,9 +135,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the problem that gave rise to this solution.
-	/// @details Used directly; not cloned.  This override checks that the problem
-	/// is a CostFunctionNetworkOptimizationProblem.
+	/// @details Cloned on input.  This override checks that the problem
+	/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
+	/// set, the problem must match it.
 	void set_problem( OptimizationProblemCSP const & problem ) override;
+
+	/// @brief Set the solution vector for this problem.
+	/// @details If the problem has been set, this solution vector must be of compatible size.
+	void
+	set_solution_vector(
+		std::vector< masala::base::Size > const & solution_vector_in
+	);
 
 public:
 
@@ -155,6 +166,10 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The solution, stored as a vector of choices, one per variable position (i.e. per position with
+	/// more than one choice) in order of indices of variable positions.
+	std::vector< masala::base::Size > solution_vector_;
 
 }; // class CostFunctionNetworkOptimizationSolution
 

@@ -228,11 +228,38 @@ void
 CostFunctionNetworkOptimizationSolution::set_problem(
     OptimizationProblemCSP const & problem
 ) {
+    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( problem ) );
     CHECK_OR_THROW_FOR_CLASS(
-        std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( problem ) != nullptr,
+        problem_cast != nullptr,
         "set_problem", "A problem was passed to this function that was not a cost function network optimization problem."
     );
-    OptimizationSolution::set_problem( problem );
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    if( !solution_vector_.empty() ) {
+        CHECK_OR_THROW_FOR_CLASS( solution_vector_.size() == problem_cast->total_variable_nodes(),
+            "set_problem", "The solution vector must have one choice for each variable node.  The problem "
+            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
+            + std::to_string( solution_vector_.size() ) + " entries."
+        );
+    }
+    protected_problem() = problem;
+}
+
+/// @brief Set the solution vector for this problem.
+/// @details If the problem has been set, this solution vector must be of compatible size.
+void
+CostFunctionNetworkOptimizationSolution::set_solution_vector(
+    std::vector< masala::base::Size > const & solution_vector_in
+) {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    if( protected_problem() != nullptr ) {
+        CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == problem_cast->total_variable_nodes(),
+            "set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
+            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
+            + std::to_string( solution_vector_in.size() ) + " entries."
+        );
+    }
+    solution_vector_ = solution_vector_in;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +279,9 @@ CostFunctionNetworkOptimizationSolution::recompute_score() {
         "problem has been associated with this solution.  Please finish configuring this problem by calling "
         "set_problem() before calling recompute_score()."
     );
+    CHECK_OR_THROW_FOR_CLASS( !solution_vector_.empty(), "recompute_score", "No solution vector has been set yet.  "
+        "Please call set_solution_vector() before calling this function."
+    );
 #ifndef NDEBUG
     // In debug mode, use dynamic_pointer_cast with a check.
     CostFunctionNetworkOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
@@ -262,8 +292,12 @@ CostFunctionNetworkOptimizationSolution::recompute_score() {
     // In release mode, use static_pointer_cast.  It shouldn't be possible for the pointer to be nonconst.
     CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
 #endif
-
-    set_solution_score( problem_cast->compute_absolute_score( solution_vector_ ) );
+    CHECK_OR_THROW_FOR_CLASS( solution_vector_.size() == problem_cast->total_variable_nodes(),
+        "set_problem", "The solution vector must have one choice for each variable node.  The problem "
+        "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
+        + std::to_string( solution_vector_.size() ) + " entries."
+    );
+    protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
 }
 
 } // namespace cost_function_network
