@@ -162,6 +162,10 @@ public:
 	/// CostFunctionNetworkOptimizationProblem's calculators.
 	void recompute_score() override;
 
+	/// @brief Determine whether this solution is the same as another.
+	/// @details Compares the stored solution vector to a provided solution vector.
+	bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -196,6 +197,15 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 				"void", "Returns nothing", std::bind( &CostFunctionNetworkOptimizationSolution::recompute_score, this )
             )
         );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput <bool, std::vector< base::Size > const & > > (
+                "operator==", "Compare this solution to the solution vector of another solution.  Return true if they match, false otherwise.",
+                true, false, false, false,
+                "other_solution_vector", "The solution vector to which we are comparing.  Unaltered by this operation.",
+                "vectors_match", "True of the stored solution vector matches the other solution vector; false otherwise.",
+                std::bind( &CostFunctionNetworkOptimizationSolution::operator==, this, std::placeholders::_1 )
+            )
+        );
 
         // Getters:
         api_def->add_getter(
@@ -324,6 +334,16 @@ CostFunctionNetworkOptimizationSolution::recompute_score() {
         + std::to_string( solution_vector_.size() ) + " entries."
     );
     protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
+}
+
+/// @brief Determine whether this solution is the same as another.
+/// @details Compares the stored solution vector to a provided solution vector.
+bool
+CostFunctionNetworkOptimizationSolution::operator==(
+    std::vector< masala::base::Size > const & other_solution_vector
+) const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    return solution_vector_ == other_solution_vector;
 }
 
 } // namespace cost_function_network
