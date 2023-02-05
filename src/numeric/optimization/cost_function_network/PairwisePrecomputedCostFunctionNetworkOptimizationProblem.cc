@@ -176,11 +176,16 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset
     return one_choice_node_constant_offset_ + background_constant_offset_;
 }
 
-// ALSO TODO:
-// - ADD FINALIZATION STEP IN WHICH WE COMPUTE THE TWOBODY INTERACTIONS OF ALL VARIABLE NODE CHOICES WITH
-// SINGLE-CHOICE NODES, TRANSFER THOSE TO THE ONEBODY ENERGIES OF THOSE VARIABLE NODE CHOICES, AND DELETE
-// THE CORRESPONDING TWOBODY ENERGIES.
-// - CHECK WHETHER THIS OBJECT IS FINALIZED IN SETTERS.
+/// @brief Does this pariwise precomputed cost function network optimization problem have any non-pairwise
+/// components that must be computed on the fly?
+/// @details For now, returns false.  This will be implemented in the future.
+bool
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores() const {
+    // CHECK_OR_THROW_FOR_CLASS( finalized(), "has_non_pairwise_scores", "The problem setup must be finalized with a call "
+    //     "to finalize() before this function can be called."
+    // );
+    return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
@@ -287,7 +292,10 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
     using base::Size;
     CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
 
-    Real accumulator( total_constant_offset() + CostFunctionNetworkOptimizationProblem::compute_absolute_score( candidate_solution ) ); //Constant offset plus anything not pairwise.
+    Real accumulator( total_constant_offset() );
+    if( has_non_pairwise_scores() ) {
+        accumulator += CostFunctionNetworkOptimizationProblem::compute_absolute_score( candidate_solution );
+    }
     Size const n_pos( candidate_solution.size() );
     std::vector< std::pair< Size, Size > > const variable_positions( n_choices_at_variable_nodes() );
     CHECK_OR_THROW_FOR_CLASS( candidate_solution.size() == variable_positions.size(), "compute_absolute_score",
@@ -374,6 +382,16 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "total_constant_offset", "This is the sum of background_constant_offset() and one_choice_node_constant_offset().",
                 false, false,
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "has_non_pairwise_scores", "Get whether this problem has any components to its score that are not decomposable as one- "
+                "or two-node additive.",
+                "has_non_pairwise_scores", "Returns true if there are non-pairwise components that must be computed on the fly, false "
+                "otherwise.  (For now, always false.  Non-pairwise functionality will be added in the future.)",
+                false, false,
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores, this )
             )
         );
 

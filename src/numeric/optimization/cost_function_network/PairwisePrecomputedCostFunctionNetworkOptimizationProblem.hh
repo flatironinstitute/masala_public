@@ -141,6 +141,11 @@ public:
 	masala::base::Real
 	total_constant_offset() const;
 
+	/// @brief Does this pariwise precomputed cost function network optimization problem have any non-pairwise
+	/// components that must be computed on the fly?
+	/// @details For now, returns false.  This will be implemented in the future.
+	bool has_non_pairwise_scores() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
