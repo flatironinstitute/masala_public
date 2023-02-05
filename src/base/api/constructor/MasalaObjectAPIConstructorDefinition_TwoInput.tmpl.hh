@@ -189,13 +189,13 @@ private:
 	/// @details Must be set on construction.
 	std::string const input_parameter0_name_;
 
-	/// @brief The name of input parameter 1.
-	/// @details Must be set on construction.
-	std::string const input_parameter1_name_;
-
 	/// @brief A description of input parameter 0.
 	/// @details Must be set on construction.
 	std::string const input_parameter0_description_;
+
+	/// @brief The name of input parameter 1.
+	/// @details Must be set on construction.
+	std::string const input_parameter1_name_;
 
 	/// @brief A description of input parameter 1.
 	/// @details Must be set on construction.
