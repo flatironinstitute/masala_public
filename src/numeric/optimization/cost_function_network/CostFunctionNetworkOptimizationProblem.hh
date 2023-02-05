@@ -80,7 +80,7 @@ public:
 	CostFunctionNetworkOptimizationProblemSP
 	deep_clone() const;
 
-	/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	void make_independent();
 
 public:
@@ -249,6 +249,12 @@ protected:
 	/// @details The finalize() function must be called before this function is used.
 	masala::base::Size protected_total_variable_nodes() const;
 
+	/// @brief Access the  indices of variable nodes, and the number of choices
+	/// (a vector of pairs, sorted by node index).
+	/// @details The finalize() function must be called before this function is used.
+	std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
+	protected_n_choices_at_variable_nodes() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +267,11 @@ private:
 
 	/// @brief The total number of variable nodes, populated by the finalize() function.
 	masala::base::Size total_variable_nodes_ = 0;
+
+	/// @brief The indices of variable nodes, and the number of choices (a vector of pairs, sorted
+	/// by node index).
+	/// @details Cached by the finalize() function.
+	std::vector< std::pair< masala::base::Size, masala::base::Size > > n_choices_at_variable_nodes_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 

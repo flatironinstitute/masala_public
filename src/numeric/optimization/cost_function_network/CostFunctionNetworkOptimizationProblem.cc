@@ -57,7 +57,7 @@ CostFunctionNetworkOptimizationProblem::deep_clone() const {
     return new_problem;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 void
 CostFunctionNetworkOptimizationProblem::make_independent() {
     masala::numeric::optimization::OptimizationProblem::make_independent();
@@ -154,6 +154,9 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
     using masala::base::Size;
+    if( finalized() ) {
+        return n_choices_at_variable_nodes_;
+    }
     std::vector< std::pair< Size, Size > > outvec;
     outvec.reserve( n_choices_by_node_index_.size() );
     {   // Scope for mutex lock.
@@ -445,20 +448,37 @@ CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
 CostFunctionNetworkOptimizationProblem::protected_reset() {
-    masala::numeric::optimization::OptimizationProblem::protected_reset();
     n_choices_by_node_index_.clear();
+    total_variable_nodes_ = 0;
+    n_choices_at_variable_nodes_.clear();
+    masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
 CostFunctionNetworkOptimizationProblem::protected_finalize() {
+    using masala::base::Size;
+
     CHECK_OR_THROW_FOR_CLASS( total_variable_nodes_ == 0, "protected_finalize", "Program error: the total number of variable nodes was nonzero!" );
+    CHECK_OR_THROW_FOR_CLASS( n_choices_at_variable_nodes_.empty(), "protected_finalize", "Program error: expected the n_choices_at_variable_nodes_ vector to be empty, but it wasn't!" );
+    n_choices_at_variable_nodes_.reserve( n_choices_by_node_index_.size() );
     for( auto const choices : n_choices_by_node_index_ ) {
         if( choices.second > 1 ) {
             ++total_variable_nodes_;
+            n_choices_at_variable_nodes_.push_back(choices);
         }
     }
+    n_choices_at_variable_nodes_.shrink_to_fit();
+    std::sort(
+        n_choices_at_variable_nodes_.begin(), n_choices_at_variable_nodes_.end(),
+        [](
+            std::pair< Size, Size > const & first, std::pair< Size, Size > const & second
+        ){
+            return first.first < second.first;
+        }
+    );
+
     masala::numeric::optimization::OptimizationProblem::protected_finalize();
 }
 
@@ -468,6 +488,15 @@ masala::base::Size
 CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
     return total_variable_nodes_;
+}
+
+/// @brief Access the  indices of variable nodes, and the number of choices
+/// (a vector of pairs, sorted by node index).
+/// @details The finalize() function must be called before this function is used.
+std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
+CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
+    return n_choices_at_variable_nodes_;
 }
 
 
