@@ -323,7 +323,7 @@ OptimizationSolution::get_api_definition() {
                 "increments the number of times this solution was produced by the optimizer by 1.",
                 false, false,
                 std::bind( static_cast< void( OptimizationSolution::* )() >( &OptimizationSolution::increment_n_times_solution_was_produced ), this )
-            ) 
+            )
         );
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
@@ -333,7 +333,7 @@ OptimizationSolution::get_api_definition() {
                 "which to increment the counter.)",
                 false, false,
                 std::bind( static_cast< void( OptimizationSolution::* )( Size ) >( &OptimizationSolution::increment_n_times_solution_was_produced ), this, std::placeholders::_1 )
-            ) 
+            )
         );
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
@@ -342,7 +342,7 @@ OptimizationSolution::get_api_definition() {
                 "n_times_produced", "The number of times that this solution was seen.",
                 false, false,
                 std::bind( &OptimizationSolution::set_n_times_solution_was_produced, this, std::placeholders::_1 )
-            ) 
+            )
         );
 
         // Work functions:
