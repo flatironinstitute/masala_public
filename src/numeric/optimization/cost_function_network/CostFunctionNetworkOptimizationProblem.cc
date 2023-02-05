@@ -38,6 +38,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -236,6 +237,20 @@ masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_absolute_score(
     std::vector< base::Size > const & candidate_solution
 ) const {
+    MASALA_THROW( class_namespace_and_name(), "compute_absolute_score", "This function is not implemented for the base class -- only for derived classes, at present." );
+    return 0.0; //TODO implement support for non-pairwise problems.
+}
+
+/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_score_change(
+    std::vector< base::Size > const & old_solution,
+    std::vector< base::Size > const & new_solution,
+) const {
+    MASALA_THROW( class_namespace_and_name(), "compute_score_change", "This function is not implemented for the base class -- only for derived classes, at present." );
     return 0.0; //TODO implement support for non-pairwise problems.
 }
 
@@ -364,6 +379,21 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 "entries for every position, though, since not all positions have at least two choices.)",
                 "score", "The score for this candidate solution, computed by this function.",
                 std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
+                "compute_score_change", "Given two candidate solutions, compute the score difference.  "
+	            "The candidate solution is expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices. (There may not be "
+                "entries for every position, though, since not all positions have at least two choices.)",
+                true, false, true, false,
+                "old_solution", "The first candidate solution, expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.",
+                "new_solution", "The second candidate solution, expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.",
+                "delta_score", "The score change from old to new candidate solutions, computed by this function.",
+                std::bind( &CostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
 
