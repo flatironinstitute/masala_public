@@ -142,6 +142,31 @@ public:
 		OptimizationSolutionSP solution_in
 	);
 
+	/// @brief Increment the number of times the Nth solution was produced, by 1.
+	/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+	void
+	increment_n_times_solution_was_produced(
+		masala::base::Size const solution_index
+	);
+
+	/// @brief Increment the number of times the Nth solution was produced, by additional_times_produced.
+	/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+	/// @param additional_times_produced The number by which to increment this.
+	void
+	increment_n_times_solution_was_produced(
+		masala::base::Size const solution_index,
+		masala::base::Size const additional_times_produced
+	);
+
+	/// @brief Set the number of times the Nth solution was produced.
+	/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+	/// @param n_times_produced The number of times that this solutinos was produced.
+	void
+	set_n_times_solution_was_produced(
+		masala::base::Size const solution_index,
+		masala::base::Size const n_times_produced
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

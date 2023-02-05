@@ -27,10 +27,11 @@
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
@@ -184,6 +185,36 @@ OptimizationSolutions::get_api_definition() {
                 true, false, std::bind( &OptimizationSolutions::add_optimization_solution, this, std::placeholders::_1 )
             )
         );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::base::Size > >(
+                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "increments the number of times a solution was produced by the optimizer by 1.",
+                "solution_index", "The index of the solution to increment.  Must be in range; throws otherwise.",
+                false, false,
+                std::bind( static_cast< void( OptimizationSolutions::* )( base::Size ) >( &OptimizationSolutions::increment_n_times_solution_was_produced ), this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< masala::base::Size, masala::base::Size > >(
+                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "increments the number of times a solution was produced by the optimizer by additional_times_produced.",
+                "solution_index", "The index of the solution to increment.  Must be in range; throws otherwise.",
+                "additional_times_produced", "The number of additional times that this solution was seen.  (The number by "
+                "which to increment the counter.)",
+                false, false,
+                std::bind( static_cast< void( OptimizationSolutions::* )( base::Size, base::Size ) >( &OptimizationSolutions::increment_n_times_solution_was_produced ), this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< masala::base::Size, masala::base::Size > >(
+                "set_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "sets the number of times a solution was produced.",
+                "solution_index", "The index of the solution to increment.  Must be in range; throws otherwise.",
+                "n_times_produced", "The number of times that this solution was seen.",
+                false, false,
+                std::bind( &OptimizationSolutions::set_n_times_solution_was_produced, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
 
         // Getters:
         api_def->add_getter(
@@ -267,6 +298,52 @@ OptimizationSolutions::add_optimization_solution(
 ) {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
     optimization_solutions_.emplace_back( solution_in );
+}
+
+/// @brief Increment the number of times the Nth solution was produced, by 1.
+/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+void
+OptimizationSolutions::increment_n_times_solution_was_produced(
+    masala::base::Size const solution_index
+) {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions_.size(), "increment_n_times_solution_was_produced",
+        "The solution index " + std::to_string( solution_index ) + " was out of range.  This object stores "
+        + std::to_string( optimization_solutions_.size() ) + "solutions."
+    );
+    optimization_solutions_[solution_index]->increment_n_times_solution_was_produced();
+}
+
+/// @brief Increment the number of times the Nth solution was produced, by additional_times_produced.
+/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+/// @param additional_times_produced The number by which to increment this.
+void
+OptimizationSolutions::increment_n_times_solution_was_produced(
+    masala::base::Size const solution_index,
+    masala::base::Size const additional_times_produced
+) {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions_.size(), "increment_n_times_solution_was_produced",
+        "The solution index " + std::to_string( solution_index ) + " was out of range.  This object stores "
+        + std::to_string( optimization_solutions_.size() ) + "solutions."
+    );
+    optimization_solutions_[solution_index]->increment_n_times_solution_was_produced( additional_times_produced );
+}
+
+/// @brief Set the number of times the Nth solution was produced.
+/// @param solution_index The index of the solution to increment.  Must be in range (throws otherwise).
+/// @param n_times_produced The number of times that this solutinos was produced.
+void
+OptimizationSolutions::set_n_times_solution_was_produced(
+    masala::base::Size const solution_index,
+    masala::base::Size const n_times_produced
+) {
+    std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions_.size(), "set_n_times_solution_was_produced",
+        "The solution index " + std::to_string( solution_index ) + " was out of range.  This object stores "
+        + std::to_string( optimization_solutions_.size() ) + "solutions."
+    );
+    optimization_solutions_[solution_index]->set_n_times_solution_was_produced( n_times_produced );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
