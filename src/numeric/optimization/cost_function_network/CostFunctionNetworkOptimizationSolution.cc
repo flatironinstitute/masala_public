@@ -34,7 +34,6 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -197,15 +196,6 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 std::bind( &OptimizationSolution::solution_score, this )
             )
         );
-        api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Size > >(
-                "n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
-                "retrieves the number of times this solution was produced by the optimizer.",
-                "n_times_solution_was_produced", "The number of times this solution was produced by the optimizer.",
-                false, false,
-                std::bind( &OptimizationSolution::n_times_solution_was_produced, this )
-            )
-        );
 
         // Setters:
         api_def->add_setter(
@@ -234,33 +224,6 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 false, false,
                 std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_vector, this, std::placeholders::_1 )
             ) 
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
-                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
-                "increments the number of times this solution was produced by the optimizer by 1.",
-                false, false,
-                std::bind( static_cast< void( OptimizationSolution::* )() >( &OptimizationSolution::increment_n_times_solution_was_produced ), this )
-            )
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
-                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
-                "increments the number of times this solution was produced by the optimizer by additional_times_produced.",
-                "additional_times_produced", "The number of additional times that this solution was seen.  (The number by "
-                "which to increment the counter.)",
-                false, false,
-                std::bind( static_cast< void( OptimizationSolution::* )( Size ) >( &OptimizationSolution::increment_n_times_solution_was_produced ), this, std::placeholders::_1 )
-            )
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
-                "set_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
-                "sets the number of times this solution was produced.",
-                "n_times_produced", "The number of times that this solution was seen.",
-                false, false,
-                std::bind( &OptimizationSolution::set_n_times_solution_was_produced, this, std::placeholders::_1 )
-            )
         );
 
         api_definition() = api_def; //Make const.
