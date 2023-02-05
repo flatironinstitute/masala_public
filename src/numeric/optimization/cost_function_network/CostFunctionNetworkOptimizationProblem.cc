@@ -384,7 +384,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
                 "compute_score_change", "Given two candidate solutions, compute the score difference.  "
-	            "The candidate solution is expressed as a vector of choice indices, with "
+	            "The candidate solutions are expressed as a vector of choice indices, with "
                 "one entry per variable position, in order of position indices. (There may not be "
                 "entries for every position, though, since not all positions have at least two choices.)",
                 true, false, true, false,

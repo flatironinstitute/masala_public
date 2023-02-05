@@ -203,7 +203,7 @@ public:
 
 		nlohmann::json json_inputs;
 		json_inputs["Input_0"] = json_input0;
-		json_inputs["Input_1"] = json_input0;
+		json_inputs["Input_1"] = json_input1;
 		json_api["Inputs"] = json_inputs;
 
 		// Outputs:
