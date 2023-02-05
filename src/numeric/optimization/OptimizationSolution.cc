@@ -32,6 +32,7 @@
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -59,6 +60,7 @@ OptimizationSolution::OptimizationSolution(
     std::lock_guard< std::mutex > lock( src.solution_mutex_ );
     solution_score_ = src.solution_score_;
     problem_ = src.problem_;
+    n_times_solution_was_produced_ = src.n_times_solution_was_produced_;
 }
 
 /// @brief Assignment operator.
@@ -72,6 +74,7 @@ OptimizationSolution::operator=(
     std::lock_guard< std::mutex > lock2( src.solution_mutex_, std::adopt_lock );
     solution_score_ = src.solution_score_;
     problem_ = src.problem_;
+    n_times_solution_was_produced_ = src.n_times_solution_was_produced_;
     return *this;
 }
 
@@ -162,6 +165,37 @@ OptimizationSolution::set_problem(
     problem_ = ( problem == nullptr ? nullptr : problem->deep_clone() );
 }
 
+/// @brief Increment the number of times that the solution was produced by 1.
+///	@details An optimizer might produce the same solution many times.  This is
+/// the count of the number of times this solution was produced during optimization.
+void
+OptimizationSolution::increment_n_times_solution_was_produced() {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    ++n_times_solution_was_produced_;
+}
+
+/// @brief Increment the number of times that the solution was produced by additional_times_produced.
+///	@details An optimizer might produce the same solution many times.  This is
+/// the count of the number of times this solution was produced during optimization.
+void
+OptimizationSolution::increment_n_times_solution_was_produced(
+    masala::base::Size const additional_times_produced
+) {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    n_times_solution_was_produced_ += additional_times_produced;
+}
+
+/// @brief Set the number of times that the solution was produced.
+///	@details An optimizer might produce the same solution many times.  This is
+/// the count of the number of times this solution was produced during optimization.
+void
+OptimizationSolution::set_n_times_solution_was_produced(
+    masala::base::Size const n_times_produced
+) {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    n_times_solution_was_produced_ = n_times_produced;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,6 +212,15 @@ OptimizationProblemCSP
 OptimizationSolution::problem() const {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
     return problem_;
+}
+
+/// @brief Get the number of times that the solution was produced.
+///	@details An optimizer might produce the same solution many times.  This is
+/// the count of the number of times this solution was produced during optimization.
+masala::base::Size
+OptimizationSolution::n_times_solution_was_produced() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return n_times_solution_was_produced_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -247,6 +290,15 @@ OptimizationSolution::get_api_definition() {
                 std::bind( &OptimizationSolution::problem, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Size > >(
+                "n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "retrieves the number of times this solution was produced by the optimizer.",
+                "n_times_solution_was_produced", "The number of times this solution was produced by the optimizer.",
+                false, false,
+                std::bind( &OptimizationSolution::n_times_solution_was_produced, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
@@ -263,6 +315,33 @@ OptimizationSolution::get_api_definition() {
                 "problem_in", "Const shared pointer to the problem that gave rise to the solution.  Deep-cloned on input.",
                 true, false,
                 std::bind( &OptimizationSolution::set_problem, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "increments the number of times this solution was produced by the optimizer by 1.",
+                false, false,
+                std::bind( static_cast< void( OptimizationSolution::* )() >( &OptimizationSolution::increment_n_times_solution_was_produced ), this )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
+                "increment_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "increments the number of times this solution was produced by the optimizer by additional_times_produced.",
+                "additional_times_produced", "The number of additional times that this solution was seen.  (The number by "
+                "which to increment the counter.)",
+                false, false,
+                std::bind( static_cast< void( OptimizationSolution::* )( Size ) >( &OptimizationSolution::increment_n_times_solution_was_produced ), this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
+                "set_n_times_solution_was_produced", "An optimizer may produce the same solution many times.  This "
+                "sets the number of times this solution was produced.",
+                "n_times_produced", "The number of times that this solution was seen.",
+                false, false,
+                std::bind( &OptimizationSolution::set_n_times_solution_was_produced, this, std::placeholders::_1 )
             ) 
         );
 

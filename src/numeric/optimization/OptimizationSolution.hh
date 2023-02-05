@@ -123,6 +123,21 @@ public:
 	/// to add checks that the problem type is correct.
 	virtual void set_problem( OptimizationProblemCSP const & problem );
 
+	/// @brief Increment the number of times that the solution was produced by 1.
+	///	@details An optimizer might produce the same solution many times.  This is
+	/// the count of the number of times this solution was produced during optimization.
+	void increment_n_times_solution_was_produced();
+
+	/// @brief Increment the number of times that the solution was produced by additional_times_produced.
+	///	@details An optimizer might produce the same solution many times.  This is
+	/// the count of the number of times this solution was produced during optimization.
+	void increment_n_times_solution_was_produced( masala::base::Size const additional_times_produced );
+
+	/// @brief Set the number of times that the solution was produced.
+	///	@details An optimizer might produce the same solution many times.  This is
+	/// the count of the number of times this solution was produced during optimization.
+	void set_n_times_solution_was_produced( masala::base::Size const n_times_produced );
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +149,11 @@ public:
 
 	/// @brief Access the problem.
 	OptimizationProblemCSP problem() const;
+
+	/// @brief Get the number of times that the solution was produced.
+	///	@details An optimizer might produce the same solution many times.  This is
+	/// the count of the number of times this solution was produced during optimization.
+	masala::base::Size n_times_solution_was_produced() const;
 
 public:
 
@@ -210,6 +230,10 @@ private:
 
 	/// @brief The problem that gave rise to this solution.
 	OptimizationProblemCSP problem_;
+
+	/// @brief An optimizer might produce the same solution many times.  This is
+	/// the count of the number of times this solution was produced during optimization.
+	masala::base::Size n_times_solution_was_produced_ = 1;
 
 }; // class OptimizationSolution
 
