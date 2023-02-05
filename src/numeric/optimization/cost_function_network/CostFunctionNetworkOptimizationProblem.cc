@@ -128,6 +128,9 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
+    if( finalized() ) {
+        return total_variable_nodes_;
+    }
     std::lock_guard< std::mutex > lock( problem_mutex() );
     if( n_choices_by_node_index_.empty() ) { return 0; }
     base::Size accumulator(0);
@@ -450,7 +453,21 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
 CostFunctionNetworkOptimizationProblem::protected_finalize() {
+    CHECK_OR_THROW_FOR_CLASS( total_variable_nodes_ == 0, "protected_finalize", "Program error: the total number of variable nodes was nonzero!" );
+    for( auto const choices : n_choices_by_node_index_ ) {
+        if( choices.second > 1 ) {
+            ++total_variable_nodes_;
+        }
+    }
     masala::numeric::optimization::OptimizationProblem::protected_finalize();
+}
+
+/// @brief Access the total number of variable nodes, precomputed by finalize() and cached.
+/// @details The finalize() function must be called before this function is used.
+masala::base::Size
+CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
+    return total_variable_nodes_;
 }
 
 

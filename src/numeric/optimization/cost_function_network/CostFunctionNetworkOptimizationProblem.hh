@@ -245,6 +245,10 @@ protected:
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 	void protected_finalize() override;
 
+	/// @brief Access the total number of variable nodes, precomputed by finalize() and cached.
+	/// @details The finalize() function must be called before this function is used.
+	masala::base::Size protected_total_variable_nodes() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +258,9 @@ private:
 	/// @brief The number of choices at each node index.
 	/// @details Resizes automatically.
 	std::map< masala::base::Size, masala::base::Size > n_choices_by_node_index_;
+
+	/// @brief The total number of variable nodes, populated by the finalize() function.
+	masala::base::Size total_variable_nodes_ = 0;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
