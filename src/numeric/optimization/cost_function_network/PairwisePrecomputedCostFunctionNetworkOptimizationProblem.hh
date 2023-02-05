@@ -206,6 +206,18 @@ public:
 		std::vector< base::Size > const & candidate_solution
 	) const override;
 
+	/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+	/// @details The candidate solution is expressed as a vector of choice indices, with
+	/// one entry per variable position, in order of position indices.  (There may not be
+	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This uses the one- and two-node penalties cached in this object to make this
+	/// calculation very efficient.
+	masala::base::Real
+	compute_score_change(
+		std::vector< base::Size > const & old_solution,
+		std::vector< base::Size > const & new_solution
+	) const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

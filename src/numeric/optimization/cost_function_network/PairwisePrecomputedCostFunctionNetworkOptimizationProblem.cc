@@ -39,6 +39,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
@@ -293,9 +294,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
     CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
 
     Real accumulator( total_constant_offset() );
-    if( has_non_pairwise_scores() ) {
-        accumulator += CostFunctionNetworkOptimizationProblem::compute_absolute_score( candidate_solution );
-    }
+    // if( has_non_pairwise_scores() ) {
+    //     accumulator += compute_non_pairwise_score( candidate_solution );
+    // }
     Size const n_pos( candidate_solution.size() );
     std::vector< std::pair< Size, Size > > const variable_positions( n_choices_at_variable_nodes() );
     CHECK_OR_THROW_FOR_CLASS( candidate_solution.size() == variable_positions.size(), "compute_absolute_score",
@@ -324,6 +325,77 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
                 std::map< std::pair< Size, Size >, Real >::const_iterator it2( it->second.find( std::make_pair( choice_j_index, choice_i_index ) ) );
                 if( it2 != it->second.end() ) {
                     accumulator += it2->second;
+                }
+            }
+        }
+    }
+
+    return accumulator;
+}
+
+/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+/// @note This uses the one- and two-node penalties cached in this object to make this
+/// calculation very efficient.
+masala::base::Real
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
+    std::vector< base::Size > const & old_solution,
+    std::vector< base::Size > const & new_solution
+) const {
+    using masala::base::Real;
+    using masala::base::Size;
+    CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_score_change", "The problem setup must be finalized "
+        "before compute_score_change() can be called."
+    );
+
+    Real accumulator( 0.0 );
+    // if( has_non_pairwise_scores() ) {
+    //     accumulator += compute_non_pairwise_score_change( old_solution, new_solution );
+    // }
+    base::Size const npos( protected_total_variable_nodes() ); //Only safe to call if finalized.
+    CHECK_OR_THROW_FOR_CLASS( old_solution.size() == npos, "compute_score_change",
+        "The size of the old candidate solution vector was " + std::to_string( old_solution.size() ) + ", but "
+        "there are " + std::to_string( npos ) + " variable positions."
+    );
+    CHECK_OR_THROW_FOR_CLASS( new_solution.size() == npos, "compute_score_change",
+        "The size of the new candidate solution vector was " + std::to_string( new_solution.size() ) + ", but "
+        "there are " + std::to_string( npos ) + " variable positions."
+    );
+
+    // The following is only safe to call in a finalized context:
+    std::vector< std::pair< Size, Size > > const & var_nodes_and_choices( protected_n_choices_at_variable_nodes() );
+
+    bool changed_encountered(false);
+    for( base::Size i(0); i<npos; ++i ) {
+        Size const i_index( var_nodes_and_choices[i].first );
+        // Sum onebody energy change:
+        if( old_solution[i] != new_solution[i] ) {
+            changed_encountered = true;
+            auto const it_nodes( single_node_penalties_.find( i_index ) );
+            if( it_nodes != single_node_penalties_.end() ) {
+                auto const it_choices_old( it_nodes->second.find( old_solution[i] ) );
+                Real const old_onebody_energy( it_choices_old == it_nodes->second.end() ? 0.0 : it_choices_old->second );
+                auto const it_choices_new( it_nodes->second.find( new_solution[i] ) );
+                Real const new_onebody_energy( it_choices_new == it_nodes->second.end() ? 0.0 : it_choices_new->second );
+                accumulator += new_onebody_energy - old_onebody_energy;
+            }
+        }
+
+        // Sum twobody energy change:
+        if( changed_encountered ) {
+            for( base::Size j(0); j<i; ++j ) {
+                if( old_solution[j] != new_solution[j] || old_solution[i] != new_solution[i] ) {
+                    Size const j_index( var_nodes_and_choices[j].first );
+                    auto const it_nodepairs( pairwise_node_penalties_.find( std::make_pair( j_index, i_index ) ) );
+                    if( it_nodepairs != pairwise_node_penalties_.end() ) {
+                        auto const it_choicepairs_old( it_nodepairs->second.find( std::make_pair( old_solution[j], old_solution[i] ) ) );
+                        Real const old_twobody_energy( it_choicepairs_old == it_nodepairs->second.end() ? 0.0 : it_choicepairs_old->second );
+                        auto const it_choicepairs_new( it_nodepairs->second.find( std::make_pair( new_solution[j], new_solution[i] ) ) );
+                        Real const new_twobody_energy( it_choicepairs_new == it_nodepairs->second.end() ? 0.0 : it_choicepairs_new->second );
+                        accumulator += new_twobody_energy - old_twobody_energy;
+                    }
                 }
             }
         }
@@ -440,7 +512,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
 
         // Work functions
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< masala::base::Real, std::vector< masala::base::Size > const & > >(
                 "compute_absolute_score", "Given a candidate solution, compute the score.  "
 	            "The candidate solution is expressed as a vector of choice indices, with "
                 "one entry per variable position, in order of position indices.  This override "
@@ -452,6 +524,23 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "entries for every position, though, since not all positions have at least two choices.)",
                 "score", "The score for this candidate solution, computed by this function.",
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< masala::base::Real, std::vector< masala::base::Size > const &, std::vector< masala::base::Size > const & > >(
+                "compute_score_change", "Given two candidate solutions, compute the score difference.  "
+	            "The candidate solutions are expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices. (There may not be "
+                "entries for every position, though, since not all positions have at least two choices.)  This "
+                "override uses precomputed one- and two-node penalties cached in the problem definition to make "
+                "this calculation very efficient.",
+                true, false, false, true,
+                "old_solution", "The first candidate solution, expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.",
+                "new_solution", "The second candidate solution, expressed as a vector of choice indices, with "
+                "one entry per variable position, in order of position indices.",
+                "delta_score", "The score change from old to new candidate solutions, computed by this function.",
+                std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
 
