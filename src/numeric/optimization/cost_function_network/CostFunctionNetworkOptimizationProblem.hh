@@ -196,7 +196,7 @@ public:
 	masala::base::Real
 	compute_score_change(
 		std::vector< base::Size > const & old_solution,
-		std::vector< base::Size > const & new_solution,
+		std::vector< base::Size > const & new_solution
 	) const;
 
 public:

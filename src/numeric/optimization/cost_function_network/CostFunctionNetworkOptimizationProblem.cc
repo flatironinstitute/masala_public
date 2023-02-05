@@ -248,7 +248,7 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_score_change(
     std::vector< base::Size > const & old_solution,
-    std::vector< base::Size > const & new_solution,
+    std::vector< base::Size > const & new_solution
 ) const {
     MASALA_THROW( class_namespace_and_name(), "compute_score_change", "This function is not implemented for the base class -- only for derived classes, at present." );
     return 0.0; //TODO implement support for non-pairwise problems.
