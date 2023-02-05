@@ -65,7 +65,8 @@ public:
 	/// choice) in order of indices of variable positions.
 	CostFunctionNetworkOptimizationSolution(
 		CostFunctionNetworkOptimizationProblemCSP const & problem_in,
-		std::vector< masala::base::Size > const & solution_vector_in
+		std::vector< masala::base::Size > const & solution_vector_in,
+		masala::base::Real const solution_score
 	);
 
 	/// @brief Copy constructor.

@@ -33,7 +33,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -57,12 +57,14 @@ namespace cost_function_network {
 /// choice) in order of indices of variable positions.
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
     CostFunctionNetworkOptimizationProblemCSP const & problem_in,
-    std::vector< masala::base::Size > const & solution_vector_in
+    std::vector< masala::base::Size > const & solution_vector_in,
+    masala::base::Real const solution_score
 ) :
     masala::numeric::optimization::OptimizationSolution()
 {
     set_problem( problem_in );
     set_solution_vector( solution_vector_in );
+    set_solution_score( solution_score );
 }
 
 
@@ -160,12 +162,20 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput < CostFunctionNetworkOptimizationSolution, CostFunctionNetworkOptimizationProblemCSP, std::vector< masala::base::Size > const & > > (
+            masala::make_shared<
+                constructor::MasalaObjectAPIConstructorDefinition_ThreeInput <
+                    CostFunctionNetworkOptimizationSolution,
+                    CostFunctionNetworkOptimizationProblemCSP,
+                    std::vector< masala::base::Size > const &,
+                    Real
+                >
+            > (
                 class_name(),
                 "Initialization constructor: initialize the solution from the problem definition.  (The problem definition "
                 "deep-cloned and stored for future reference).",
                 "problem_in", "The problem definition.  Deep-cloned but otherwise unaltered by this operation.",
-                "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices."
+                "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices.",
+                "solution_score_in", "The solution score."
             )
         );
         api_def->add_constructor(
