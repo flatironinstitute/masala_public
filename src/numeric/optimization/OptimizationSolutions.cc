@@ -346,6 +346,24 @@ OptimizationSolutions::set_n_times_solution_was_produced(
     optimization_solutions_[solution_index]->set_n_times_solution_was_produced( n_times_produced );
 }
 
+
+/// @brief Remove an optimization solution from the list of optimization solutions
+/// stored in this container.
+/// @details Throws if the solution index is out of range.
+void
+OptimizationSolutions::remove_optimization_solution(
+    masala::base::Size const solution_index
+) {
+	std::lock_guard< std::mutex > lock( solutions_mutex_ );
+	CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions_.size(),
+		"remove_optimization_solution", "The solution index " + std::to_string( solution_index ) +
+		" is out of range.  This object currently stores only " + std::to_string( optimization_solutions_.size() ) +
+		" solutions."
+	);
+	std::vector< OptimizationSolutionSP >::iterator it( optimization_solutions_.begin() + solution_index );
+	optimization_solutions_.erase( it );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////

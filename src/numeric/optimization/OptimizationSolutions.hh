@@ -167,6 +167,15 @@ public:
 		masala::base::Size const n_times_produced
 	);
 
+	/// @brief Remove an optimization solution from the list of optimization solutions
+	/// stored in this container.
+	/// @details Throws if the solution index is out of range.
+	void
+	remove_optimization_solution(
+		masala::base::Size const solution_index
+	);
+
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
