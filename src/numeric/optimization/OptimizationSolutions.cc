@@ -215,6 +215,14 @@ OptimizationSolutions::get_api_definition() {
                 std::bind( &OptimizationSolutions::set_n_times_solution_was_produced, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::base::Size > >(
+				"remove_optimization_solution", "Remove an optimization solution, by solution index.",
+				"solution_index", "The index of the solution to remove.  Must be in range; throws otherwise.",
+				false, false,
+				std::bind( &OptimizationSolutions::remove_optimization_solution, this, std::placeholders::_1 )
+			)
+		);
 
         // Getters:
         api_def->add_getter(

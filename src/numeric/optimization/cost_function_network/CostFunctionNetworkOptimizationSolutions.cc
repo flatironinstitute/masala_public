@@ -167,6 +167,14 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 false, true, std::bind( &CostFunctionNetworkOptimizationSolutions::add_optimization_solution, this, std::placeholders::_1 )
             )
         );
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::base::Size > >(
+				"remove_optimization_solution", "Remove an optimization solution, by solution index.",
+				"solution_index", "The index of the solution to remove.  Must be in range; throws otherwise.",
+				false, false,
+				std::bind( &OptimizationSolutions::remove_optimization_solution, this, std::placeholders::_1 )
+			)
+		);
 
         api_definition() = api_def; //Make const.
     }
