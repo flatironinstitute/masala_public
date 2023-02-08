@@ -213,7 +213,11 @@ MasalaThreadManager::do_work_in_threads(
     // execution, this stores information about how many threads have actually
     // been assigned and which threads they are.
     MasalaThreadedWorkExecutionSummary summary;
-    summary.set_nthreads_requested( request.n_threads_requested() );
+    if( request.all_threads_requested() ) {
+        summary.set_all_threads_requested();
+    } else {
+        summary.set_nthreads_requested( request.n_threads_requested() );
+    }
     summary.set_njobs( request.work_vector_size() );
 
     // Prepare a parallel function for doing a vector of work:

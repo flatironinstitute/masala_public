@@ -85,11 +85,19 @@ MasalaThreadedWorkExecutionSummary::class_namespace() const {
     return "masala::base::managers::threads";
 } // MasalaThreadedWorkExecutionSummary::class_namespace()
 
+/// @brief Indicate that all threads were requested.  (Sets ntherads_requested_ to 0.)
+void
+MasalaThreadedWorkExecutionSummary::set_all_threads_requested() {
+    all_threads_requested_ = true;
+    nthreads_requested_ = 0;
+}
+
 /// @brief Set the number of threads requested.
 void
 MasalaThreadedWorkExecutionSummary::set_nthreads_requested(
     base::Size const nthreads_requested
 ) {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( !all_threads_requested_, "set_nthreads_requested", "Program error: cannot set number of threads requested, since it was already indicated that all threads were requested." );
     nthreads_requested_ = nthreads_requested;
 }
 
@@ -225,7 +233,7 @@ void
 MasalaThreadedWorkExecutionSummary::write_summary_to_tracer() const {
     std::ostringstream ss;
 
-    ss << "Executed " << njobs_ << " in " << nthreads_actual_ << " threads (" << nthreads_requested_ << " were requested)." << std::endl;
+    ss << "Executed " << njobs_ << " in " << nthreads_actual_ << " threads (" << ( all_threads_requested_ ? "all" : std::to_string( nthreads_requested_ ) ) << " threads were requested)." << std::endl;
     ss << "Total walltime:\t" << execution_time_microseconds_ << " microseconds." << std::endl;
     ss << "\tThreadID:\tTime(us):" << std::endl;
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(

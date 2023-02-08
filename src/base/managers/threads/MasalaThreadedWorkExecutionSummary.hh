@@ -101,6 +101,9 @@ public:
 	/// @brief Returns "masala::base::managers::threads".
 	std::string class_namespace() const override;
 
+	/// @brief Indicate that all threads were requested.  (Sets ntherads_requested_ to 0.)
+	void set_all_threads_requested();
+
 	/// @brief Set the number of threads requested.
 	void set_nthreads_requested( base::Size const nthreads_requested );
 
@@ -134,7 +137,11 @@ public:
 	/// @brief Get the status of the work.
 	inline MasalaThreadedWorkStatus work_status() const { return work_status_; }
 
+	/// @brief Were all threads requested?
+	inline bool all_threads_requested() const { return all_threads_requested_; }
+
 	/// @brief Get the number of threads that were requested.
+	/// @details Will be zero if all threads were requested.
 	inline base::Size nthreads_requested() const { return nthreads_requested_; }
 
 	/// @brief Get the number of threads that were actually used for the work (which can
@@ -209,6 +216,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA that are set by the set_assigned_child_threads function:
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Were all threads requested?
+	bool all_threads_requested_ = false;
 
 	/// @brief The number of threads that were requested.
 	base::Size nthreads_requested_ = 0;
