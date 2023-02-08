@@ -32,6 +32,7 @@
 // STL headers
 #include <algorithm>
 #include <string>
+#include <sstream>
 #include <thread>
 
 namespace masala {
@@ -45,19 +46,26 @@ namespace threads {
 
 /// @brief Options constructor.
 /// @param[in] status The status for the work done.
+/// @param[in] nthreads_requested The number of threads that were
+/// requested.
 /// @param[in] nthreads_actual The number of threads that were
 /// actually used for carrying out the work.
+/// @param[in] njobs The number of jobs carried out.
 /// @param[in] execution_time The time, in microseconds, that
 /// execution took.
 MasalaThreadedWorkExecutionSummary::MasalaThreadedWorkExecutionSummary(
     MasalaThreadedWorkStatus const status,
+    base::Size const nthreads_requested,
     base::Size const nthreads_actual,
+    base::Size const njobs,
     base::Real const execution_time_microseconds
 ) :
     base::MasalaObject(),
     work_status_(status),
     execution_time_microseconds_(execution_time_microseconds),
-    nthreads_actual_(nthreads_actual)
+    nthreads_requested_(nthreads_requested),
+    nthreads_actual_(nthreads_actual),
+    njobs_(njobs)
 {}
 
 
@@ -76,6 +84,22 @@ std::string
 MasalaThreadedWorkExecutionSummary::class_namespace() const {
     return "masala::base::managers::threads";
 } // MasalaThreadedWorkExecutionSummary::class_namespace()
+
+/// @brief Set the number of threads requested.
+void
+MasalaThreadedWorkExecutionSummary::set_nthreads_requested(
+    base::Size const nthreads_requested
+) {
+    nthreads_requested_ = nthreads_requested;
+}
+
+/// @brief Set the number of jobs.
+void
+MasalaThreadedWorkExecutionSummary::set_njobs(
+    base::Size const njobs
+) {
+    njobs_ = njobs;
+}
 
 /// @brief Allow the MasalaThreadPool to record which threads have been assigned to this
 /// job.  We will store:
@@ -194,6 +218,28 @@ void
 MasalaThreadedWorkExecutionSummary::set_work_successful() {
     CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_work_successful", "Cannot alter work status after work has completed." );
     work_status_ = MasalaThreadedWorkStatus::WORK_SUCCESSFUL;
+}
+
+/// @brief Write a summary of the work done to the tracer.
+void
+MasalaThreadedWorkExecutionSummary::write_summary_to_tracer() const {
+    std::ostringstream ss;
+
+    ss << "Executed " << njobs_ << " in " << nthreads_actual_ << " threads (" << nthreads_requested_ << " were requested)." << std::endl;
+    ss << "Total walltime:\t" << execution_time_microseconds_ << " microseconds." << std::endl;
+    ss << "\tThreadID:\tTime(us):" << std::endl;
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        nthreads_actual_ == assigned_thread_indices_.size(), "write_summary_to_tracer", "Program error: "
+        "mismatch between assigned thread count and length of thread index vector."
+    );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        nthreads_actual_ == execution_time_microseconds_individual_threads_.size(), "write_summary_to_tracer", "Program error: "
+        "mismatch between assigned thread count and length of thread execution time vector."
+    );
+    for( base::Size i(0); i<nthreads_actual_; ++i ) {
+        ss << "\t" << assigned_thread_indices_[i] << "\t" << execution_time_microseconds_individual_threads_[i] << std::endl;
+    }
+    write_to_tracer( ss.str() );
 }
 
 } // namespace threads
