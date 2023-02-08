@@ -88,17 +88,19 @@ public:
 	get_keywords() const override;
 
 	/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
-	/// @details Must be implemented by derived classes.
+	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
+	/// the problem with the same index.
 	virtual
-	masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP
+	std::vector< masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP >
 	run_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 	) const;
 
 	/// @brief Run the optimizer on a set of cost function network optimization problems, and produce a set of solutions.
-	/// @details Must be implemented by derived classes.
+	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
+	/// the problem with the same index.
 	virtual
-	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutions_APICSP
+	std::vector< masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutions_APICSP >
 	run_cost_function_network_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblems_API const & problem
 	) const = 0;

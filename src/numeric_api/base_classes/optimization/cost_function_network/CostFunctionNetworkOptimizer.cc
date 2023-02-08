@@ -35,6 +35,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <vector>
@@ -79,11 +80,13 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 }
 
 /// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
-/// @details Must be implemented by derived classes.
-masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP
+/// @details Must be implemented by derived classes.   Each solutions set in the vector of solutions corresponds to
+/// the problem with the same index.
+std::vector< masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP >
 CostFunctionNetworkOptimizer::run_optimizer(
     masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 ) const {
+    using namespace masala::numeric_api::auto_generated_api::optimization;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
     CostFunctionNetworkOptimizationProblems_API const * problems_cast( dynamic_cast< CostFunctionNetworkOptimizationProblems_API const * >( &problems ) );
     CHECK_OR_THROW_FOR_CLASS(
@@ -92,7 +95,16 @@ CostFunctionNetworkOptimizer::run_optimizer(
         "A set of optimization problems was passed to the run_optimizer function, but it was not "
         "a set of cost function network optimization problems."
     );
-    return run_cost_function_network_optimizer( *problems_cast );
+
+    std::vector< CostFunctionNetworkOptimizationSolutions_APICSP > const outvec1( run_cost_function_network_optimizer( *problems_cast ) );
+
+    // Conversion to base class pointers requires another step, irritatingly:
+    std::vector< OptimizationSolutions_APICSP > outvec2( outvec1.size() );
+    for( base::Size i(0), imax(outvec1.size()); i<imax; ++i ) {
+        outvec2[i] = outvec1[i];
+    }
+
+    return outvec2;
 }
 
 } // namespace cost_function_network
