@@ -233,7 +233,7 @@ void
 MasalaThreadedWorkExecutionSummary::write_summary_to_tracer() const {
     std::ostringstream ss;
 
-    ss << "Executed " << njobs_ << " in " << nthreads_actual_ << " threads (" << ( all_threads_requested_ ? "all" : std::to_string( nthreads_requested_ ) ) << " threads were requested)." << std::endl;
+    ss << "Carried out " << njobs_ << " jobs in " << nthreads_actual_ << " threads (" << ( all_threads_requested_ ? "all" : std::to_string( nthreads_requested_ ) ) << " threads were requested)." << std::endl;
     ss << "Total walltime:\t" << execution_time_microseconds_ << " microseconds." << std::endl;
     ss << "\tThreadID:\tTime(us):" << std::endl;
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
