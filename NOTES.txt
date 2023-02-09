@@ -103,3 +103,4 @@
      - (Note that currently, I'm releasing and re-locking mutexes for base and derived class data on calls to the copy constructor or to operator=.  This is bad, and not really threadsafe.)
 
 - [ ] Deal with situation of total threads not being set before thread manager is called.
+- [ ] PROBLEM: X contains Y, and has a function that returns YCSP.  X_API returns Y_APICSP.  But when Y is a Z (a derived class of Y), the Z still gets encapsulated in a Y_APICSP.  Need to figure out how to fix.
