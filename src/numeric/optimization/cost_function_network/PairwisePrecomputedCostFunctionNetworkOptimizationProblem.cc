@@ -588,38 +588,53 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     using masala::base::Real;
     using masala::base::Size;
 
+    // Accumulators for onebody and twobody energies:
     Real accumulator1( 0.0 ), accumulator2( 0.0 );
+    
+    // The set of nodes with only one choice:
     std::set< Size > one_choice_nodes;
 
+    // Find all of the nodes with only one choice:
     for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
-        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0, "compute_one_choice_node_constant_offset", "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!" );
+        // Ensure that this node hasn't already been added:
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0,
+            "compute_one_choice_node_constant_offset",
+            "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!"
+        );
+
+        // If there's only one choice, add the node:
         if( it->second == 1 ) {
             one_choice_nodes.insert(it->first);
         }
     }
 
-    for( std::map< Size, std::map< Size, Real > >::const_iterator it( single_node_penalties_.begin() );
-        it != single_node_penalties_.end();
+    // Accumulate the onebody energies of one-choice nodes:
+    for( std::map< Size, std::map< Size, Real > >::const_iterator it( single_node_penalties_.cbegin() );
+        it != single_node_penalties_.cend();
         ++it
     ) {
         if( one_choice_nodes.count( it->first ) != 0 ) {
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in single-node energies!" );
-            accumulator1 += it->second.begin()->second; // Add onebody energies of nodes with only one choice.
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+                it->second.size() == 1,
+                "one_choice_node_constant_offset",
+                "Program error: multiple choice assignments found in single-node energies!"
+            );
+            accumulator1 += it->second.cbegin()->second; // Add onebody energies of nodes with only one choice.
         }
     }
 
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
-    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.begin() );
-        it != pairwise_node_penalties_.end();
+    for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.cbegin() );
+        it != pairwise_node_penalties_.cend();
         ++it
     ) {
         if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
-            accumulator2 += it->second.begin()->second; // Add twobody energies of pairs of nodes with only one choice.
+            accumulator2 += it->second.cbegin()->second; // Add twobody energies of pairs of nodes with only one choice.
         }
     }
 
