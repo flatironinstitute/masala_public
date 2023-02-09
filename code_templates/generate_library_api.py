@@ -49,6 +49,15 @@ def is_masala_class( project_name : str, classname : str ) -> bool :
     if classname.startswith( project_name + "::" ) : return True
     return False
 
+## @brief Determine whether a class derives from a masala plugin class base.
+def is_masala_plugin_class( \
+    project_name : str, \
+    library_name : str, \
+    class_namespace_and_name : str, \
+    jsonfile : json \
+    ) -> bool :
+    return False
+
 ## @brief Returns true if a class is a masala API class (i.e. follows pattern
 ## "masala::*_api::" ).
 def is_masala_api_class( classname : str ) -> bool :
@@ -573,7 +582,18 @@ def generate_function_call( \
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_implementations( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool, is_derived : bool ) -> str :
+def generate_function_implementations( \
+    project_name: str, \
+    library_name : str, \
+    classname: str, \
+    jsonfile: json, \
+    tabchar: str, \
+    fxn_type: str, \
+    additional_includes: list, \
+    is_lightweight: bool, \
+    is_derived : bool \
+    ) -> str :
+
     outstring = ""
     first = True
 
@@ -664,13 +684,13 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner )  ) :
                 is_masala_API_ptr = True
-                if( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) ) :
+                if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
                     is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
             is_masala_API_obj = True
-            # if( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) ) :
+            # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
             #     is_masala_plugin_obj = True
-            assert( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) == False ), \
+            assert( is_masala_plugin_class( project_name, library_name, drop_const( outtype ), jsonfile ) == False ), \
                 "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
                 + "(): support for returning plugin classes by reference (and properly enclosing them in the correct " \
                 + "type of API container) has not yet been added to the build system."
@@ -1231,9 +1251,9 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
