@@ -438,23 +438,31 @@ OptimizationSolutions::recompute_all_scores(
     masala::base::Real const max_fractional_error
 ) {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
-    masala::base::Size failed_count(0);
-    for( OptimizationSolutionSP const & solution : optimization_solutions_ ) {
+    std::vector< std::pair< base::Size, std::pair< base::Real, base::Real > > > failed_cases;
+    failed_cases.reserve( optimization_solutions_.size() );
+    for( base::Size isolution(0), isolutionmax(optimization_solutions_.size());
+        isolution < isolutionmax;
+        ++isolution
+    ) {
+        OptimizationSolutionSP const & solution( optimization_solutions_[isolution] );
         masala::base::Real const old_score( solution->solution_score() );
         solution->recompute_score();
         masala::base::Real const delta( std::abs( old_score - solution->solution_score() ) );
         if( delta > max_fractional_error * old_score ) {
-            ++failed_count;
+            failed_cases.push_back( std::make_pair( isolution, std::make_pair( old_score, solution->solution_score() ) ) );
         }
     }
-    CHECK_OR_THROW_FOR_CLASS(
-        failed_count == 0,
-        "recompute_all_scores",
-        "A total of " + std::to_string( failed_count ) + " out of " +
-        std::to_string( optimization_solutions_.size() ) + " optimization "
-        "solutions showed solution value changes larger than " +
-        std::to_string(max_fractional_error) + " times the original score."
-    );
+    if( failed_cases.size() != 0 ) {
+        std::stringstream ss;
+        ss << "A total of " << failed_cases.size() << " out of " << optimization_solutions_.size()
+            << "solutions showed value changes larger than a fractional error of " << max_fractional_error
+            << ".\n";
+        ss << "SOLUTION\tOLD_SCORE\tNEW_SCORE\n";
+        for( auto const & entry : failed_cases ) {
+            ss << entry.first << "\t" << entry.second.first << "\t" << entry.second.second << "\n";
+        }
+        MASALA_THROW( class_namespace_and_name(), "recompute_all_scores", ss.str() );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
