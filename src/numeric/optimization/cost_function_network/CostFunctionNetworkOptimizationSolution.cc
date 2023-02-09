@@ -53,7 +53,7 @@ namespace cost_function_network {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Constructor that initializes from the problem description.
-/// @details The problem definition is deep-cloned on input.  The solution is represented
+/// @details The problem definition is stored directly, not copied.  The solution is represented
 /// as a vector of choice indices, one per variable position (i.e. per position with more than one
 /// choice) in order of indices of variable positions.
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
@@ -173,8 +173,8 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             > (
                 class_name(),
                 "Initialization constructor: initialize the solution from the problem definition.  (The problem definition "
-                "deep-cloned and stored for future reference).",
-                "problem_in", "The problem definition.  Deep-cloned but otherwise unaltered by this operation.",
+                "stored directly -- i.e. not deep-cloned -- for future reference).",
+                "problem_in", "The problem definition.  Unaltered by this operation.",
                 "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices.",
                 "solution_score_in", "The solution score."
             )
@@ -231,7 +231,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 "set_problem", "Set the problem that gave rise to this solution.",
                 "problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
                 "must be a cost function network optimizatoin problem, and this function will throw if it is "
-                "not.  Deep-cloned on input.",
+                "not.  Stored directly (not cloned) on input.",
                 false, true,
                 std::bind( &CostFunctionNetworkOptimizationSolution::set_problem, this, std::placeholders::_1 )
             ) 
@@ -257,7 +257,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Set the problem that gave rise to this solution.
-/// @details Deep-cloned on input.  This override checks that the problem
+/// @details Stored directly (not cloned) on input.  This override checks that the problem
 /// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
 /// set, the problem must match it.
 void
