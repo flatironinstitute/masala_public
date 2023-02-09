@@ -245,7 +245,7 @@ OptimizationProblems::add_optimization_problem(
     OptimizationProblemSP problem_in
 ) {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
-    optimization_problems_.emplace_back( problem_in );
+    optimization_problems_.push_back( problem_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
