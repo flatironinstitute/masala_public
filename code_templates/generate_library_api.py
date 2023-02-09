@@ -50,13 +50,38 @@ def is_masala_class( project_name : str, classname : str ) -> bool :
     return False
 
 ## @brief Determine whether a class derives from a masala plugin class base.
+## @details Assumes that "const" has been trimmed from class_namespace_and_name.
 def is_masala_plugin_class( \
     project_name : str, \
     library_name : str, \
     class_namespace_and_name : str, \
     jsonfile : json \
     ) -> bool :
-    return True
+    namesplit = class_namespace_and_name.split("::")
+    if( namesplit[0] == project_name and namesplit[1] == library_name ) :
+        if class_namespace_and_name in jsonfile["Elements"] :
+            if jsonfile["Elements"][class_namespace_and_name]["Properties"]["Is_Plugin_Class"] == True :
+                return True
+            else :
+                return False
+
+    # Check the class inheritence:
+    fname = namesplit[1]
+    for i in range (2, len(namesplit)) :
+        fname += "/" + namesplit[i]
+    fname += ".hh"
+    fcontents = slurp_file_and_remove_comments( fname ).replace(":", " : ").replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    parentclass = None
+    for i in range( len(fcontents) - 4 ) :
+        if fcontents[i] == "class" and \
+            fcontents[i+1] == namesplit[len(namesplit)-1] and \
+            fcontents[i+2] == ":" and \
+            fcontents[i+3] == "public" :
+            parentclass = fcontents[i+4]
+    if parentclass == None : return False
+    elif parentclass == "masala::base::managers::plugin_module::MasalaPlugin" : return True
+
+    return is_masala_plugin_class( project_name, library_name, parentclass, jsonfile )
 
 ## @brief Returns true if a class is a masala API class (i.e. follows pattern
 ## "masala::*_api::" ).
@@ -694,7 +719,7 @@ def generate_function_implementations( \
                 "\n********************************************************************************\n" \
                 + "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
                 + "():\nsupport for returning plugin classes by reference (and properly enclosing them in the correct\n" \
-                + "type of API container) has not yet been added to the build system.\n" \
+                + "type of API container) has not yet been added to the Masala build system.\n" \
                 + "********************************************************************************"
 
         if is_lightweight == True :
@@ -723,15 +748,16 @@ def generate_function_implementations( \
                 outstring += tabchar + "// that nothing unsafe is done with the nonconst object.\n" 
 
                 if is_masala_plugin_ptr :
+                    dummy = []
                     outstring += tabchar + "MASALA_SHARED_POINTER< " \
-                        + correct_masala_types( project_name, outtype_inner, dummy ) \
+                        + outtype_inner \
                         + " > returnobj( " \
                         + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
                         + " );\n"
                     outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
                         + outtype_inner + "\" ) {\n"
                     outstring += tabchar + tabchar + "return masala::make_shared< " \
-                        + correct_masala_types( project_name, outtype_inner, dummy ) \
+                        + correct_masala_types( project_name, drop_const( outtype_inner ), dummy ) \
                         + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
                     outstring += tabchar + "}\n"
                     outstring += tabchar + "return masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->"
@@ -740,8 +766,8 @@ def generate_function_implementations( \
                         outstring += "encapsulate_const_plugin_object_instance( returnobj );"
                     else :
                         outstring += "encapsulate_plugin_object_instance( returnobj );"
-                    additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager.hh" )
-                    return
+                    additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager" )
+                    return outstring
 
             outstring += tabchar + "return "
 
