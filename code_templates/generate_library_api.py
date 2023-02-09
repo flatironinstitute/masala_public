@@ -56,7 +56,7 @@ def is_masala_plugin_class( \
     class_namespace_and_name : str, \
     jsonfile : json \
     ) -> bool :
-    return False
+    return True
 
 ## @brief Returns true if a class is a masala API class (i.e. follows pattern
 ## "masala::*_api::" ).
@@ -691,9 +691,11 @@ def generate_function_implementations( \
             # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
             #     is_masala_plugin_obj = True
             assert( is_masala_plugin_class( project_name, library_name, drop_const( outtype ), jsonfile ) == False ), \
-                "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
-                + "(): support for returning plugin classes by reference (and properly enclosing them in the correct " \
-                + "type of API container) has not yet been added to the build system."
+                "\n********************************************************************************\n" \
+                + "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
+                + "():\nsupport for returning plugin classes by reference (and properly enclosing them in the correct\n" \
+                + "type of API container) has not yet been added to the build system.\n" \
+                + "********************************************************************************"
 
         if is_lightweight == True :
             accessor_string = "."
