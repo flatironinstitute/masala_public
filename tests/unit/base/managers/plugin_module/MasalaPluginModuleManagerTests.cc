@@ -87,7 +87,7 @@ public:
         inner_object_( masala::make_shared< DummyPlugin1 >() )
     {}
 
-    DummyPlugin1API( std::shared_ptr< DummyPlugin1 > const & object ) :
+    DummyPlugin1API( std::shared_ptr< DummyPlugin1 > object ) :
         ::masala::base::managers::plugin_module::MasalaPluginAPI(),
         inner_object_( object )
     {}
@@ -200,7 +200,7 @@ public:
         inner_object_( masala::make_shared< DummyPlugin2 >() )
     {}
 
-    DummyPlugin2API( std::shared_ptr< DummyPlugin2 > const & object ) :
+    DummyPlugin2API( std::shared_ptr< DummyPlugin2 > object ) :
         ::masala::base::managers::plugin_module::MasalaPluginAPI(),
         inner_object_( object )
     {}
