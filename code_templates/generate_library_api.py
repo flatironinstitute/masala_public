@@ -234,6 +234,11 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<set>")
             return "std::set< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        elif inputclass.startswith( "list" ) or inputclass.startswith( "std::list" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<list>")
+            return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
         elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
             firstchevron = inputclass.find( "<" )
             firstcomma = inputclass.find( "," )
@@ -713,6 +718,8 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
         if entry != original_api_include :
             if entry.startswith("<") :
                 assert entry.endswith(">")
+                if(fwdstr=="") :
+                    continue #Only include vector/list/set/map includes in header file.
                 newentry = "#include " + entry
             else :
                 newentry = "#include <" + entry + fwdstr + ".hh>"
