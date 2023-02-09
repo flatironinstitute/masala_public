@@ -367,12 +367,10 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
     // The following is only safe to call in a finalized context:
     std::vector< std::pair< Size, Size > > const & var_nodes_and_choices( protected_n_choices_at_variable_nodes() );
 
-    bool changed_encountered(false);
     for( base::Size i(0); i<npos; ++i ) {
         Size const i_index( var_nodes_and_choices[i].first );
         // Sum onebody energy change:
         if( old_solution[i] != new_solution[i] ) {
-            changed_encountered = true;
             auto const it_nodes( single_node_penalties_.find( i_index ) );
             if( it_nodes != single_node_penalties_.end() ) {
                 auto const it_choices_old( it_nodes->second.find( old_solution[i] ) );
@@ -384,18 +382,16 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         }
 
         // Sum twobody energy change:
-        if( changed_encountered ) {
-            for( base::Size j(0); j<i; ++j ) {
-                if( old_solution[j] != new_solution[j] || old_solution[i] != new_solution[i] ) {
-                    Size const j_index( var_nodes_and_choices[j].first );
-                    auto const it_nodepairs( pairwise_node_penalties_.find( std::make_pair( j_index, i_index ) ) );
-                    if( it_nodepairs != pairwise_node_penalties_.end() ) {
-                        auto const it_choicepairs_old( it_nodepairs->second.find( std::make_pair( old_solution[j], old_solution[i] ) ) );
-                        Real const old_twobody_energy( it_choicepairs_old == it_nodepairs->second.end() ? 0.0 : it_choicepairs_old->second );
-                        auto const it_choicepairs_new( it_nodepairs->second.find( std::make_pair( new_solution[j], new_solution[i] ) ) );
-                        Real const new_twobody_energy( it_choicepairs_new == it_nodepairs->second.end() ? 0.0 : it_choicepairs_new->second );
-                        accumulator += new_twobody_energy - old_twobody_energy;
-                    }
+        for( base::Size j(0); j<i; ++j ) {
+            if( old_solution[j] != new_solution[j] || old_solution[i] != new_solution[i] ) {
+                Size const j_index( var_nodes_and_choices[j].first );
+                auto const it_nodepairs( pairwise_node_penalties_.find( std::make_pair( j_index, i_index ) ) );
+                if( it_nodepairs != pairwise_node_penalties_.end() ) {
+                    auto const it_choicepairs_old( it_nodepairs->second.find( std::make_pair( old_solution[j], old_solution[i] ) ) );
+                    Real const old_twobody_energy( it_choicepairs_old == it_nodepairs->second.end() ? 0.0 : it_choicepairs_old->second );
+                    auto const it_choicepairs_new( it_nodepairs->second.find( std::make_pair( new_solution[j], new_solution[i] ) ) );
+                    Real const new_twobody_energy( it_choicepairs_new == it_nodepairs->second.end() ? 0.0 : it_choicepairs_new->second );
+                    accumulator += new_twobody_energy - old_twobody_energy;
                 }
             }
         }
