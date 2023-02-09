@@ -455,7 +455,7 @@ OptimizationSolutions::recompute_all_scores(
     if( failed_cases.size() != 0 ) {
         std::stringstream ss;
         ss << "A total of " << failed_cases.size() << " out of " << optimization_solutions_.size()
-            << "solutions showed value changes larger than a fractional error of " << max_fractional_error
+            << " solutions showed value changes larger than a fractional error of " << max_fractional_error
             << ".\n";
         ss << "SOLUTION\tOLD_SCORE\tNEW_SCORE\n";
         for( auto const & entry : failed_cases ) {
