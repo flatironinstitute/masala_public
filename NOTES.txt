@@ -101,3 +101,5 @@
 
 - [ ] Improve thread-safety.  Base classes should offer protected access to their mutex, and a protected copy_data(src) function that is intended to be called from a threadlocked context.  Overridden versions of this function should call the parent class copy_data().  The copy constructor should use operator=, which should lock the mutex of this and src before calling copy_data().
      - (Note that currently, I'm releasing and re-locking mutexes for base and derived class data on calls to the copy constructor or to operator=.  This is bad, and not really threadsafe.)
+
+- [ ] Deal with situation of total threads not being set before thread manager is called.
