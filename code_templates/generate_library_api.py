@@ -749,6 +749,7 @@ def generate_function_implementations( \
 
                 if is_masala_plugin_ptr :
                     dummy = []
+                    output_api_class_name = correct_masala_types( project_name, drop_const( outtype_inner ), dummy )
                     outstring += tabchar + "MASALA_SHARED_POINTER< " \
                         + outtype_inner \
                         + " > returnobj( " \
@@ -757,15 +758,23 @@ def generate_function_implementations( \
                     outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
                         + outtype_inner + "\" ) {\n"
                     outstring += tabchar + tabchar + "return masala::make_shared< " \
-                        + correct_masala_types( project_name, drop_const( outtype_inner ), dummy ) \
+                        + output_api_class_name \
                         + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
                     outstring += tabchar + "}\n"
-                    outstring += tabchar + "return masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->"
                     tempsplit = outtype_inner.strip().split()
+                    outstring += tabchar + "return std::static_pointer_cast< " \
+                        + output_api_class_name
                     if tempsplit[0] == "const" or tempsplit[len(tempsplit)-1] == "const" :
-                        outstring += "encapsulate_const_plugin_object_instance( returnobj );"
+                        outstring += " const"
+                    outstring += " >(\n" + tabchar + tabchar + \
+                        "masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->"
+                    if tempsplit[0] == "const" or tempsplit[len(tempsplit)-1] == "const" :
+                        outstring += "encapsulate_const_plugin_object_instance( returnobj )\n"
                     else :
-                        outstring += "encapsulate_plugin_object_instance( returnobj );"
+                        outstring += "encapsulate_plugin_object_instance( returnobj )\n"
+                    outstring += tabchar + ");\n}\n"
+                    add_base_class_include( project_name, outtype, additional_includes )
+                    add_base_class_include( project_name, drop_const( outtype_inner ), additional_includes )
                     additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager" )
                     return outstring
 
