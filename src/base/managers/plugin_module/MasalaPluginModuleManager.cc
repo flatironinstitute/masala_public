@@ -30,6 +30,7 @@
 // Base headers:
 #include <base/types.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
@@ -401,6 +402,40 @@ MasalaPluginModuleManager::create_plugin_object_instance(
         "with name \"" + plugin_name + "\" and keyword \"" + keyword + "\"."
     );
     return nullptr;
+}
+
+/// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+/// @details Intended only to be called from auto-generated API code.
+MasalaPluginAPISP
+MasalaPluginModuleManager::encapsulate_plugin_object_instance(
+    MasalaPluginSP const & object
+) const {
+    std::string const key( object->get_plugin_object_manager_key() );
+    std::map< std::string, MasalaPluginCreatorCSP >::const_iterator it(
+        all_plugin_map_.find( key )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != all_plugin_map_.end(), "encapsulate_plugin_object_instance",
+        "The key \"" + key + "\" could not be found.  Has this plugin class been registered with "
+        "the plugin manager?"
+    );
+    return it->second->encapsulate_plugin_object_instance( object );
+}
+
+/// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+/// @details Intended only to be called from auto-generated API code.
+MasalaPluginAPICSP
+MasalaPluginModuleManager::encapsulate_const_plugin_object_instance(
+    MasalaPluginCSP const & object
+) const {
+    std::string const key( object->get_plugin_object_manager_key() );
+    std::map< std::string, MasalaPluginCreatorCSP >::const_iterator it(
+        all_plugin_map_.find( key )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != all_plugin_map_.end(), "encapsulate_plugin_object_instance",
+        "The key \"" + key + "\" could not be found.  Has this plugin class been registered with "
+        "the plugin manager?"
+    );
+    return it->second->encapsulate_const_plugin_object_instance( object );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
