@@ -920,6 +920,7 @@ def prepare_creator_cc_file( \
         .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
+        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( name_string, namespace, ".hh" ) + ">" ) \
         .replace( "<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + api_dirname_short + name_string + "_API.hh>" ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" )
 

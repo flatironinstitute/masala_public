@@ -14,6 +14,7 @@
 
 // Project headers:
 <__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>
+<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
 
 // STL headers:
 #include <string>
@@ -62,7 +63,9 @@ masala::base::managers::plugin_module::MasalaPluginAPICSP
     // that nothing unsafe is done with the nonconst object.
 	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >(
 		std::const_pointer_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> >(
-			object
+			std::static_pointer_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const >(
+				object
+			)
 		)
 	);
 }

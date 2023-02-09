@@ -135,7 +135,13 @@ public:
     encapsulate_const_plugin_object_instance(
         masala::base::managers::plugin_module::MasalaPluginCSP const & object
     ) const override {
-        return masala::make_shared<DummyPlugin1API>( std::const_pointer_cast< DummyPlugin1 >( object ) );
+        return masala::make_shared<DummyPlugin1API>(
+            std::const_pointer_cast< DummyPlugin1 >(
+                std::static_pointer_cast< DummyPlugin1 const >(
+                    object
+                )
+            )
+        );
     }
 
     std::vector< std::vector< std::string > >
@@ -240,7 +246,13 @@ public:
     encapsulate_const_plugin_object_instance(
         masala::base::managers::plugin_module::MasalaPluginCSP const & object
     ) const override {
-        return masala::make_shared<DummyPlugin2API>( std::const_pointer_cast< DummyPlugin2 >( object ) );
+        return masala::make_shared<DummyPlugin2API>(
+            std::const_pointer_cast< DummyPlugin2 >(
+                std::static_pointer_cast< DummyPlugin2 const >(
+                    object
+                )
+            )
+        );
     }
 
     std::vector< std::vector< std::string > >
