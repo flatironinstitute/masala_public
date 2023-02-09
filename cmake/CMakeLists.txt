@@ -32,7 +32,6 @@ SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
 SET( THREADS_PREFER_PTHREAD_FLAG ON )
 SET( Catch2_DIR ../catch2_build )
 #SET(CMAKE_CXX_FLAGS "-Werror -Wall -Wextra -pedantic-errors")
-SET(CMAKE_EXE_EXPORTS_C_FLAG "-Wl,--export-dynamic")
 FIND_PACKAGE( Threads REQUIRED )
 
 # Set header file locations:
