@@ -514,6 +514,61 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             outstring += ")" + conststr + overridestr + ";"
     return outstring
 
+## @brief Generate the actual function call in a setter, getter, or work function.
+def generate_function_call( \
+        object_string : str, \
+        accessor_string : str, \
+        namepattern : str, \
+        fxn : json, \
+        ninputs : int, \
+        project_name : str, \
+        jsonfile : json \
+    ) -> str :
+    outstring = object_string + accessor_string + fxn[namepattern + "_Name"] + "("
+    if ninputs > 0 :
+        for i in range(ninputs) :
+            curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
+
+            input_is_masala_API_ptr = False
+            input_is_masala_class = False
+            if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
+                firstchevron = curinputname.find("<")
+                lastchevron = curinputname.rfind(">")
+                curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
+                if( is_masala_class( project_name, curinput_inner )  ) :
+                    input_is_masala_API_ptr = True
+            elif is_masala_class( project_name, curinputname ) :
+                curinput_inner = curinputname
+                input_is_masala_class = True
+
+            if input_is_masala_class or input_is_masala_API_ptr :
+                if input_is_masala_API_ptr :
+                    input_point_or_arrow = "->"
+                else :
+                    input_point_or_arrow = "."
+
+                inputtype = curinput_inner.split()[0]
+                assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
+                if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                else :
+                    if input_is_masala_class :
+                        outstring += " *( "
+                    else :
+                        outstring += " "
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                    if input_is_masala_class :
+                        outstring += " )"
+            else:
+
+                outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+            if i+1 < ninputs :
+                outstring += ","
+            else :
+                outstring += " "
+    outstring += ")"
+    return outstring
+
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
@@ -599,45 +654,26 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 
         # Body:
 
-        ismasalaAPIptr = False
-        ismasalaAPIobj = False
+        is_masala_API_ptr = False
+        is_masala_API_obj = False
+        is_masala_plugin_ptr = False
+        #is_masala_plugin_obj = False
         if outtype.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner )  ) :
-                ismasalaAPIptr = True
+                is_masala_API_ptr = True
+                if( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) ) :
+                    is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
-            ismasalaAPIobj = True
-
-        if is_derived == True :
-            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
-        else :
-            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
-            if ismasalaAPIptr :
-                outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We might\n"
-                outstring += tabchar + "// cast away the constness of the object, but if we do, we effectively restore it by\n"
-                outstring += tabchar + "// encapsulating it in a const API object (in that case) that only allows const access.\n"
-                outstring += tabchar + "// This is ONLY allowed in Masala code that is auto-generated in a manner that ensures\n"
-                outstring += tabchar + "// that nothing unsafe is done with the nonconst object.\n"
-            outstring += tabchar + "return "
-
-            if ismasalaAPIptr and returns_this_ref == False :
-                dummy = []
-                outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
-                outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
-                outstring += tabchar + tabchar + tabchar
-            elif ismasalaAPIobj :
-                dummy = []
-                outstring += correct_masala_types( project_name, outtype, dummy ) + "(\n"
-                if output_is_lightweight :
-                    outstring += tabchar + tabchar + outtype + "( "
-                else :
-                    outstring += tabchar + tabchar + "masala::make_shared< " + outtype + " >( "
-                add_base_class_include( project_name, outtype, additional_includes )
-        else :
-            outstring += tabchar
+            is_masala_API_obj = True
+            # if( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) ) :
+            #     is_masala_plugin_obj = True
+            assert( is_masala_plugin_class( project_name, drop_const( outtype_inner ), jsonfile ) == False ), \
+                "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
+                + "(): support for returning plugin classes by reference (and properly enclosing them in the correct " \
+                + "type of API container) has not yet been added to the build system."
 
         if is_lightweight == True :
             accessor_string = "."
@@ -651,52 +687,62 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
                 object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object() )"
             else :
                 object_string = "inner_object_"
-        outstring += object_string + accessor_string + fxn[namepattern + "_Name"] + "("
-        if ninputs > 0 :
-            for i in range(ninputs) :
-                curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
-                
-                input_is_masala_API_ptr = False
-                input_is_masala_class = False
-                if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
-                    firstchevron = curinputname.find("<")
-                    lastchevron = curinputname.rfind(">")
-                    curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
-                    if( is_masala_class( project_name, curinput_inner )  ) :
-                        input_is_masala_API_ptr = True
-                elif is_masala_class( project_name, curinputname ) :
-                    curinput_inner = curinputname
-                    input_is_masala_class = True
 
-                if input_is_masala_class or input_is_masala_API_ptr :
-                    if input_is_masala_API_ptr :
-                        input_point_or_arrow = "->"
+        if is_derived == True :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+        else :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
+            if is_masala_API_ptr or is_masala_plugin_ptr :
+                outstring += tabchar + "// In this function, note that std::const_pointer_cast is safe to use.  We might\n"
+                outstring += tabchar + "// cast away the constness of the object, but if we do, we effectively restore it by\n"
+                outstring += tabchar + "// encapsulating it in a const API object (in that case) that only allows const access.\n"
+                outstring += tabchar + "// This is ONLY allowed in Masala code that is auto-generated in a manner that ensures\n"
+                outstring += tabchar + "// that nothing unsafe is done with the nonconst object.\n" 
+
+                if is_masala_plugin_ptr :
+                    outstring += tabchar + "MASALA_SHARED_POINTER< " \
+                        + correct_masala_types( project_name, outtype_inner, dummy ) \
+                        + " > returnobj( " \
+                        + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
+                        + " );\n"
+                    outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
+                        + outtype_inner + "\" ) {\n"
+                    outstring += tabchar + tabchar + "return masala::make_shared< " \
+                        + correct_masala_types( project_name, outtype_inner, dummy ) \
+                        + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
+                    outstring += tabchar + "}\n"
+                    outstring += tabchar + "return masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->"
+                    tempsplit = outtype_inner.strip().split()
+                    if tempsplit[0] == "const" or tempsplit[len(tempsplit)-1] == "const" :
+                        outstring += "encapsulate_const_plugin_object_instance( returnobj );"
                     else :
-                        input_point_or_arrow = "."
+                        outstring += "encapsulate_plugin_object_instance( returnobj );"
+                    additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager.hh" )
+                    return
 
-                    inputtype = curinput_inner.split()[0] 
-                    assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
-                    if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                    else :
-                        if input_is_masala_class :
-                            outstring += " *( "
-                        else :
-                            outstring += " "
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                        if input_is_masala_class :
-                            outstring += " )"
-                else:
+            outstring += tabchar + "return "
 
-                    outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
-                if i+1 < ninputs :
-                    outstring += ","
+            if is_masala_API_ptr and returns_this_ref == False :
+                dummy = []
+                outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
+                outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
+                outstring += tabchar + tabchar + tabchar
+            elif is_masala_API_obj :
+                dummy = []
+                outstring += correct_masala_types( project_name, outtype, dummy ) + "(\n"
+                if output_is_lightweight :
+                    outstring += tabchar + tabchar + outtype + "( "
                 else :
-                    outstring += " "
-        outstring += ")"
-        if ismasalaAPIptr and returns_this_ref == False :
+                    outstring += tabchar + tabchar + "masala::make_shared< " + outtype + " >( "
+                add_base_class_include( project_name, outtype, additional_includes )
+        else :
+            outstring += tabchar
+
+        outstring += generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile )
+        if is_masala_API_ptr and returns_this_ref == False :
             outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
-        elif ismasalaAPIobj and returns_this_ref == False :
+        elif is_masala_API_obj and returns_this_ref == False :
             outstring += " )\n" + tabchar + ")"
         outstring += ";\n"
         if returns_this_ref == True :
