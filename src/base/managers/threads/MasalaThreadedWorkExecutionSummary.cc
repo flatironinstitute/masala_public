@@ -34,6 +34,7 @@
 #include <string>
 #include <sstream>
 #include <thread>
+#include <iomanip>
 
 namespace masala {
 namespace base {
@@ -232,6 +233,8 @@ MasalaThreadedWorkExecutionSummary::set_work_successful() {
 void
 MasalaThreadedWorkExecutionSummary::write_summary_to_tracer() const {
     std::ostringstream ss;
+
+    ss << std::setprecision(16);
 
     ss << "Carried out " << njobs_ << " jobs in " << nthreads_actual_ << " threads (" << ( all_threads_requested_ ? "all" : std::to_string( nthreads_requested_ ) ) << " threads were requested)." << std::endl;
     ss << "Total walltime:\t" << execution_time_microseconds_ << " microseconds." << std::endl;
