@@ -87,6 +87,11 @@ public:
         inner_object_( masala::make_shared< DummyPlugin1 >() )
     {}
 
+    DummyPlugin1API( std::shared_ptr< DummyPlugin1 > const & object ) :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( object )
+    {}
+
     static std::string class_name_static() { return "DummyPlugin1API"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
@@ -118,6 +123,20 @@ public:
 
     ::masala::base::managers::plugin_module::MasalaPluginAPISP
     create_plugin_object() const override { return masala::make_shared< DummyPlugin1API >(); }
+
+    masala::base::managers::plugin_module::MasalaPluginAPISP
+    encapsulate_plugin_object_instance(
+        masala::base::managers::plugin_module::MasalaPluginSP const & object
+    ) const override {
+        return masala::make_shared<DummyPlugin1API>( std::static_pointer_cast< DummyPlugin1 >( object ) );
+    }
+
+    masala::base::managers::plugin_module::MasalaPluginAPICSP
+    encapsulate_const_plugin_object_instance(
+        masala::base::managers::plugin_module::MasalaPluginCSP const & object
+    ) const override {
+        return masala::make_shared<DummyPlugin1API>( std::const_pointer_cast< DummyPlugin1 >( object ) );
+    }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {
@@ -181,6 +200,11 @@ public:
         inner_object_( masala::make_shared< DummyPlugin2 >() )
     {}
 
+    DummyPlugin2API( std::shared_ptr< DummyPlugin2 > const & object ) :
+        ::masala::base::managers::plugin_module::MasalaPluginAPI(),
+        inner_object_( object )
+    {}
+
     static std::string class_name_static() { return "DummyPlugin2API"; }
     static std::string class_namespace_static() { return "masala::tests::unit::base::managers::plugin_module"; }
 
@@ -204,6 +228,20 @@ public:
 
     ::masala::base::managers::plugin_module::MasalaPluginAPISP
     create_plugin_object() const override { return masala::make_shared< DummyPlugin2API >(); }
+
+    masala::base::managers::plugin_module::MasalaPluginAPISP
+    encapsulate_plugin_object_instance(
+        masala::base::managers::plugin_module::MasalaPluginSP const & object
+    ) const override {
+        return masala::make_shared<DummyPlugin2API>( std::static_pointer_cast< DummyPlugin2 >( object ) );
+    }
+
+    masala::base::managers::plugin_module::MasalaPluginAPICSP
+    encapsulate_const_plugin_object_instance(
+        masala::base::managers::plugin_module::MasalaPluginCSP const & object
+    ) const override {
+        return masala::make_shared<DummyPlugin2API>( std::const_pointer_cast< DummyPlugin2 >( object ) );
+    }
 
     std::vector< std::vector< std::string > >
     get_plugin_object_categories() const override {

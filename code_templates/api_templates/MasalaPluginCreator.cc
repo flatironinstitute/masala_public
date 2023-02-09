@@ -34,6 +34,39 @@ masala::base::managers::plugin_module::MasalaPluginAPISP
 	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >();
 }
 
+/// @brief Create an object of the desired type (or, more precisely, an API container
+/// for an object of a desired type).
+/// @details Must be implemented by derived classes.
+masala::base::managers::plugin_module::MasalaPluginAPISP
+<__CREATOR_CLASS_API_NAME__>::encapsulate_plugin_object_instance(
+	masala::base::managers::plugin_module::MasalaPluginSP const & object
+) const {
+	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >(
+		std::static_pointer_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> >(
+			object
+		)
+	);
+}
+
+/// @brief Create an object of the desired type (or, more precisely, an API container
+/// for an object of a desired type).
+/// @details Must be implemented by derived classes.
+masala::base::managers::plugin_module::MasalaPluginAPICSP
+<__CREATOR_CLASS_API_NAME__>::encapsulate_const_plugin_object_instance(
+	masala::base::managers::plugin_module::MasalaPluginCSP const & object
+) const {
+    // On the following line, note that std::const_pointer_cast is safe to use.  We might
+    // cast away the constness of the object, but if we do, we effectively restore it by
+    // encapsulating it in a const API object (in that case) that only allows const access.
+    // This is ONLY allowed in Masala code that is auto-generated in a manner that ensures
+    // that nothing unsafe is done with the nonconst object.
+	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >(
+		std::const_pointer_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> >(
+			object
+		)
+	);
+}
+
 /// @brief Return the names of the categories for this type of plugin object.
 /// @returns In this case, returns { <__PLUGIN_CATEGORIES__> }.
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector).
