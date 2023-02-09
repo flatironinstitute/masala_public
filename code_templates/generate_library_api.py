@@ -776,7 +776,7 @@ def generate_function_implementations( \
                     add_base_class_include( project_name, outtype, additional_includes )
                     add_base_class_include( project_name, drop_const( outtype_inner ), additional_includes )
                     additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager" )
-                    return outstring
+                    continue # Go on to next function.
 
             outstring += tabchar + "return "
 
