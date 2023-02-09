@@ -224,6 +224,25 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<vector>")
+            return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        elif inputclass.startswith( "set" ) or inputclass.startswith( "std::set" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<set>")
+            return "std::set< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
+            firstchevron = inputclass.find( "<" )
+            firstcomma = inputclass.find( "," )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<map>")
+            return "std::map< " \
+                + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                + correct_masala_types( project_name, inputclass[firstcomma + 1 : firstchevron].strip(), additional_includes, is_enum=is_enum ) \
+                + " >"
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
@@ -684,6 +703,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 ## string of the inclusions.
 def generate_additional_includes( additional_includes : list, generate_fwd_includes : bool, original_api_include: str ) -> str :
     outstr = ""
+    added = []
     if generate_fwd_includes == True :
         fwdstr = ".fwd"
     else :
@@ -691,11 +711,18 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
     first = True
     for entry in additional_includes :
         if entry != original_api_include :
-            if first == True :
-                first = False
+            if entry.startswith("<") :
+                assert entry.endswith(">")
+                newentry = "#include " + entry
             else :
-                outstr += "\n"
-            outstr += "#include <" + entry + fwdstr + ".hh>"
+                newentry = "#include <" + entry + fwdstr + ".hh>"
+            if newentry not in added :
+                added.append(newentry)
+                if first == True :
+                    first = False
+                else :
+                    outstr += "\n"
+                outstr += newentry
     return outstr
 
 ## @brief Generate the categories for a plugin class, from the JSON description.
