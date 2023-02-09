@@ -78,6 +78,12 @@ public:
     std::vector< std::string >
     get_keywords() const = 0;
 
+	/// @brief Get the map key for the class of object, as used for indexing in the MasalaPluginManager.
+	/// @details The map key is the concatenated vector of base class names (separated by commas)
+	/// followed by a colon and then the object name.
+	std::string
+	get_plugin_object_manager_key() const;
+
 }; // class MasalaPlugin
 
 } // namespace plugin_module	
