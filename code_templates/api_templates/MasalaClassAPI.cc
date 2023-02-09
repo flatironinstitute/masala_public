@@ -55,7 +55,6 @@
 /// a shared pointer to the copy.
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::clone() const {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
     return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
 }
 
