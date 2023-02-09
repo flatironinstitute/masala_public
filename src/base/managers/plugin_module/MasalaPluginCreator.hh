@@ -35,6 +35,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 
 // STL headers:
 #include <vector>
@@ -77,6 +78,24 @@ public:
 	virtual
 	masala::base::managers::plugin_module::MasalaPluginAPISP
 	create_plugin_object() const = 0;
+
+	/// @brief Create an object of the desired type (or, more precisely, an API container
+	/// for an object of a desired type).
+	/// @details Must be implemented by derived classes.
+	virtual
+	masala::base::managers::plugin_module::MasalaPluginAPISP
+	encapsulate_plugin_object_instance(
+		masala::base::managers::plugin_module::MasalaPluginSP const & object
+	) const = 0;
+
+	/// @brief Create an object of the desired type (or, more precisely, an API container
+	/// for an object of a desired type).
+	/// @details Must be implemented by derived classes.
+	virtual
+	masala::base::managers::plugin_module::MasalaPluginAPICSP
+	encapsulate_const_plugin_object_instance(
+		masala::base::managers::plugin_module::MasalaPluginCSP const & object
+	) const = 0;
 
 	/// @brief Return the names of the categories for this type of plugin object.
 	/// @details For example, Selector, AtomSelector, etc.
