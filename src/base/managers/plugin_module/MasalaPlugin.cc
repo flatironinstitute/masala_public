@@ -71,5 +71,3 @@ MasalaPlugin::get_plugin_object_manager_key() const {
 } // namespace managers
 } // namespace base
 } // namespace masala
-
-#endif //Masala_src_base_managers_plugin_module_MasalaPlugin_hh
