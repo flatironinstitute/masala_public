@@ -618,28 +618,37 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     ) {
         if( one_choice_nodes.count( it->first ) != 0 ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
-                it->second.size() == 1,
+                it->second.size() <= 1,
                 "one_choice_node_constant_offset",
                 "Program error: multiple choice assignments found in single-node energies!"
             );
-            accumulator1 += it->second.cbegin()->second; // Add onebody energies of nodes with only one choice.
+            if( it->second.size() == 1 ) {
+                accumulator1 += it->second.cbegin()->second; // Add onebody energies of nodes with only one choice.
+            }
         }
     }
-
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
+    // Accumulate the twobody energies of pairs of one-choice nodes:
     for( std::map< std::pair< Size, Size >, std::map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.cbegin() );
         it != pairwise_node_penalties_.cend();
         ++it
     ) {
-        if( single_node_penalties_.count( it->first.first ) != 0 && single_node_penalties_.count( it->first.first ) != 0 ) {
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it->second.size() == 1, "one_choice_node_constant_offset", "Program error: multiple choice assignments found in pairwise node energies!" );
-            accumulator2 += it->second.cbegin()->second; // Add twobody energies of pairs of nodes with only one choice.
+        if( one_choice_nodes.count( it->first.first ) != 0 && one_choice_nodes.count( it->first.second ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+                it->second.size() <= 1,
+                "one_choice_node_constant_offset",
+                "Program error: multiple choice assignments found in pairwise node energies at two positions "
+                "that are supposed to have one choice each!"
+            );
+            if( it->second.size() == 1 ) {
+                accumulator2 += it->second.cbegin()->second; // Add twobody energies of pairs of nodes with only one choice.
+            }
         }
     }
-
     write_to_tracer( "Sum of two-body energies between nodes with only one choice: " + std::to_string( accumulator2 ) );
 
+    // Sum the onebody and twobody energies of nodes with only one choice:
     Real total_accumulator( accumulator1 + accumulator2 );
     write_to_tracer( "Total node background: " + std::to_string( total_accumulator ) );
 
