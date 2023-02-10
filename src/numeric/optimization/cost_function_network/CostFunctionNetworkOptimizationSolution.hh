@@ -132,6 +132,29 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the solution vector for this problem.
+	/// @details This returns the solution vector as one value per
+	/// variable position, in order of variable positions.  Indices
+	/// in the vector do NOT necessarily correspond to node indices,
+	/// since nodes with zero or one choice are omitted.
+	/// @note Problem and solution vector must have been set.
+	std::vector< masala::base::Size > const &
+	solution_at_variable_positions() const;
+
+	/// @brief Get the solution vector for this problem.
+	/// @details This returns the solution vector as one value per
+	/// position, in order of all positions.  Indices in the vector
+	/// correspond to node indices.
+	/// @note Problem and solution vector must have been set.
+	std::vector< masala::base::Size >
+	solution_at_all_positions() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 

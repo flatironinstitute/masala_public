@@ -216,6 +216,34 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 std::bind( &OptimizationSolution::solution_score, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > const & > >(
+                "solution_at_variable_positions", "Get the solution "
+                "vector for this problem for variable nodes only.  "
+                "This returns the solution vector as one value per "
+                "variable position, in order of variable positions.  Indices "
+                "in the vector do NOT necessarily correspond to node indices, "
+                "since nodes with zero or one choice are omitted.  Problem and "
+                "solution vector must have been set.",
+                "solution_at_variable_positions", "A vector of choices, one per variable node.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_at_variable_positions, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > > >(
+                "solution_at_all_positions", "Get the solution vector "
+                "for this problem, for all nodes.  "
+                "This returns the solution vector as one value per "
+                "position, in order of positions.  Indices "
+                "in the vector correspond to node indices.  Problem and "
+                "solution vector must have been set.",
+                "solution_at_all_positions", "A vector of choices, one per node.  Nodes "
+                "with no choices will show a zero for the choice index.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_at_all_positions, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
@@ -250,6 +278,51 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
     }
 
     return api_definition();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the solution vector for this problem.
+/// @details This returns the solution vector as one value per
+/// variable position, in order of variable positions.  Indices
+/// in the vector do NOT necessarily correspond to node indices,
+/// since nodes with zero or one choice are omitted.
+/// @note Problem and solution vector must have been set.
+std::vector< masala::base::Size > const &
+CostFunctionNetworkOptimizationSolution::solution_at_variable_positions() const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "solution_at_variable_positions",
+        "The problem must be set before calling this function!"
+    );
+    CHECK_OR_THROW_FOR_CLASS( !solution_vector_.empty(), "solution_at_variable_positions",
+        "An empty solution vector was found!  Was the solution vector set before calling this function?"
+    );
+    return solution_vector_;
+}
+
+/// @brief Get the solution vector for this problem.
+/// @details This returns the solution vector as one value per
+/// position, in order of all positions.  Indices in the vector
+/// correspond to node indices.
+/// @note Problem and solution vector must have been set.
+std::vector< masala::base::Size >
+CostFunctionNetworkOptimizationSolution::solution_at_all_positions() const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "solution_at_all_positions",
+        "The problem must be set before calling this function!"
+    );
+    CHECK_OR_THROW_FOR_CLASS( !solution_vector_.empty(), "solution_at_all_positions",
+        "An empty solution vector was found!  Was the solution vector set before calling this function?"
+    );
+    CostFunctionNetworkOptimizationProblemCSP problem( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+    std::vector< std::pair< base::Size, base::Size > > const varnodes( problem->n_choices_at_variable_nodes() );
+    std::vector< base::Size > solution( problem->total_nodes(), 0 );
+    for( base::Size i(0), imax(solution_vector_.size()); i<imax; ++i ) {
+        solution[varnodes[i].first] = solution_vector_[i];
+    }
+    return solution;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
