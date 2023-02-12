@@ -169,7 +169,7 @@ MasalaPluginModuleManager::remove_plugins(
         // FOR DEBUGGING ONLY.  DELETE ME:
         write_to_tracer( "Removing " + creator->get_plugin_object_namespace_and_name() + ".  Current categories are:" );
         write_to_tracer( "Num_entries\tCategory" );
-        for( auto it( plugins_by_hierarchical_category_.cbegin() ); it!=plugins_by_hierarchical_category_.cend(); ++it ) {
+        for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
 			std::ostringstream ss;
 			ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
 			write_to_tracer( ss.str() );
@@ -180,7 +180,7 @@ MasalaPluginModuleManager::remove_plugins(
 		// FOR DEBUGGING ONLY.  DELETE ME:
 		write_to_tracer( "After removing " + creator->get_plugin_object_namespace_and_name() + ":" );
 		write_to_tracer( "Num_entries\tCategory" );
-        for( auto it( plugins_by_hierarchical_category_.cbegin() ); it!=plugins_by_hierarchical_category_.cend(); ++it ) {
+        for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
 			std::ostringstream ss;
 			ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
 			write_to_tracer( ss.str() );
