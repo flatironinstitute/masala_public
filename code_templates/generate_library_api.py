@@ -30,6 +30,7 @@ from re import split as regex_split
 from sys import argv
 import os
 import shutil
+import re
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -48,6 +49,40 @@ def is_masala_class( project_name : str, classname : str ) -> bool :
     if classname.startswith( project_name + "::" ) : return True
     return False
 
+## @brief Determine whether a class derives from a masala plugin class base.
+## @details Assumes that "const" has been trimmed from class_namespace_and_name.
+def is_masala_plugin_class( \
+    project_name : str, \
+    library_name : str, \
+    class_namespace_and_name : str, \
+    jsonfile : json \
+    ) -> bool :
+    namesplit = class_namespace_and_name.split("::")
+    if( namesplit[0] == project_name and namesplit[1] == library_name ) :
+        if class_namespace_and_name in jsonfile["Elements"] :
+            if jsonfile["Elements"][class_namespace_and_name]["Properties"]["Is_Plugin_Class"] == True :
+                return True
+            else :
+                return False
+
+    # Check the class inheritence:
+    fname = namesplit[1]
+    for i in range (2, len(namesplit)) :
+        fname += "/" + namesplit[i]
+    fname += ".hh"
+    fcontents = slurp_file_and_remove_comments( fname ).replace(":", " : ").replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    parentclass = None
+    for i in range( len(fcontents) - 4 ) :
+        if fcontents[i] == "class" and \
+            fcontents[i+1] == namesplit[len(namesplit)-1] and \
+            fcontents[i+2] == ":" and \
+            fcontents[i+3] == "public" :
+            parentclass = fcontents[i+4]
+    if parentclass == None : return False
+    elif parentclass == "masala::base::managers::plugin_module::MasalaPlugin" : return True
+
+    return is_masala_plugin_class( project_name, library_name, parentclass, jsonfile )
+
 ## @brief Returns true if a class is a masala API class (i.e. follows pattern
 ## "masala::*_api::" ).
 def is_masala_api_class( classname : str ) -> bool :
@@ -57,6 +92,19 @@ def is_masala_api_class( classname : str ) -> bool :
     if len(classname_split) > 2 and classname_split[1].endswith("_api") :
         return True
     return False
+
+## @brief Read a C++ file and remove comments, returning a string of file contents.
+def slurp_file_and_remove_comments( filename : str ) -> str :
+    with open( filename, 'r' ) as filehandle :
+        filecontents = filehandle.read()
+    
+    # Remove anything between /* and */ or bewteen // and \n
+    # (Shamelessly taken from stackexchange).
+    comments = re.compile( r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"', re.DOTALL | re.MULTILINE )
+
+    return comments.sub( ' ', filecontents )
+    
+
 
 ## @brief Initialize the auto_generated_api directory, creating it if it does
 ## not exist and deleting anything in it if it does.
@@ -209,7 +257,31 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<vector>")
+            return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "set" ) or inputclass.startswith( "std::set" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<set>")
+            return "std::set< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "list" ) or inputclass.startswith( "std::list" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<list>")
+            return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
+            firstchevron = inputclass.find( "<" )
+            firstcomma = inputclass.find( "," )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<map>")
+            return "std::map< " \
+                + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                + correct_masala_types( project_name, inputclass[firstcomma + 1 : firstchevron].strip(), additional_includes, is_enum=is_enum ) \
+                + " >"
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
@@ -303,6 +375,12 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 ## @note The classname input should include namespace.
 def generate_constructor_prototypes(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
     outstring = ""
+
+    if jsonfile["Elements"][classname]["Properties"]["Has_Protected_Constructors"] == True :
+        outstring += "protected:\n\n"
+    else :
+        outstring += "public:\n\n"
+
     first = True
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
         #print(constructor)
@@ -318,6 +396,8 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
         outstring += tabchar + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
+                if i > 0 :
+                    outstring += ","
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + tabchar + ");"
         else :
@@ -326,14 +406,9 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool, is_plugin_class : bool ) -> str :
+def generate_constructor_implementations(project_name: str, api_base_class : str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool,  is_derived : bool, is_plugin_class : bool ) -> str :
     outstring = ""
     first = True
-
-    if is_plugin_class == True :
-        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
-    else :
-        api_base_class = "masala::base::MasalaObjectAPI"
 
     for constructor in jsonfile["Elements"][classname]["Constructors"]["Constructor_APIs"] :
         #print(constructor)
@@ -349,29 +424,50 @@ def generate_constructor_implementations(project_name: str, classname: str, json
         outstring += constructor["Constructor_Name"] + "_API::" + constructor["Constructor_Name"] + "_API("
         if ninputs > 0 :
             for i in range(ninputs) :
+                if i > 0 :
+                    outstring += ","
                 outstring += "\n" + tabchar + correct_masala_types( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + constructor["Inputs"]["Input_" + str(i)]["Input_Name"]
             outstring += "\n" + ") :\n"
         else :
             outstring += ") :\n"
         
         # Initialization:
-        outstring += tabchar + api_base_class + "(),\n"
-        if is_lightweight == True :
-            outstring += tabchar + "inner_object_("
-        else:
-            outstring += tabchar + "inner_object_( masala::make_shared< " + classname + " >("
-        if ninputs > 0 :
-            for i in range(ninputs) :
-                outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
-                if i+1 < ninputs :
-                    outstring += ","
-                else :
-                    outstring += " "
-        
-        if is_lightweight == True :
-            outstring +=")\n"
+        if is_derived == True :
+            outstring += tabchar + api_base_class + "( "
+            if is_lightweight == True :
+                outstring += classname + "("
+            else:
+                outstring += "masala::make_shared< " + classname + " >("
+            if ninputs > 0 :
+                for i in range(ninputs) :
+                    outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
+                    if i+1 < ninputs :
+                        outstring += ","
+                    else :
+                        outstring += " "
+            
+            if is_lightweight == True :
+                outstring +=")\n"
+            else :
+                outstring +=") )\n"
         else :
-            outstring +=") )\n"
+            outstring += tabchar + api_base_class + "(),\n"
+            if is_lightweight == True :
+                outstring += tabchar + "inner_object_("
+            else:
+                outstring += tabchar + "inner_object_( masala::make_shared< " + classname + " >("
+            if ninputs > 0 :
+                for i in range(ninputs) :
+                    outstring += " " + access_needed_object( project_name, constructor["Inputs"]["Input_" + str(i)]["Input_Type"], constructor["Inputs"]["Input_" + str(i)]["Input_Name"], jsonfile )
+                    if i+1 < ninputs :
+                        outstring += ","
+                    else :
+                        outstring += " "
+            
+            if is_lightweight == True :
+                outstring +=")\n"
+            else :
+                outstring +=") )\n"
 
         # Body:
         outstring += "{}"
@@ -423,8 +519,12 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                 outstring += "  (The return value is an enum.)\n"
             else :
                 outstring += "\n"
+            if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
+                outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
+            if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
+                outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
         outstring += tabchar + fxn[namepattern + "_Name"] + "("
 
@@ -433,19 +533,92 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             conststr = ""
 
+        if fxn["Is_Override_Of_Base_API_Virtual_Function"] == True :
+            overridestr = " override"
+        else :
+            overridestr = ""
+
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
-            outstring += "\n" + tabchar + ")" + conststr + ";"
+                if i+1 < ninputs :
+                    outstring += ","
+            outstring += "\n" + tabchar + ")" + conststr + overridestr + ";"
         else :
-            outstring += ")" + conststr + ";"
+            outstring += ")" + conststr + overridestr + ";"
+    return outstring
+
+## @brief Generate the actual function call in a setter, getter, or work function.
+def generate_function_call( \
+        object_string : str, \
+        accessor_string : str, \
+        namepattern : str, \
+        fxn : json, \
+        ninputs : int, \
+        project_name : str, \
+        jsonfile : json \
+    ) -> str :
+    outstring = object_string + accessor_string + fxn[namepattern + "_Name"] + "("
+    if ninputs > 0 :
+        for i in range(ninputs) :
+            curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
+
+            input_is_masala_API_ptr = False
+            input_is_masala_class = False
+            if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
+                firstchevron = curinputname.find("<")
+                lastchevron = curinputname.rfind(">")
+                curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
+                if( is_masala_class( project_name, curinput_inner )  ) :
+                    input_is_masala_API_ptr = True
+            elif is_masala_class( project_name, curinputname ) :
+                curinput_inner = curinputname
+                input_is_masala_class = True
+
+            if input_is_masala_class or input_is_masala_API_ptr :
+                if input_is_masala_API_ptr :
+                    input_point_or_arrow = "->"
+                else :
+                    input_point_or_arrow = "."
+
+                inputtype = curinput_inner.split()[0]
+                assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
+                if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                else :
+                    if input_is_masala_class :
+                        outstring += " *( "
+                    else :
+                        outstring += " "
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
+                    if input_is_masala_class :
+                        outstring += " )"
+            else:
+
+                outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+            if i+1 < ninputs :
+                outstring += ","
+            else :
+                outstring += " "
+    outstring += ")"
     return outstring
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_implementations( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_lightweight: bool ) -> str :
+def generate_function_implementations( \
+    project_name: str, \
+    library_name : str, \
+    classname: str, \
+    jsonfile: json, \
+    tabchar: str, \
+    fxn_type: str, \
+    additional_includes: list, \
+    is_lightweight: bool, \
+    is_derived : bool \
+    ) -> str :
+
     outstring = ""
     first = True
 
@@ -518,39 +691,101 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         if ninputs > 0 :
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                if i+1 < ninputs :
+                    outstring += ","
             outstring += "\n)" + conststr + " {\n"
         else :
             outstring += ")" + conststr + " {\n"
 
         # Body:
 
-        ismasalaAPIptr = False
-        ismasalaAPIobj = False
+        is_masala_API_ptr = False
+        is_masala_API_obj = False
+        is_masala_plugin_ptr = False
+        #is_masala_plugin_obj = False
         if outtype.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner )  ) :
-                ismasalaAPIptr = True
+                is_masala_API_ptr = True
+                if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
+                    is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
-            ismasalaAPIobj = True
+            is_masala_API_obj = True
+            # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
+            #     is_masala_plugin_obj = True
+            assert( is_masala_plugin_class( project_name, library_name, drop_const( outtype ), jsonfile ) == False ), \
+                "\n********************************************************************************\n" \
+                + "Error in generating implementation for function " + apiclassname + "::" + fxn[namepattern + "_Name"] \
+                + "():\nsupport for returning plugin classes by reference (and properly enclosing them in the correct\n" \
+                + "type of API container) has not yet been added to the Masala build system.\n" \
+                + "********************************************************************************"
 
-        outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        if is_lightweight == True :
+            accessor_string = "."
+            if is_derived == True :
+                object_string = "static_cast< " + classname + conststr + " >( inner_object() )"
+            else :
+                object_string = "inner_object_"
+        else :
+            accessor_string = "->"
+            if is_derived == True :
+                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object() )"
+            else :
+                object_string = "inner_object_"
+
+        if is_derived == True :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+        else :
+            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
-            if ismasalaAPIptr :
-                outstring += tabchar + "// On the following line, note that std::const_pointer_cast is safe to use.  We\n"
-                outstring += tabchar + "// cast away the constness of the object, but effectively restore it by encapsulating\n"
-                outstring += tabchar + "// it in an API object that only allows const access.  This is ONLY allowed in Masala\n"
-                outstring += tabchar + "// code that is auto-generated in a manner that ensures that nothing unsafe is done\n"
-                outstring += tabchar + "// with the nonconst object.\n"
+            if is_masala_API_ptr or is_masala_plugin_ptr :
+                outstring += tabchar + "// In this function, note that std::const_pointer_cast is safe to use.  We might\n"
+                outstring += tabchar + "// cast away the constness of the object, but if we do, we effectively restore it by\n"
+                outstring += tabchar + "// encapsulating it in a const API object (in that case) that only allows const access.\n"
+                outstring += tabchar + "// This is ONLY allowed in Masala code that is auto-generated in a manner that ensures\n"
+                outstring += tabchar + "// that nothing unsafe is done with the nonconst object.\n" 
+
+                if is_masala_plugin_ptr :
+                    dummy = []
+                    output_api_class_name = correct_masala_types( project_name, drop_const( outtype_inner ), dummy )
+                    outstring += tabchar + "MASALA_SHARED_POINTER< " \
+                        + outtype_inner \
+                        + " > returnobj( " \
+                        + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
+                        + " );\n"
+                    outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
+                        + outtype_inner + "\" ) {\n"
+                    outstring += tabchar + tabchar + "return masala::make_shared< " \
+                        + output_api_class_name \
+                        + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
+                    outstring += tabchar + "}\n"
+                    tempsplit = outtype_inner.strip().split()
+                    outstring += tabchar + "return std::static_pointer_cast< " \
+                        + output_api_class_name
+                    if tempsplit[0] == "const" or tempsplit[len(tempsplit)-1] == "const" :
+                        outstring += " const"
+                    outstring += " >(\n" + tabchar + tabchar + \
+                        "masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->"
+                    if tempsplit[0] == "const" or tempsplit[len(tempsplit)-1] == "const" :
+                        outstring += "encapsulate_const_plugin_object_instance( returnobj )\n"
+                    else :
+                        outstring += "encapsulate_plugin_object_instance( returnobj )\n"
+                    outstring += tabchar + ");\n}\n"
+                    add_base_class_include( project_name, outtype, additional_includes )
+                    add_base_class_include( project_name, drop_const( outtype_inner ), additional_includes )
+                    additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager" )
+                    continue # Go on to next function.
+
             outstring += tabchar + "return "
 
-            if ismasalaAPIptr and returns_this_ref == False :
+            if is_masala_API_ptr and returns_this_ref == False :
                 dummy = []
                 outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
-            elif ismasalaAPIobj :
+            elif is_masala_API_obj :
                 dummy = []
                 outstring += correct_masala_types( project_name, outtype, dummy ) + "(\n"
                 if output_is_lightweight :
@@ -561,55 +796,10 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
         else :
             outstring += tabchar
 
-        accessor_string = "->"
-        if is_lightweight == True :
-            accessor_string = "."
-        outstring += "inner_object_" + accessor_string + fxn[namepattern + "_Name"] + "("
-        if ninputs > 0 :
-            for i in range(ninputs) :
-                curinputname = fxn["Inputs"]["Input_" + str(i)]["Input_Type"]
-                
-                input_is_masala_API_ptr = False
-                input_is_masala_class = False
-                if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
-                    firstchevron = curinputname.find("<")
-                    lastchevron = curinputname.rfind(">")
-                    curinput_inner = curinputname[firstchevron+1:lastchevron].strip()
-                    if( is_masala_class( project_name, curinput_inner )  ) :
-                        input_is_masala_API_ptr = True
-                elif is_masala_class( project_name, curinputname ) :
-                    curinput_inner = curinputname
-                    input_is_masala_class = True
-
-                if input_is_masala_class or input_is_masala_API_ptr :
-                    if input_is_masala_API_ptr :
-                        input_point_or_arrow = "->"
-                    else :
-                        input_point_or_arrow = "."
-
-                    inputtype = curinput_inner.split()[0] 
-                    assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
-                    if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                    else :
-                        if input_is_masala_class :
-                            outstring += " *( "
-                        else :
-                            outstring += " "
-                        outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                        if input_is_masala_class :
-                            outstring += " )"
-                else:
-
-                    outstring += " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
-                if i+1 < ninputs :
-                    outstring += ","
-                else :
-                    outstring += " "
-        outstring += ")"
-        if ismasalaAPIptr and returns_this_ref == False :
+        outstring += generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile )
+        if is_masala_API_ptr and returns_this_ref == False :
             outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
-        elif ismasalaAPIobj and returns_this_ref == False :
+        elif is_masala_API_obj and returns_this_ref == False :
             outstring += " )\n" + tabchar + ")"
         outstring += ";\n"
         if returns_this_ref == True :
@@ -621,6 +811,7 @@ def generate_function_implementations( project_name: str, classname: str, jsonfi
 ## string of the inclusions.
 def generate_additional_includes( additional_includes : list, generate_fwd_includes : bool, original_api_include: str ) -> str :
     outstr = ""
+    added = []
     if generate_fwd_includes == True :
         fwdstr = ".fwd"
     else :
@@ -628,11 +819,20 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
     first = True
     for entry in additional_includes :
         if entry != original_api_include :
-            if first == True :
-                first = False
+            if entry.startswith("<") :
+                assert entry.endswith(">")
+                if(fwdstr=="") :
+                    continue #Only include vector/list/set/map includes in header file.
+                newentry = "#include " + entry
             else :
-                outstr += "\n"
-            outstr += "#include <" + entry + fwdstr + ".hh>"
+                newentry = "#include <" + entry + fwdstr + ".hh>"
+            if newentry not in added :
+                added.append(newentry)
+                if first == True :
+                    first = False
+                else :
+                    outstr += "\n"
+                outstr += newentry
     return outstr
 
 ## @brief Generate the categories for a plugin class, from the JSON description.
@@ -823,6 +1023,7 @@ def prepare_creator_cc_file( \
         .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
+        .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( name_string, namespace, ".hh" ) + ">" ) \
         .replace( "<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + api_dirname_short + name_string + "_API.hh>" ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" )
 
@@ -865,8 +1066,114 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
         filehandle.write(fwdfile)
     print( "\tWrote \"" + fname + "\"."  )
 
+## @brief Figure out the parent class for this API class, and the include file that defines the parent class.
+## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
+## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
+## @returns A tuple of ( parent include file string, parent namespace and name string, root API class namespace and name string, boolean representing whether this is a class derived from another API class ).
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list[str], is_plugin_class : bool ) -> tuple[ str, str, bool ] :
+    #print( classname, namespace, flush=True )
+    # First, find the parent class name.
+    assert len(namespace) > 1
+    if namespace[0] == project_name :
+        fstring = "src/"
+    else :
+        fstring = "headers/" + namespace[0] + "/headers/"
+    for i in range( 1, len(namespace) ) : #Deliberately starting at 1 (not 0) to omit project namespace.
+        fstring += namespace[i]
+        fstring += "/"
+    fstring += classname + ".hh"
+    lines = slurp_file_and_remove_comments(fstring).splitlines()
+    #for line in lines : print(line)
+    parent_namespace_and_name = None
+    for line in lines :
+        linesplit = line.strip().split()
+        if len(linesplit) > 2 and linesplit[0] == "class" and (linesplit[1] == classname or linesplit[1] == classname + ":") :
+            if linesplit[1] == classname + ":" :
+                startentry = 2
+            else :
+                startentry = 3
+            assert len(linesplit) > startentry + 1
+            assert linesplit[startentry] == "public"
+            parent_namespace_and_name = linesplit[startentry+1]
+            if parent_namespace_and_name.endswith("{") :
+                parent_namespace_and_name = parent_namespace_and_name[:-1]
+            print("\t\tFound parent class " + parent_namespace_and_name + ".")
+            break
+
+    if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
+        # Second, prepare the parent class .hh file.
+        parentsplit = parent_namespace_and_name.split("::")
+        assert len(parentsplit) > 0
+        if parentsplit[0] == project_name :
+            parent_hhfile = "src"
+            parent_api_hhfile = "src"
+        else :
+            parent_hhfile = "headers/" + parentsplit[0] + "/headers"
+            parent_api_hhfile = "headers/" + parentsplit[0] + "/headers"
+        parent_api_namespace_and_name = parentsplit[0]
+        assert len(parentsplit) > 2
+        for i in range( 1, len(parentsplit) ) :
+            parent_hhfile += "/" + parentsplit[i]
+            if i == 2 :
+                parent_api_hhfile += "_api/auto_generated_api"
+                parent_api_namespace_and_name += "_api::auto_generated_api"
+            parent_api_hhfile += "/" + parentsplit[i]
+            parent_api_namespace_and_name += "::" + parentsplit[i]
+        parent_hhfile += ".hh"
+        parent_api_hhfile += "_API.hh"
+        parent_api_namespace_and_name += "_API"
+
+        # Third, check the parent file for an API definition.
+        parent_has_api = False
+        #print( "****\t" + parent_hhfile, flush=True )
+        lines = slurp_file_and_remove_comments(parent_hhfile).replace("(", " ( ").replace(")", " ) ").replace("=", " = ").replace("0", " 0 ").replace(";", " ; ").split() # Overwrite old lines; split by whitespace.
+        #print(lines)
+        for i in range( 0, len(lines) - 6 ) :
+            if lines[i].endswith("MasalaObjectAPIDefinitionCWP") and \
+                lines[i+1] == "get_api_definition" and \
+                lines[i+2] == "(" and \
+                lines[i+3] == ")" and \
+                lines[i+4] == "override" and \
+                lines[i+5] != "=" and \
+                lines[i+6] != "0":
+
+                parent_has_api = True
+                print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
+                break
+
+        parent_classname = parentsplit[len(parentsplit) - 1]
+        parent_namespace = []
+        for j in range( len(parentsplit) - 1 ) :
+            parent_namespace.append( parentsplit[j] )
+        if parent_api_hhfile.startswith( "src/" ) :
+            parent_api_hhfile = "#include <" + parent_api_hhfile[4:] + ">"
+        else :
+            parent_api_hhfile = "#include <" + parent_api_hhfile[17 + len(parentsplit[0]):] + ">"
+
+        if parent_has_api == True :
+            include2, parent2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
+                root_api_namespace_and_name = parent_api_namespace_and_name
+            return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
+        else : # parent_has_api == False
+            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
+            include2, parent2, root_api_namespace_and_name, ancestor_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
+            return( include2, parent2, root_api_namespace_and_name, ancestor_is_plugin )
+
+    # If we reach here, there's no parent class with an API.
+    if is_plugin_class == True :
+        return ( "#include <base/managers/plugin_module/MasalaPluginAPI.hh>", \
+            "masala::base::managers::plugin_module::MasalaPluginAPI", \
+            "masala::base::managers::plugin_module::MasalaPluginAPI", \
+            False )
+    else :
+        return ( "#include <base/MasalaObjectAPI.hh>", \
+            "masala::base::MasalaObjectAPI", \
+            "masala::base::MasalaObjectAPI", \
+            False )
+
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
@@ -878,20 +1185,29 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
 
-    if is_plugin_class == True :
-        api_base_class_include = "#include <base/managers/plugin_module/MasalaPluginAPI.hh>"
-        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+
+    if is_derived == False :
+        hhfile_template_to_use = hhfile_template
     else :
-        api_base_class_include = "#include <base/MasalaObjectAPI.hh>"
-        api_base_class = "masala::base::MasalaObjectAPI"
+        hhfile_template_to_use = derived_hhfile_template
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
+    if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
+        pure_virtuals_for_protected_constructor_classes = " = 0"
+        protected_constructor_comment_start = "/*\n\t// (Commented out because this API class has protected constructors.)"
+        protected_constructor_comment_end = "*/"
+    else :
+        pure_virtuals_for_protected_constructor_classes = ""
+        protected_constructor_comment_start = ""
+        protected_constructor_comment_end = ""
+
     additional_includes = []
 
     hhfile = \
-        hhfile_template \
+        hhfile_template_to_use \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + dirname_short + apiclassname + ".hh" ) \
         .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Headers for auto-generated API for\n/// " + namespace_and_source_class + " class." ) \
@@ -915,7 +1231,12 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
-        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include )
+        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
+        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include ) \
+        .replace( "<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", pure_virtuals_for_protected_constructor_classes ) \
+        .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
+        .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -923,7 +1244,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool  ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -934,15 +1255,24 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
-    if is_plugin_class == True :
-        api_base_class = "masala::base::managers::plugin_module::MasalaPluginAPI"
+    if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
+        protected_constructor_comment_start = "/*\n// (Commented out because this API class has protected constructors and these functions are pure virtual.)"
+        protected_constructor_comment_end = "*/"
     else :
-        api_base_class = "masala::base::MasalaObjectAPI"
+        protected_constructor_comment_start = ""
+        protected_constructor_comment_end = ""
+
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class )
+
+    if is_derived == False :
+        ccfile_template_to_use = ccfile_template
+    else :
+        ccfile_template_to_use = derived_ccfile_template
 
     additional_includes = []
 
     ccfile = \
-        ccfile_template \
+        ccfile_template_to_use \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + dirname_short + apiclassname + ".cc" ) \
         .replace( "<__DOXYGEN_BRIEF_DESCRIPTION__>", "/// @brief Implementations for auto-generated API for\n/// " + namespace_and_source_class + " class." ) \
@@ -957,12 +1287,15 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight) ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
-        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class )
+        .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
+        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
+        .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
+        .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
@@ -1106,6 +1439,9 @@ ccfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.cc" )
 hhfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.hh" )
 fwdfile_template = read_file( "code_templates/api_templates/MasalaClassAPI.fwd.hh" )
 
+derived_ccfile_template = read_file( "code_templates/api_templates/MasalaDerivedClassAPI.cc" )
+derived_hhfile_template = read_file( "code_templates/api_templates/MasalaDerivedClassAPI.hh" )
+
 lightweight_ccfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.cc" )
 lightweight_hhfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.hh" )
 lightweight_fwdfile_template = read_file( "code_templates/api_templates/MasalaLightWeightClassAPI.fwd.hh" )
@@ -1139,14 +1475,14 @@ if json_api["Elements"] is not None :
         is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
         if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class )
         else :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class )
         
-        if is_plugin_class == True :
+        if is_plugin_class == True and json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
             generate_registration_function = True
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
             plugins_list.append( [creator_name,creator_namespace,creator_filename] )

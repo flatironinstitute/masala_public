@@ -77,6 +77,10 @@ public:
 	/// @param[in] output_parameter_name A name for what the getter returns.  (Not used in the
 	///            C++ code; could be used elsewhere.)
 	/// @param[in] output_parameter_description The description of what the getter returns.
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
 	/// @param[in] getter_function The actual getter function.
 	MasalaObjectAPIGetterDefinition_OneInput(
 		std::string const & getter_function_name,
@@ -85,9 +89,14 @@ public:
 		std::string const & input_parameter0_description,
 		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn,
 		std::function< T0( T1 ) > const & getter_function
 	) :
-		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description ),
+		MasalaObjectAPIGetterDefinition(
+			getter_function_name, getter_function_description,
+			is_virtual_non_override_fxn, is_override_of_api_virtual_fxn
+		),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_(output_parameter_name),
@@ -107,6 +116,10 @@ public:
 	/// @param[in] output_parameter_description The description of what the getter returns.
 	/// @param[in] output_type_name The name of the output type.
 	/// @param[in] output_type_namespace The namespace of the output type.
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
 	/// @param[in] getter_function The actual getter function.
 	MasalaObjectAPIGetterDefinition_OneInput(
 		std::string const & getter_function_name,
@@ -117,9 +130,15 @@ public:
 		std::string const & output_parameter_description,
 		std::string const & output_type_name,
 		std::string const & output_type_namespace,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn,
 		std::function< T0( T1 ) > const & getter_function
 	) :
-		MasalaObjectAPIGetterDefinition( getter_function_name, getter_function_description, output_type_name, output_type_namespace ),
+		MasalaObjectAPIGetterDefinition(
+			getter_function_name, getter_function_description,
+			output_type_name, output_type_namespace,
+			is_virtual_non_override_fxn, is_override_of_api_virtual_fxn
+		),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_(output_parameter_name),
@@ -157,10 +176,12 @@ public:
 	std::string
 	get_getter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Getter:\t"
+    	ss << "Getter:\t" << (is_virtual_non_override_fxn() ? "virtual " : "" )
 			<< ( has_custom_output_type_name() ? get_custom_output_type_namespace_and_name() : masala::base::api::name_from_type(base::api::type<T0>()) )
 			<< " " << getter_function_name()
-			<< "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " ) const:" << std::endl;
+			<< "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " ) const"
+			<< ( is_override_of_api_virtual_fxn() ? " override" : "" )
+			<< ":" << std::endl;
 		ss << getter_function_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
@@ -176,6 +197,8 @@ public:
 		json_api["Getter_Name"] = getter_function_name();
 		json_api["Getter_Description"] = getter_function_description();
 		json_api["Is_Const"] = true;
+		json_api["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] = is_virtual_non_override_fxn();
+		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
 
 		//Inputs:
 		json_api["Getter_N_Inputs"] = 1;

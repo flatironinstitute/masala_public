@@ -28,11 +28,12 @@ import glob
 
 errmsg = "Error in copy_headers.py: "
 
-assert len(argv) == 4, errmsg + "Incorrect number of arguments.   Usage: python3 copy_headers.py <library name> <source dir> <destination dir>."
+assert len(argv) == 5, errmsg + "Incorrect number of arguments.   Usage: python3 copy_headers.py <project name> <library name> <source dir> <destination dir>."
 
-lib_name = argv[1]
-source_dir = argv[2]
-dest_dir = argv[3]
+project_name = argv[1]
+lib_name = argv[2]
+source_dir = argv[3]
+dest_dir = argv[4]
 
 assert path.isdir( source_dir ), source_dir + " is not a directory."
 assert path.isdir( dest_dir ), dest_dir + " is not a directory."
@@ -69,19 +70,15 @@ def is_lightweight( filename : str ) -> bool :
     hhname = filename.replace(".fwd.hh", ".hh")
     with open( hhname, 'r' ) as filehandle:
         filelines = filehandle.readlines()
-    is_lightweight = None
+    is_lightweight = False
     for line in filelines:
-        linestripped = line.strip()
-        if linestripped.endswith( "inner_object_;" ) :
-            linesplit = linestripped.split()
-            assert len(linesplit) == 2
-            if linesplit[0].endswith("SP") :
-                is_lightweight = False
-                break
-            else :
-                is_lightweight = True
-                break
-    assert is_lightweight is not None, "Error in parsing file " + hhname + " to determine whether this is a lightweight API."
+        if line.strip() == "/// @note Note that this is a special case API object built for a lightweight" :
+            is_lightweight = True
+            break
+    # if is_lightweight == True :
+    #     print( filename + " IS LIGHTWEIGHT" )
+    # else :
+    #     print( filename + " IS NOT LIGHTWEIGHT")
     return is_lightweight
 
 ## @brief Get a list of all of the .fwd.hh files included by a header file.
@@ -97,6 +94,84 @@ def get_fwd_files( filename : str, source_dir : str ) -> list :
             if linesplit[1].endswith(".fwd.hh") :
                 returnlist.append( source_dir + "/"+ linesplit[1] )
     return returnlist
+
+## @brief Given file contents, purge comments and comment lines.
+def purge_comments( file_contents : str ) -> str :
+    # Get rid of //
+    outstr = ""
+    file_lines = file_contents.splitlines()
+    for line in file_lines:
+        pos = line.find("//")
+        if pos == -1 :
+            outstr += line + "\n"
+        else :
+            outstr += line[0:pos] + "\n"
+
+    # Get rid of /*...*/
+    outstr2 = ""
+    recording = True
+    for i in range(len(outstr)) :
+        if i + 1 < len(outstr) and recording == True :
+            if outstr[i:i+2] == "/*" :
+                recording = False
+                continue
+        if i > 0 and recording == False :
+            if outstr[i-1:i+1] == "*/" :
+                recording = True
+                continue
+        if recording == True :
+            outstr2 += outstr[i]
+    return outstr2
+
+## @brief Given an .hh file defining a class, a source directory (e.g. ""../src" ), and a
+## library name for an api library (e.g. "numeric_api"), determine whether the class is a
+## derived class with a parent in the parent library (e.g. "numeric" if this is "numeric_api").
+## If it is, return the path and filename of the parent header (.hh file).  If it is not,
+## simply return None.
+def parent_library_base_filename( file : str, source_dir : str, lib_name : str, project_name : str ) -> str :
+    if lib_name.endswith("_api") == False :
+        return None
+    with open( file, 'r' ) as filehandle:
+        hh_filecontents = filehandle.read()
+    hh_filecontents = purge_comments( hh_filecontents ).replace("(", " ( ").replace(")", " ) ").replace("<", " < ").replace(">", " > ").replace("{", " { ").replace("}", " } ").replace(";", " ; ").split()
+
+    classdef_found = False
+
+    for i in range( len( hh_filecontents ) - 5 ) :
+        if hh_filecontents[i] == "class" :
+            increment = 3
+            if hh_filecontents[i+2] == ":" :
+                increment +=  1
+            if hh_filecontents[i+increment-1] == "public" :
+                parent_class = hh_filecontents[i+increment]
+                classdef_found = True
+                break
+    if classdef_found == False:
+        return None
+
+    #print( "*****\tParent in header " + file + " is " + parent_class + "." )
+    parentsplit = parent_class.replace(":", " ").split()
+
+    parent_lib_name = lib_name[:-4] # "numeric" if this is "numeric_api"
+
+    if parentsplit[0] == project_name and parentsplit[1] == parent_lib_name :
+        has_parent_class_to_copy = True
+    elif parentsplit[0] == parent_lib_name :
+        has_parent_class_to_copy = True
+        parent_class = project_name + "::" + parent_class
+        parentsplit = parent_class.replace(":", " ").split()
+    else :
+        has_parent_class_to_copy = False
+    
+    if has_parent_class_to_copy == False :
+        return None
+
+    parent_header = source_dir
+    for j in range( 1, len(parentsplit) ) :
+        parent_header += "/" + parentsplit[j]
+    parent_header += ".hh"
+    print( "\t\tFound parent class " + parent_class + " in header file " + file + ".  Will copy " + parent_header + "." )
+    return parent_header
 
 ## @brief Copy all the files in a list.
 def copy_files_in_list( files_to_copy : list, source_dir : str ) :
@@ -164,6 +239,9 @@ for file in files :
             files_to_copy = []
         else :
             files_to_copy = get_fwd_files( file, source_dir )
+            parent_hh_file = parent_library_base_filename( file, source_dir, lib_name, project_name )
+            if lib_name.endswith( "_api" ) and parent_hh_file != None :
+                files_to_copy.append( parent_hh_file )
 
         copy_files_in_list( files_to_copy, source_dir )
     

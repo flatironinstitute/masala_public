@@ -16,22 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/types.hh
-/// @brief A utility file containing some typedefs.
+/// @file tests/unit/numeric/numeric_tests.cc
+/// @brief Define main() function for testing.
+/// @details The CATCH_CONFIG_MAIN macro must be invoked once in the unit
+/// testing application generated with the Catch2 library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_types_hh
-#define Masala_src_core_types_hh
+#define CATCH_CONFIG_MAIN
 
-#include <numeric/types.hh>
-
-namespace masala {
-namespace core {
-
-    typedef numeric::Size Size;
-    typedef numeric::Real Real;
-
-} // namespace core
-} // namespace masala
-
-#endif // Masala_src_core_types_hh
+// Unit testing library (Catch2) headers:
+#include <external/catch2/single_include/catch2/catch.hpp>

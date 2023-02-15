@@ -28,7 +28,7 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:
@@ -95,13 +95,13 @@ public:
     void
     add_atom_instance(
         AtomInstanceCSP const & new_atom,
-        std::array< masala::core::Real, 3 > const & new_atom_coordinates
+        std::array< masala::base::Real, 3 > const & new_atom_coordinates
     ) = 0;
 
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
     virtual
-    std::array< masala::core::Real, 3 > const
+    std::array< masala::base::Real, 3 > const
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const = 0;

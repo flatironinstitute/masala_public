@@ -28,7 +28,7 @@
 #include <core/chemistry/MoleculesCollection.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/Molecules.fwd.hh>
 
 // Base headers:
@@ -92,7 +92,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the number of molecules in this MoleculesCollection container.
-    masala::core::Size size() const;
+    masala::base::Size size() const;
 
     /// @brief Get an iterator to the first Molecules object stored in this MoleculesCollection
     /// container.

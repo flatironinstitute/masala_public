@@ -30,7 +30,7 @@
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentation.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // External headers:
@@ -100,12 +100,12 @@ public:
     void
     add_atom_instance(
         AtomInstanceCSP const & new_atom,
-        std::array< masala::core::Real, 3 > const & new_atom_coordinates
+        std::array< masala::base::Real, 3 > const & new_atom_coordinates
     ) override;
 
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
-    std::array< masala::core::Real, 3 > const
+    std::array< masala::base::Real, 3 > const
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const override;
@@ -118,10 +118,10 @@ private:
 
     /// @brief Data storage for atom coordinates.
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
-    Eigen::Matrix< masala::core::Real, 3, Eigen::Dynamic > atom_coordinates_;
+    Eigen::Matrix< masala::base::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
     /// @brief Map of atom index to column index.
-    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::Size > atom_instance_to_column_;
+    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::base::Size > atom_instance_to_column_;
 
 };
 

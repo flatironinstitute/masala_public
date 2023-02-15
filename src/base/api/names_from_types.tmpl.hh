@@ -61,26 +61,32 @@ namespace api {
         );
 
         if constexpr( std::is_class<T>::value ) {
-            MASALA_SHARED_POINTER<T> tempobj(
-                masala::make_shared<T>()
-            );
-
-            if constexpr( std::is_const<T>::value ) {
-                masala::base::MasalaObjectCSP tempptr(
-                    std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
-                );
-                if( tempptr != nullptr ) {
-                    return tempptr->class_namespace() + "::" + tempptr->class_name();
-                }
+            if constexpr( std::is_abstract<T>::value ) {
+                // If this is an abstract base class, try and see whether it has a class_namespace_and_name_static() function.
+                return T::class_namespace_and_name_static();
             } else {
-                masala::base::MasalaObjectSP tempptr(
-                    std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+
+                MASALA_SHARED_POINTER<T> tempobj(
+                    masala::make_shared<T>()
                 );
-                if( tempptr != nullptr ) {
-                    return tempptr->class_namespace() + "::" + tempptr->class_name();
+
+                if constexpr( std::is_const<T>::value ) {
+                    masala::base::MasalaObjectCSP tempptr(
+                        std::dynamic_pointer_cast< masala::base::MasalaObject const >(tempobj)
+                    );
+                    if( tempptr != nullptr ) {
+                        return tempptr->class_namespace() + "::" + tempptr->class_name();
+                    }
+                } else {
+                    masala::base::MasalaObjectSP tempptr(
+                        std::dynamic_pointer_cast< masala::base::MasalaObject >(tempobj)
+                    );
+                    if( tempptr != nullptr ) {
+                        return tempptr->class_namespace() + "::" + tempptr->class_name();
+                    }
                 }
+                
             }
-            
         }
         return typeid(T).name();
     }
@@ -125,6 +131,38 @@ namespace api {
     std::string
     name_from_type(type<MASALA_WEAK_POINTER<T const>>) {
         return "MASALA_WEAK_POINTER< " + name_from_type(type<T>()) + " const >";
+    }
+
+    /// @brief Manually override for pairs.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1, T2 >> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + " >";
+    }
+
+    /// @brief Manually override for const pairs.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1, T2 > const> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + " > const";
+    }
+
+    /// @brief Manually override for pairs of const elements.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1 const, T2 const >> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + " const, "
+            + name_from_type( type<T2>() ) + " const >";
+    }
+
+    /// @brief Manually override for pairs pairs of const elements.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::pair< T1 const, T2 const > const> ) {
+        return "std::pair< " + name_from_type( type<T1>() ) + " const, "
+            + name_from_type( type<T2>() ) + " const > const";
     }
 
     /// @brief Manually override for sets.

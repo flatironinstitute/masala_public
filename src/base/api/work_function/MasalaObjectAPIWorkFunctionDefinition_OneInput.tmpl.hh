@@ -74,6 +74,10 @@ public:
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
 	/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
 	/// @param[in] input_parameter0_name The name for the input parameter.
 	/// @param[in] input_parameter0_description The description of the input parameter.
 	/// @param[in] output_parameter_name The name for what the work function returns.
@@ -84,13 +88,19 @@ public:
 		std::string const & work_function_description,
 		bool const is_const,
 		bool const returns_this_ref,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description,
 		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
 		std::function< T0( T1 ) > const & work_function
 	) :
-		MasalaObjectAPIWorkFunctionDefinition( work_function_name, work_function_description, is_const, returns_this_ref ),
+		MasalaObjectAPIWorkFunctionDefinition(
+			work_function_name, work_function_description,
+			is_const, returns_this_ref,
+			is_virtual_non_override_fxn, is_override_of_api_virtual_fxn
+		),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		output_name_( output_parameter_name ),
@@ -136,9 +146,13 @@ public:
 	std::string
 	get_work_function_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "WorkFunction:\t" << masala::base::api::name_from_type( base::api::type<T0>() )
+    	ss << "WorkFunction:\t"
+			<< (is_virtual_non_override_fxn() ? "virtual " : "" )
+			<< masala::base::api::name_from_type( base::api::type<T0>() )
 			<< " " << work_function_name() << "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " )"
-			<< (is_const() ? " const" : "" ) << ":" << std::endl;
+			<< (is_const() ? " const" : "" )
+			<< (is_override_of_api_virtual_fxn() ? " override" : "")
+			<< ":" << std::endl;
 		ss << work_function_description() << std::endl;
 		if( returns_this_ref() ) {
 			ss << "Note that this function returns a reference to the original object (*this)." << std::endl;
@@ -158,6 +172,8 @@ public:
 		json_api["Work_Function_Description"] = work_function_description();
 		json_api["Is_Const"] = is_const();
 		json_api["Returns_This_Ref"] = returns_this_ref();
+		json_api["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] = is_virtual_non_override_fxn();
+		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
 
 		//Inputs:
 		json_api["Work_Function_N_Inputs"] = 1;

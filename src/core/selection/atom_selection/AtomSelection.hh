@@ -34,7 +34,7 @@
 #include <core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -80,6 +80,7 @@ public:
 	clone() const;
 
 	/// @brief Create a copy of this object that is independent of the original.
+    /// @details Warning: doing so guarantees that the selection points to nothing.
 	AtomSelectionSP
 	deep_clone() const;
 
@@ -104,7 +105,7 @@ public:
     /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
     /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
     /// in more than one hierarchical category (in which case there would be more than one
-    /// entry in the outher vector), but must be in at least one.  The first one is used as
+    /// entry in the outer vector), but must be in at least one.  The first one is used as
     /// the primary key.
     std::vector< std::vector< std::string > >
     get_categories() const override;
@@ -118,7 +119,7 @@ public:
 	void add_atom( masala::core::chemistry::atoms::AtomInstanceCSP const & atom_in );
 
 	/// @brief Get the number of selected atoms in this selection.
-	masala::core::Size num_selected_atoms() const;
+	masala::base::Size num_selected_atoms() const;
 
     /// @brief An iterator pointing to the first atom.
     masala::core::chemistry::atoms::AtomInstanceConstIterator

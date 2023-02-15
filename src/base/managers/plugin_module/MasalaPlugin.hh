@@ -66,7 +66,7 @@ public:
     /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
     /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
     /// in more than one hierarchical category (in which case there would be more than one
-    /// entry in the outher vector), but must be in at least one.  The first one is used as
+    /// entry in the outer vector), but must be in at least one.  The first one is used as
     /// the primary key.
     virtual
     std::vector< std::vector< std::string > >
@@ -77,6 +77,12 @@ public:
     virtual
     std::vector< std::string >
     get_keywords() const = 0;
+
+	/// @brief Get the map key for the class of object, as used for indexing in the MasalaPluginManager.
+	/// @details The map key is the concatenated vector of base class names (separated by commas)
+	/// followed by a colon and then the object name.
+	std::string
+	get_plugin_object_manager_key() const;
 
 }; // class MasalaPlugin
 

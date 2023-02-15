@@ -74,14 +74,26 @@ public:
 	///			   we are describing here.
 	/// @param[in] input_parameter0_name The name of the input parameter.
 	/// @param[in] input_parameter0_description The description of the input parameter.
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
+	/// @param[in] setter_function The setter function, bound with std::bind with std::placeholders.
 	MasalaObjectAPISetterDefinition_OneInput(
 		std::string const & setter_function_name,
 		std::string const & setter_function_description,
 		std::string const & input_parameter0_name,
 		std::string const & input_parameter0_description,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn,
 		std::function< void( T1 ) > const & setter_function
 	) :
-		MasalaObjectAPISetterDefinition( setter_function_name, setter_function_description ),
+		MasalaObjectAPISetterDefinition(
+			setter_function_name,
+			setter_function_description,
+			is_virtual_non_override_fxn,
+			is_override_of_api_virtual_fxn
+		),
 		input_parameter0_name_(input_parameter0_name),
 		input_parameter0_description_(input_parameter0_description),
 		setter_function_( setter_function )
@@ -125,7 +137,12 @@ public:
 	std::string
 	get_setter_human_readable_description() const override {
 		std::ostringstream ss;
-    	ss << "Setter:\tvoid " << setter_function_name() << "( " << masala::base::api::name_from_type( base::api::type<T1>() ) << " ):" << std::endl;
+    	ss << "Setter:\t"
+			<< (is_virtual_non_override_fxn() ? "virtual " : "" )
+			<< "void " << setter_function_name() << "( "
+			<< masala::base::api::name_from_type( base::api::type<T1>() )
+			<< " ) " << (is_override_of_api_virtual_fxn() ? " override" : "")
+			<< ":" << std::endl;
 		ss << setter_function_description() << std::endl;
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		return ss.str();
@@ -140,6 +157,8 @@ public:
 		json_api["Setter_Name"] = setter_function_name();
 		json_api["Setter_Description"] = setter_function_description();
 		json_api["Is_Const"] = false;
+		json_api["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] = is_virtual_non_override_fxn();
+		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
 
 		//Inputs:
 		json_api["Setter_N_Inputs"] = 1;

@@ -193,7 +193,7 @@ MasalaThreadManager::do_work_in_threads(
 ) const {
     if( request.empty() ) {
         write_to_tracer( "The MasalaThreadManager received an empty work vector.  Returning without doing anything." );
-        return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, 0, 0.0 );
+        return MasalaThreadedWorkExecutionSummary( MasalaThreadedWorkStatus::NO_WORK_DONE, request.n_threads_requested(), 0, 0, 0.0 );
     }
 
     // The number of threads to actually request should be:
@@ -213,6 +213,12 @@ MasalaThreadManager::do_work_in_threads(
     // execution, this stores information about how many threads have actually
     // been assigned and which threads they are.
     MasalaThreadedWorkExecutionSummary summary;
+    if( request.all_threads_requested() ) {
+        summary.set_all_threads_requested();
+    } else {
+        summary.set_nthreads_requested( request.n_threads_requested() );
+    }
+    summary.set_njobs( request.work_vector_size() );
 
     // Prepare a parallel function for doing a vector of work:
     std::function< void() > const inner_fxn(

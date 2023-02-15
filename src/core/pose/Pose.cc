@@ -186,7 +186,7 @@ Pose::get_api_definition() {
                 "The Pose class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
                 "molecule or group of molecules.",
-                false
+                false, false
             )
         );
 
@@ -215,7 +215,7 @@ Pose::get_api_definition() {
                 "molecules_shared_ptr",
                 "Access the Molecules object within the Pose, by shared pointer.",
                 "molecules", "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
-                "and chemical connectivity.",
+                "and chemical connectivity.", false, false,
                 std::bind( &Pose::molecules_shared_ptr, this )
             )
         );
@@ -224,7 +224,7 @@ Pose::get_api_definition() {
         //         "molecules_weak_ptr",
         //         "Access the Molecules object within the Pose, by weak pointer.",
         //         "molecules", "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
-        //         "and chemical connectivity.  Must be converted to a shared pointer before use.",
+        //         "and chemical connectivity.  Must be converted to a shared pointer before use.", false, false,
         //         std::bind( &Pose::molecules_weak_ptr, this )
         //     )
         // );
@@ -233,7 +233,7 @@ Pose::get_api_definition() {
         //         "molecules",
         //         "Access the Molecules object within the Pose.",
         //         "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
-        //         "and chemical connectivity.",
+        //         "and chemical connectivity.", false, false,
         //         std::bind( &Pose::molecules, this )
         //     )
         // );

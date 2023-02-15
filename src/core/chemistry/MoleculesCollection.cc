@@ -83,7 +83,7 @@ MoleculesCollection::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the number of molecules in this MoleculesCollection container.
-core::Size
+base::Size
 MoleculesCollection::size() const {
     return molecule_set_.size();
 }

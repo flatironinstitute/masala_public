@@ -33,7 +33,7 @@
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/data/AtomData.fwd.hh>
 
 // Base headers:
@@ -114,17 +114,17 @@ public:
     signed int formal_charge() const;
 
     /// @brief Get the partial charge for this atom instance.
-    masala::core::Real partial_charge() const;
+    masala::base::Real partial_charge() const;
 
     /// @brief Get the element type (enum) for this atom instance.
     masala::base::managers::database::elements::ElementTypeEnum element_type_enum() const;
 
     /// @brief Get the van der Waals radius for this element from the
     /// element type database.
-    masala::core::Real van_der_waals_radius() const;
+    masala::base::Real van_der_waals_radius() const;
 
     /// @brief Get the default colour for an element of this type.
-    std::array< masala::core::Real, 3 > const &
+    std::array< masala::base::Real, 3 > const &
     element_default_rgb_colour() const;
 
 public:
@@ -153,7 +153,7 @@ private:
     signed int formal_charge_ = 0;
 
     /// @brief The partial charge on this atom.
-    masala::core::Real partial_charge_ = 0.0;
+    masala::base::Real partial_charge_ = 0.0;
 
     /// @brief Optional additional data attached to this atom.
     /// @details Intended to store things like PDB name, PDB index, etc.

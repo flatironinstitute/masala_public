@@ -32,13 +32,13 @@
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
 
-public:
-
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
+
+public:
 
     /// @brief Constructor from shared pointer to object.
     /// @details Directly uses the object that is passed in.  Does not clone it.
@@ -56,14 +56,16 @@ public:
 
     /// @brief Clone operation: make a copy of this object and return
     /// a shared pointer to the copy.
+    virtual
     <__SOURCE_CLASS_API_NAME__>SP
-    clone() const;
+    clone() const<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone operation: make a copy of this object and return
     /// a shared pointer to the copy, where the copy is fully independent
     /// (all contents also deep-cloned).
+    virtual
     <__SOURCE_CLASS_API_NAME__>SP
-    deep_clone() const;
+    deep_clone() const<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone all of the internal data for this object, making it fully
     /// independent of any other object.
@@ -85,6 +87,24 @@ public:
     /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
     std::string
     class_namespace() const override;
+
+    /// @brief Get the name of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAME__>".
+    static
+    std::string
+    class_name_static();
+
+    /// @brief Get the namespace of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>".
+    static
+    std::string
+    class_namespace_static();
+
+    /// @brief Get the namespace and name of this class -- static version.
+    /// @returns Returns "<__SOURCE_CLASS_API_NAMESPACE__>::<__SOURCE_CLASS_API_NAME__>".
+    static
+    std::string
+    class_namespace_and_name_static();
 
     /// @brief Get the name of the class for which this class provides an API.
     /// @returns Returns "<__SOURCE_CLASS_NAME__>".
@@ -119,6 +139,10 @@ public:
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
     get_inner_object() const;
 
+    /// @brief Nonconst access to the inner object.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP
+    get_inner_object();
+
 <__CPP_GETTER_PROTOTYPES__>
 
 public:
@@ -128,6 +152,25 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_WORK_FUNCTION_PROTOTYPES__>
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED DATA ACCESS FOR DERIVED CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    /// @note This is a nonconst instance of the inner object nonconst pointer, so both the
+    /// pointer and the object that it points to can be changed.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP & inner_object();
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    /// @note Version for const access.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP inner_object() const;
+
+    /// @brief Access the base class mutex from derived classes.
+    /// @note The mutex is mutable, so this function can be const.
+    std::mutex & api_mutex() const;
 
 private:
 

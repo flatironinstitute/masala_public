@@ -53,15 +53,23 @@ namespace atom_selection {
 AtomSelection::AtomSelection(
 	AtomSelection const & src
 ) :
-	atoms_( src.atoms_ )
-{}
+	masala::core::selection::Selection(src)
+{
+    std::lock_guard< std::mutex > lock( src.whole_object_mutex_ );
+    atoms_ = src.atoms_;
+}
 
 /// @brief Assignment operator.
 AtomSelection &
 AtomSelection::operator=(
 	AtomSelection const & src
 ) {
-	atoms_ = src.atoms_;
+    {
+        std::lock( whole_object_mutex_, src.whole_object_mutex_ );
+        std::lock_guard< std::mutex > lock1( whole_object_mutex_, std::adopt_lock );
+        std::lock_guard< std::mutex > lock2( src.whole_object_mutex_, std::adopt_lock );
+        atoms_ = src.atoms_;
+    }
 	return *this;
 }
 
@@ -72,9 +80,12 @@ AtomSelection::clone() const {
 }
 
 /// @brief Create a copy of this object that is independent of the original.
+/// @details Warning: doing so guarantees that the selection points to nothing.
 AtomSelectionSP
 AtomSelection::deep_clone() const {
-	return masala::make_shared< AtomSelection >( *this );
+	AtomSelectionSP copy( masala::make_shared< AtomSelection >( *this ) );
+    copy->atoms_.clear();
+    return copy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +121,7 @@ AtomSelection::get_api_definition() {
                 *this,
                 "A container for atoms and chemical bonds, and for data representations "
                 "that allow efficient geometric manipulations.",
-                false
+                false, false
             )
         );
 
@@ -128,9 +139,10 @@ AtomSelection::get_api_definition() {
         );
 
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < core::Size > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
                 "num_selected_atoms", "Gets the total number of atoms that are in the selection.",
                 "num_selected_atoms", "The number of atoms in the selection.",
+                false, false,
                 std::bind( &AtomSelection::num_selected_atoms, this )
             )
         );
@@ -138,6 +150,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
                 "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
                 "atoms_begin", "Iterator pointing to the first atom in the set stored in the selection.",
+                false, false,
                 std::bind( &AtomSelection::atoms_begin, this )
             )
         );
@@ -145,6 +158,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < masala::core::chemistry::atoms::AtomInstanceConstIterator > >(
                 "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
                 "atoms_end", "Iterator pointing one past the last atom in the set stored in the selection.",
+                false, false,
                 std::bind( &AtomSelection::atoms_end, this )
             )
         );
@@ -153,6 +167,7 @@ AtomSelection::get_api_definition() {
             masala::make_shared< MasalaObjectAPISetterDefinition_OneInput < masala::core::chemistry::atoms::AtomInstanceCSP > >(
                 "add_atom", "Add an atom to this selection.",
                 "atom_in", "The atom to add to the selection.",
+                false, false,
                 std::bind( &AtomSelection::add_atom, this, std::placeholders::_1 )
             )
         );
@@ -168,7 +183,7 @@ AtomSelection::get_api_definition() {
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
-/// entry in the outher vector), but must be in at least one.  The first one is used as
+/// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
 AtomSelection::get_categories() const {
@@ -203,7 +218,7 @@ AtomSelection::add_atom(
 }
 
 /// @brief Get the number of selected atoms in this selection.
-masala::core::Size
+masala::base::Size
 AtomSelection::num_selected_atoms() const {
 	std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 	return atoms_.size();

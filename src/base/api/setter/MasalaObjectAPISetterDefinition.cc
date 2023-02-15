@@ -25,6 +25,9 @@
 // Class headers
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 
+// Base headers
+#include <base/error/ErrorHandling.hh>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -39,14 +42,31 @@ namespace setter {
 ///			   we are describing here.
 /// @param[in] setter_function_description The description of the setter function that
 ///			   we are describing here.
+/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+///            is NOT an override of a virtual function in a parent API class)?
+/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+///            a function in a base API class?
 MasalaObjectAPISetterDefinition::MasalaObjectAPISetterDefinition(
     std::string const & setter_function_name,
-    std::string const & setter_function_description
+    std::string const & setter_function_description,
+    bool const is_virtual_non_override_fxn,
+    bool const is_override_of_api_virtual_fxn
 ) :
     masala::base::MasalaObject(),
     setter_function_name_(setter_function_name),
-    setter_function_description_(setter_function_description)
-{}
+    setter_function_description_(setter_function_description),
+    is_virtual_non_override_fxn_(is_virtual_non_override_fxn),
+    is_override_of_api_virtual_fxn_(is_override_of_api_virtual_fxn)
+{
+    CHECK_OR_THROW(
+        !(is_virtual_non_override_fxn_ && is_override_of_api_virtual_fxn_),
+        "masala::base::api::setter::MasalaObjectAPISetterDefinition",
+        "MasalaObjectAPISetterDefinition",
+        "The " + setter_function_name + "() setter function was specified to be both a virtual function that "
+        "does not override a base API class function, AND a virtual function that does ovreride a base API "
+        "class function.  At most only one of these can be true."
+    );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -62,6 +82,20 @@ MasalaObjectAPISetterDefinition::setter_function_name() const {
 std::string const &
 MasalaObjectAPISetterDefinition::setter_function_description() const {
     return setter_function_description_;
+}
+
+/// @brief Is this function a virtual function that does NOT override
+/// a function in a base class that has a defined API?
+bool
+MasalaObjectAPISetterDefinition::is_virtual_non_override_fxn() const {
+    return is_virtual_non_override_fxn_;
+}
+
+/// @brief Is this function an override of a virtual function in a base
+/// class that has a defined API?
+bool
+MasalaObjectAPISetterDefinition::is_override_of_api_virtual_fxn() const {
+    return is_override_of_api_virtual_fxn_;
 }
 
 } // namespace setter

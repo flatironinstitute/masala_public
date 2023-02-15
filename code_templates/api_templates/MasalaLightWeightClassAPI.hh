@@ -6,8 +6,9 @@
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 /// @note This file is an auto-generated API file.  Do not edit it, but instead
 /// edit the <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class's
-/// get_api_definition() function.  Also note that this is a special case
-/// API object built for a lightweight inner object that could be stack-allocated.
+/// get_api_definition() function.
+/// Also note that this is a special case API object built for a lightweight
+/// inner object that could be stack-allocated.
 
 <__CPP_HH_HEADER_GUARD__>
 
@@ -31,15 +32,17 @@
 <__DOXYGEN_BRIEF_DESCRIPTION__>
 <__DOXYGEN_DETAILED_DESCRIPTION__>
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
+/// @note Note that this is a special case API object built for a lightweight
+/// inner object that could be stack-allocated.
 class <__SOURCE_CLASS_API_NAME__> : public <__BASE_API_CLASS_NAMESPACE_AND_NAME__> {
-
-public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_CONSTRUCTOR_PROTOTYPES__>
+
+public:
 
     /// @brief Constructor from object instance.
     /// @details Copies the object passed in.
@@ -55,6 +58,7 @@ public:
         <__SOURCE_CLASS_API_NAME__> const & src
     );
 
+    <__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
     /// @brief Clone operation: make a copy of this object and return
     /// a shared pointer to the copy.
     <__SOURCE_CLASS_API_NAME__>SP
@@ -65,6 +69,7 @@ public:
     /// (all contents also deep-cloned).
     <__SOURCE_CLASS_API_NAME__>SP
     deep_clone() const;
+    <__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 
     /// @brief Deep clone all of the internal data for this object, making it fully
     /// independent of any other object.
@@ -120,6 +125,10 @@ public:
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const &
     get_inner_object() const;
 
+    /// @brief Nonconst access to the inner object.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+    get_inner_object();
+
 <__CPP_GETTER_PROTOTYPES__>
 
 public:
@@ -129,6 +138,23 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_WORK_FUNCTION_PROTOTYPES__>
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED DATA ACCESS FOR DERIVED CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> & inner_object();
+
+    /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+    /// @note Version for const access.
+    <__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & inner_object() const;
+
+    /// @brief Access the base class mutex from derived classes.
+    /// @note The mutex is mutable, so this function can be const.
+    std::mutex & api_mutex() const;
 
 private:
 

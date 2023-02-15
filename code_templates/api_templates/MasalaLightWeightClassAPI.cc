@@ -41,17 +41,18 @@
 <__SOURCE_CLASS_API_NAME__>::operator=(
     <__SOURCE_CLASS_API_NAME__> const & src
 ) {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
-    std::lock_guard< std::mutex > lock2( src.api_mutex_ );
+    std::lock( api_mutex_, src.api_mutex_ );
+    std::lock_guard< std::mutex > lock( api_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock2( src.api_mutex_, std::adopt_lock );
     inner_object_ = src.inner_object_;
     return *this;
 }
 
+<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 /// @brief Clone operation: make a copy of this object and return
 /// a shared pointer to the copy.
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::clone() const {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
     return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >( *this );
 }
 
@@ -60,11 +61,11 @@
 /// (all contents also deep-cloned).
 <__SOURCE_CLASS_API_NAME__>SP
 <__SOURCE_CLASS_API_NAME__>::deep_clone() const {
-    std::lock_guard< std::mutex > lock( api_mutex_ );
     <__SOURCE_CLASS_API_NAME__>SP object_copy( clone() );
     object_copy->make_independent();
     return object_copy;
 }
+<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 
 /// @brief Deep clone all of the internal data for this object, making it fully
 /// independent of any other object.
@@ -130,6 +131,13 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
     return inner_object_;
 }
 
+/// @brief Nonconst access to the inner object.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::get_inner_object() {
+    std::lock_guard< std::mutex > lock_guard( api_mutex_ );
+    return inner_object_;
+}
+
 <__CPP_GETTER_IMPLEMENTATIONS__>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,5 +145,29 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 ////////////////////////////////////////////////////////////////////////////////
 
 <__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED DATA ACCESS FOR DERIVED CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::inner_object() {
+    return inner_object_;
+}
+
+/// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
+/// @note Version for const access.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> const &
+<__SOURCE_CLASS_API_NAME__>::inner_object() const {
+    return inner_object_;
+}
+
+/// @brief Access the base class mutex from derived classes.
+/// @note The mutex is mutable, so this function can be const.
+std::mutex &
+<__SOURCE_CLASS_API_NAME__>::api_mutex() const {
+    return api_mutex_;
+}
 
 <__CPP_END_NAMESPACE__>

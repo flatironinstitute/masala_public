@@ -30,12 +30,14 @@
 // Base headers:
 #include <base/types.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // STL headers:
 #include <string>
 #include <sstream>
+//#include <iomanip> // DELETE ME
 
 namespace masala {
 namespace base {
@@ -160,10 +162,31 @@ void
 MasalaPluginModuleManager::remove_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
+    // write_to_tracer( "Removing a set of creators..." ); // DELETE ME
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     for( auto const & creator : creators ) {
+
+        // FOR DEBUGGING ONLY.  DELETE ME:
+        // write_to_tracer( "Removing " + creator->get_plugin_object_namespace_and_name() + ".  Current categories are:" );
+        // write_to_tracer( "Num_entries\tCategory" );
+        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
+		// 	std::ostringstream ss;
+		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
+		// 	write_to_tracer( ss.str() );
+		// }
+
         remove_plugin_mutex_locked( creator );
+
+		// FOR DEBUGGING ONLY.  DELETE ME:
+		// write_to_tracer( "After removing " + creator->get_plugin_object_namespace_and_name() + ":" );
+		// write_to_tracer( "Num_entries\tCategory" );
+        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
+		// 	std::ostringstream ss;
+		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
+		// 	write_to_tracer( ss.str() );
+		// }
     }
+    // write_to_tracer( "Finished removing a set of creators." ); // DELETE ME
 }
 
 /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
@@ -403,6 +426,40 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     return nullptr;
 }
 
+/// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+/// @details Intended only to be called from auto-generated API code.
+MasalaPluginAPISP
+MasalaPluginModuleManager::encapsulate_plugin_object_instance(
+    MasalaPluginSP const & object
+) const {
+    std::string const key( object->get_plugin_object_manager_key() );
+    std::map< std::string, MasalaPluginCreatorCSP >::const_iterator it(
+        all_plugin_map_.find( key )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != all_plugin_map_.end(), "encapsulate_plugin_object_instance",
+        "The key \"" + key + "\" could not be found.  Has this plugin class been registered with "
+        "the plugin manager?"
+    );
+    return it->second->encapsulate_plugin_object_instance( object );
+}
+
+/// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+/// @details Intended only to be called from auto-generated API code.
+MasalaPluginAPICSP
+MasalaPluginModuleManager::encapsulate_const_plugin_object_instance(
+    MasalaPluginCSP const & object
+) const {
+    std::string const key( object->get_plugin_object_manager_key() );
+    std::map< std::string, MasalaPluginCreatorCSP >::const_iterator it(
+        all_plugin_map_.find( key )
+    );
+    CHECK_OR_THROW_FOR_CLASS( it != all_plugin_map_.end(), "encapsulate_plugin_object_instance",
+        "The key \"" + key + "\" could not be found.  Has this plugin class been registered with "
+        "the plugin manager?"
+    );
+    return it->second->encapsulate_const_plugin_object_instance( object );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -557,12 +614,12 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
         for( std::string const & category : categories ) {
             ss.push_back( category );
 
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_subcategory_.count( ss ) > 0,
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
                 "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
                 base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
                 "category map."
             );
-            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_subcategory_.at(ss) );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_.at(ss) );
             bool found( false );
             for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
                 if( (**it) == (*creator) ) {
@@ -576,16 +633,16 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
                 "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
             );
             if( myset.empty() ) {
-                plugins_by_hierarchical_subcategory_.erase( ss );
+                plugins_by_hierarchical_category_.erase( ss );
             }
         }
 
-        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_subcategory_.count( ss ) > 0,
             "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
             base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
             "category map."
         );
-        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_.at(ss) );
+        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_subcategory_.at(ss) );
         bool found( false );
         for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
             if( (**it) == (*creator) ) {
@@ -596,10 +653,10 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
         }
         CHECK_OR_THROW_FOR_CLASS( found, "remove_plugin_mutex_locked",
             "Program error!  Could not find plugin \"" + plugin_object_name + "\" in hierarchical "
-            "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
+            "subcategory [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
         );
         if( myset.empty() ) {
-            plugins_by_hierarchical_category_.erase( ss );
+            plugins_by_hierarchical_subcategory_.erase( ss );
         }
     }
     write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );

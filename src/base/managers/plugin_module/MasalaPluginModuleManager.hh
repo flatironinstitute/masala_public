@@ -38,6 +38,7 @@
 #include <base/api/names_from_types.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPluginCreator.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -235,6 +236,20 @@ public:
     create_plugin_object_instance(
         std::string const & keyword,
         std::string const & plugin_name
+    ) const;
+
+    /// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+    /// @details Intended only to be called from auto-generated API code.
+    MasalaPluginAPISP
+    encapsulate_plugin_object_instance(
+        MasalaPluginSP const & object
+    ) const;
+
+    /// @brief Given a plugin object, encapsulate it in an API container of the corresponding type.
+    /// @details Intended only to be called from auto-generated API code.
+    MasalaPluginAPICSP
+    encapsulate_const_plugin_object_instance(
+        MasalaPluginCSP const & object
     ) const;
 
 private:

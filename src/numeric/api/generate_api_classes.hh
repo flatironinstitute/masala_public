@@ -16,22 +16,31 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/types.hh
-/// @brief A utility file containing some typedefs for numerical types.
+/// @file src/numeric/api/generate_api_classes.hh
+/// @brief Utility functions to generate all of the classes in numeric that define
+/// an API.  Used for auto-generating the numeric api.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_types_hh
-#define Masala_src_numeric_types_hh
+#ifndef Masala_src_numeric_api_generate_api_classes_hh
+#define Masala_src_numeric_api_generate_api_classes_hh
 
-#include <base/types.hh>
+// Base headers
+#include <base/MasalaObject.fwd.hh>
+
+// STL headers
+#include <vector>
 
 namespace masala {
 namespace numeric {
+namespace api {
 
-    typedef masala::base::Size Size;
-    typedef masala::base::Real Real;
+    /// @brief Generate an instance of each of the classes in numeric that have a defined API, and
+    /// return a vector of owning pointers to these instances.
+    /// @details Used for auto-generating the numeric API description (as a JSON file).
+    std::vector< masala::base::MasalaObjectSP > generate_api_classes();
 
+} // namespace api
 } // namespace numeric
 } // namespace masala
 
-#endif // Masala_src_numeric_types_hh
+#endif //Masala_src_numeric_api_generate_api_classes_hh

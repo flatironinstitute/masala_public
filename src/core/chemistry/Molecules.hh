@@ -27,13 +27,13 @@
 #include <core/chemistry/Molecules.fwd.hh>
 
 // Core headers:
-#include <core/types.hh>
+#include <base/types.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 #include <core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 #include <core/chemistry/MoleculesConfiguration.fwd.hh>
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -117,11 +117,11 @@ public:
     void
     add_atom(
         masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
-        std::array< masala::core::Real, 3 > const & coords
+        std::array< masala::base::Real, 3 > const & coords
     );
 
     /// @brief Get the number of atoms in this molecule.
-    core::Size total_atoms() const;
+    base::Size total_atoms() const;
 
     /// @brief Begin const iterator for accessing atoms.
     atoms::AtomInstanceConstIterator
@@ -132,7 +132,7 @@ public:
     atoms_end() const;
 
     /// @brief Access the coordinates for an atom.
-    std::array< masala::core::Real, 3 >
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         atoms::AtomInstanceConstIterator const atom_iterator
     ) const;

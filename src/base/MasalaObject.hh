@@ -104,7 +104,7 @@ public:
 	get_api_definition();
 
 	/// @brief Writes text to the tracer, using the MasalaTracerManager.
-	/// @details Threadsafe.
+	/// @details Threadsafe, but DO NOT USE FROM CONSTRUCTOR!
 	void
 	write_to_tracer(
 		std::string const & message

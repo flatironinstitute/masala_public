@@ -16,22 +16,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/types.hh
-/// @brief A utility file containing some typedefs.
+/// @file src/base/managers/random/MasalaRandomNumberGenerator.hh
+/// @brief Forward declarations for a static singleton for generating random numbers, with unique random seeds
+/// for each process and thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_types_hh
-#define Masala_src_core_api_types_hh
-
-#include <base/types.hh>
+#ifndef Masala_src_base_managers_random_MasalaRandomNumberGenerator_fwd_hh
+#define Masala_src_base_managers_random_MasalaRandomNumberGenerator_fwd_hh
 
 namespace masala {
-namespace core_api {
+namespace base {
+namespace managers {
+namespace random {
 
-    typedef base::Size Size;
-    typedef base::Real Real;
+    class MasalaRandomNumberGenerator;
 
-} // namespace core
+    /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow
+    /// lazy loading of data.
+    using MasalaRandomNumberGeneratorHandle = MasalaRandomNumberGenerator *;
+
+} // namespace random
+} // namespace managers
+} // namespace base
 } // namespace masala
 
-#endif // Masala_src_core_types_hh
+#endif // Masala_src_base_managers_random_MasalaRandomNumberGenerator_fwd_hh

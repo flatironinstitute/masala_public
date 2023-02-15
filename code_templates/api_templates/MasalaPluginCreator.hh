@@ -53,6 +53,22 @@ public:
 	masala::base::managers::plugin_module::MasalaPluginAPISP
 	create_plugin_object() const override;
 
+	/// @brief Create an object of the desired type (or, more precisely, an API container
+	/// for an object of a desired type).
+	/// @details Must be implemented by derived classes.
+	masala::base::managers::plugin_module::MasalaPluginAPISP
+	encapsulate_plugin_object_instance(
+		masala::base::managers::plugin_module::MasalaPluginSP const & object
+	) const override;
+
+	/// @brief Create an object of the desired type (or, more precisely, an API container
+	/// for an object of a desired type).
+	/// @details Must be implemented by derived classes.
+	masala::base::managers::plugin_module::MasalaPluginAPICSP
+	encapsulate_const_plugin_object_instance(
+		masala::base::managers::plugin_module::MasalaPluginCSP const & object
+	) const override;
+
 	/// @brief Return the names of the categories for this type of plugin object.
 	/// @returns In this case, returns { <__PLUGIN_CATEGORIES__> }.
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector).

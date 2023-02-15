@@ -69,13 +69,18 @@ public:
 
 	/// @brief Options constructor.
 	/// @param[in] status The status for the work done.
+	/// @param[in] nthreads_requested The number of threads that were
+	/// requested.
 	/// @param[in] nthreads_actual The number of threads that were
 	/// actually used for carrying out the work.
-	/// @param[in] execution_time The time, in microseconds, that
+	/// @param[in] njobs The number of jobs carried out.
+ 	/// @param[in] execution_time The time, in microseconds, that
 	/// execution took.
 	MasalaThreadedWorkExecutionSummary(
 		MasalaThreadedWorkStatus const status,
+		base::Size const nthreads_requested,
 		base::Size const nthreads_actual,
+		base::Size const njobs,
 		base::Real const execution_time_microseconds
 	);
 
@@ -95,6 +100,15 @@ public:
 
 	/// @brief Returns "masala::base::managers::threads".
 	std::string class_namespace() const override;
+
+	/// @brief Indicate that all threads were requested.  (Sets ntherads_requested_ to 0.)
+	void set_all_threads_requested();
+
+	/// @brief Set the number of threads requested.
+	void set_nthreads_requested( base::Size const nthreads_requested );
+
+	/// @brief Set the number of jobs.
+	void set_njobs( base::Size const njobs );
 
 	/// @brief Allow the MasalaThreadPool to record which threads have been assigned to this
 	/// job.  We will store:
@@ -123,9 +137,19 @@ public:
 	/// @brief Get the status of the work.
 	inline MasalaThreadedWorkStatus work_status() const { return work_status_; }
 
+	/// @brief Were all threads requested?
+	inline bool all_threads_requested() const { return all_threads_requested_; }
+
+	/// @brief Get the number of threads that were requested.
+	/// @details Will be zero if all threads were requested.
+	inline base::Size nthreads_requested() const { return nthreads_requested_; }
+
 	/// @brief Get the number of threads that were actually used for the work (which can
 	/// be less than the number requested).
 	inline base::Size nthreads_actual() const { return nthreads_actual_; }
+
+	/// @brief Get the number of jobs that were carried out.
+	inline base::Size njobs() const { return njobs_; }
 
 	/// @brief Set the execution time in microseconds.
 	void set_execution_time_microseconds( base::Real const execution_time_microseconds );
@@ -171,6 +195,9 @@ public:
 	/// @brief Indicate that the work was done successfully.
 	void set_work_successful();
 
+	/// @brief Write a summary of the work done to the tracer.
+	void write_summary_to_tracer() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -190,9 +217,18 @@ private:
 // PRIVATE DATA that are set by the set_assigned_child_threads function:
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Were all threads requested?
+	bool all_threads_requested_ = false;
+
+	/// @brief The number of threads that were requested.
+	base::Size nthreads_requested_ = 0;
+
 	/// @brief The number of threads that were actually used for the work (which can
 	/// be less than the number requested).
 	base::Size nthreads_actual_ = 0;
+
+	/// @brief The number of jobs that were carried out.
+	base::Size njobs_ = 0;
 
 	/// @brief The indices of the threads assigned.  The parent thread is the 0th entry.
 	std::vector< base::Size > assigned_thread_indices_;

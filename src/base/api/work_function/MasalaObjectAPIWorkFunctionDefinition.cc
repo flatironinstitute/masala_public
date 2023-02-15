@@ -25,6 +25,9 @@
 // Class headers
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 
+// Base headers
+#include <base/error/ErrorHandling.hh>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -41,18 +44,35 @@ namespace work_function {
 ///			   we are describing here.
 /// @param[in] is_const Is this work function a const function?
 /// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
+/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+///            is NOT an override of a virtual function in a parent API class)?
+/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+///            a function in a base API class?
 MasalaObjectAPIWorkFunctionDefinition::MasalaObjectAPIWorkFunctionDefinition(
     std::string const & work_function_name,
     std::string const & work_function_description,
     bool const is_const,
-    bool const returns_this_ref
+    bool const returns_this_ref,
+    bool const is_virtual_non_override_fxn,
+    bool const is_override_of_api_virtual_fxn
 ) :
     masala::base::MasalaObject(),
     work_function_name_(work_function_name),
     work_function_description_(work_function_description),
     is_const_(is_const),
-    returns_this_ref_(returns_this_ref)
-{}
+    returns_this_ref_(returns_this_ref),
+    is_virtual_non_override_fxn_(is_virtual_non_override_fxn),
+    is_override_of_api_virtual_fxn_(is_override_of_api_virtual_fxn)
+{
+    CHECK_OR_THROW(
+        !(is_virtual_non_override_fxn_ && is_override_of_api_virtual_fxn_),
+        "masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition",
+        "MasalaObjectAPIWorkFunctionDefinition",
+        "The " + work_function_name + "() work function was specified to be both a virtual function that "
+        "does not override a base API class function, AND a virtual function that does ovreride a base API "
+        "class function.  At most only one of these can be true."
+    );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -80,6 +100,20 @@ MasalaObjectAPIWorkFunctionDefinition::is_const() const {
 bool
 MasalaObjectAPIWorkFunctionDefinition::returns_this_ref() const {
     return returns_this_ref_;
+}
+
+/// @brief Is this function a virtual function that does NOT override
+/// a function in a base class that has a defined API?
+bool
+MasalaObjectAPIWorkFunctionDefinition::is_virtual_non_override_fxn() const {
+    return is_virtual_non_override_fxn_;
+}
+
+/// @brief Is this function an override of a virtual function in a base
+/// class that has a defined API?
+bool
+MasalaObjectAPIWorkFunctionDefinition::is_override_of_api_virtual_fxn() const {
+    return is_override_of_api_virtual_fxn_;
 }
 
 } // namespace work_function

@@ -30,7 +30,7 @@
 #include <core/pose/Pose.hh>
 #include <core/chemistry/Molecules.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
-#include <core/types.hh>
+#include <base/types.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -136,7 +136,7 @@ BasicPDBReader::get_api_definition() {
                 "The BasicPDBReader is intended as a bare-bones means of generating a Pose.  It is "
                 "intended ONLY for testing other classes' functionality.  A full PDB reader will be "
                 "available in the standard_masala_plugins library.",
-                false
+                false, false
             )
         );
 
@@ -161,7 +161,7 @@ BasicPDBReader::get_api_definition() {
                 "pose_from_pdb_file_contents",
                 "Given the contents of a PDB file as a vector of strings, generate a Pose and return a "
                 "shared pointer to the pose.",
-                true, false,
+                true, false, false, false,
                 "file_lines", "The lines of a PDB file, as a vector of strings (one string per line).",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
                 std::bind( &BasicPDBReader::pose_from_pdb_file_contents, this, std::placeholders::_1 )
@@ -173,7 +173,7 @@ BasicPDBReader::get_api_definition() {
                 "Read a PDB file from disk, and return a pose.  Note that invoking this function triggers a read from "
                 "disk!  However, this function does use the Masala disk manager to ensure that disk reads are "
                 "managed and threadsafe.",
-                true, false,
+                true, false, false, false,
                 "file_name", "The input PDB file.  This file will be read from disk.",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
                 std::bind( &BasicPDBReader::pose_from_pdb_file_on_disk, this, std::placeholders::_1 )
@@ -201,7 +201,7 @@ BasicPDBReader::add_atoms_from_file_lines(
     std::vector< std::string > const & file_lines,
     std::vector< bool > & atom_lines_read
 ) const {
-    for( masala::core::Size i(0), imax(file_lines.size()); i<imax; ++i ) {
+    for( masala::base::Size i(0), imax(file_lines.size()); i<imax; ++i ) {
         if( atom_lines_read[i] ) continue;
         std::string const & curline( file_lines[i] );
         if( curline.size() < 6 ) continue; //Skip short lines.
@@ -223,10 +223,10 @@ BasicPDBReader::add_atoms_from_file_lines(
 
         // Containers:
         signed long const atomno( masala::base::utility::string::parse_string< signed long >( curline_atomno, true ) );
-        std::array< masala::core::Real, 3 > coords{
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_xcoord, true ),
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_ycoord, true ),
-            masala::base::utility::string::parse_string< masala::core::Real >( curline_zcoord, true )
+        std::array< masala::base::Real, 3 > coords{
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_xcoord, true ),
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_ycoord, true ),
+            masala::base::utility::string::parse_string< masala::base::Real >( curline_zcoord, true )
         };
 
         // The new atom.

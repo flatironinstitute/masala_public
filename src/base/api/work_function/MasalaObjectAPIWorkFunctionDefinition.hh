@@ -67,11 +67,17 @@ public:
 	///			   we are describing here.
 	/// @param[in] is_const Is this work function a const function?
 	/// @param[in] returns_this_ref Does this function return reference (or const reference) to this?
+	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
+	///            is NOT an override of a virtual function in a parent API class)?
+	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
+	///            a function in a base API class?
 	MasalaObjectAPIWorkFunctionDefinition(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
 		bool const is_const,
-		bool const returns_this_ref
+		bool const returns_this_ref,
+		bool const is_virtual_non_override_fxn,
+		bool const is_override_of_api_virtual_fxn
 	);
 
 	/// @brief Copy constructor.
@@ -119,6 +125,14 @@ public:
 	/// @brief Does this function return reference (or const reference) to this?
 	bool returns_this_ref() const;
 
+	/// @brief Is this function a virtual function that does NOT override
+	/// a function in a base class that has a defined API?
+	bool is_virtual_non_override_fxn() const;
+
+	/// @brief Is this function an override of a virtual function in a base
+	/// class that has a defined API?
+	bool is_override_of_api_virtual_fxn() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +153,14 @@ private:
 
 	/// @brief Does this function return reference (or const reference) to this?
 	bool const returns_this_ref_ = false;
+
+	/// @brief Is this function a virtual function that does NOT override
+	/// a function in a base class that has a defined API?
+	bool is_virtual_non_override_fxn_ = false;
+
+	/// @brief Is this function an override of a virtual function in a base
+	/// class that has a defined API?
+	bool is_override_of_api_virtual_fxn_ = false;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 
