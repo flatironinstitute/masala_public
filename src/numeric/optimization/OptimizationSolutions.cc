@@ -491,6 +491,14 @@ OptimizationSolutions::optimization_solutions() {
     return optimization_solutions_;
 }
 
+/// @brief Allow derived classes to access the vector of optimization solutions (const).
+/// @details This does NOT lock the solutions_mutex_ mutex.  Calling functions must
+/// do this first.
+std::vector< OptimizationSolutionSP > const &
+OptimizationSolutions::optimization_solutions() const {
+    return optimization_solutions_;
+}
+
 } // namespace optimization
 } // namespace numeric
 } // namesapce masala

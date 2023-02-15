@@ -31,6 +31,8 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -145,12 +147,6 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
 
-        // Work functions:
-
-
-        // Getters:
-
-
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
@@ -175,6 +171,31 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
 				std::bind( &OptimizationSolutions::remove_optimization_solution, this, std::placeholders::_1 )
 			)
 		);
+
+        // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< masala::base::Real, masala::base::Size > >(
+                "solution_score", "Get the score of the nth solution.",
+                "solution_index", "The index of the solution whose score we are retrieving.  This "
+	            " will throw if this index is not in range.",
+                "solution_score", "The score associated with this solution.",
+                false, false, std::bind( &CostFunctionNetworkOptimizationSolutions::solution_score, this, std::placeholders::_1 )
+            )
+        );
+
+        // Work functions:
+        api_def->add_work_function(
+            std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< bool, masala::base::Size, std::vector< masala::base::Size > const & > >(
+                "solution_matches", "Does a given solution's solution vector match a solution vector "
+                "to which we are comparing?",
+                true, false, false, false,
+                "solution_index", "The index of the solution to remove.  Must be in range; throws otherwise.",
+                "comparison_solution_vector", "The vector of solutions to which we are comparing.  This "
+                "is one choice index per variable node.  (There should not be entries for fixed nodes.)",
+                "solutions_match", "True if the solutions match; false otherwise.",
+                std::bind( &CostFunctionNetworkOptimizationSolutions::solution_matches, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
 
         api_definition() = api_def; //Make const.
     }
@@ -206,6 +227,50 @@ CostFunctionNetworkOptimizationSolutions::add_optimization_solution(
         "to a CostFunctionNetworkOptimizationSolutions container."
     );
     masala::numeric::optimization::OptimizationSolutions::add_optimization_solution( solution_in );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the score of the nth solution.
+/// @param solution_index The index of the solution whose score we are retrieving.  This
+/// will throw if this index is not in range.
+masala::base::Real
+CostFunctionNetworkOptimizationSolutions::solution_score(
+    masala::base::Size const solution_index
+) const {
+    std::lock_guard< std::mutex > lock( solutions_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions().size(), "solution_score",
+        "Solution index out of range!  There are " + std::to_string( optimization_solutions().size() ) +
+        " solutions stored in this object, yet I was asked to access solution " +
+        std::to_string(solution_index) + "."
+    );
+    return optimization_solutions()[solution_index]->solution_score();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Does a given solution's solution vector match a solution vector to which we
+/// are comparing?
+/// @param solution_index The index of the solution.  Must be within range, or this will throw.
+/// @param comparison_solution_vector The vector of solutions to which we are comparing.  This
+/// is one choice index per variable node.  (There should not be entries for fixed nodes.)
+/// @return True if the solution vector matches, false otherwise.
+bool
+CostFunctionNetworkOptimizationSolutions::solution_matches(
+    masala::base::Size const solution_index,
+    std::vector< masala::base::Size > const & comparison_solution_vector
+) const {
+    std::lock_guard< std::mutex > lock( solutions_mutex() );
+    CHECK_OR_THROW_FOR_CLASS( solution_index < optimization_solutions().size(), "solution_matches",
+        "Solution index out of range!  There are " + std::to_string( optimization_solutions().size() ) +
+        " solutions stored in this object, yet I was asked to access solution " +
+        std::to_string(solution_index) + "."
+    );
+    return std::static_pointer_cast< CostFunctionNetworkOptimizationSolution const >( optimization_solutions()[solution_index] )->operator==( comparison_solution_vector );
 }
 
 } // namespace cost_function_network
