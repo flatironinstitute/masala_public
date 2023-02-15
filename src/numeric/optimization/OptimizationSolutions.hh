@@ -235,6 +235,11 @@ protected:
 	/// do this first.
 	std::vector< OptimizationSolutionSP > & optimization_solutions();
 
+	/// @brief Allow derived classes to access the vector of optimization solutions (const).
+	/// @details This does NOT lock the solutions_mutex_ mutex.  Calling functions must
+	/// do this first.
+	std::vector< OptimizationSolutionSP > const & optimization_solutions() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

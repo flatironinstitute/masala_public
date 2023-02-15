@@ -141,6 +141,39 @@ public:
 		OptimizationSolutionSP solution_in
 	) override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the score of the nth solution.
+	/// @param solution_index The index of the solution whose score we are retrieving.  This
+	/// will throw if this index is not in range.
+	masala::base::Real
+	solution_score(
+		masala::base::Size const solution_index
+	) const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Does a given solution's solution vector match a solution vector to which we
+	/// are comparing?
+	/// @param solution_index The index of the solution.  Must be within range, or this will throw.
+	/// @param comparison_solution_vector The vector of solutions to which we are comparing.  This
+	/// is one choice index per variable node.  (There should not be entries for fixed nodes.)
+	/// @return True if the solution vector matches, false otherwise.
+	bool
+	solution_matches(
+		masala::base::Size const solution_index,
+		std::vector< masala::base::Size > const & comparison_solution_vector
+	) const;
+
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
