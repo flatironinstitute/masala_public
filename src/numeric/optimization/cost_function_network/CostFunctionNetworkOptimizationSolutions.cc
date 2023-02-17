@@ -186,7 +186,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
 
         // Work functions:
         api_def->add_work_function(
-            std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< bool, masala::base::Size, std::vector< masala::base::Size > const & > >(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< bool, masala::base::Size, std::vector< masala::base::Size > const & > >(
                 "solution_matches", "Does a given solution's solution vector match a solution vector "
                 "to which we are comparing?",
                 true, false, false, false,
@@ -195,6 +195,23 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 "is one choice index per variable node.  (There should not be entries for fixed nodes.)",
                 "solutions_match", "True if the solutions match; false otherwise.",
                 std::bind( &CostFunctionNetworkOptimizationSolutions::solution_matches, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, CostFunctionNetworkOptimizationProblem const &, masala::base::Size > > (
+                "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
+	            "and keep up to the lowest-scoring N.  Note: if both sets contain the same solution, the number of times "
+                "that solution was produced will be incremented in this set by the number of times it was produced "
+                "in the other set.",
+                false, false, false, false,
+                "other_solutions", "The other solutions object, which we're merging into "
+	            "this one.  Unchanged by this operation.",
+                "max_solutions_to_store_total", "The maximum number of solutions that we "
+                "want to be storing at the end of this operation.  The lowest-scoring solutions "
+                "from the union of both sets are stored, and any solutions past the lowest N are "
+                "discarded.",
+                "void", "Returns nothing.",
+                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
 
