@@ -198,7 +198,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, CostFunctionNetworkOptimizationProblem const &, masala::base::Size > > (
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, CostFunctionNetworkOptimizationSolutions const &, masala::base::Size > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
 	            "and keep up to the lowest-scoring N.  Note: if both sets contain the same solution, the number of times "
                 "that solution was produced will be incremented in this set by the number of times it was produced "
@@ -328,6 +328,7 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
         for( Size j(0), jmax(optimization_solutions().size()); j<jmax; ++j ) {
             CostFunctionNetworkOptimizationSolutionSP this_solution( std::static_pointer_cast< CostFunctionNetworkOptimizationSolution >( optimization_solutions()[j] ) );
             if( this_solution->operator==( other_solution_vec ) ) {
+                // If the solution is already in this container, increment the number times it was produced.
                 this_solution->increment_n_times_solution_was_produced( other_solution->n_times_solution_was_produced() );
                 found = true;
                 break;
@@ -337,7 +338,30 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
             solution_summaries.push_back( std::make_tuple( i, false, other_solutions.optimization_solutions()[i]->solution_score() ) );
         }
     }
-    TODO CONTINUE HERE
+    
+    // Sort the vector of summaries by score:
+    std::sort(
+        solution_summaries.begin(), solution_summaries.end(),
+        [](
+            std::tuple< Size, bool, Real > const & a,
+            std::tuple< Size, bool, Real > const & b
+        ){
+            return std::get<2>(a) < std::get<2>(b);
+        }
+    );
+
+    // Take the first N solutions and make them the new solution vector:
+    std::vector< masala::numeric::optimization::OptimizationSolutionSP > new_solutions;
+    Size const nsol( std::min( solution_summaries.size(), max_solutions_to_store_total ) );
+    new_solutions.reserve( nsol );
+    for( Size i(0); i<nsol; ++i ) {
+        new_solutions.push_back(
+            std::get<1>(solution_summaries[i]) ?
+            optimization_solutions()[std::get<0>(solution_summaries[i])] :
+            other_solutions.optimization_solutions()[std::get<0>(solution_summaries[i])]
+        );
+    }
+    optimization_solutions() = new_solutions;
 }
 
 } // namespace cost_function_network
