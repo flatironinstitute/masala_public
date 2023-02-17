@@ -116,6 +116,22 @@ MasalaObjectAPIWorkFunctionDefinition::is_override_of_api_virtual_fxn() const {
     return is_override_of_api_virtual_fxn_;
 }
 
+/// @brief Is this function one that triggers no mutex-locking?
+bool
+MasalaObjectAPIWorkFunctionDefinition::triggers_no_mutex_lock() const {
+    return triggers_no_mutex_lock_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// ADDITIONAL SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Indicate that this function does not trigger mutex-locking.
+void
+MasalaObjectAPIWorkFunctionDefinition::set_triggers_no_mutex_lock() {
+    triggers_no_mutex_lock_ = true;
+}
+
 } // namespace work_function
 } // namespace api
 } // namespace base
