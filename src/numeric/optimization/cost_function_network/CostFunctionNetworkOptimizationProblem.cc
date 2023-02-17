@@ -239,6 +239,8 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
 /// @details The candidate solution is expressed as a vector of choice indices, with
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_absolute_score(
     std::vector< base::Size > const & candidate_solution
@@ -251,6 +253,8 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 /// @details The candidate solution is expressed as a vector of choice indices, with
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_score_change(
     std::vector< base::Size > const & old_solution,
@@ -374,10 +378,10 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
         );
 
         // Work functions:
-        api_def->add_work_function(
+        work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
                 "compute_absolute_score", "Given a candidate solution, compute the score.  "
-	            "The candidate solution is expressed as a vector of choice indices, with "
+                "The candidate solution is expressed as a vector of choice indices, with "
                 "one entry per variable position, in order of position indices.",
                 true, false, true, false,
                 "candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
@@ -387,7 +391,11 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
             )
         );
-        api_def->add_work_function(
+        comp_abs_score_fxn->set_triggers_no_mutex_lock();
+        api_def->add_work_function( comp_abs_score_fxn );
+
+
+        work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > comp_score_change_fxn(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
                 "compute_score_change", "Given two candidate solutions, compute the score difference.  "
 	            "The candidate solutions are expressed as a vector of choice indices, with "
@@ -402,6 +410,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 std::bind( &CostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+        comp_score_change_fxn->set_triggers_no_mutex_lock();
+        api_def->add_work_function( comp_score_change_fxn );
 
         api_definition() = api_def; //Make const.
     }

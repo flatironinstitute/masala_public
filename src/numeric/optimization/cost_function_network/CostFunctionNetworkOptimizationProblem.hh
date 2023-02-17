@@ -182,6 +182,8 @@ public:
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+	/// a read-only context.
 	virtual
 	masala::base::Real
 	compute_absolute_score(
@@ -192,6 +194,8 @@ public:
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+	/// a read-only context.
 	virtual
 	masala::base::Real
 	compute_score_change(
