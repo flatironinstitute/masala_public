@@ -83,7 +83,6 @@ OptimizationSolutions::operator=(
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionsSP
 OptimizationSolutions::deep_clone() const {
-    std::lock_guard< std::mutex > lock( solutions_mutex_ );
     OptimizationSolutionsSP new_object( masala::make_shared< OptimizationSolutions >( *this ) );
     new_object->make_independent();
     return new_object;
