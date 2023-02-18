@@ -42,176 +42,6 @@ namespace managers {
 namespace random {
 
 ////////////////////////////////////////////////////////////////////////////////
-// NON-CLASS FUNCTIONS FOR CONVENIENCE
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Size
-uniform_size_distribution(
-    base::Size const beginrange,
-    base::Size const endrange
-);
-
-/// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-signed long int
-uniform_signed_long_int_distribution(
-    signed long int const beginrange,
-    signed long int const endrange
-);
-
-/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
-/// interval [beginrange, endrange).
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Real
-uniform_real_distribution(
-    base::Real const beginrange,
-    base::Real const endrange
-);
-
-/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
-/// interval [0, 1).
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Real
-uniform_real_distribution();
-
-/// @brief Generate a single-precision floating-point number uniformly drawn from the
-/// interval [beginrange, endrange).
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-float
-uniform_float_distribution(
-    float const beginrange,
-    float const endrange
-);
-
-/// @brief Generate a single-precision floating-point number uniformly drawn from the
-/// interval [0, 1).
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-float
-uniform_float_distribution();
-
-/// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
-/// with mean and standard deviation given by mean and stddev, respectively.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean, stddev )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Real
-gaussian_real_distribution(
-    base::Real const mean,
-    base::Real const stddev
-);
-
-/// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
-/// with mean 0 and standard deviation 1.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Real
-gaussian_real_distribution();
-
-/// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
-/// with mean and standard deviation given by mean and stddev, respectively.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean, stddev )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-float
-gaussian_float_distribution(
-    float const mean,
-    float const stddev
-);
-
-/// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
-/// with mean 0 and standard deviation 1.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( 0, 1 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-float
-gaussian_float_distribution();
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( mean )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Size
-poisson_size_distribution(
-    base::Size const mean
-);
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( 0 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Size
-poisson_size_distribution();
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( mean )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-signed long int
-poisson_singed_long_int_distribution(
-    signed long int const mean
-);
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( 0 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-signed long int
-poisson_singed_long_int_distribution();
-
-/// @brief Apply the Metropolis criterion.
-/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function directly.
-/// @note The change in energy and k_B * T must be given in the same units.
-/// @returns True to accept a the move that produces this delta_E, false to reject it.
-bool
-apply_metropolis_criterion(
-    base::Real const delta_E,
-    base::Real const kbT
-);
-
-/// @brief Apply the Metropolis criterion (for floating-point values.).
-/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function directly.
-/// @note The change in energy and k_B * T must be given in the same units.
-/// @returns True to accept a the move that produces this delta_E, false to reject it.
-bool
-apply_metropolis_criterion(
-    float const delta_E,
-    float const kbT
-);
-
-////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS MasalaRandomNumberGenerator
@@ -388,6 +218,188 @@ private:
     std::mt19937_64 random_engine_;
 
 };
+
+////////////////////////////////////////////////////////////////////////////////
+// NON-CLASS FUNCTIONS FOR CONVENIENCE
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Size
+uniform_size_distribution(
+    base::Size const beginrange,
+    base::Size const endrange
+);
+
+/// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+signed long int
+uniform_signed_long_int_distribution(
+    signed long int const beginrange,
+    signed long int const endrange
+);
+
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution(
+    base::Real const beginrange,
+    base::Real const endrange
+);
+
+/// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+uniform_real_distribution();
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [beginrange, endrange).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution(
+    float const beginrange,
+    float const endrange
+);
+
+/// @brief Generate a single-precision floating-point number uniformly drawn from the
+/// interval [0, 1).
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+uniform_float_distribution();
+
+/// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
+/// with mean and standard deviation given by mean and stddev, respectively.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean, stddev )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+gaussian_real_distribution(
+    base::Real const mean,
+    base::Real const stddev
+);
+
+/// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
+/// with mean 0 and standard deviation 1.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Real
+gaussian_real_distribution();
+
+/// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
+/// with mean and standard deviation given by mean and stddev, respectively.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean, stddev )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+gaussian_float_distribution(
+    float const mean,
+    float const stddev
+);
+
+/// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
+/// with mean 0 and standard deviation 1.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( 0, 1 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+float
+gaussian_float_distribution();
+
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( mean )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Size
+poisson_size_distribution(
+    base::Size const mean
+);
+
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( 0 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+base::Size
+poisson_size_distribution();
+
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( mean )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+signed long int
+poisson_singed_long_int_distribution(
+    signed long int const mean
+);
+
+/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( 0 )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+signed long int
+poisson_singed_long_int_distribution();
+
+/// @brief Apply the Metropolis criterion.
+/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function directly.
+/// @note The change in energy and k_B * T must be given in the same units.
+/// @returns True to accept a the move that produces this delta_E, false to reject it.
+bool
+apply_metropolis_criterion(
+    base::Real const delta_E,
+    base::Real const kbT
+);
+
+/// @brief Apply the Metropolis criterion (for floating-point values.).
+/// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function directly.
+/// @note The change in energy and k_B * T must be given in the same units.
+/// @returns True to accept a the move that produces this delta_E, false to reject it.
+bool
+apply_metropolis_criterion(
+    float const delta_E,
+    float const kbT
+);
+
+/// @brief Shuffle a vector.
+/// @details This is a convenience function that calls MasalaRandomNumberGenerator::shuffle_vector()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function directly.
+template< class T >
+void
+shuffle_vector(
+    std::vector< T > & vec
+) {
+    MasalaRandomNumberGenerator::get_instance()->shuffle_vector(vec);
+}
 
 } // namespace random
 } // namespace managers
