@@ -26,16 +26,6 @@
 // Forward declarations:
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.fwd.hh>
 
-// Parent header:
-#include <numeric/optimization/OptimizationProblem.hh>
-
-// Numeric headers:
-#include <base/types.hh>
-
-// STL headers:
-#include <map>
-#include <utility> //For std::pair.
-
 namespace masala {
 namespace numeric_api {
 namespace utility {
