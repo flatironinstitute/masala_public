@@ -345,7 +345,9 @@ with open( output_file, 'w' ) as fhandle:
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
-            fhandle.write("\n\tPUBLIC " + lib_name + "\n)\n")
+            if len(cclist) > 0 :
+                fhandle.write("\n\tPUBLIC " + lib_name )
+            fhandle.write( "\n)\n" )
 
 if len(api_cclist) > 0 and output_file_api != None :
     with open( output_file_api, 'w' ) as fhandle :
