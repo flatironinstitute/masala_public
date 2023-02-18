@@ -367,6 +367,15 @@ public:
         signed long int const mean
     );
 
+    /// @brief Given a vector, shuffle the order.
+    template< class T >
+    void
+    shuffle_vector(
+        std::vector< T > & vec
+    ) {
+        std::shuffle( vec.begin(), vec.end(), random_engine_ );
+    }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
