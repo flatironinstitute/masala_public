@@ -35,6 +35,7 @@
 
 // STL headers:
 #include <random>
+#include <algorithm>
 
 namespace masala {
 namespace base {
