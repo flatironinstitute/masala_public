@@ -61,6 +61,7 @@ class MasalaThreadManagerAccessKey : public masala::base::MasalaObject {
 	friend class MasalaThreadManager;
 
 private:
+
 	/// @brief Default constructor, private.
 	MasalaThreadManagerAccessKey() = default;
 
@@ -143,6 +144,11 @@ public:
     /// @details Returns "masala::base::managers::thread".
     std::string
     class_namespace() const override;
+
+    /// @brief Get the number of hardware threads available on this node.
+    /// @details May return 0 if std::thread::hardware_concurrency() does not
+    /// work for some reason on this hardware.
+    masala::base::Size hardware_threads() const;
 
     /// @brief Return the whether the current thread is known to the thread manager.
     bool this_thread_is_a_masala_thread() const;
@@ -256,16 +262,20 @@ private:
     /// @brief Lock the thread manager (e.g. for resizing thread pools).
     mutable std::mutex thread_manager_mutex_;
 
+    /// @brief The number of hardware threads available on this node, set
+    /// on object construction.
+    masala::base::Size const hardware_threads_ = 1;
+
     /// @brief The default configuration for the thread manager.
     MasalaThreadManagerConfigurationCSP configuration_;
 
     /// @brief The total number of threads to launch.
-    base::Size total_threads_ = 1;
+    masala::base::Size total_threads_ = 1;
 
     /// @brief The thread pool.  These are created on instantiation of the thread
     /// manager.  Threads are launched internally on first request, and are kept
     /// idling until work is assigned.
-    base::managers::threads::thread_pool::MasalaThreadPoolSP thread_pool_;
+    masala::base::managers::threads::thread_pool::MasalaThreadPoolSP thread_pool_;
 
     /// @brief The system ID of the master thread for this process.  Set on construction.
     std::thread::id const master_thread_id_;

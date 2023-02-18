@@ -70,7 +70,6 @@ MasalaThreadManagerAccessKey::class_namespace() const {
     return "masala::base::managers::threads";
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // MasalaThreadManager PRIVATE CONSTRUCTOR
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,6 +79,7 @@ MasalaThreadManagerAccessKey::class_namespace() const {
 /// work is first assigned to threads (lazy thread launching).
 MasalaThreadManager::MasalaThreadManager() :
     base::MasalaObject(),
+    hardware_threads_( std::thread::hardware_concurrency() ),
     configuration_( OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MasalaThreadManager, MasalaThreadManagerConfiguration ) ),
     total_threads_( configuration_->default_total_threads() ),
     thread_pool_(
@@ -91,7 +91,7 @@ MasalaThreadManager::MasalaThreadManager() :
 {
     std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
     if( total_threads_ == 0 ) {
-        total_threads_ = std::thread::hardware_concurrency();
+        total_threads_ = hardware_threads_;
         if( total_threads_ == 0 ) {
             write_to_tracer(
                 "Warning!  Could not determine number of hardware threads on node.  "
@@ -120,6 +120,14 @@ MasalaThreadManager::class_name() const {
 std::string
 MasalaThreadManager::class_namespace() const {
     return "masala::base::managers::threads";
+}
+
+/// @brief Get the number of hardware threads available on this node.
+/// @details May return 0 if std::thread::hardware_concurrency() does not
+/// work for some reason on this hardware.
+masala::base::Size
+MasalaThreadManager::hardware_threads() const {
+    return hardware_threads_;
 }
 
 /// @brief Return the whether the current thread is known to the thread manager.
@@ -329,7 +337,7 @@ MasalaThreadManager::set_total_threads(
 ) {
     base::Size actual_desired( desired_threadcount );
     if( actual_desired == 0 ) {
-        actual_desired = std::thread::hardware_concurrency();
+        actual_desired = hardware_threads_;
         if( actual_desired == 0 ) {
             write_to_tracer(
                 "Warning!  Could not determine number of hardware threads on node.  "
