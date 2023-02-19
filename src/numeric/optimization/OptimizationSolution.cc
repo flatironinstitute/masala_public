@@ -78,10 +78,17 @@ OptimizationSolution::operator=(
     return *this;
 }
 
+/// @brief Make a copy of this object.
+/// @details Must be implemented for derived classes.
+OptimizationSolutionSP
+OptimizationSolution::clone() const {
+	return masala::make_shared< OptimizationSolution >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionSP
 OptimizationSolution::deep_clone() const {
-    OptimizationSolutionSP new_object( masala::make_shared< OptimizationSolution >( *this ) );
+    OptimizationSolutionSP new_object( this->clone() );
     new_object->make_independent();
     return new_object;
 }
