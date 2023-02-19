@@ -80,10 +80,17 @@ OptimizationSolutions::operator=(
     return *this;
 }
 
+/// @brief Make a copy of this object and return an owning pointer.
+/// @details Derived classes must override this.
+OptimizationSolutionsSP
+OptimizationSolutions::clone() const {
+	return masala::make_shared< OptimizationSolutions >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionsSP
 OptimizationSolutions::deep_clone() const {
-    OptimizationSolutionsSP new_object( masala::make_shared< OptimizationSolutions >( *this ) );
+    OptimizationSolutionsSP new_object( this->clone() );
     new_object->make_independent();
     return new_object;
 }

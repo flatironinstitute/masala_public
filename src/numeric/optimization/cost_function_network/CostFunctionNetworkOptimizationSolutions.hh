@@ -74,6 +74,10 @@ public:
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationSolutions() override = default;
 
+	/// @brief Make a copy of this object and return an owning pointer.
+	OptimizationSolutionsSP
+	clone() const override;
+
 	/// @brief Make a fully independent copy of this object.
 	CostFunctionNetworkOptimizationSolutionsSP
 	deep_clone() const;

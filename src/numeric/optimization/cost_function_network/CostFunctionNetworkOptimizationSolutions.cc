@@ -53,10 +53,16 @@ namespace cost_function_network {
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Make a copy of this object and return an owning pointer.
+OptimizationSolutionsSP
+CostFunctionNetworkOptimizationSolutions::clone() const {
+	return masala::make_shared< CostFunctionNetworkOptimizationSolutions >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationSolutionsSP
 CostFunctionNetworkOptimizationSolutions::deep_clone() const {
-    CostFunctionNetworkOptimizationSolutionsSP new_object( masala::make_shared< CostFunctionNetworkOptimizationSolutions >( *this ) );
+    CostFunctionNetworkOptimizationSolutionsSP new_object( std::static_pointer_cast< CostFunctionNetworkOptimizationSolutions >( this->clone() ) );
     new_object->make_independent();
     return new_object;
 }
