@@ -87,11 +87,11 @@ OptimizationProblems::deep_clone() const {
     return new_object;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 void
 OptimizationProblems::make_independent() {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
-    for( masala::base::Size i(1); i<=optimization_problems_.size(); ++i ) {
+    for( masala::base::Size i(0); i<optimization_problems_.size(); ++i ) {
         optimization_problems_[i] = optimization_problems_[i]->deep_clone();
     }
 }

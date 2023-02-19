@@ -77,7 +77,7 @@ public:
 	deep_clone() const;
 
 	/// @brief Ensure that all data are unique and not shared
-	/// (i.e. everytihng is deep-cloned.)
+	/// (i.e. everything is deep-cloned.)
 	void make_independent();
 
 public:
