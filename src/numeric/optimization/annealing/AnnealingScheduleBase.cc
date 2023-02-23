@@ -81,7 +81,7 @@ AnnealingScheduleBase::operator=(
 /// @brief Make a copy of this object.
 AnnealingScheduleBaseSP
 AnnealingScheduleBase::clone() const {
-    return std::make_shared< AnnealingScheduleBase >( *this );
+    return masala::make_shared< AnnealingScheduleBase >( *this );
 }
 
 /// @brief Make this object wholly independent.

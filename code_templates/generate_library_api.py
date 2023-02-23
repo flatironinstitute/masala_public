@@ -498,6 +498,12 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             first = False
         else :
             outstring += "\n\n"
+
+        if ( "Triggers_No_Mutex_Lock" in fxn ) and ( fxn["Triggers_No_Mutex_Lock"] == True ) :
+            triggers_no_mutex_lock = True
+        else :
+            triggers_no_mutex_lock = False
+
         outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
@@ -519,10 +525,14 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                 outstring += "  (The return value is an enum.)\n"
             else :
                 outstring += "\n"
+            if triggers_no_mutex_lock :
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
         else :
+            if triggers_no_mutex_lock :
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
@@ -668,6 +678,10 @@ def generate_function_implementations( \
             returns_this_ref = True
         else :
             returns_this_ref = False
+        if ( "Triggers_No_Mutex_Lock" in fxn ) and ( fxn["Triggers_No_Mutex_Lock"] == True ) :
+            triggers_no_mutex_lock = True
+        else :
+            triggers_no_mutex_lock = False
 
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -679,7 +693,11 @@ def generate_function_implementations( \
             else :
                 outstring += "\n"
             outstring += correct_masala_types( project_name, outtype, additional_includes, is_enum=output_is_enum ) + "\n"
+            if triggers_no_mutex_lock :
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
         else :
+            if triggers_no_mutex_lock :
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
 
@@ -735,10 +753,11 @@ def generate_function_implementations( \
             else :
                 object_string = "inner_object_"
 
-        if is_derived == True :
-            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
-        else :
-            outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+        if triggers_no_mutex_lock == False :
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
             if is_masala_API_ptr or is_masala_plugin_ptr :
                 outstring += tabchar + "// In this function, note that std::const_pointer_cast is safe to use.  We might\n"

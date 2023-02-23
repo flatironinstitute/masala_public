@@ -72,12 +72,18 @@ public:
 	/// @brief Destructor.
 	~OptimizationSolutions() override = default;
 
+	/// @brief Make a copy of this object and return an owning pointer.
+	/// @details Derived classes must override this.
+	virtual
+	OptimizationSolutionsSP
+	clone() const;
+
 	/// @brief Make a fully independent copy of this object.
 	OptimizationSolutionsSP
 	deep_clone() const;
 
 	/// @brief Ensure that all data are unique and not shared
-	/// (i.e. everytihng is deep-cloned.)
+	/// (i.e. everything is deep-cloned.)
 	void make_independent();
 
 public:

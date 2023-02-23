@@ -149,6 +149,9 @@ public:
 		if( returns_this_ref() ) {
 			ss << "Note that this function returns a reference to the original object (*this)." << std::endl;
 		}
+		if( triggers_no_mutex_lock() ) {
+			ss << ( returns_this_ref() ? "Also note " : "Note ") << "that this function triggers no mutex lock." << std::endl;
+		}
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}
@@ -165,6 +168,11 @@ public:
 		json_api["Returns_This_Ref"] = returns_this_ref();
 		json_api["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] = is_virtual_non_override_fxn();
 		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
+
+		// Optional properties:
+		if( triggers_no_mutex_lock() ) {
+			json_api["Triggers_No_Mutex_Lock"] = true;
+		}
 
 		//Inputs:
 		json_api["Work_Function_N_Inputs"] = 0;

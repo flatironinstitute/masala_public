@@ -284,7 +284,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
 /// @note This uses the one- and two-node penalties cached in this object to make this
-/// calculation efficient.
+/// calculation efficient.  This function does NOT lock the problem mutex.  This is only
+/// threadsafe from a read-only context.
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_score(
     std::vector< base::Size > const & candidate_solution
@@ -338,7 +339,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
 /// @note This uses the one- and two-node penalties cached in this object to make this
-/// calculation very efficient.
+/// calculation very efficient.  This function does NOT lock the problem mutex.  This is only
+/// threadsafe from a read-only context.
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
     std::vector< base::Size > const & old_solution,
@@ -507,7 +509,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
         );
 
         // Work functions
-        api_def->add_work_function(
+        work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< masala::base::Real, std::vector< masala::base::Size > const & > compute_absolute_score_fxn(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< masala::base::Real, std::vector< masala::base::Size > const & > >(
                 "compute_absolute_score", "Given a candidate solution, compute the score.  "
 	            "The candidate solution is expressed as a vector of choice indices, with "
@@ -522,7 +524,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
             )
         );
-        api_def->add_work_function(
+        compute_absolute_score_fxn->set_triggers_no_mutex_lock();
+        api_def->add_work_function( compute_absolute_score_fxn );
+
+        work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP<
+            masala::base::Real, std::vector< masala::base::Size > const &,
+            std::vector< masala::base::Size > const &
+        > compute_score_change_fxn(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< masala::base::Real, std::vector< masala::base::Size > const &, std::vector< masala::base::Size > const & > >(
                 "compute_score_change", "Given two candidate solutions, compute the score difference.  "
 	            "The candidate solutions are expressed as a vector of choice indices, with "
@@ -539,6 +547,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+        compute_score_change_fxn->set_triggers_no_mutex_lock();
+        api_def->add_work_function( compute_score_change_fxn );
 
         api_definition() = api_def; //Make const.
     }

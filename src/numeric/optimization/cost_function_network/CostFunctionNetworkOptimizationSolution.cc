@@ -68,11 +68,16 @@ CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution
     set_solution_score( solution_score );
 }
 
+/// @brief Make a copy of this object.
+masala::numeric::optimization::OptimizationSolutionSP
+CostFunctionNetworkOptimizationSolution::clone() const {
+    return masala::make_shared< CostFunctionNetworkOptimizationSolution >( *this );
+}
 
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationSolutionSP
 CostFunctionNetworkOptimizationSolution::deep_clone() const {
-    CostFunctionNetworkOptimizationSolutionSP new_solution( masala::make_shared< CostFunctionNetworkOptimizationSolution >( *this ) );
+    CostFunctionNetworkOptimizationSolutionSP new_solution( std::static_pointer_cast< CostFunctionNetworkOptimizationSolution >( this->clone() ) );
     new_solution->make_independent();
     return new_solution;
 }

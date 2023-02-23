@@ -70,6 +70,12 @@ public:
 	/// @brief Destructor.
 	~OptimizationSolution() override = default;
 
+	/// @brief Make a copy of this object.
+	/// @details Must be implemented for derived classes.
+	virtual
+	OptimizationSolutionSP
+	clone() const;
+
 	/// @brief Make a fully independent copy of this object.
 	OptimizationSolutionSP
 	deep_clone() const;

@@ -200,7 +200,8 @@ public:
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
 	/// @note This uses the one- and two-node penalties cached in this object to make this
-	/// calculation efficient.
+	/// calculation efficient.  This function does NOT lock the problem mutex.  This is only
+	/// threadsafe from a read-only context.
 	masala::base::Real
 	compute_absolute_score(
 		std::vector< base::Size > const & candidate_solution
@@ -211,7 +212,8 @@ public:
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
 	/// @note This uses the one- and two-node penalties cached in this object to make this
-	/// calculation very efficient.
+	/// calculation very efficient.  This function does NOT lock the problem mutex.  This is only
+	/// threadsafe from a read-only context.
 	masala::base::Real
 	compute_score_change(
 		std::vector< base::Size > const & old_solution,

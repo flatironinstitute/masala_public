@@ -79,6 +79,10 @@ public:
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationSolution() override = default;
 
+	/// @brief Make a copy of this object.
+	masala::numeric::optimization::OptimizationSolutionSP
+	clone() const override;
+
 	/// @brief Make a fully independent copy of this object.
 	CostFunctionNetworkOptimizationSolutionSP
 	deep_clone() const;

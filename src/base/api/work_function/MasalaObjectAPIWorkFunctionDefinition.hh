@@ -133,6 +133,18 @@ public:
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn() const;
 
+	/// @brief Is this function one that triggers no mutex-locking?
+	bool triggers_no_mutex_lock() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// ADDITIONAL SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Indicate that this function does not trigger mutex-locking.
+	void set_triggers_no_mutex_lock();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +173,9 @@ private:
 	/// @brief Is this function an override of a virtual function in a base
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn_ = false;
+
+	/// @brief Is this function one that does NOT trigger mutex-locking?
+	bool triggers_no_mutex_lock_ = false;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 

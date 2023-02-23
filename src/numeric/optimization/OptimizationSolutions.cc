@@ -80,20 +80,26 @@ OptimizationSolutions::operator=(
     return *this;
 }
 
+/// @brief Make a copy of this object and return an owning pointer.
+/// @details Derived classes must override this.
+OptimizationSolutionsSP
+OptimizationSolutions::clone() const {
+	return masala::make_shared< OptimizationSolutions >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 OptimizationSolutionsSP
 OptimizationSolutions::deep_clone() const {
-    std::lock_guard< std::mutex > lock( solutions_mutex_ );
-    OptimizationSolutionsSP new_object( masala::make_shared< OptimizationSolutions >( *this ) );
+    OptimizationSolutionsSP new_object( this->clone() );
     new_object->make_independent();
     return new_object;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 void
 OptimizationSolutions::make_independent() {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
-    for( masala::base::Size i(1); i<=optimization_solutions_.size(); ++i ) {
+    for( masala::base::Size i(0); i<optimization_solutions_.size(); ++i ) {
         optimization_solutions_[i] = optimization_solutions_[i]->deep_clone();
     }
 }

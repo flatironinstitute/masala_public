@@ -42,6 +42,7 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <tuple>
 
 namespace masala {
 namespace numeric {
@@ -52,10 +53,16 @@ namespace cost_function_network {
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Make a copy of this object and return an owning pointer.
+OptimizationSolutionsSP
+CostFunctionNetworkOptimizationSolutions::clone() const {
+	return masala::make_shared< CostFunctionNetworkOptimizationSolutions >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationSolutionsSP
 CostFunctionNetworkOptimizationSolutions::deep_clone() const {
-    CostFunctionNetworkOptimizationSolutionsSP new_object( masala::make_shared< CostFunctionNetworkOptimizationSolutions >( *this ) );
+    CostFunctionNetworkOptimizationSolutionsSP new_object( std::static_pointer_cast< CostFunctionNetworkOptimizationSolutions >( this->clone() ) );
     new_object->make_independent();
     return new_object;
 }
@@ -185,7 +192,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
 
         // Work functions:
         api_def->add_work_function(
-            std::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< bool, masala::base::Size, std::vector< masala::base::Size > const & > >(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< bool, masala::base::Size, std::vector< masala::base::Size > const & > >(
                 "solution_matches", "Does a given solution's solution vector match a solution vector "
                 "to which we are comparing?",
                 true, false, false, false,
@@ -194,6 +201,23 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 "is one choice index per variable node.  (There should not be entries for fixed nodes.)",
                 "solutions_match", "True if the solutions match; false otherwise.",
                 std::bind( &CostFunctionNetworkOptimizationSolutions::solution_matches, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, CostFunctionNetworkOptimizationSolutions const &, masala::base::Size > > (
+                "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
+	            "and keep up to the lowest-scoring N.  Note: if both sets contain the same solution, the number of times "
+                "that solution was produced will be incremented in this set by the number of times it was produced "
+                "in the other set.",
+                false, false, false, false,
+                "other_solutions", "The other solutions object, which we're merging into "
+	            "this one.  Unchanged by this operation.",
+                "max_solutions_to_store_total", "The maximum number of solutions that we "
+                "want to be storing at the end of this operation.  The lowest-scoring solutions "
+                "from the union of both sets are stored, and any solutions past the lowest N are "
+                "discarded.",
+                "void", "Returns nothing.",
+                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
 
@@ -271,6 +295,79 @@ CostFunctionNetworkOptimizationSolutions::solution_matches(
         std::to_string(solution_index) + "."
     );
     return std::static_pointer_cast< CostFunctionNetworkOptimizationSolution const >( optimization_solutions()[solution_index] )->operator==( comparison_solution_vector );
+}
+
+/// @brief Given another collection of solutions, merge-sort the solutions
+/// and keep up to the lowest-scoring N.
+/// @param[in] other_solutions The other solutions object, which we're merging into
+/// this one.  Unchanged by this operation.
+/// @param[in] max_solutions_to_store_total The maximum number of solutions that we
+/// want to be storing at the end of this operation.  The lowest-scoring solutions
+/// from the union of both sets are stored, and any solutions past the lowest N are
+/// discarded.
+/// @note If both sets contain the same solution, the number of times that solution
+/// was produced will be incremented in this set by the number of times it was produced
+/// in the other set.
+void
+CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
+    CostFunctionNetworkOptimizationSolutions const & other_solutions,
+    masala::base::Size const max_solutions_to_store_total
+) {
+    using masala::base::Size;
+    using masala::base::Real;
+    std::lock( solutions_mutex(), other_solutions.solutions_mutex() );
+    std::lock_guard< std::mutex > lock1( solutions_mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lock2( other_solutions.solutions_mutex(), std::adopt_lock );
+    
+    std::vector< std::tuple< Size, bool, Real > > solution_summaries; //Store solution index, whether it is in this (true) or other (false), and the score.
+
+    solution_summaries.reserve( optimization_solutions().size() + other_solutions.optimization_solutions().size() );
+    for( Size i(0), imax(optimization_solutions().size()); i<imax; ++i ) {
+        // Add solutions from THIS container.
+        solution_summaries.push_back( std::make_tuple( i, true, optimization_solutions()[i]->solution_score() ) );
+    }
+    for( Size i(0), imax(other_solutions.optimization_solutions().size()); i<imax; ++i ) {
+        // Add solutions from THAT container.  Skip any that are already in this container, though.
+        CostFunctionNetworkOptimizationSolutionCSP other_solution( std::static_pointer_cast< CostFunctionNetworkOptimizationSolution const >( other_solutions.optimization_solutions()[i] ) );
+        std::vector< Size > const other_solution_vec( other_solution->solution_at_variable_positions() );
+        bool found(false);
+        for( Size j(0), jmax(optimization_solutions().size()); j<jmax; ++j ) {
+            CostFunctionNetworkOptimizationSolutionSP this_solution( std::static_pointer_cast< CostFunctionNetworkOptimizationSolution >( optimization_solutions()[j] ) );
+            if( this_solution->operator==( other_solution_vec ) ) {
+                // If the solution is already in this container, increment the number times it was produced.
+                this_solution->increment_n_times_solution_was_produced( other_solution->n_times_solution_was_produced() );
+                found = true;
+                break;
+            }
+        }
+        if( !found ) {
+            solution_summaries.push_back( std::make_tuple( i, false, other_solutions.optimization_solutions()[i]->solution_score() ) );
+        }
+    }
+    
+    // Sort the vector of summaries by score:
+    std::sort(
+        solution_summaries.begin(), solution_summaries.end(),
+        [](
+            std::tuple< Size, bool, Real > const & a,
+            std::tuple< Size, bool, Real > const & b
+        ){
+            return std::get<2>(a) < std::get<2>(b);
+        }
+    );
+
+    // Take the first N solutions and make them the new solution vector:
+    std::vector< masala::numeric::optimization::OptimizationSolutionSP > new_solutions;
+    Size const nsol( std::min( solution_summaries.size(), max_solutions_to_store_total ) );
+    new_solutions.reserve( nsol );
+    for( Size i(0); i<nsol; ++i ) {
+        new_solutions.push_back(
+            std::get<1>(solution_summaries[i]) ?
+            optimization_solutions()[std::get<0>(solution_summaries[i])] :
+            other_solutions.optimization_solutions()[std::get<0>(solution_summaries[i])]
+        );
+    }
+    optimization_solutions() = new_solutions;
 }
 
 } // namespace cost_function_network
