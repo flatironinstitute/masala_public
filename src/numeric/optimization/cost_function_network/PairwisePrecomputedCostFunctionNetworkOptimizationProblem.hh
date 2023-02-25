@@ -41,7 +41,7 @@
 
 // STL headers:
 #include <atomic>
-#include <map>
+#include <unordered_map>
 #include <utility> //For std::pair.
 
 namespace masala {
@@ -273,13 +273,13 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::map< masala::base::Size, std::map< masala::base::Size, masala::base::Real > > single_node_penalties_;
+	std::unordered_map< masala::base::Size, std::unordered_map< masala::base::Size, masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
-	std::map<
+	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		std::map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real > //The choice indices.
+		std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real > //The choice indices.
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.
