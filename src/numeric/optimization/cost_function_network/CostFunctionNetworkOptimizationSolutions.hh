@@ -33,6 +33,7 @@
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // STL headers:
 #include <mutex>
@@ -179,19 +180,22 @@ public:
 
 	/// @brief Given another collection of solutions, merge-sort the solutions
 	/// and keep up to the lowest-scoring N.
-	/// @param[in] other_solutions The other solutions object, which we're merging into
-	/// this one.  Unchanged by this operation.
+	/// @param[in] other_solutions The other solutions, represented as a vector of
+	/// tuples of (solution vector for variable positions only, solution score,
+	/// solution count).
 	/// @param[in] max_solutions_to_store_total The maximum number of solutions that we
 	/// want to be storing at the end of this operation.  The lowest-scoring solutions
 	/// from the union of both sets are stored, and any solutions past the lowest N are
 	/// discarded.
+	/// @param[in] problem The problem for all of these solutions.
 	/// @note If both sets contain the same solution, the number of times that solution
 	/// was produced will be incremented in this set by the number of times it was produced
 	/// in the other set.
 	void
 	merge_in_lowest_scoring_solutions(
-		CostFunctionNetworkOptimizationSolutions const & other_solutions,
-		masala::base::Size const max_solutions_to_store_total
+		std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
+		masala::base::Size const max_solutions_to_store_total,
+		CostFunctionNetworkOptimizationProblemCSP problem
 	);
 
 private:
