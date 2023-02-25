@@ -143,7 +143,7 @@ public:
 	function(
 		T1 input1,
 		T2 input2,
-		T3 input2
+		T3 input3
 	) const {
 		return work_function_( input1, input2, input3 );
 	}

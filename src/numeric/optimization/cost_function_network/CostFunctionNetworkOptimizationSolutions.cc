@@ -208,7 +208,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP > (
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
 	            "and keep up to the lowest-scoring N.  Note: if both sets contain the same solution, the number of times "
                 "that solution was produced will be incremented in this set by the number of times it was produced "
