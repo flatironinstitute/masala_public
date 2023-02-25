@@ -218,7 +218,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
     masala::base::Real const penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    std::unordered_map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index().find(node_index) );
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index().find(node_index) );
     if( it == n_choices_by_node_index().end() ) {
         // Update the number of choices per node:
         n_choices_by_node_index()[node_index] = choice_index + 1;
@@ -265,11 +265,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
-    std::unordered_map< std::pair< base::Size, base::Size >, std::unordered_map< std::pair< base::Size, base::Size >, base::Real > >::iterator it(
+    std::unordered_map< std::pair< base::Size, base::Size >, std::unordered_map< std::pair< base::Size, base::Size >, base::Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::iterator it(
         pairwise_node_penalties_.find( node_indices )
     );
     if( it == pairwise_node_penalties_.end() ) {
-        pairwise_node_penalties_[node_indices] = std::unordered_map< std::pair< base::Size, base::Size >, base::Real >{ { choice_indices, penalty } };
+        pairwise_node_penalties_[node_indices] = std::unordered_map< std::pair< base::Size, base::Size >, base::Real, masala::base::size_pair_hash >{ { choice_indices, penalty } };
     } else {
         it->second[choice_indices] = penalty;
     }
@@ -321,7 +321,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
             Size const node_j_index( variable_positions[j].first );
             Size const choice_j_index( candidate_solution[j] );
             // Retrieve twobody energy:
-            std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
+            std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
             if( it != pairwise_node_penalties_.end() ) {
                 std::unordered_map< std::pair< Size, Size >, Real >::const_iterator it2( it->second.find( std::make_pair( choice_j_index, choice_i_index ) ) );
                 if( it2 != it->second.end() ) {
@@ -601,7 +601,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     std::set< Size > one_choice_nodes;
 
     // Find all of the nodes with only one choice:
-    for( std::unordered_map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
+    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
@@ -636,7 +636,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
     // Accumulate the twobody energies of pairs of one-choice nodes:
-    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real > >::const_iterator it( pairwise_node_penalties_.cbegin() );
+    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.cbegin() );
         it != pairwise_node_penalties_.cend();
         ++it
     ) {
@@ -672,7 +672,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
     using masala::base::Size;
 
     std::set< Size > one_choice_nodes;
-    for( std::unordered_map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
+    for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
@@ -682,7 +682,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         }
     }
 
-    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real > >::iterator it( pairwise_node_penalties_.begin() );
+    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::iterator it( pairwise_node_penalties_.begin() );
         it!= pairwise_node_penalties_.end();
         // no increment here
     ) {

@@ -38,6 +38,7 @@
 
 // Numeric headers:
 #include <base/types.hh>
+#include <base/hash_types.hh>
 
 // STL headers:
 #include <atomic>
@@ -279,7 +280,8 @@ private:
 	/// by choice index (corresponding to node indices).
 	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real > //The choice indices.
+		std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, masala::base::size_pair_hash >, //The choice indices.
+		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.
