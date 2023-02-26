@@ -165,8 +165,16 @@ protected:
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__>SP & inner_object();
 
     /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
-    /// @note Version for const access.
+    /// @note Version for const access.  This version necessitates copying the owning
+    /// pointer, which requires incrementing the reference count.  This can create resource
+    /// contention if many threads are doing this.
     <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP inner_object() const;
+
+	/// @brief Get a reference to the inner object.  Performs no mutex-locking.
+	<__SOURCE_CLASS_NAMESPACE_AND_NAME__> & inner_object_ref();
+
+	/// @brief Get a const reference to the inner object.  Performs no mutex-locking.
+	<__SOURCE_CLASS_NAMESPACE_AND_NAME__> const & inner_object_ref() const;
 
     /// @brief Access the base class mutex from derived classes.
     /// @note The mutex is mutable, so this function can be const.
