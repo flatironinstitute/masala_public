@@ -747,10 +747,11 @@ def generate_function_implementations( \
             else :
                 object_string = "inner_object_"
         else :
-            accessor_string = "->"
             if is_derived == True :
-                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object() )"
+                accessor_string = "."
+                object_string = "static_cast< " + classname + conststr + " & >( inner_object_ref() )"
             else :
+                accessor_string = "->"
                 object_string = "inner_object_"
 
         if triggers_no_mutex_lock == False :
