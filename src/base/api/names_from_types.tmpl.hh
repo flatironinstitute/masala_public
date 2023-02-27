@@ -31,6 +31,7 @@
 #include <string>
 #include <base/managers/memory/util.hh>
 #include <set>
+#include <tuple>
 
 namespace masala {
 namespace base {
@@ -191,6 +192,26 @@ namespace api {
     std::string
     name_from_type( type<std::set< T const > const> ) {
         return "std::set< " + name_from_type( type<T>() ) + " const > const";
+    }
+
+    /// @brief Manually override for 3-tuples.
+    template<class T1, class T2, class T3>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3 >> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + " >";
+    }
+
+    /// @brief Manually override for const 3-tuples.
+    template<class T1, class T2, class T3>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3 > const> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + " > const";
     }
 
     /// @brief Manually override for vectors.

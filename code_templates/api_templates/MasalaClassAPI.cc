@@ -185,10 +185,24 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 }
 
 /// @brief Assumes that the mutex has been locked.  Performs no mutex-locking.
-/// @note Version for const access.
+/// @note Version for const access.  This version necessitates copying the owning
+/// pointer, which requires incrementing the reference count.  This can create resource
+/// contention if many threads are doing this.
 <__SOURCE_CLASS_NAMESPACE_AND_NAME__>CSP
 <__SOURCE_CLASS_API_NAME__>::inner_object() const {
     return inner_object_;
+}
+
+/// @brief Get a reference to the inner object.  Performs no mutex-locking.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> &
+<__SOURCE_CLASS_API_NAME__>::inner_object_ref() {
+    return *inner_object_;
+}
+
+/// @brief Get a const reference to the inner object.  Performs no mutex-locking.
+<__SOURCE_CLASS_NAMESPACE_AND_NAME__> const &
+<__SOURCE_CLASS_API_NAME__>::inner_object_ref() const {
+    return *inner_object_;
 }
 
 /// @brief Access the base class mutex from derived classes.

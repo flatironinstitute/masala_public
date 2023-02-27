@@ -692,9 +692,9 @@ def generate_function_implementations( \
                 outstring += "/// (The return value is an enum.)\n"
             else :
                 outstring += "\n"
-            outstring += correct_masala_types( project_name, outtype, additional_includes, is_enum=output_is_enum ) + "\n"
             if triggers_no_mutex_lock :
                 outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+            outstring += correct_masala_types( project_name, outtype, additional_includes, is_enum=output_is_enum ) + "\n"
         else :
             if triggers_no_mutex_lock :
                 outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
@@ -747,10 +747,11 @@ def generate_function_implementations( \
             else :
                 object_string = "inner_object_"
         else :
-            accessor_string = "->"
             if is_derived == True :
-                object_string = "std::static_pointer_cast< " + classname + conststr + " >( inner_object() )"
+                accessor_string = "."
+                object_string = "static_cast< " + classname + conststr + " & >( inner_object_ref() )"
             else :
+                accessor_string = "->"
                 object_string = "inner_object_"
 
         if triggers_no_mutex_lock == False :
