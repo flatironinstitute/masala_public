@@ -158,7 +158,7 @@ void
 ElementType::initialize_datum_from_json(
     T & datum,
     std::string const & key,
-    std::string const & abbreviation,
+    std::string const & /*abbreviation*/,
     nlohmann::json const & json,
     T const & default_value
 ) {

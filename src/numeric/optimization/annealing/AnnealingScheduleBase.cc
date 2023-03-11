@@ -228,7 +228,7 @@ AnnealingScheduleBase::temperature() const {
 /// @details The base class throws; derived classes should override this.
 masala::base::Real
 AnnealingScheduleBase::temperature(
-    masala::base::Size const time_index
+    masala::base::Size const /*time_index*/
 ) const {
     MASALA_THROW( class_namespace_and_name(), "temperature", "This function is not implemented in the base class.  It must be implemented in derived classes." );
 }
