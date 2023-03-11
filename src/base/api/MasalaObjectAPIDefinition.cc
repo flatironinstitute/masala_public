@@ -65,8 +65,8 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     api_class_name_( this_object.class_name() ),
     api_class_namespace_( this_object.class_namespace() ),
     api_class_description_( api_class_description ),
-    is_lightweight_( is_lightweight ),
-    has_protected_constructors_( has_protected_constructors )
+    has_protected_constructors_( has_protected_constructors ),
+    is_lightweight_( is_lightweight )
 {
     using namespace base::managers::plugin_module;
     MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );

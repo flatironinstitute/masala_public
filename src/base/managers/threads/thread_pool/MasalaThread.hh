@@ -198,16 +198,16 @@ private:
 	/// @brief The system ID of the thread that this object contains, set on construction.
 	std::thread::id system_thread_id_;
 
+	/// @brief The index of this thread in the thread pool.
+	/// @details Must be set on creation.
+	base::Size const thread_index_ = 0;
+
 	/// @brief Are we locked in idle mode?
 	std::atomic_bool forced_idle_;
 
 	/// @brief Is it time to force termination of all threads?
 	/// @details When termination is forced, it prevents a thread from accepting new work.
 	std::atomic_bool forced_termination_;
-
-	/// @brief The index of this thread in the thread pool.
-	/// @details Must be set on creation.
-	base::Size const thread_index_ = 0;
 
 	/// @brief A (raw) pointer to the function to execute in this thread.
 	/// @details Can be nullptr.

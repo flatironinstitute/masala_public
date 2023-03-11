@@ -297,7 +297,7 @@ void
 MasalaThreadManager::execute_function_in_threads(
     std::function< void() > const & fxn,
     base::Size const threads_to_request,
-    MasalaThreadManagerAccessKey const & access_key,
+    MasalaThreadManagerAccessKey const & /*access_key*/,
     MasalaThreadedWorkExecutionSummary & summary
 ) const {
     {

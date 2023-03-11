@@ -97,7 +97,8 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     atom_coordinates_(0, natoms_before ) = new_atom_coordinates[0]; 
     atom_coordinates_(1, natoms_before ) = new_atom_coordinates[1];
     atom_coordinates_(2, natoms_before ) = new_atom_coordinates[2];
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_coordinates_.cols() == atom_instance_to_column_.size(), "add_atom_instance", "Mismatch in map and matrix sizes!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_coordinates_.cols() >= 0, "add_atom_instance", "Somehow, the number of columns in the atom_coordinates_ matrix is negative.  This is a program error.  Please contact a developer." )
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( static_cast< masala::base::Size >( atom_coordinates_.cols() ) == atom_instance_to_column_.size(), "add_atom_instance", "Mismatch in map and matrix sizes!" );
 }
 
 /// @brief Get the coordinates of an atom.
