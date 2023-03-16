@@ -6,4 +6,4 @@
 	url = git@gitlab.com:vmullig/eigen_fork.git
 [submodule "external/catch2_fork"]
 	path = external/catch2
-	url = git@gitlab.com:vmullig/catch2_fork.git
+	url = git@github.com:flatironinstitute/masala_dev_catch2_fork.git
