@@ -187,7 +187,8 @@ MolecularSystem::get_api_definition() {
                 *this,
                 "The MolecularSystem class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
-                "molecule or group of molecules.",
+                "molecule or group of molecules.  It is roughly equivalent to the Pose class in other molecular "
+                "modelling programs, such as Rosetta.",
                 false, false
             )
         );
