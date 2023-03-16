@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/threads/MasalaThreadManagerConfiguration.cc
-/// @brief A container of configuration settings for a Molecules object.
+/// @brief A container of configuration settings for the Masala thread manager singleton.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project headers

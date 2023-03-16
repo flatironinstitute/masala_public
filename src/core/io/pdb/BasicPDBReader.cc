@@ -28,7 +28,7 @@
 
 // Core headers:
 #include <core/molecular_system/MolecularSystem.hh>
-#include <core/chemistry/Molecules.hh>
+#include <core/chemistry/MolecularGeometry.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <base/types.hh>
 
@@ -235,7 +235,7 @@ BasicPDBReader::add_atoms_from_file_lines(
                 curline_atomname, atomno, curline_element
             )
         );
-        molecular_system.molecules_nonconst().add_atom( newatom, coords );
+        molecular_system.molecular_geometry_nonconst().add_atom( newatom, coords );
     }
 }
 
