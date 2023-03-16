@@ -18,7 +18,7 @@
 
 /// @file src/core/chemistry/BasicPDBReader.fwd.hh
 /// @brief Forward declarations for a class for reading the basic information
-/// from a PDB file quickly, and setting up a minimal pose.
+/// from a PDB file quickly, and setting up a minimal molecular system.
 /// @note This is intended for testing only.  The proper PDB reader will be in the
 /// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).

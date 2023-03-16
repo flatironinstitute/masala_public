@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelector.hh
 /// @brief Header for a pure virtual base class for DegreeOfFreedomSelectors.
-/// @details DegreeOfFreedomSelectors select degrees of freedom in a pose.
+/// @details DegreeOfFreedomSelectors select degrees of freedom in a molecular system.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -37,7 +37,7 @@
 
 // Core API headers:
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelection.fwd.hh>
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -46,7 +46,7 @@ namespace selectors {
 namespace degree_of_freedom_selectors {
 
 /// @brief A pure virtual base class for DegreeOfFreedomSelectors.
-/// @details DegreeOfFreedomSelectors select atoms in a pose based on annotated regions.
+/// @details DegreeOfFreedomSelectors select atoms in a molecular system based on annotated regions.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -69,20 +69,20 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	// /// @brief Given the current pose, generate the selection.
+	// /// @brief Given the current molecular system, generate the selection.
 	// /// @details Calls generate_degree_of_freedom_selection(), which must be implemented
 	// /// by derived classes.
 	// core::selection::SelectionCSP
 	// generate_selection(
-	// 	core_api::auto_generated_api::pose::Pose_API const & pose
+	// 	core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 	// ) const override;
 
-	/// @brief Given the current pose, generate the annotated region selection.
+	/// @brief Given the current molecular system, generate the annotated region selection.
 	/// @details Pure virtual function.
 	virtual
 	DegreeOfFreedomSelectionCSP
 	generate_degree_of_freedom_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 	) const = 0;
 
 }; // class DegreeOfFreedomSelector

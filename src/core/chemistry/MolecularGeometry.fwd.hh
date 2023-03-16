@@ -16,31 +16,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/core/pose/PoseUnitTests.cc
-/// @brief Unit tests for the Pose class.
+/// @file src/core/chemistry/MolecularGeometry.fwd.hh
+/// @brief Forward declarations for a class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Unit testing library (Catch2) headers:
-#include <external/catch2/single_include/catch2/catch.hpp>
+#ifndef Masala_src_core_chemistry_MolecularGeometry_fwd_hh
+#define Masala_src_core_chemistry_MolecularGeometry_fwd_hh
 
-// Unit headers:
-#include <core/pose/Pose.hh>
+#include <base/managers/memory/util.hh>
 
 namespace masala {
-namespace tests {
-namespace unit {
 namespace core {
-namespace pose {
+namespace chemistry {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][instantiation]" ) {
-    REQUIRE_NOTHROW([&](){
-        masala::core::pose::PoseSP mypose( masala::make_shared< masala::core::pose::Pose >() );
-        mypose->write_to_tracer( "Instantiated a pose." );
-    }() );
-}
+    class MolecularGeometry;
 
-} // namespace pose
+    using MolecularGeometrySP = MASALA_SHARED_POINTER< MolecularGeometry >;
+    using MolecularGeometryCSP = MASALA_SHARED_POINTER< MolecularGeometry const >;
+    using MolecularGeometryWP = MASALA_WEAK_POINTER< MolecularGeometry >;
+    using MolecularGeometryCWP = MASALA_WEAK_POINTER< MolecularGeometry const >;
+
+} // namespace chemistry
 } // namespace core
-} // namespace unit
-} // namespace tests
 } // namespace masala
+
+#endif // Masala_src_core_chemistry_MolecularGeometry_fwd_hh

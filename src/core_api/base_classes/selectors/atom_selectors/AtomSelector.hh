@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/selectors/atom_selectors/AtomSelector.hh
 /// @brief Header for a pure virtual base class for AtomSelectors.
-/// @details AtomSelectors select atoms in a pose based on some rule.
+/// @details AtomSelectors select atoms in a molecular system based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -36,7 +36,7 @@
 #include <core/selection/atom_selection/AtomSelection.fwd.hh>
 
 // Core API headers:
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
 #include <core_api/auto_generated_api/selection/atom_selection/AtomSelection_API.fwd.hh>
 
 namespace masala {
@@ -46,7 +46,7 @@ namespace selectors {
 namespace atom_selectors {
 
 /// @brief A pure virtual base class for AtomSelectors.
-/// @details AtomSelectors select atoms in a pose based on some rule.
+/// @details AtomSelectors select atoms in a molecular system based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -69,20 +69,20 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	// /// @brief Given the current pose, generate the selection.
+	// /// @brief Given the current molecular system, generate the selection.
 	// /// @details Calls generate_atom_selection(), which must be implemented
 	// /// by derived classes.
 	// masala::core_api::auto_generated_api::selection::Selection_APICSP
 	// generate_selection(
-	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// 	masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 	// ) const override;
 
-	/// @brief Given the current pose, generate the atom selection.
+	/// @brief Given the current molecular system, generate the atom selection.
 	/// @details Pure virtual function.
 	virtual
 	masala::core_api::auto_generated_api::selection::atom_selection::AtomSelection_APICSP
 	generate_atom_selection(
-		masala::core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 	) const = 0;
 
 }; // class AtomSelector

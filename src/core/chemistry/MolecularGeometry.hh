@@ -16,15 +16,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/Molecules.hh
+/// @file src/core/chemistry/MolecularGeometry.hh
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_hh
-#define Masala_src_core_chemistry_Molecules_hh
+#ifndef Masala_src_core_chemistry_MolecularGeometry_hh
+#define Masala_src_core_chemistry_MolecularGeometry_hh
 
 // Forward declarations:
-#include <core/chemistry/Molecules.fwd.hh>
+#include <core/chemistry/MolecularGeometry.fwd.hh>
 
 // Core headers:
 #include <base/types.hh>
@@ -32,7 +32,7 @@
 #include <core/chemistry/atoms/AtomInstanceConstIterator.fwd.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
-#include <core/chemistry/MoleculesConfiguration.fwd.hh>
+#include <core/chemistry/MolecularGeometryConfiguration.fwd.hh>
 #include <base/types.hh>
 
 // Base headers:
@@ -52,7 +52,7 @@ namespace chemistry {
 
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Molecules : public masala::base::MasalaObject {
+class MolecularGeometry : public masala::base::MasalaObject {
 
 public:
 
@@ -62,33 +62,33 @@ public:
 
     /// @brief Default constructor.
     /// @details Gets configuration from configuration manager, which may trigger load from disk.
-    Molecules();
+    MolecularGeometry();
 
     /// @brief Copy constructor.
     /// @details Must be explicitly declared due to mutex.
-    Molecules( Molecules const & src );
+    MolecularGeometry( MolecularGeometry const & src );
 
     /// @brief Default destructor.
-    ~Molecules() override = default;
+    ~MolecularGeometry() override = default;
 
     /// @brief Assignment operator.
     /// @details Be sure to update this as data are added.
-    Molecules &
+    MolecularGeometry &
     operator=(
-        Molecules const & src
+        MolecularGeometry const & src
     );
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     virtual
-    MoleculesSP
+    MolecularGeometrySP
     clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
     /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
     virtual
-    MoleculesSP
+    MolecularGeometrySP
     deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -97,7 +97,7 @@ public:
     void
     make_independent();
 
-	/// @brief Returns "Molecules".
+	/// @brief Returns "MolecularGeometry".
 	std::string class_name() const override;
 
     /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry".
@@ -158,7 +158,7 @@ private:
 	/// implementation throws.  Must be implemented by derived classes that have configurations.
 	/// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
 	/// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
-	/// class.  This version creates a MoleculesConfiguration object.
+	/// class.  This version creates a MolecularGeometryConfiguration object.
 	base::managers::configuration::ConfigurationBaseCSP
 	load_configuration(
 		base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
@@ -170,11 +170,11 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief A mutex for locking a whole molecules object.
+    /// @brief A mutex for locking a whole molecular geometry object.
     mutable std::mutex whole_object_mutex_;
 
     /// @brief Configuration for this object.
-    MoleculesConfigurationCSP configuration_;
+    MolecularGeometryConfigurationCSP configuration_;
 
     /// @brief The representation of the atom coordinates.
     /// @details Different calculators might need atoms represented in different ways, internally (e.g.
@@ -192,7 +192,7 @@ private:
     std::vector< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP > additional_atom_coordinate_representations_;
 
     /// @brief The atoms themselves and their properties.
-    /// @details The Molecules container is responsible for keeping these linked to the
+    /// @details The MolecularGeometry container is responsible for keeping these linked to the
     /// AtomCoordinateRepresentation.
     /// @note This is deliberately a set and not a vector to prevent an arbitrary index
     /// from being handed out or used for atoms.  Iterators are properly used to iterate
@@ -215,10 +215,10 @@ private:
     /// @brief The API definition for this class.
     base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
-}; // class Molecules
+}; // class MolecularGeometry
 
 } // namespace chemistry
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_chemistry_Molecules_hh
+#endif // Masala_src_core_chemistry_MolecularGeometry_hh

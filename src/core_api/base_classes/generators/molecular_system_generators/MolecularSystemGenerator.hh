@@ -16,48 +16,48 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/generators/pose_generators/PoseGenerator.hh
-/// @brief Header for a pure virtual base class for PoseGenerators.
-/// @details PoseGenerators generate poses based on some input or some set of
+/// @file src/core_api/base_classes/generators/molecular_system_generators/MolecularSystemGenerator.hh
+/// @brief Header for a pure virtual base class for MolecularSystemGenerators.
+/// @details MolecularSystemGenerators generate molecular systems based on some input or some set of
 /// user-supplied parameters.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_hh
-#define Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_hh
+#ifndef Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_hh
+#define Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_hh
 
 // Parent class:
 #include <core_api/base_classes/generators/Generator.hh>
 
 // Forward declarations:
-#include <core_api/base_classes/generators/pose_generators/PoseGenerator.fwd.hh>
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/base_classes/generators/molecular_system_generators/MolecularSystemGenerator.fwd.hh>
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
 namespace base_classes {
 namespace generators {
-namespace pose_generators {
+namespace molecular_system_generators {
 
-/// @brief A pure virtual base class for PoseGenerators.
-/// @details PoseGenerators generate poses based on some input or some set of
+/// @brief A pure virtual base class for MolecularSystemGenerators.
+/// @details MolecularSystemGenerators generate molecular systems based on some input or some set of
 /// user-supplied parameters.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PoseGenerator : public masala::core_api::base_classes::generators::Generator {
+class MolecularSystemGenerator : public masala::core_api::base_classes::generators::Generator {
 
 public:
 
 	/// @brief Default constructor.
-	PoseGenerator() = default;
+	MolecularSystemGenerator() = default;
 
 	/// @brief Copy constructor.
-	PoseGenerator( PoseGenerator const & ) = default;
+	MolecularSystemGenerator( MolecularSystemGenerator const & ) = default;
 
 	/// @brief Destructor.
-	~PoseGenerator() override = default;
+	~MolecularSystemGenerator() override = default;
 
 public:
 
@@ -66,23 +66,23 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief All generators must implement a generate_object() function that
-	/// creates a new instance of a Masala object of a given type.  PoseGenerators
-	/// call generate_pose() and return a shared pointer to a Pose object.
+	/// creates a new instance of a Masala object of a given type.  MolecularSystemGenerators
+	/// call generate_molecular_system() and return a shared pointer to a MolecularSystem object.
 	base::MasalaObjectSP
 	generate_object() const override;
 
-	/// @brief All pose generators must implement a generate_pose() function which
-	/// returns a shared pointer to a new Pose instance.
+	/// @brief All molecular system generators must implement a generate_molecular_system() function which
+	/// returns a shared pointer to a new MolecularSystem instance.
 	virtual
-	core_api::auto_generated_api::pose::Pose_APISP
-	generate_pose() const = 0;
+	core_api::auto_generated_api::molecular_system::MolecularSystem_APISP
+	generate_molecular_system() const = 0;
 
-}; // class PoseGenerator
+}; // class MolecularSystemGenerator
 
-} // namespace pose_generators
+} // namespace molecular_system_generators
 } // namespace generators
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif // Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_hh
+#endif // Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_hh

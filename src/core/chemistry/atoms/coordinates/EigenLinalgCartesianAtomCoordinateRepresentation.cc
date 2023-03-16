@@ -108,7 +108,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
     AtomInstanceCSP const & atom
 ) const {
     auto const it( atom_instance_to_column_.find( atom ) );
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecules object!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecular geometry object!" );
     masala::base::Size const column( it->second );
     return std::array< masala::base::Real, 3 >{ atom_coordinates_(0, column), atom_coordinates_(1, column), atom_coordinates_(2, column) };
 }

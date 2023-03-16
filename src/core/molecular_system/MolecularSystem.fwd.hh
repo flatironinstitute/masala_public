@@ -16,30 +16,32 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/pose/Pose.fwd.hh
+/// @file src/core/molecular_system/MolecularSystem.fwd.hh
 /// @brief Forward declarations for a class representing a molecular structure.
-/// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
+/// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
+/// @note A MolecularSystem is equivalent to what is called a "Pose" in other molecular modelling
+/// packages, such as Rosetta.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_pose_Pose_fwd_hh
-#define Masala_src_core_pose_Pose_fwd_hh
+#ifndef Masala_src_core_molecular_system_MolecularSystem_fwd_hh
+#define Masala_src_core_molecular_system_MolecularSystem_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
-namespace pose {
+namespace molecular_system {
 
-    class Pose;
+    class MolecularSystem;
 
-    using PoseSP = MASALA_SHARED_POINTER< Pose >;
-    using PoseCSP = MASALA_SHARED_POINTER< Pose const >;
-    using PoseWP = MASALA_WEAK_POINTER< Pose >;
-    using PoseCWP = MASALA_WEAK_POINTER< Pose const >;
+    using MolecularSystemSP = MASALA_SHARED_POINTER< MolecularSystem >;
+    using MolecularSystemCSP = MASALA_SHARED_POINTER< MolecularSystem const >;
+    using MolecularSystemWP = MASALA_WEAK_POINTER< MolecularSystem >;
+    using MolecularSystemCWP = MASALA_WEAK_POINTER< MolecularSystem const >;
 
-} // namespace pose
+} // namespace molecular_system
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_pose_Pose_fwd_hh
+#endif // Masala_src_core_molecular_system_MolecularSystem_fwd_hh

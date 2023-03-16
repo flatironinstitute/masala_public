@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/selectors/atom_selectors/AtomSelector.cc
 /// @brief Function implementations for a pure virtual base class for AtomSelectors.
-/// @details AtomSelectors select atoms in a pose based on some rule.
+/// @details AtomSelectors select atoms in a molecular system based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -39,14 +39,14 @@ namespace atom_selectors {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-// /// @brief Given the current pose, generate the selection.
+// /// @brief Given the current molecular system, generate the selection.
 // /// @details Calls generate_atom_selection(), which must be implemented
 // /// by derived classes.
 // masala::core::selection::SelectionCSP
 // AtomSelector::generate_selection(
-// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+// 	masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 // ) const {
-// 	return generate_atom_selection( pose );
+// 	return generate_atom_selection( molecular_system );
 // }
 
 } // namespace atom_selectors

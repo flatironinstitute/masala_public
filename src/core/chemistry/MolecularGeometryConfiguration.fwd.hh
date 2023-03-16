@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/MoleculesConfiguration.fwd.hh
+/// @file src/core/chemistry/MolecularGeometryConfiguration.fwd.hh
 /// @brief Forward declarations for a container of configuration settings for a
-/// Molecules object.
+/// MolecularGeometry object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_MoleculesConfiguration_fwd_hh
-#define Masala_src_core_chemistry_MoleculesConfiguration_fwd_hh
+#ifndef Masala_src_core_chemistry_MolecularGeometryConfiguration_fwd_hh
+#define Masala_src_core_chemistry_MolecularGeometryConfiguration_fwd_hh
 
 // STL headers
 #include <base/managers/memory/util.hh>
@@ -31,15 +31,15 @@ namespace masala {
 namespace core {
 namespace chemistry {
 
-    class MoleculesConfiguration;
+    class MolecularGeometryConfiguration;
 
-    using MoleculesConfigurationSP = MASALA_SHARED_POINTER< MoleculesConfiguration >;
-    using MoleculesConfigurationCSP = MASALA_SHARED_POINTER< MoleculesConfiguration const >;
-    using MoleculesConfigurationWP = MASALA_WEAK_POINTER< MoleculesConfiguration >;
-    using MoleculesConfigurationCWP = MASALA_WEAK_POINTER< MoleculesConfiguration const>;
+    using MolecularGeometryConfigurationSP = MASALA_SHARED_POINTER< MolecularGeometryConfiguration >;
+    using MolecularGeometryConfigurationCSP = MASALA_SHARED_POINTER< MolecularGeometryConfiguration const >;
+    using MolecularGeometryConfigurationWP = MASALA_WEAK_POINTER< MolecularGeometryConfiguration >;
+    using MolecularGeometryConfigurationCWP = MASALA_WEAK_POINTER< MolecularGeometryConfiguration const>;
 
 } // namespace chemistry
 } // namespace core
 } // namespace masala
 
-#endif //Masala_src_core_chemistry_MoleculesConfiguration_fwd_hh
+#endif //Masala_src_core_chemistry_MolecularGeometryConfiguration_fwd_hh

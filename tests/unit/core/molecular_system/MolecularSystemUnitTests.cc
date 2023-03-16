@@ -16,28 +16,31 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/Molecules.fwd.hh
-/// @brief Forward declarations for a class contiaining a collection of atoms and chemical bonds.
+/// @file tests/unit/core/molecular_system/MolecularSystemUnitTests.cc
+/// @brief Unit tests for the MolecularSystem class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_fwd_hh
-#define Masala_src_core_chemistry_Molecules_fwd_hh
+// Unit testing library (Catch2) headers:
+#include <external/catch2/single_include/catch2/catch.hpp>
 
-#include <base/managers/memory/util.hh>
+// Unit headers:
+#include <core/molecular_system/MolecularSystem.hh>
 
 namespace masala {
+namespace tests {
+namespace unit {
 namespace core {
-namespace chemistry {
+namespace molecular_system {
 
-    class Molecules;
+TEST_CASE( "Instantiate a molecular system", "[core::molecular_system::MolecularSystem][instantiation]" ) {
+    REQUIRE_NOTHROW([&](){
+        masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
+        my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
+    }() );
+}
 
-    using MoleculesSP = MASALA_SHARED_POINTER< Molecules >;
-    using MoleculesCSP = MASALA_SHARED_POINTER< Molecules const >;
-    using MoleculesWP = MASALA_WEAK_POINTER< Molecules >;
-    using MoleculesCWP = MASALA_WEAK_POINTER< Molecules const >;
-
-} // namespace chemistry
+} // namespace molecular_system
 } // namespace core
+} // namespace unit
+} // namespace tests
 } // namespace masala
-
-#endif // Masala_src_core_chemistry_Molecules_fwd_hh

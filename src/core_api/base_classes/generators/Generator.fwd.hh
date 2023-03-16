@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/generators/Generator.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for Generators.
-/// @details Generators create an instance of something (e.g. a Pose from a data
+/// @details Generators create an instance of something (e.g. a MolecularSystem from a data
 /// source or from some input paramaters).
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
