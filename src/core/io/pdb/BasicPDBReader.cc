@@ -27,7 +27,7 @@
 #include <core/io/pdb/BasicPDBReader.hh>
 
 // Core headers:
-#include <core/pose/Pose.hh>
+#include <core/pose/MolecularSystem.hh>
 #include <core/chemistry/Molecules.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <base/types.hh>
@@ -91,12 +91,12 @@ BasicPDBReader::class_namespace() const {
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Given the contents of a PDB file, generate a Pose.
-core::pose::PoseSP
-BasicPDBReader::pose_from_pdb_file_contents(
+/// @brief Given the contents of a PDB file, generate a MolecularSystem.
+core::pose::MolecularSystemSP
+BasicPDBReader::molecular_system_from_pdb_file_contents(
     std::vector< std::string > const & file_lines
 ) const {
-    masala::core::pose::PoseSP pose( masala::make_shared< masala::core::pose::Pose >() );
+    masala::core::pose::MolecularSystemSP pose( masala::make_shared< masala::core::pose::MolecularSystem >() );
 
     std::vector< bool > atom_lines_read( file_lines.size(), false ); // Allows us to skip re-parsing the same lines.
 
@@ -107,14 +107,14 @@ BasicPDBReader::pose_from_pdb_file_contents(
     return pose;
 }
 
-/// @brief Given a PDB file name, read the PDB file and generate a Pose.
+/// @brief Given a PDB file name, read the PDB file and generate a MolecularSystem.
 /// @note Warning!  This triggers a read from disk!  This is threadsafe and
 /// properly managed through the disk manager.
-masala::core::pose::PoseSP
-BasicPDBReader::pose_from_pdb_file_on_disk(
+masala::core::pose::MolecularSystemSP
+BasicPDBReader::molecular_system_from_pdb_file_on_disk(
     std::string const & filename
 ) const {
-    return pose_from_pdb_file_contents(
+    return molecular_system_from_pdb_file_contents(
         base::managers::disk::MasalaDiskManager::get_instance()->read_ascii_file_to_string_vector( filename )
     );
 }
@@ -123,7 +123,7 @@ BasicPDBReader::pose_from_pdb_file_on_disk(
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the Pose class.
+/// @brief Get a description of the API for the MolecularSystem class.
 base::api::MasalaObjectAPIDefinitionCWP
 BasicPDBReader::get_api_definition() {
     using namespace masala::base::api;
@@ -133,7 +133,7 @@ BasicPDBReader::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this,
-                "The BasicPDBReader is intended as a bare-bones means of generating a Pose.  It is "
+                "The BasicPDBReader is intended as a bare-bones means of generating a MolecularSystem.  It is "
                 "intended ONLY for testing other classes' functionality.  A full PDB reader will be "
                 "available in the standard_masala_plugins library.",
                 false, false
@@ -157,26 +157,26 @@ BasicPDBReader::get_api_definition() {
 
         // Work functions:
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput < core::pose::PoseSP, std::vector< std::string > const & > >(
-                "pose_from_pdb_file_contents",
-                "Given the contents of a PDB file as a vector of strings, generate a Pose and return a "
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput < core::pose::MolecularSystemSP, std::vector< std::string > const & > >(
+                "molecular_system_from_pdb_file_contents",
+                "Given the contents of a PDB file as a vector of strings, generate a MolecularSystem and return a "
                 "shared pointer to the pose.",
                 true, false, false, false,
                 "file_lines", "The lines of a PDB file, as a vector of strings (one string per line).",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
-                std::bind( &BasicPDBReader::pose_from_pdb_file_contents, this, std::placeholders::_1 )
+                std::bind( &BasicPDBReader::molecular_system_from_pdb_file_contents, this, std::placeholders::_1 )
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< core::pose::PoseSP, std::string const & > >(
-                "pose_from_pdb_file_on_disk",
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< core::pose::MolecularSystemSP, std::string const & > >(
+                "molecular_system_from_pdb_file_on_disk",
                 "Read a PDB file from disk, and return a pose.  Note that invoking this function triggers a read from "
                 "disk!  However, this function does use the Masala disk manager to ensure that disk reads are "
                 "managed and threadsafe.",
                 true, false, false, false,
                 "file_name", "The input PDB file.  This file will be read from disk.",
                 "pose", "A shared pointer to the pose generated from the PDb file contents.",
-                std::bind( &BasicPDBReader::pose_from_pdb_file_on_disk, this, std::placeholders::_1 )
+                std::bind( &BasicPDBReader::molecular_system_from_pdb_file_on_disk, this, std::placeholders::_1 )
             )
         );
 
@@ -190,14 +190,14 @@ BasicPDBReader::get_api_definition() {
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a Pose.
+/// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a MolecularSystem.
 /// @details This modifies pose, as well as atom_lines_read, marking off which lines
 /// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
 /// @note In its current form, this does NOT set up residue information.  It only assigns
 /// atom coordinates and identities.
 void
 BasicPDBReader::add_atoms_from_file_lines(
-    masala::core::pose::Pose & pose,
+    masala::core::pose::MolecularSystem & pose,
     std::vector< std::string > const & file_lines,
     std::vector< bool > & atom_lines_read
 ) const {
