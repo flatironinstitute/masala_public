@@ -20,6 +20,8 @@
 /// @brief Forward declarations for a class representing a molecular structure.
 /// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
+/// @note A MolecularSystem is equivalent to what is called a "Pose" in other molecular modelling
+/// packages, such as Rosetta.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_pose_MolecularSystem_fwd_hh
