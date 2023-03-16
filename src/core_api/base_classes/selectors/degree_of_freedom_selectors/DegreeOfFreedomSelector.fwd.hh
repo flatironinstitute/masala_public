@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/selectors/degree_of_freedom_selectors//DegreeOfFreedomSelector.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for DegreeOfFreedomSelectors.
-/// @details DegreeOfFreedomSelectors select degrees of freedom in a pose.
+/// @details DegreeOfFreedomSelectors select degrees of freedom in a molecular system.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
