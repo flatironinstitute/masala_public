@@ -170,7 +170,7 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief A mutex for locking a whole molecules object.
+    /// @brief A mutex for locking a whole molecular geometry object.
     mutable std::mutex whole_object_mutex_;
 
     /// @brief Configuration for this object.

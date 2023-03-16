@@ -112,13 +112,13 @@ MolecularGeometry::clone() const {
 /// pointer to the deep copy.
 MolecularGeometrySP
 MolecularGeometry::deep_clone() const {
-    MolecularGeometrySP molecules_copy;
+    MolecularGeometrySP molecular_geometry_copy;
     {   // Scope for lock guard.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-        molecules_copy = masala::make_shared< MolecularGeometry >( *this );
+        molecular_geometry_copy = masala::make_shared< MolecularGeometry >( *this );
     }
-    molecules_copy->make_independent();
-    return molecules_copy;
+    molecular_geometry_copy->make_independent();
+    return molecular_geometry_copy;
 }
 
 /// @brief Make this object independent by making a deep copy of all of its private members.
@@ -221,7 +221,7 @@ MolecularGeometry::get_api_definition() {
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_OneInput < std::array< masala::base::Real, 3 >, atoms::AtomInstanceConstIterator const > >(
-                "get_atom_coordinates", "Get the coordinates of a particular atom in a molecules object.",
+                "get_atom_coordinates", "Get the coordinates of a particular atom in a molecular geometry object.",
                 "atom_iterator", "An AtomInstanceConstIterator pointing to the atom whose coordinates we wish to obtain.",
                 "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
                 false, false,
