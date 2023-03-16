@@ -16,14 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/pose/Pose.cc
+/// @file src/core/pose/MolecularSystem.cc
 /// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
+/// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <core/pose/Pose.hh>
+#include <core/pose/MolecularSystem.hh>
 
 // Core headers:
 #include <core/chemistry/Molecules.hh>
@@ -43,25 +43,25 @@ namespace pose {
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Default constructor, making an empty Pose.
+/// @brief Default constructor, making an empty MolecularSystem.
 /// @details Ensures that the molecules_ object always exists.
-Pose::Pose() :
+MolecularSystem::MolecularSystem() :
     masala::base::MasalaObject(),
     molecules_( masala::make_shared< masala::core::chemistry::Molecules >() )
 {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-PoseSP
-Pose::clone() const {
-    return masala::make_shared< Pose >( *this );
+MolecularSystemSP
+MolecularSystem::clone() const {
+    return masala::make_shared< MolecularSystem >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
-PoseSP
-Pose::deep_clone() const {
-    PoseSP newpose( masala::make_shared< Pose >( *this ) );
+MolecularSystemSP
+MolecularSystem::deep_clone() const {
+    MolecularSystemSP newpose( masala::make_shared< MolecularSystem >( *this ) );
     newpose->make_independent();
     return newpose;
 }
@@ -69,33 +69,33 @@ Pose::deep_clone() const {
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Be sure to update this function whenever a private member is added!
 void
-Pose::make_independent() {
+MolecularSystem::make_independent() {
     molecules_ = molecules_->deep_clone();
 }
 
-/// @brief Returns "Pose".
+/// @brief Returns "MolecularSystem".
 std::string
-Pose::class_name() const {
+MolecularSystem::class_name() const {
     return class_name_static();
 }
 
-/// @brief Returns "Pose".
+/// @brief Returns "MolecularSystem".
 /// @details Called by non-static version.
 std::string
-Pose::class_name_static() {
-    return "Pose";
+MolecularSystem::class_name_static() {
+    return "MolecularSystem";
 }
 
 /// @brief Every class can provide its own namespace.  This returns "masala::core::pose".
 std::string
-Pose::class_namespace() const {
+MolecularSystem::class_namespace() const {
     return class_namespace_static();
 }
 
 /// @brief Returns "masala::core::pose".
 /// @details Called by non-static version.
 std::string
-Pose::class_namespace_static() {
+MolecularSystem::class_namespace_static() {
     return "masala::core::pose";
 }
 
@@ -109,7 +109,7 @@ Pose::class_namespace_static() {
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::MoleculesCSP
-Pose::molecules_shared_ptr() const {
+MolecularSystem::molecules_shared_ptr() const {
     return molecules_;
 }
 
@@ -119,7 +119,7 @@ Pose::molecules_shared_ptr() const {
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::MoleculesCWP
-Pose::molecules_weak_ptr() const {
+MolecularSystem::molecules_weak_ptr() const {
     return molecules_;
 }
 
@@ -129,43 +129,43 @@ Pose::molecules_weak_ptr() const {
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::Molecules const &
-Pose::molecules() const {
+MolecularSystem::molecules() const {
     return *molecules_;
 }
 
 /// @brief Access the Molecules object in this pose, by nonconst shared pointer.
 /// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::MoleculesSP
-Pose::molecules_shared_ptr_nonconst() {
+MolecularSystem::molecules_shared_ptr_nonconst() {
     return molecules_;
 }
 
 /// @brief Access the Molecules object in this pose, by nonconst weak pointer.
 /// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::MoleculesWP
-Pose::molecules_weak_ptr_nonconst() {
+MolecularSystem::molecules_weak_ptr_nonconst() {
     return molecules_;
 }
 
 /// @brief Access the Molecules object in this pose, by nonconst reference.
 /// @details The Molecules object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any Pose containing it, so direct
+/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
 /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
 core::chemistry::Molecules &
-Pose::molecules_nonconst() {
+MolecularSystem::molecules_nonconst() {
     return *molecules_;
 }
 
@@ -173,9 +173,9 @@ Pose::molecules_nonconst() {
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the Pose class.
+/// @brief Get a description of the API for the MolecularSystem class.
 base::api::MasalaObjectAPIDefinitionCWP
-Pose::get_api_definition() {
+MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
 
     if( api_definition_ == nullptr ) {
@@ -183,7 +183,7 @@ Pose::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this,
-                "The Pose class stores information about the geometry, chemical properties, annotations, "
+                "The MolecularSystem class stores information about the geometry, chemical properties, annotations, "
                 "and energies of a molecule or group of molecules, as well as any cached data for that "
                 "molecule or group of molecules.",
                 false, false
@@ -192,17 +192,17 @@ Pose::get_api_definition() {
 
         // Constructors:
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < Pose > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < MolecularSystem > > (
                 class_name_static(),
-                "Creates an empty Pose, initializing it only with an empty Molecules object."
+                "Creates an empty MolecularSystem, initializing it only with an empty Molecules object."
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < Pose, Pose const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < MolecularSystem, MolecularSystem const & > > (
                 class_name_static(),
-                "Copy constructor: copies an input Pose.  Note that this does not make a unique Pose unless "
+                "Copy constructor: copies an input MolecularSystem.  Note that this does not make a unique MolecularSystem unless "
                 "make_independent() is subsequently called.",
-                "src", "The input Pose to copy.  Unaltered by this operation."
+                "src", "The input MolecularSystem to copy.  Unaltered by this operation."
             )
         );
 
@@ -213,28 +213,28 @@ Pose::get_api_definition() {
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
                 "molecules_shared_ptr",
-                "Access the Molecules object within the Pose, by shared pointer.",
+                "Access the Molecules object within the MolecularSystem, by shared pointer.",
                 "molecules", "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
                 "and chemical connectivity.", false, false,
-                std::bind( &Pose::molecules_shared_ptr, this )
+                std::bind( &MolecularSystem::molecules_shared_ptr, this )
             )
         );
         // api_def->add_getter(
         //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
         //         "molecules_weak_ptr",
-        //         "Access the Molecules object within the Pose, by weak pointer.",
+        //         "Access the Molecules object within the MolecularSystem, by weak pointer.",
         //         "molecules", "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
         //         "and chemical connectivity.  Must be converted to a shared pointer before use.", false, false,
-        //         std::bind( &Pose::molecules_weak_ptr, this )
+        //         std::bind( &MolecularSystem::molecules_weak_ptr, this )
         //     )
         // );
         // api_def->add_getter(
         //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
         //         "molecules",
-        //         "Access the Molecules object within the Pose.",
+        //         "Access the Molecules object within the MolecularSystem.",
         //         "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
         //         "and chemical connectivity.", false, false,
-        //         std::bind( &Pose::molecules, this )
+        //         std::bind( &MolecularSystem::molecules, this )
         //     )
         // );
 

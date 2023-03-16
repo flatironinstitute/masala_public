@@ -16,15 +16,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/core/pose/PoseUnitTests.cc
-/// @brief Unit tests for the Pose class.
+/// @file tests/unit/core/pose/MolecularSystemUnitTests.cc
+/// @brief Unit tests for the MolecularSystem class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit testing library (Catch2) headers:
 #include <external/catch2/single_include/catch2/catch.hpp>
 
 // Unit headers:
-#include <core/pose/Pose.hh>
+#include <core/pose/MolecularSystem.hh>
 
 namespace masala {
 namespace tests {
@@ -32,9 +32,9 @@ namespace unit {
 namespace core {
 namespace pose {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::Pose][instantiation]" ) {
+TEST_CASE( "Instantiate a pose", "[core::pose::MolecularSystem][instantiation]" ) {
     REQUIRE_NOTHROW([&](){
-        masala::core::pose::PoseSP mypose( masala::make_shared< masala::core::pose::Pose >() );
+        masala::core::pose::MolecularSystemSP mypose( masala::make_shared< masala::core::pose::MolecularSystem >() );
         mypose->write_to_tracer( "Instantiated a pose." );
     }() );
 }

@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/pose/Pose.hh
+/// @file src/core/pose/MolecularSystem.hh
 /// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates, degree-of-freedom and kinematic relationships,
+/// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_pose_Pose_hh
-#define Masala_src_core_pose_Pose_hh
+#ifndef Masala_src_core_pose_MolecularSystem_hh
+#define Masala_src_core_pose_MolecularSystem_hh
 
 // Forward declarations:
-#include <core/pose/Pose.fwd.hh>
+#include <core/pose/MolecularSystem.fwd.hh>
 
 // Core headers:
 #include <core/chemistry/Molecules.fwd.hh>
@@ -40,11 +40,11 @@ namespace pose {
 
 
 /// @brief A class representing a molecular structure.
-/// @details Poses store atom coordinates and bonds (in the form of a Molecules object),
+/// @details MolecularSystems store atom coordinates and bonds (in the form of a Molecules object),
 /// degree-of-freedom and kinematic relationships, annotations, and computed or measured
 /// properties.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Pose : public masala::base::MasalaObject {
+class MolecularSystem : public masala::base::MasalaObject {
 
 public:
 
@@ -52,23 +52,23 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor, making an empty Pose.
+    /// @brief Default constructor, making an empty MolecularSystem.
     /// @details Ensures that the molecules_ object always exists.
-    Pose();
+    MolecularSystem();
 
     /// @brief Copy constructor.
-    Pose( Pose const & ) = default;
+    MolecularSystem( MolecularSystem const & ) = default;
 
     /// @brief Default destructor.
-    ~Pose() override = default;
+    ~MolecularSystem() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
-    virtual PoseSP clone() const;
+    virtual MolecularSystemSP clone() const;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
-    virtual PoseSP deep_clone() const;
+    virtual MolecularSystemSP deep_clone() const;
 
     /// @brief Make this object independent by making a deep copy of all of its private members.
     /// @details Be sure to update this function whenever a private member is added!
@@ -76,12 +76,12 @@ public:
     void
     make_independent();
 
-    /// @brief Returns "Pose".
+    /// @brief Returns "MolecularSystem".
     /// @details Calls static version.
     std::string
     class_name() const override;
 
-    /// @brief Returns "Pose".
+    /// @brief Returns "MolecularSystem".
     /// @details Called by non-static version.
     static
     std::string
@@ -131,7 +131,7 @@ public:
     /// @brief Access the Molecules object in this pose, by nonconst shared pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the Molecules object also appropriately update any Pose containing it, so direct
+    /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
@@ -141,7 +141,7 @@ public:
     /// @brief Access the Molecules object in this pose, by nonconst weak pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the Molecules object also appropriately update any Pose containing it, so direct
+    /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
@@ -151,7 +151,7 @@ public:
     /// @brief Access the Molecules object in this pose, by nonconst reference.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the Molecules object also appropriately update any Pose containing it, so direct
+    /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
     /// access is safe.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
     /// not all form one contiguously-bonded set).
@@ -164,7 +164,7 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the Pose class.
+    /// @brief Get a description of the API for the MolecularSystem class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
@@ -174,7 +174,7 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief The Molecules object in this Pose.
+    /// @brief The Molecules object in this MolecularSystem.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
@@ -193,4 +193,4 @@ private:
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_pose_Pose_hh
+#endif // Masala_src_core_pose_MolecularSystem_hh
