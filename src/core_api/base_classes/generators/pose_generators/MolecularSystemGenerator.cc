@@ -16,19 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/generators/pose_generators/PoseGenerator.cc
-/// @brief Function implementations for a pure virtual base class for PoseGenerators.
-/// @details PoseGenerators generate poses based on some input or some set of
+/// @file src/core_api/base_classes/generators/pose_generators/MolecularSystemGenerator.cc
+/// @brief Function implementations for a pure virtual base class for MolecularSystemGenerators.
+/// @details MolecularSystemGenerators generate poses based on some input or some set of
 /// user-supplied parameters.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit headers:
-#include <core_api/base_classes/generators/pose_generators/PoseGenerator.hh>
+#include <core_api/base_classes/generators/pose_generators/MolecularSystemGenerator.hh>
 
 // Core API headers:
-#include <core_api/auto_generated_api/pose/Pose_API.hh>
+#include <core_api/auto_generated_api/pose/MolecularSystem_API.hh>
 
 namespace masala {
 namespace core_api {
@@ -41,10 +41,10 @@ namespace pose_generators {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief All generators must implement a generate_object() function that
-/// creates a new instance of a Masala object of a given type.  PoseGenerators
-/// call generate_pose() and return a shared pointer to a Pose object.
+/// creates a new instance of a Masala object of a given type.  MolecularSystemGenerators
+/// call generate_pose() and return a shared pointer to a MolecularSystem object.
 base::MasalaObjectSP
-PoseGenerator::generate_object() const {
+MolecularSystemGenerator::generate_object() const {
     return generate_pose();
 }
 

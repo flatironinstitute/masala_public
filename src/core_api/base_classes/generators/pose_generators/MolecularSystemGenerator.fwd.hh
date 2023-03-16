@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/generators/pose_generators/PoseGenerator.fwd.hh
-/// @brief Forward declarations for a pure virtual base class for PoseGenerators.
-/// @details PoseGenerators generate poses based on some input or some set of
+/// @file src/core_api/base_classes/generators/pose_generators/MolecularSystemGenerator.fwd.hh
+/// @brief Forward declarations for a pure virtual base class for MolecularSystemGenerators.
+/// @details MolecularSystemGenerators generate poses based on some input or some set of
 /// user-supplied parameters.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_fwd_hh
-#define Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_fwd_hh
+#ifndef Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
+#define Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,23 +35,23 @@ namespace base_classes {
 namespace generators {
 namespace pose_generators {
 
-	class PoseGenerator;
+	class MolecularSystemGenerator;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using PoseGeneratorSP = MASALA_SHARED_POINTER< PoseGenerator >;
+	using MolecularSystemGeneratorSP = MASALA_SHARED_POINTER< MolecularSystemGenerator >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using PoseGeneratorCSP = MASALA_SHARED_POINTER< PoseGenerator const >;
+	using MolecularSystemGeneratorCSP = MASALA_SHARED_POINTER< MolecularSystemGenerator const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using PoseGeneratorWP = MASALA_WEAK_POINTER< PoseGenerator >;
+	using MolecularSystemGeneratorWP = MASALA_WEAK_POINTER< MolecularSystemGenerator >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using PoseGeneratorCWP = MASALA_WEAK_POINTER< PoseGenerator const >;
+	using MolecularSystemGeneratorCWP = MASALA_WEAK_POINTER< MolecularSystemGenerator const >;
 
 } // namespace pose_generators
 } // namespace generators
@@ -59,4 +59,4 @@ namespace pose_generators {
 } // namespace core_api
 } // namespace masala
 
-#endif // Masala_src_core_api_base_classes_generators_pose_generators_PoseGenerator_fwd_hh
+#endif // Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
