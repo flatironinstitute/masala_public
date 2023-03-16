@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/pose/MolecularSystem.hh
+/// @file src/core/molecular_system/MolecularSystem.hh
 /// @brief A class representing a molecular structure.
 /// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
@@ -24,11 +24,11 @@
 /// packages, such as Rosetta.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_pose_MolecularSystem_hh
-#define Masala_src_core_pose_MolecularSystem_hh
+#ifndef Masala_src_core_molecular_system_MolecularSystem_hh
+#define Masala_src_core_molecular_system_MolecularSystem_hh
 
 // Forward declarations:
-#include <core/pose/MolecularSystem.fwd.hh>
+#include <core/molecular_system/MolecularSystem.fwd.hh>
 
 // Core headers:
 #include <core/chemistry/Molecules.fwd.hh>
@@ -38,7 +38,7 @@
 
 namespace masala {
 namespace core {
-namespace pose {
+namespace molecular_system {
 
 
 /// @brief A class representing a molecular structure.
@@ -91,12 +91,12 @@ public:
     std::string
     class_name_static();
 
-    /// @brief Every class can provide its own namespace.  This returns "masala::core::pose".
+    /// @brief Every class can provide its own namespace.  This returns "masala::core::molecular_system".
     /// @details Calls static version
     std::string
     class_namespace() const override;
 
-    /// @brief Returns "masala::core::pose".
+    /// @brief Returns "masala::core::molecular_system".
     /// @details Called by non-static version.
     static
     std::string
@@ -108,7 +108,7 @@ public:
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Access the Molecules object in this pose, by shared pointer.
+    /// @brief Access the Molecules object in this molecular system, by shared pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
@@ -116,7 +116,7 @@ public:
     masala::core::chemistry::MoleculesCSP
     molecules_shared_ptr() const;
 
-    /// @brief Access the Molecules object in this pose, by weak pointer.
+    /// @brief Access the Molecules object in this molecular system, by weak pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
@@ -124,7 +124,7 @@ public:
     masala::core::chemistry::MoleculesCWP
     molecules_weak_ptr() const;
 
-    /// @brief Access the Molecules object in this pose, by const reference.
+    /// @brief Access the Molecules object in this molecular system, by const reference.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.
     /// @note A Molecules object may contain more than one molecule (i.e. its atoms may
@@ -132,7 +132,7 @@ public:
     masala::core::chemistry::Molecules const &
     molecules() const;
 
-    /// @brief Access the Molecules object in this pose, by nonconst shared pointer.
+    /// @brief Access the Molecules object in this molecular system, by nonconst shared pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
     /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
@@ -142,7 +142,7 @@ public:
     masala::core::chemistry::MoleculesSP
     molecules_shared_ptr_nonconst();
 
-    /// @brief Access the Molecules object in this pose, by nonconst weak pointer.
+    /// @brief Access the Molecules object in this molecular system, by nonconst weak pointer.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
     /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
@@ -152,7 +152,7 @@ public:
     masala::core::chemistry::MoleculesWP
     molecules_weak_ptr_nonconst();
 
-    /// @brief Access the Molecules object in this pose, by nonconst reference.
+    /// @brief Access the Molecules object in this molecular system, by nonconst reference.
     /// @details The Molecules object contains the coordinates and properties of atoms
     /// and chemical bonds.  We will use an observer system to ensure that direct updates
     /// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
@@ -193,8 +193,8 @@ private:
 
 };
 
-} // namespace pose
+} // namespace molecular_system
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_pose_MolecularSystem_hh
+#endif // Masala_src_core_molecular_system_MolecularSystem_hh

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/pose/MolecularSystem.fwd.hh
+/// @file src/core/molecular_system/MolecularSystem.fwd.hh
 /// @brief Forward declarations for a class representing a molecular structure.
 /// @details MolecularSystems store atom coordinates, degree-of-freedom and kinematic relationships,
 /// annotations, and computed or measured properties.
@@ -24,14 +24,14 @@
 /// packages, such as Rosetta.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_pose_MolecularSystem_fwd_hh
-#define Masala_src_core_pose_MolecularSystem_fwd_hh
+#ifndef Masala_src_core_molecular_system_MolecularSystem_fwd_hh
+#define Masala_src_core_molecular_system_MolecularSystem_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
 namespace masala {
 namespace core {
-namespace pose {
+namespace molecular_system {
 
     class MolecularSystem;
 
@@ -40,8 +40,8 @@ namespace pose {
     using MolecularSystemWP = MASALA_WEAK_POINTER< MolecularSystem >;
     using MolecularSystemCWP = MASALA_WEAK_POINTER< MolecularSystem const >;
 
-} // namespace pose
+} // namespace molecular_system
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_pose_MolecularSystem_fwd_hh
+#endif // Masala_src_core_molecular_system_MolecularSystem_fwd_hh
