@@ -37,7 +37,7 @@
 
 // Core API headers:
 #include <core_api/base_classes/selectors/atom_selectors/annotated_region_selectors/AnnotatedRegionSelection.fwd.hh>
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/pose/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -75,7 +75,7 @@ public:
 	// /// by derived classes.
 	// masala::core::selection::SelectionCSP
 	// generate_selection(
-	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// 	masala::core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 	// ) const override;
 
 	/// @brief Given the current pose, generate the annotated region selection.
@@ -83,7 +83,7 @@ public:
 	virtual
 	AnnotatedRegionSelectionCSP
 	generate_annotated_region_selection(
-		masala::core_api::auto_generated_api::pose::Pose_API const & pose
+		masala::core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 	) const = 0;
 
 }; // class AnnotatedRegionSelector

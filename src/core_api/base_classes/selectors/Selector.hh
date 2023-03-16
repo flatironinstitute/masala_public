@@ -36,7 +36,7 @@
 #include <core/selection/Selection.fwd.hh>
 
 // Core API headers:
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/pose/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -72,7 +72,7 @@ public:
 	// virtual
 	// masala::core::selection::SelectionCSP
 	// generate_selection(
-	// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+	// 	masala::core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 	// ) const = 0;
 
 }; // class Selector

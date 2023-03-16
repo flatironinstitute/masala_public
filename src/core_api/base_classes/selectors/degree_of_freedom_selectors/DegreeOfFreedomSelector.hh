@@ -37,7 +37,7 @@
 
 // Core API headers:
 #include <core_api/base_classes/selectors/degree_of_freedom_selectors/DegreeOfFreedomSelection.fwd.hh>
-#include <core_api/auto_generated_api/pose/Pose_API.fwd.hh>
+#include <core_api/auto_generated_api/pose/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -74,7 +74,7 @@ public:
 	// /// by derived classes.
 	// core::selection::SelectionCSP
 	// generate_selection(
-	// 	core_api::auto_generated_api::pose::Pose_API const & pose
+	// 	core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 	// ) const override;
 
 	/// @brief Given the current pose, generate the annotated region selection.
@@ -82,7 +82,7 @@ public:
 	virtual
 	DegreeOfFreedomSelectionCSP
 	generate_degree_of_freedom_selection(
-		core_api::auto_generated_api::pose::Pose_API const & pose
+		core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 	) const = 0;
 
 }; // class DegreeOfFreedomSelector

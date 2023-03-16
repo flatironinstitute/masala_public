@@ -44,7 +44,7 @@ namespace degree_of_freedom_selectors {
 // /// by derived classes.
 // core::selection::SelectionCSP
 // DegreeOfFreedomSelector::generate_selection(
-// 	core_api::auto_generated_api::pose::Pose_API const & pose
+// 	core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 // ) const {
 // 	return generate_degree_of_freedom_selection( pose );
 // }

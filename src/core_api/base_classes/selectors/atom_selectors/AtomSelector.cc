@@ -44,7 +44,7 @@ namespace atom_selectors {
 // /// by derived classes.
 // masala::core::selection::SelectionCSP
 // AtomSelector::generate_selection(
-// 	masala::core_api::auto_generated_api::pose::Pose_API const & pose
+// 	masala::core_api::auto_generated_api::pose::MolecularSystem_API const & pose
 // ) const {
 // 	return generate_atom_selection( pose );
 // }
