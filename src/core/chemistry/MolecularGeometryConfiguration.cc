@@ -16,12 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/MoleculesConfiguration.cc
-/// @brief A container of configuration settings for a Molecules object.
+/// @file src/core/chemistry/MolecularGeometryConfiguration.cc
+/// @brief A container of configuration settings for a MolecularGeometry object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Project headers
-#include <core/chemistry/MoleculesConfiguration.hh>
+#include <core/chemistry/MolecularGeometryConfiguration.hh>
 
 namespace masala {
 namespace core {
@@ -36,36 +36,36 @@ namespace chemistry {
 /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
 /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
 /// ConfigurationBase-derived object.
-MoleculesConfiguration::MoleculesConfiguration(
+MolecularGeometryConfiguration::MolecularGeometryConfiguration(
     masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) :
     masala::base::managers::configuration::ConfigurationBase( passkey )
 {
-    write_to_tracer( "Loading Molecules class configuration from configuration settings on disk." );
+    write_to_tracer( "Loading MolecularGeometry class configuration from configuration settings on disk." );
     //TODO load configuration from disk here.
 }
 
 /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
-MoleculesConfigurationSP
-MoleculesConfiguration::clone() const {
-    return masala::make_shared< MoleculesConfiguration >(*this);
+MolecularGeometryConfigurationSP
+MolecularGeometryConfiguration::clone() const {
+    return masala::make_shared< MolecularGeometryConfiguration >(*this);
 }
 
 /// @brief Deep clone operation: make an independent copy of this object and return a shared_ptr to the copy.
-MoleculesConfigurationSP
-MoleculesConfiguration::deep_clone() const {
-    return masala::make_shared< MoleculesConfiguration >(*this);
+MolecularGeometryConfigurationSP
+MolecularGeometryConfiguration::deep_clone() const {
+    return masala::make_shared< MolecularGeometryConfiguration >(*this);
 }
 
-/// @brief Returns "MoleculesConfiguration".
+/// @brief Returns "MolecularGeometryConfiguration".
 std::string
-MoleculesConfiguration::class_name() const {
-    return "MoleculesConfiguration";
+MolecularGeometryConfiguration::class_name() const {
+    return "MolecularGeometryConfiguration";
 }
 
 /// @brief Returns "masala::core::chemistry".
 std::string
-MoleculesConfiguration::class_namespace() const {
+MolecularGeometryConfiguration::class_namespace() const {
     return "masala::core::chemistry";
 }
 
@@ -75,7 +75,7 @@ MoleculesConfiguration::class_namespace() const {
 
 /// @brief Get the default kinematic representation.
 std::string const &
-MoleculesConfiguration::default_atom_coordinate_representation() const {
+MolecularGeometryConfiguration::default_atom_coordinate_representation() const {
     return default_atom_coordinate_representation_;
 }
 

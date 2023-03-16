@@ -16,18 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/MoleculesConfiguration.hh
-/// @brief A container of configuration settings for a Molecules object.
+/// @file src/core/chemistry/MolecularGeometryConfiguration.hh
+/// @brief A container of configuration settings for a MolecularGeometry object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_MoleculesConfiguration_hh
-#define Masala_src_core_chemistry_MoleculesConfiguration_hh
+#ifndef Masala_src_core_chemistry_MolecularGeometryConfiguration_hh
+#define Masala_src_core_chemistry_MolecularGeometryConfiguration_hh
 
 // Parent header
 #include <base/managers/configuration/ConfigurationBase.hh>
 
 // Project headers:
-#include <core/chemistry/MoleculesConfiguration.fwd.hh>
+#include <core/chemistry/MolecularGeometryConfiguration.fwd.hh>
 
 // Base headers
 #include <base/managers/configuration/MasalaConfigurationManagerAuthorization.fwd.hh>
@@ -39,7 +39,7 @@ namespace masala {
 namespace core {
 namespace chemistry {
 
-class MoleculesConfiguration : public masala::base::managers::configuration::ConfigurationBase {
+class MolecularGeometryConfiguration : public masala::base::managers::configuration::ConfigurationBase {
 
 public:
 
@@ -48,27 +48,27 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MoleculesConfiguration() = delete;
+    MolecularGeometryConfiguration() = delete;
 
     /// @brief MasalaConfigurationManager-authorized constructor.
     /// @details The MasalaConfigurationManagerAuthorization object is an object that only the
     /// MasalaConfigurationManager can create.  One needs to have one in hand to instantiate a
     /// ConfigurationBase-derived object.
-    MoleculesConfiguration( masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey );
+    MolecularGeometryConfiguration( masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey );
 
     /// @brief Copy constructor.
-    MoleculesConfiguration( MoleculesConfiguration const & src ) = default;
+    MolecularGeometryConfiguration( MolecularGeometryConfiguration const & src ) = default;
 
     /// @brief Default destructor.
-    ~MoleculesConfiguration() override = default;
+    ~MolecularGeometryConfiguration() override = default;
 
     /// @brief Clone operation: make a copy of this object and return a shared_ptr to the copy.
-    MoleculesConfigurationSP clone() const;
+    MolecularGeometryConfigurationSP clone() const;
 
     /// @brief Deep operation: make an independent copy of this object and return a shared_ptr to the copy.
-    MoleculesConfigurationSP deep_clone() const;
+    MolecularGeometryConfigurationSP deep_clone() const;
 
-    /// @brief Returns "MoleculesConfiguration".
+    /// @brief Returns "MolecularGeometryConfiguration".
     std::string class_name() const override;
 
     /// @brief Returns "masala::core::chemistry".
@@ -99,4 +99,4 @@ private:
 } // namespace core
 } // namespace masala
 
-#endif //Masala_src_core_chemistry_MoleculesConfiguration_hh
+#endif //Masala_src_core_chemistry_MolecularGeometryConfiguration_hh
