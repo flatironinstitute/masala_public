@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/core/pose/MolecularSystemUnitTests.cc
+/// @file tests/unit/core/molecular_system/MolecularSystemUnitTests.cc
 /// @brief Unit tests for the MolecularSystem class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -24,22 +24,22 @@
 #include <external/catch2/single_include/catch2/catch.hpp>
 
 // Unit headers:
-#include <core/pose/MolecularSystem.hh>
+#include <core/molecular_system/MolecularSystem.hh>
 
 namespace masala {
 namespace tests {
 namespace unit {
 namespace core {
-namespace pose {
+namespace molecular_system {
 
-TEST_CASE( "Instantiate a pose", "[core::pose::MolecularSystem][instantiation]" ) {
+TEST_CASE( "Instantiate a molecular system", "[core::molecular_system::MolecularSystem][instantiation]" ) {
     REQUIRE_NOTHROW([&](){
-        masala::core::pose::MolecularSystemSP mypose( masala::make_shared< masala::core::pose::MolecularSystem >() );
-        mypose->write_to_tracer( "Instantiated a pose." );
+        masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
+        my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
     }() );
 }
 
-} // namespace pose
+} // namespace molecular_system
 } // namespace core
 } // namespace unit
 } // namespace tests
