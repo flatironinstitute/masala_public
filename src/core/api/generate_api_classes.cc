@@ -25,7 +25,7 @@
 #include <core/api/generate_api_classes.hh>
 
 // Core headers
-#include <core/pose/MolecularSystem.hh>
+#include <core/molecular_system/MolecularSystem.hh>
 #include <core/chemistry/Molecules.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
@@ -44,7 +44,7 @@ namespace api {
         std::vector< masala::base::MasalaObjectSP > outvec;
 
         // Add to this vector whenever a class is added with a defined API:
-        outvec.emplace_back( masala::make_shared< masala::core::pose::MolecularSystem >() );
+        outvec.emplace_back( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::Molecules >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );

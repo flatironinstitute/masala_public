@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/generators/pose_generators/MolecularSystemGenerator.fwd.hh
+/// @file src/core_api/base_classes/generators/molecular_system_generators/MolecularSystemGenerator.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for MolecularSystemGenerators.
-/// @details MolecularSystemGenerators generate poses based on some input or some set of
+/// @details MolecularSystemGenerators generate molecular systems based on some input or some set of
 /// user-supplied parameters.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
-#define Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
+#ifndef Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_fwd_hh
+#define Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -33,7 +33,7 @@ namespace masala {
 namespace core_api {
 namespace base_classes {
 namespace generators {
-namespace pose_generators {
+namespace molecular_system_generators {
 
 	class MolecularSystemGenerator;
 
@@ -53,10 +53,10 @@ namespace pose_generators {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using MolecularSystemGeneratorCWP = MASALA_WEAK_POINTER< MolecularSystemGenerator const >;
 
-} // namespace pose_generators
+} // namespace molecular_system_generators
 } // namespace generators
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif // Masala_src_core_api_base_classes_generators_pose_generators_MolecularSystemGenerator_fwd_hh
+#endif // Masala_src_core_api_base_classes_generators_molecular_system_generators_MolecularSystemGenerator_fwd_hh
