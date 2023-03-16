@@ -28,7 +28,7 @@
 #include <core/molecular_system/MolecularSystem.hh>
 
 // Core headers:
-#include <core/chemistry/Molecules.hh>
+#include <core/chemistry/MolecularGeometry.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -46,10 +46,10 @@ namespace molecular_system {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Default constructor, making an empty MolecularSystem.
-/// @details Ensures that the molecules_ object always exists.
+/// @details Ensures that the molecular_geometry_ object always exists.
 MolecularSystem::MolecularSystem() :
     masala::base::MasalaObject(),
-    molecules_( masala::make_shared< masala::core::chemistry::Molecules >() )
+    molecular_geometry_( masala::make_shared< masala::core::chemistry::MolecularGeometry >() )
 {}
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
@@ -72,7 +72,7 @@ MolecularSystem::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 MolecularSystem::make_independent() {
-    molecules_ = molecules_->deep_clone();
+    molecular_geometry_ = molecular_geometry_->deep_clone();
 }
 
 /// @brief Returns "MolecularSystem".
@@ -105,70 +105,70 @@ MolecularSystem::class_namespace_static() {
 // PUBLIC ACCESSORS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Access the Molecules object in this molecular system, by shared pointer.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by shared pointer.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculesCSP
-MolecularSystem::molecules_shared_ptr() const {
-    return molecules_;
+core::chemistry::MolecularGeometryCSP
+MolecularSystem::molecular_geometry_shared_ptr() const {
+    return molecular_geometry_;
 }
 
-/// @brief Access the Molecules object in this molecular system, by weak pointer.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by weak pointer.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculesCWP
-MolecularSystem::molecules_weak_ptr() const {
-    return molecules_;
+core::chemistry::MolecularGeometryCWP
+MolecularSystem::molecular_geometry_weak_ptr() const {
+    return molecular_geometry_;
 }
 
-/// @brief Access the Molecules object in this molecular system, by const reference.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by const reference.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::Molecules const &
-MolecularSystem::molecules() const {
-    return *molecules_;
+core::chemistry::MolecularGeometry const &
+MolecularSystem::molecular_geometry() const {
+    return *molecular_geometry_;
 }
 
-/// @brief Access the Molecules object in this molecular system, by nonconst shared pointer.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by nonconst shared pointer.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
+/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculesSP
-MolecularSystem::molecules_shared_ptr_nonconst() {
-    return molecules_;
+core::chemistry::MolecularGeometrySP
+MolecularSystem::molecular_geometry_shared_ptr_nonconst() {
+    return molecular_geometry_;
 }
 
-/// @brief Access the Molecules object in this molecular system, by nonconst weak pointer.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by nonconst weak pointer.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
+/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::MoleculesWP
-MolecularSystem::molecules_weak_ptr_nonconst() {
-    return molecules_;
+core::chemistry::MolecularGeometryWP
+MolecularSystem::molecular_geometry_weak_ptr_nonconst() {
+    return molecular_geometry_;
 }
 
-/// @brief Access the Molecules object in this molecular system, by nonconst reference.
-/// @details The Molecules object contains the coordinates and properties of atoms
+/// @brief Access the MolecularGeometry object in this molecular system, by nonconst reference.
+/// @details The MolecularGeometry object contains the coordinates and properties of atoms
 /// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the Molecules object also appropriately update any MolecularSystem containing it, so direct
+/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
 /// access is safe.
-/// @note A Molecules object may contain more than one molecule (i.e. its atoms may
+/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
 /// not all form one contiguously-bonded set).
-core::chemistry::Molecules &
-MolecularSystem::molecules_nonconst() {
-    return *molecules_;
+core::chemistry::MolecularGeometry &
+MolecularSystem::molecular_geometry_nonconst() {
+    return *molecular_geometry_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ MolecularSystem::get_api_definition() {
         api_def->add_constructor(
             masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < MolecularSystem > > (
                 class_name_static(),
-                "Creates an empty MolecularSystem, initializing it only with an empty Molecules object."
+                "Creates an empty MolecularSystem, initializing it only with an empty MolecularGeometry object."
             )
         );
         api_def->add_constructor(
@@ -213,30 +213,30 @@ MolecularSystem::get_api_definition() {
 
         // Getters:
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCSP > >(
-                "molecules_shared_ptr",
-                "Access the Molecules object within the MolecularSystem, by shared pointer.",
-                "molecules", "A const shared pointer to the Molecules object, which stores atoms, atomic geometry, "
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MolecularGeometryCSP > >(
+                "molecular_geometry_shared_ptr",
+                "Access the MolecularGeometry object within the MolecularSystem, by shared pointer.",
+                "molecular_geometry", "A const shared pointer to the MolecularGeometry object, which stores atoms, atomic geometry, "
                 "and chemical connectivity.", false, false,
-                std::bind( &MolecularSystem::molecules_shared_ptr, this )
+                std::bind( &MolecularSystem::molecular_geometry_shared_ptr, this )
             )
         );
         // api_def->add_getter(
-        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MoleculesCWP > >(
-        //         "molecules_weak_ptr",
-        //         "Access the Molecules object within the MolecularSystem, by weak pointer.",
-        //         "molecules", "A const weak pointer to the Molecules object, which stores atoms, atomic geometry, "
+        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MolecularGeometryCWP > >(
+        //         "molecular_geometry_weak_ptr",
+        //         "Access the MolecularGeometry object within the MolecularSystem, by weak pointer.",
+        //         "molecular_geometry", "A const weak pointer to the MolecularGeometry object, which stores atoms, atomic geometry, "
         //         "and chemical connectivity.  Must be converted to a shared pointer before use.", false, false,
-        //         std::bind( &MolecularSystem::molecules_weak_ptr, this )
+        //         std::bind( &MolecularSystem::molecular_geometry_weak_ptr, this )
         //     )
         // );
         // api_def->add_getter(
-        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::Molecules const & > >(
-        //         "molecules",
-        //         "Access the Molecules object within the MolecularSystem.",
-        //         "molecules", "A const reference to the Molecules object, which stores atoms, atomic geometry, "
+        //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MolecularGeometry const & > >(
+        //         "molecular_geometry",
+        //         "Access the MolecularGeometry object within the MolecularSystem.",
+        //         "molecular_geometry", "A const reference to the MolecularGeometry object, which stores atoms, atomic geometry, "
         //         "and chemical connectivity.", false, false,
-        //         std::bind( &MolecularSystem::molecules, this )
+        //         std::bind( &MolecularSystem::molecular_geometry, this )
         //     )
         // );
 
