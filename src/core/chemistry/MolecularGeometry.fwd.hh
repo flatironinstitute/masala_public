@@ -16,12 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/Molecules.fwd.hh
+/// @file src/core/chemistry/MolecularGeometry.fwd.hh
 /// @brief Forward declarations for a class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_Molecules_fwd_hh
-#define Masala_src_core_chemistry_Molecules_fwd_hh
+#ifndef Masala_src_core_chemistry_MolecularGeometry_fwd_hh
+#define Masala_src_core_chemistry_MolecularGeometry_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
@@ -29,15 +29,15 @@ namespace masala {
 namespace core {
 namespace chemistry {
 
-    class Molecules;
+    class MolecularGeometry;
 
-    using MoleculesSP = MASALA_SHARED_POINTER< Molecules >;
-    using MoleculesCSP = MASALA_SHARED_POINTER< Molecules const >;
-    using MoleculesWP = MASALA_WEAK_POINTER< Molecules >;
-    using MoleculesCWP = MASALA_WEAK_POINTER< Molecules const >;
+    using MolecularGeometrySP = MASALA_SHARED_POINTER< MolecularGeometry >;
+    using MolecularGeometryCSP = MASALA_SHARED_POINTER< MolecularGeometry const >;
+    using MolecularGeometryWP = MASALA_WEAK_POINTER< MolecularGeometry >;
+    using MolecularGeometryCWP = MASALA_WEAK_POINTER< MolecularGeometry const >;
 
 } // namespace chemistry
 } // namespace core
 } // namespace masala
 
-#endif // Masala_src_core_chemistry_Molecules_fwd_hh
+#endif // Masala_src_core_chemistry_MolecularGeometry_fwd_hh

@@ -16,19 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/Molecules.cc
+/// @file src/core/chemistry/MolecularGeometry.cc
 /// @brief A class contiaining a collection of atoms and chemical bonds.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class header:
-#include <core/chemistry/Molecules.hh>
+#include <core/chemistry/MolecularGeometry.hh>
 
 // Core headers:
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
-#include <core/chemistry/MoleculesConfiguration.hh>
+#include <core/chemistry/MolecularGeometryConfiguration.hh>
 #include <core/initialization/registrators/CoreAtomCoordinateRepresentationRegistrator.hh>
 
 // Base headers:
@@ -50,17 +50,17 @@ namespace chemistry {
 
 /// @brief Default constructor.
 /// @details Gets configuration from configuration manager, which may trigger load from disk.
-Molecules::Molecules() :
+MolecularGeometry::MolecularGeometry() :
     masala::base::MasalaObject(),
     configuration_(
-        OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( Molecules, MoleculesConfiguration )
+        OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MolecularGeometry, MolecularGeometryConfiguration )
     )
 {}
 
 /// @brief Copy constructor.
 /// @details Must be explicitly declared due to mutex.
-Molecules::Molecules(
-    Molecules const & src
+MolecularGeometry::MolecularGeometry(
+    MolecularGeometry const & src
 ) :
     masala::base::MasalaObject(src)
 {
@@ -76,9 +76,9 @@ Molecules::Molecules(
 
 /// @brief Assignment operator.
 /// @details Be sure to update this as data are added.
-Molecules &
-Molecules::operator=(
-    Molecules const & src
+MolecularGeometry &
+MolecularGeometry::operator=(
+    MolecularGeometry const & src
 ) {
     { //Scope for lock guards:
         std::lock( whole_object_mutex_, src.whole_object_mutex_ );
@@ -102,20 +102,20 @@ Molecules::operator=(
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-MoleculesSP
-Molecules::clone() const {
+MolecularGeometrySP
+MolecularGeometry::clone() const {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-    return masala::make_shared< Molecules >( *this );
+    return masala::make_shared< MolecularGeometry >( *this );
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
-MoleculesSP
-Molecules::deep_clone() const {
-    MoleculesSP molecules_copy;
+MolecularGeometrySP
+MolecularGeometry::deep_clone() const {
+    MolecularGeometrySP molecules_copy;
     {   // Scope for lock guard.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
-        molecules_copy = masala::make_shared< Molecules >( *this );
+        molecules_copy = masala::make_shared< MolecularGeometry >( *this );
     }
     molecules_copy->make_independent();
     return molecules_copy;
@@ -124,7 +124,7 @@ Molecules::deep_clone() const {
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
 void
-Molecules::make_independent() {
+MolecularGeometry::make_independent() {
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
     configuration_ = configuration_->deep_clone();
@@ -161,21 +161,21 @@ Molecules::make_independent() {
     //Need to clone these appropriately.
 }
 
-/// @brief Returns "Molecules".
+/// @brief Returns "MolecularGeometry".
 std::string
-Molecules::class_name() const {
-    return "Molecules";
+MolecularGeometry::class_name() const {
+    return "MolecularGeometry";
 }
 
 /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry".
 std::string
-Molecules::class_namespace() const {
+MolecularGeometry::class_namespace() const {
     return "masala::core::chemistry";
 }
 
 /// @brief Get the API definition for this object.
 base::api::MasalaObjectAPIDefinitionCWP
-Molecules::get_api_definition() {
+MolecularGeometry::get_api_definition() {
     using namespace base::api;
     using namespace base::api::constructor;
     using namespace base::api::getter;
@@ -193,30 +193,30 @@ Molecules::get_api_definition() {
             )
         );
 
-        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( Molecules, api_def );
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( MolecularGeometry, api_def );
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
-                "total_atoms", "Gets the total number of atoms in this Molecules object.",
-                "total_atoms", "The number of atoms in the Molecules object.",
+                "total_atoms", "Gets the total number of atoms in this MolecularGeometry object.",
+                "total_atoms", "The number of atoms in the MolecularGeometry object.",
                 false, false,
-                std::bind( &Molecules::total_atoms, this )
+                std::bind( &MolecularGeometry::total_atoms, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_begin", "Get a const iterator over atoms, initialized to first atom.",
-                "atoms_begin", "Iterator pointing to the first atom in the set stored in the Molecules object.",
+                "atoms_begin", "Iterator pointing to the first atom in the set stored in the MolecularGeometry object.",
                 false, false,
-                std::bind( &Molecules::atoms_begin, this )
+                std::bind( &MolecularGeometry::atoms_begin, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < atoms::AtomInstanceConstIterator > >(
                 "atoms_end", "Get a const iterator over atoms, initialized to one past the last atom.",
-                "atoms_end", "Iterator pointing one past the last atom in the set stored in the Molecules object.",
+                "atoms_end", "Iterator pointing one past the last atom in the set stored in the MolecularGeometry object.",
                 false, false,
-                std::bind( &Molecules::atoms_end, this )
+                std::bind( &MolecularGeometry::atoms_end, this )
             )
         );
         api_def->add_getter(
@@ -225,7 +225,7 @@ Molecules::get_api_definition() {
                 "atom_iterator", "An AtomInstanceConstIterator pointing to the atom whose coordinates we wish to obtain.",
                 "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
                 false, false,
-                std::bind( &Molecules::get_atom_coordinates, this, std::placeholders::_1 )
+                std::bind( &MolecularGeometry::get_atom_coordinates, this, std::placeholders::_1 )
             )
         );
 
@@ -240,7 +240,7 @@ Molecules::get_api_definition() {
 
 /// @brief Add an atom to this molecule.
 void
-Molecules::add_atom(
+MolecularGeometry::add_atom(
     masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
     std::array< masala::base::Real, 3 > const & coords
 ) {
@@ -257,25 +257,25 @@ Molecules::add_atom(
 
 /// @brief Get the number of atoms in this molecule.
 base::Size
-Molecules::total_atoms() const {
+MolecularGeometry::total_atoms() const {
     return atoms_.size();
 }
 
 /// @brief Begin const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
-Molecules::atoms_begin() const {
+MolecularGeometry::atoms_begin() const {
     return atoms::AtomInstanceConstIterator( atoms_const_.cbegin() );
 }
 
 /// @brief End const iterator for accessing atoms.
 atoms::AtomInstanceConstIterator
-Molecules::atoms_end() const {
+MolecularGeometry::atoms_end() const {
     return atoms::AtomInstanceConstIterator( atoms_const_.cend() );
 }
 
 /// @brief Access the coordinates for an atom.
 std::array< masala::base::Real, 3 >
-Molecules::get_atom_coordinates(
+MolecularGeometry::get_atom_coordinates(
     atoms::AtomInstanceConstIterator const atom_iterator
 ) const {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
@@ -293,7 +293,7 @@ Molecules::get_atom_coordinates(
 /// - Calling this from multiple threads.  This function does not lock the object mutex!  It should
 /// only be called from locked contexts!
 core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
-Molecules::master_atom_coordinate_representation_mutex_locked() {
+MolecularGeometry::master_atom_coordinate_representation_mutex_locked() {
     if( master_atom_coordinate_representation_ == nullptr ) {
         masala::core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
         master_atom_coordinate_representation_ = std::dynamic_pointer_cast< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
@@ -312,15 +312,15 @@ Molecules::master_atom_coordinate_representation_mutex_locked() {
 /// implementation throws.  Must be implemented by derived classes that have configurations.
 /// @note Receives an instance of a MasalaConfigurationManagerAuthorization object.  Since this has a
 /// private constructor, it can only be instantiated by the MasalaConfigurationManager, its only friend
-/// class.  This version creates a MoleculesConfiguration object.
+/// class.  This version creates a MolecularGeometryConfiguration object.
 base::managers::configuration::ConfigurationBaseCSP
-Molecules::load_configuration(
+MolecularGeometry::load_configuration(
     masala::base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 ) const {
 
-    write_to_tracer( "Loading default Molecules configuration." );
+    write_to_tracer( "Loading default MolecularGeometry configuration." );
 
-    return masala::make_shared< MoleculesConfiguration >( passkey );
+    return masala::make_shared< MolecularGeometryConfiguration >( passkey );
 }
 
 } // namespace chemistry
