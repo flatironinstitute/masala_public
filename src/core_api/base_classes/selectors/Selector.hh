@@ -36,7 +36,7 @@
 #include <core/selection/Selection.fwd.hh>
 
 // Core API headers:
-#include <core_api/auto_generated_api/pose/MolecularSystem_API.fwd.hh>
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
 
 namespace masala {
 namespace core_api {
@@ -67,12 +67,12 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	// /// @brief Given the current pose, generate the selection.
+	// /// @brief Given the current molecular system, generate the selection.
 	// /// @details Pure virtual function.  Must be implemented by sub-classes.
 	// virtual
 	// masala::core::selection::SelectionCSP
 	// generate_selection(
-	// 	masala::core_api::auto_generated_api::pose::MolecularSystem_API const & pose
+	// 	masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API const & molecular_system
 	// ) const = 0;
 
 }; // class Selector

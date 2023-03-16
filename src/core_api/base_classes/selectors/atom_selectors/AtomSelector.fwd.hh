@@ -18,7 +18,7 @@
 
 /// @file src/core_api/base_classes/selectors/atom_selectors/AtomSelector.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for AtomSelectors.
-/// @details AtomSelectors select atoms in a pose based on some rule.
+/// @details AtomSelectors select atoms in a molecular system based on some rule.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
