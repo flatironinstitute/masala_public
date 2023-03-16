@@ -18,7 +18,7 @@
 
 /// @file src/core/chemistry/BasicPDBReader.hh
 /// @brief A class for reading the basic information from a PDB file quickly, and
-/// setting up a minimal pose.
+/// setting up a minimal molecular system.
 /// @note This is intended for testing only.  The proper PDB reader will be in the
 /// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -30,7 +30,7 @@
 #include <core/io/pdb/BasicPDBReader.fwd.hh>
 
 // Core headers:
-#include <core/pose/MolecularSystem.fwd.hh>
+#include <core/molecular_system/MolecularSystem.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -45,7 +45,7 @@ namespace io {
 namespace pdb {
 
 /// @brief A class for reading the basic information from a PDB file quickly, and
-/// setting up a minimal pose.
+/// setting up a minimal molecular system.
 /// @note This is intended for testing only.  The proper PDB reader will be in the
 /// standard Masala plugins library.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -98,7 +98,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Given the contents of a PDB file, generate a MolecularSystem.
-    masala::core::pose::MolecularSystemSP
+    masala::core::molecular_system::MolecularSystemSP
     molecular_system_from_pdb_file_contents(
         std::vector< std::string > const & file_lines
     ) const;
@@ -106,7 +106,7 @@ public:
     /// @brief Given a PDB file name, read the PDB file and generate a MolecularSystem.
     /// @note Warning!  This triggers a read from disk!  This is threadsafe and
     /// properly managed through the disk manager.
-    masala::core::pose::MolecularSystemSP
+    masala::core::molecular_system::MolecularSystemSP
     molecular_system_from_pdb_file_on_disk(
         std::string const & filename
     ) const;
@@ -128,13 +128,13 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Read the ATOM and HETATM lines in a PDB file, and add atoms to a MolecularSystem.
-    /// @details This modifies pose, as well as atom_lines_read, marking off which lines
+    /// @details This modifies molecular_system, as well as atom_lines_read, marking off which lines
     /// in the file are ATOM or HETATM lines to avoid re-parsing these lines later.
     /// @note In its current form, this does NOT set up residue information.  It only assigns
     /// atom coordinates and identities.
     void
     add_atoms_from_file_lines(
-        masala::core::pose::MolecularSystem & pose,
+        masala::core::molecular_system::MolecularSystem & molecular_system,
         std::vector< std::string > const & file_lines,
         std::vector< bool > & atom_lines_read
     ) const;
