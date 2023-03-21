@@ -30,6 +30,7 @@
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/disk/MasalaDiskManager.hh>
+#include <base/utility/string/string_comparison.hh>
 
 // STL headers:
 #include <string>
@@ -174,11 +175,11 @@ MasalaPluginLibraryManager::load_and_register_plugin_libraries_in_subdirectories
 	using namespace base::managers::disk;
 
 #ifdef _WIN32
-	std::string const expected_libfile( "registration_api.dll" );
+	std::string const expected_libfile_ending( "registration_api.dll" );
 #elif __linux__
-	std::string const expected_libfile( "libregistration_api.so" );
+	std::string const expected_libfile_ending( "registration_api.so" );
 #elif __APPLE__
-	std::string const expected_libfile( "libregistration_api.dylib" );
+	std::string const expected_libfile_ending( "registration_api.dylib" );
 #endif
 
 	MasalaDiskManagerHandle const diskmanager( MasalaDiskManager::get_instance() );
@@ -187,7 +188,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_libraries_in_subdirectories
 		std::vector< std::string > const files( diskmanager->get_files( subdir ) );
 		for( std::string const & path_and_file : files ) {
 			std::string const file( diskmanager->filename_from_path_and_filename( path_and_file ) );
-			if( file == expected_libfile ) {
+			if( masala::base::utility::string::string_ends_with( file, expected_libfile_ending) ) {
 				load_and_register_plugin_library( path_and_file, throw_on_failure );
 			}
 		}
