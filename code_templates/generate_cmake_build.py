@@ -289,6 +289,7 @@ assert len(argv) == 7, errmsg + "Incorrect number of arguments.   python3 genera
 
 project_name = argv[1]
 lib_name = argv[2]
+lib_full_name = project_name + "_" + lib_name
 source_dir = argv[3]
 output_file = argv[4]
 output_file_api = argv[5]
@@ -326,13 +327,13 @@ else :
 
 with open( output_file, 'w' ) as fhandle:
     if len(cclist) > 0 :
-        fhandle.write( "ADD_LIBRARY(" + lib_name + " SHARED" )
+        fhandle.write( "ADD_LIBRARY(" + lib_full_name + " SHARED" )
         for entry in cclist:
             fhandle.write( "\n\t" + entry )
         fhandle.write( "\n)\n" )
-        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
+        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_full_name + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
         if len(depend_list) > 0 :
-            fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name )
+            fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_full_name )
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
@@ -346,7 +347,7 @@ with open( output_file, 'w' ) as fhandle:
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
             if len(cclist) > 0 :
-                fhandle.write("\n\tPUBLIC " + lib_name )
+                fhandle.write("\n\tPUBLIC " + lib_full_name )
             fhandle.write( "\n)\n" )
 
 if len(api_cclist) > 0 and output_file_api != None :
@@ -362,13 +363,13 @@ if len(api_cclist) > 0 and output_file_api != None :
         fhandle.write( "\tCOMMAND sh -c \"cd .. && python3 code_templates/generate_library_api.py " + project_name + " "  + lib_name + " build/" + lib_name + "_api.json && cd build\"\n")
         fhandle.write( "\tVERBATIM\n)\n\n" )
 
-        fhandle.write( "ADD_LIBRARY(" + lib_name + "_api SHARED" )
+        fhandle.write( "ADD_LIBRARY(" + lib_full_name + "_api SHARED" )
         for entry in api_cclist :
             fhandle.write( "\n\t" + entry )
         fhandle.write( "\n)\n" )
-        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_name + "_api PROPERTIES VERSION ${PROJECT_VERSION})\n" )
-        fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_name + "_api" )
-        fhandle.write( "\n\tPUBLIC " + lib_name )
+        fhandle.write( "SET_TARGET_PROPERTIES(" + lib_full_name + "_api PROPERTIES VERSION ${PROJECT_VERSION})\n" )
+        fhandle.write( "TARGET_LINK_LIBRARIES(" + lib_full_name + "_api" )
+        fhandle.write( "\n\tPUBLIC " + lib_full_name )
         if len(depend_list) > 0 :
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
@@ -388,7 +389,7 @@ if len(testslist) > 0 :
             fhandle.write( "SET_TARGET_PROPERTIES(" + testlibname + " PROPERTIES VERSION ${PROJECT_VERSION})\n" )
 
             fhandle.write( "TARGET_LINK_LIBRARIES(" + testlibname )
-            fhandle.write( "\n\tPUBLIC " + lib_name )
+            fhandle.write( "\n\tPUBLIC " + lib_full_name )
             for dentry in test_depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
