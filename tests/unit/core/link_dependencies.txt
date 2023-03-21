@@ -1,5 +1,5 @@
-base
-numeric
-numeric_api
-core
-core_api
+masala_base
+masala_numeric
+masala_numeric_api
+masala_core
+masala_core_api
