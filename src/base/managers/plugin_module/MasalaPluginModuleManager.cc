@@ -321,7 +321,7 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
 }
 
 /// @brief Get a list of plugins in a given category.
-/// @param[in] cateogry The category to search
+/// @param[in] category The category to search
 /// @param[in] include_subcategories If true, plugins in any subcategory are
 /// also included.  If false, only plugins in this category are included.
 /// @param[in] include_namespace If include_namesapce is true (the default), then
@@ -360,6 +360,71 @@ MasalaPluginModuleManager::get_list_of_plugins_by_category(
         outvec.push_back( include_namespace ? plugin->get_plugin_object_namespace_and_name() : plugin->get_plugin_object_name() );
     }
     return outvec;
+}
+
+/// @brief Get a list of plugins by category.  Only names will be returned, unless
+/// there is a name conflict, in which case namespaces will be included.
+/// @param[in] category The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+std::vector< std::string >
+MasalaPluginModuleManager::get_short_names_of_plugins_by_category(
+	std::vector< std::string > const & category,
+	bool const include_subcategories
+) const {
+	std::vector< std::string > outvec( get_list_of_plugins_by_category( category, include_subcategories, true ) );
+	std::set< std::string > names_seen, names_seen_repeatedly;
+	for( std::string const & longname : outvec ) {
+		std::string const shortname( longname.substr( longname.rfind(':') + 1 ) );
+		if( names_seen.insert( shortname ).second == false ) {
+			names_seen_repeatedly.insert( shortname );
+		}
+	}
+	for( std::string & name : outvec ) {
+		std::string const shortname( name.substr( name.rfind(':') + 1 ) );
+		if( names_seen_repeatedly.count(shortname) == 0 ) {
+			name = shortname;
+		}
+	}
+	return outvec;
+}
+
+/// @brief Get a list of plugins by category as a comma-separated list.  Only names
+/// will be returned, unless there is a name conflict, in which case namespaces will
+/// be included.
+/// @param[in] category The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+/// @note Returns "(None)" if no plugins are found in the category.
+std::string
+MasalaPluginModuleManager::get_short_names_of_plugins_by_category_cs_list(
+	std::vector< std::string > const & category,
+	bool const include_subcategories
+) const {
+	std::vector< std::string > const plugins( get_short_names_of_plugins_by_category( category, include_subcategories ) );
+	switch( plugins.size() ) {
+		case 0:
+			return "(None)";
+		case 1:
+			return plugins[0];
+		case 2:
+			return plugins[0] + " and " + plugins[1];
+		default:
+			{
+				std::ostringstream ss;
+				for( base::Size i(0), imax(plugins.size()); i<imax; ++i ) {
+					if(i > 0) {
+						ss << ", ";
+					}
+					if( i == imax - 1 ) {
+						ss << "and ";
+					}
+					ss << plugins[i];
+				}
+				return ss.str();
+			}
+	}
+	return ""; //Keep some old compilers happy.
 }
 
 /// @brief Create a plugin object instance by category and plugin name.

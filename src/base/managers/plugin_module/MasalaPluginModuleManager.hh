@@ -202,7 +202,7 @@ public:
     ) const;
 
     /// @brief Get a list of plugins in a given category.
-    /// @param[in] cateogry The category to search
+    /// @param[in] category The category to search
     /// @param[in] include_subcategories If true, plugins in any subcategory are
     /// also included.  If false, only plugins in this category are included.
     /// @param[in] include_namespace If include_namesapce is true (the default), then
@@ -215,6 +215,30 @@ public:
         std::vector< std::string > const & category,
         bool const include_subcategories,
         bool const include_namespace = true
+    ) const;
+
+    /// @brief Get a list of plugins by category.  Only names will be returned, unless
+    /// there is a name conflict, in which case namespaces will be included.
+    /// @param[in] category The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    std::vector< std::string >
+    get_short_names_of_plugins_by_category(
+        std::vector< std::string > const & category,
+        bool const include_subcategories
+    ) const;
+
+    /// @brief Get a list of plugins by category as a comma-separated list.  Only names
+    /// will be returned, unless there is a name conflict, in which case namespaces will
+    /// be included.
+    /// @param[in] category The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    /// @note Returns "(None)" if no plugins are found in the category.
+    std::string
+    get_short_names_of_plugins_by_category_cs_list(
+        std::vector< std::string > const & category,
+        bool const include_subcategories
     ) const;
 
     /// @brief Create a plugin object instance by category and plugin name.
