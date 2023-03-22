@@ -464,6 +464,65 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     return nullptr;
 }
 
+/// @brief Create a plugin object instance by category and plugin name.  This version uses
+/// just the name of the plugin UNLESS there is a name conflict, in which case the namespace
+/// plus name is expected.
+/// @details Actually creates an API container for a plugin object.  If include_subcategories
+/// is true, then we load plugins with the given name that are in any sub-category; if false, we
+/// strictly restrict our search to the given category.
+/// @note If there is more than one plugin in a category with the same name and namespace has not
+/// been provided, this throws.
+MasalaPluginAPISP
+MasalaPluginModuleManager::create_plugin_object_instance_by_short_name(
+    std::vector< std::string > const & category,
+    std::string const & plugin_name,
+    bool const include_subcategories
+) const {
+	bool const namespace_provided( plugin_name.find(':') != std::string::npos );
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        include_subcategories ?
+        plugins_by_hierarchical_subcategory_.find( category ) :
+        plugins_by_hierarchical_category_.find( category )
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        "create_plugin_object_instance_by_short_name",
+        "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
+        " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
+    );
+    std::set< MasalaPluginCreatorCSP > const & myset( it->second );
+	
+	if( namespace_provided ) {
+    	for( auto const & entry : myset ) {
+			if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+				write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
+				return entry->create_plugin_object();
+			}
+        }
+		MASALA_THROW( class_namespace_and_name(), "create_plugin_object_instance_by_short_name", "Could not find a plugin "
+			"with name \"" + plugin_name + "\" in category [ " + base::utility::container::container_to_string( category, ", " )
+			+ " ]."
+		);
+    } else {
+		std::vector< masala::base::managers::plugin_module::MasalaPluginCreatorCSP > creators;
+		for( auto const & entry : myset ) {
+			if( entry->get_plugin_object_name() == plugin_name ) {
+				creators.push_back( entry );
+			}
+        }
+		CHECK_OR_THROW_FOR_CLASS( !creators.empty(), "create_plugin_object_instance_by_short_name",
+			"Found no plugins in category with the name \"" + plugin_name + "\"."
+		);
+		CHECK_OR_THROW_FOR_CLASS( creators.size() <= 1, "create_plugin_object_instance_by_short_name",
+			"Found " + std::to_string( creators.size() ) + " plugins in category with the name \"" + plugin_name
+			+ "\".  The full name with namespace must be provided to relieve the ambiguity."
+		);
+		return creators[0]->create_plugin_object();
+	}
+    return nullptr;
+}
+
 /// @brief Create a plugin object instance by keyword and plugin name.
 /// @details Actually creates an API container for a plugin object.
 /// @note Since names must be unique, the plugin_name should include namespace.
