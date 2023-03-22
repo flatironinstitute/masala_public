@@ -152,6 +152,15 @@ public:
 		return "masala::base::api::getter";
 	}
 
+	/// @brief Provide an input to the function.
+	T0
+	function() const {
+		getter_function_();
+	}
+
+	/// @brief Get a raw pointer to the function.
+	std::function< T0() > const * function_raw_ptr() const { return &getter_function_; }
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

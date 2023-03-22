@@ -126,6 +126,10 @@ public:
 		return work_function_();
 	}
 
+
+	/// @brief Get a raw pointer to the function.
+	std::function< T0() > const * function_raw_ptr() const { return &work_function_; }
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

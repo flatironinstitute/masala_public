@@ -132,6 +132,9 @@ public:
 		setter_function_(input1, input2);
 	}
 
+	/// @brief Get a raw pointer to the function.
+	std::function< void(T1, T2) > const * function_raw_ptr() const { return &setter_function_; }
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

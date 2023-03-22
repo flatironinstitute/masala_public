@@ -141,6 +141,9 @@ public:
 		return work_function_( input1, input2 );
 	}
 
+	/// @brief Get a raw pointer to the function.
+	std::function< T0(T1, T2) > const * function_raw_ptr() const { return &work_function_; }
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
