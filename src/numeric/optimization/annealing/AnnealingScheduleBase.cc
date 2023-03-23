@@ -105,10 +105,10 @@ AnnealingScheduleBase::deep_clone() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the hierarchical categories for this plugin class.
-/// @details The base class implementation returns { { "AnnealingScheduleBase" } }
+/// @details The base class implementation returns { { "AnnealingSchedule" } }
 std::vector< std::vector< std::string > >
 AnnealingScheduleBase::get_categories() const {
-    return std::vector< std::vector< std::string > >{ { "AnnealingScheduleBase" } };
+    return std::vector< std::vector< std::string > >{ { "AnnealingSchedule" } };
 }
 
 /// @brief Get the ahierarchical keywords for this plugin class.

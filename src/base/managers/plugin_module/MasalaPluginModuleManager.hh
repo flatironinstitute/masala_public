@@ -202,7 +202,7 @@ public:
     ) const;
 
     /// @brief Get a list of plugins in a given category.
-    /// @param[in] cateogry The category to search
+    /// @param[in] category The category to search
     /// @param[in] include_subcategories If true, plugins in any subcategory are
     /// also included.  If false, only plugins in this category are included.
     /// @param[in] include_namespace If include_namesapce is true (the default), then
@@ -217,6 +217,30 @@ public:
         bool const include_namespace = true
     ) const;
 
+    /// @brief Get a list of plugins by category.  Only names will be returned, unless
+    /// there is a name conflict, in which case namespaces will be included.
+    /// @param[in] category The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    std::vector< std::string >
+    get_short_names_of_plugins_by_category(
+        std::vector< std::string > const & category,
+        bool const include_subcategories
+    ) const;
+
+    /// @brief Get a list of plugins by category as a comma-separated list.  Only names
+    /// will be returned, unless there is a name conflict, in which case namespaces will
+    /// be included.
+    /// @param[in] category The category to search
+    /// @param[in] include_subcategories If true, plugins in any subcategory are
+    /// also included.  If false, only plugins in this category are included.
+    /// @note Returns "(None)" if no plugins are found in the category.
+    std::string
+    get_short_names_of_plugins_by_category_cs_list(
+        std::vector< std::string > const & category,
+        bool const include_subcategories
+    ) const;
+
     /// @brief Create a plugin object instance by category and plugin name.
     /// @details Actually creates an API container for a plugin object.  If include_subcategories
     /// is true, then we load plugins with the given name that are in any sub-category; if false, we
@@ -224,6 +248,21 @@ public:
     /// @note Since names must be unique, the plugin_name should include namespace.
     MasalaPluginAPISP
     create_plugin_object_instance(
+        std::vector< std::string > const & category,
+        std::string const & plugin_name,
+        bool const include_subcategories
+    ) const;
+
+    /// @brief Create a plugin object instance by category and plugin name.  This version uses
+    /// just the name of the plugin UNLESS there is a name conflict, in which case the namespace
+    /// plus name is expected.
+    /// @details Actually creates an API container for a plugin object.  If include_subcategories
+    /// is true, then we load plugins with the given name that are in any sub-category; if false, we
+    /// strictly restrict our search to the given category.
+    /// @note If there is more than one plugin in a category with the same name and namespace has not
+    /// been provided, this throws.
+    MasalaPluginAPISP
+    create_plugin_object_instance_by_short_name(
         std::vector< std::string > const & category,
         std::string const & plugin_name,
         bool const include_subcategories

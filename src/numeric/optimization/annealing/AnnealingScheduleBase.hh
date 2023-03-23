@@ -94,7 +94,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the hierarchical categories for this plugin class.
-	/// @details The base class implementation returns { { "AnnealingScheduleBase" } }
+	/// @details The base class implementation returns { { "AnnealingSchedule" } }
 	std::vector< std::vector< std::string > >
 	get_categories() const override;
 

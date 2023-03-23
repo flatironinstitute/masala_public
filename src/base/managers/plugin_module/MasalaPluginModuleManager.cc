@@ -321,7 +321,7 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
 }
 
 /// @brief Get a list of plugins in a given category.
-/// @param[in] cateogry The category to search
+/// @param[in] category The category to search
 /// @param[in] include_subcategories If true, plugins in any subcategory are
 /// also included.  If false, only plugins in this category are included.
 /// @param[in] include_namespace If include_namesapce is true (the default), then
@@ -362,6 +362,71 @@ MasalaPluginModuleManager::get_list_of_plugins_by_category(
     return outvec;
 }
 
+/// @brief Get a list of plugins by category.  Only names will be returned, unless
+/// there is a name conflict, in which case namespaces will be included.
+/// @param[in] category The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+std::vector< std::string >
+MasalaPluginModuleManager::get_short_names_of_plugins_by_category(
+	std::vector< std::string > const & category,
+	bool const include_subcategories
+) const {
+	std::vector< std::string > outvec( get_list_of_plugins_by_category( category, include_subcategories, true ) );
+	std::set< std::string > names_seen, names_seen_repeatedly;
+	for( std::string const & longname : outvec ) {
+		std::string const shortname( longname.substr( longname.rfind(':') + 1 ) );
+		if( names_seen.insert( shortname ).second == false ) {
+			names_seen_repeatedly.insert( shortname );
+		}
+	}
+	for( std::string & name : outvec ) {
+		std::string const shortname( name.substr( name.rfind(':') + 1 ) );
+		if( names_seen_repeatedly.count(shortname) == 0 ) {
+			name = shortname;
+		}
+	}
+	return outvec;
+}
+
+/// @brief Get a list of plugins by category as a comma-separated list.  Only names
+/// will be returned, unless there is a name conflict, in which case namespaces will
+/// be included.
+/// @param[in] category The category to search
+/// @param[in] include_subcategories If true, plugins in any subcategory are
+/// also included.  If false, only plugins in this category are included.
+/// @note Returns "(None)" if no plugins are found in the category.
+std::string
+MasalaPluginModuleManager::get_short_names_of_plugins_by_category_cs_list(
+	std::vector< std::string > const & category,
+	bool const include_subcategories
+) const {
+	std::vector< std::string > const plugins( get_short_names_of_plugins_by_category( category, include_subcategories ) );
+	switch( plugins.size() ) {
+		case 0:
+			return "(None)";
+		case 1:
+			return plugins[0];
+		case 2:
+			return plugins[0] + " and " + plugins[1];
+		default:
+			{
+				std::ostringstream ss;
+				for( base::Size i(0), imax(plugins.size()); i<imax; ++i ) {
+					if(i > 0) {
+						ss << ", ";
+					}
+					if( i == imax - 1 ) {
+						ss << "and ";
+					}
+					ss << plugins[i];
+				}
+				return ss.str();
+			}
+	}
+	return ""; //Keep some old compilers happy.
+}
+
 /// @brief Create a plugin object instance by category and plugin name.
 /// @details Actually creates an API container for a plugin object.  If include_subcategories
 /// is true, then we load plugins with the given name that are in any sub-category; if false, we
@@ -396,6 +461,65 @@ MasalaPluginModuleManager::create_plugin_object_instance(
         "with name \"" + plugin_name + "\" in category [ " + base::utility::container::container_to_string( category, ", " )
         + " ]."
     );
+    return nullptr;
+}
+
+/// @brief Create a plugin object instance by category and plugin name.  This version uses
+/// just the name of the plugin UNLESS there is a name conflict, in which case the namespace
+/// plus name is expected.
+/// @details Actually creates an API container for a plugin object.  If include_subcategories
+/// is true, then we load plugins with the given name that are in any sub-category; if false, we
+/// strictly restrict our search to the given category.
+/// @note If there is more than one plugin in a category with the same name and namespace has not
+/// been provided, this throws.
+MasalaPluginAPISP
+MasalaPluginModuleManager::create_plugin_object_instance_by_short_name(
+    std::vector< std::string > const & category,
+    std::string const & plugin_name,
+    bool const include_subcategories
+) const {
+	bool const namespace_provided( plugin_name.find(':') != std::string::npos );
+    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
+        include_subcategories ?
+        plugins_by_hierarchical_subcategory_.find( category ) :
+        plugins_by_hierarchical_category_.find( category )
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        "create_plugin_object_instance_by_short_name",
+        "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
+        " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
+    );
+    std::set< MasalaPluginCreatorCSP > const & myset( it->second );
+	
+	if( namespace_provided ) {
+    	for( auto const & entry : myset ) {
+			if( entry->get_plugin_object_namespace_and_name() == plugin_name ) {
+				write_to_tracer( "Creating an instance of \"" + entry->get_plugin_object_namespace_and_name() + "\"." );
+				return entry->create_plugin_object();
+			}
+        }
+		MASALA_THROW( class_namespace_and_name(), "create_plugin_object_instance_by_short_name", "Could not find a plugin "
+			"with name \"" + plugin_name + "\" in category [ " + base::utility::container::container_to_string( category, ", " )
+			+ " ]."
+		);
+    } else {
+		std::vector< masala::base::managers::plugin_module::MasalaPluginCreatorCSP > creators;
+		for( auto const & entry : myset ) {
+			if( entry->get_plugin_object_name() == plugin_name ) {
+				creators.push_back( entry );
+			}
+        }
+		CHECK_OR_THROW_FOR_CLASS( !creators.empty(), "create_plugin_object_instance_by_short_name",
+			"Found no plugins in category with the name \"" + plugin_name + "\"."
+		);
+		CHECK_OR_THROW_FOR_CLASS( creators.size() <= 1, "create_plugin_object_instance_by_short_name",
+			"Found " + std::to_string( creators.size() ) + " plugins in category with the name \"" + plugin_name
+			+ "\".  The full name with namespace must be provided to relieve the ambiguity."
+		);
+		return creators[0]->create_plugin_object();
+	}
     return nullptr;
 }
 
