@@ -27,6 +27,7 @@
 
 // Base class.
 #include <base/MasalaObject.hh>
+#include <base/types.hh>
 
 // Forward declarations.
 #include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
@@ -122,6 +123,10 @@ public:
 	/// @brief Is this function an override of a virtual function in a base
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn() const;
+
+	/// @brief Get the number of input parameters for this setter.
+	/// @details Pure virtual; must be overridden by derived classes.
+	virtual masala::base::Size num_input_parameters() const = 0;
 
 private:
 

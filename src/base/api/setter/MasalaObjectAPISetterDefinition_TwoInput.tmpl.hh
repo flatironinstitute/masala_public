@@ -189,6 +189,10 @@ public:
 		return json_api;
 	}
 
+	/// @brief Get the number of input parameters for this setter.
+	/// @details Returns 2.
+	masala::base::Size num_input_parameters() const override { return 2; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
