@@ -453,8 +453,8 @@ OptimizationSolutions::recompute_all_scores(
         OptimizationSolutionSP const & solution( optimization_solutions_[isolution] );
         masala::base::Real const old_score( solution->solution_score() );
         solution->recompute_score();
-        masala::base::Real const delta( std::abs( old_score - solution->solution_score() ) );
-        if( delta > max_fractional_error * old_score ) {
+        masala::base::Real const absdelta( std::abs( old_score - solution->solution_score() ) );
+        if( absdelta > std::abs( max_fractional_error * old_score ) ) {
             failed_cases.push_back( std::make_pair( isolution, std::make_pair( old_score, solution->solution_score() ) ) );
         }
     }
