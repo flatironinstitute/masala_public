@@ -20,6 +20,8 @@ After building, you will likely want to pull and build the standard Masala plugi
 
 ## Using
 
+In order to use Masala, the `MASALA_PATH` environment variable must be set to the directory in which Masala is installed.
+
 ### Using Masala as a standalone application
 
 Masala applications can be written that link the Masala libraries, as with any conventional software.
