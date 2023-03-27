@@ -116,6 +116,15 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the penalties for all of the choices at one node.
+	/// @param[in] absolute_node_index The absolute index of the ndoe for which we're setting penalties.
+	/// @param[in] penalties_by_choice_index The penalties for all of the choices, indexed by choice index.
+	/// @note Only in debug mode do we check that these have not already been set.
+	void
+	set_penalties_for_all_choices_at_node(
+		masala::base::Size const absolute_node_index,
+		std::vector< masala::base::Real > const & penalties_by_choice_index
+	);
 
 public:
 

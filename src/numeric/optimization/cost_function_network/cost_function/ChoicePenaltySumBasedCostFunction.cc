@@ -106,6 +106,41 @@ ChoicePenaltySumBasedCostFunction::get_keywords() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Set the penalties for all of the choices at one node.
+/// @param[in] absolute_node_index The absolute index of the ndoe for which we're setting penalties.
+/// @param[in] penalties_by_choice_index The penalties for all of the choices, indexed by choice index.
+/// @note Only in debug mode do we check that these have not already been set.
+void
+ChoicePenaltySumBasedCostFunction::set_penalties_for_all_choices_at_node(
+    masala::base::Size const absolute_node_index,
+    std::vector< masala::base::Real > const & penalties_by_choice_index
+) {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalties_for_all_choices_at_node",
+        "This function cannot be called after the " + class_name() + " has been finalized."
+    );
+
+    Size const nchoices( penalties_by_choice_index.size() );
+
+#ifndef NDEBUG
+    // Debug-mode checks:
+    for( Size i(0); i<nchoices; ++i ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+            penalties_by_absolute_node_and_choice_.count( std::make_pair( absolute_node_index, i ) ) == 0,
+            "set_penalties_for_all_choices_at_node",
+            "Penalties for node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( i )
+            + " have already been set."
+        );
+    }
+#endif
+
+    for( Size i(0); i<nchoices; ++i ) {
+        penalties_by_absolute_node_and_choice_[ std::make_pair( absolute_node_index, i ) ] = penalties_by_choice_index[i];
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
@@ -158,7 +193,7 @@ ChoicePenaltySumBasedCostFunction::protected_finalize(
         }
     }
     penalties_by_absolute_node_and_choice_.clear(); // Save memory.
-    
+
     CostFunction::protected_finalize( variable_node_indices );
 }
 
