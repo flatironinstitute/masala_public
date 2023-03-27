@@ -42,6 +42,7 @@
 // STL headers:
 #include <map>
 #include <utility> //For std::pair.
+#include <mutex>
 
 namespace masala {
 namespace numeric {
@@ -65,14 +66,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	CostFunction() = default;
+	CostFunction();
 
 	/// @brief Copy constructor.
-	CostFunction( CostFunction const & ) = default;
+	CostFunction( CostFunction const & src );
 
 	// @brief Assignment operator.
 	CostFunction &
-	operator=( CostFunction const & ) = default;
+	operator=( CostFunction const & src );
 
 	/// @brief Destructor.
 	~CostFunction() override = default;
@@ -157,12 +158,23 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Assignment operator, assuming that we've already locked the write mutex.
+	virtual void assign_mutex_locked( CostFunction const & src );
+
+	/// @brief Allow derived classes to access the mutex.
+	inline std::mutex & mutex() const { return mutex_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief A mutex for data-loading.  Not used during access phase.
+	mutable std::mutex mutex_;
+
+	/// @brief An atomic bool for whether this object is finalized.
+	std::atomic_bool finalized_;
 
 }; // class CostFunction
 

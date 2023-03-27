@@ -47,6 +47,35 @@ namespace cost_function {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Default constructor.
+CostFunction::CostFunction() :
+    masala::base::managers::plugin_module::MasalaPlugin(),
+    finalized_(false)
+{}
+
+/// @brief Copy constructor.
+CostFunction::CostFunction(
+    CostFunction const & src
+) :
+    masala::base::managers::plugin_module::MasalaPlugin( src )
+{
+    std::lock( src.mutex_, mutex_ );
+    std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+    assign_mutex_locked( src );
+}
+
+// @brief Assignment operator.
+CostFunction &
+CostFunction::operator=(
+    CostFunction const & src
+) {
+    std::lock( src.mutex_, mutex_ );
+    std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+    assign_mutex_locked( src );
+    return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -103,6 +132,13 @@ CostFunction::get_keywords() const {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Assignment operator, assuming that we've already locked the write mutex.
+void
+CostFunction::assign_mutex_locked(
+    CostFunction const & src
+) {
+    finalized_ = src.finalized_.load();
+}
 
 } // namespace cost_function
 } // namespace cost_function_network
