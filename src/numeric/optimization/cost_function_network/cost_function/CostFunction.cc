@@ -156,7 +156,7 @@ CostFunction::finalize(
 /// be overridden, and overrides should call parent class protected_finalize().
 void
 CostFunction::protected_finalize(
-    std::vector< masala::base::Size > const & variable_node_indices
+    std::vector< masala::base::Size > const & //variable_node_indices
 ) {
     CHECK_OR_THROW_FOR_CLASS( finalized_ == false, "protected_finalize", "This " + class_name() + " object has already been finalized!" );
     finalized_ = true;

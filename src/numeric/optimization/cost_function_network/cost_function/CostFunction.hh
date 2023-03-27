@@ -41,6 +41,7 @@
 
 // STL headers:
 #include <mutex>
+#include <atomic>
 
 namespace masala {
 namespace numeric {
@@ -135,7 +136,7 @@ public:
 	/// @param[in] variable_node_indices A list of all of the absolute node indices
 	/// for nodes that have more than one choice, indexed by variable node index.
 	void
-	CostFunction::finalize(
+	finalize(
 		std::vector< masala::base::Size > const & variable_node_indices
 	);
 
