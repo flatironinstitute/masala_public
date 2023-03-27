@@ -345,6 +345,15 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this problem description been finalized?  That is, is the problem setup "
+                "complete and the object locked to now be read-only?",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false,
+                std::bind( &OptimizationProblem::finalized, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(

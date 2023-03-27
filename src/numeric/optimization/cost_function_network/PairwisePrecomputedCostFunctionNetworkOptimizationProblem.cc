@@ -464,6 +464,15 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this problem description been finalized?  That is, is the problem setup "
+                "complete and the object locked to now be read-only?",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false,
+                std::bind( &OptimizationProblem::finalized, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
