@@ -38,9 +38,10 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/hash_types.hh>
 
 // STL headers:
-#include <map>
+#include <unordered_map>
 #include <utility> //For std::pair.
 
 namespace masala {
@@ -150,7 +151,18 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
+	/// @param[in] variable_node_indices A list of all of the absolute node indices
+	/// for nodes that have more than one choice, indexed by variable node index.
+	/// @details The base class function simply marks this object as finalized.  Should
+	/// be overridden, and overrides should call parent class protected_finalize().
+	void
+	protected_finalize(
+		std::vector< masala::base::Size > const & variable_node_indices
+	) override;
+
 	/// @brief Override of assign_mutex_locked().  Calls parent function.
+	/// @details Throws if src is not a ChoicePenaltySumBasedCostFunction.
 	void assign_mutex_locked( CostFunction const & src ) override;
 
 private:
@@ -159,6 +171,13 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief The penalties, stored as a pair of <absolute node index, choice index >.
+	/// @details Used during input/write phase.  Cleared by finalize() operation.
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_absolute_node_and_choice_;
+
+	/// @brief The penalties, stored as a pair of <variable node index, choice index >.
+	/// @details Used during output/read phase.  Populated by finalize() operation.
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_variable_node_and_choice_;
 
 }; // class ChoicePenaltySumBasedCostFunction
 

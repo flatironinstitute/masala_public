@@ -121,15 +121,61 @@ ChoicePenaltySumBasedCostFunction::get_keywords() const {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
+/// @details The base class function simply marks this object as finalized.  Should
+/// be overridden, and overrides should call parent class protected_finalize().
+void
+ChoicePenaltySumBasedCostFunction::protected_finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    std::unordered_map< Size, Size > absolute_to_variable_index;
+    for( Size i(0), imax(variable_node_indices.size()); i<imax; ++i ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+            absolute_to_variable_index.count( variable_node_indices[i] ) == 0, "protected_finalize", "The absolute index " + std::to_string( variable_node_indices[i] ) + " appears more than once in the list of absolute node indices."
+        );
+        absolute_to_variable_index[variable_node_indices[i]] = i;
+    }
+
+    for(
+        std::unordered_map< std::pair< Size, Size >, Real, base::size_pair_hash >::const_iterator it( penalties_by_absolute_node_and_choice_.cbegin() );
+        it != penalties_by_absolute_node_and_choice_.cend();
+        ++it
+    ) {
+        Size const absindex( it->first.first );
+        Size const choiceindex( it->first.second );
+        Real const penalty( it->second );
+        std::unordered_map< Size, Size >::const_iterator it2( absolute_to_variable_index.find( absindex ) );
+        if( it2 != absolute_to_variable_index.end() ) {
+            Size const varindex( it2->second );
+            std::pair< Size, Size > const key( std::make_pair( varindex, choiceindex ) );
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.count( key ) == 0, "protected_finalize", "The key (" + std::to_string( key.first ) + ", " + std::to_string( key.second ) + ") is already in the penalties_by_variable_node_and_choice_ map!" );
+            penalties_by_variable_node_and_choice_[key] = penalty;
+        }
+    }
+    penalties_by_absolute_node_and_choice_.clear(); // Save memory.
+    
+    CostFunction::protected_finalize( variable_node_indices );
+}
+
 /// @brief Override of assign_mutex_locked().  Calls parent function.
+/// @details Throws if src is not a ChoicePenaltySumBasedCostFunction.
 void
 ChoicePenaltySumBasedCostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
     ChoicePenaltySumBasedCostFunction const * const src_cast_ptr( dynamic_cast< ChoicePenaltySumBasedCostFunction const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a ChoicePenaltySumBasedCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
-    CostFunction::assign_mutex_locked( src );
+
+    penalties_by_absolute_node_and_choice_ = src_cast_ptr->penalties_by_absolute_node_and_choice_;
+    penalties_by_variable_node_and_choice_ = src_cast_ptr->penalties_by_variable_node_and_choice_;
     // TODO OTHER ASSIGNMENT.
+
+    CostFunction::assign_mutex_locked( src );
 }
 
 } // namespace cost_function
