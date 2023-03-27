@@ -18,9 +18,10 @@
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/ChoicePenaltySumBasedCostFunction.hh
 /// @brief Header for a pure virtual base class for ChoicePenaltySumBasedCostFunctions.
-/// @details ChoicePenaltySumBasedCostFunctions define a penalty function for a given solution to a cost
-/// function network optimization problem.  (That is, given a selection of one choice
-/// per node, produce a numerical value.)
+/// @details ChoicePenaltySumBasedCostFunctions define a penalty function which is based on the following:
+/// - A penalty is assigned to each choice.
+/// - The selected choices' penalties are summed, and a constant is added.
+/// - An R->R (nonlinear) function is applied to the sum, and this is returned as the penalty.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
