@@ -38,6 +38,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -195,6 +196,8 @@ SquareOfChoicePenaltySumCostFunction::get_api_definition() {
                 "a given solution, adds a constant, and squares the result.", false, false
             )
         );
+
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( SquareOfChoicePenaltySumCostFunction, api_def );
 
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<bool> >(
