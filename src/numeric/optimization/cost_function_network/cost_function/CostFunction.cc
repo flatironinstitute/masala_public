@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/CostFunction.cc
+/// @file src/numeric/optimization/cost_function_network/cost_function/CostFunction.cc
 /// @brief Implementation for a pure virtual base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
@@ -24,7 +24,7 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric/optimization/cost_function_network/CostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
 // STL headers:
 #include <vector>
@@ -37,6 +37,7 @@ namespace masala {
 namespace numeric {
 namespace optimization {
 namespace cost_function_network {
+namespace cost_function {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
@@ -100,6 +101,7 @@ CostFunction::get_keywords() const {
 
 
 
+} // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/CostFunction.hh
+/// @file src/numeric/optimization/cost_function_network/cost_function/CostFunction.hh
 /// @brief Header for a pure virtual base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
@@ -25,11 +25,11 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
-#define Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
+#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
+#define Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
 
 // Forward declarations:
-#include <numeric/optimization/cost_function_network/CostFunction.fwd.hh>
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
 
 // Parent header:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
@@ -45,6 +45,7 @@ namespace masala {
 namespace numeric {
 namespace optimization {
 namespace cost_function_network {
+namespace cost_function {
 
 /// @brief A pure virtual base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
@@ -147,9 +148,10 @@ private:
 
 }; // class CostFunction
 
+} // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
 } // namesapce masala
 
-#endif // Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
+#endif // Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
