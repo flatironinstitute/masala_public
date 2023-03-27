@@ -142,7 +142,7 @@ protected:
 
 	/// @brief Allow derived classes to access whether this object is finalized.
 	/// @note Assumes problem mutex was locked.
-	inline bool finalized() const { return finalized_.load(); }
+	inline bool protected_finalized() const { return finalized_.load(); }
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.
 	/// Base class protected_finalize() sets finalized_ to true.

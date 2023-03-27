@@ -161,7 +161,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_o
 /// one choice, plus the twobdy energies between those nodes.
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
         "to finalize() before this function can be called."
     );
     return one_choice_node_constant_offset_;
@@ -171,7 +171,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_const
 /// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
         "to finalize() before this function can be called."
     );
     return one_choice_node_constant_offset_ + background_constant_offset_;
@@ -182,7 +182,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset
 /// @details For now, returns false.  This will be implemented in the future.
 bool
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores() const {
-    // CHECK_OR_THROW_FOR_CLASS( finalized(), "has_non_pairwise_scores", "The problem setup must be finalized with a call "
+    // CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "has_non_pairwise_scores", "The problem setup must be finalized with a call "
     //     "to finalize() before this function can be called."
     // );
     return false;
@@ -292,7 +292,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
 ) const {
     using base::Real;
     using base::Size;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
 
     Real accumulator( total_constant_offset() );
     // if( has_non_pairwise_scores() ) {
@@ -348,7 +348,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 ) const {
     using masala::base::Real;
     using masala::base::Size;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_score_change", "The problem setup must be finalized "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_score_change", "The problem setup must be finalized "
         "before compute_score_change() can be called."
     );
 

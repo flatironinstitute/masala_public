@@ -21,10 +21,16 @@
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
+/// @note Since this class does not implement class_name() or class_namespace()
+/// functions required by the MasalaObject base class, it remains pure virtual.  This class
+/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
+
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
@@ -89,6 +95,18 @@ CostFunction::get_keywords() const {
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
+/// @brief Attach a problem with which this cost function is associated.
+/// @details The problem is stored by weak pointer.  Should be called before
+/// CostFunctionNetworkOptimizationProblem::add_cost_function().
+void
+CostFunction::attach_problem(
+    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP const & problem
+) {
+    CHECK_OR_THROW_FOR_CLASS( problem != nullptr, "attach_problem", "Cannot attach a nullptr problem." );
+    //CHECK_OR_THROW_FOR_CLASS( problem->
+    problem_ = problem;
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
@@ -100,6 +118,13 @@ CostFunction::get_keywords() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 
+/// @brief Access the problem, by shared pointer.
+/// @details Returns nullptr if no problem is attached or if the problem has been destroyed.
+/// @note Inefficient in a multi-threaded context: incremenets reference count of shared pointer.
+masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP
+CostFunction::problem() const {
+    return masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP( problem_ );
+}
 
 } // namespace cost_function
 } // namespace cost_function_network

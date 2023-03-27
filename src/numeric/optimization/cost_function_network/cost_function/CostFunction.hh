@@ -22,7 +22,8 @@
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
+/// functions required by the MasalaObject base class, it remains pure virtual.  This class
+/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
@@ -35,6 +36,9 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+
+// Base headers:
 #include <base/types.hh>
 
 // STL headers:
@@ -51,6 +55,9 @@ namespace cost_function {
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
+/// @note Since this class does not implement class_name() or class_namespace()
+/// functions required by the MasalaObject base class, it remains pure virtual.  This class
+/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -125,6 +132,14 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Attach a problem with which this cost function is associated.
+	/// @details The problem is stored by weak pointer.  Should be called before
+	/// CostFunctionNetworkOptimizationProblem::add_cost_function().
+	void
+	attach_problem(
+		masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP const & problem
+	);
+
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	virtual
 	masala::base::Real
@@ -144,12 +159,20 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Access the problem, by shared pointer.
+	/// @details Returns nullptr if no problem is attached or if the problem has been destroyed.
+	/// @note Inefficient in a multi-threaded context: incremenets reference count of shared pointer.
+	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP problem() const;
+
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The cost function network optimization problem to which this cost function is attached.
+	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCWP problem_;
 
 
 }; // class CostFunction

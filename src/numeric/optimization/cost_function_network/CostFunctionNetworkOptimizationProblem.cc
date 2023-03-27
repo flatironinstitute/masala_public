@@ -128,7 +128,7 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
-    if( finalized() ) {
+    if( protected_finalized() ) {
         return total_variable_nodes_;
     }
     std::lock_guard< std::mutex > lock( problem_mutex() );
@@ -154,7 +154,7 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
     using masala::base::Size;
-    if( finalized() ) {
+    if( protected_finalized() ) {
         return n_choices_at_variable_nodes_;
     }
     std::vector< std::pair< Size, Size > > outvec;
@@ -433,7 +433,7 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
     masala::base::Size const min_choice_count
 ) {
     std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
-    CHECK_OR_THROW_FOR_CLASS( !finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
         "This object has already been finalized.  Cannot set the minimum number of choices at a node at this point!"
     );
     if( it == n_choices_by_node_index_.end() ) {
@@ -449,7 +449,7 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
 /// @note This assumes that the problem mutex has already been set.
 std::map< masala::base::Size, masala::base::Size > &
 CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
-    CHECK_OR_THROW_FOR_CLASS( !finalized(), "n_choices_by_node_index",
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "n_choices_by_node_index",
         "Can only get nonconst access to the number of choices by node index if the problem has not been finalized!"
     );
     return n_choices_by_node_index_;
@@ -496,7 +496,7 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 /// @details The finalize() function must be called before this function is used.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
     return total_variable_nodes_;
 }
 
@@ -505,7 +505,7 @@ CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
 /// @details The finalize() function must be called before this function is used.
 std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
 CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() const {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
     return n_choices_at_variable_nodes_;
 }
 
