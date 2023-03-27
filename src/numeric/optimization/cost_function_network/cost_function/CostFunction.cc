@@ -22,15 +22,13 @@
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.  This class
-/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
+/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
 // Numeric headers:
-#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // STL headers:
 #include <vector>

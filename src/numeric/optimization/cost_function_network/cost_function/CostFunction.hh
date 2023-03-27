@@ -22,8 +22,7 @@
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.  This class
-/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
+/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
@@ -36,7 +35,6 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // Numeric headers:
-#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -56,8 +54,7 @@ namespace cost_function {
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.  This class
-/// is deliberately NOT THREADSAFE for writes (though simultaneous read-access is safe).
+/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
 
