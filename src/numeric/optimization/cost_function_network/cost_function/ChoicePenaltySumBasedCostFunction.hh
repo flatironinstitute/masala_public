@@ -127,6 +127,12 @@ public:
 		std::vector< masala::base::Real > const & penalties_by_choice_index
 	);
 
+	/// @brief Set the constant offset.
+	void
+	set_constant_offset(
+		masala::base::Real const constant_offset
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,20 +140,24 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
-	virtual
+	/// @details This version just computes the sum of the penalties of the selected choices.
+	/// @note No mutex-locking is performed!
 	masala::base::Real
 	compute_cost_function(
 		std::vector< masala::base::Size > const & candidate_solution
-	) const = 0;
+	) const override;
 
 	/// @brief Given an old selection of choices at variable nodes and a new selection,
 	/// compute the cost function difference.
-	virtual
+	/// @details This version just computes the difference of the sums of the penalties of the
+	/// selected choices.  It isn't useful for much, and should probably not be called from other
+	/// code.
+	/// @note No mutex-locking is performed!
 	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
 		std::vector< masala::base::Size > const & candidate_solution_new
-	) const = 0;
+	) const override;
 
 public:
 
@@ -171,6 +181,12 @@ protected:
 		std::vector< masala::base::Size > const & variable_node_indices
 	) override;
 
+	/// @brief Get the number of variable positions.
+	/// @details Returns 0 if not finalized.
+	/// @note Performs no mutex-locking!  If writing is possible, the mutex
+	/// must be locked before calling this function.
+	inline masala::base::Size n_variable_positions() const { return n_variable_positions_; }
+
 	/// @brief Override of assign_mutex_locked().  Calls parent function.
 	/// @details Throws if src is not a ChoicePenaltySumBasedCostFunction.
 	void assign_mutex_locked( CostFunction const & src ) override;
@@ -188,6 +204,13 @@ private:
 	/// @brief The penalties, stored as a pair of <variable node index, choice index >.
 	/// @details Used during output/read phase.  Populated by finalize() operation.
 	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_variable_node_and_choice_;
+
+	/// @brief The number of variable positions.
+	/// @details Set by finalize() function.
+	masala::base::Size n_variable_positions_ = 0;
+
+	/// @brief A constant offset added to the sum of the penalties for the choices.
+	masala::base::Real constant_offset_ = 0.0;
 
 }; // class ChoicePenaltySumBasedCostFunction
 

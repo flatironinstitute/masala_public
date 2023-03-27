@@ -142,10 +142,103 @@ ChoicePenaltySumBasedCostFunction::set_penalties_for_all_choices_at_node(
     }
 }
 
+/// @brief Set the constant offset.
+void
+ChoicePenaltySumBasedCostFunction::set_constant_offset(
+    masala::base::Real const constant_offset
+) {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_constant_offset",
+        "This function cannot be called after the " + class_name() + " has been finalized."
+    );
+
+    constant_offset_ = constant_offset;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Given a selection of choices at variable nodes, compute the cost function.
+/// @details This version just computes the sum of the penalties of the selected choices.
+/// @note No mutex-locking is performed!
+masala::base::Real
+ChoicePenaltySumBasedCostFunction::compute_cost_function(
+    std::vector< masala::base::Size > const & candidate_solution
+) const {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_cost_function", "The " + class_name()
+        + " must be finalized before this function is called!"
+    );
+    Size const nentries( candidate_solution.size() );
+    CHECK_OR_THROW_FOR_CLASS( nentries == n_variable_positions_, "compute_cost_function", "Expected "
+        "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
+        + " variable positions, but got " + std::to_string( nentries ) + "!" 
+    );
+    Real accumulator( constant_offset_ );
+    for( Size i(0); i<nentries; ++i ) {
+        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it(
+            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution[i]) )
+        );
+        if( it != penalties_by_variable_node_and_choice_.end() ) {
+            accumulator += it->second;
+        }
+    }
+    return accumulator;
+}
+
+/// @brief Given an old selection of choices at variable nodes and a new selection,
+/// compute the cost function difference.
+/// @details This version just computes the difference of the sums of the penalties of the
+/// selected choices.  It isn't useful for much, and should probably not be called from other
+/// code.
+/// @note No mutex-locking is performed!
+masala::base::Real
+ChoicePenaltySumBasedCostFunction::compute_cost_function_difference(
+    std::vector< masala::base::Size > const & candidate_solution_old,
+    std::vector< masala::base::Size > const & candidate_solution_new
+) const {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_cost_function_difference", "The " + class_name()
+        + " must be finalized before this function is called!"
+    );
+    Size const nentries_old( candidate_solution_old.size() );
+    Size const nentries_new( candidate_solution_new.size() );
+    CHECK_OR_THROW_FOR_CLASS( nentries_old == n_variable_positions_, "compute_cost_function", "Expected "
+        "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
+        + " variable positions in the old candidate solution, but got " + std::to_string( nentries_old ) + "!" 
+    );
+    CHECK_OR_THROW_FOR_CLASS( nentries_new == n_variable_positions_, "compute_cost_function", "Expected "
+        "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
+        + " variable positions in the new candidate solution, but got " + std::to_string( nentries_new ) + "!" 
+    );
+
+    Real sum_old( 0.0 ), sum_new( 0.0 ); // We ignore the constant offset, since it won't appear in the difference.
+
+    for( Size i(0); i<nentries_old; ++i ) {
+        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it(
+            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_old[i]) )
+        );
+        if( it != penalties_by_variable_node_and_choice_.end() ) {
+            sum_old += it->second;
+        }
+
+        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it2(
+            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_new[i]) )
+        );
+        if( it2 != penalties_by_variable_node_and_choice_.end() ) {
+            sum_new += it2->second;
+        }
+    }
+    return sum_new - sum_old;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
@@ -175,6 +268,8 @@ ChoicePenaltySumBasedCostFunction::protected_finalize(
         );
         absolute_to_variable_index[variable_node_indices[i]] = i;
     }
+
+    n_variable_positions_ = variable_node_indices.size();
 
     for(
         std::unordered_map< std::pair< Size, Size >, Real, base::size_pair_hash >::const_iterator it( penalties_by_absolute_node_and_choice_.cbegin() );
