@@ -1,0 +1,155 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/numeric/optimization/cost_function_network/CostFunction.hh
+/// @brief Header for a pure virtual base class for CostFunctions.
+/// @details CostFunctions define a penalty function for a given solution to a cost
+/// function network optimization problem.  (That is, given a selection of one choice
+/// per node, produce a numerical value.)
+/// @note Since this class does not implement class_name() or class_namespace()
+/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#ifndef Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
+#define Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
+
+// Forward declarations:
+#include <numeric/optimization/cost_function_network/CostFunction.fwd.hh>
+
+// Parent header:
+#include <base/managers/plugin_module/MasalaPlugin.hh>
+
+// Numeric headers:
+#include <base/types.hh>
+
+// STL headers:
+#include <map>
+#include <utility> //For std::pair.
+
+namespace masala {
+namespace numeric {
+namespace optimization {
+namespace cost_function_network {
+
+/// @brief A pure virtual base class for CostFunctions.
+/// @details CostFunctions define a penalty function for a given solution to a cost
+/// function network optimization problem.  (That is, given a selection of one choice
+/// per node, produce a numerical value.)
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Default constructor.
+	CostFunction() = default;
+
+	/// @brief Copy constructor.
+	CostFunction( CostFunction const & ) = default;
+
+	// @brief Assignment operator.
+	CostFunction &
+	operator=( CostFunction const & ) = default;
+
+	/// @brief Destructor.
+	~CostFunction() override = default;
+
+	/// @brief Make a copy of this object.
+	virtual
+	CostFunctionSP
+	clone() const = 0;
+
+	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
+	virtual
+	void make_independent() = 0;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the category or categories for this plugin class.  Default for all
+	/// cost functions; may be overridden by derived classes.
+	/// @returns { { "CostFunction" } }
+	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
+	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
+	/// in more than one hierarchical category (in which case there would be more than one
+	/// entry in the outer vector), but must be in at least one.  The first one is used as
+	/// the primary key.
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the keywords for this plugin class.  Default for all
+	/// optimization problems; may be overridden by derived classes.
+	/// @returns { "optimization_problem", "cost_function", "numeric" }
+	std::vector< std::string >
+	get_keywords() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// WORK FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////
+
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+
+}; // class CostFunction
+
+} // namespace cost_function_network
+} // namespace optimization
+} // namespace numeric
+} // namesapce masala
+
+#endif // Masala_src_numeric_optimization_cost_function_network_CostFunction_hh
