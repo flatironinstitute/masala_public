@@ -32,6 +32,12 @@
 #include <string>
 
 // Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -174,6 +180,82 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function_difference(
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get a description of the API of this object.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+SquareOfChoicePenaltySumCostFunction::get_api_definition() {
+    using masala::base::Size;
+    using masala::base::Real;
+    using namespace masala::base::api;
+    std::lock_guard< std::mutex > lock( mutex() );
+    if( api_definition_mutex_locked() == nullptr ) {
+        
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this, "A cost function which sums the penalties of the individual choices that were selected for "
+                "a given solution, adds a constant, and squares the result.", false, false
+            )
+        );
+
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<bool> >(
+                "finalized", "Has the data-entry phase ended and the object been locked?",
+                "finalized", "True if we have finalized this object, false otherwise.",
+                false, false, std::bind( &SquareOfChoicePenaltySumCostFunction::finalized, this )
+            )
+        );
+
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_constant_offset", "Set the constant to be added to all penalty sums.",
+                "constant_offset", "The constant to be added to the penalty sum before the whole thing is squared.",
+                false, false, std::bind( &SquareOfChoicePenaltySumCostFunction::set_constant_offset, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< Real > const & > >(
+                "set_penalties_for_all_choices_at_node", "Set the penalties for all of the choices at one node.",
+                "absolute_node_index", "The absolute index of the node for which we're setting penalties.",
+                "penalties_by_choice_index", "The penalties for all of the choices, indexed by choice index.",
+                false, false,
+                std::bind( &SquareOfChoicePenaltySumCostFunction::set_penalties_for_all_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
+                "finalize", "Indicate that all data input is complete.", false, false, false, false,
+                "variable_node_indices", "A list of all of the absolute node indices for nodes that have more than "
+                "one choice, indexed by variable node index.", "void", "No output.",
+                std::bind( &SquareOfChoicePenaltySumCostFunction::finalize, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, std::vector< Size > const & > >(
+                "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  This version "
+                "computes the sum of the selected choices plus a constant, then squares the result.", true, false, false, false,
+                "candidate_solution", "A candidate solution, as a vector of choices for each variable position (i.e. position with "
+                "more than one choice).", "score", "The output score: the sum of the penalties for the selected choices, plus a constant "
+                "offset, all squared.", std::bind( &SquareOfChoicePenaltySumCostFunction::compute_cost_function, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, std::vector< Size > const & > >(
+                "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, compute "
+                "the cost function difference.  This version computes the sum of the old selected choices plus a constant, then "
+                "squares the result.  It repeats this for the new selected choices, then returns the difference.",
+                true, false, false, false,
+                "candidate_solution_old", "The old candidate solution, as a vector of choices for each variable position.",
+                "candidate_solution_new", "The new candidate solution, as a vector of choices for each variable position.",
+                "score", "The output score: the difference of the sum of the penalties for the selected choices, plus a constant "
+                "offset, all squared.",
+                std::bind( &SquareOfChoicePenaltySumCostFunction::compute_cost_function_difference, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+    
+        api_definition_mutex_locked() = api_def;
+    }
+    return api_definition_mutex_locked();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
