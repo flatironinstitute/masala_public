@@ -195,6 +195,13 @@ protected:
 	void
 	make_independent_mutex_locked();
 
+	/// @brief Access the API definition.  Mutex must be locked by calling function.
+	inline
+	masala::base::api::MasalaObjectAPIDefinitionCSP &
+	api_definition_mutex_locked() {
+		return api_definition_;
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +213,9 @@ private:
 
 	/// @brief An atomic bool for whether this object is finalized.
 	std::atomic_bool finalized_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class CostFunction
 
