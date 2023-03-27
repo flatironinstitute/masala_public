@@ -116,6 +116,10 @@ public:
 	/// @details Derived classes should probably override this.
 	virtual void finalize();
 
+	/// @brief Has this problem been finalized?
+	/// @details Locks mutex for check.
+	bool finalized() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

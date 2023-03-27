@@ -143,6 +143,14 @@ OptimizationProblem::finalize() {
     OptimizationProblem::protected_finalize();
 }
 
+/// @brief Has this problem been finalized?
+/// @details Locks mutex for check.
+bool
+OptimizationProblem::finalized() const {
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+    return OptimizationProblem::protected_finalized();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
