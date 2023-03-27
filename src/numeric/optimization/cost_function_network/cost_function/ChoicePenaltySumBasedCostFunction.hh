@@ -191,6 +191,11 @@ protected:
 	/// @details Throws if src is not a ChoicePenaltySumBasedCostFunction.
 	void assign_mutex_locked( CostFunction const & src ) override;
 
+	/// @brief Make this object fully independent.  Assumes mutex was already locked.
+	/// Should be called by overrides.
+	void
+	make_independent_mutex_locked() override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

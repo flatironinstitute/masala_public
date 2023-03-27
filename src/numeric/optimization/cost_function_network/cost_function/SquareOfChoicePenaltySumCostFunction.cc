@@ -68,6 +68,27 @@ SquareOfChoicePenaltySumCostFunction::operator=(
     return *this;
 }
 
+/// @brief Make a copy of this object.
+CostFunctionSP
+SquareOfChoicePenaltySumCostFunction::clone() const {
+    return masala::make_shared< SquareOfChoicePenaltySumCostFunction >( *this );
+}
+
+/// @brief Make a copy of this object that is fully independent.
+SquareOfChoicePenaltySumCostFunctionSP
+SquareOfChoicePenaltySumCostFunction::deep_clone() const {
+    SquareOfChoicePenaltySumCostFunctionSP new_object( std::static_pointer_cast< SquareOfChoicePenaltySumCostFunction >( this->clone() ) );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
+void
+SquareOfChoicePenaltySumCostFunction::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex() );
+    make_independent_mutex_locked();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -187,6 +208,14 @@ SquareOfChoicePenaltySumCostFunction::assign_mutex_locked(
     // TODO OTHER ASSIGNMENT.
 
     ChoicePenaltySumBasedCostFunction::assign_mutex_locked( src );
+}
+
+/// @brief Make this object fully independent.  Assumes mutex was already locked.
+/// Should be called by overrides.
+void
+SquareOfChoicePenaltySumCostFunction::make_independent_mutex_locked() {
+    // GNDN
+    ChoicePenaltySumBasedCostFunction::make_independent_mutex_locked();
 }
 
 } // namespace cost_function

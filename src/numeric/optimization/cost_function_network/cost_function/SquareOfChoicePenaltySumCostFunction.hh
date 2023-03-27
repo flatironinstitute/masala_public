@@ -78,6 +78,17 @@ public:
 	/// @brief Destructor.
 	~SquareOfChoicePenaltySumCostFunction() override = default;
 
+	/// @brief Make a copy of this object.
+	CostFunctionSP
+	clone() const override;
+
+	/// @brief Make a copy of this object that is fully independent.
+	SquareOfChoicePenaltySumCostFunctionSP
+	deep_clone() const;
+
+	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
+	void make_independent() override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +183,11 @@ protected:
 	/// @brief Override of assign_mutex_locked().  Calls parent function.
 	/// @details Throws if src is not a SquareOfChoicePenaltySumCostFunction.
 	void assign_mutex_locked( CostFunction const & src ) override;
+
+	/// @brief Make this object fully independent.  Assumes mutex was already locked.
+	/// Should be called by overrides.
+	void
+	make_independent_mutex_locked() override;
 
 private:
 

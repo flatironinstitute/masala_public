@@ -308,6 +308,14 @@ ChoicePenaltySumBasedCostFunction::assign_mutex_locked(
     CostFunction::assign_mutex_locked( src );
 }
 
+/// @brief Make this object fully independent.  Assumes mutex was already locked.
+/// Should be called by overrides.
+void
+ChoicePenaltySumBasedCostFunction::make_independent_mutex_locked() {
+    // GNDN
+    CostFunction::make_independent_mutex_locked();
+}
+
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization

@@ -177,6 +177,13 @@ CostFunction::protected_finalized() const {
     return finalized_.load();
 }
 
+/// @brief Make this object fully independent.  Assumes mutex was already locked.
+/// Should be called by overrides.
+void
+CostFunction::make_independent_mutex_locked() {
+    //GNDN.
+}
+
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization

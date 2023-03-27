@@ -189,6 +189,12 @@ protected:
 	/// @details Performs no locking of write mutex for check.
 	bool protected_finalized() const;
 
+	/// @brief Make this object fully independent.  Assumes mutex was already locked.
+	/// Should be called by overrides.
+	virtual
+	void
+	make_independent_mutex_locked();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
