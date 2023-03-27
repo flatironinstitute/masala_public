@@ -134,13 +134,10 @@ public:
 	/// @brief Indicate that all data input is complete.
 	/// @param[in] variable_node_indices A list of all of the absolute node indices
 	/// for nodes that have more than one choice, indexed by variable node index.
-	/// @details Must be overridden by derived classes.  Should lock mutex and then
-	/// call protected_finalize.
-	virtual
 	void
 	CostFunction::finalize(
 		std::vector< masala::base::Size > const & variable_node_indices
-	) = 0;
+	);
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	virtual
@@ -174,7 +171,7 @@ protected:
 	/// @param[in] variable_node_indices A list of all of the absolute node indices
 	/// for nodes that have more than one choice, indexed by variable node index.
 	/// @details The base class function simply marks this object as finalized.  Should
-	/// be called by overrides of finalize().
+	/// be overridden, and overrides should call parent class protected_finalize().
 	virtual
 	void
 	protected_finalize(

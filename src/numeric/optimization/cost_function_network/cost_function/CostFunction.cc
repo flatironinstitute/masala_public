@@ -129,6 +129,17 @@ CostFunction::finalized() const {
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Indicate that all data input is complete.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
+void
+CostFunction::finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    protected_finalize( variable_node_indices );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +153,7 @@ CostFunction::finalized() const {
 /// @param[in] variable_node_indices A list of all of the absolute node indices
 /// for nodes that have more than one choice, indexed by variable node index.
 /// @details The base class function simply marks this object as finalized.  Should
-/// be called by overrides of finalize().
+/// be overridden, and overrides should call parent class protected_finalize().
 void
 CostFunction::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
