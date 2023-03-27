@@ -93,23 +93,8 @@ CostFunction::get_keywords() const {
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Attach a problem with which this cost function is associated.
-/// @details The problem is stored by weak pointer.  Should be called before
-/// CostFunctionNetworkOptimizationProblem::add_cost_function().
-void
-CostFunction::attach_problem(
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP const & problem
-) {
-    CHECK_OR_THROW_FOR_CLASS( problem_attached_ == false, "attach_problem", "A problem was already attached to this cost function." );
-    CHECK_OR_THROW_FOR_CLASS( problem != nullptr, "attach_problem", "Cannot attach a nullptr problem." );
-    CHECK_OR_THROW_FOR_CLASS( problem->finalized(), "attach_problem", "Problem must be finalized before calling this function." );
-    problem_ = problem;
-    problem_attached_ = true;
-    
-
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
@@ -120,14 +105,6 @@ CostFunction::attach_problem(
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-
-/// @brief Access the problem, by shared pointer.
-/// @details Returns nullptr if no problem is attached or if the problem has been destroyed.
-/// @note Inefficient in a multi-threaded context: incremenets reference count of shared pointer.
-masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP
-CostFunction::problem() const {
-    return masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP( problem_ );
-}
 
 } // namespace cost_function
 } // namespace cost_function_network

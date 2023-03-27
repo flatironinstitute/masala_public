@@ -132,14 +132,6 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Attach a problem with which this cost function is associated.
-	/// @details The problem is stored by weak pointer.  Should be called before
-	/// CostFunctionNetworkOptimizationProblem::add_cost_function().
-	void
-	attach_problem(
-		masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP const & problem
-	);
-
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	virtual
 	masala::base::Real
@@ -159,26 +151,11 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Access the problem, by shared pointer.
-	/// @details Returns nullptr if no problem is attached or if the problem has been destroyed.
-	/// @note Inefficient in a multi-threaded context: incremenets reference count of shared pointer.
-	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP problem() const;
-
-
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief The cost function network optimization problem to which this cost function is attached.
-	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCWP problem_;
-
-	/// @brief Has the problem been attached?
-	bool problem_attached_ = false;
-
-	/// @brief Number of variable positions in the problem.
-	
 
 
 }; // class CostFunction
