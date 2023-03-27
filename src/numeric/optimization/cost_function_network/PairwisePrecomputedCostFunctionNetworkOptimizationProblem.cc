@@ -294,10 +294,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
     using base::Size;
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
 
-    Real accumulator( total_constant_offset() );
-    // if( has_non_pairwise_scores() ) {
-    //     accumulator += compute_non_pairwise_score( candidate_solution );
-    // }
+    Real accumulator(
+        total_constant_offset() +
+        CostFunctionNetworkOptimizationProblem::compute_absolute_score( candidate_solution ) // Handles anything non-pairwise.
+    );
+
     Size const n_pos( candidate_solution.size() );
     std::vector< std::pair< Size, Size > > const variable_positions( n_choices_at_variable_nodes() );
     CHECK_OR_THROW_FOR_CLASS( candidate_solution.size() == variable_positions.size(), "compute_absolute_score",
@@ -352,10 +353,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         "before compute_score_change() can be called."
     );
 
-    Real accumulator( 0.0 );
-    // if( has_non_pairwise_scores() ) {
-    //     accumulator += compute_non_pairwise_score_change( old_solution, new_solution );
-    // }
+    Real accumulator( CostFunctionNetworkOptimizationProblem::compute_score_change( old_solution, new_solution ) ); //Handles any non-pairwise terms.
+
     base::Size const npos( protected_total_variable_nodes() ); //Only safe to call if finalized.
     CHECK_OR_THROW_FOR_CLASS( old_solution.size() == npos, "compute_score_change",
         "The size of the old candidate solution vector was " + std::to_string( old_solution.size() ) + ", but "

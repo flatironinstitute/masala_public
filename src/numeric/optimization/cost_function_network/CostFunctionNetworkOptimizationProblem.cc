@@ -29,6 +29,9 @@
 #include <vector>
 #include <string>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
+
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -243,10 +246,13 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
 /// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_absolute_score(
-    std::vector< base::Size > const & /*candidate_solution*/
+    std::vector< base::Size > const & candidate_solution
 ) const {
-    MASALA_THROW( class_namespace_and_name(), "compute_absolute_score", "This function is not implemented for the base class -- only for derived classes, at present." );
-    return 0.0; //TODO implement support for non-pairwise problems.
+    masala::base::Real accumulator(0.0);
+    for( auto const & entry : cost_functions_ ) {
+        accumulator += entry->compute_cost_function( candidate_solution );
+    }
+    return accumulator;
 }
 
 /// @brief Given a pair of candidate solutions, compute the difference in their scores.
@@ -257,11 +263,14 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 /// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_score_change(
-    std::vector< base::Size > const & /*old_solution*/,
-    std::vector< base::Size > const & /*new_solution*/
+    std::vector< base::Size > const & old_solution,
+    std::vector< base::Size > const & new_solution
 ) const {
-    MASALA_THROW( class_namespace_and_name(), "compute_score_change", "This function is not implemented for the base class -- only for derived classes, at present." );
-    return 0.0; //TODO implement support for non-pairwise problems.
+    masala::base::Real accumulator(0.0);
+    for( auto const & entry : cost_functions_ ) {
+        accumulator += entry->compute_cost_function_difference( old_solution, new_solution );
+    }
+    return accumulator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

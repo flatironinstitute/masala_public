@@ -37,11 +37,15 @@
 #include <numeric/optimization/OptimizationProblem.hh>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
+
+// Base headers:
 #include <base/types.hh>
 
 // STL headers:
 #include <map>
 #include <utility> //For std::pair.
+#include <vector>
 
 namespace masala {
 namespace numeric {
@@ -253,11 +257,32 @@ protected:
 	/// @details The finalize() function must be called before this function is used.
 	masala::base::Size protected_total_variable_nodes() const;
 
-	/// @brief Access the  indices of variable nodes, and the number of choices
+	/// @brief Access the indices of variable nodes, and the number of choices
 	/// (a vector of pairs, sorted by node index).
 	/// @details The finalize() function must be called before this function is used.
 	std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
 	protected_n_choices_at_variable_nodes() const;
+
+	/// @brief Const iterators over the set of cost functions.  Starting iterator.
+	inline
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP >::const_iterator
+	cost_functions_begin() const {
+		return cost_functions_.cbegin();
+	}
+
+	/// @brief Const iterators over the set of cost functions.  Ending iterator.
+	inline
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP >::const_iterator
+	cost_functions_end() const {
+		return cost_functions_.cend();
+	}
+
+	/// @brief Const access to the vector of cost functions.
+	inline
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP > const &
+	cost_functions() const {
+		return cost_functions_;
+	}
 
 private:
 
@@ -276,6 +301,9 @@ private:
 	/// by node index).
 	/// @details Cached by the finalize() function.
 	std::vector< std::pair< masala::base::Size, masala::base::Size > > n_choices_at_variable_nodes_;
+
+	/// @brief A set of CostFunctions to impose.  The overall cost function is the sum of all of these.
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP > cost_functions_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
