@@ -174,6 +174,12 @@ private:
 	/// @brief The cost function network optimization problem to which this cost function is attached.
 	masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCWP problem_;
 
+	/// @brief Has the problem been attached?
+	bool problem_attached_ = false;
+
+	/// @brief Number of variable positions in the problem.
+	
+
 
 }; // class CostFunction
 

@@ -102,9 +102,12 @@ void
 CostFunction::attach_problem(
     masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP const & problem
 ) {
+    CHECK_OR_THROW_FOR_CLASS( problem_attached_ == false, "attach_problem", "A problem was already attached to this cost function." );
     CHECK_OR_THROW_FOR_CLASS( problem != nullptr, "attach_problem", "Cannot attach a nullptr problem." );
-    //CHECK_OR_THROW_FOR_CLASS( problem->
+    CHECK_OR_THROW_FOR_CLASS( problem->finalized(), "attach_problem", "Problem must be finalized before calling this function." );
     problem_ = problem;
+    problem_attached_ = true;
+    
 
 }
 
