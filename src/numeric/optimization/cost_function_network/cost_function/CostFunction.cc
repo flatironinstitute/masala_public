@@ -112,6 +112,13 @@ CostFunction::get_keywords() const {
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Has this object been finalized?
+/// @details Locks write mutex for check.
+bool
+CostFunction::finalized() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    return protected_finalized();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
@@ -122,7 +129,6 @@ CostFunction::get_keywords() const {
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,12 +138,32 @@ CostFunction::get_keywords() const {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
+/// @details The base class function simply marks this object as finalized.  Should
+/// be called by overrides of finalize().
+void
+CostFunction::protected_finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
+    CHECK_OR_THROW_FOR_CLASS( finalized_ == false, "protected_finalize", "This " + class_name() + " object has already been finalized!" );
+    finalized_ = true;
+}
+
 /// @brief Assignment operator, assuming that we've already locked the write mutex.
 void
 CostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
     finalized_ = src.finalized_.load();
+}
+
+/// @brief Has this object been finalized?
+/// @details Performs no locking of write mutex for check.
+bool
+CostFunction::protected_finalized() const {
+    return finalized_.load();
 }
 
 } // namespace cost_function

@@ -40,8 +40,6 @@
 #include <base/types.hh>
 
 // STL headers:
-#include <map>
-#include <utility> //For std::pair.
 #include <mutex>
 
 namespace masala {
@@ -116,6 +114,9 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Has this object been finalized?
+	/// @details Locks write mutex for check.
+	bool finalized() const;
 
 public:
 
@@ -129,6 +130,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Indicate that all data input is complete.
+	/// @param[in] variable_node_indices A list of all of the absolute node indices
+	/// for nodes that have more than one choice, indexed by variable node index.
+	/// @details Must be overridden by derived classes.  Should lock mutex and then
+	/// call protected_finalize.
+	virtual
+	void
+	CostFunction::finalize(
+		std::vector< masala::base::Size > const & variable_node_indices
+	) = 0;
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	virtual
@@ -158,11 +170,26 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
+	/// @param[in] variable_node_indices A list of all of the absolute node indices
+	/// for nodes that have more than one choice, indexed by variable node index.
+	/// @details The base class function simply marks this object as finalized.  Should
+	/// be called by overrides of finalize().
+	virtual
+	void
+	protected_finalize(
+		std::vector< masala::base::Size > const & variable_node_indices
+	);
+
 	/// @brief Assignment operator, assuming that we've already locked the write mutex.
 	virtual void assign_mutex_locked( CostFunction const & src );
 
 	/// @brief Allow derived classes to access the mutex.
 	inline std::mutex & mutex() const { return mutex_; }
+
+	/// @brief Has this object been finalized?
+	/// @details Performs no locking of write mutex for check.
+	bool protected_finalized() const;
 
 private:
 
