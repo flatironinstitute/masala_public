@@ -69,11 +69,13 @@ public:
 	ChoicePenaltySumBasedCostFunction() = default;
 
 	/// @brief Copy constructor.
-	ChoicePenaltySumBasedCostFunction( ChoicePenaltySumBasedCostFunction const & ) = default;
+	ChoicePenaltySumBasedCostFunction(
+		ChoicePenaltySumBasedCostFunction const & src
+	);
 
 	// @brief Assignment operator.
 	ChoicePenaltySumBasedCostFunction &
-	operator=( ChoicePenaltySumBasedCostFunction const & ) = default;
+	operator=( ChoicePenaltySumBasedCostFunction const & src );
 
 	/// @brief Destructor.
 	~ChoicePenaltySumBasedCostFunction() override = default;
@@ -147,6 +149,9 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Override of assign_mutex_locked().  Calls parent function.
+	void assign_mutex_locked( CostFunction const & src ) override;
 
 private:
 

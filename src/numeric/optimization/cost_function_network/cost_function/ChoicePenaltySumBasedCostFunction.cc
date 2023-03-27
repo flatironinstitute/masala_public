@@ -46,6 +46,29 @@ namespace cost_function {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Copy constructor.
+ChoicePenaltySumBasedCostFunction::ChoicePenaltySumBasedCostFunction(
+    ChoicePenaltySumBasedCostFunction const & src
+) :
+    CostFunction( src )
+{
+    std::lock( src.mutex(), mutex() );
+    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
+    assign_mutex_locked( src );
+}
+
+// @brief Assignment operator.
+ChoicePenaltySumBasedCostFunction &
+ChoicePenaltySumBasedCostFunction::operator=(
+    ChoicePenaltySumBasedCostFunction const & src
+) {
+    std::lock( src.mutex(), mutex() );
+    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
+    assign_mutex_locked( src );
+    return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -98,6 +121,16 @@ ChoicePenaltySumBasedCostFunction::get_keywords() const {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Override of assign_mutex_locked().  Calls parent function.
+void
+ChoicePenaltySumBasedCostFunction::assign_mutex_locked(
+    CostFunction const & src
+) {
+    ChoicePenaltySumBasedCostFunction const * const src_cast_ptr( dynamic_cast< ChoicePenaltySumBasedCostFunction const * >( &src ) );
+    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a ChoicePenaltySumBasedCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
+    CostFunction::assign_mutex_locked( src );
+    // TODO OTHER ASSIGNMENT.
+}
 
 } // namespace cost_function
 } // namespace cost_function_network
