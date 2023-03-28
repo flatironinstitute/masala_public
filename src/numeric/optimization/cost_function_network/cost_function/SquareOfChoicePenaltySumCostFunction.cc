@@ -224,7 +224,7 @@ SquareOfChoicePenaltySumCostFunction::get_api_definition() {
             )
         );
         api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real const > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
                 "set_weight", "Set a multiplier for this cost function.",
                 "weight_in", "The multiplier, a factor by which the computed cost function is always multiplied.",
                 false, false,
