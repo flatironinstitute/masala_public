@@ -168,7 +168,7 @@ ChoicePenaltySumBasedCostFunction<T>::set_constant_offset(
 /// @details This version just computes the sum of the penalties of the selected choices.
 /// @note No mutex-locking is performed!
 template< typename T >
-T
+masala::base::Real
 ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
@@ -191,7 +191,7 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
             accumulator += it->second;
         }
     }
-    return accumulator;
+    return static_cast< masala::base::Real >( accumulator );
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -201,7 +201,7 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
 /// code.
 /// @note No mutex-locking is performed!
 template< typename T >
-T
+masala::base::Real
 ChoicePenaltySumBasedCostFunction<T>::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_old,
     std::vector< masala::base::Size > const & candidate_solution_new
@@ -239,7 +239,7 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function_difference(
             sum_new += it2->second;
         }
     }
-    return sum_new - sum_old;
+    return static_cast< masala::base::Real >( sum_new - sum_old );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

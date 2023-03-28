@@ -143,7 +143,7 @@ public:
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	/// @details This version just computes the sum of the penalties of the selected choices.
 	/// @note No mutex-locking is performed!
-	T
+	masala::base::Real
 	compute_cost_function(
 		std::vector< masala::base::Size > const & candidate_solution
 	) const override;
@@ -154,7 +154,7 @@ public:
 	/// selected choices.  It isn't useful for much, and should probably not be called from other
 	/// code.
 	/// @note No mutex-locking is performed!
-	T
+	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
 		std::vector< masala::base::Size > const & candidate_solution_new
