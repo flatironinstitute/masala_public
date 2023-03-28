@@ -1,3 +1,4 @@
+#!/bin/bash
 mkdir bin && echo "Created bin/ directory." || echo "Directory bin/ already exists."
 mkdir build && echo "Created build/ directory." || echo "Directory build/ already exists."
 cd build
