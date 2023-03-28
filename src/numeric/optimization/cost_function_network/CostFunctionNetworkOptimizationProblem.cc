@@ -234,6 +234,17 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
     set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count ); // Checks that state is not finalized.
 }
 
+/// @brief Add a (non-quadratic) cost function.
+/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+/// must not yet be finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_cost_function(
+    masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
+) {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    add_cost_function_mutex_locked( cost_function );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -450,10 +461,11 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
     masala::base::Size const node_index,
     masala::base::Size const min_choice_count
 ) {
-    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
         "This object has already been finalized.  Cannot set the minimum number of choices at a node at this point!"
     );
+
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     if( it == n_choices_by_node_index_.end() ) {
         n_choices_by_node_index_[node_index] = min_choice_count;
     } else {
@@ -461,6 +473,19 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
             it->second = min_choice_count;
         }
     }
+}
+
+/// @brief Add a (non-quadratic) cost function.
+/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+/// must not yet be finalized.  This version assumes that the mutex for this object has already been locked.
+void
+CostFunctionNetworkOptimizationProblem::add_cost_function_mutex_locked(
+    masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & cost_function
+) {
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_cost_function_mutex_locked",
+        "This object has already been finalized.  Cannot add a cost function at this point!"
+    );
+    cost_functions_.push_back( cost_function );
 }
 
 /// @brief Access the number of choices by node index.
@@ -506,6 +531,17 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
             return first.first < second.first;
         }
     );
+
+    // Finalize cost functions:
+    if( !cost_functions_.empty() ) {
+        std::vector< Size > variable_indices( n_choices_at_variable_nodes_.size() );
+        for( Size i(0), imax(n_choices_at_variable_nodes_.size()); i<imax; ++i ) {
+            variable_indices[i] = n_choices_at_variable_nodes_[i].first;
+        }
+        for( auto const & cost_function : cost_functions_ ) {
+            cost_function->finalize( variable_indices );
+        }
+    }
 
     masala::numeric::optimization::OptimizationProblem::protected_finalize();
 }

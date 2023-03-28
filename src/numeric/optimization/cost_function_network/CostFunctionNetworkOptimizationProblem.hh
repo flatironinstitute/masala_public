@@ -176,6 +176,14 @@ public:
 		masala::base::Size const min_choice_count
 	);
 
+	/// @brief Add a (non-quadratic) cost function.
+	/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+	/// must not yet be finalized.
+	void
+	add_cost_function(
+		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,6 +241,14 @@ protected:
 		masala::base::Size const min_choice_count
 	);
 
+	/// @brief Add a (non-quadratic) cost function.
+	/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+	/// must not yet be finalized.  This version assumes that the mutex for this object has already been locked.
+	void
+	add_cost_function_mutex_locked(
+		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & cost_function
+	);
+
 	/// @brief Access the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
 	std::map< masala::base::Size, masala::base::Size > &
@@ -265,21 +281,21 @@ protected:
 
 	/// @brief Const iterators over the set of cost functions.  Starting iterator.
 	inline
-	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP >::const_iterator
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP >::const_iterator
 	cost_functions_begin() const {
 		return cost_functions_.cbegin();
 	}
 
 	/// @brief Const iterators over the set of cost functions.  Ending iterator.
 	inline
-	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP >::const_iterator
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP >::const_iterator
 	cost_functions_end() const {
 		return cost_functions_.cend();
 	}
 
 	/// @brief Const access to the vector of cost functions.
 	inline
-	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP > const &
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > const &
 	cost_functions() const {
 		return cost_functions_;
 	}
@@ -303,7 +319,7 @@ private:
 	std::vector< std::pair< masala::base::Size, masala::base::Size > > n_choices_at_variable_nodes_;
 
 	/// @brief A set of CostFunctions to impose.  The overall cost function is the sum of all of these.
-	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP > cost_functions_;
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > cost_functions_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 
