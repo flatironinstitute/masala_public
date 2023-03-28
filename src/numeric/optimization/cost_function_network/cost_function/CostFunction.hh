@@ -125,6 +125,9 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the weight for this penalty function.
+	/// @details Function must not have been finalized.
+	void set_weight( masala::base::Real const weight_in );
 
 public:
 
@@ -202,6 +205,14 @@ protected:
 		return api_definition_;
 	}
 
+	/// @brief Access the weight.
+	/// @details Should only be used in contexts in which the mutex is locked,
+	/// or in which the object is finailized.
+	masala::base::Real
+	protected_weight() const {
+		return weight_;
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +227,9 @@ private:
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief A weighting factor by which the computed penalty function is multiplied.
+	masala::base::Real weight_ = 1.0;
 
 }; // class CostFunction
 

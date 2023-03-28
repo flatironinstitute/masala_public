@@ -124,6 +124,18 @@ CostFunction::finalized() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Set the weight for this penalty function.
+/// @details Function must not have been finalized.
+void
+CostFunction::set_weight(
+    masala::base::Real const weight_in
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_weight", "The weight for a " + class_name()
+        + " cost function cannot be set after the object is finalized."
+    );
+    weight_ = weight_in;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS

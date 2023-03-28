@@ -158,7 +158,7 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution ) );
-    return sum*sum;
+    return protected_weight()*sum*sum;
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -174,7 +174,7 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function_difference(
 ) const {
     masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_old ) );
     masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_new ) );
-    return ( newsum * newsum ) - ( oldsum * oldsum );
+    return protected_weight() * ( ( newsum * newsum ) - ( oldsum * oldsum ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +221,14 @@ SquareOfChoicePenaltySumCostFunction::get_api_definition() {
                 "penalties_by_choice_index", "The penalties for all of the choices, indexed by choice index.",
                 false, false,
                 std::bind( &SquareOfChoicePenaltySumCostFunction::set_penalties_for_all_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real const > >(
+                "set_weight", "Set a multiplier for this cost function.",
+                "weight_in", "The multiplier, a factor by which the computed cost function is always multiplied.",
+                false, false,
+                std::bind( &SquareOfChoicePenaltySumCostFunction::set_weight, this, std::placeholders::_1 )
             )
         );
 
