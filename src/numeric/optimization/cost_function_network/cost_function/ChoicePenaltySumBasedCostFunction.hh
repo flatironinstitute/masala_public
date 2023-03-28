@@ -220,9 +220,6 @@ private:
 
 }; // class ChoicePenaltySumBasedCostFunction
 
-template class ChoicePenaltySumBasedCostFunction< masala::base::Real >;
-template class ChoicePenaltySumBasedCostFunction< signed long int >;
-
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization

@@ -320,6 +320,9 @@ ChoicePenaltySumBasedCostFunction<T>::make_independent_mutex_locked() {
     CostFunction::make_independent_mutex_locked();
 }
 
+template class ChoicePenaltySumBasedCostFunction< masala::base::Real >;
+template class ChoicePenaltySumBasedCostFunction< signed long int >;
+
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
