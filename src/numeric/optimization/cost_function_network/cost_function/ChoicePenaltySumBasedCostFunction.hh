@@ -59,7 +59,6 @@ namespace cost_function {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template < typename T >
 class ChoicePenaltySumBasedCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::CostFunction {
 
 public:
@@ -125,13 +124,13 @@ public:
 	void
 	set_penalties_for_all_choices_at_node(
 		masala::base::Size const absolute_node_index,
-		std::vector< T > const & penalties_by_choice_index
+		std::vector< masala::base::Real > const & penalties_by_choice_index
 	);
 
 	/// @brief Set the constant offset.
 	void
 	set_constant_offset(
-		T const constant_offset
+		masala::base::Real const constant_offset
 	);
 
 public:
@@ -143,7 +142,7 @@ public:
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	/// @details This version just computes the sum of the penalties of the selected choices.
 	/// @note No mutex-locking is performed!
-	T
+	masala::base::Real
 	compute_cost_function(
 		std::vector< masala::base::Size > const & candidate_solution
 	) const override;
@@ -154,7 +153,7 @@ public:
 	/// selected choices.  It isn't useful for much, and should probably not be called from other
 	/// code.
 	/// @note No mutex-locking is performed!
-	T
+	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
 		std::vector< masala::base::Size > const & candidate_solution_new
@@ -205,18 +204,18 @@ private:
 
 	/// @brief The penalties, stored as a pair of <absolute node index, choice index >.
 	/// @details Used during input/write phase.  Cleared by finalize() operation.
-	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, T, base::size_pair_hash > penalties_by_absolute_node_and_choice_;
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_absolute_node_and_choice_;
 
 	/// @brief The penalties, stored as a pair of <variable node index, choice index >.
 	/// @details Used during output/read phase.  Populated by finalize() operation.
-	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, T, base::size_pair_hash > penalties_by_variable_node_and_choice_;
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_variable_node_and_choice_;
 
 	/// @brief The number of variable positions.
 	/// @details Set by finalize() function.
 	masala::base::Size n_variable_positions_ = 0;
 
 	/// @brief A constant offset added to the sum of the penalties for the choices.
-	T constant_offset_ = 0.0;
+	masala::base::Real constant_offset_ = 0.0;
 
 }; // class ChoicePenaltySumBasedCostFunction
 
