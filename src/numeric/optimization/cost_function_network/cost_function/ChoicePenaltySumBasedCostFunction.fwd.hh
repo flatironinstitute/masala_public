@@ -35,23 +35,25 @@ namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
+	template< typename T >
 	class ChoicePenaltySumBasedCostFunction;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using ChoicePenaltySumBasedCostFunctionSP = MASALA_SHARED_POINTER< ChoicePenaltySumBasedCostFunction >;
+	template< typename T >
+	using ChoicePenaltySumBasedCostFunctionSP = MASALA_SHARED_POINTER< ChoicePenaltySumBasedCostFunction<T> >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using ChoicePenaltySumBasedCostFunctionCSP = MASALA_SHARED_POINTER< ChoicePenaltySumBasedCostFunction const >;
+	using ChoicePenaltySumBasedCostFunctionCSP = MASALA_SHARED_POINTER< ChoicePenaltySumBasedCostFunction<T> const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using ChoicePenaltySumBasedCostFunctionWP = MASALA_WEAK_POINTER< ChoicePenaltySumBasedCostFunction >;
+	using ChoicePenaltySumBasedCostFunctionWP = MASALA_WEAK_POINTER< ChoicePenaltySumBasedCostFunction<T> >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using ChoicePenaltySumBasedCostFunctionCWP = MASALA_WEAK_POINTER< ChoicePenaltySumBasedCostFunction const >;
+	using ChoicePenaltySumBasedCostFunctionCWP = MASALA_WEAK_POINTER< ChoicePenaltySumBasedCostFunction<T> const >;
 
 } // namespace cost_function
 } // namespace cost_function_network

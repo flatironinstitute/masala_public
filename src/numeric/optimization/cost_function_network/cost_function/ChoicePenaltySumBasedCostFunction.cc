@@ -111,12 +111,11 @@ ChoicePenaltySumBasedCostFunction::get_keywords() const {
 /// @param[in] penalties_by_choice_index The penalties for all of the choices, indexed by choice index.
 /// @note Only in debug mode do we check that these have not already been set.
 void
-ChoicePenaltySumBasedCostFunction::set_penalties_for_all_choices_at_node(
+ChoicePenaltySumBasedCostFunction<T>::set_penalties_for_all_choices_at_node(
     masala::base::Size const absolute_node_index,
-    std::vector< masala::base::Real > const & penalties_by_choice_index
+    std::vector< T > const & penalties_by_choice_index
 ) {
     using masala::base::Size;
-    using masala::base::Real;
 
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalties_for_all_choices_at_node",
@@ -144,12 +143,9 @@ ChoicePenaltySumBasedCostFunction::set_penalties_for_all_choices_at_node(
 
 /// @brief Set the constant offset.
 void
-ChoicePenaltySumBasedCostFunction::set_constant_offset(
-    masala::base::Real const constant_offset
+ChoicePenaltySumBasedCostFunction<T>::set_constant_offset(
+    T const constant_offset
 ) {
-    using masala::base::Size;
-    using masala::base::Real;
-
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_constant_offset",
         "This function cannot be called after the " + class_name() + " has been finalized."
@@ -165,12 +161,11 @@ ChoicePenaltySumBasedCostFunction::set_constant_offset(
 /// @brief Given a selection of choices at variable nodes, compute the cost function.
 /// @details This version just computes the sum of the penalties of the selected choices.
 /// @note No mutex-locking is performed!
-masala::base::Real
-ChoicePenaltySumBasedCostFunction::compute_cost_function(
+T
+ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     using masala::base::Size;
-    using masala::base::Real;
 
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_cost_function", "The " + class_name()
         + " must be finalized before this function is called!"
@@ -180,9 +175,9 @@ ChoicePenaltySumBasedCostFunction::compute_cost_function(
         "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
         + " variable positions, but got " + std::to_string( nentries ) + "!" 
     );
-    Real accumulator( constant_offset_ );
+    T accumulator( constant_offset_ );
     for( Size i(0); i<nentries; ++i ) {
-        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it(
+        std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it(
             penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution[i]) )
         );
         if( it != penalties_by_variable_node_and_choice_.end() ) {
@@ -198,13 +193,12 @@ ChoicePenaltySumBasedCostFunction::compute_cost_function(
 /// selected choices.  It isn't useful for much, and should probably not be called from other
 /// code.
 /// @note No mutex-locking is performed!
-masala::base::Real
-ChoicePenaltySumBasedCostFunction::compute_cost_function_difference(
+T
+ChoicePenaltySumBasedCostFunction<T>::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_old,
     std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
     using masala::base::Size;
-    using masala::base::Real;
 
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_cost_function_difference", "The " + class_name()
         + " must be finalized before this function is called!"
@@ -220,17 +214,17 @@ ChoicePenaltySumBasedCostFunction::compute_cost_function_difference(
         + " variable positions in the new candidate solution, but got " + std::to_string( nentries_new ) + "!" 
     );
 
-    Real sum_old( 0.0 ), sum_new( 0.0 ); // We ignore the constant offset, since it won't appear in the difference.
+    T sum_old( 0.0 ), sum_new( 0.0 ); // We ignore the constant offset, since it won't appear in the difference.
 
     for( Size i(0); i<nentries_old; ++i ) {
-        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it(
+        std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it(
             penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_old[i]) )
         );
         if( it != penalties_by_variable_node_and_choice_.end() ) {
             sum_old += it->second;
         }
 
-        std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >::const_iterator it2(
+        std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it2(
             penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_new[i]) )
         );
         if( it2 != penalties_by_variable_node_and_choice_.end() ) {
@@ -255,11 +249,10 @@ ChoicePenaltySumBasedCostFunction::compute_cost_function_difference(
 /// @details The base class function simply marks this object as finalized.  Should
 /// be overridden, and overrides should call parent class protected_finalize().
 void
-ChoicePenaltySumBasedCostFunction::protected_finalize(
+ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
 ) {
     using masala::base::Size;
-    using masala::base::Real;
 
     std::unordered_map< Size, Size > absolute_to_variable_index;
     for( Size i(0), imax(variable_node_indices.size()); i<imax; ++i ) {
@@ -272,13 +265,13 @@ ChoicePenaltySumBasedCostFunction::protected_finalize(
     n_variable_positions_ = variable_node_indices.size();
 
     for(
-        std::unordered_map< std::pair< Size, Size >, Real, base::size_pair_hash >::const_iterator it( penalties_by_absolute_node_and_choice_.cbegin() );
+        std::unordered_map< std::pair< Size, Size >, T, base::size_pair_hash >::const_iterator it( penalties_by_absolute_node_and_choice_.cbegin() );
         it != penalties_by_absolute_node_and_choice_.cend();
         ++it
     ) {
         Size const absindex( it->first.first );
         Size const choiceindex( it->first.second );
-        Real const penalty( it->second );
+        T const penalty( it->second );
         std::unordered_map< Size, Size >::const_iterator it2( absolute_to_variable_index.find( absindex ) );
         if( it2 != absolute_to_variable_index.end() ) {
             Size const varindex( it2->second );
@@ -295,10 +288,10 @@ ChoicePenaltySumBasedCostFunction::protected_finalize(
 /// @brief Override of assign_mutex_locked().  Calls parent function.
 /// @details Throws if src is not a ChoicePenaltySumBasedCostFunction.
 void
-ChoicePenaltySumBasedCostFunction::assign_mutex_locked(
+ChoicePenaltySumBasedCostFunction<T>::assign_mutex_locked(
     CostFunction const & src
 ) {
-    ChoicePenaltySumBasedCostFunction const * const src_cast_ptr( dynamic_cast< ChoicePenaltySumBasedCostFunction const * >( &src ) );
+    ChoicePenaltySumBasedCostFunction<T> const * const src_cast_ptr( dynamic_cast< ChoicePenaltySumBasedCostFunction<T> const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a ChoicePenaltySumBasedCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
 
     penalties_by_absolute_node_and_choice_ = src_cast_ptr->penalties_by_absolute_node_and_choice_;
