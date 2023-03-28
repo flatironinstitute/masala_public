@@ -55,7 +55,7 @@ namespace cost_function {
 SquareOfChoicePenaltySumCostFunction::SquareOfChoicePenaltySumCostFunction(
     SquareOfChoicePenaltySumCostFunction const & src
 ) :
-    ChoicePenaltySumBasedCostFunction( src )
+    ChoicePenaltySumBasedCostFunction< masala::base::Real >( src )
 {
     std::lock( src.mutex(), mutex() );
     std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
@@ -118,7 +118,7 @@ SquareOfChoicePenaltySumCostFunction::get_categories() const {
 /// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based", "quadratic", "squared" }
 std::vector< std::string >
 SquareOfChoicePenaltySumCostFunction::get_keywords() const {
-	std::vector< std::string > outvec( ChoicePenaltySumBasedCostFunction::get_keywords() );
+	std::vector< std::string > outvec( ChoicePenaltySumBasedCostFunction< masala::base::Real >::get_keywords() );
     outvec.push_back( "quadratic" );
     outvec.push_back( "squared" );
     return outvec;
@@ -157,7 +157,7 @@ masala::base::Real
 SquareOfChoicePenaltySumCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
-    masala::base::Real const sum( ChoicePenaltySumBasedCostFunction::compute_cost_function( candidate_solution ) );
+    masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution ) );
     return sum*sum;
 }
 
@@ -172,8 +172,8 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_old,
     std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
-    masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction::compute_cost_function( candidate_solution_old ) );
-    masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction::compute_cost_function( candidate_solution_new ) );
+    masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_old ) );
+    masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_new ) );
     return ( newsum * newsum ) - ( oldsum * oldsum );
 }
 
@@ -278,7 +278,7 @@ SquareOfChoicePenaltySumCostFunction::protected_finalize(
 
     //TODO do any finalization needed here.
 
-    ChoicePenaltySumBasedCostFunction::finalize( variable_node_indices );
+    ChoicePenaltySumBasedCostFunction< masala::base::Real >::finalize( variable_node_indices );
 }
 
 /// @brief Override of assign_mutex_locked().  Calls parent function.
@@ -292,7 +292,7 @@ SquareOfChoicePenaltySumCostFunction::assign_mutex_locked(
 
     // TODO OTHER ASSIGNMENT.
 
-    ChoicePenaltySumBasedCostFunction::assign_mutex_locked( src );
+    ChoicePenaltySumBasedCostFunction< masala::base::Real >::assign_mutex_locked( src );
 }
 
 /// @brief Make this object fully independent.  Assumes mutex was already locked.
@@ -300,7 +300,7 @@ SquareOfChoicePenaltySumCostFunction::assign_mutex_locked(
 void
 SquareOfChoicePenaltySumCostFunction::make_independent_mutex_locked() {
     // GNDN
-    ChoicePenaltySumBasedCostFunction::make_independent_mutex_locked();
+    ChoicePenaltySumBasedCostFunction< masala::base::Real >::make_independent_mutex_locked();
 }
 
 } // namespace cost_function

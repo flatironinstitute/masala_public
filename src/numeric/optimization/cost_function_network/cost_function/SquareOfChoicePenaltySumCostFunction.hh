@@ -55,7 +55,7 @@ namespace cost_function {
 /// - The selected choices' penalties are summed, and a constant is added.
 /// - The sum is squared, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class SquareOfChoicePenaltySumCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::ChoicePenaltySumBasedCostFunction {
+class SquareOfChoicePenaltySumCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::ChoicePenaltySumBasedCostFunction< masala::base::Real > {
 
 public:
 
