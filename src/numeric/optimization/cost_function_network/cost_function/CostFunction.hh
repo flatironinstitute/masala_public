@@ -17,12 +17,10 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/CostFunction.hh
-/// @brief Header for a pure virtual base class for CostFunctions.
+/// @brief Header for a non-instantiable base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_CostFunction_hh
@@ -49,12 +47,10 @@ namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
-/// @brief A pure virtual base class for CostFunctions.
+/// @brief A non-instantiable base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -64,10 +60,10 @@ public:
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.
+	/// @brief Default constructor (protected in API).
 	CostFunction();
 
-	/// @brief Copy constructor.
+	/// @brief Copy constructor (protected in API).
 	CostFunction( CostFunction const & src );
 
 	// @brief Assignment operator.
@@ -80,11 +76,15 @@ public:
 	/// @brief Make a copy of this object.
 	virtual
 	CostFunctionSP
-	clone() const = 0;
+	clone() const;
+
+	/// @brief Make a fully independent copy of this object.
+	CostFunctionSP
+	deep_clone() const;
 
 	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	virtual
-	void make_independent() = 0;
+	void make_independent();
 
 public:
 
@@ -108,6 +108,25 @@ public:
 	/// @returns { "optimization_problem", "cost_function", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Get the class name ("CostFunction").
+	static
+	std::string class_name_static();
+
+	/// @brief Get the class namespace ("masala::numeric::optimization::cost_function_network::cost_function").
+	static
+	std::string class_namespace_static();
+
+	/// @brief Get the class namespace and name
+	/// ("masala::numeric::optimization::cost_function_network::cost_function::CostFunction").
+	static
+	std::string class_namespace_and_name_static();
+
+	/// @brief Get the class name.  Calls class_name_static().
+	std::string class_name() const override;
+
+	/// @brief Get the class namespace.  Calls class_namespace_static().
+	std::string class_namespace() const override;
 
 public:
 
@@ -144,26 +163,32 @@ public:
 	);
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
+	/// @details This version returns 0; must be overridden by derived classes.
 	virtual
 	masala::base::Real
 	compute_cost_function(
 		std::vector< masala::base::Size > const & candidate_solution
-	) const = 0;
+	) const;
 
 	/// @brief Given an old selection of choices at variable nodes and a new selection,
 	/// compute the cost function difference.
+	/// @details This version returns 0; must be overridden by derived classes.
 	virtual
 	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
 		std::vector< masala::base::Size > const & candidate_solution_new
-	) const = 0;
+	) const;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the API definition for this (non-instantiable) class.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition();
 
 protected:
 

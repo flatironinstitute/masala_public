@@ -17,12 +17,10 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/CostFunction.cc
-/// @brief Implementation for a pure virtual base class for CostFunctions.
+/// @brief Implementation for a non-instantiable base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -35,6 +33,8 @@
 #include <string>
 
 // Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -47,13 +47,13 @@ namespace cost_function {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Default constructor.
+/// @brief Default constructor (protected in API).
 CostFunction::CostFunction() :
     masala::base::managers::plugin_module::MasalaPlugin(),
     finalized_(false)
 {}
 
-/// @brief Copy constructor.
+/// @brief Copy constructor (protected in API).
 CostFunction::CostFunction(
     CostFunction const & src
 ) :
@@ -75,6 +75,27 @@ CostFunction::operator=(
     std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
     assign_mutex_locked( src );
     return *this;
+}
+
+/// @brief Make a copy of this object.
+CostFunctionSP
+CostFunction::clone() const {
+    return masala::make_shared< CostFunction >(*this);
+}
+
+/// @brief Make a fully independent copy of this object.
+CostFunctionSP
+CostFunction::deep_clone() const {
+    CostFunctionSP new_object( clone() );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
+void
+CostFunction::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    make_independent_mutex_locked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,6 +127,40 @@ CostFunction::get_keywords() const {
 		"cost_function",
 		"numeric"
 	};
+}
+
+/// @brief Get the class name ("CostFunction").
+/*static*/
+std::string
+CostFunction::class_name_static() {
+    return "CostFunction";
+}
+
+/// @brief Get the class namespace ("masala::numeric::optimization::cost_function_network::cost_function").
+/*static*/
+std::string
+CostFunction::class_namespace_static() {
+    return "masala::numeric::optimization::cost_function_network::cost_function";
+}
+
+/// @brief Get the class namespace and name
+/// ("masala::numeric::optimization::cost_function_network::cost_function::CostFunction").
+/*static*/
+std::string
+CostFunction::class_namespace_and_name_static() {
+    return class_namespace_static() + "::" + class_name_static();
+}
+
+/// @brief Get the class name.  Calls class_name_static().
+std::string
+CostFunction::class_name() const {
+    return class_name_static();
+}
+
+/// @brief Get the class namespace.  Calls class_namespace_static().
+std::string
+CostFunction::class_namespace() const {
+    return class_namespace_static();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,10 +207,50 @@ CostFunction::finalize(
     protected_finalize( variable_node_indices );
 }
 
+/// @brief Given a selection of choices at variable nodes, compute the cost function.
+/// @details This version returns 0; must be overridden by derived classes.
+masala::base::Real
+CostFunction::compute_cost_function(
+    std::vector< masala::base::Size > const & /*candidate_solution*/
+) const {
+    return 0.0;
+}
+
+/// @brief Given an old selection of choices at variable nodes and a new selection,
+/// compute the cost function difference.
+/// @details This version returns 0; must be overridden by derived classes.
+masala::base::Real
+CostFunction::compute_cost_function_difference(
+    std::vector< masala::base::Size > const & /*candidate_solution_old*/,
+    std::vector< masala::base::Size > const & /*candidate_solution_new*/
+) const {
+    return 0.0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the API definition for this (non-instantiable) class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+CostFunction::get_api_definition() {
+    using namespace masala::base::api;
+
+    std::lock_guard< std::mutex > lock( mutex_ );
+    if( api_definition_ == nullptr ) {
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this, "A cost function, used in cost function network optimization algorithms.",
+                false, true
+            )
+        );
+
+        ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( CostFunction, api_def );
+
+        api_definition_ = api_def;
+    }
+    return api_definition_;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
@@ -180,6 +275,8 @@ CostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
     finalized_ = src.finalized_.load();
+    api_definition_ = nullptr; // Deliberately not assigned.
+    weight_ = src.weight_;
 }
 
 /// @brief Has this object been finalized?

@@ -38,6 +38,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
@@ -395,15 +396,20 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< base::Size, base::Size > >(
                 "set_minimum_number_of_choices_at_node", "Set the (minimum) number of choices at a node.  "
                 "If the number of choices has already been set to greater than the specified number, this does nothing.",
-
                 "node_index", "The index of the node for which we're setting the minimum number of choices.",
-
                 "min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
                 "been set for this node to a value greater than this, then this does nothing.",
-
                 false, false,
-
                 std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > >(
+                "add_cost_function", "Add a cost function to the set of cost functions that will be evaluated during optimization.",
+                "cost_function", "The input cost function, which should be unfinalized.  This is used directly, not cloned.  "
+                "The CostFunctionNetworkOptimizationProblem takes ownership and manages the state of the cost function, "
+                "including its finalization.", false, false,
+                std::bind( &CostFunctionNetworkOptimizationProblem::add_cost_function, this, std::placeholders::_1 )
+            )
         );
 
         // Work functions:
@@ -485,6 +491,9 @@ CostFunctionNetworkOptimizationProblem::add_cost_function_mutex_locked(
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_cost_function_mutex_locked",
         "This object has already been finalized.  Cannot add a cost function at this point!"
     );
+    CHECK_OR_THROW_FOR_CLASS( !cost_function->finalized(), "add_cost_function", "The input " + cost_function->class_name()
+        + " is already finalized.  Expected an unfinalized object!"
+    );
     cost_functions_.push_back( cost_function );
 }
 
@@ -539,6 +548,9 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
             variable_indices[i] = n_choices_at_variable_nodes_[i].first;
         }
         for( auto const & cost_function : cost_functions_ ) {
+            CHECK_OR_THROW_FOR_CLASS( !(cost_function->finalized()), "protected_finalize", "A " + cost_function->class_name()
+                + " cost function was already finalized.  Expected all cost functions to be unfinalized!"
+            )
             cost_function->finalize( variable_indices );
         }
     }

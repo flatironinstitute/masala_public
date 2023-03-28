@@ -83,6 +83,12 @@ public:
 	/// @brief Destructor.
 	~ChoicePenaltySumBasedCostFunction() override = default;
 
+	/// @brief This class is pure virtual, and does not define the clone function.
+	CostFunctionSP clone() const override = 0;
+
+	/// @brief This class is pure virtual, and does not define the make independent function.
+	void make_independent() override = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +110,12 @@ public:
 	/// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief This class is pure virtual, and does not define the name function.
+	std::string class_name() const override = 0;
+
+	/// @brief This class is pure virtual, and does not define the namespace function.
+	std::string class_namespace() const override = 0;
 
 public:
 

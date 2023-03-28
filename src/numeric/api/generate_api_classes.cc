@@ -36,6 +36,7 @@
 #include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblems.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 #include <numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.hh>
 
 namespace masala {
@@ -61,6 +62,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblems >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolution >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutions >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::CostFunction >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::SquareOfChoicePenaltySumCostFunction >() );
         // ADD MORE ENTRIES HERE
 

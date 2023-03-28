@@ -17,7 +17,7 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh
-/// @brief Forward declarations for a pure virtual base class for CostFunctions.
+/// @brief Forward declarations for a non-instantiable base class for CostFunctions.
 /// @details CostFunctions define a penalty function for a given solution to a cost
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
