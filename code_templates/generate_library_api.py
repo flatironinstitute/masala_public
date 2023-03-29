@@ -1177,8 +1177,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else : # parent_has_api == False
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
-            include2, parent2, root_api_namespace_and_name, ancestor_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
-            return( include2, parent2, root_api_namespace_and_name, ancestor_is_plugin )
+            return get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
