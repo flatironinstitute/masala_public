@@ -188,7 +188,7 @@ public:
 
 	/// @brief Get the API definition for this (non-instantiable) class.
 	masala::base::api::MasalaObjectAPIDefinitionCWP
-	get_api_definition();
+	get_api_definition() override;
 
 protected:
 
