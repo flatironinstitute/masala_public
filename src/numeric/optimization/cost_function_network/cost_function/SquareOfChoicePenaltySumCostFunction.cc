@@ -286,7 +286,7 @@ SquareOfChoicePenaltySumCostFunction::protected_finalize(
 
     //TODO do any finalization needed here.
 
-    ChoicePenaltySumBasedCostFunction< masala::base::Real >::finalize( variable_node_indices );
+    ChoicePenaltySumBasedCostFunction< masala::base::Real >::protected_finalize( variable_node_indices );
 }
 
 /// @brief Override of assign_mutex_locked().  Calls parent function.
