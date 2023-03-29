@@ -189,6 +189,7 @@ CostFunction::set_weight(
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_weight", "The weight for a " + class_name()
         + " cost function cannot be set after the object is finalized."
     );
+    write_to_tracer( "Set weight for " + class_name() + " cost function to " + std::to_string(weight_in) + "." );
     weight_ = weight_in;
 }
 
