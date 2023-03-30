@@ -199,14 +199,6 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief The penalties, stored as a pair of <absolute node index, choice index >.
-	/// @details Used during input/write phase.  Cleared by finalize() operation.
-	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_absolute_node_and_choice_;
-
-	/// @brief The penalties, stored as a pair of <variable node index, choice index >.
-	/// @details Used during output/read phase.  Populated by finalize() operation.
-	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, base::size_pair_hash > penalties_by_variable_node_and_choice_;
-
 }; // class SquareOfChoicePenaltySumCostFunction
 
 } // namespace cost_function
