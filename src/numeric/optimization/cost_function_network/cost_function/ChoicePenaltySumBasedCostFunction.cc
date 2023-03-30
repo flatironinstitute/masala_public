@@ -191,6 +191,7 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
             accumulator += it->second;
         }
     }
+    //write_to_tracer( std::to_string(accumulator) ); // DELETE ME.
     return static_cast< masala::base::Real >( accumulator );
 }
 
