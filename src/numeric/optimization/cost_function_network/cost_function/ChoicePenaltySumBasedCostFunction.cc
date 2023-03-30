@@ -306,7 +306,10 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
             );
 #endif
             constant_offset_ += penalty;
-            write_to_tracer( "Adjusting constant offset.  Offset is now " + std::to_string( constant_offset_ ) + "." );
+            write_to_tracer( "Adjusting constant offset for penalty of " + std::to_string( penalty )
+                + " at constant node " + std::to_string( absindex ) + ".  Offset is now "
+                + std::to_string( constant_offset_ ) + "."
+            );
         }
     }
     penalties_by_absolute_node_and_choice_.clear(); // Save memory.
