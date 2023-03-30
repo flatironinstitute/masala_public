@@ -68,7 +68,35 @@ namespace cost_function_network {
 
 	/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 	/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
-	/// solution.
+	/// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
+	/// @details  The solutions and solutions scores are as follows:
+	/// 0 0 0 -> 80
+	/// 0 0 1 -> 103
+	/// 0 0 2 -> 107
+	/// 0 1 0 -> 132
+	/// 0 1 1 -> 183
+	/// 0 1 2 -> 188
+	/// 0 2 0 -> 59
+	/// 0 2 1 -> 78
+	/// 0 2 2 -> 82
+	/// 1 0 0 -> 80
+	/// 1 0 1 -> 94
+	/// 1 0 2 -> 93
+	/// 1 1 0 -> 125
+	/// 1 1 1 -> 167
+	/// 1 1 2 -> 167
+	/// 1 2 0 -> 55
+	/// 1 2 1 -> 65
+	/// 1 2 2 -> 64
+	/// 2 0 0 -> 39
+	/// 2 0 1 -> 47
+	/// 2 0 2 -> 48
+	/// 2 1 0 -> 83
+	/// 2 1 1 -> 119
+	/// 2 1 2 -> 121
+	/// 2 2 0 -> 18  <-- lowest
+	/// 2 2 1 -> 22
+	/// 2 2 2 -> 23
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_squared_choice_count_penalties( bool const finalized = true );
 
