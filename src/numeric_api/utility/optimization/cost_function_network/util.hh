@@ -64,7 +64,13 @@ namespace cost_function_network {
 	/// 2 2 1 -> 6  <-- lowest
 	/// 2 2 2 -> 7
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-	construct_test_problem();
+	construct_test_problem( bool const finalized = true );
+
+	/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
+	/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
+	/// solution.
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	construct_test_problem_with_squared_choice_count_penalties( bool const finalized = true );
 
 } // namespace cost_function_network
 } // namespace optimization

@@ -23,7 +23,8 @@
 // Unit header:
 #include <numeric_api/utility/optimization/cost_function_network/util.hh>
 
-// Numeric headers:
+// Numeric API headers:
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.hh>
 
 namespace masala {
@@ -64,7 +65,7 @@ namespace cost_function_network {
 /// 2 2 1 -> 6  <-- lowest
 /// 2 2 2 -> 7
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-construct_test_problem() {
+construct_test_problem( bool const finalized ) {
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
     PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
         masala::make_shared< PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API >()
@@ -112,8 +113,35 @@ construct_test_problem() {
     problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 1 ), 0 );
     problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 2 ), 3 );
 
-    // Finalize the problem.
-    problem->finalize();
+    if( finalized ) {
+        // Finalize the problem.
+        problem->finalize();
+    }
+    
+    // Return the problem.
+    return problem;
+}
+
+/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
+/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
+/// solution.
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+construct_test_problem_with_squared_choice_count_penalties( bool const finalized ) {
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
+
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem(false) );
+
+    SquareOfChoicePenaltySumCostFunction_APISP cost_func( masala::make_shared< SquareOfChoicePenaltySumCostFunction_API >() );
+
+    TODO TODO TODO;
+
+    problem->add_cost_function( cost_func );
+
+    if( finalized ) {
+        // Finalize the problem.
+        problem->finalize();
+    }
     
     // Return the problem.
     return problem;
