@@ -143,7 +143,9 @@ ChoicePenaltySumBasedCostFunction<T>::set_penalties_for_all_choices_at_node(
 
     for( Size i(0); i<nchoices; ++i ) {
         penalties_by_absolute_node_and_choice_[ std::make_pair( absolute_node_index, i ) ] = penalties_by_choice_index[i];
+        //write_to_tracer( "Set penalty for node " + std::to_string(absolute_node_index) + " choice " + std::to_string(i) + " to " + std::to_string(penalties_by_choice_index[i]) );
     }
+    //write_to_tracer( "Set penalties for node " + std::to_string(absolute_node_index) + "'s " + std::to_string(penalties_by_choice_index.size()) + " choices." );
 }
 
 /// @brief Set the constant offset.
