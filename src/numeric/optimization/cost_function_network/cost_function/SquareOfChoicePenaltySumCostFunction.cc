@@ -30,7 +30,6 @@
 // STL headers:
 #include <vector>
 #include <string>
-#include <iostream>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -159,9 +158,7 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution ) );
-    masala::base::Real const returnval( protected_weight()*sum*sum );
-    std::cout << "FINISH " << returnval << std::endl;
-    return returnval;
+    return protected_weight()*sum*sum;
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -176,9 +173,7 @@ SquareOfChoicePenaltySumCostFunction::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
     masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_old ) );
-    std::cout << "FINISH " << protected_weight() * ( oldsum * oldsum ) << std::endl;
     masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< masala::base::Real >::compute_cost_function( candidate_solution_new ) );
-    std::cout << "FINISH " << protected_weight() * ( newsum * newsum ) << std::endl;
     return protected_weight() * ( ( newsum * newsum ) - ( oldsum * oldsum ) );
 }
 

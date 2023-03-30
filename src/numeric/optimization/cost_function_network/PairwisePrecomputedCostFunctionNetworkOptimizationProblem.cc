@@ -29,7 +29,6 @@
 #include <vector>
 #include <string>
 #include <set>
-#include <iostream>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -355,7 +354,6 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
     );
 
     Real accumulator( CostFunctionNetworkOptimizationProblem::compute_score_change( old_solution, new_solution ) ); //Handles any non-pairwise terms.
-    std::cout << "SCORECHANGE_INITIAL=" << accumulator << std::endl;
 
     base::Size const npos( protected_total_variable_nodes() ); //Only safe to call if finalized.
     CHECK_OR_THROW_FOR_CLASS( old_solution.size() == npos, "compute_score_change",
@@ -399,8 +397,6 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
             }
         }
     }
-
-    std::cout << "SCORECHANGE_FINAL=" << accumulator << std::endl;
 
     return accumulator;
 }

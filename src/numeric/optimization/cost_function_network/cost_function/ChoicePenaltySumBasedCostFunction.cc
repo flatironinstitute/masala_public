@@ -32,7 +32,6 @@
 // STL headers:
 #include <vector>
 #include <string>
-#include <iostream>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -183,7 +182,6 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
         "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
         + " variable positions, but got " + std::to_string( nentries ) + "!" 
     );
-    std::cout << "START offset=" << constant_offset_ << std::endl;
     T accumulator( constant_offset_ );
     for( Size i(0); i<nentries; ++i ) {
         typename std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it(
@@ -191,7 +189,6 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function(
         );
         if( it != penalties_by_variable_node_and_choice_.end() ) {
             accumulator += it->second;
-            std::cout << "(" << i << "," << candidate_solution[i] << ") " << it->second << " " << accumulator << std::endl;
         }
     }
     //write_to_tracer( std::to_string(accumulator) ); // DELETE ME.
