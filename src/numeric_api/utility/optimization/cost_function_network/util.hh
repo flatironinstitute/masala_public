@@ -35,6 +35,11 @@ namespace cost_function_network {
 	/// @brief This is a utility funciton to construct a standard test problem for
 	/// testing out cost function network optimizers.  This problem has three nodes
 	/// with three choices per node, for a total of 27 possible solutions.
+	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+	/// by default.
+	/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+	/// false, we leave the problem unfinalized, permitting additional stuff to be added.
 	/// @details  The solutions and solutions scores are as follows:
 	/// 0 0 0 -> 71
 	/// 0 0 1 -> 54
@@ -63,13 +68,19 @@ namespace cost_function_network {
 	/// 2 2 0 -> 18
 	/// 2 2 1 -> 6  <-- lowest
 	/// 2 2 2 -> 7
+	/// If gapped, all solutions shift up by 17.
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-	construct_test_problem( bool const finalized = true );
+	construct_test_problem( bool const gapped=false, bool const finalized = true );
 
 	/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 	/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
 	/// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
-	/// @details  The solutions and solutions scores are as follows:
+	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+	/// by default.
+	/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+	/// false, we leave the problem unfinalized, permitting additional stuff to be added.
+	/// @details  The solutions and solutions scores are as follows if ungapped:
 	/// 0 0 0 -> 80
 	/// 0 0 1 -> 103
 	/// 0 0 2 -> 107
@@ -98,7 +109,7 @@ namespace cost_function_network {
 	/// 2 2 1 -> 22
 	/// 2 2 2 -> 23
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-	construct_test_problem_with_squared_choice_count_penalties( bool const finalized = true );
+	construct_test_problem_with_squared_choice_count_penalties( bool const gapped=false, bool const finalized = true );
 
 } // namespace cost_function_network
 } // namespace optimization
