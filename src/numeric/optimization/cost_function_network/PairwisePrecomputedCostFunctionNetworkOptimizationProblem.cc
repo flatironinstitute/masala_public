@@ -680,13 +680,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
     using masala::base::Size;
 
     std::set< Size > one_choice_nodes;
-    write_to_tracer( "NODE\tCHOICE_COUNT" );
+    //write_to_tracer( "NODE\tCHOICE_COUNT" );
     for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0, "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes", "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!" );
-        write_to_tracer( std::to_string(it->first) + "\t" + std::to_string(it->second) );
+        //write_to_tracer( std::to_string(it->first) + "\t" + std::to_string(it->second) );
         if( it->second == 1 ) {
             one_choice_nodes.insert(it->first);
         }
