@@ -238,7 +238,7 @@ construct_test_problem_with_squared_choice_count_penalties(
     cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 3.0, 2.0, 1.0 } );
     cost_func->set_penalties_for_all_choices_at_node( 1, std::vector< masala::base::Real >{ 2.0, 5.0, 1.0 } );
     if( gapped ) {
-        cost_func->set_penalties_for_all_choices_at_node( 2, std::vector< masala::base::Real >{ 0.0 } );
+        cost_func->set_penalties_for_all_choices_at_node( 2, std::vector< masala::base::Real >{ 2.0 } );
     }
     cost_func->set_penalties_for_all_choices_at_node( last_node, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
 
