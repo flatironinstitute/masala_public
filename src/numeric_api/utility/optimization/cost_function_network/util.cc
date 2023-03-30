@@ -170,8 +170,8 @@ construct_test_problem_with_squared_choice_count_penalties( bool const finalized
 
     cost_func->set_constant_offset( -3.0 );
     cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 3.0, 2.0, 1.0 } );
-    cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 2.0, 5.0, 1.0 } );
-    cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
+    cost_func->set_penalties_for_all_choices_at_node( 1, std::vector< masala::base::Real >{ 2.0, 5.0, 1.0 } );
+    cost_func->set_penalties_for_all_choices_at_node( 2, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
 
     problem->add_cost_function( cost_func );
 
