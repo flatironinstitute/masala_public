@@ -156,7 +156,7 @@ ChoicePenaltySumBasedCostFunction<T>::set_constant_offset(
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_constant_offset",
         "This function cannot be called after the " + class_name() + " has been finalized."
     );
-
+    write_to_tracer( "Set constant offset to " + std::to_string( constant_offset ) "." );
     constant_offset_ = constant_offset;
 }
 
