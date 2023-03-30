@@ -288,6 +288,25 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
             std::pair< Size, Size > const key( std::make_pair( varindex, choiceindex ) );
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.count( key ) == 0, "protected_finalize", "The key (" + std::to_string( key.first ) + ", " + std::to_string( key.second ) + ") is already in the penalties_by_variable_node_and_choice_ map!" );
             penalties_by_variable_node_and_choice_[key] = penalty;
+        } else {
+#ifndef NDEBUG
+            //Check that we have only one choice at this node.
+            Size tempcounter(0);
+            for(
+                typename std::unordered_map< std::pair< Size, Size >, T, base::size_pair_hash >::const_iterator it3( penalties_by_absolute_node_and_choice_.cbegin() );
+                it3 != penalties_by_absolute_node_and_choice_.cend();
+                ++it3
+            ) {
+                if( it3->first.first == absindex ) {
+                    ++tempcounter;
+                }
+            }
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( tempcounter == 1, "protected_finalize", "Expected exactly 1 choice "
+                "for node " + std::to_string( absindex ) + ", but got " + std::to_string( tempcounter ) + "!"
+            );
+#endif
+            constant_offset_ += penalty;
+            write_to_tracer( "Adjusting constant offset.  Offset is now " + std::to_string( constant_offset_ ) + "." );
         }
     }
     penalties_by_absolute_node_and_choice_.clear(); // Save memory.
