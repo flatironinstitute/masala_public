@@ -288,6 +288,7 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
             std::pair< Size, Size > const key( std::make_pair( varindex, choiceindex ) );
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.count( key ) == 0, "protected_finalize", "The key (" + std::to_string( key.first ) + ", " + std::to_string( key.second ) + ") is already in the penalties_by_variable_node_and_choice_ map!" );
             penalties_by_variable_node_and_choice_[key] = penalty;
+            //write_to_tracer( "<" + std::to_string( varindex ) + "," + std::to_string( choiceindex ) + ">=" + std::to_string(penalty) ); //DELETE ME
         } else {
 #ifndef NDEBUG
             //Check that we have only one choice at this node.
