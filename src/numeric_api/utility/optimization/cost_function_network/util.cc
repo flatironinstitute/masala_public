@@ -191,6 +191,35 @@ construct_test_problem(
 /// 2 2 0 -> 18  <-- lowest
 /// 2 2 1 -> 22
 /// 2 2 2 -> 23
+///
+/// The solutions and solutions scores are as follows if gapped:
+/// 0 0 0 -> 96
+/// 0 0 1 -> 135
+/// 0 0 2 -> 139
+/// 0 1 0 -> 160
+/// 0 1 1 -> 227
+/// 0 1 2 -> 232
+/// 0 2 0 -> 71
+/// 0 2 1 -> 106
+/// 0 2 2 -> 110
+/// 1 0 0 -> 92
+/// 1 0 1 -> 122
+/// 1 0 2 -> 121
+/// 1 1 0 -> 149
+/// 1 1 1 -> 207
+/// 1 1 2 -> 207
+/// 1 2 0 -> 63
+/// 1 2 1 -> 89
+/// 1 2 2 -> 88
+/// 2 0 0 -> 47
+/// 2 0 1 -> 71
+/// 2 0 2 -> 72
+/// 2 1 0 -> 103
+/// 2 1 1 -> 155
+/// 2 1 2 -> 157
+/// 2 2 0 -> 22  <-- lowest
+/// 2 2 1 -> 42
+/// 2 2 2 -> 43
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_squared_choice_count_penalties(
     bool const gapped,
@@ -208,6 +237,9 @@ construct_test_problem_with_squared_choice_count_penalties(
     cost_func->set_constant_offset( -3.0 );
     cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 3.0, 2.0, 1.0 } );
     cost_func->set_penalties_for_all_choices_at_node( 1, std::vector< masala::base::Real >{ 2.0, 5.0, 1.0 } );
+    if( gapped ) {
+        cost_func->set_penalties_for_all_choices_at_node( 2, std::vector< masala::base::Real >{ 0.0 } );
+    }
     cost_func->set_penalties_for_all_choices_at_node( last_node, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
 
     problem->add_cost_function( cost_func );
