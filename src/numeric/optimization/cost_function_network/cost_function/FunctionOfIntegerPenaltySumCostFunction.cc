@@ -586,7 +586,7 @@ FunctionOfIntegerPenaltySumCostFunction::protected_finalize(
         );
     }
 
-    //TODO do fitting here.
+    TODO do fitting here.
 
     ChoicePenaltySumBasedCostFunction< signed long int >::protected_finalize( variable_node_indices );
 }
@@ -646,9 +646,9 @@ FunctionOfIntegerPenaltySumCostFunction::compute_outside_range_function(
         case PenaltyFunctionBehaviourOutsideRange::CONSTANT :
             return a;
         case PenaltyFunctionBehaviourOutsideRange::LINEAR :
-            return b*x + a;
+            return b*static_cast< masala::base::Real >(x) + a;
         case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
-            return c*x*x + b*x + a;
+            return c*static_cast< masala::base::Real >(x*x) + b*static_cast< masala::base::Real >(x) + a;
         default :
             MASALA_THROW( class_namespace_static() + "::" + class_name_static(),
                 "compute_outside_range_function",
@@ -656,6 +656,21 @@ FunctionOfIntegerPenaltySumCostFunction::compute_outside_range_function(
             );
     }
     return 0.0; // Keep older compilers happy.
+}
+
+/// @brief Compute the function that maps I->R.
+masala::base::Real
+FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
+    signed long int x
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "function_of_sum", "This function must be called from a finalized context!" );
+    if( x < penalty_range_start_ ) {
+        return compute_outside_range_function( behaviour_low_, x, a_low_, b_low_, c_low_ );
+    } else if ( x >= penalty_range_start_ + penalty_values_.size() ) {
+        return compute_outside_range_function( behaviour_high_, x, a_high_, b_high_, c_high_ );
+    } else {
+        return penalty_values_[ x - penalty_range_start_ ];
+    }
 }
 
 } // namespace cost_function

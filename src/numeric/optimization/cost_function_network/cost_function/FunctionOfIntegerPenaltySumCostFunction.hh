@@ -312,6 +312,12 @@ private:
 		masala::base::Real c
 	);
 
+	/// @brief Compute the function that maps I->R.
+	masala::base::Real
+	function_of_sum(
+		signed long int x
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
