@@ -35,6 +35,16 @@ namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
+	/// @brief Penalty function behaviour outside of the range specified.
+	/// @details If you add to this list, update penalty_behaviour_string_from_enum().
+	enum class PenaltyFunctionBehaviourOutsideRange {
+		UNDEFINED_BEHAVIOUR = 0, // Keep first
+		CONSTANT = 1, // Keep second
+		LINEAR,
+		QUADRATIC, // Keep second to last
+		NUM_BEHAVIOURS = QUADRATIC // Keep last
+	};
+
 	class FunctionOfIntegerPenaltySumCostFunction;
 
 	/// @brief We will use the convention that an class name followed by SP

@@ -30,6 +30,7 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <sstream>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -94,6 +95,66 @@ void
 FunctionOfIntegerPenaltySumCostFunction::make_independent() {
     std::lock_guard< std::mutex > lock( mutex() );
     make_independent_mutex_locked();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// STATIC PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a penalty function behaviour enum, get the corresponding string.
+/*static*/
+std::string
+FunctionOfIntegerPenaltySumCostFunction::penalty_behaviour_string_from_enum(
+	PenaltyFunctionBehaviourOutsideRange const behaviour_enum
+) {
+    switch( behaviour_enum ) {
+        case PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR :
+            return "undefined_behaviour";
+        case PenaltyFunctionBehaviourOutsideRange::CONSTANT :
+            return "constant";
+        case PenaltyFunctionBehaviourOutsideRange::LINEAR :
+            return "linear";
+        case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
+            return "quadratic";
+    }
+    MASALA_THROW( "masala::numeric::optimization::cost_function_network::cost_function::FunctionOfIntegerPenaltySumCostFunction",
+        "penalty_behaviour_string_from_enum",
+        "Invalid penalty function behaviour enum passed to this function!"
+    );
+    return ""; // Keep older compilers happy.
+}
+
+/// @brief Given a penalty function behaviour string, get the corresponding enum.
+/// @details Returns PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR if the string is not recognized.
+/*static*/
+PenaltyFunctionBehaviourOutsideRange
+FunctionOfIntegerPenaltySumCostFunction::penalty_behaviour_enum_from_string(
+	std::string const & behaviour_string
+) {
+    using masala::base::Size;
+    for( Size i(1); i <= static_cast<Size>(PenaltyFunctionBehaviourOutsideRange::NUM_BEHAVIOURS); ++i ) {
+        if( behaviour_string == penalty_behaviour_string_from_enum( static_cast< PenaltyFunctionBehaviourOutsideRange >(i) ) ) {
+            return static_cast< PenaltyFunctionBehaviourOutsideRange >(i);
+        }
+    }
+    return PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR;
+}
+
+/// @brief Get all allowed behaviours as a comma-separated list.
+/*static*/
+std::string
+FunctionOfIntegerPenaltySumCostFunction::list_penalty_behaviours() {
+    using masala::base::Size;
+    std::ostringstream ss;
+    for( Size i(1); i <= static_cast<Size>(PenaltyFunctionBehaviourOutsideRange::NUM_BEHAVIOURS); ++i ) {
+        if( i > 1 ) {
+            ss << ", ";
+            if( i > 2 && i == static_cast<Size>(PenaltyFunctionBehaviourOutsideRange::NUM_BEHAVIOURS) ) {
+                ss << " and ";
+            }
+            ss << penalty_behaviour_string_from_enum( static_cast< PenaltyFunctionBehaviourOutsideRange >(i) );
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +359,10 @@ FunctionOfIntegerPenaltySumCostFunction::assign_mutex_locked(
     FunctionOfIntegerPenaltySumCostFunction const * const src_cast_ptr( dynamic_cast< FunctionOfIntegerPenaltySumCostFunction const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a FunctionOfIntegerPenaltySumCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
 
-    // TODO OTHER ASSIGNMENT.
+    penalty_range_start_ = src_cast_ptr->penalty_range_start_;
+    penalty_values_ = src_cast_ptr->penalty_values_;
+    behaviour_low_ = src_cast_ptr->behaviour_low_;
+    behaviour_high_ = src_cast_ptr->behaviour_high_;
 
     ChoicePenaltySumBasedCostFunction< signed long int >::assign_mutex_locked( src );
 }

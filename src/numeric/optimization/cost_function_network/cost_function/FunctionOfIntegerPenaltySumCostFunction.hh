@@ -92,6 +92,32 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// STATIC PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given a penalty function behaviour enum, get the corresponding string.
+	static
+	std::string
+	penalty_behaviour_string_from_enum(
+		PenaltyFunctionBehaviourOutsideRange const behaviour_enum
+	);
+
+	/// @brief Given a penalty function behaviour string, get the corresponding enum.
+	/// @details Returns PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR if the string is not recognized.
+	static
+	PenaltyFunctionBehaviourOutsideRange
+	penalty_behaviour_enum_from_string(
+		std::string const & behaviour_string
+	);
+
+	/// @brief Get all allowed behaviours as a comma-separated list.
+	static
+	std::string
+	list_penalty_behaviours();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -198,6 +224,18 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The start of the specified penalty range.
+	signed long int penalty_range_start_ = 0;
+
+	/// @brief The penalty values.
+	std::vector< masala::base::Real > penalty_values_;
+
+	/// @brief The penalty function behaviour below the specified range.
+	PenaltyFunctionBehaviourOutsideRange behaviour_low_ = PenaltyFunctionBehaviourOutsideRange::QUADRATIC;
+
+	/// @brief The penalty function behaviour above the specified range.
+	PenaltyFunctionBehaviourOutsideRange behaviour_high_ = PenaltyFunctionBehaviourOutsideRange::QUADRATIC;
 
 }; // class FunctionOfIntegerPenaltySumCostFunction
 
