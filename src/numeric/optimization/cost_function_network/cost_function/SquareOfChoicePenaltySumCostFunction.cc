@@ -17,7 +17,7 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.cc
-/// @brief Implementation for a pure virtual base class for SquareOfChoicePenaltySumCostFunctions.
+/// @brief Implementation for a class for SquareOfChoicePenaltySumCostFunctions.
 /// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
