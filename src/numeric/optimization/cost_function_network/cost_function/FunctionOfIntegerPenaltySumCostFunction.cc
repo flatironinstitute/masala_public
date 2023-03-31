@@ -552,7 +552,27 @@ FunctionOfIntegerPenaltySumCostFunction::protected_finalize(
     using masala::base::Size;
     using masala::base::Real;
 
-    //TODO do any finalization needed here.
+    if( behaviour_high_ == PenaltyFunctionBehaviourOutsideRange::QUADRATIC ||
+        behaviour_low_ == PenaltyFunctionBehaviourOutsideRange::QUADRATIC
+    ) {
+        CHECK_OR_THROW_FOR_CLASS( penalty_values_.size() >= 3, "protected_finalize", "If a quadratic function "
+            "is used before or after the defined penalty function value range, then at least three penalty "
+            "values must be defined.  (A parabola is fitted to three terminal points to smoothly extend them.)"
+        );
+    } else if ( behaviour_high_ == PenaltyFunctionBehaviourOutsideRange::LINEAR ||
+        behaviour_low_ == PenaltyFunctionBehaviourOutsideRange::LINEAR
+    ) {
+        CHECK_OR_THROW_FOR_CLASS( penalty_values_.size() >= 2, "protected_finalize", "If a linear function "
+            "is used before or after the defined penalty function value range, then at least two penalty "
+            "values must be defined.  (A line is fitted to two terminal points to continuously extend them.)"
+        );
+    } else {
+        CHECK_OR_THROW_FOR_CLASS( penalty_values_.size() >= 1, "protected_finalize", "At least one penalty value "
+            "must be provided."
+        );
+    }
+
+    //TODO do fitting here.
 
     ChoicePenaltySumBasedCostFunction< signed long int >::protected_finalize( variable_node_indices );
 }
