@@ -202,7 +202,6 @@ FunctionOfIntegerPenaltySumCostFunction::class_namespace() const {
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +219,7 @@ FunctionOfIntegerPenaltySumCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution ) );
-    return protected_weight()*sum*sum;
+    return protected_weight() * function_of_sum( sum );
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -236,7 +235,7 @@ FunctionOfIntegerPenaltySumCostFunction::compute_cost_function_difference(
 ) const {
     masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution_old ) );
     masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution_new ) );
-    return protected_weight() * ( ( newsum * newsum ) - ( oldsum * oldsum ) );
+    return protected_weight() * ( function_of_sum( newsum ) - function_of_sum( oldsum ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +254,7 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this, "A cost function which sums the penalties of the individual choices that were selected for "
-                "a given solution, adds a constant, and squares the result.", false, false
+                "a given solution, then applies a nonlinear function to the result.", false, false
             )
         );
 
@@ -269,22 +268,6 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
             )
         );
 
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_constant_offset", "Set the constant to be added to all penalty sums.",
-                "constant_offset", "The constant to be added to the penalty sum before the whole thing is squared.",
-                false, false, std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_constant_offset, this, std::placeholders::_1 )
-            )
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< Real > const & > >(
-                "set_penalties_for_all_choices_at_node", "Set the penalties for all of the choices at one node.",
-                "absolute_node_index", "The absolute index of the node for which we're setting penalties.",
-                "penalties_by_choice_index", "The penalties for all of the choices, indexed by choice index.",
-                false, false,
-                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalties_for_all_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )
-            )
-        );
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
                 "set_weight", "Set a multiplier for this cost function.",
@@ -305,7 +288,7 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, std::vector< Size > const & > >(
                 "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  This version "
-                "computes the sum of the selected choices plus a constant, then squares the result.", true, false, false, false,
+                "computes some function of the sum of integer penalties for selected choices.", true, false, false, false,
                 "candidate_solution", "A candidate solution, as a vector of choices for each variable position (i.e. position with "
                 "more than one choice).", "score", "The output score: the sum of the penalties for the selected choices, plus a constant "
                 "offset, all squared.", std::bind( &FunctionOfIntegerPenaltySumCostFunction::compute_cost_function, this, std::placeholders::_1 )
@@ -314,13 +297,13 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, std::vector< Size > const & > >(
                 "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, compute "
-                "the cost function difference.  This version computes the sum of the old selected choices plus a constant, then "
-                "squares the result.  It repeats this for the new selected choices, then returns the difference.",
+                "the cost function difference.  This version computes some function of the sum of integer penalties for selected "
+                "choices.  It repeats this for the new selected choices, then returns the difference.",
                 true, false, false, false,
                 "candidate_solution_old", "The old candidate solution, as a vector of choices for each variable position.",
                 "candidate_solution_new", "The new candidate solution, as a vector of choices for each variable position.",
-                "score", "The output score: the difference of the sum of the penalties for the selected choices, plus a constant "
-                "offset, all squared.",
+                "score", "The output score: the difference of the function of the sum of the integer penalties for the "
+                "selected choices.",
                 std::bind( &FunctionOfIntegerPenaltySumCostFunction::compute_cost_function_difference, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
