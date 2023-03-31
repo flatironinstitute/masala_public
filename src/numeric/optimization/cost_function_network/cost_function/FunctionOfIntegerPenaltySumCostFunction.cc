@@ -202,9 +202,109 @@ FunctionOfIntegerPenaltySumCostFunction::class_namespace() const {
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Set the penalty function behaviour below the range of values specified.
+PenaltyFunctionBehaviourOutsideRange
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low() const {
+    return behaviour_low_;
+}
+
+/// @brief Set the penalty function behaviour below the range of values specified, by string.
+std::string
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low_by_string() const {
+    return penalty_behaviour_string_from_enum( behaviour_low_ );
+}
+
+/// @brief Set the penalty function behaviour above the range of values specified.
+PenaltyFunctionBehaviourOutsideRange
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high() const {
+    return behaviour_high_;
+}
+
+/// @brief Set the penalty function behaviour above the range of values specified, by string.
+std::string
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_hig_by_string() const {
+    return penalty_behaviour_string_from_enum( behaviour_high_ );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the penalty function behaviour below the range of values specified.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_low(
+    PenaltyFunctionBehaviourOutsideRange const behaviour_low
+) {
+    using masala::base::Size;
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_function_behaviour_low", "The "
+        + class_name() + " instance has already been finalized.  This function can only be called "
+        "before the finalization."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        static_cast< Size >( behaviour_low ) > 0 &&
+        static_cast<Size>( behaviour_low_ ) <= static_cast<Size>( PenaltyFunctionBehaviourOutsideRange::NUM_BEHAVIOURS ) &&
+        behaviour_low_ != PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR,
+        "set_penalty_function_behaviour_low",
+        "The behaviour indicated is not recognized!"
+    );
+    behaviour_low_ = behaviour_low;
+    write_to_tracer( "Set penalty function behaviour to " + penalty_behaviour_string_from_enum( behaviour_low_ )
+        + " below penalty range."
+    );
+}
+
+/// @brief Set the penalty function behaviour below the range of values specified, by string.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_low_by_string(
+    std::string const & behaviour_low_string
+) {
+    PenaltyFunctionBehaviourOutsideRange const behaviour( penalty_behaviour_enum_from_string(behaviour_low_string) );
+    CHECK_OR_THROW_FOR_CLASS( behaviour != PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR,
+        "set_penalty_function_behaviour_low_by_string",
+        "Could not interpret \"" + behaviour_low_string + "\" as an allowed behaviour.  Allowed behaviours "
+        "are " + list_penalty_behaviours() + "."
+    );
+    set_penalty_function_behaviour_low( behaviour );
+}
+
+/// @brief Set the penalty function behaviour above the range of values specified.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high(
+    PenaltyFunctionBehaviourOutsideRange const behaviour_high
+) {
+    using masala::base::Size;
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_function_behaviour_high", "The "
+        + class_name() + " instance has already been finalized.  This function can only be called "
+        "before the finalization."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        static_cast< Size >( behaviour_high ) > 0 &&
+        static_cast<Size>( behaviour_high_ ) <= static_cast<Size>( PenaltyFunctionBehaviourOutsideRange::NUM_BEHAVIOURS ) &&
+        behaviour_high_ != PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR,
+        "set_penalty_function_behaviour_high",
+        "The behaviour indicated is not recognized!"
+    );
+    behaviour_high_ = behaviour_high;
+    write_to_tracer( "Set penalty function behaviour to " + penalty_behaviour_string_from_enum( behaviour_high_ )
+        + " above penalty range."
+    
+}
+
+/// @brief Set the penalty function behaviour above the range of values specified, by string.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high_by_string(
+    std::string const & behaviour_high_string
+) {
+    PenaltyFunctionBehaviourOutsideRange const behaviour( penalty_behaviour_enum_from_string(behaviour_high_string) );
+    CHECK_OR_THROW_FOR_CLASS( behaviour != PenaltyFunctionBehaviourOutsideRange::UNDEFINED_BEHAVIOUR,
+        "set_penalty_function_behaviour_high_by_string",
+        "Could not interpret \"" + behaviour_high_string + "\" as an allowed behaviour.  Allowed behaviours "
+        "are " + list_penalty_behaviours() + "."
+    );
+    set_penalty_function_behaviour_high( behaviour );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS

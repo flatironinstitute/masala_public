@@ -149,6 +149,21 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the penalty function behaviour below the range of values specified.
+	PenaltyFunctionBehaviourOutsideRange
+	get_penalty_function_behaviour_low() const;
+
+	/// @brief Set the penalty function behaviour below the range of values specified, by string.
+	std::string
+	get_penalty_function_behaviour_low_by_string() const;
+
+	/// @brief Set the penalty function behaviour above the range of values specified.
+	PenaltyFunctionBehaviourOutsideRange
+	get_penalty_function_behaviour_high() const;
+
+	/// @brief Set the penalty function behaviour above the range of values specified, by string.
+	std::string
+	get_penalty_function_behaviour_hig_by_string() const;
 
 public:
 
@@ -156,6 +171,29 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the penalty function behaviour below the range of values specified.
+	void
+	set_penalty_function_behaviour_low(
+		PenaltyFunctionBehaviourOutsideRange const behaviour_low
+	);
+
+	/// @brief Set the penalty function behaviour below the range of values specified, by string.
+	void
+	set_penalty_function_behaviour_low_by_string(
+		std::string const & behaviour_low_string
+	);
+
+	/// @brief Set the penalty function behaviour above the range of values specified.
+	void
+	set_penalty_function_behaviour_high(
+		PenaltyFunctionBehaviourOutsideRange const behaviour_high
+	);
+
+	/// @brief Set the penalty function behaviour above the range of values specified, by string.
+	void
+	set_penalty_function_behaviour_high_by_string(
+		std::string const & behaviour_high_string
+	);
 
 public:
 
