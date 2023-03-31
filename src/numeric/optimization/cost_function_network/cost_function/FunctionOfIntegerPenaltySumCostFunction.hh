@@ -138,7 +138,15 @@ public:
 	get_keywords() const override;
 
 	/// @brief Get the name of this class ("FunctionOfIntegerPenaltySumCostFunction").
+	/// @details Static version.
+	static std::string class_name_static();
+
+	/// @brief Get the name of this class ("FunctionOfIntegerPenaltySumCostFunction").
 	std::string class_name() const override;
+
+	/// @brief Get the namespace of this class ("masala::numeric::optimization::cost_function_network::cost_function").
+	/// @details Static version.
+	static std::string class_namespace_static();
 
 	/// @brief Get the namespace of this class ("masala::numeric::optimization::cost_function_network::cost_function").
 	std::string class_namespace() const override;
@@ -284,6 +292,29 @@ protected:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Compute the tail function outside of the range of penalty values specified.
+	/// @param[in] behaviour The behaviour (constant, linear, or quadratic).
+	/// @param[in] x The value of the input function.
+	/// @param[in] a The constant offset.
+	/// @param[in] b The slope.
+	/// @param[in] c The quadratic term.
+	/// @details The overall equation is cx^2 + bx + a for quadratic, bx+a for linear, a for constant.
+	static
+	masala::base::Real
+	compute_outside_range_function(
+		PenaltyFunctionBehaviourOutsideRange const behaviour,
+		signed long int x,
+		masala::base::Real a,
+		masala::base::Real b,
+		masala::base::Real c
+	);
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // USER-INPUT PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -304,7 +335,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Parameters of penalty function outside of defined range.
-	/// @details Constant functions simply use a; linear functions use bx+a; quadratic functions use c^2+bx+a.
+	/// @details Constant functions simply use a; linear functions use bx+a; quadratic functions use cx^2+bx+a.
 	masala::base::Real c_high_ = 0.0;
 	masala::base::Real b_high_ = 0.0;
 	masala::base::Real a_high_ = 0.0;

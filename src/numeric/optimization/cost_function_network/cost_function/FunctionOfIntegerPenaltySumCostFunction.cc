@@ -117,7 +117,7 @@ FunctionOfIntegerPenaltySumCostFunction::penalty_behaviour_string_from_enum(
         case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
             return "quadratic";
     }
-    MASALA_THROW( "masala::numeric::optimization::cost_function_network::cost_function::FunctionOfIntegerPenaltySumCostFunction",
+    MASALA_THROW( class_namespace_static() + "::" + class_name_static(),
         "penalty_behaviour_string_from_enum",
         "Invalid penalty function behaviour enum passed to this function!"
     );
@@ -187,15 +187,29 @@ FunctionOfIntegerPenaltySumCostFunction::get_keywords() const {
 }
 
 /// @brief Get the name of this class ("FunctionOfIntegerPenaltySumCostFunction").
+/// @details Static version.
+std::string
+FunctionOfIntegerPenaltySumCostFunction::class_name_static() {
+    return "FunctionOfIntegerPenaltySumCostFunction";
+}
+
+/// @brief Get the name of this class ("FunctionOfIntegerPenaltySumCostFunction").
 std::string
 FunctionOfIntegerPenaltySumCostFunction::class_name() const {
-    return "FunctionOfIntegerPenaltySumCostFunction";
+    return class_name_static();
+}
+
+/// @brief Get the namespace of this class ("masala::numeric::optimization::cost_function_network::cost_function").
+/// @details Static version.
+std::string
+FunctionOfIntegerPenaltySumCostFunction::class_namespace_static() {
+    return "masala::numeric::optimization::cost_function_network::cost_function";
 }
 
 /// @brief Get the namespace of this class ("masala::numeric::optimization::cost_function_network::cost_function").
 std::string
 FunctionOfIntegerPenaltySumCostFunction::class_namespace() const {
-    return "masala::numeric::optimization::cost_function_network::cost_function";
+    return class_namespace_static();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -606,6 +620,41 @@ void
 FunctionOfIntegerPenaltySumCostFunction::make_independent_mutex_locked() {
     // GNDN
     ChoicePenaltySumBasedCostFunction< signed long int >::make_independent_mutex_locked();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Compute the tail function outside of the range of penalty values specified.
+/// @param[in] behaviour The behaviour (constant, linear, or quadratic).
+/// @param[in] x The value of the input function.
+/// @param[in] a The constant offset.
+/// @param[in] b The slope.
+/// @param[in] c The quadratic term.
+/// @details The overall equation is cx^2 + bx + a for quadratic, bx+a for linear, a for constant.
+/*static*/
+masala::base::Real
+FunctionOfIntegerPenaltySumCostFunction::compute_outside_range_function(
+    PenaltyFunctionBehaviourOutsideRange const behaviour,
+    signed long int x,
+    masala::base::Real a,
+    masala::base::Real b,
+    masala::base::Real c
+) {
+    switch( behaviour ) {
+        case PenaltyFunctionBehaviourOutsideRange::CONSTANT :
+            return a;
+        case PenaltyFunctionBehaviourOutsideRange::LINEAR :
+            return b*x + a;
+        case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
+            return c*x*x + b*x + a;
+        default :
+            MASALA_THROW( class_namespace_static() + "::" + class_name_static(),
+                "compute_outside_range_function",
+                "Undefined penalty value behaviour was specified!"
+            );
+    }
 }
 
 } // namespace cost_function
