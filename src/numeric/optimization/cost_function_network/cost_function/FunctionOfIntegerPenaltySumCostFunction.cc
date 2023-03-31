@@ -289,7 +289,7 @@ FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high(
     behaviour_high_ = behaviour_high;
     write_to_tracer( "Set penalty function behaviour to " + penalty_behaviour_string_from_enum( behaviour_high_ )
         + " above penalty range."
-    
+    );
 }
 
 /// @brief Set the penalty function behaviour above the range of values specified, by string.
