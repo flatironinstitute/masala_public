@@ -655,6 +655,7 @@ FunctionOfIntegerPenaltySumCostFunction::compute_outside_range_function(
                 "Undefined penalty value behaviour was specified!"
             );
     }
+    return 0.0; // Keep older compilers happy.
 }
 
 } // namespace cost_function
