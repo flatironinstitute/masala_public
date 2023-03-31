@@ -671,6 +671,7 @@ FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
     } else {
         return penalty_values_[ x - penalty_range_start_ ];
     }
+    return 0.0; // For older compilers.
 }
 
 } // namespace cost_function
