@@ -155,6 +155,7 @@ FunctionOfIntegerPenaltySumCostFunction::list_penalty_behaviours() {
             ss << penalty_behaviour_string_from_enum( static_cast< PenaltyFunctionBehaviourOutsideRange >(i) );
         }
     }
+    return ss.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
