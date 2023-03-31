@@ -21,7 +21,7 @@
 /// @details FunctionOfIntegerPenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A signed integer penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
-/// - An arbitrary function is applied to the sum, and this is returned as the penalty.
+/// - An arbitrary function (I->R) is applied to the sum, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_FunctionOfIntegerPenaltySumCostFunction_fwd_hh

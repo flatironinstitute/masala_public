@@ -21,7 +21,7 @@
 /// @details FunctionOfIntegerPenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A signed integer penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
-/// - An arbitrary function is applied to the sum, and this is returned as the penalty.
+/// - An arbitrary function (I->R) is applied to the sum, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_FunctionOfIntegerPenaltySumCostFunction_hh
@@ -53,7 +53,7 @@ namespace cost_function {
 /// @details FunctionOfIntegerPenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A signed integer penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
-/// - An arbitrary function is applied to the sum, and this is returned as the penalty.
+/// - An arbitrary function (I->R) is applied to the sum, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class FunctionOfIntegerPenaltySumCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::ChoicePenaltySumBasedCostFunction < signed long int > {
 
@@ -169,6 +169,12 @@ public:
 	std::vector< masala::base::Real > const &
 	get_penalty_function() const;
 
+	/// @brief Get the start of the penalty range.
+	/// @details If the start of the range is S, and there are N penalty
+	/// values provided, then the function is defined from S to S + N - 1.
+	signed long int
+	get_penalty_range_start() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +209,14 @@ public:
 	void
 	set_penalty_function(
 		std::vector< masala::base::Real > const & penalty_function_in
+	);
+
+	/// @brief Set the value at which the penalty range starts.
+	/// @details If the start of the range is S, and there are N penalty
+	/// values provided, then the function is defined from S to S + N - 1.
+	void
+	set_penalty_range_start(
+		signed long int const range_start
 	);
 
 public:

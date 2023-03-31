@@ -21,7 +21,7 @@
 /// @details FunctionOfIntegerPenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A signed integer penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
-/// - An arbitrary function is applied to the sum, and this is returned as the penalty.
+/// - An arbitrary function (I->R) is applied to the sum, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -237,6 +237,15 @@ FunctionOfIntegerPenaltySumCostFunction::get_penalty_function() const {
     return penalty_values_;
 }
 
+/// @brief Get the start of the penalty range.
+/// @details If the start of the range is S, and there are N penalty
+/// values provided, then the function is defined from S to S + N - 1.
+signed long int
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_range_start() const {
+    std::lock_guard< std::mutex > lock( mutex() );
+    return penalty_range_start_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -333,6 +342,22 @@ FunctionOfIntegerPenaltySumCostFunction::set_penalty_function(
     penalty_values_ = penalty_function_in;
 }
 
+/// @brief Set the value at which the penalty range starts.
+/// @details If the start of the range is S, and there are N penalty
+/// values provided, then the function is defined from S to S + N - 1.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_range_start(
+    signed long int const range_start
+) {
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_range_start", "The "
+        + class_name() + " instance has already been finalized.  This function can only be called "
+        "before finalization."
+    );
+    penalty_range_start_ = range_start;
+    write_to_tracer( "Set penalty range start to " + std::to_string(penalty_range_start_) + "." );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +406,8 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this, "A cost function which sums the penalties of the individual choices that were selected for "
-                "a given solution, then applies a nonlinear function to the result.", false, false
+                "a given solution, then applies a nonlinear function to the result.  The individual choices' penalties "
+                "are signed integers, and the final function maps integers to real numbers.", false, false
             )
         );
 
@@ -418,6 +444,16 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
                 std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< signed long int > >(
+                "get_penalty_range_start", "Get the start of the range over which penalty values are defined.  "
+                "(If the start of the range is S, and there are N penalty values provided, then the function "
+                "is defined from S to S + N - 1.)",
+                "penalty_range_start", "The start of the range over which penalty values are defined.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_range_start, this )
+            )
+        );
 
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
@@ -448,9 +484,19 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::vector< Real > const & > >(
                 "set_penalty_function", "Set the penalty function values from the starting value up to a user-desired "
-                "number of values.", "penalty_values_iin", "The penalty function values.",
+                "number of values.", "penalty_values_in", "The penalty function values.",
                 false, false,
                 std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_function, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< signed long int > >(
+                "set_penalty_range_start", "Set the start of the range over which penalty values are defined.  "
+                "(If the start of the range is S, and there are N penalty values provided, then the function "
+                "is defined from S to S + N - 1.)",
+                "penalty_range_start", "The start of the range over which penalty values are defined.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_range_start, this, std::placeholders::_1 )
             )
         );
 
