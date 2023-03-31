@@ -284,7 +284,7 @@ protected:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PRIVATE VARIABLES
+// USER-INPUT PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief The start of the specified penalty range.
@@ -298,6 +298,19 @@ private:
 
 	/// @brief The penalty function behaviour above the specified range.
 	PenaltyFunctionBehaviourOutsideRange behaviour_high_ = PenaltyFunctionBehaviourOutsideRange::QUADRATIC;
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES COMPUTED BY FINALIZATION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Parameters of penalty function outside of defined range.
+	/// @details Constant functions simply use a; linear functions use bx+a; quadratic functions use c^2+bx+a.
+	masala::base::Real c_high_ = 0.0;
+	masala::base::Real b_high_ = 0.0;
+	masala::base::Real a_high_ = 0.0;
+	masala::base::Real c_low_ = 0.0;
+	masala::base::Real b_low_ = 0.0;
+	masala::base::Real a_low_ = 0.0;
 
 }; // class FunctionOfIntegerPenaltySumCostFunction
 

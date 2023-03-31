@@ -590,6 +590,12 @@ FunctionOfIntegerPenaltySumCostFunction::assign_mutex_locked(
     penalty_values_ = src_cast_ptr->penalty_values_;
     behaviour_low_ = src_cast_ptr->behaviour_low_;
     behaviour_high_ = src_cast_ptr->behaviour_high_;
+    c_high_ = src_cast_ptr->c_high_;
+    b_high_ = src_cast_ptr->b_high_;
+    a_high_ = src_cast_ptr->a_high_;
+    c_low_ = src_cast_ptr->c_low_;
+    b_low_ = src_cast_ptr->b_low_;
+    a_low_ = src_cast_ptr->a_low_;
 
     ChoicePenaltySumBasedCostFunction< signed long int >::assign_mutex_locked( src );
 }
