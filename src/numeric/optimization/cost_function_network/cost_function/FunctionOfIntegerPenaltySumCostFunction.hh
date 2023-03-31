@@ -163,7 +163,11 @@ public:
 
 	/// @brief Set the penalty function behaviour above the range of values specified, by string.
 	std::string
-	get_penalty_function_behaviour_hig_by_string() const;
+	get_penalty_function_behaviour_high_by_string() const;
+
+	/// @brief Access the penalty function.
+	std::vector< masala::base::Real > const &
+	get_penalty_function() const;
 
 public:
 
@@ -193,6 +197,12 @@ public:
 	void
 	set_penalty_function_behaviour_high_by_string(
 		std::string const & behaviour_high_string
+	);
+
+	/// @brief Set penalty function in a given range of values.
+	void
+	set_penalty_function(
+		std::vector< masala::base::Real > const & penalty_function_in
 	);
 
 public:

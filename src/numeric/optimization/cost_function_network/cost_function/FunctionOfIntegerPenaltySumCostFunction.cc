@@ -205,25 +205,36 @@ FunctionOfIntegerPenaltySumCostFunction::class_namespace() const {
 /// @brief Set the penalty function behaviour below the range of values specified.
 PenaltyFunctionBehaviourOutsideRange
 FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low() const {
+    std::lock_guard< std::mutex > lock( mutex() );
     return behaviour_low_;
 }
 
 /// @brief Set the penalty function behaviour below the range of values specified, by string.
 std::string
 FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low_by_string() const {
+    std::lock_guard< std::mutex > lock( mutex() );
     return penalty_behaviour_string_from_enum( behaviour_low_ );
 }
 
 /// @brief Set the penalty function behaviour above the range of values specified.
 PenaltyFunctionBehaviourOutsideRange
 FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high() const {
+    std::lock_guard< std::mutex > lock( mutex() );
     return behaviour_high_;
 }
 
 /// @brief Set the penalty function behaviour above the range of values specified, by string.
 std::string
-FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_hig_by_string() const {
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high_by_string() const {
+    std::lock_guard< std::mutex > lock( mutex() );
     return penalty_behaviour_string_from_enum( behaviour_high_ );
+}
+
+/// @brief Access the penalty function.
+std::vector< masala::base::Real > const &
+FunctionOfIntegerPenaltySumCostFunction::get_penalty_function() const {
+    std::lock_guard< std::mutex > lock( mutex() );
+    return penalty_values_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +250,7 @@ FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_low(
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_function_behaviour_low", "The "
         + class_name() + " instance has already been finalized.  This function can only be called "
-        "before the finalization."
+        "before finalization."
     );
     CHECK_OR_THROW_FOR_CLASS(
         static_cast< Size >( behaviour_low ) > 0 &&
@@ -277,7 +288,7 @@ FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high(
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_function_behaviour_high", "The "
         + class_name() + " instance has already been finalized.  This function can only be called "
-        "before the finalization."
+        "before finalization."
     );
     CHECK_OR_THROW_FOR_CLASS(
         static_cast< Size >( behaviour_high ) > 0 &&
@@ -304,6 +315,22 @@ FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high_by_
         "are " + list_penalty_behaviours() + "."
     );
     set_penalty_function_behaviour_high( behaviour );
+}
+
+/// @brief Set penalty function in a given range of values.
+void
+FunctionOfIntegerPenaltySumCostFunction::set_penalty_function(
+    std::vector< masala::base::Real > const & penalty_function_in
+) {
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_function", "The "
+        + class_name() + " instance has already been finalized.  This function can only be called "
+        "before finalization."
+    );
+    CHECK_OR_THROW_FOR_CLASS( !penalty_function_in.empty(), "set_penalty_function", "The "
+        "input penalty function was an empty vector.  At least one entry is required!"
+    );
+    penalty_values_ = penalty_function_in;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,18 +396,26 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
         );
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::string > >(
-                "get_penalty_function_behaviour_low", "Get the penalty function behaviour below the range of values provided.",
+                "get_penalty_function_behaviour_low_by_string", "Get the penalty function behaviour below the range of values provided.",
                 "behaviour", "The penalty function behaviour below the range of penalties proivded.  Available outputs are: "
                 + list_penalty_behaviours() + ".", false, false,
-                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low, this )
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low_by_string, this )
             )
         );
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::string > >(
-                "get_penalty_function_behaviour_high", "Get the penalty function behaviour above the range of values provided.",
+                "get_penalty_function_behaviour_high_by_string", "Get the penalty function behaviour above the range of values provided.",
                 "behaviour", "The penalty function behaviour above the range of penalties proivded.  Available outputs are: "
                 + list_penalty_behaviours() + ".", false, false,
-                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high, this )
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high_by_string, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< Real > const & > >(
+                "get_penalty_function", "Get the values of the penalty function in the range provided.",
+                "penalty_function_values", "The values of the penalty function in the range proivded.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function, this )
             )
         );
 
@@ -408,6 +443,14 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
                 "penalties specified.  Available options are: " + list_penalty_behaviours() + ".",
                 false, false,
                 std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high_by_string, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::vector< Real > const & > >(
+                "set_penalty_function", "Set the penalty function values from the starting value up to a user-desired "
+                "number of values.", "penalty_values_iin", "The penalty function values.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_function, this, std::placeholders::_1 )
             )
         );
 
