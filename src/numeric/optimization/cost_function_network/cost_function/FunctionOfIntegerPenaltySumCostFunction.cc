@@ -367,6 +367,22 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
                 false, false, std::bind( &FunctionOfIntegerPenaltySumCostFunction::finalized, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::string > >(
+                "get_penalty_function_behaviour_low", "Get the penalty function behaviour below the range of values provided.",
+                "behaviour", "The penalty function behaviour below the range of penalties proivded.  Available outputs are: "
+                + list_penalty_behaviours() + ".", false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_low, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::string > >(
+                "get_penalty_function_behaviour_high", "Get the penalty function behaviour above the range of values provided.",
+                "behaviour", "The penalty function behaviour above the range of penalties proivded.  Available outputs are: "
+                + list_penalty_behaviours() + ".", false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::get_penalty_function_behaviour_high, this )
+            )
+        );
 
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
@@ -374,6 +390,24 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
                 "weight_in", "The multiplier, a factor by which the computed cost function is always multiplied.",
                 false, false,
                 std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_weight, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::string const & > >(
+                "set_penalty_function_behaviour_low_by_string", "Set the penalty function behaviour below the range "
+                "of penalty values specified.", "behaviour_in", "The penalty function behaviour below the range of "
+                "penalties specified.  Available options are: " + list_penalty_behaviours() + ".",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_low_by_string, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::string const & > >(
+                "set_penalty_function_behaviour_high_by_string", "Set the penalty function behaviour above the range "
+                "of penalty values specified.", "behaviour_in", "The penalty function behaviour above the range of "
+                "penalties specified.  Available options are: " + list_penalty_behaviours() + ".",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_function_behaviour_high_by_string, this, std::placeholders::_1 )
             )
         );
 
