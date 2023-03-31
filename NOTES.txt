@@ -103,4 +103,5 @@
      - (Note that currently, I'm releasing and re-locking mutexes for base and derived class data on calls to the copy constructor or to operator=.  This is bad, and not really threadsafe.)
 
 - [ ] Deal with situation of total threads not being set before thread manager is called.
-- [ ] PROBLEM: X contains Y, and has a function that returns YCSP.  X_API returns Y_APICSP.  But when Y is a Z (a derived class of Y), the Z still gets encapsulated in a Y_APICSP.  Need to figure out how to fix.
+- [X] PROBLEM: X contains Y, and has a function that returns YCSP.  X_API returns Y_APICSP.  But when Y is a Z (a derived class of Y), the Z still gets encapsulated in a Y_APICSP.  Need to figure out how to fix.
+     - [ ] I've solved this for now, but better solution is just to define a dynamic_api_cast function and a static_api_cast function, analogous to dynamic_pointer_cast and static_pointer_cast.

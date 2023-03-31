@@ -23,8 +23,15 @@
 // Unit header:
 #include <numeric_api/utility/optimization/cost_function_network/util.hh>
 
-// Numeric headers:
+// Numeric API headers:
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.hh>
+
+// Base headers:
+#include <base/types.hh>
+
+// STL headers:
+#include <vector>
 
 namespace masala {
 namespace numeric_api {
@@ -35,6 +42,11 @@ namespace cost_function_network {
 /// @brief This is a utility funciton to construct a standard test problem for
 /// testing out cost function network optimizers.  This problem has three nodes
 /// with three choices per node, for a total of 27 possible solutions.
+/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+/// by default.
+/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+/// false, we leave the problem unfinalized, permitting additional stuff to be added.
 /// @details  The solutions and solutions scores are as follows:
 /// 0 0 0 -> 71
 /// 0 0 1 -> 54
@@ -63,9 +75,16 @@ namespace cost_function_network {
 /// 2 2 0 -> 18
 /// 2 2 1 -> 6  <-- lowest
 /// 2 2 2 -> 7
+/// If gapped, all solutions shift up by 17.
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-construct_test_problem() {
+construct_test_problem(
+    bool const gapped,
+    bool const finalized
+) {
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+
+    masala::base::Size const last_node( gapped ? 3 : 2 );
+
     PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
         masala::make_shared< PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API >()
     );
@@ -77,9 +96,9 @@ construct_test_problem() {
     problem->set_onebody_penalty( 1, 0, 15 );
     problem->set_onebody_penalty( 1, 1, 43 );
     problem->set_onebody_penalty( 1, 2, 0 );
-    problem->set_onebody_penalty( 2, 0, 14 );
-    problem->set_onebody_penalty( 2, 1, 5 );
-    problem->set_onebody_penalty( 2, 2, 0 );
+    problem->set_onebody_penalty( last_node, 0, 14 );
+    problem->set_onebody_penalty( last_node, 1, 5 );
+    problem->set_onebody_penalty( last_node, 2, 0 );
 
     // Configure pairwise two-node penalties:
     problem->set_twobody_penalty( std::make_pair( 0, 1 ), std::make_pair( 0, 0 ), 5 );
@@ -92,28 +111,143 @@ construct_test_problem() {
     problem->set_twobody_penalty( std::make_pair( 0, 1 ), std::make_pair( 2, 1 ), 3 );
     problem->set_twobody_penalty( std::make_pair( 0, 1 ), std::make_pair( 2, 2 ), 1 );
 
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 0, 0 ), 5 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 0, 1 ), 3 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 0, 2 ), 9 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 1, 0 ), 4 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 1, 1 ), 1 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 1, 2 ), 2 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 2, 0 ), 1 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 2, 1 ), 0 );
-    problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 2, 2 ), 3 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 0, 0 ), 5 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 0, 1 ), 3 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 0, 2 ), 9 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 1, 0 ), 4 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 1, 1 ), 1 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 1, 2 ), 2 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 2, 0 ), 1 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 2, 1 ), 0 );
+    problem->set_twobody_penalty( std::make_pair( 0, last_node ), std::make_pair( 2, 2 ), 3 );
 
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 0, 0 ), 7 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 0, 1 ), 1 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 0, 2 ), 4 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 1, 0 ), 6 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 1, 1 ), 4 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 1, 2 ), 8 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 0 ), 2 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 1 ), 0 );
-    problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 2 ), 3 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 0, 0 ), 7 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 0, 1 ), 1 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 0, 2 ), 4 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 1, 0 ), 6 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 1, 1 ), 4 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 1, 2 ), 8 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 2, 0 ), 2 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 2, 1 ), 0 );
+    problem->set_twobody_penalty( std::make_pair( 1, last_node ), std::make_pair( 2, 2 ), 3 );
 
-    // Finalize the problem.
-    problem->finalize();
+    if( gapped ) {
+        // We set some penalties here that become fixed background.  The fixed background should be 17.0.
+        problem->set_onebody_penalty( 2, 0, 12.0 );
+
+        // The pairwise penalties for choices at node 0 with node 2 are effectively onebody penalties, so they have to be the same:
+        problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 0, 0 ), 3.0 );
+        problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 1, 0 ), 3.0 );
+        problem->set_twobody_penalty( std::make_pair( 0, 2 ), std::make_pair( 2, 0 ), 3.0 );
+
+        // The pairwise penalties for choices at node 1 with node 2 are also effectively onebody penalties, so they have to be the same:
+        problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 0, 0 ), 2.0 );
+        problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 1, 0 ), 2.0 );
+        problem->set_twobody_penalty( std::make_pair( 1, 2 ), std::make_pair( 2, 0 ), 2.0 );
+    }
+
+    if( finalized ) {
+        // Finalize the problem.
+        problem->finalize();
+    }
+    
+    // Return the problem.
+    return problem;
+}
+
+/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
+/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
+/// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
+/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+/// by default.
+/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+/// false, we leave the problem unfinalized, permitting additional stuff to be added.
+/// @details  The solutions and solutions scores are as follows if ungapped:
+/// 0 0 0 -> 80
+/// 0 0 1 -> 103
+/// 0 0 2 -> 107
+/// 0 1 0 -> 132
+/// 0 1 1 -> 183
+/// 0 1 2 -> 188
+/// 0 2 0 -> 59
+/// 0 2 1 -> 78
+/// 0 2 2 -> 82
+/// 1 0 0 -> 80
+/// 1 0 1 -> 94
+/// 1 0 2 -> 93
+/// 1 1 0 -> 125
+/// 1 1 1 -> 167
+/// 1 1 2 -> 167
+/// 1 2 0 -> 55
+/// 1 2 1 -> 65
+/// 1 2 2 -> 64
+/// 2 0 0 -> 39
+/// 2 0 1 -> 47
+/// 2 0 2 -> 48
+/// 2 1 0 -> 83
+/// 2 1 1 -> 119
+/// 2 1 2 -> 121
+/// 2 2 0 -> 18  <-- lowest
+/// 2 2 1 -> 22
+/// 2 2 2 -> 23
+///
+/// The solutions and solutions scores are as follows if gapped:
+/// 0 0 0 -> 113
+/// 0 0 1 -> 152
+/// 0 0 2 -> 156
+/// 0 1 0 -> 177
+/// 0 1 1 -> 244
+/// 0 1 2 -> 249
+/// 0 2 0 -> 88
+/// 0 2 1 -> 123
+/// 0 2 2 -> 127
+/// 1 0 0 -> 109
+/// 1 0 1 -> 139
+/// 1 0 2 -> 138
+/// 1 1 0 -> 166
+/// 1 1 1 -> 224
+/// 1 1 2 -> 224
+/// 1 2 0 -> 80
+/// 1 2 1 -> 106
+/// 1 2 2 -> 105
+/// 2 0 0 -> 64
+/// 2 0 1 -> 88
+/// 2 0 2 -> 89
+/// 2 1 0 -> 120
+/// 2 1 1 -> 172
+/// 2 1 2 -> 174
+/// 2 2 0 -> 39  <-- lowest
+/// 2 2 1 -> 59
+/// 2 2 2 -> 60
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+construct_test_problem_with_squared_choice_count_penalties(
+    bool const gapped,
+    bool const finalized
+) {
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
+
+    masala::base::Size const last_node( gapped ? 3 : 2 );
+
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false) );
+
+    SquareOfChoicePenaltySumCostFunction_APISP cost_func( masala::make_shared< SquareOfChoicePenaltySumCostFunction_API >() );
+
+    cost_func->set_constant_offset( -3.0 );
+    cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< masala::base::Real >{ 3.0, 2.0, 1.0 } );
+    cost_func->set_penalties_for_all_choices_at_node( 1, std::vector< masala::base::Real >{ 2.0, 5.0, 1.0 } );
+    if( gapped ) {
+        cost_func->set_penalties_for_all_choices_at_node( 2, std::vector< masala::base::Real >{ 2.0 } );
+    }
+    cost_func->set_penalties_for_all_choices_at_node( last_node, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
+
+    problem->add_cost_function( cost_func );
+
+    if( finalized ) {
+        // Finalize the problem.
+        problem->finalize();
+    }
     
     // Return the problem.
     return problem;

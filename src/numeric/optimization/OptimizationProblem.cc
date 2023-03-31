@@ -29,6 +29,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -143,6 +144,14 @@ OptimizationProblem::finalize() {
     OptimizationProblem::protected_finalize();
 }
 
+/// @brief Has this problem been finalized?
+/// @details Locks mutex for check.
+bool
+OptimizationProblem::finalized() const {
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+    return OptimizationProblem::protected_finalized();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +180,17 @@ OptimizationProblem::get_api_definition() {
 
         // Constructors:
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OptimizationProblem, api_def );
+
+        // Getters:
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this problem description been finalized?  That is, is the problem setup "
+                "complete and the object locked to now be read-only?",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false,
+                std::bind( &OptimizationProblem::finalized, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(

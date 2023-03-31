@@ -161,7 +161,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::background_constant_o
 /// one choice, plus the twobdy energies between those nodes.
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_constant_offset() const {;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "one_choice_node_constant_offset", "The problem setup must be finalized with a call "
         "to finalize() before this function can be called."
     );
     return one_choice_node_constant_offset_;
@@ -171,7 +171,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::one_choice_node_const
 /// @details This is the sum of background_constant_offset() and one_choice_node_constant_offset().
 masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset() const {
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "total_constant_offset", "The problem setup must be finalized with a call "
         "to finalize() before this function can be called."
     );
     return one_choice_node_constant_offset_ + background_constant_offset_;
@@ -182,7 +182,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::total_constant_offset
 /// @details For now, returns false.  This will be implemented in the future.
 bool
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores() const {
-    // CHECK_OR_THROW_FOR_CLASS( finalized(), "has_non_pairwise_scores", "The problem setup must be finalized with a call "
+    // CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "has_non_pairwise_scores", "The problem setup must be finalized with a call "
     //     "to finalize() before this function can be called."
     // );
     return false;
@@ -292,12 +292,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
 ) const {
     using base::Real;
     using base::Size;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_absolute_score", "The problem setup must be finalized before compute_absolute_score() can be called." );
 
-    Real accumulator( total_constant_offset() );
-    // if( has_non_pairwise_scores() ) {
-    //     accumulator += compute_non_pairwise_score( candidate_solution );
-    // }
+    Real accumulator(
+        total_constant_offset() +
+        CostFunctionNetworkOptimizationProblem::compute_absolute_score( candidate_solution ) // Handles anything non-pairwise.
+    );
+
     Size const n_pos( candidate_solution.size() );
     std::vector< std::pair< Size, Size > > const variable_positions( n_choices_at_variable_nodes() );
     CHECK_OR_THROW_FOR_CLASS( candidate_solution.size() == variable_positions.size(), "compute_absolute_score",
@@ -348,14 +349,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 ) const {
     using masala::base::Real;
     using masala::base::Size;
-    CHECK_OR_THROW_FOR_CLASS( finalized(), "compute_score_change", "The problem setup must be finalized "
+    CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_score_change", "The problem setup must be finalized "
         "before compute_score_change() can be called."
     );
 
-    Real accumulator( 0.0 );
-    // if( has_non_pairwise_scores() ) {
-    //     accumulator += compute_non_pairwise_score_change( old_solution, new_solution );
-    // }
+    Real accumulator( CostFunctionNetworkOptimizationProblem::compute_score_change( old_solution, new_solution ) ); //Handles any non-pairwise terms.
+
     base::Size const npos( protected_total_variable_nodes() ); //Only safe to call if finalized.
     CHECK_OR_THROW_FOR_CLASS( old_solution.size() == npos, "compute_score_change",
         "The size of the old candidate solution vector was " + std::to_string( old_solution.size() ) + ", but "
@@ -462,6 +461,15 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "otherwise.  (For now, always false.  Non-pairwise functionality will be added in the future.)",
                 false, false,
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::has_non_pairwise_scores, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this problem description been finalized?  That is, is the problem setup "
+                "complete and the object locked to now be read-only?",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false,
+                std::bind( &OptimizationProblem::finalized, this )
             )
         );
 
@@ -672,11 +680,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
     using masala::base::Size;
 
     std::set< Size > one_choice_nodes;
+    //write_to_tracer( "NODE\tCHOICE_COUNT" );
     for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index().begin() );
         it != n_choices_by_node_index().end();
         ++it
     ) {
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( one_choice_nodes.count( it->first ) == 0, "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes", "Node " + std::to_string( it->first ) + " is already in the set of one-choice nodes!" );
+        //write_to_tracer( std::to_string(it->first) + "\t" + std::to_string(it->second) );
         if( it->second == 1 ) {
             one_choice_nodes.insert(it->first);
         }

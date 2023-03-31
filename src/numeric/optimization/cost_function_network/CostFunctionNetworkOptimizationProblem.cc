@@ -29,12 +29,16 @@
 #include <vector>
 #include <string>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
+
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
@@ -128,7 +132,7 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
-    if( finalized() ) {
+    if( protected_finalized() ) {
         return total_variable_nodes_;
     }
     std::lock_guard< std::mutex > lock( problem_mutex() );
@@ -154,7 +158,7 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
     using masala::base::Size;
-    if( finalized() ) {
+    if( protected_finalized() ) {
         return n_choices_at_variable_nodes_;
     }
     std::vector< std::pair< Size, Size > > outvec;
@@ -231,6 +235,17 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
     set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count ); // Checks that state is not finalized.
 }
 
+/// @brief Add a (non-quadratic) cost function.
+/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+/// must not yet be finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_cost_function(
+    masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
+) {
+    std::lock_guard< std::mutex > lock( problem_mutex() );
+    add_cost_function_mutex_locked( cost_function );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -243,10 +258,13 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
 /// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_absolute_score(
-    std::vector< base::Size > const & /*candidate_solution*/
+    std::vector< base::Size > const & candidate_solution
 ) const {
-    MASALA_THROW( class_namespace_and_name(), "compute_absolute_score", "This function is not implemented for the base class -- only for derived classes, at present." );
-    return 0.0; //TODO implement support for non-pairwise problems.
+    masala::base::Real accumulator(0.0);
+    for( auto const & entry : cost_functions_ ) {
+        accumulator += entry->compute_cost_function( candidate_solution );
+    }
+    return accumulator;
 }
 
 /// @brief Given a pair of candidate solutions, compute the difference in their scores.
@@ -257,11 +275,14 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 /// a read-only context.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_score_change(
-    std::vector< base::Size > const & /*old_solution*/,
-    std::vector< base::Size > const & /*new_solution*/
+    std::vector< base::Size > const & old_solution,
+    std::vector< base::Size > const & new_solution
 ) const {
-    MASALA_THROW( class_namespace_and_name(), "compute_score_change", "This function is not implemented for the base class -- only for derived classes, at present." );
-    return 0.0; //TODO implement support for non-pairwise problems.
+    masala::base::Real accumulator(0.0);
+    for( auto const & entry : cost_functions_ ) {
+        accumulator += entry->compute_cost_function_difference( old_solution, new_solution );
+    }
+    return accumulator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -345,6 +366,15 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this problem description been finalized?  That is, is the problem setup "
+                "complete and the object locked to now be read-only?",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false,
+                std::bind( &OptimizationProblem::finalized, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
@@ -366,15 +396,20 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< base::Size, base::Size > >(
                 "set_minimum_number_of_choices_at_node", "Set the (minimum) number of choices at a node.  "
                 "If the number of choices has already been set to greater than the specified number, this does nothing.",
-
                 "node_index", "The index of the node for which we're setting the minimum number of choices.",
-
                 "min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
                 "been set for this node to a value greater than this, then this does nothing.",
-
                 false, false,
-
                 std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > >(
+                "add_cost_function", "Add a cost function to the set of cost functions that will be evaluated during optimization.",
+                "cost_function", "The input cost function, which should be unfinalized.  This is used directly, not cloned.  "
+                "The CostFunctionNetworkOptimizationProblem takes ownership and manages the state of the cost function, "
+                "including its finalization.", false, false,
+                std::bind( &CostFunctionNetworkOptimizationProblem::add_cost_function, this, std::placeholders::_1 )
+            )
         );
 
         // Work functions:
@@ -432,10 +467,11 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
     masala::base::Size const node_index,
     masala::base::Size const min_choice_count
 ) {
-    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
-    CHECK_OR_THROW_FOR_CLASS( !finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_minimum_number_of_choices_at_node_mutex_locked",
         "This object has already been finalized.  Cannot set the minimum number of choices at a node at this point!"
     );
+
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index_.find(node_index) );
     if( it == n_choices_by_node_index_.end() ) {
         n_choices_by_node_index_[node_index] = min_choice_count;
     } else {
@@ -445,11 +481,27 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mu
     }
 }
 
+/// @brief Add a (non-quadratic) cost function.
+/// @details Stores the object directly; does not clone it.  The CostFunctionNetworkOptimizationProblem
+/// must not yet be finalized.  This version assumes that the mutex for this object has already been locked.
+void
+CostFunctionNetworkOptimizationProblem::add_cost_function_mutex_locked(
+    masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & cost_function
+) {
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_cost_function_mutex_locked",
+        "This object has already been finalized.  Cannot add a cost function at this point!"
+    );
+    CHECK_OR_THROW_FOR_CLASS( !cost_function->finalized(), "add_cost_function", "The input " + cost_function->class_name()
+        + " is already finalized.  Expected an unfinalized object!"
+    );
+    cost_functions_.push_back( cost_function );
+}
+
 /// @brief Access the number of choices by node index.
 /// @note This assumes that the problem mutex has already been set.
 std::map< masala::base::Size, masala::base::Size > &
 CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
-    CHECK_OR_THROW_FOR_CLASS( !finalized(), "n_choices_by_node_index",
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "n_choices_by_node_index",
         "Can only get nonconst access to the number of choices by node index if the problem has not been finalized!"
     );
     return n_choices_by_node_index_;
@@ -489,6 +541,20 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
         }
     );
 
+    // Finalize cost functions:
+    if( !cost_functions_.empty() ) {
+        std::vector< Size > variable_indices( n_choices_at_variable_nodes_.size() );
+        for( Size i(0), imax(n_choices_at_variable_nodes_.size()); i<imax; ++i ) {
+            variable_indices[i] = n_choices_at_variable_nodes_[i].first;
+        }
+        for( auto const & cost_function : cost_functions_ ) {
+            CHECK_OR_THROW_FOR_CLASS( !(cost_function->finalized()), "protected_finalize", "A " + cost_function->class_name()
+                + " cost function was already finalized.  Expected all cost functions to be unfinalized!"
+            )
+            cost_function->finalize( variable_indices );
+        }
+    }
+
     masala::numeric::optimization::OptimizationProblem::protected_finalize();
 }
 
@@ -496,7 +562,7 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 /// @details The finalize() function must be called before this function is used.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_total_variable_nodes", "This object must be finalized before this function is called!" );
     return total_variable_nodes_;
 }
 
@@ -505,7 +571,7 @@ CostFunctionNetworkOptimizationProblem::protected_total_variable_nodes() const {
 /// @details The finalize() function must be called before this function is used.
 std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
 CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() const {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
     return n_choices_at_variable_nodes_;
 }
 

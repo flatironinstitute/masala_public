@@ -68,7 +68,7 @@ public:
     /// @brief Deep clone all of the internal data for this object, making it fully
     /// independent of any other object.
     void
-    make_independent();
+    make_independent() override;
 
 public:
 
