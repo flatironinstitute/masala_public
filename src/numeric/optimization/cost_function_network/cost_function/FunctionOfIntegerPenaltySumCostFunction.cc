@@ -36,6 +36,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
@@ -469,6 +470,26 @@ FunctionOfIntegerPenaltySumCostFunction::get_api_definition() {
             )
         );
 
+
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< signed long int > const & > >(
+                "set_penalties_for_all_choices_at_node", "Set the penalties for all of the choices at one node.",
+                "absolute_node_index", "The absolute index of the node for which we're setting penalties.",
+                "penalties_by_choice_index", "The penalties for all of the choices, indexed by choice index.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalties_for_all_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, signed long int > >(
+                "set_penalty_for_choice_at_node", "Set the penalty for a given choice at one node.",
+                "absolute_node_index", "The absolute index of the node for which we're setting a penalty.",
+                "choice_index", "The index of the choice at this node for which we're setting a penalty.",
+                "penalty_value", "The penalty value for this choice at this node.",
+                false, false,
+                std::bind( &FunctionOfIntegerPenaltySumCostFunction::set_penalty_for_choice_at_node, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+            )
+        );
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
                 "set_weight", "Set a multiplier for this cost function.",
