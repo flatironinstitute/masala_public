@@ -325,7 +325,7 @@ private:
 	/// @param[in] high If true, we're doing the high end of the range; if false, we're doing the low.
 	/// @param[in] behaviour The penalty function behaviour (constant, linear, or quadratic).
 	/// @param[in] start_x The value of x at the start of the range
-	/// @param[in] penalty_values The penalty values within the range.  Up to three at the low or high
+	/// @param[in] penalty_values The penalty values within the range.  Up to two at the low or high
 	/// end will be fitted to determine the parameters.
 	/// @param[out] a The constant offset, fitted by this function (for all behaviours).
 	/// @param[out] b The slope, fitted by this function (for linear or quadratic).  Will be 0 for constant.

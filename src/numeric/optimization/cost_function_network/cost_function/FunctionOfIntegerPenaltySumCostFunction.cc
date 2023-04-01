@@ -569,9 +569,10 @@ FunctionOfIntegerPenaltySumCostFunction::protected_finalize(
     if( behaviour_high_ == PenaltyFunctionBehaviourOutsideRange::QUADRATIC ||
         behaviour_low_ == PenaltyFunctionBehaviourOutsideRange::QUADRATIC
     ) {
-        CHECK_OR_THROW_FOR_CLASS( penalty_values_.size() >= 3, "protected_finalize", "If a quadratic function "
-            "is used before or after the defined penalty function value range, then at least three penalty "
-            "values must be defined.  (A parabola is fitted to three terminal points to smoothly extend them.)"
+        CHECK_OR_THROW_FOR_CLASS( penalty_values_.size() >= 2, "protected_finalize", "If a quadratic function "
+            "is used before or after the defined penalty function value range, then at least two penalty "
+            "values must be defined.  (A parabola is fitted to have its vertex on the second-to-terminal point "
+            "and to pass through the terminal point.)"
         );
     } else if ( behaviour_high_ == PenaltyFunctionBehaviourOutsideRange::LINEAR ||
         behaviour_low_ == PenaltyFunctionBehaviourOutsideRange::LINEAR
@@ -682,7 +683,7 @@ FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
 /// @param[in] high If true, we're doing the high end of the range; if false, we're doing the low.
 /// @param[in] behaviour The penalty function behaviour (constant, linear, or quadratic).
 /// @param[in] start_x The value of x at the start of the range.
-/// @param[in] penalty_values The penalty values within the range.  Up to three at the low or high
+/// @param[in] penalty_values The penalty values within the range.  Up to two at the low or high
 /// end will be fitted to determine the parameters.
 /// @param[out] a The constant offset, fitted by this function (for all behaviours).
 /// @param[out] b The slope, fitted by this function (for linear or quadratic).  Will be 0 for constant.
@@ -736,40 +737,32 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
             a = penalty_values[x1_index] - ( b * static_cast<Real>(x1) );
             break;
         case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
-            // y = c x^2 + b x + a, passing through (x1, y1), (x2, y2), and (x3, y3).
-            // y1 = c x1^2 + b x1 + a; y2 = c x2^2 + b x2 + a; y3 = c x3^2 + b x^3 + a
-            // y1 - y2 = c( x1^2 - x2^2 ) + b( x1 - x2 ); y1 - y3 = c( x1^2 - x3^2 ) + b (x1 - x3)
-            // (y1 - y2 - c( x1^2 - x2^2 ))/(x1-x2) = b; (y1 - y3 - c( x1^2 - x3^2 ))/(x1-x3) = b
-            // (x1-x3)(y1 - y2 - c( x1^2 - x2^2 )) = (x1-x2)(y1 - y3 - c( x1^2 - x3^2 ))
-            // x1 y1 - x1 y2 - c x1( x1^2 - x2^2 ) - x3 y1 + x3 y2 + c x3( x1^2 - x2^2 ) = x1 y1 - x1 y3 - c x1( x1^2 - x3^2 ) - x2 y1 + x2 y3 + c x2( x1^2 - x3^2 )
-            // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( x1(2 x1^2-x2^2-x3^2) + x2(x3^2-x1^2) + x3(x1^2-x2^2) )
-            // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( x1((x1-x2)(x1+x2) + (x1-x3)(x1+x3)) + x2(x3-x1)(x3+x1) + x3(x1-x2)(x1+x2) )
-            // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( (x1+x3)(x1-x2)(2x1+x2-x3) )
-            // b = (y1 - y3 - c( x1^2 - x3^2 ))/(x1-x3)
-            // a = y1 - c x1^2 - b x1
+            // We want a parabola with its vertex at (x2, y2) passing through (x1, y1).
+            // y = K(x-x2)^2 + y2 --> y2 = K(x2-x2)^2 + y2 (checks out; vertex is at (x2, y2), as desired).
+            // y = K( x^2 - 2 x x2 + x2^2 ) + y2
+            // y = K x^2 - 2 x2 x + x2^2 + y2
+            // y1 = K x1^2 - 2 x2 x1 + x2^2 + y2
+            // K = (y1 + 2 x2 x1 - x2^2 - y2) / x1^2
+            // Let c = K, b = - 2 x2, a = x2^2 + y2
             DEBUG_MODE_CHECK_OR_THROW(
-                penalty_values.size() > 2,
+                penalty_values.size() > 1,
                 class_namespace_static() + "::" + class_name_static(),
                 "fit_tail_function",
-                "Expected at least three penalty values to be defined before this function is called "
+                "Expected at least two penalty values to be defined before this function is called "
                 "for quadratic fit!"
             );
             Size const x1_index( high ? penalty_values.size() - 1 : 0 );
             Size const x2_index( high ? x1_index - 1 : x1_index + 1 );
-            Size const x3_index( high ? x2_index - 1 : x2_index + 1 );
             Real const x1( static_cast<Real>( high ? start_x + static_cast< signed long int >(x1_index) : start_x ) );
             Real const x2( static_cast<Real>( high ? x1 - 1 : x1 + 1 ) );
-            Real const x3( static_cast<Real>( high ? x2 - 1 : x2 + 1 ) );
             Real const x1sq( static_cast<Real>( x1*x1 ) );
             Real const x2sq( static_cast<Real>( x2*x2 ) );
-            Real const x3sq( static_cast<Real>( x3*x3 ) );
             Real const y1( penalty_values[x1_index] );
             Real const y2( penalty_values[x2_index] );
-            Real const y3( penalty_values[x3_index] );
 
-            c = ( x1*(y3-y2) + x2*(y1-y3) + x3*(y2-y1) ) / ( x1*(2*x1sq-x2sq-x3sq) + x2*(x3sq-x1sq) + x3*(x1sq-x2sq) );
-            b = (y1 - y3 - c*(x1sq-x3sq) ) / (x1-x3);
-            a = y1 - c*x1sq - b*x1;
+            a = x2sq + y2;
+            b = -2 * x2;
+            c = ( y1 - b * x1 - a ) / x1sq;
 
             break;
         default :
