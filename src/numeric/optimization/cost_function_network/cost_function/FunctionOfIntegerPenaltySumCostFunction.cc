@@ -670,7 +670,7 @@ FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "function_of_sum", "This function must be called from a finalized context!" );
     if( x < penalty_range_start_ ) {
         return compute_outside_range_function( behaviour_low_, x, a_low_, b_low_, c_low_ );
-    } else if ( x >= penalty_range_start_ + penalty_values_.size() ) {
+    } else if ( x >= penalty_range_start_ + static_cast<signed long int>(penalty_values_.size()) ) {
         return compute_outside_range_function( behaviour_high_, x, a_high_, b_high_, c_high_ );
     } else {
         return penalty_values_[ x - penalty_range_start_ ];
@@ -705,6 +705,7 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
 
     switch( behaviour ) {
         case PenaltyFunctionBehaviourOutsideRange::CONSTANT :
+        {
             DEBUG_MODE_CHECK_OR_THROW(
                 penalty_values.size() > 0,
                 class_namespace_static() + "::" + class_name_static(),
@@ -716,7 +717,9 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
             b = 0;
             c = 0;
             break;
+        }
         case PenaltyFunctionBehaviourOutsideRange::LINEAR :
+        {
             // y = b x + a, passing through (x1, y1) and (x2, y2)
             // y1 = b x1 + a; y2 = b x2 + a
             // y1 - y2 = b( x1 - x2 ) --> b = (y1 - y2)/(x1 - x2)
@@ -736,7 +739,9 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
             b = (penalty_values[x1_index] - penalty_values[x2_index])/static_cast<Real>(x1 - x2);
             a = penalty_values[x1_index] - ( b * static_cast<Real>(x1) );
             break;
+        }
         case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
+        {
             // We want a parabola with its vertex at (x2, y2) passing through (x1, y1).
             // y = K(x-x2)^2 + y2 --> y2 = K(x2-x2)^2 + y2 (checks out; vertex is at (x2, y2), as desired).
             // y = K( x^2 - 2 x x2 + x2^2 ) + y2
@@ -765,11 +770,14 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
             c = ( y1 - b * x1 - a ) / x1sq;
 
             break;
+        }
         default :
+        {
             MASALA_THROW( class_namespace_static() + "::" + class_name_static(),
                 "fit_tail_function",
                 "Undefined penalty value behaviour was specified!"
             );
+        }
     }
 }
 
