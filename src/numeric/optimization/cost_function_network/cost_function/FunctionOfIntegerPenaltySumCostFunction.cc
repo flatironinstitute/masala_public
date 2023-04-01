@@ -586,7 +586,8 @@ FunctionOfIntegerPenaltySumCostFunction::protected_finalize(
         );
     }
 
-    TODO do fitting here.
+    // Determine the parameters for the tail functions.
+    fit_tail_functions_mutex_locked();
 
     ChoicePenaltySumBasedCostFunction< signed long int >::protected_finalize( variable_node_indices );
 }
@@ -627,11 +628,12 @@ FunctionOfIntegerPenaltySumCostFunction::make_independent_mutex_locked() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Compute the tail function outside of the range of penalty values specified.
+/// @details This is a static function.
 /// @param[in] behaviour The behaviour (constant, linear, or quadratic).
 /// @param[in] x The value of the input function.
 /// @param[in] a The constant offset.
 /// @param[in] b The slope.
-/// @param[in] c The quadratic term.
+/// @param[in] c The quadratic term coefficient.
 /// @details The overall equation is cx^2 + bx + a for quadratic, bx+a for linear, a for constant.
 /*static*/
 masala::base::Real
@@ -659,6 +661,7 @@ FunctionOfIntegerPenaltySumCostFunction::compute_outside_range_function(
 }
 
 /// @brief Compute the function that maps I->R.
+/// @note Performs no mutex-locking.  Expects a finalized context.
 masala::base::Real
 FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
     signed long int x
@@ -672,6 +675,69 @@ FunctionOfIntegerPenaltySumCostFunction::function_of_sum(
         return penalty_values_[ x - penalty_range_start_ ];
     }
     return 0.0; // For older compilers.
+}
+
+/// @brief Fit a single tail function.
+/// @details This is a static function.
+/// @param[in] high If true, we're doing the high end of the range; if false, we're doing the low.
+/// @param[in] behaviour The penalty function behaviour (constant, linear, or quadratic).
+/// @param[in] start_x The value of x at the start of the range.
+/// @param[in] penalty_values The penalty values within the range.  Up to three at the low or high
+/// end will be fitted to determine the parameters.
+/// @param[out] a The constant offset, fitted by this function (for all behaviours).
+/// @param[out] b The slope, fitted by this function (for linear or quadratic).  Will be 0 for constant.
+/// @param[out] c The quadratic term coefficient, fitted by this function (for quadratic).  Will be 0 for
+/// constant or linear.
+/*static*/
+void
+FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
+    bool const high,
+    PenaltyFunctionBehaviourOutsideRange const behaviour,
+    signed long int start_x,
+    std::vector< masala::base::Real > const & penalty_values,
+    masala::base::Real & a,
+    masala::base::Real & b,
+    masala::base::Real & c
+) {
+    using masala::base::Size;
+    using masala::base::Real;
+
+    switch( behaviour ) {
+        case PenaltyFunctionBehaviourOutsideRange::CONSTANT :
+            a = ( high ? penalty_values[penalty_values.size() - 1] : penalty_values[0] );
+            b = 0;
+            c = 0;
+            break;
+        case PenaltyFunctionBehaviourOutsideRange::LINEAR :
+            // y = bx + a, passing through (x1, y1) and (x2, y2)
+            // y1 = b x1 + a; y2 = b x2 + a
+            // y1 - y2 = b( x1 - x2 ) --> b = (y1 - y2)/(x1 - x2)
+            // a = y1 - b x1
+            Size const x1_index( high ? penalty_values.size() - 1 : 0 );
+            Size const x2_index( high ? x1_index - 1 : x1_index + 1 );
+            signed long int const x1( high ? start_x + static_cast< signed long int >(x1_index) : start_x );
+            signed long int const x2( high ? x1 - 1 : x1 + 1 );
+            c = 0;
+            b = (penalty_values[x1_index] - penalty_values[x2_index])/static_cast<Real>(x1 - x2);
+            a = penalty_values[x1_index] - ( b * static_cast<Real>(x1) );
+            break;
+        case PenaltyFunctionBehaviourOutsideRange::QUADRATIC :
+            TODO
+            break;
+        default :
+            MASALA_THROW( class_namespace_static() + "::" + class_name_static(),
+                "fit_tail_function",
+                "Undefined penalty value behaviour was specified!"
+            );
+    }
+}
+
+/// @brief Determine the parameters of the tail functions.
+/// @note Performs no mutex-locking.  Called from protected_finalize().
+void
+FunctionOfIntegerPenaltySumCostFunction::fit_tail_functions_mutex_locked() {
+    fit_tail_function( false, behaviour_low_, penalty_range_start_, penalty_values_, a_low_, b_low_, c_low_ );
+    fit_tail_function( true, behaviour_high_, penalty_range_start_, penalty_values_, a_high_, b_high_, c_high_ );
 }
 
 } // namespace cost_function

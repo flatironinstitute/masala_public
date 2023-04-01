@@ -296,11 +296,12 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Compute the tail function outside of the range of penalty values specified.
+	/// @details This is a static function.
 	/// @param[in] behaviour The behaviour (constant, linear, or quadratic).
 	/// @param[in] x The value of the input function.
 	/// @param[in] a The constant offset.
 	/// @param[in] b The slope.
-	/// @param[in] c The quadratic term.
+	/// @param[in] c The quadratic term coefficient.
 	/// @details The overall equation is cx^2 + bx + a for quadratic, bx+a for linear, a for constant.
 	static
 	masala::base::Real
@@ -313,10 +314,38 @@ private:
 	);
 
 	/// @brief Compute the function that maps I->R.
+	/// @note Performs no mutex-locking.  Expects a finalized context.
 	masala::base::Real
 	function_of_sum(
 		signed long int x
 	) const;
+
+	/// @brief Fit a single tail function.
+	/// @details This is a static function.
+	/// @param[in] high If true, we're doing the high end of the range; if false, we're doing the low.
+	/// @param[in] behaviour The penalty function behaviour (constant, linear, or quadratic).
+	/// @param[in] start_x The value of x at the start of the range
+	/// @param[in] penalty_values The penalty values within the range.  Up to three at the low or high
+	/// end will be fitted to determine the parameters.
+	/// @param[out] a The constant offset, fitted by this function (for all behaviours).
+	/// @param[out] b The slope, fitted by this function (for linear or quadratic).  Will be 0 for constant.
+	/// @param[out] c The quadratic term coefficient, fitted by this function (for quadratic).  Will be 0 for
+	/// constant or linear.
+	static
+	void
+	fit_tail_function(
+		bool const high,
+		PenaltyFunctionBehaviourOutsideRange const behaviour,
+		signed long int start_x,
+		std::vector< masala::base::Real > const & penalty_values,
+		masala::base::Real & a,
+		masala::base::Real & b,
+		masala::base::Real & c
+	);
+
+	/// @brief Determine the parameters of the tail functions.
+	/// @note Performs no mutex-locking.  Called from protected_finalize().
+	void fit_tail_functions_mutex_locked();
 
 private:
 
