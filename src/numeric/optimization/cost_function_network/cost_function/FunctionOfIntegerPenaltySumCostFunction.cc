@@ -743,6 +743,8 @@ FunctionOfIntegerPenaltySumCostFunction::fit_tail_function(
             // (x1-x3)(y1 - y2 - c( x1^2 - x2^2 )) = (x1-x2)(y1 - y3 - c( x1^2 - x3^2 ))
             // x1 y1 - x1 y2 - c x1( x1^2 - x2^2 ) - x3 y1 + x3 y2 + c x3( x1^2 - x2^2 ) = x1 y1 - x1 y3 - c x1( x1^2 - x3^2 ) - x2 y1 + x2 y3 + c x2( x1^2 - x3^2 )
             // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( x1(2 x1^2-x2^2-x3^2) + x2(x3^2-x1^2) + x3(x1^2-x2^2) )
+            // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( x1((x1-x2)(x1+x2) + (x1-x3)(x1+x3)) + x2(x3-x1)(x3+x1) + x3(x1-x2)(x1+x2) )
+            // c = ( x1 (y3 - y2) + x2( y1 - y3 ) + x3( y2 - y1 ) ) / ( (x1+x3)(x1-x2)(2x1+x2-x3) )
             // b = (y1 - y3 - c( x1^2 - x3^2 ))/(x1-x3)
             // a = y1 - c x1^2 - b x1
             DEBUG_MODE_CHECK_OR_THROW(
