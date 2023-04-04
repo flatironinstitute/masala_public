@@ -176,40 +176,38 @@ namespace cost_function_network {
 	/// 2 1 2 -> 57
 	/// 2 2 0 -> 33
 	/// 2 2 1 -> 21
-	/// 2 2 2 -> 7
+	/// 2 2 2 -> 7  <-- lowest
 	///
 	/// The solutions and solutions scores are as follows if gapped:
-	/// 0 0 0 -> 
-	/// 0 0 1 -> 
-	/// 0 0 2 -> 
-	/// 0 1 0 -> 
-	/// 0 1 1 -> 
-	/// 0 1 2 -> 
-	/// 0 2 0 -> 
-	/// 0 2 1 -> 
-	/// 0 2 2 -> 
-	/// 1 0 0 -> 
-	/// 1 0 1 -> 
-	/// 1 0 2 -> 
-	/// 1 1 0 -> 
-	/// 1 1 1 -> 
-	/// 1 1 2 -> 
-	/// 1 2 0 -> 
-	/// 1 2 1 -> 
-	/// 1 2 2 -> 
-	/// 2 0 0 -> 
-	/// 2 0 1 -> 
-	/// 2 0 2 -> 
-	/// 2 1 0 -> 
-	/// 2 1 1 -> 
-	/// 2 1 2 -> 
-	/// 2 2 0 -> 
-	/// 2 2 1 -> 
-	/// 2 2 2 -> 
+	/// 0 0 0 -> 71
+	/// 0 0 1 -> 54
+	/// 0 0 2 -> 80
+	/// 0 1 0 -> 118
+	/// 0 1 1 -> 105
+	/// 0 1 2 -> 176
+	/// 0 2 0 -> 77
+	/// 0 2 1 -> 64
+	/// 0 2 2 -> 134
+	/// 1 0 0 -> 98
+	/// 1 0 1 -> 80
+	/// 1 0 2 -> 145
+	/// 1 1 0 -> 188
+	/// 1 1 1 -> 174
+	/// 1 1 2 -> 284
+	/// 1 2 0 -> 142
+	/// 1 2 1 -> 128
+	/// 1 2 2 -> 237
+	/// 2 0 0 -> 38
+	/// 2 0 1 -> 22  <-- lowest
+	/// 2 0 2 -> 45
+	/// 2 1 0 -> 89
+	/// 2 1 1 -> 77
+	/// 2 1 2 -> 145
+	/// 2 2 0 -> 40
+	/// 2 2 1 -> 28
+	/// 2 2 2 -> 95
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_function_of_integer_penalty_sum_penalties( bool const gapped=false, bool const finalized = true );
-	TODO TODO TODO IMPLEMENT THE ABOVE AND ADD GAPPED PENALTIES
-
 
 } // namespace cost_function_network
 } // namespace optimization
