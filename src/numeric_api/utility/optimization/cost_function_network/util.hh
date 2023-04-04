@@ -140,6 +140,77 @@ namespace cost_function_network {
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_squared_choice_count_penalties( bool const gapped=false, bool const finalized = true );
 
+	/// @brief Construct a variant of the problem above, with some of the choices in a "countable"
+	/// category and a desired count of those choices.  That makes what was previously the second-lowest
+	/// energy solution the new lowest-energy solution.  This emulates what is done in Rosetta with the
+	/// aa_composition scoreterm.
+	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+	/// by default.
+	/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+	/// false, we leave the problem unfinalized, permitting additional stuff to be added.
+	/// @details  The solutions and solutions scores are as follows if ungapped:
+	/// 0 0 0 -> 96
+	/// 0 0 1 -> 79
+	/// 0 0 2 -> 73
+	/// 0 1 0 -> 111
+	/// 0 1 1 -> 98
+	/// 0 1 2 -> 88
+	/// 0 2 0 -> 70
+	/// 0 2 1 -> 57
+	/// 0 2 2 -> 46
+	/// 1 0 0 -> 91
+	/// 1 0 1 -> 73
+	/// 1 0 2 -> 57
+	/// 1 1 0 -> 100
+	/// 1 1 1 -> 86
+	/// 1 1 2 -> 108
+	/// 1 2 0 -> 54
+	/// 1 2 1 -> 40
+	/// 1 2 2 -> 61
+	/// 2 0 0 -> 63
+	/// 2 0 1 -> 47
+	/// 2 0 2 -> 38
+	/// 2 1 0 -> 82
+	/// 2 1 1 -> 70
+	/// 2 1 2 -> 57
+	/// 2 2 0 -> 33
+	/// 2 2 1 -> 21
+	/// 2 2 2 -> 7
+	///
+	/// The solutions and solutions scores are as follows if gapped:
+	/// 0 0 0 -> 
+	/// 0 0 1 -> 
+	/// 0 0 2 -> 
+	/// 0 1 0 -> 
+	/// 0 1 1 -> 
+	/// 0 1 2 -> 
+	/// 0 2 0 -> 
+	/// 0 2 1 -> 
+	/// 0 2 2 -> 
+	/// 1 0 0 -> 
+	/// 1 0 1 -> 
+	/// 1 0 2 -> 
+	/// 1 1 0 -> 
+	/// 1 1 1 -> 
+	/// 1 1 2 -> 
+	/// 1 2 0 -> 
+	/// 1 2 1 -> 
+	/// 1 2 2 -> 
+	/// 2 0 0 -> 
+	/// 2 0 1 -> 
+	/// 2 0 2 -> 
+	/// 2 1 0 -> 
+	/// 2 1 1 -> 
+	/// 2 1 2 -> 
+	/// 2 2 0 -> 
+	/// 2 2 1 -> 
+	/// 2 2 2 -> 
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	construct_test_problem_with_function_of_integer_penalty_sum_penalties( bool const gapped=false, bool const finalized = true );
+	TODO TODO TODO IMPLEMENT THE ABOVE AND ADD GAPPED PENALTIES
+
+
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace utility
