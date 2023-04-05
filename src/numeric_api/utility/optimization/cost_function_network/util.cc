@@ -293,33 +293,33 @@ construct_test_problem_with_squared_choice_count_penalties(
 /// 2 2 2 -> 7  <-- lowest
 ///
 /// The solutions and solutions scores are as follows if gapped:
-/// 0 0 0 -> 71
-/// 0 0 1 -> 54
-/// 0 0 2 -> 80
-/// 0 1 0 -> 118
-/// 0 1 1 -> 105
-/// 0 1 2 -> 176
-/// 0 2 0 -> 77
-/// 0 2 1 -> 64
-/// 0 2 2 -> 134
-/// 1 0 0 -> 98
-/// 1 0 1 -> 80
-/// 1 0 2 -> 145
-/// 1 1 0 -> 188
-/// 1 1 1 -> 174
-/// 1 1 2 -> 284
-/// 1 2 0 -> 142
-/// 1 2 1 -> 128
-/// 1 2 2 -> 237
-/// 2 0 0 -> 38
-/// 2 0 1 -> 22  <-- lowest
-/// 2 0 2 -> 45
-/// 2 1 0 -> 89
-/// 2 1 1 -> 77
-/// 2 1 2 -> 145
-/// 2 2 0 -> 40
-/// 2 2 1 -> 28
-/// 2 2 2 -> 95
+/// 0 0 0 -> 88
+/// 0 0 1 -> 71
+/// 0 0 2 -> 97
+/// 0 1 0 -> 135
+/// 0 1 1 -> 122
+/// 0 1 2 -> 193
+/// 0 2 0 -> 94
+/// 0 2 1 -> 81
+/// 0 2 2 -> 151
+/// 1 0 0 -> 115
+/// 1 0 1 -> 97
+/// 1 0 2 -> 162
+/// 1 1 0 -> 205
+/// 1 1 1 -> 191
+/// 1 1 2 -> 301
+/// 1 2 0 -> 159
+/// 1 2 1 -> 145
+/// 1 2 2 -> 254
+/// 2 0 0 -> 55
+/// 2 0 1 -> 39  <-- lowest
+/// 2 0 2 -> 62
+/// 2 1 0 -> 106
+/// 2 1 1 -> 94
+/// 2 1 2 -> 162
+/// 2 2 0 -> 57
+/// 2 2 1 -> 45
+/// 2 2 2 -> 112
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_function_of_integer_penalty_sum_penalties(
     bool const gapped /*=false*/,
@@ -333,6 +333,8 @@ construct_test_problem_with_function_of_integer_penalty_sum_penalties(
     PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false) );
 
     FunctionOfIntegerPenaltySumCostFunction_APISP cost_func( masala::make_shared< FunctionOfIntegerPenaltySumCostFunction_API >() );
+
+    cost_func->set_penalty_function( std::vector< masala::base::Real >{ 25.0, 15.0, 0.0, 22.0 } );
 
     cost_func->set_penalties_for_all_choices_at_node( 0, std::vector< signed long int >{ 0, 1, 0 } );
     cost_func->set_penalties_for_all_choices_at_node( 1, std::vector< signed long int >{ 0, 1, 1 } );
