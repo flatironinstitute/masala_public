@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.fwd.hh
-/// @brief Forward declarations for a class for SquareOfChoicePenaltySumCostFunctions.
-/// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
-/// - A penalty is assigned to each choice.
+/// @file src/numeric/optimization/cost_function_network/cost_function/FunctionOfIntegerPenaltySumCostFunction.fwd.hh
+/// @brief Forward declarations for a class for FunctionOfIntegerPenaltySumCostFunctions.
+/// @details FunctionOfIntegerPenaltySumCostFunctions define a penalty function which is based on the following:
+/// - A signed integer penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
-/// - The sum is squared, and this is returned as the penalty.
+/// - An arbitrary function (I->R) is applied to the sum, and this is returned as the penalty.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
-#define Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
+#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_FunctionOfIntegerPenaltySumCostFunction_fwd_hh
+#define Masala_src_numeric_optimization_cost_function_network_cost_function_FunctionOfIntegerPenaltySumCostFunction_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,23 +35,33 @@ namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
-	class SquareOfChoicePenaltySumCostFunction;
+	/// @brief Penalty function behaviour outside of the range specified.
+	/// @details If you add to this list, update penalty_behaviour_string_from_enum().
+	enum class PenaltyFunctionBehaviourOutsideRange {
+		UNDEFINED_BEHAVIOUR = 0, // Keep first
+		CONSTANT = 1, // Keep second
+		LINEAR,
+		QUADRATIC, // Keep second to last
+		NUM_BEHAVIOURS = QUADRATIC // Keep last
+	};
+
+	class FunctionOfIntegerPenaltySumCostFunction;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionSP = MASALA_SHARED_POINTER< SquareOfChoicePenaltySumCostFunction >;
+	using FunctionOfIntegerPenaltySumCostFunctionSP = MASALA_SHARED_POINTER< FunctionOfIntegerPenaltySumCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionCSP = MASALA_SHARED_POINTER< SquareOfChoicePenaltySumCostFunction const >;
+	using FunctionOfIntegerPenaltySumCostFunctionCSP = MASALA_SHARED_POINTER< FunctionOfIntegerPenaltySumCostFunction const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionWP = MASALA_WEAK_POINTER< SquareOfChoicePenaltySumCostFunction >;
+	using FunctionOfIntegerPenaltySumCostFunctionWP = MASALA_WEAK_POINTER< FunctionOfIntegerPenaltySumCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionCWP = MASALA_WEAK_POINTER< SquareOfChoicePenaltySumCostFunction const >;
+	using FunctionOfIntegerPenaltySumCostFunctionCWP = MASALA_WEAK_POINTER< FunctionOfIntegerPenaltySumCostFunction const >;
 
 } // namespace cost_function
 } // namespace cost_function_network
@@ -59,4 +69,4 @@ namespace cost_function {
 } // namespace numeric
 } // namesapce masala
 
-#endif //Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
+#endif //Masala_src_numeric_optimization_cost_function_network_cost_function_FunctionOfIntegerPenaltySumCostFunction_fwd_hh

@@ -17,7 +17,7 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.cc
-/// @brief Implementation for a pure virtual base class for SquareOfChoicePenaltySumCostFunctions.
+/// @brief Implementation for a class for SquareOfChoicePenaltySumCostFunctions.
 /// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
@@ -35,6 +35,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
@@ -221,6 +222,16 @@ SquareOfChoicePenaltySumCostFunction::get_api_definition() {
                 "penalties_by_choice_index", "The penalties for all of the choices, indexed by choice index.",
                 false, false,
                 std::bind( &SquareOfChoicePenaltySumCostFunction::set_penalties_for_all_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, Real > >(
+                "set_penalty_for_choice_at_node", "Set the penalty for a given choice at one node.",
+                "absolute_node_index", "The absolute index of the node for which we're setting a penalty.",
+                "choice_index", "The index of the choice at this node for which we're setting a penalty.",
+                "penalty_value", "The penalty value for this choice at this node.",
+                false, false,
+                std::bind( &SquareOfChoicePenaltySumCostFunction::set_penalty_for_choice_at_node, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
         api_def->add_setter(

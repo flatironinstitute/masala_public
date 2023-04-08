@@ -17,7 +17,7 @@
 */
 
 /// @file src/numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.hh
-/// @brief Header for a pure virtual base class for SquareOfChoicePenaltySumCostFunctions.
+/// @brief Header for a class for SquareOfChoicePenaltySumCostFunctions.
 /// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
@@ -49,7 +49,7 @@ namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
-/// @brief A pure virtual base class for SquareOfChoicePenaltySumCostFunctions.
+/// @brief A class for SquareOfChoicePenaltySumCostFunctions.
 /// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
 /// - A penalty is assigned to each choice.
 /// - The selected choices' penalties are summed, and a constant is added.
