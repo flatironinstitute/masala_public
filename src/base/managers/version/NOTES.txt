@@ -1,0 +1,5 @@
+The Masala version manager will store a VersionInfo object for Masala's core and for each registered plugin library.
+
+The VersionInfo object will store:
+- The version of the module.
+- Any requirements for versions of other modules (e.g. "Requires masala core version 1.2+").
