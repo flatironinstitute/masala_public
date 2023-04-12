@@ -207,4 +207,4 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblems::add_optimization_pro
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

@@ -69,7 +69,7 @@ MasalaEnvironmentVariable::env_var_value() const {
 	return env_var_value_;
 }
 
-} // namesapce environment
-} // namesapce managers
+} // namespace environment
+} // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala

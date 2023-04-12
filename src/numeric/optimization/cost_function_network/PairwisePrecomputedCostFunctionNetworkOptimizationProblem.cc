@@ -749,4 +749,4 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

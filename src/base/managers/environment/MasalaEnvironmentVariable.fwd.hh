@@ -48,9 +48,9 @@ namespace environment {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using MasalaEnvironmentVariableCWP = MASALA_WEAK_POINTER< MasalaEnvironmentVariable const >;
 
-} // namesapce environment
-} // namesapce managers
+} // namespace environment
+} // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_base_managers_environment_MasalaEnvironmentVariable_fwd_hh

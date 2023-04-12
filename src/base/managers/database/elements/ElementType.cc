@@ -177,4 +177,4 @@ ElementType::initialize_datum_from_json(
 } // namespace database
 } // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala

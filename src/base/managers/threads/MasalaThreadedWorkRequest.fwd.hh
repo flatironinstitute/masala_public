@@ -53,6 +53,6 @@ namespace threads {
 } // namespace threads
 } // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_base_managers_threads_MasalaThreadedWorkRequest_fwd_hh

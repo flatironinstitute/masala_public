@@ -360,4 +360,4 @@ construct_test_problem_with_function_of_integer_penalty_sum_penalties(
 } // namespace optimization
 } // namespace utility
 } // namespace numeric_api
-} // namesapce masala
+} // namespace masala

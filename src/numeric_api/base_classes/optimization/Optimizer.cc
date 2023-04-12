@@ -70,4 +70,4 @@ Optimizer::get_keywords() const {
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
-} // namesapce masala
+} // namespace masala
