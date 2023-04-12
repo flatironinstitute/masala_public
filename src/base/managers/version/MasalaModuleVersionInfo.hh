@@ -29,8 +29,10 @@
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/types.hh>
 
 // STL headers:
+#include <string>
 
 namespace masala {
 namespace base {
@@ -70,11 +72,57 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the library name.
+	void
+	set_library_name(
+		std::string const & library_name
+	);
+
+	/// @brief Get the library name.
+	std::string const &
+	library_name() const;
+
+	/// @brief Set the major and minor version numbers.
+	void
+	set_major_and_minor_version(
+		masala::base::Size const major_version,
+		masala::base::Size const minor_version
+	);
+
+	/// @brief Set the major verison.
+	void
+	set_major_version(
+		masala::base::Size const major_version
+	);
+
+	/// @brief Set the minor verison.
+	void
+	set_minor_version(
+		masala::base::Size const minor_version
+	);
+
+	/// @brief Get the major version.
+	masala::base::Size
+	major_version() const;
+
+	/// @brief Get the minor version.
+	masala::base::Size
+	minor_version() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Name of the library.
+	std::string library_name_;
+
+	/// @brief The major version number.
+	masala::base::Size major_version_ = 1;
+
+	/// @brief The minor version number.
+	masala::base::Size minor_version_ = 0;
 
 
 }; // class MasalaModuleVersionInfo

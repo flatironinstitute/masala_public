@@ -47,6 +47,63 @@ MasalaModuleVersionInfo::class_namespace() const {
 	return "masala::base::managers::version";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the library name.
+void
+MasalaModuleVersionInfo::set_library_name(
+    std::string const & library_name
+) {
+    CHECK_OR_THROW_FOR_CLASS( !library_name.empty(), "set_library_name", "The library name cannot be empty." );
+    library_name_ = library_name;
+}
+
+/// @brief Get the library name.
+std::string const &
+MasalaModuleVersionInfo::library_name() const {
+    return library_name_;
+}
+
+/// @brief Set the major and minor version numbers.
+void
+MasalaModuleVersionInfo::set_major_and_minor_version(
+    masala::base::Size const major_version,
+    masala::base::Size const minor_version
+) {
+    major_version_ = major_version;
+    minor_version_ = minor_version;
+}
+
+/// @brief Set the major verison.
+void
+MasalaModuleVersionInfo::set_major_version(
+    masala::base::Size const major_version
+) {
+    major_version_= major_version;
+}
+
+/// @brief Set the minor verison.
+void
+MasalaModuleVersionInfo::set_minor_version(
+    masala::base::Size const minor_version
+) {
+    minor_version_ = minor_version;
+}
+
+/// @brief Get the major version.
+masala::base::Size
+MasalaModuleVersionInfo::major_version() const {
+    return major_version_;
+}
+
+/// @brief Get the minor version.
+masala::base::Size
+MasalaModuleVersionInfo::minor_version() const {
+    return minor_version_;
+}
+
 } // namespace version
 } // namespace managers
 } // namespace base
