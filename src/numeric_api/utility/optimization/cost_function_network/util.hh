@@ -213,6 +213,6 @@ namespace cost_function_network {
 } // namespace optimization
 } // namespace utility
 } // namespace numeric
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_numeric_api_utility_optimization_cost_function_network_util_hh

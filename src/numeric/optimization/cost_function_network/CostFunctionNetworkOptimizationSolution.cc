@@ -427,4 +427,4 @@ CostFunctionNetworkOptimizationSolution::operator==(
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

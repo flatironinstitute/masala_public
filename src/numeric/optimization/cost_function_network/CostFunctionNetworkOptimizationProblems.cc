@@ -203,4 +203,4 @@ CostFunctionNetworkOptimizationProblems::add_optimization_problem(
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

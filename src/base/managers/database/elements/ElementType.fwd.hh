@@ -206,6 +206,6 @@ namespace elements {
 } // namespace database
 } // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_base_managers_database_elements_ElementType_fwd_hh

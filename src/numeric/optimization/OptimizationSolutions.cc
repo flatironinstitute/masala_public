@@ -507,4 +507,4 @@ OptimizationSolutions::optimization_solutions() const {
 
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

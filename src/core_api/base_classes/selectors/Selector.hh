@@ -80,6 +80,6 @@ public:
 } // namespace selectors
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_core_api_base_classes_selectors_Selector_hh

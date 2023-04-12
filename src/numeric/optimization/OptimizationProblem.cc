@@ -250,4 +250,4 @@ OptimizationProblem::protected_reset() {
 
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

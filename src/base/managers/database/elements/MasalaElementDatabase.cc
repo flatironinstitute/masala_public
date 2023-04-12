@@ -145,4 +145,4 @@ MasalaElementDatabase::initialize(
 } // namespace database
 } // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala

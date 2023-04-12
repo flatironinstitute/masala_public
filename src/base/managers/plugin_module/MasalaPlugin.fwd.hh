@@ -54,6 +54,6 @@ namespace plugin_module {
 } // namespace plugin_module	
 } // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_base_managers_plugin_module_MasalaPlugin_fwd_hh

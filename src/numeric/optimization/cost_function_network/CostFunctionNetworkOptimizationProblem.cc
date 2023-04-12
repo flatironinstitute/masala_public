@@ -579,4 +579,4 @@ CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() 
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

@@ -111,4 +111,4 @@ CostFunctionNetworkOptimizer::run_optimizer(
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
-} // namesapce masala
+} // namespace masala

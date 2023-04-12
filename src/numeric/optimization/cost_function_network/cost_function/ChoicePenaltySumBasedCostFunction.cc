@@ -384,4 +384,4 @@ template class ChoicePenaltySumBasedCostFunction< signed long int >;
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

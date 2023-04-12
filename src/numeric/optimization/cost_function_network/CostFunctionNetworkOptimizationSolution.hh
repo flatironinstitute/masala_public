@@ -208,6 +208,6 @@ private:
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_numeric_optimization_cost_function_network_CostFunctionNetworkOptimizationSolution_hh
