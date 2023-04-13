@@ -52,9 +52,7 @@ MasalaVersionManager::MasalaVersionManager() :
     masala::base::MasalaObject()
 {
     std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
-    module_version_infos_.insert(
-        masala::make_shared< MasalaModuleVersionInfo >( "Masala", masala_version() )
-    );
+    module_version_infos_[ "Masala" ] = masala::make_shared< MasalaModuleVersionInfo >( "Masala", masala_version() );
 }
 
 

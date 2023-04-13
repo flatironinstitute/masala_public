@@ -36,7 +36,7 @@
 
 // STL headers:
 #include <mutex>
-#include <set>
+#include <unordered_map>
 
 namespace masala {
 namespace base {
@@ -106,7 +106,7 @@ private:
     /// @brief The list of MasalaModuleVersionInfo objects.
     /// @details MasalaModuleVersionInfo objects contain information about the version
     /// of each loaded module.
-    std::set< MasalaModuleVersionInfoCSP > module_version_infos_;
+    std::unordered_map< std::string, MasalaModuleVersionInfoCSP > module_version_infos_;
 
 };
 
