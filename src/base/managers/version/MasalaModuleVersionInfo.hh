@@ -60,7 +60,10 @@ public:
 	MasalaModuleVersionInfo( MasalaModuleVersionInfo const & ) = default;
 	
 	/// @brief Assignment operator, defaulted.
-	void operator=( MasalaModuleVersionInfo const & ) = default;
+	MasalaModuleVersionInfo &
+	operator=(
+		MasalaModuleVersionInfo const &
+	) = default;
 
 	/// @brief Virtual destructor.
 	~MasalaModuleVersionInfo() override = default;

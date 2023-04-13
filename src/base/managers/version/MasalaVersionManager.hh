@@ -61,7 +61,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Private constructor: object can only be instantiated with getInstance().
-    MasalaVersionManager() = default;
+    MasalaVersionManager();
 
 public:
 
