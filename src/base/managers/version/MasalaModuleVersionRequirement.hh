@@ -54,6 +54,7 @@ public:
 
 	/// @brief Constructor to specify another module as required WITHOUT specifying any
 	/// minimum or maximum version requirement for that module.  Not really recommended.
+	/// @details Sets other_module_must_be_loaded_ to true.
 	MasalaModuleVersionRequirement(
 		std::string const & other_module_name
 	);
@@ -62,6 +63,7 @@ public:
 	/// @details If set_minimum_version is true, we set the minimum version; otherwise we set the maximum.
 	MasalaModuleVersionRequirement(
 		std::string const & other_module_name,
+		bool const other_module_must_be_loaded,
 		std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
 		bool const set_minimum_version = true
 	);
@@ -69,6 +71,7 @@ public:
 	/// @brief Constructor with minimum AND maximum version.
 	MasalaModuleVersionRequirement(
 		std::string const & other_module_name,
+		bool const other_module_must_be_loaded,
 		std::pair< masala::base::Size, masala::base::Size > const & min_version,
 		std::pair< masala::base::Size, masala::base::Size > const & max_version
 	);
@@ -116,6 +119,9 @@ private:
 
 	/// @brief The module for which we're imposing a version requirement.
 	std::string other_module_name_;
+
+	/// @brief Must the other module exist / be loaded?
+	bool other_module_must_be_loaded_ = false;
 
 	/// @brief Are we requiring that the version be less than or equal to some cutoff?
 	bool max_version_specified_ = false;

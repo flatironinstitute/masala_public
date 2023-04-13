@@ -35,11 +35,13 @@ namespace version {
 
 /// @brief Constructor to specify another module as required WITHOUT specifying any
 /// minimum or maximum version requirement for that module.  Not really recommended.
+/// @details Sets other_module_must_be_loaded_ to true.
 MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
+    other_module_must_be_loaded_( true ),
     min_version_specified_( false ),
     max_version_specified_( false ),
     min_version_( std::make_pair( 0, 0 ) ),
@@ -57,11 +59,13 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
 /// @details If set_minimum_version is true, we set the minimum version; otherwise we set the maximum.
 MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name,
+    bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
     bool const set_minimum_version = true
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
+    other_module_must_be_loaded_( other_module_must_be_loaded ),
     min_version_specified_( set_minimum_version ),
     max_version_specified_( !set_minimum_version ),
     min_version_( set_minimum_version ? min_or_max_version : std::make_pair( 0, 0 ) ),
@@ -78,11 +82,13 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
 /// @brief Constructor with minimum AND maximum version.
 MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name,
+    bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_version,
     std::pair< masala::base::Size, masala::base::Size > const & max_version
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
+    other_module_must_be_loaded_( other_module_must_be_loaded ),
     min_version_specified_( true ),
     max_version_specified_( true ),
     min_version_( min_version ),
