@@ -30,10 +30,12 @@
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
+#include <base/managers/version/MasalaModuleVersionRequirement.fwd.hh>
 
 // STL headers:
 #include <string>
 #include <utility>
+#include <set>
 
 namespace masala {
 namespace base {
@@ -156,6 +158,11 @@ private:
 
 	/// @brief The minor version number.
 	masala::base::Size minor_version_ = 0;
+
+	/// @brief A bunch of optional version requirements.
+	/// @details This allows one module to indicate that another module is required, and possibly has
+	/// a minimum or maximum required version.
+	std::set< MasalaModuleVersionRequirementCSP > version_requirements_;
 
 
 }; // class MasalaModuleVersionInfo
