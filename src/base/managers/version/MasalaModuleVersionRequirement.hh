@@ -52,6 +52,12 @@ public:
 	/// @brief Default constructor, deleted.
 	MasalaModuleVersionRequirement() = delete;
 
+	/// @brief Constructor to specify another module as required WITHOUT specifying any
+	/// minimum or maximum version requirement for that module.  Not really recommended.
+	MasalaModuleVersionRequirement(
+		std::string const & other_module_name
+	);
+
 	/// @brief Constructor with minimum OR maximum version (but not both).
 	/// @details If set_minimum_version is true, we set the minimum version; otherwise we set the maximum.
 	MasalaModuleVersionRequirement(
