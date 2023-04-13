@@ -94,6 +94,13 @@ public:
     std::string
     class_namespace() const override;
 
+    /// @brief Add information for a new library.
+    /// @details Stores the input directly, without cloning.
+    void
+    add_library_information(
+        MasalaModuleVersionInfoCSP const & module_version_info
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

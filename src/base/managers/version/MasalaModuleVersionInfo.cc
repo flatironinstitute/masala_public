@@ -153,6 +153,13 @@ MasalaModuleVersionInfo::version() const {
     return std::make_pair( major_version_, minor_version_ );
 }
 
+/// @brief Get a string of "<major version>.<minor version>".
+/// @note Somewhat expensive.  Generated for each call.
+std::string
+MasalaModuleVersionInfo::version_string() const {
+    return std::to_string( major_version_ ) + "." + std::to_string(minor_version_); 
+}
+
 } // namespace version
 } // namespace managers
 } // namespace base

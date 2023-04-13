@@ -134,6 +134,11 @@ public:
 	std::pair< masala::base::Size, masala::base::Size >
 	version() const;
 
+	/// @brief Get a string of "<major version>.<minor version>".
+	/// @note Somewhat expensive.  Generated for each call.
+	std::string
+	version_string() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
