@@ -33,18 +33,52 @@ namespace managers {
 namespace version {
 
 
-/// @brief Every class can name itself.
+/// @brief Initialization constructor.
+MasalaModuleVersionInfo::MasalaModuleVersionInfo(
+    std::string const & library_name,
+    std::pair< masala::base::Size, masala::base::Size > const & version
+) :
+    masala::base::MasalaObject(),
+    library_name_( library_name ),
+    major_version_( version.first ),
+    minor_version_( version.second )
+{
+    CHECK_OR_THROW(
+        !library_name_.empty(),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaModuleVersionInfo",
+        "The library name cannot be empty!"
+    );
+}
+
+/// @brief Every class can name itself.  This is the static version.
 /// @returns "MasalaModuleVersionInfo".
+/*static*/
+std::string
+MasalaModuleVersionInfo::class_name_static() {
+    return "MasalaModuleVersionInfo";
+}
+
+/// @brief Every class can provide its own namespace.  This is the static version.
+/// @returns "masala::base::managers::version".
+/*static*/
+std::string
+MasalaModuleVersionInfo::class_namespace_static() {
+    return "masala::base::managers::version";
+}
+
+/// @brief Every class can name itself.
+/// @returns "MasalaModuleVersionInfo".  Calls class_name_static().
 std::string
 MasalaModuleVersionInfo::class_name() const {
-	return "MasalaModuleVersionInfo";
+	return class_name_static();
 }
 
 /// @brief Every class can provide its own namespace.
-/// @returns "masala::base::managers::version".
+/// @returns "masala::base::managers::version".  Calls class_namespace_static().
 std::string
 MasalaModuleVersionInfo::class_namespace() const {
-	return "masala::base::managers::version";
+	return class_namespace_static();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

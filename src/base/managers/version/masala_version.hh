@@ -29,6 +29,7 @@
 #define MASALA_MAJOR_VERSION 0
 #define MASALA_MINOR_VERSION 1
 
+namespace masala {
 namespace base {
 namespace managers {
 namespace version {
@@ -40,6 +41,7 @@ namespace version {
         return std::make_pair( MASALA_MAJOR_VERSION, MASALA_MINOR_VERSION );
     }
 
-} // namespace  version
-} // namespace  managers
-} // namespace  base
+} // namespace version
+} // namespace managers
+} // namespace base
+} // namespace masala

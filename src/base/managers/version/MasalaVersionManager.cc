@@ -26,6 +26,8 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/version/masala_version.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 
 // STL headers:
 
@@ -40,6 +42,21 @@ MasalaVersionManager::get_instance() {
     static MasalaVersionManager version_manager;
     return &version_manager;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE CONSTRUCTOR
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Private constructor: object can only be instantiated with getInstance().
+MasalaVersionManager::MasalaVersionManager() :
+    masala::base::MasalaObject()
+{
+    std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
+    module_version_infos_.insert(
+        masala::make_shared< MasalaModuleVersionInfo >( "Masala", masala_version() )
+    );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS

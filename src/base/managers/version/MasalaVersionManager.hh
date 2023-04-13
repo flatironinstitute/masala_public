@@ -32,9 +32,11 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.fwd.hh>
 
 // STL headers:
 #include <mutex>
+#include <set>
 
 namespace masala {
 namespace base {
@@ -101,6 +103,10 @@ private:
     /// @brief A mutex to lock this object.
     mutable std::mutex masala_version_manager_mutex_;
 
+    /// @brief The list of MasalaModuleVersionInfo objects.
+    /// @details MasalaModuleVersionInfo objects contain information about the version
+    /// of each loaded module.
+    std::set< MasalaModuleVersionInfoCSP > module_version_infos_;
 
 };
 

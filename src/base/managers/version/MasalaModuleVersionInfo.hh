@@ -50,6 +50,12 @@ public:
 	/// @brief Default constructor.
 	MasalaModuleVersionInfo() = default;
 
+	/// @brief Initialization constructor.
+	MasalaModuleVersionInfo(
+		std::string const & library_name,
+		std::pair< masala::base::Size, masala::base::Size > const & version
+	);
+
 	/// @brief Copy constructor, defaulted.
 	MasalaModuleVersionInfo( MasalaModuleVersionInfo const & ) = default;
 	
@@ -59,12 +65,20 @@ public:
 	/// @brief Virtual destructor.
 	~MasalaModuleVersionInfo() override = default;
 
-	/// @brief Every class can name itself.
+	/// @brief Every class can name itself.  This is the static version.
 	/// @returns "MasalaModuleVersionInfo".
+	static std::string class_name_static();
+
+	/// @brief Every class can provide its own namespace.  This is the static version.
+	/// @returns "masala::base::managers::version".
+	static std::string class_namespace_static();
+
+	/// @brief Every class can name itself.
+	/// @returns "MasalaModuleVersionInfo".  Calls class_name_static().
 	std::string class_name() const override;
 
 	/// @brief Every class can provide its own namespace.
-	/// @returns "masala::base::managers::version".
+	/// @returns "masala::base::managers::version".  Calls class_namespace_static().
 	std::string class_namespace() const override;
 
 public:
