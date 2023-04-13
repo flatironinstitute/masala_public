@@ -33,6 +33,48 @@ namespace base {
 namespace managers {
 namespace version {
 
+/// @brief Constructor with minimum OR maximum version (but not both).
+/// @details If set_minimum_version is true, we set the minimum version; otherwise we set the maximum.
+MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
+    std::string const & other_module_name,
+    std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
+    bool const set_minimum_version = true
+) :
+    masala::base::MasalaObject(),
+    other_module_name_(other_module_name),
+    min_version_specified_( set_minimum_version ),
+    max_version_specified_( !set_minimum_version ),
+    min_version_( set_minimum_version ? min_or_max_version : std::make_pair( 0, 0 ) ),
+    max_version_( set_minimum_version ? std::make_pair( 0, 0 ) : min_or_max_version )
+{
+    CHECK_OR_THROW(
+        !other_module_name_.empty(),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaModuleVersionRequirement",
+        "The other module name cannot be empty!"
+    );
+}
+
+/// @brief Constructor with minimum AND maximum version.
+MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
+    std::string const & other_module_name,
+    std::pair< masala::base::Size, masala::base::Size > const & min_version,
+    std::pair< masala::base::Size, masala::base::Size > const & max_version
+) :
+    masala::base::MasalaObject(),
+    other_module_name_(other_module_name),
+    min_version_specified_(true),
+    max_version_specified_(true),
+    min_version_( min_version ),
+    max_version_( max_version )
+{
+    CHECK_OR_THROW(
+        !other_module_name_.empty(),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaModuleVersionRequirement",
+        "The other module name cannot be empty!"
+    );
+}
 
 /// @brief Every class can name itself.  This is the static version.
 /// @returns "MasalaModuleVersionRequirement".

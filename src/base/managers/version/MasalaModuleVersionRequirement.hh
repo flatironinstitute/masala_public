@@ -49,8 +49,23 @@ class MasalaModuleVersionRequirement : masala::base::MasalaObject {
 
 public:
 
-	/// @brief Default constructor.
-	MasalaModuleVersionRequirement() = default;
+	/// @brief Default constructor, deleted.
+	MasalaModuleVersionRequirement() = delete;
+
+	/// @brief Constructor with minimum OR maximum version (but not both).
+	/// @details If set_minimum_version is true, we set the minimum version; otherwise we set the maximum.
+	MasalaModuleVersionRequirement(
+		std::string const & other_module_name,
+		std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
+		bool const set_minimum_version = true
+	);
+
+	/// @brief Constructor with minimum AND maximum version.
+	MasalaModuleVersionRequirement(
+		std::string const & other_module_name,
+		std::pair< masala::base::Size, masala::base::Size > const & min_version,
+		std::pair< masala::base::Size, masala::base::Size > const & max_version
+	);
 
 	/// @brief Copy constructor, defaulted.
 	MasalaModuleVersionRequirement( MasalaModuleVersionRequirement const & ) = default;
@@ -92,6 +107,21 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The module for which we're imposing a version requirement.
+	std::string other_module_name_;
+
+	/// @brief Are we requiring that the version be less than or equal to some cutoff?
+	bool max_version_specified_ = false;
+
+	/// @brief Are we requiring that the version be greater than or equal to some cutoff?
+	bool min_version_specified_ = false;
+
+	/// @brief The maximum version, as a pair of <major, minor>.
+	std::pair< masala::base::Size, masala::base::Size > max_version_ = std::make_pair( 0, 0 );
+
+	/// @brief The minimum version, as a pair of <major, minor>.
+	std::pair< masala::base::Size, masala::base::Size > min_version_ = std::make_pair( 0, 0 );
 
 
 }; // class MasalaModuleVersionRequirement
