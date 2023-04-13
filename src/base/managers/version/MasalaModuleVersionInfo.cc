@@ -66,6 +66,15 @@ MasalaModuleVersionInfo::library_name() const {
     return library_name_;
 }
 
+/// @brief Set the major and minor version numbers, by a pair of <major, minor>.
+void
+MasalaModuleVersionInfo::set_major_and_minor_version(
+    std::pair< masala::base::Size, masala::base::Size > const & version
+) {
+    major_version_ = version.first;
+    minor_version_ = version.second;
+}
+
 /// @brief Set the major and minor version numbers.
 void
 MasalaModuleVersionInfo::set_major_and_minor_version(
@@ -102,6 +111,12 @@ MasalaModuleVersionInfo::major_version() const {
 masala::base::Size
 MasalaModuleVersionInfo::minor_version() const {
     return minor_version_;
+}
+
+/// @brief Get the major and minor version as a pair of <major, minor>.
+std::pair< masala::base::Size, masala::base::Size >
+MasalaModuleVersionInfo::version() const {
+    return std::make_pair( major_version_, minor_version_ );
 }
 
 } // namespace version

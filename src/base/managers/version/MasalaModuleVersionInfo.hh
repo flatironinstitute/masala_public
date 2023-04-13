@@ -33,6 +33,7 @@
 
 // STL headers:
 #include <string>
+#include <utility>
 
 namespace masala {
 namespace base {
@@ -82,6 +83,12 @@ public:
 	std::string const &
 	library_name() const;
 
+	/// @brief Set the major and minor version numbers, by a pair of <major, minor>.
+	void
+	set_major_and_minor_version(
+		std::pair< masala::base::Size, masala::base::Size > const & version
+	);
+
 	/// @brief Set the major and minor version numbers.
 	void
 	set_major_and_minor_version(
@@ -108,6 +115,10 @@ public:
 	/// @brief Get the minor version.
 	masala::base::Size
 	minor_version() const;
+
+	/// @brief Get the major and minor version as a pair of <major, minor>.
+	std::pair< masala::base::Size, masala::base::Size >
+	version() const;
 
 private:
 
