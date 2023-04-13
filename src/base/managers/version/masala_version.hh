@@ -26,6 +26,9 @@
 /// STL headers:
 #include <utility> // For std::pair
 
+#define MASALA_MAJOR_VERSION 0
+#define MASALA_MINOR_VERSION 1
+
 namespace base {
 namespace managers {
 namespace version {
@@ -34,7 +37,7 @@ namespace version {
     inline
     std::pair< masala::base::Size, masala::base::Size >
     masala_version() {
-        return std::make_pair( 0, 1 );
+        return std::make_pair( MASALA_MAJOR_VERSION, MASALA_MINOR_VERSION );
     }
 
 } // namespace  version
