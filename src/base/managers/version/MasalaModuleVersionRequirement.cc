@@ -61,15 +61,15 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name,
     bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
-    bool const set_minimum_version = true
+    bool const set_minimum_version /*=true*/
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
     other_module_must_be_loaded_( other_module_must_be_loaded ),
     min_version_specified_( set_minimum_version ),
     max_version_specified_( !set_minimum_version ),
-    min_version_( set_minimum_version ? min_or_max_version : std::make_pair( 0, 0 ) ),
-    max_version_( set_minimum_version ? std::make_pair( 0, 0 ) : min_or_max_version )
+    min_version_( set_minimum_version ? min_or_max_version : std::pair< masala::base::Size, masala::base::Size >( 0, 0 ) ),
+    max_version_( set_minimum_version ? std::pair< masala::base::Size, masala::base::Size >( 0, 0 ) : min_or_max_version )
 {
     CHECK_OR_THROW(
         !other_module_name_.empty(),
