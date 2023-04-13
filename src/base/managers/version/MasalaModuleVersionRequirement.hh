@@ -123,18 +123,17 @@ private:
 	/// @brief Must the other module exist / be loaded?
 	bool other_module_must_be_loaded_ = false;
 
-	/// @brief Are we requiring that the version be less than or equal to some cutoff?
-	bool max_version_specified_ = false;
-
 	/// @brief Are we requiring that the version be greater than or equal to some cutoff?
 	bool min_version_specified_ = false;
 
-	/// @brief The maximum version, as a pair of <major, minor>.
-	std::pair< masala::base::Size, masala::base::Size > max_version_ = std::make_pair( 0, 0 );
+	/// @brief Are we requiring that the version be less than or equal to some cutoff?
+	bool max_version_specified_ = false;
 
 	/// @brief The minimum version, as a pair of <major, minor>.
 	std::pair< masala::base::Size, masala::base::Size > min_version_ = std::make_pair( 0, 0 );
 
+	/// @brief The maximum version, as a pair of <major, minor>.
+	std::pair< masala::base::Size, masala::base::Size > max_version_ = std::make_pair( 0, 0 );
 
 }; // class MasalaModuleVersionRequirement
 
