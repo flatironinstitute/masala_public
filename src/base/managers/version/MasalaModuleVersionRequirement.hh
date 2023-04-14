@@ -56,7 +56,8 @@ public:
 	/// minimum or maximum version requirement for that module.  Not really recommended.
 	/// @details Sets other_module_must_be_loaded_ to true.
 	MasalaModuleVersionRequirement(
-		std::string const & other_module_name
+		std::string const & other_module_name,
+		std::string const & other_module_not_loaded_message = ""
 	);
 
 	/// @brief Constructor with minimum OR maximum version (but not both).
@@ -65,7 +66,9 @@ public:
 		std::string const & other_module_name,
 		bool const other_module_must_be_loaded,
 		std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
-		bool const set_minimum_version = true
+		bool const set_minimum_version = true,
+		std::string const & other_module_not_loaded_message = "",
+		std::string const & message_for_below_min_or_above_max_version = ""
 	);
 
 	/// @brief Constructor with minimum AND maximum version.
@@ -73,7 +76,10 @@ public:
 		std::string const & other_module_name,
 		bool const other_module_must_be_loaded,
 		std::pair< masala::base::Size, masala::base::Size > const & min_version,
-		std::pair< masala::base::Size, masala::base::Size > const & max_version
+		std::pair< masala::base::Size, masala::base::Size > const & max_version,
+		std::string const & other_module_not_loaded_message = "",
+		std::string const & below_min_version_message = "",
+		std::string const & above_max_version_message = ""
 	);
 
 	/// @brief Copy constructor, defaulted.
@@ -134,6 +140,15 @@ private:
 
 	/// @brief The maximum version, as a pair of <major, minor>.
 	std::pair< masala::base::Size, masala::base::Size > max_version_ = std::make_pair( 0, 0 );
+
+	/// @brief An optional message to be displayed if a requred module is not loaded.
+	std::string required_module_not_loaded_message_;
+
+	/// @brief An optional message to be displayed if a module has less than the specified minimum version.
+	std::string below_min_version_message_;
+
+	/// @brief An optional message to be displayed if a module has more than the specified maximum verson.
+	std::string above_max_version_message_;
 
 }; // class MasalaModuleVersionRequirement
 

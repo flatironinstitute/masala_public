@@ -37,7 +37,8 @@ namespace version {
 /// minimum or maximum version requirement for that module.  Not really recommended.
 /// @details Sets other_module_must_be_loaded_ to true.
 MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
-    std::string const & other_module_name
+    std::string const & other_module_name,
+    std::string const & other_module_not_loaded_message /*= ""*/
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
@@ -45,7 +46,10 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     min_version_specified_( false ),
     max_version_specified_( false ),
     min_version_( std::make_pair( 0, 0 ) ),
-    max_version_( std::make_pair( 0, 0 ) )
+    max_version_( std::make_pair( 0, 0 ) ),
+    required_module_not_loaded_message_( other_module_not_loaded_message ),
+    below_min_version_message_(""),
+    above_max_version_message_("")
 {
     CHECK_OR_THROW(
         !other_module_name_.empty(),
@@ -61,7 +65,9 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name,
     bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_or_max_version,
-    bool const set_minimum_version /*=true*/
+    bool const set_minimum_version /*=true*/,
+    std::string const & other_module_not_loaded_message /*=""*/,
+    std::string const & message_for_below_min_or_above_max_version /*=""*/
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
@@ -69,7 +75,10 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     min_version_specified_( set_minimum_version ),
     max_version_specified_( !set_minimum_version ),
     min_version_( set_minimum_version ? min_or_max_version : std::pair< masala::base::Size, masala::base::Size >( 0, 0 ) ),
-    max_version_( set_minimum_version ? std::pair< masala::base::Size, masala::base::Size >( 0, 0 ) : min_or_max_version )
+    max_version_( set_minimum_version ? std::pair< masala::base::Size, masala::base::Size >( 0, 0 ) : min_or_max_version ),
+    required_module_not_loaded_message_( other_module_not_loaded_message ),
+    below_min_version_message_( set_minimum_version ? message_for_below_min_or_above_max_version : "" ),
+    above_max_version_message_( set_minimum_version ? "" : message_for_below_min_or_above_max_version )
 {
     CHECK_OR_THROW(
         !other_module_name_.empty(),
@@ -84,7 +93,10 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     std::string const & other_module_name,
     bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_version,
-    std::pair< masala::base::Size, masala::base::Size > const & max_version
+    std::pair< masala::base::Size, masala::base::Size > const & max_version,
+    std::string const & other_module_not_loaded_message = "",
+    std::string const & below_min_version_message = "",
+    std::string const & above_max_version_message = ""
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),
@@ -92,7 +104,10 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     min_version_specified_( true ),
     max_version_specified_( true ),
     min_version_( min_version ),
-    max_version_( max_version )
+    max_version_( max_version ),
+    required_module_not_loaded_message_( other_module_not_loaded_message ),
+    below_min_version_message_( below_min_version_message ),
+    above_max_version_message_( above_max_version_message )
 {
     CHECK_OR_THROW(
         !other_module_name_.empty(),
