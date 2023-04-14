@@ -94,9 +94,9 @@ MasalaModuleVersionRequirement::MasalaModuleVersionRequirement(
     bool const other_module_must_be_loaded,
     std::pair< masala::base::Size, masala::base::Size > const & min_version,
     std::pair< masala::base::Size, masala::base::Size > const & max_version,
-    std::string const & other_module_not_loaded_message = "",
-    std::string const & below_min_version_message = "",
-    std::string const & above_max_version_message = ""
+    std::string const & other_module_not_loaded_message /*=""*/,
+    std::string const & below_min_version_message /*=""*/,
+    std::string const & above_max_version_message /*=""*/
 ) :
     masala::base::MasalaObject(),
     other_module_name_( other_module_name ),

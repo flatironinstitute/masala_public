@@ -163,15 +163,19 @@ MasalaModuleVersionInfo::version_string() const {
 
 /// @brief Indicate that another module is required, with no minimum or maximum version
 /// for that other module.  Not really recommended.
+/// @param[in] other_module_name The name of the required library.
+/// @param[in] other_module_not_loaded_message An optional message to display if the required
+/// library is not loaded.
 void
 MasalaModuleVersionInfo::add_requirement(
-    std::string const & other_module_name
+    std::string const & other_module_name,
+    std::string const & other_module_not_loaded_message /*=""*/
 ) {
     CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement",
         "The other module name cannot be empty!"
     );
     version_requirements_.insert(
-        std::make_shared< MasalaModuleVersionRequirement >( other_module_name )
+        std::make_shared< MasalaModuleVersionRequirement >( other_module_name, other_module_not_loaded_message )
     );
 }
 
@@ -181,7 +185,9 @@ void
 MasalaModuleVersionInfo::add_requirement_with_minimum_version(
     std::string const & other_module_name,
     bool const other_module_is_required,
-    std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version,
+    std::string const & other_module_not_loaded_message /*=""*/,
+    std::string const & other_module_below_min_version_message /*=""*/
 ) {
     CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_minimum_version",
         "The other module name cannot be empty!"
@@ -191,18 +197,31 @@ MasalaModuleVersionInfo::add_requirement_with_minimum_version(
             other_module_name,
             other_module_is_required,
             other_module_min_version,
-            true
+            true,
+            other_module_not_loaded_message,
+            other_module_below_min_version_message
         )
     );
 }
 
 /// @brief Indicate that another module may be required, with a maximum version
 /// for that other module if it is present.
+/// @param[in] other_module_name The name of the library that may or may not be required.
+/// @param[in] other_module_is_required True if we throw an error if this library is not loaded, and
+/// false if we're only checking the version if it happens to be loaded.
+/// @param[in] other_module_max_version The maximum version required for the other library, as a pair
+/// of <major version, minor version>.
+/// @param[in] other_module_not_loaded_message An optional message to display if the required
+/// library is not loaded.  Only used if other_module_is_required is true.
+/// @param[in] other_module_above_max_version_message An optional message to display if the other
+/// library is above the maximum version.
 void
 MasalaModuleVersionInfo::add_requirement_with_maximum_version(
     std::string const & other_module_name,
     bool const other_module_is_required,
-    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version,
+    std::string const & other_module_not_loaded_message /*=""*/,
+    std::string const & other_module_above_max_version_message /*=""*/
 ) {
     CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_maximum_version",
         "The other module name cannot be empty!"
@@ -212,19 +231,37 @@ MasalaModuleVersionInfo::add_requirement_with_maximum_version(
             other_module_name,
             other_module_is_required,
             other_module_max_version,
-            false
+            false,
+            other_module_not_loaded_message,
+            other_module_above_max_version_message
         )
     );
 }
 
 /// @brief Indicate that another module may be required, with a minimum and maximum version
 /// for that other module if it is present.
+/// @param[in] other_module_name The name of the library that may or may not be required.
+/// @param[in] other_module_is_required True if we throw an error if this library is not loaded, and
+/// false if we're only checking the version if it happens to be loaded.
+/// @param[in] other_module_min_version The minimum version required for the other library, as a pair
+/// of <major version, minor version>.
+/// @param[in] other_module_max_version The maximum version required for the other library, as a pair
+/// of <major version, minor version>.
+/// @param[in] other_module_not_loaded_message An optional message to display if the required
+/// library is not loaded.  Only used if other_module_is_required is true.
+/// @param[in] other_module_below_min_version_message An optional message to display if the other
+/// library is below the minimum version.
+/// @param[in] other_module_above_max_version_message An optional message to display if the other
+/// library is above the maximum version.
 void
 MasalaModuleVersionInfo::add_requirement_with_minimum_and_maximum_version(
     std::string const & other_module_name,
     bool const other_module_is_required,
     std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version,
-    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version,
+    std::string const & other_module_not_loaded_message /*=""*/,
+    std::string const & other_module_below_min_version_message /*=""*/,
+    std::string const & other_module_above_max_version_message /*=""*/
 ) {
     CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_minimum_and_maximum_version",
         "The other module name cannot be empty!"
@@ -234,7 +271,10 @@ MasalaModuleVersionInfo::add_requirement_with_minimum_and_maximum_version(
             other_module_name,
             other_module_is_required,
             other_module_min_version,
-            other_module_max_version
+            other_module_max_version,
+            other_module_not_loaded_message,
+            other_module_below_min_version_message,
+            other_module_above_max_version_message
         )
     );
 }
