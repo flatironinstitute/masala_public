@@ -144,6 +144,41 @@ public:
 	std::string
 	version_string() const;
 
+	/// @brief Indicate that another module is required, with no minimum or maximum version
+	/// for that other module.  Not really recommended.
+	void
+	add_requirement(
+		std::string const & other_module_name
+	);
+
+	/// @brief Indicate that another module may be required, with a minimum version
+	/// for that other module if it is present.
+	void
+	add_requirement_with_minimum_version(
+		std::string const & other_module_name,
+		bool const other_module_is_required,
+		std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version
+	);
+
+	/// @brief Indicate that another module may be required, with a maximum version
+	/// for that other module if it is present.
+	void
+	add_requirement_with_maximum_version(
+		std::string const & other_module_name,
+		bool const other_module_is_required,
+		std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+	);
+
+	/// @brief Indicate that another module may be required, with a minimum and maximum version
+	/// for that other module if it is present.
+	void
+	add_requirement_with_minimum_and_maximum_version(
+		std::string const & other_module_name,
+		bool const other_module_is_required,
+		std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version,
+		std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

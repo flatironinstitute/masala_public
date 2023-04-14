@@ -26,6 +26,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/version/MasalaModuleVersionRequirement.hh>
 
 namespace masala {
 namespace base {
@@ -158,6 +159,84 @@ MasalaModuleVersionInfo::version() const {
 std::string
 MasalaModuleVersionInfo::version_string() const {
     return std::to_string( major_version_ ) + "." + std::to_string(minor_version_); 
+}
+
+/// @brief Indicate that another module is required, with no minimum or maximum version
+/// for that other module.  Not really recommended.
+void
+MasalaModuleVersionInfo::add_requirement(
+    std::string const & other_module_name
+) {
+    CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement",
+        "The other module name cannot be empty!"
+    );
+    version_requirements_.insert(
+        std::make_shared< MasalaModuleVersionRequirement >( other_module_name )
+    );
+}
+
+/// @brief Indicate that another module may be required, with a minimum version
+/// for that other module if it is present.
+void
+MasalaModuleVersionInfo::add_requirement_with_minimum_version(
+    std::string const & other_module_name,
+    bool const other_module_is_required,
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version
+) {
+    CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_minimum_version",
+        "The other module name cannot be empty!"
+    );
+    version_requirements_.insert(
+        std::make_shared< MasalaModuleVersionRequirement >(
+            other_module_name,
+            other_module_is_required,
+            other_module_min_version,
+            true
+        )
+    );
+}
+
+/// @brief Indicate that another module may be required, with a maximum version
+/// for that other module if it is present.
+void
+MasalaModuleVersionInfo::add_requirement_with_maximum_version(
+    std::string const & other_module_name,
+    bool const other_module_is_required,
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+) {
+    CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_maximum_version",
+        "The other module name cannot be empty!"
+    );
+    version_requirements_.insert(
+        std::make_shared< MasalaModuleVersionRequirement >(
+            other_module_name,
+            other_module_is_required,
+            other_module_max_version,
+            false
+        )
+    );
+}
+
+/// @brief Indicate that another module may be required, with a minimum and maximum version
+/// for that other module if it is present.
+void
+MasalaModuleVersionInfo::add_requirement_with_minimum_and_maximum_version(
+    std::string const & other_module_name,
+    bool const other_module_is_required,
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_min_version,
+    std::pair< masala::base::Size, masala::base::Size > const & other_module_max_version
+) {
+    CHECK_OR_THROW_FOR_CLASS( !other_module_name.empty(), "add_requirement_with_minimum_and_maximum_version",
+        "The other module name cannot be empty!"
+    );
+    version_requirements_.insert(
+        std::make_shared< MasalaModuleVersionRequirement >(
+            other_module_name,
+            other_module_is_required,
+            other_module_min_version,
+            other_module_max_version
+        )
+    );
 }
 
 } // namespace version
