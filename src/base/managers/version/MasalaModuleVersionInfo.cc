@@ -294,7 +294,7 @@ MasalaModuleVersionInfo::check_version_requirements_satisfied(
     bool satisfied(true);
     // Loop through all requirements:
     for( auto const & requirement : version_requirements_ ) {
-        satisfied &= requirement->check_version_requirements_satisfied( version_info_map, new_messages );
+        satisfied &= requirement->check_version_requirements_satisfied( version_info_map, this, new_messages );
     }
     if( !satisfied ) {
         messages += "\n" + new_messages;
