@@ -244,6 +244,44 @@ MasalaModuleVersionRequirement::check_version_requirements_satisfied(
     return satisfied;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE STATIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Returns true if ver1 is less than ver2, false otherwise.
+/*static*/
+bool
+MasalaModuleVersionRequirement::version_lt(
+    std::pair< masala::base::Size, masala::base::Size > ver1,
+    std::pair< masala::base::Size, masala::base::Size > ver2
+) {
+    if( ver1.first < ver2.first ) {
+        return true;
+    }
+    if( ver1.first > ver2.first ) {
+        return false;
+    }
+    // If we reach here, the major version is equal, so we compare the minor version.
+    return ver1.second < ver2.second;
+}
+
+/// @brief Returns true if ver1 is greater than ver2, false otherwise.
+/*static*/
+bool
+MasalaModuleVersionRequirement::version_gt(
+    std::pair< masala::base::Size, masala::base::Size > ver1,
+    std::pair< masala::base::Size, masala::base::Size > ver2
+) {
+    if( ver1.first > ver2.first ) {
+        return true;
+    }
+    if( ver1.first < ver2.first ) {
+        return false;
+    }
+    // If we reach here, the major version is equal, so we compare the minor version.
+    return ver1.second > ver2.second;
+}
+
 } // namespace version
 } // namespace managers
 } // namespace base

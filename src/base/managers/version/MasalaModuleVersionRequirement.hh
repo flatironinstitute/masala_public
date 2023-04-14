@@ -134,6 +134,28 @@ public:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE STATIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Returns true if ver1 is less than ver2, false otherwise.
+	static
+	bool
+	version_lt(
+		std::pair< masala::base::Size, masala::base::Size > ver1,
+		std::pair< masala::base::Size, masala::base::Size > ver2
+	);
+
+	/// @brief Returns true if ver1 is greater than ver2, false otherwise.
+	static
+	bool
+	version_gt(
+		std::pair< masala::base::Size, masala::base::Size > ver1,
+		std::pair< masala::base::Size, masala::base::Size > ver2
+	);
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
