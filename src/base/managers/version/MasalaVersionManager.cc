@@ -91,6 +91,29 @@ MasalaVersionManager::add_library_information(
     write_to_tracer( "Added version information for library \"" + libname + "\" version " + module_version_info->version_string() + "." );
 }
 
+/// @brief Check whether version requirements are satisfied.
+/// @returns True if satisfied, false otherwise.  If false, the messages
+/// string is populated with information about unsatisfied modules.
+bool
+MasalaVersionManager::check_version_requirements_satisfied(
+    std::string & messages
+) const {
+    std::string messages_out;
+    bool satisfied(true);
+    for(
+        std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::const_iterator it( module_version_infos_.begin() );
+        it != module_version_infos_.end();
+        ++it
+    ) {
+        MasalaModuleVersionInfo const & module_version_info( *(it->second) );
+        satisfied &= module_version_info.check_version_requirements_satisfied( module_version_infos_, messages_out );
+    }
+    if(!satisfied) {
+        messages = messages_out;
+    }
+    return satisfied;
+}
+
 
 } // namespace version
 } // namespace managers

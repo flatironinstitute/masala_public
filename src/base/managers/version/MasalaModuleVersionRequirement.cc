@@ -26,7 +26,9 @@
 #include <base/managers/version/MasalaModuleVersionRequirement.hh>
 
 // Base headers:
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
 namespace base {
@@ -150,6 +152,97 @@ MasalaModuleVersionRequirement::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+
+/// @brief Given a set of MasalaModuleVersionInfo objects, check that this requirement is satisfied.
+/// @param version_info_map A map containing a bunch of other MasalaModuleVersionInfo objects.
+/// @param this_version_info Address of MasalaModuleVersionInfo object to skip.
+/// @param messages If the requirements are NOT satisfied, this string will have messages appended to it.
+/// @returns True if requirements are satisfied, false otherwise.
+bool
+MasalaModuleVersionRequirement::check_version_requirements_satisfied(
+    std::unordered_map< std::string, MasalaModuleVersionInfoCSP > const & version_info_map,
+    MasalaModuleVersionInfo const * this_version_info,
+    std::string & messages
+) const {
+    bool satisfied( true );
+    bool required_module_is_loaded( !other_module_must_be_loaded_ );
+    bool module_has_greater_than_eq_min_version( !min_version_specified_ );
+    bool module_has_less_than_eq_max_version( !max_version_specified_ );
+
+    for(
+        std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::const_iterator it( version_info_map.begin() );
+        it != version_info_map.end();
+        ++it
+    ) {
+        MasalaModuleVersionInfo const & other_version_info( *(it->second) );
+        if( this_version_info == &other_version_info ) {
+            continue;
+        }
+
+        if( other_version_info.library_name() == other_module_name_ ) {
+            // Check whether required modules are loaded.
+            if( other_module_must_be_loaded_ ) {
+                required_module_is_loaded = true;
+            }
+            
+            // Check whether other module is less than min version.
+            if( min_version_specified_ && version_lt( other_version_info.version(), min_version_ ) ) {
+                module_has_greater_than_eq_min_version = false;
+            }
+
+            // Check whether other module is greater than max version.
+            if( max_version_specified_ && version_gt( other_version_info.version(), max_version_ ) ) {
+                module_has_less_than_eq_max_version = false;
+            }
+        }
+    }
+
+    if( other_module_must_be_loaded_ && !required_module_is_loaded ) {
+        satisfied = false;
+        if( !messages.empty() ) {
+            messages += "\n";
+        }
+        messages += "\tLibrary \"" + other_module_name_ + "\" is required by library \""
+            + this_version_info->library_name() + "\" version " + this_version_info->version_string()
+            + ".";
+        if( !required_module_not_loaded_message_.empty() ) {
+            messages += "  " + required_module_not_loaded_message_;
+        }
+    }
+
+    if( min_version_specified_ && !module_has_greater_than_eq_min_version ) {
+        satisfied = false;
+        if( !messages.empty() ) {
+            messages += "\n";
+        }
+        messages += "\tLibrary \"" + other_module_name_ + "\" must have at least version "
+            + std::to_string( min_version_.first ) + "." + std::to_string( min_version_.second )
+            + ", as specified by library \""
+            + this_version_info->library_name() + "\" version " + this_version_info->version_string()
+            + ".";
+        if( !below_min_version_message_.empty() ) {
+            messages += "  " + below_min_version_message_;
+        }
+    }
+
+    if( max_version_specified_ && !module_has_less_than_eq_max_version ) {
+        satisfied = false;
+        if( !messages.empty() ) {
+            messages += "\n";
+        }
+        messages += "\tLibrary \"" + other_module_name_ + "\" must have at most version "
+            + std::to_string( max_version_.first ) + "." + std::to_string( max_version_.second )
+            + ", as specified by library \""
+            + this_version_info->library_name() + "\" version " + this_version_info->version_string()
+            + ".";
+        if( !above_max_version_message_.empty() ) {
+            messages += "  " + above_max_version_message_;
+        }
+    }
+
+    return satisfied;
+}
 
 } // namespace version
 } // namespace managers

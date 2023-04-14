@@ -29,12 +29,15 @@
 #include <base/managers/version/MasalaModuleVersionRequirement.fwd.hh>
 
 // Base headers:
+#include <base/managers/version/MasalaModuleVersionInfo.fwd.hh>
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
 
 // STL headers:
 #include <string>
 #include <utility>
+#include <unordered_map>
+#include <vector>
 
 namespace masala {
 namespace base {
@@ -116,6 +119,17 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Given a set of MasalaModuleVersionInfo objects, check that this requirement is satisfied.
+	/// @param version_info_map A map containing a bunch of other MasalaModuleVersionInfo objects.
+	/// @param this_version_info Address of MasalaModuleVersionInfo object to skip.
+	/// @param messages If the requirements are NOT satisfied, this string will have messages appended to it.
+	/// @returns True if requirements are satisfied, false otherwise.
+	bool
+	check_version_requirements_satisfied(
+		std::unordered_map< std::string, MasalaModuleVersionInfoCSP > const & version_info_map,
+		MasalaModuleVersionInfo const * this_version_info,
+		std::string & messages
+	) const;
 
 private:
 

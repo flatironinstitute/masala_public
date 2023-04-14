@@ -279,6 +279,29 @@ MasalaModuleVersionInfo::add_requirement_with_minimum_and_maximum_version(
     );
 }
 
+/// @brief Given a set of MasalaModuleVersionInfo objects, check that all of the requirements
+/// stored in this object are satisfied.
+/// @param version_info_map A map containing a bunch of other MasalaModuleVersionInfo objects.  This
+/// object may be included, in which case it is skipped.
+/// @param messages If the requirements are NOT satisfied, this string will have messages appended to it.
+/// @returns True if requirements are satisfied, false otherwise.
+bool
+MasalaModuleVersionInfo::check_version_requirements_satisfied(
+    std::unordered_map< std::string, MasalaModuleVersionInfoCSP > const & version_info_map,
+    std::string & messages
+) const {
+    std::string new_messages;
+    bool satisfied(true);
+    // Loop through all requirements:
+    for( auto const & requirement : version_requirements_ ) {
+        satisfied &= requirement->check_version_requirements_satisfied( version_info_map, new_messages );
+    }
+    if( !satisfied ) {
+        messages += "\n" + new_messages;
+    }
+    return satisfied;
+}
+
 } // namespace version
 } // namespace managers
 } // namespace base

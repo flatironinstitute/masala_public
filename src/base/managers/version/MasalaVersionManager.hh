@@ -101,6 +101,14 @@ public:
         MasalaModuleVersionInfoCSP const & module_version_info
     );
 
+    /// @brief Check whether version requirements are satisfied.
+    /// @returns True if satisfied, false otherwise.  If false, the messages
+    /// string is populated with information about unsatisfied modules.
+    bool
+    check_version_requirements_satisfied(
+        std::string & messages
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

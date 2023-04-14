@@ -36,6 +36,7 @@
 #include <string>
 #include <utility>
 #include <set>
+#include <unordered_map>
 
 namespace masala {
 namespace base {
@@ -220,6 +221,18 @@ public:
 		std::string const & other_module_below_min_version_message = "",
 		std::string const & other_module_above_max_version_message = ""
 	);
+
+	/// @brief Given a set of MasalaModuleVersionInfo objects, check that all of the requirements
+	/// stored in this object are satisfied.
+	/// @param version_info_map A map containing a bunch of other MasalaModuleVersionInfo objects.  This
+	/// object may be included, in which case it is skipped.
+	/// @param messages If the requirements are NOT satisfied, this string will have messages appended to it.
+	/// @returns True if requirements are satisfied, false otherwise.
+	bool
+	check_version_requirements_satisfied(
+		std::unordered_map< std::string, MasalaModuleVersionInfoCSP > const & version_info_map,
+		std::string & messages
+	) const;
 
 private:
 
