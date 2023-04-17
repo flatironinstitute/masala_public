@@ -91,6 +91,21 @@ MasalaVersionManager::add_library_information(
     write_to_tracer( "Added version information for library \"" + libname + "\" version " + module_version_info->version_string() + "." );
 }
 
+/// @brief Remove information for a library.
+/// @details Throws if library name not registered.
+void
+MasalaVersionManager::remove_library_information(
+    std::string const & library_name
+) {
+    std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
+    std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::iterator it( module_version_infos_.find( library_name ) );
+    CHECK_OR_THROW_FOR_CLASS( it != module_version_infos_.end(), "remove_library_information", "No library named \""
+        + library_name + "\" was registered with the Masala version manager."
+    );
+    module_version_infos_.erase(it);
+    write_to_tracer( "Removed version information for library \"" + library_name + "\"." );
+}
+
 /// @brief Check whether version requirements are satisfied.
 /// @returns True if satisfied, false otherwise.  If false, the messages
 /// string is populated with information about unsatisfied modules.
@@ -100,6 +115,7 @@ MasalaVersionManager::check_version_requirements_satisfied(
 ) const {
     std::string messages_out;
     bool satisfied(true);
+    std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
     for(
         std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::const_iterator it( module_version_infos_.begin() );
         it != module_version_infos_.end();
@@ -118,6 +134,7 @@ MasalaVersionManager::check_version_requirements_satisfied(
 /// with this manager.
 masala::base::Size
 MasalaVersionManager::n_modules_registered() const {
+    std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
     return module_version_infos_.size();
 }
 

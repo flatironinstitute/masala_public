@@ -101,6 +101,13 @@ public:
         MasalaModuleVersionInfoCSP const & module_version_info
     );
 
+    /// @brief Remove information for a library.
+    /// @details Throws if library name not registered.
+    void
+    remove_library_information(
+        std::string const & library_name
+    );
+
     /// @brief Check whether version requirements are satisfied.
     /// @returns True if satisfied, false otherwise.  If false, the messages
     /// string is populated with information about unsatisfied modules.
