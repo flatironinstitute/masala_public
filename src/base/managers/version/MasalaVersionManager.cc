@@ -114,6 +114,12 @@ MasalaVersionManager::check_version_requirements_satisfied(
     return satisfied;
 }
 
+/// @brief Get the number of versioned modules that have been registered
+/// with this manager.
+masala::base::Size
+MasalaVersionManager::n_modules_registered() const {
+    return module_version_infos_.size();
+}
 
 } // namespace version
 } // namespace managers

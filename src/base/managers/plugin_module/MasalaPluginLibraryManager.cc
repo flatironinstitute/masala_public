@@ -29,6 +29,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
 #include <base/managers/disk/MasalaDiskManager.hh>
 #include <base/utility/string/string_comparison.hh>
 
@@ -103,6 +104,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	std::string const & dynamic_link_library_path_and_filename,
 	bool const throw_on_failure/*=false*/
 ) {
+	using namespace masala::base::managers::version;
 	std::string const abspath( disk::MasalaDiskManager::get_instance()->get_absolute_path( dynamic_link_library_path_and_filename ) );
 
 	void * handle; // A handle for the dynamic library.
@@ -133,10 +135,15 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 
 	// Try to register the dynamic library, and handle errors:
 	try {
+		MasalaVersionManagerHandle vm( MasalaVersionManager::get_instance() );
+		masala::base::Size const nregistered( vm->n_modules_registered() );
 		registration_fxn = (void(*)())(dlsym( handle, "register_library" ));
 		char * errormsg;
 		CHECK_OR_THROW_FOR_CLASS( ( errormsg = dlerror() ) == nullptr, "load_and_register_plugin_library", std::string( errormsg ) );
 		CHECK_OR_THROW_FOR_CLASS( registration_fxn != nullptr, "load_and_register_plugin_library", "Function pointer was null." );
+		CHECK_OR_THROW_FOR_CLASS( vm->n_modules_registered() >= nregistered + 1, "load_and_register_plugin_library", "Expected \""
+			+ dynamic_link_library_path_and_filename + "\" to register itself with the version manager, but it failed to do so!"
+		);
 	} catch( std::exception & except ) {
 		if( throw_on_failure ) {
 			MASALA_THROW(

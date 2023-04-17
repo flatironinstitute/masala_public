@@ -109,6 +109,11 @@ public:
         std::string & messages
     ) const;
 
+    /// @brief Get the number of versioned modules that have been registered
+    /// with this manager.
+    masala::base::Size
+    n_modules_registered() const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
