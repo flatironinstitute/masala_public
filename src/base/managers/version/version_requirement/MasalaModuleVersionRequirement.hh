@@ -19,7 +19,7 @@
 /// @file src/base/managers/version/version_requirement/MasalaModuleVersionRequirement.hh
 /// @brief Headers for a class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
-/// @note This class offers no thread-safety.
+/// @note This class offers no thread-safety.  It should only be instantiated by a MasalaModuleVersionInfo object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_hh
@@ -47,7 +47,7 @@ namespace version_requirement {
 
 /// @brief Headers for a class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
-/// @note This class offers no thread-safety.
+/// @note This class offers no thread-safety.  It should only be instantiated by a MasalaModuleVersionInfo object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaModuleVersionRequirement : masala::base::MasalaObject {
 

@@ -19,7 +19,7 @@
 /// @file src/base/managers/version/version_requirement/MasalaModuleVersionRequirement.cc
 /// @brief A class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
-/// @note This class offers no thread-safety.
+/// @note This class offers no thread-safety.  It should only be instantiated by a MasalaModuleVersionInfo object.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit headers:
