@@ -167,8 +167,8 @@ MasalaModuleVersionRequirement::check_version_requirements_satisfied(
 ) const {
     bool satisfied( true );
     bool required_module_is_loaded( !other_module_must_be_loaded_ );
-    bool module_has_greater_than_eq_min_version( !min_version_specified_ );
-    bool module_has_less_than_eq_max_version( !max_version_specified_ );
+    bool module_has_greater_than_eq_min_version( true );
+    bool module_has_less_than_eq_max_version( true );
 
     for(
         std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::const_iterator it( version_info_map.begin() );
