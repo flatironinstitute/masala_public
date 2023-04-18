@@ -26,7 +26,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
-#include <base/managers/version/MasalaModuleVersionRequirement.hh>
+#include <base/managers/version/version_requirement/MasalaModuleVersionRequirement.hh>
 
 namespace masala {
 namespace base {
@@ -175,7 +175,7 @@ MasalaModuleVersionInfo::add_requirement(
         "The other module name cannot be empty!"
     );
     version_requirements_.insert(
-        std::make_shared< MasalaModuleVersionRequirement >( other_module_name, other_module_not_loaded_message )
+        std::make_shared< version_requirement::MasalaModuleVersionRequirement >( other_module_name, other_module_not_loaded_message )
     );
 }
 
@@ -193,7 +193,7 @@ MasalaModuleVersionInfo::add_requirement_with_minimum_version(
         "The other module name cannot be empty!"
     );
     version_requirements_.insert(
-        std::make_shared< MasalaModuleVersionRequirement >(
+        std::make_shared< version_requirement::MasalaModuleVersionRequirement >(
             other_module_name,
             other_module_is_required,
             other_module_min_version,
@@ -227,7 +227,7 @@ MasalaModuleVersionInfo::add_requirement_with_maximum_version(
         "The other module name cannot be empty!"
     );
     version_requirements_.insert(
-        std::make_shared< MasalaModuleVersionRequirement >(
+        std::make_shared< version_requirement::MasalaModuleVersionRequirement >(
             other_module_name,
             other_module_is_required,
             other_module_max_version,
@@ -267,7 +267,7 @@ MasalaModuleVersionInfo::add_requirement_with_minimum_and_maximum_version(
         "The other module name cannot be empty!"
     );
     version_requirements_.insert(
-        std::make_shared< MasalaModuleVersionRequirement >(
+        std::make_shared< version_requirement::MasalaModuleVersionRequirement >(
             other_module_name,
             other_module_is_required,
             other_module_min_version,

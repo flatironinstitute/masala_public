@@ -30,7 +30,7 @@
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/types.hh>
-#include <base/managers/version/MasalaModuleVersionRequirement.fwd.hh>
+#include <base/managers/version/version_requirement/MasalaModuleVersionRequirement.fwd.hh>
 
 // STL headers:
 #include <string>
@@ -252,7 +252,7 @@ private:
 	/// @brief A bunch of optional version requirements.
 	/// @details This allows one module to indicate that another module is required, and possibly has
 	/// a minimum or maximum required version.
-	std::set< MasalaModuleVersionRequirementCSP > version_requirements_;
+	std::set< version_requirement::MasalaModuleVersionRequirementCSP > version_requirements_;
 
 
 }; // class MasalaModuleVersionInfo

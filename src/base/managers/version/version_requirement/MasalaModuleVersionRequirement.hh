@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/version/MasalaModuleVersionRequirement.hh
+/// @file src/base/managers/version/version_requirement/MasalaModuleVersionRequirement.hh
 /// @brief Headers for a class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
 /// @note This class offers no thread-safety.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_version_MasalaModuleVersionRequirement_hh
-#define Masala_src_base_managers_version_MasalaModuleVersionRequirement_hh
+#ifndef Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_hh
+#define Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_hh
 
 // Forward declarations:
-#include <base/managers/version/MasalaModuleVersionRequirement.fwd.hh>
+#include <base/managers/version/version_requirement/MasalaModuleVersionRequirement.fwd.hh>
 
 // Base headers:
 #include <base/managers/version/MasalaModuleVersionInfo.fwd.hh>
@@ -43,6 +43,7 @@ namespace masala {
 namespace base {
 namespace managers {
 namespace version {
+namespace version_requirement {
 
 /// @brief Headers for a class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
@@ -102,7 +103,7 @@ public:
 	static std::string class_name_static();
 
 	/// @brief Every class can provide its own namespace.  This is the static version.
-	/// @returns "masala::base::managers::version".
+	/// @returns "masala::base::managers::version::version_requirement".
 	static std::string class_namespace_static();
 
 	/// @brief Every class can name itself.
@@ -110,7 +111,7 @@ public:
 	std::string class_name() const override;
 
 	/// @brief Every class can provide its own namespace.
-	/// @returns "masala::base::managers::version".  Calls class_namespace_static().
+	/// @returns "masala::base::managers::version::version_requirement".  Calls class_namespace_static().
 	std::string class_namespace() const override;
 
 public:
@@ -188,9 +189,10 @@ private:
 
 }; // class MasalaModuleVersionRequirement
 
+} // namespace version_requirement
 } // namespace version
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_version_MasalaModuleVersionRequirement_tmpl_hh
+#endif //Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_hh

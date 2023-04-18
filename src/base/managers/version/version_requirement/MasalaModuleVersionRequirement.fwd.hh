@@ -16,14 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/version/MasalaModuleVersionRequirement.fwd.hh
+/// @file src/base/managers/version/version_requirement/MasalaModuleVersionRequirement.fwd.hh
 /// @brief Forward declarations for a class storing a requirement, specified by
 /// one Masala module, for the version of another Masala module.
 /// @note This class offers no thread-safety.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_version_MasalaModuleVersionRequirement_fwd_hh
-#define Masala_src_base_managers_version_MasalaModuleVersionRequirement_fwd_hh
+#ifndef Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_fwd_hh
+#define Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -31,6 +31,7 @@ namespace masala {
 namespace base {
 namespace managers {
 namespace version {
+namespace version_requirement {
 
 	class MasalaModuleVersionRequirement;
 
@@ -50,9 +51,10 @@ namespace version {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using MasalaModuleVersionRequirementCWP = MASALA_WEAK_POINTER< MasalaModuleVersionRequirement const >;
 
+} // namespace version_requirement
 } // namespace version
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_version_MasalaModuleVersionRequirement_fwd_hh
+#endif //Masala_src_base_managers_version_version_requirement_MasalaModuleVersionRequirement_fwd_hh

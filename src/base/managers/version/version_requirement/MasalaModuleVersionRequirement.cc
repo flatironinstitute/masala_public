@@ -16,14 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/version/MasalaModuleVersionRequirement.cc
+/// @file src/base/managers/version/version_requirement/MasalaModuleVersionRequirement.cc
 /// @brief A class storing a requirement, specified by one Masala module, for
 /// the version of another Masala module.
 /// @note This class offers no thread-safety.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit headers:
-#include <base/managers/version/MasalaModuleVersionRequirement.hh>
+#include <base/managers/version/version_requirement/MasalaModuleVersionRequirement.hh>
 
 // Base headers:
 #include <base/managers/version/MasalaModuleVersionInfo.hh>
@@ -34,6 +34,7 @@ namespace masala {
 namespace base {
 namespace managers {
 namespace version {
+namespace version_requirement {
 
 /// @brief Constructor to specify another module as required WITHOUT specifying any
 /// minimum or maximum version requirement for that module.  Not really recommended.
@@ -128,11 +129,11 @@ MasalaModuleVersionRequirement::class_name_static() {
 }
 
 /// @brief Every class can provide its own namespace.  This is the static version.
-/// @returns "masala::base::managers::version".
+/// @returns "masala::base::managers::version::version_requirement".
 /*static*/
 std::string
 MasalaModuleVersionRequirement::class_namespace_static() {
-    return "masala::base::managers::version";
+    return "masala::base::managers::version::version_requirement";
 }
 
 /// @brief Every class can name itself.
@@ -143,7 +144,7 @@ MasalaModuleVersionRequirement::class_name() const {
 }
 
 /// @brief Every class can provide its own namespace.
-/// @returns "masala::base::managers::version".  Calls class_namespace_static().
+/// @returns "masala::base::managers::version::version_requirement".  Calls class_namespace_static().
 std::string
 MasalaModuleVersionRequirement::class_namespace() const {
 	return class_namespace_static();
@@ -282,6 +283,7 @@ MasalaModuleVersionRequirement::version_gt(
     return ver1.second > ver2.second;
 }
 
+} // namespace version_requirement
 } // namespace version
 } // namespace managers
 } // namespace base
