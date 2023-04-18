@@ -119,7 +119,8 @@ public:
     void
     load_and_register_plugin_library(
         std::string const & dynamic_link_library_path_and_filename,
-        bool const throw_on_failure=false
+        bool const throw_on_failure=true,
+	    bool const throw_if_requirements_unsatisfied=true
     );
 
     /// @brief Iterate through all sub-directories in a directory, and load all
@@ -137,7 +138,7 @@ public:
     void
     load_and_register_plugin_libraries_in_subdirectories(
         std::string const & path_to_plugin_directory,
-        bool const throw_on_failure=false
+        bool const throw_on_failure=true
     );
 
 private:
