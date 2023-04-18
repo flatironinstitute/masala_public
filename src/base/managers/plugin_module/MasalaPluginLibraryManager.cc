@@ -170,6 +170,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 			+ dynamic_link_library_path_and_filename + "\", it was found that the following requirements were not satisfied:\n"
 			+ requirements_check_messages
 		);
+		write_to_tracer( "Successfully registered plugins from \"" + dynamic_link_library_path_and_filename + "\"."  );
 	}
 	else {
 		if( requirements_satisfied ) {
