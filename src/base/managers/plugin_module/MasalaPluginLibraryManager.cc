@@ -29,6 +29,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
 #include <base/managers/disk/MasalaDiskManager.hh>
 #include <base/utility/string/string_comparison.hh>
 
@@ -101,8 +102,10 @@ MasalaPluginLibraryManager::total_plugin_libraries() const {
 void
 MasalaPluginLibraryManager::load_and_register_plugin_library(
 	std::string const & dynamic_link_library_path_and_filename,
-	bool const throw_on_failure/*=false*/
+	bool const throw_on_failure/*=true*/,
+	bool const throw_if_requirements_unsatisfied/*=true*/
 ) {
+	using namespace masala::base::managers::version;
 	std::string const abspath( disk::MasalaDiskManager::get_instance()->get_absolute_path( dynamic_link_library_path_and_filename ) );
 
 	void * handle; // A handle for the dynamic library.
@@ -132,6 +135,8 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	dlerror(); //Clear error message.
 
 	// Try to register the dynamic library, and handle errors:
+	MasalaVersionManagerHandle vm( MasalaVersionManager::get_instance() );
+	masala::base::Size const nregistered( vm->n_modules_registered() );
 	try {
 		registration_fxn = (void(*)())(dlsym( handle, "register_library" ));
 		char * errormsg;
@@ -153,7 +158,29 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 	dlerror(); //Clear error message.
 
 	(*(registration_fxn))();
-    write_to_tracer( "Successfully registered plugins from \"" + dynamic_link_library_path_and_filename + "\"."  );
+	CHECK_OR_THROW_FOR_CLASS( vm->n_modules_registered() >= nregistered + 1, "load_and_register_plugin_library", "Expected \""
+		+ dynamic_link_library_path_and_filename + "\" to register itself with the version manager, but it failed to do so!"
+	);
+
+	// Check that requirments are satisfied.
+	std::string requirements_check_messages;
+	bool requirements_satisfied( vm->check_version_requirements_satisfied( requirements_check_messages ) );
+	if( throw_if_requirements_unsatisfied ) {
+		CHECK_OR_THROW_FOR_CLASS( requirements_satisfied, "load_and_register_plugin_library", "When attempting to load plugins from \""
+			+ dynamic_link_library_path_and_filename + "\", it was found that the following requirements were not satisfied:\n"
+			+ requirements_check_messages
+		);
+		write_to_tracer( "Successfully registered plugins from \"" + dynamic_link_library_path_and_filename + "\"."  );
+	}
+	else {
+		if( requirements_satisfied ) {
+			write_to_tracer( "Successfully registered plugins from \"" + dynamic_link_library_path_and_filename + "\"."  );
+		} else {
+			write_to_tracer( "Registered plugins from \"" + dynamic_link_library_path_and_filename + "\".  However, the "
+				+ "following requirements were unsatisfied:\n" + requirements_check_messages
+			);
+		}
+	}
 }
 
 /// @brief Iterate through all sub-directories in a directory, and load all
@@ -170,7 +197,7 @@ MasalaPluginLibraryManager::load_and_register_plugin_library(
 void
 MasalaPluginLibraryManager::load_and_register_plugin_libraries_in_subdirectories(
     std::string const & path_to_plugin_directory,
-	bool const throw_on_failure /*=false*/
+	bool const throw_on_failure /*=true*/
 ) {
 	using namespace base::managers::disk;
 

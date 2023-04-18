@@ -100,7 +100,8 @@
         "future": "cpp",
         "hash_map": "cpp",
         "typeindex": "cpp",
-        "alignedvector3": "cpp"
+        "alignedvector3": "cpp",
+        "__verbose_abort": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }
