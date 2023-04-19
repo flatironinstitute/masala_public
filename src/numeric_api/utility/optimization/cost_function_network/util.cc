@@ -40,7 +40,7 @@ namespace utility {
 namespace optimization {
 namespace cost_function_network {
 
-/// @brief This is a utility funciton to construct a standard test problem for
+/// @brief This is a utility function to construct a standard test problem for
 /// testing out cost function network optimizers.  This problem has three nodes
 /// with three choices per node, for a total of 27 possible solutions.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
