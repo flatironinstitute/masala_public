@@ -79,7 +79,7 @@ public:
 	~ChoiceFeature() override = default;
 
 	/// @brief Copy this object and return a shared pointer to the copy.
-	CostFunctionSP clone() const override;
+	ChoiceFeatureSP clone() const override;
 
 	/// @brief Ensure that this object is fully independent.
 	void make_independent() override;

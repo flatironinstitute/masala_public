@@ -45,6 +45,18 @@ namespace feature_based {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Copy this object and return a shared pointer to the copy.
+ChoiceFeatureSP
+ChoiceFeature::clone() const {
+    return masala::make_shared< ChoiceFeature >( *this );
+}
+
+/// @brief Ensure that this object is fully independent.
+void
+ChoiceFeature::make_independent() {
+    //GNDN
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +79,7 @@ ChoiceFeature::get_categories() const {
 /// @returns { "optimization_problem", "cost_function", "numeric", "choice_feature" }
 std::vector< std::string >
 ChoiceFeature::get_keywords() const {
-	std::vector< std::string > outvec( CostFunction::get_keywords() );
-    outvec.push_back( "choice_feature" );
-    return outvec;
+    return std::vector< std::string >{ "optimization_problem", "cost_function", "numeric", "choice_feature" };
 }
 
 /// @brief This returns the class name ("ChoiceFeature").
@@ -84,16 +94,13 @@ ChoiceFeature::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network::cost_function::feature_based";
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
