@@ -21,7 +21,8 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers thread safety for setup only.
+/// @note This class is a lightweight class that offers thread safety for the API definition only.  There
+/// are no setters, so everything is set in the constructor, and it's read-only after that.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -45,11 +46,24 @@ namespace feature_based {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Default constructor.
-ChoiceFeature::ChoiceFeature() :
+/// @brief Constructor with min and max connections for satisfaction, and
+/// the offset (number of connections from internal satisfaction or background).
+ChoiceFeature::ChoiceFeature(
+    masala::base::Size min_connections,
+    masala::base::Size max_connections,
+    masala::base::Size offset /*=0*/
+) :
     masala::base::managers::plugin_manager::MasalaPlugin(),
-    finalized_(false)
-{}
+    min_connections_(min_connections),
+    max_connections_(max_connections),
+    offset_(offset)
+{
+    CHECK_OR_THROW( min_connections_ <= max_connections_,
+        class_namespace_static() + "::" + class_name_static(),
+        "::ChoiceFeature", "The minimum number of connections "
+        "must be less than or equal to the maximum."
+    );
+}
 
 
 /// @brief Copy constructor.
@@ -129,14 +143,6 @@ ChoiceFeature::class_namespace() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Finalize this object.
-/*virtual*/
-void
-ChoiceFeature::finalize() {
-    std::lock< std::mutex > lock(mutex_);
-    protected_finalize();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,15 +192,6 @@ void
 ChoiceFeature::protected_assign(
     ChoiceFeature const & src
 ) {
-    finalized_ = src.finalized_.load();
-}
-
-/// @brief Finalize this object.  Assumes mutex has been locked.
-/*virtual*/
-void
-protected_finalize() {
-    CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize", "This object has already been finalized!" );
-    finalized_ = true;
 }
 
 } // namespace feature_based

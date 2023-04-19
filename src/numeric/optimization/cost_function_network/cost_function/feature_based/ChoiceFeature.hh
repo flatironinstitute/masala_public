@@ -21,7 +21,8 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers thread safety for setup only.
+/// @note This class is a lightweight class that offers thread safety for the API definition only.  There
+/// are no setters, so everything is set in the constructor, and it's read-only after that.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_hh
@@ -54,7 +55,8 @@ namespace feature_based {
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers thread safety for setup only.
+/// @note This class is a lightweight class that offers thread safety for the API definition only.  There
+/// are no setters, so everything is set in the constructor, and it's read-only after that.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class ChoiceFeature : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -64,8 +66,16 @@ public:
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.
-	ChoiceFeature();
+	/// @brief Default constructor, deleted.
+	ChoiceFeature() = delete;
+
+	/// @brief Constructor with min and max connections for satisfaction, and
+	/// the offset (number of connections from internal satisfaction or background).
+	ChoiceFeature(
+		masala::base::Size min_connections,
+		masala::base::Size max_connections,
+		masala::base::Size offset = 0
+	);
 
 	/// @brief Copy constructor.
 	ChoiceFeature(
@@ -127,11 +137,6 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-	/// @brief Finalize this object.
-	virtual
-	void finalize();
-
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,11 +174,6 @@ protected:
 		ChoiceFeature const & src
 	);
 
-	/// @brief Finalize this object.  Assumes mutex has been locked.
-	virtual
-	void
-	protected_finalize();
-
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,8 +186,15 @@ private:
 	/// @brief The API definition for this object.  Nullptr if not yet accessed.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
-	/// @brief Has this object been finalized?
-	std::atomic_bool finalized_;
+	/// @brief The minimum number of connections.
+	masala::base::Size const min_connections_ = 0;
+
+	/// @brief The maximum number of connections.
+	masala::base::Size const max_connections_ = 0;
+
+	/// @brief The offset.  (e.g. The number of hydrogen bonds satisfied to background or
+	/// by internal connections.)
+	masala::base::Size const offset_ = 0;
 
 }; // class ChoiceFeature
 
