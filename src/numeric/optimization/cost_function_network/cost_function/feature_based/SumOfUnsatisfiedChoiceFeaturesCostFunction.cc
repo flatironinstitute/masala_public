@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/cost_function/SumOfUnsatisfiedChoiceFeaturesCostFunction.cc
+/// @file src/numeric/optimization/cost_function_network/cost_function/feature_based/SumOfUnsatisfiedChoiceFeaturesCostFunction.cc
 /// @brief Implementation for a pure virtual base class for SumOfUnsatisfiedChoiceFeaturesCostFunctions.
 /// @details SumOfUnsatisfiedChoiceFeaturesCostFunctions define a penalty function which is based on the following:
 /// - One or more features are defined for each choice at each node.  (A feature could be a hydrogen bond
@@ -30,7 +30,7 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric/optimization/cost_function_network/cost_function/SumOfUnsatisfiedChoiceFeaturesCostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/SumOfUnsatisfiedChoiceFeaturesCostFunction.hh>
 
 // STL headers:
 #include <vector>
@@ -44,6 +44,7 @@ namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
+namespace feature_based {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
@@ -195,6 +196,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
 template class SumOfUnsatisfiedChoiceFeaturesCostFunction< masala::base::Real >;
 template class SumOfUnsatisfiedChoiceFeaturesCostFunction< signed long int >;
 
+} // namespace feature_based
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization

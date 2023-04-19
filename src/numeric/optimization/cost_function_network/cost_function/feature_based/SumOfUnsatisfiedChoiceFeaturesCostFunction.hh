@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/cost_function/SumOfUnsatisfiedChoiceFeaturesCostFunction.hh
+/// @file src/numeric/optimization/cost_function_network/cost_function/feature_based/SumOfUnsatisfiedChoiceFeaturesCostFunction.hh
 /// @brief Header for a pure virtual base class for SumOfUnsatisfiedChoiceFeaturesCostFunctions.
 /// @details SumOfUnsatisfiedChoiceFeaturesCostFunctions define a penalty function which is based on the following:
 /// - One or more features are defined for each choice at each node.  (A feature could be a hydrogen bond
@@ -29,11 +29,11 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
-#define Masala_src_numeric_optimization_cost_function_network_cost_function_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
+#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
+#define Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
 
 // Forward declarations:
-#include <numeric/optimization/cost_function_network/cost_function/SumOfUnsatisfiedChoiceFeaturesCostFunction.fwd.hh>
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/SumOfUnsatisfiedChoiceFeaturesCostFunction.fwd.hh>
 
 // Parent header:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
@@ -53,6 +53,7 @@ namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
+namespace feature_based {
 
 /// @brief A pure virtual base class for SumOfUnsatisfiedChoiceFeaturesCostFunctions.
 /// @details SumOfUnsatisfiedChoiceFeaturesCostFunctions define a penalty function which is based on the following:
@@ -203,10 +204,11 @@ private:
 
 }; // class SumOfUnsatisfiedChoiceFeaturesCostFunction
 
+} // namespace feature_based
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
 } // namespace masala
 
-#endif // Masala_src_numeric_optimization_cost_function_network_cost_function_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
+#endif // Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_SumOfUnsatisfiedChoiceFeaturesCostFunction_hh
