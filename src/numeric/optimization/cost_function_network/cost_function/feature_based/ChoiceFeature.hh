@@ -21,7 +21,7 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers no thread safety.
+/// @note This class is a lightweight class that offers thread safety for setup only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_hh
@@ -39,7 +39,8 @@
 #include <base/types.hh>
 
 // STL headers:
-
+#include <atomic>
+#include <mutex>
 
 namespace masala {
 namespace numeric {
@@ -53,7 +54,7 @@ namespace feature_based {
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers no thread safety.
+/// @note This class is a lightweight class that offers thread safety for setup only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class ChoiceFeature : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -64,16 +65,16 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	ChoiceFeature() = default;
+	ChoiceFeature();
 
 	/// @brief Copy constructor.
 	ChoiceFeature(
 		ChoiceFeature const &
-	) = default;
+	);
 
 	// @brief Assignment operator.
 	ChoiceFeature &
-	operator=( ChoiceFeature const & ) = default;
+	operator=( ChoiceFeature const & );
 
 	/// @brief Destructor.
 	~ChoiceFeature() override = default;
@@ -139,12 +140,44 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get an object describing the API for this object.
+	/// @details Default implementation returns nullptr.  May be overridden by
+	/// derived objects.
+	/// @note This is a weak pointer rather than a shared pointer since the
+	/// original object is expected to hold on to its API definition (which includes
+	/// funciton pointers to the functions of the instance).  Querying whether the
+	/// weak pointer can be converted to a shared pointer serves on a check as to
+	/// whether it is safe to use the function pointers.  Not ideal, but better than
+	/// nothing.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Assign this object based on src.  Assumes that both locks have been set.
+	void
+	protected_assign(
+		ChoiceFeature const & src
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief The mutex for this object.
+	std::mutex mutex_;
+
+	/// @brief The API definition for this object.  Nullptr if not yet accessed.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief Has this object been finalized?
+	std::atomic_bool finalized_;
 
 }; // class ChoiceFeature
 

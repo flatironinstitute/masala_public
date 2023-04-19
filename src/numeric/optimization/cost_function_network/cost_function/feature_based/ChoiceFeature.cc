@@ -21,7 +21,7 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers no thread safety.
+/// @note This class is a lightweight class that offers thread safety for setup only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -44,6 +44,33 @@ namespace feature_based {
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Default constructor.
+ChoiceFeature::ChoiceFeature() :
+    masala::base::managers::plugin_manager::MasalaPlugin(),
+    finalized_(false)
+{}
+
+
+/// @brief Copy constructor.
+ChoiceFeature::ChoiceFeature(
+    ChoiceFeature const & src
+) {
+    std::lock( src.mutex_, mutex_ );
+    std::lock_guard< std::mutex > lock_this( mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock_that( src.mutex_, std::adopt_lock );
+    protected_assign( src );
+}
+
+// @brief Assignment operator.
+ChoiceFeature &
+ChoiceFeature::operator=( ChoiceFeature const & src ) {
+    std::lock( src.mutex_, mutex_ );
+    std::lock_guard< std::mutex > lock_this( mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lock_that( src.mutex_, std::adopt_lock );
+    protected_assign( src );
+    return *this;
+}
 
 /// @brief Copy this object and return a shared pointer to the copy.
 ChoiceFeatureSP
@@ -109,6 +136,49 @@ ChoiceFeature::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get an object describing the API for this object.
+/// @details Default implementation returns nullptr.  May be overridden by
+/// derived objects.
+/// @note This is a weak pointer rather than a shared pointer since the
+/// original object is expected to hold on to its API definition (which includes
+/// function pointers to the functions of the instance).  Querying whether the
+/// weak pointer can be converted to a shared pointer serves on a check as to
+/// whether it is safe to use the function pointers.  Not ideal, but better than
+/// nothing.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+ChoiceFeature::get_api_definition() {
+    using namespace masala::base::api;
+    std::lock< std::mutex > lock( mutex_ );
+
+    if( api_definition_ == nullptr ) {
+        MasalaObjectAPIDefinitionSP apidef(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "An object that stores one feature on a node choice in a
+                cost function optimization problem.  Features can make connections
+                to other node choices, and can be satisfied by having a number
+                of connections between a minimum and a maximum value.",
+                true, false
+            )
+        )
+
+        api_definition_ = apidef; //Nonconst to const.
+    }
+    return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Assign this object based on src.  Assumes that both locks have been set.
+void
+ChoiceFeature::protected_assign(
+    ChoiceFeature const & src
+) {
+    finalized_ = src.finalized_.load();
+}
 
 } // namespace feature_based
 } // namespace cost_function
