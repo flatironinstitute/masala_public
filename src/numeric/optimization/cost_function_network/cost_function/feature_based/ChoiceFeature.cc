@@ -129,6 +129,14 @@ ChoiceFeature::class_namespace() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Finalize this object.
+/*virtual*/
+void
+ChoiceFeature::finalize() {
+    std::lock< std::mutex > lock(mutex_);
+    protected_finalize();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,11 +181,20 @@ ChoiceFeature::get_api_definition() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Assign this object based on src.  Assumes that both locks have been set.
+/*virtual*/
 void
 ChoiceFeature::protected_assign(
     ChoiceFeature const & src
 ) {
     finalized_ = src.finalized_.load();
+}
+
+/// @brief Finalize this object.  Assumes mutex has been locked.
+/*virtual*/
+void
+protected_finalize() {
+    CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize", "This object has already been finalized!" );
+    finalized_ = true;
 }
 
 } // namespace feature_based

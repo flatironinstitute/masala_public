@@ -127,6 +127,11 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 
+	/// @brief Finalize this object.
+	virtual
+	void finalize();
+
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +168,11 @@ protected:
 	protected_assign(
 		ChoiceFeature const & src
 	);
+
+	/// @brief Finalize this object.  Assumes mutex has been locked.
+	virtual
+	void
+	protected_finalize();
 
 private:
 
