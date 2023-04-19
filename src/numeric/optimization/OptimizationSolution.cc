@@ -420,4 +420,4 @@ OptimizationSolution::protected_problem() const {
 
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

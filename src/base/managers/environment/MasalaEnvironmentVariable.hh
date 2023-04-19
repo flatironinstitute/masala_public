@@ -103,9 +103,9 @@ private:
 
 }; // class MasalaEnvironmentVariable
 
-} // namesapce environment
-} // namesapce managers
+} // namespace environment
+} // namespace managers
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_base_managers_environment_MasalaEnvironmentVariable_tmpl_hh

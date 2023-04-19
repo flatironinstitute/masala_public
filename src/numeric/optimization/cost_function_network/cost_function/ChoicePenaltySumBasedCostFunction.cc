@@ -148,6 +148,37 @@ ChoicePenaltySumBasedCostFunction<T>::set_penalties_for_all_choices_at_node(
     //write_to_tracer( "Set penalties for node " + std::to_string(absolute_node_index) + "'s " + std::to_string(penalties_by_choice_index.size()) + " choices." );
 }
 
+/// @brief Set the penalty for a choice at a node.
+/// @param[in] absolute_node_index The absolute index of the node for which we're setting penalties.
+/// @param[in] choice_index The index of the choice at this node for which we're setting penalties.
+/// @param[in] penalty_value The penalty value.
+/// @note Only in debug mode do we check that these have not already been set.
+template< typename T >
+void
+ChoicePenaltySumBasedCostFunction<T>::set_penalty_for_choice_at_node(
+    masala::base::Size const absolute_node_index,
+    masala::base::Size const choice_index,
+    T const penalty_value
+) {
+    using masala::base::Size;
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_penalty_for_choice_at_node",
+        "This function cannot be called after the " + class_name() + " has been finalized."
+    );
+
+#ifndef NDEBUG
+    // Debug-mode checks:
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        penalties_by_absolute_node_and_choice_.count( std::make_pair( absolute_node_index, choice_index ) ) == 0,
+        "set_penalty_for_choice_at_node",
+        "The penalty for node " + std::to_string( absolute_node_index ) + ", choice "
+        + std::to_string( choice_index ) + " has already been set."
+    );
+#endif
+
+    penalties_by_absolute_node_and_choice_[ std::make_pair( absolute_node_index, choice_index ) ] = penalty_value;
+}
+
 /// @brief Set the constant offset.
 template< typename T >
 void
@@ -353,4 +384,4 @@ template class ChoicePenaltySumBasedCostFunction< signed long int >;
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

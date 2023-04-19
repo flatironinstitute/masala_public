@@ -304,4 +304,4 @@ OptimizationProblems::optimization_problems() {
 
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

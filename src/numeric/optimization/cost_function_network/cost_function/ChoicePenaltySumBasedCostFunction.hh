@@ -140,6 +140,18 @@ public:
 		std::vector< T > const & penalties_by_choice_index
 	);
 
+	/// @brief Set the penalty for a choice at a node.
+	/// @param[in] absolute_node_index The absolute index of the node for which we're setting penalties.
+	/// @param[in] choice_index The index of the choice at this node for which we're setting penalties.
+	/// @param[in] penalty_value The penalty value.
+	/// @note Only in debug mode do we check that these have not already been set.
+	void
+	set_penalty_for_choice_at_node(
+		masala::base::Size const absolute_node_index,
+		masala::base::Size const choice_index,
+		T const penalty_value
+	);
+
 	/// @brief Set the constant offset.
 	void
 	set_constant_offset(
@@ -240,6 +252,6 @@ private:
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_numeric_optimization_cost_function_network_cost_function_ChoicePenaltySumBasedCostFunction_hh

@@ -52,6 +52,6 @@ namespace optimization {
 
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_numeric_optimization_OptimizationSolution_fwd_hh

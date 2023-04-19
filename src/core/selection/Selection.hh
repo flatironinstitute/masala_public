@@ -62,6 +62,6 @@ public:
 
 } // namespace selection
 } // namespace core
-} // namesapce masala
+} // namespace masala
 
 #endif // Masala_src_core_selecion_Selection_hh

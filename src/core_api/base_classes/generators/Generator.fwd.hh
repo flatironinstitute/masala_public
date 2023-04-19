@@ -55,6 +55,6 @@ namespace generators {
 } // namespace generators
 } // namespace base_classes
 } // namespace core_api
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_core_api_base_classes_generators_Generator_fwd_hh

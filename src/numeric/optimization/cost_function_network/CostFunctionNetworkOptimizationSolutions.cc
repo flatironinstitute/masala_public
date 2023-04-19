@@ -387,4 +387,4 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala

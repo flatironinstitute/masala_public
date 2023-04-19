@@ -48,6 +48,6 @@ namespace base {
 	using MasalaObjectCWP = MASALA_WEAK_POINTER< MasalaObject const >;
 
 } // namespace base
-} // namesapce masala
+} // namespace masala
 
 #endif //Masala_src_base_MasalaObject_fwd_hh

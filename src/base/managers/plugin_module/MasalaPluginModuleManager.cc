@@ -324,7 +324,7 @@ MasalaPluginModuleManager::get_list_of_plugins_by_keywords(
 /// @param[in] category The category to search
 /// @param[in] include_subcategories If true, plugins in any subcategory are
 /// also included.  If false, only plugins in this category are included.
-/// @param[in] include_namespace If include_namesapce is true (the default), then
+/// @param[in] include_namespace If include_namespace is true (the default), then
 /// the full namespace and name is returned.
 /// @note The category is a vector of hierarchical strings.  For instance,
 /// selector->atomselector is represented as

@@ -298,4 +298,4 @@ CostFunction::make_independent_mutex_locked() {
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
-} // namesapce masala
+} // namespace masala
