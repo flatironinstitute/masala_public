@@ -38,6 +38,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -264,21 +265,21 @@ ChoiceFeature::get_api_definition() {
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( ChoiceFeature, apidef );
 
         apidef->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "min_connections", "Get the minimum number of connections that this feature must have to be satisfied.  Not threadsafe.",
                 "min_connections", "The minimum number of connections that this feature must have to be satisfied.",
                 false, false, std::bind( &ChoiceFeature::min_connections, this )
             )
         );
         apidef->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "max_connections", "Get the maximum number of connections that this feature must have to be satisfied.  Not threadsafe.",
                 "max_connections", "The maximum number of connections that this feature must have to be satisfied.",
                 false, false, std::bind( &ChoiceFeature::max_connections, this )
             )
         );
         apidef->add_getter(
-            std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "offset", "Get the offset in the number of connections.  Not threadsafe.",
                 "offset", "The offset in the number of connections (i.e. the number of connections that "
                 "are always satisfied).",
@@ -288,7 +289,17 @@ ChoiceFeature::get_api_definition() {
 
 
         apidef->add_setter(
-            std::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< masala::base::Size, masala::base::Size > >(
+                "add_other_node_and_choice_that_satisfies_this", "Indicate that a particular choice at another node satisfies "
+                "this feature.  This feature must not be finalized yet.  Threadsafe.",
+                "other_node_absolute_index", "The other node index (absolute index, not variable index).",
+                "other_choice_index", "The other choice index.",
+                false, false,
+                std::bind( &add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "finalize", "Indicate that data entry is complete, and that this object is now read-only.  Threadsafe.",
                 false, false, std::bind( &ChoiceFeature::finalize, this )
             )
