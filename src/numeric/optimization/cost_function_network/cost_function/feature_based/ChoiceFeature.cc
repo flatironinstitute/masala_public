@@ -37,6 +37,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -226,24 +227,32 @@ ChoiceFeature::get_api_definition() {
 
         apidef->add_getter(
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
-                "min_connections", "Get the minimum number of connections that this feature must have to be satisfied.",
+                "min_connections", "Get the minimum number of connections that this feature must have to be satisfied.  Not threadsafe.",
                 "min_connections", "The minimum number of connections that this feature must have to be satisfied.",
                 false, false, std::bind( &ChoiceFeature::min_connections, this )
             )
         );
         apidef->add_getter(
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
-                "max_connections", "Get the maximum number of connections that this feature must have to be satisfied.",
+                "max_connections", "Get the maximum number of connections that this feature must have to be satisfied.  Not threadsafe.",
                 "max_connections", "The maximum number of connections that this feature must have to be satisfied.",
                 false, false, std::bind( &ChoiceFeature::max_connections, this )
             )
         );
         apidef->add_getter(
             std::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
-                "offset", "Get the offset in the number of connections.",
+                "offset", "Get the offset in the number of connections.  Not threadsafe.",
                 "offset", "The offset in the number of connections (i.e. the number of connections that "
                 "are always satisfied).",
                 false, false, std::bind( &ChoiceFeature::offset, this )
+            )
+        );
+
+
+        apidef->add_setter(
+            std::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+                "finalize", "Indicate that data entry is complete, and that this object is now read-only.  Threadsafe.",
+                false, false, std::bind( &ChoiceFeature::finalize, this )
             )
         );
 
