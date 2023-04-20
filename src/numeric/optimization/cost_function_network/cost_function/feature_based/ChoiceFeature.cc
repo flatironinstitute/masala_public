@@ -112,10 +112,14 @@ ChoiceFeature::make_independent() {
 }
 
 /// @brief Finalize this object.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
 void
-ChoiceFeature::finalize() {
+ChoiceFeature::finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
     std::lock_guard< std::mutex > lock( mutex_ );
-    protected_finalize();
+    protected_finalize( variable_node_indices );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -292,9 +296,13 @@ ChoiceFeature::protected_assign(
 }
 
 /// @brief Finalize this object.  Assumes that mutex has been locked.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
 /*virtual*/
 void
-ChoiceFeature::protected_finalize() {
+ChoiceFeature::protected_finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
     CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize",
         "This ChoiceFeature has already been finalized!"
     );

@@ -99,7 +99,11 @@ public:
 	virtual void make_independent();
 
 	/// @brief Finalize this object.
-	void finalize();
+	/// @param[in] variable_node_indices A list of all of the absolute node indices
+	/// for nodes that have more than one choice, indexed by variable node index.
+	void finalize(
+		std::vector< masala::base::Size > const & variable_node_indices
+	);
 
 public:
 
@@ -203,9 +207,13 @@ protected:
 	);
 
 	/// @brief Finalize this object.  Assumes that mutex has been locked.
+	/// @param[in] variable_node_indices A list of all of the absolute node indices
+	/// for nodes that have more than one choice, indexed by variable node index.
 	virtual
 	void
-	protected_finalize();
+	protected_finalize(
+		std::vector< masala::base::Size > const & variable_node_indices
+	);
 
 private:
 
