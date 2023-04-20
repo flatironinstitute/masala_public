@@ -189,6 +189,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     TODO TODO TODO
+    - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
+    - Inner iteration over same (to lower indices).
+    - For each choice feature, accumulate number of connections.
+    - After loops, count number of features that are satisfied.
+    - Return count.
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -225,6 +230,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
 ) {
     TODO TODO TODO
+    - Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
+    - Identify ChoiceFeatures that are now part of fixed background, and store these in a list.
 
     CostFunction::protected_finalize( variable_node_indices );
 }
