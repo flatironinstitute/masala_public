@@ -97,6 +97,14 @@ ChoiceFeature::clone() const {
     return masala::make_shared< ChoiceFeature >( *this );
 }
 
+/// @brief Copy this object and return a fully independent shared pointer to the copy.
+ChoiceFeatureSP
+ChoiceFeature::deep_clone() const {
+    ChoiceFeatureSP newobj( this->clone() );
+    newobj->make_independent();
+    return newobj;
+}
+
 /// @brief Ensure that this object is fully independent.
 void
 ChoiceFeature::make_independent() {

@@ -92,6 +92,9 @@ public:
 	/// @brief Copy this object and return a shared pointer to the copy.
 	virtual ChoiceFeatureSP clone() const;
 
+	/// @brief Copy this object and return a fully independent shared pointer to the copy.
+	ChoiceFeatureSP deep_clone() const;
+
 	/// @brief Ensure that this object is fully independent.
 	virtual void make_independent();
 

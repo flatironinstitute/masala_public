@@ -232,6 +232,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
     TODO TODO TODO
     - Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
     - Identify ChoiceFeatures that are now part of fixed background, and store these in a list.
+    - Finalize all choice features.
 
     CostFunction::protected_finalize( variable_node_indices );
 }
@@ -246,6 +247,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::assign_mutex_locked(
     SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const * const src_cast_ptr( dynamic_cast< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a SumOfUnsatisfiedChoiceFeaturesCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
 
+    choice_features_by_absolute_node_and_choice_ = src_cast_ptr->choice_features_by_absolute_node_and_choice_;
+    choice_features_by_variable_node_and_choice_ = src_cast_ptr->choice_features_by_variable_node_and_choice_;
+
     TODO TODO TODO
 
     CostFunction::assign_mutex_locked( src );
@@ -256,7 +260,16 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::assign_mutex_locked(
 template< typename T >
 void
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
-    // GNDN
+    using masala::base::Size;
+    for( std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, std::vector< ChoiceFeatureCSP >, masala::base::size_pair_hash >::iterator it(choice_features_by_absolute_node_and_choice_.begin());
+        it != choice_features_by_absolute_node_and_choice_.end();
+        ++it
+    ) {
+        std::vector< ChoiceFeatureCSP > & vec( it->second );
+        for( Size i(0), imax(vec.size()); i<imax; ++i ) {
+            vec[i] = vec[i]->deep_clone();
+        }
+    }
     CostFunction::make_independent_mutex_locked();
 }
 
