@@ -37,28 +37,23 @@ namespace cost_function_network {
 namespace cost_function {
 namespace feature_based {
 
-	template< typename T >
 	class ChoiceFeature;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	template< typename T >
-	using ChoiceFeatureSP = MASALA_SHARED_POINTER< ChoiceFeature<T> >;
+	using ChoiceFeatureSP = MASALA_SHARED_POINTER< ChoiceFeature >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	template< typename T >
-	using ChoiceFeatureCSP = MASALA_SHARED_POINTER< ChoiceFeature<T> const >;
+	using ChoiceFeatureCSP = MASALA_SHARED_POINTER< ChoiceFeature const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	template< typename T >
-	using ChoiceFeatureWP = MASALA_WEAK_POINTER< ChoiceFeature<T> >;
+	using ChoiceFeatureWP = MASALA_WEAK_POINTER< ChoiceFeature >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	template< typename T >
-	using ChoiceFeatureCWP = MASALA_WEAK_POINTER< ChoiceFeature<T> const >;
+	using ChoiceFeatureCWP = MASALA_WEAK_POINTER< ChoiceFeature const >;
 
 } // namespace feature_based
 } // namespace cost_function

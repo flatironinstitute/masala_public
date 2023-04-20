@@ -90,10 +90,10 @@ public:
 	~ChoiceFeature() override = default;
 
 	/// @brief Copy this object and return a shared pointer to the copy.
-	ChoiceFeatureSP clone() const override;
+	virtual ChoiceFeatureSP clone() const;
 
 	/// @brief Ensure that this object is fully independent.
-	void make_independent() override;
+	virtual void make_independent();
 
 public:
 
@@ -129,6 +129,15 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the minimum number of connections that this feature must have to be satisfied.
+	masala::base::Size min_connections() const;
+
+	/// @brief Get the maximum number of connections that this feature must have to be satisfied.
+	masala::base::Size max_connections() const;
+
+	/// @brief Get the offset in the number of connections (the number of connections that are
+	/// always satisfied).
+	masala::base::Size offset() const;
 
 public:
 
@@ -181,7 +190,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief The mutex for this object.
-	std::mutex mutex_;
+	mutable std::mutex mutex_;
 
 	/// @brief The API definition for this object.  Nullptr if not yet accessed.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;

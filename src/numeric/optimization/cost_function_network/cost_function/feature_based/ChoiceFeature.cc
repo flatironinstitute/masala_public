@@ -34,6 +34,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
 
 namespace masala {
 namespace numeric {
@@ -53,14 +54,14 @@ ChoiceFeature::ChoiceFeature(
     masala::base::Size max_connections,
     masala::base::Size offset /*=0*/
 ) :
-    masala::base::managers::plugin_manager::MasalaPlugin(),
+    masala::base::managers::plugin_module::MasalaPlugin(),
     min_connections_(min_connections),
     max_connections_(max_connections),
     offset_(offset)
 {
     CHECK_OR_THROW( min_connections_ <= max_connections_,
         class_namespace_static() + "::" + class_name_static(),
-        "::ChoiceFeature", "The minimum number of connections "
+        "ChoiceFeature", "The minimum number of connections "
         "must be less than or equal to the maximum."
     );
 }
@@ -139,6 +140,25 @@ ChoiceFeature::class_namespace() const {
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the minimum number of connections that this feature must have to be satisfied.
+masala::base::Size
+ChoiceFeature::min_connections() const {
+    return min_connections_;
+}
+
+/// @brief Get the maximum number of connections that this feature must have to be satisfied.
+masala::base::Size
+ChoiceFeature::max_connections() const {
+    return max_connections_;
+}
+
+/// @brief Get the offset in the number of connections (the number of connections that are
+/// always satisfied).
+masala::base::Size
+ChoiceFeature::offset() const {
+    return offset_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,19 +183,19 @@ ChoiceFeature::class_namespace() const {
 masala::base::api::MasalaObjectAPIDefinitionCWP
 ChoiceFeature::get_api_definition() {
     using namespace masala::base::api;
-    std::lock< std::mutex > lock( mutex_ );
+    std::lock_guard< std::mutex > lock( mutex_ );
 
     if( api_definition_ == nullptr ) {
         MasalaObjectAPIDefinitionSP apidef(
             masala::make_shared< MasalaObjectAPIDefinition >(
-                *this,
-                "An object that stores one feature on a node choice in a
-                cost function optimization problem.  Features can make connections
-                to other node choices, and can be satisfied by having a number
-                of connections between a minimum and a maximum value.",
+                this,
+                "An object that stores one feature on a node choice in a "
+                "cost function optimization problem.  Features can make connections "
+                "to other node choices, and can be satisfied by having a number "
+                "of connections between a minimum and a maximum value.",
                 true, false
             )
-        )
+        );
 
         api_definition_ = apidef; //Nonconst to const.
     }
