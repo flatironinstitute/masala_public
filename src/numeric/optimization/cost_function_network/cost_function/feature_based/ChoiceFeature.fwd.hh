@@ -21,8 +21,8 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers thread safety for the API definition only.  There
-/// are no setters, so everything is set in the constructor, and it's read-only after that.
+/// @note This class is a lightweight class.  It offers thread safety during setup only.  After finalization,
+/// it is read-only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_fwd_hh

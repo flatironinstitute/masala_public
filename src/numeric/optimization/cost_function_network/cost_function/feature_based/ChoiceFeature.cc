@@ -21,8 +21,8 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class that offers thread safety for the API definition only.  There
-/// are no setters, so everything is set in the constructor, and it's read-only after that.
+/// @note This class is a lightweight class.  It offers thread safety during setup only.  After finalization,
+/// it is read-only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -57,6 +57,7 @@ ChoiceFeature::ChoiceFeature(
     masala::base::Size offset /*=0*/
 ) :
     masala::base::managers::plugin_module::MasalaPlugin(),
+    finalized_(false),
     min_connections_(min_connections),
     max_connections_(max_connections),
     offset_(offset)
@@ -99,6 +100,13 @@ ChoiceFeature::clone() const {
 void
 ChoiceFeature::make_independent() {
     //GNDN
+}
+
+/// @brief Finalize this object.
+void
+ChoiceFeature::finalize() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    protected_finalize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,12 +256,26 @@ ChoiceFeature::get_api_definition() {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Assign this object based on src.  Assumes that both locks have been set.
+/// @brief Assign this object based on src.  Assumes that both mutexes have been locked.
 /*virtual*/
 void
 ChoiceFeature::protected_assign(
     ChoiceFeature const & src
 ) {
+    finalized_.store( src.finalized_.load() );
+    min_connections_ = src.min_connections_;
+    max_connections_ = src.max_connections_;
+    offset_ = src.offset_;
+}
+
+/// @brief Finalize this object.  Assumes that mutex has been locked.
+/*virtual*/
+void
+ChoiceFeature::protected_finalize() {
+    CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize",
+        "This ChoiceFeature has already been finalized!"
+    );
+    finalized_.store(true);
 }
 
 } // namespace feature_based
