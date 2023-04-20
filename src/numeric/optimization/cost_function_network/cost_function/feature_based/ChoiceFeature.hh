@@ -38,6 +38,7 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/hash_types.hh>
 
 // STL headers:
 #include <atomic>
@@ -173,10 +174,13 @@ public:
 	/// @details This feature must not be finalized yet.  Threadsafe.
 	/// @param other_node_absolute_index The other node index (absolute index, not variable index).
 	/// @param other_choice_index The other choice index.
+	/// @param n_connections The number of connections that are made from the features of the
+	/// other node choice to this feature.
 	void
 	add_other_node_and_choice_that_satisfies_this(
 		masala::base::Size const other_node_absolute_index,
-		masala::base::Size const other_choice_index
+		masala::base::Size const other_choice_index,
+    	masala::base::Size const n_connections
 	);
 
 public:
@@ -251,15 +255,17 @@ private:
 	/// by internal connections.)
 	masala::base::Size offset_ = 0;
 
-	/// @brief A list of choices at other nodes that satisfy this feature, indexed
-	/// by absolute node index.
+	/// @brief Choices at other nodes that satisfy this feature, indexed
+	/// by absolute node index, mapped to the number of connections that they
+	/// make to this feature.
 	/// @details Used during setup, then deleted at finalization time.
-	std::set< std::pair< masala::base::Size, masala::base::Size > > other_absolute_node_choices_that_satisfy_this_;
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > other_absolute_node_choices_that_satisfy_this_;
 
-	/// @brief A list of choices at other nodes that satisfy this feature, indexed
-	/// by variable node index.
+	/// @brief Choices at other nodes that satisfy this feature, indexed
+	/// by variable node index, mapped to the number of connections that they
+	/// make to this feature.
 	/// @details Used run, after being produced by finalization step.
-	std::set< std::pair< masala::base::Size, masala::base::Size > > other_variable_node_choices_that_satisfy_this_;
+	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > other_variable_node_choices_that_satisfy_this_;
 
 }; // class ChoiceFeature
 

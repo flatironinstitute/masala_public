@@ -38,7 +38,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 namespace masala {
 namespace numeric {
@@ -209,23 +209,28 @@ ChoiceFeature::offset() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Indicate that a particular choice at another node satisfies this feature.
-/// @details This feature must not be finalized yet.
+/// @details This feature must not be finalized yet.  Threadsafe.
 /// @param other_node_absolute_index The other node index (absolute index, not variable index).
-/// @param other_choice_index The other choice index.  Threadsafe.
+/// @param other_choice_index The other choice index.
+/// @param n_connections The number of connections that are made from the features of the
+/// other node choice to this feature.
 void
 ChoiceFeature::add_other_node_and_choice_that_satisfies_this(
     masala::base::Size const other_node_absolute_index,
-    masala::base::Size const other_choice_index
+    masala::base::Size const other_choice_index,
+    masala::base::Size const n_connections
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
     CHECK_OR_THROW_FOR_CLASS( !finalized_.load(), "add_other_node_and_choice_that_satisfies_this", "This function "
         "cannot be called after this object has been finalized."
     );
+    std::pair< masala::base::Size, masala::base::Size > const key( other_node_absolute_index, other_choice_index );
     CHECK_OR_THROW_FOR_CLASS(
-        other_absolute_node_choices_that_satisfy_this_.insert( std::make_pair( other_node_absolute_index, other_choice_index ) ).second,
+        other_absolute_node_choices_that_satisfy_this_.count( key ) == 0,
         "add_other_node_and_choice_that_satisfies_this", "Unable to add connecting node " + std::to_string( other_node_absolute_index )
         + ", choice " + std::to_string( other_choice_index ) + ".  This node/choice pair has already been added!"
     );
+    other_absolute_node_choices_that_satisfy_this_[key] = n_connections;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -289,13 +294,15 @@ ChoiceFeature::get_api_definition() {
 
 
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< masala::base::Size, masala::base::Size > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< masala::base::Size, masala::base::Size, masala::base::Size > >(
                 "add_other_node_and_choice_that_satisfies_this", "Indicate that a particular choice at another node satisfies "
                 "this feature.  This feature must not be finalized yet.  Threadsafe.",
                 "other_node_absolute_index", "The other node index (absolute index, not variable index).",
                 "other_choice_index", "The other choice index.",
+                "n_connections", "The number of connections that are made from the features of the other "
+                "node choice to this feature.",
                 false, false,
-                std::bind( &add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2 )
+                std::bind( &add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
         apidef->add_setter(
@@ -339,30 +346,36 @@ ChoiceFeature::protected_finalize(
     );
     finalized_.store(true);
     std::set< masala::base::Size > fixed_nodes;
+    masala::base::Size fixed_node_connections( 0 );
 
     for( auto const & absnode_and_choice : other_absolute_node_choices_that_satisfy_this_ ) {
-        std::unordered_map< masala::base::Size, masala::base::Size >::const_iterator it( variable_node_indices_by_absolute_node_index.find( absnode_and_choice.first ) );
+        masala::base::Size const absnode( absnode_and_choice.first.first );
+        masala::base::Size const n_connections( absnode_and_choice.second );
+        std::unordered_map< masala::base::Size, masala::base::Size >::const_iterator it( variable_node_indices_by_absolute_node_index.find( absnode ) );
         if( it == variable_node_indices_by_absolute_node_index.end() ) {
             // This node index is not variable.
             CHECK_OR_THROW_FOR_CLASS(
-                fixed_nodes.insert( absnode_and_choice.first ).second,
+                fixed_nodes.insert( absnode ).second,
                 "protected_finalize",
-                "More than one choice was specified for node " + std::to_string( absnode_and_choice.first )
+                "More than one choice was specified for node " + std::to_string( absnode )
                 + ", but it is apparently a fixed node!"
             );
+            fixed_node_connections += n_connections;
         } else {
             // This node index is variable.
-            std::pair< masala::base::Size, masala::base::Size > const key( it->second, absnode_and_choice.second );
+            masala::base::Size const choice_index( absnode_and_choice.first.second );
+            std::pair< masala::base::Size, masala::base::Size > const key( it->second, choice_index );
             CHECK_OR_THROW_FOR_CLASS(
-                other_variable_node_choices_that_satisfy_this_.insert(key).second,
+                other_variable_node_choices_that_satisfy_this_.count(key) == 0,
                 "protected_finalize",
-                "Node " + std::to_string( absnode_and_choice.first ) + ", choice " + std::to_string( absnode_and_choice.second )
+                "Node " + std::to_string( absnode ) + ", choice " + std::to_string( choice_index )
                 + " was specified multiple times!"
             );
+            other_variable_node_choices_that_satisfy_this_[key] = n_connections;
         }
     }
 
-    offset_ += fixed_nodes.size(); // Think about whether I want to do this or not.
+    offset_ += fixed_node_connections; // Think about whether I want to do this or not.
 
     other_absolute_node_choices_that_satisfy_this_.clear();
 }
