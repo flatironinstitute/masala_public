@@ -124,16 +124,31 @@ ChoiceFeature::get_keywords() const {
     return std::vector< std::string >{ "optimization_problem", "cost_function", "numeric", "choice_feature" };
 }
 
+/// @brief This returns the class name ("ChoiceFeature").  Static version.
+/*static*/
+std::string
+ChoiceFeature::class_name_static() {
+    return "ChoiceFeature";
+}
+
+/// @brief This returns the class namespace ("masala::numeric::optimization::cost_function_network::cost_function::feature_based").
+/// Static version.
+/*static*/
+std::string
+ChoiceFeature::class_namespace_static() {
+    return "masala::numeric::optimization::cost_function_network::cost_function::feature_based";
+}
+
 /// @brief This returns the class name ("ChoiceFeature").
 std::string
 ChoiceFeature::class_name() const {
-    return "ChoiceFeature";
+    return class_name_static();
 }
 
 /// @brief This returns the class namespace ("masala::numeric::optimization::cost_function_network::cost_function::feature_based").
 std::string
 ChoiceFeature::class_namespace() const {
-    return "masala::numeric::optimization::cost_function_network::cost_function::feature_based";
+    return class_namespace_static();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

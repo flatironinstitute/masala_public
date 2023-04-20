@@ -117,6 +117,15 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+	/// @brief This returns the class name ("ChoiceFeature").  Static version.
+	static
+	std::string class_name_static();
+
+	/// @brief This returns the class namespace ("masala::numeric::optimization::cost_function_network::cost_function::feature_based").
+	/// Static version.
+	static
+	std::string class_namespace_static();
+
 	/// @brief This returns the class name ("ChoiceFeature").
 	std::string class_name() const override;
 
