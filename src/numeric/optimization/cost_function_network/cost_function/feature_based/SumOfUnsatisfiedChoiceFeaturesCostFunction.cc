@@ -161,6 +161,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
                 feature_connection_offset
             )
         };
+        return 0;
     } else {
         it->second.push_back(
             masala::make_shared< ChoiceFeature >(
@@ -169,7 +170,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
                 feature_connection_offset
             )
         );
+        return it->second.size();
     }
+    return 0; // Keep older compilers happy, though we never reach here.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
