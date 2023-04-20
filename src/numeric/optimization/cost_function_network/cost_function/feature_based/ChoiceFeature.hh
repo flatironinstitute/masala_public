@@ -145,12 +145,15 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the minimum number of connections that this feature must have to be satisfied.
+	/// @note Assumes finalized.  Throws in debug mode if not finalized.
 	masala::base::Size min_connections() const;
 
 	/// @brief Get the maximum number of connections that this feature must have to be satisfied.
+	/// @note Assumes finalized.  Throws in debug mode if not finalized.
 	masala::base::Size max_connections() const;
 
 	/// @brief Get the offset in the number of connections (the number of connections that are
+	/// @note Assumes finalized.  Throws in debug mode if not finalized.
 	/// always satisfied).
 	masala::base::Size offset() const;
 

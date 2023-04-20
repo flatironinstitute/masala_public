@@ -175,21 +175,27 @@ ChoiceFeature::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the minimum number of connections that this feature must have to be satisfied.
+/// @note Assumes finalized.  Throws in debug mode if not finalized.
 masala::base::Size
 ChoiceFeature::min_connections() const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(), "min_connections", "This function must be called from a finalized object only!" );
     return min_connections_;
 }
 
 /// @brief Get the maximum number of connections that this feature must have to be satisfied.
+/// @note Assumes finalized.  Throws in debug mode if not finalized.
 masala::base::Size
 ChoiceFeature::max_connections() const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(), "max_connections", "This function must be called from a finalized object only!" );
     return max_connections_;
 }
 
 /// @brief Get the offset in the number of connections (the number of connections that are
 /// always satisfied).
+/// @note Assumes finalized.  Throws in debug mode if not finalized.
 masala::base::Size
 ChoiceFeature::offset() const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(), "offset", "This function must be called from a finalized object only!" );
     return offset_;
 }
 
