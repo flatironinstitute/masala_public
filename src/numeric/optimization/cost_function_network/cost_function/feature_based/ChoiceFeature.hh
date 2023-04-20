@@ -42,6 +42,7 @@
 // STL headers:
 #include <atomic>
 #include <mutex>
+#include <set>
 
 namespace masala {
 namespace numeric {
@@ -167,6 +168,15 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Indicate that a particular choice at another node satisfies this feature.
+	/// @details This feature must not be finalized yet.  Threadsafe.
+	/// @param other_node_absolute_index The other node index (absolute index, not variable index).
+	/// @param other_choice_index The other choice index.
+	void
+	add_other_node_and_choice_that_satisfies_this(
+		masala::base::Size const other_node_absolute_index,
+		masala::base::Size const other_choice_index
+	);
 
 public:
 
@@ -239,6 +249,16 @@ private:
 	/// @brief The offset.  (e.g. The number of hydrogen bonds satisfied to background or
 	/// by internal connections.)
 	masala::base::Size offset_ = 0;
+
+	/// @brief A list of choices at other nodes that satisfy this feature, indexed
+	/// by absolute node index.
+	/// @details Used during setup, then deleted at finalization time.
+	std::set< std::pair< masala::base::Size, masala::base::Size > > other_absolute_node_choices_that_satisfy_this_;
+
+	/// @brief A list of choices at other nodes that satisfy this feature, indexed
+	/// by variable node index.
+	/// @details Used run, after being produced by finalization step.
+	std::set< std::pair< masala::base::Size, masala::base::Size > > other_variable_node_choices_that_satisfy_this_;
 
 }; // class ChoiceFeature
 

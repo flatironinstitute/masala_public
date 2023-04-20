@@ -207,6 +207,26 @@ ChoiceFeature::offset() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Indicate that a particular choice at another node satisfies this feature.
+/// @details This feature must not be finalized yet.
+/// @param other_node_absolute_index The other node index (absolute index, not variable index).
+/// @param other_choice_index The other choice index.  Threadsafe.
+void
+ChoiceFeature::add_other_node_and_choice_that_satisfies_this(
+    masala::base::Size const other_node_absolute_index,
+    masala::base::Size const other_choice_index
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !finalized_.load(), "add_other_node_and_choice_that_satisfies_this", "This function "
+        "cannot be called after this object has been finalized."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        other_absolute_node_choices_that_satisfy_this_.insert( std::make_pair( other_node_absolute_index, other_choice_index ) ).second,
+        "add_other_node_and_choice_that_satisfies_this", "Unable to add connecting node " + std::to_string( other_node_absolute_index )
+        + ", choice " + std::to_string( other_choice_index ) + ".  This node/choice pair has already been added!"
+    );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -307,6 +327,12 @@ ChoiceFeature::protected_finalize(
         "This ChoiceFeature has already been finalized!"
     );
     finalized_.store(true);
+
+    TODO TODO TODO
+    - Convert absolute indices to variable indices.
+    - Increment offset for any choices not in variable node indices.
+        - In debug mode, ensure that this is the only choice at the node in question.
+    - Delete absolute indices.
 }
 
 } // namespace feature_based
