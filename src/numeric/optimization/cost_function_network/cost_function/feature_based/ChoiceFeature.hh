@@ -43,6 +43,7 @@
 #include <atomic>
 #include <mutex>
 #include <set>
+#include <unordered_map>
 
 namespace masala {
 namespace numeric {
@@ -100,10 +101,10 @@ public:
 	virtual void make_independent();
 
 	/// @brief Finalize this object.
-	/// @param[in] variable_node_indices A list of all of the absolute node indices
-	/// for nodes that have more than one choice, indexed by variable node index.
+	/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
+	/// for nodes that have more than one choice, indexed by absolute node index.
 	void finalize(
-		std::vector< masala::base::Size > const & variable_node_indices
+		std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 	);
 
 public:
@@ -217,12 +218,12 @@ protected:
 	);
 
 	/// @brief Finalize this object.  Assumes that mutex has been locked.
-	/// @param[in] variable_node_indices A list of all of the absolute node indices
-	/// for nodes that have more than one choice, indexed by variable node index.
+	/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
+	/// for nodes that have more than one choice, indexed by absolute node index.
 	virtual
 	void
 	protected_finalize(
-		std::vector< masala::base::Size > const & variable_node_indices
+		std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 	);
 
 private:

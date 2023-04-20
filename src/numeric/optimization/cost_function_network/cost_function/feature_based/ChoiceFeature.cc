@@ -113,14 +113,14 @@ ChoiceFeature::make_independent() {
 }
 
 /// @brief Finalize this object.
-/// @param[in] variable_node_indices A list of all of the absolute node indices
-/// for nodes that have more than one choice, indexed by variable node index.
+/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
+/// for nodes that have more than one choice, indexed by absolute node index.
 void
 ChoiceFeature::finalize(
-    std::vector< masala::base::Size > const & variable_node_indices
+    std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
-    protected_finalize( variable_node_indices );
+    protected_finalize( variable_node_indices_by_absolute_node_index );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -327,23 +327,44 @@ ChoiceFeature::protected_assign(
 }
 
 /// @brief Finalize this object.  Assumes that mutex has been locked.
-/// @param[in] variable_node_indices A list of all of the absolute node indices
-/// for nodes that have more than one choice, indexed by variable node index.
+/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
+/// for nodes that have more than one choice, indexed by absolute node index.
 /*virtual*/
 void
 ChoiceFeature::protected_finalize(
-    std::vector< masala::base::Size > const & variable_node_indices
+    std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 ) {
     CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize",
         "This ChoiceFeature has already been finalized!"
     );
     finalized_.store(true);
+    std::set< masala::base::Size > fixed_nodes;
 
-    TODO TODO TODO
-    - Convert absolute indices to variable indices.
-    - Increment offset for any choices not in variable node indices.
-        - In debug mode, ensure that this is the only choice at the node in question.
-    - Delete absolute indices.
+    for( auto const & absnode_and_choice : other_absolute_node_choices_that_satisfy_this_ ) {
+        std::unordered_map< masala::base::Size, masala::base::Size >::const_iterator it( variable_node_indices_by_absolute_node_index.find( absnode_and_choice.first ) );
+        if( it == variable_node_indices_by_absolute_node_index.end() ) {
+            // This node index is not variable.
+            CHECK_OR_THROW_FOR_CLASS(
+                fixed_nodes.insert( absnode_and_choice.first ).second,
+                "protected_finalize",
+                "More than one choice was specified for node " + std::to_string( absnode_and_choice.first )
+                + ", but it is apparently a fixed node!"
+            );
+        } else {
+            // This node index is variable.
+            std::pair< masala::base::Size, masala::base::Size > const key( it->second, absnode_and_choice.second );
+            CHECK_OR_THROW_FOR_CLASS(
+                other_variable_node_choices_that_satisfy_this_.insert(key).second,
+                "protected_finalize",
+                "Node " + std::to_string( absnode_and_choice.first ) + ", choice " + std::to_string( absnode_and_choice.second )
+                + " was specified multiple times!"
+            );
+        }
+    }
+
+    offset_ += fixed_nodes.size(); // Think about whether I want to do this or not.
+
+    other_absolute_node_choices_that_satisfy_this_.clear();
 }
 
 } // namespace feature_based
