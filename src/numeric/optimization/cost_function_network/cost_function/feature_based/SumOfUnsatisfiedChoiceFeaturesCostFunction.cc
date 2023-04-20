@@ -170,7 +170,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
                 feature_connection_offset
             )
         );
-        return it->second.size();
+        return it->second.size() - 1;
     }
     return 0; // Keep older compilers happy, though we never reach here.
 }
