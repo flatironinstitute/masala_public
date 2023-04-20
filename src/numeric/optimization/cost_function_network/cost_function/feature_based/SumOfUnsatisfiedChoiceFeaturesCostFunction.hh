@@ -39,6 +39,7 @@
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -137,6 +138,28 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Add a choice feature for a set of nodes, indexed by absolute node index.
+	/// @details This can only be called prior to object finalization.
+	///
+	/// @param[in] absolute_node_index The index of this node (absolute).
+	/// @param[in] choice_index The index of this choice.
+	/// @param[in] min_connections_to_satisfy_feature The minimum number of connections that
+	/// this feature must make in order to be satisfied.
+	/// @param[in] max_connections_to_satisfy_feature The maximum number of connections that
+	/// this feature must make in order to be satisfied.
+	/// @param[in] feature_connection_offset The number of connections that this feature always
+	/// makes (e.g. to background, or to itself).
+	///
+	/// @returns The index of the newly-added choice feature in the vector of choice features for
+	/// this position.
+	masala::base::Size
+	add_choice_feature_by_absolute_node_index(
+		masala::base::Size const absolute_node_index,
+		masala::base::Size const choice_index,
+		masala::base::Size const min_connections_to_satisfy_feature,
+		masala::base::Size const max_connections_to_satisfy_feature,
+		masala::base::Size const feature_connection_offset
+	);
 
 public:
 
@@ -200,6 +223,24 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The features, indexed by absolute node index and choice index.
+	/// @details This is used only during setup, prior to finalization.  Access is mutex-controlled.
+	std::unordered_map<
+		std::pair< masala::base::Size, masala::base::Size >,
+		std::vector< ChoiceFeatureCSP >,
+		masala::base::size_pair_hash
+	> choice_features_by_absolute_node_and_choice_;
+
+	/// @brief The features, indexed by variable node index and choice index.
+	/// @details This is used only during the run, following finalization.  Access is read-only and
+	/// not mutex-controlled.  The shared pointers continue to reside in the
+	/// choice_features_by_absolute_node_and_choice_ map; this uses raw pointers.
+	std::unordered_map<
+		std::pair< masala::base::Size, masala::base::Size >,
+		std::vector< ChoiceFeature const * >,
+		masala::base::size_pair_hash
+	> choice_features_by_variable_node_and_choice_;
 
 
 }; // class SumOfUnsatisfiedChoiceFeaturesCostFunction
