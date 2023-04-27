@@ -242,6 +242,16 @@ private:
 		masala::base::size_pair_hash
 	> choice_features_by_variable_node_and_choice_;
 
+	/// @brief The fixed features, indexed by absolute node index and choice index.
+	/// @details This is used only during the run, following finalization.  Access is read-only and
+	/// not mutex-controlled.  The shared pointers continue to reside in the
+	/// choice_features_by_absolute_node_and_choice_ map; this uses raw pointers.
+	/// @note The choice index should always be 0.
+	std::unordered_map<
+		std::pair< masala::base::Size, masala::base::Size >,
+		std::vector< ChoiceFeature const * >,
+		masala::base::size_pair_hash
+	> fixed_choice_features_by_absolute_node_and_choice_;
 
 }; // class SumOfUnsatisfiedChoiceFeaturesCostFunction
 
