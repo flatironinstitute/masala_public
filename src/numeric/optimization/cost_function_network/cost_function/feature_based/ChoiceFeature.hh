@@ -102,11 +102,9 @@ public:
 	virtual void make_independent();
 
 	/// @brief Finalize this object.
-	/// @param[in] fixed_absolute_node_indices The indices of nodes that have only one choice.
 	/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
 	/// for nodes that have more than one choice, indexed by absolute node index.
 	void finalize(
-		std::vector< masala::base::Size > const & fixed_absolute_node_indices,
 		std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 	);
 
@@ -224,13 +222,11 @@ protected:
 	);
 
 	/// @brief Finalize this object.  Assumes that mutex has been locked.
-	/// @param[in] fixed_absolute_node_indices The indices of nodes that have only one choice.
 	/// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
 	/// for nodes that have more than one choice, indexed by absolute node index.
 	virtual
 	void
 	protected_finalize(
-		std::vector< masala::base::Size > const & fixed_absolute_node_indices,
 		std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 	);
 

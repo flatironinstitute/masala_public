@@ -37,7 +37,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 namespace masala {
@@ -113,16 +113,14 @@ ChoiceFeature::make_independent() {
 }
 
 /// @brief Finalize this object.
-/// @param[in] fixed_absolute_node_indices The indices of nodes that have only one choice.
 /// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
 /// for nodes that have more than one choice, indexed by absolute node index.
 void
 ChoiceFeature::finalize(
-    std::vector< masala::base::Size > const & fixed_absolute_node_indices,
     std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
-    protected_finalize( fixed_absolute_node_indices, variable_node_indices_by_absolute_node_index );
+    protected_finalize( variable_node_indices_by_absolute_node_index );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -310,9 +308,8 @@ ChoiceFeature::get_api_definition() {
             )
         );
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< std::vector< Size > const &, std::unordered_map< Size, Size > const &  > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::unordered_map< Size, Size > const &  > >(
                 "finalize", "Indicate that data entry is complete, and that this object is now read-only.  Threadsafe.",
-                "fixed_absolute_node_indices", "The indices of nodes that have only one choice.",
                 "variable_node_indices_by_absolute_node_index", "A map of all of the variable node indices for nodes "
                 "that have more than one choice, indexed by absolute node index.",
                 false, false, std::bind( &ChoiceFeature::finalize, this, std::placeholders::_1, std::placeholders::_2 )
@@ -341,13 +338,11 @@ ChoiceFeature::protected_assign(
 }
 
 /// @brief Finalize this object.  Assumes that mutex has been locked.
-/// @param[in] fixed_absolute_node_indices The indices of nodes that have only one choice.
 /// @param[in] variable_node_indices_by_absolute_node_index A map of all of the variable node indices
 /// for nodes that have more than one choice, indexed by absolute node index.
 /*virtual*/
 void
 ChoiceFeature::protected_finalize(
-    std::vector< masala::base::Size > const & fixed_absolute_node_indices,
     std::unordered_map< masala::base::Size, masala::base::Size > const & variable_node_indices_by_absolute_node_index
 ) {
     CHECK_OR_THROW_FOR_CLASS( finalized_.load() == false, "protected_finalize",
