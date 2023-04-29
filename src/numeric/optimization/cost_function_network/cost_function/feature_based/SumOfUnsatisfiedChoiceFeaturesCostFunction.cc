@@ -189,12 +189,12 @@ masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
     std::vector< masala::base::Size > const & /*candidate_solution*/
 ) const {
-    // TODO TODO TODO
-    // - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
-    // - Inner iteration over same (to lower indices).
-    // - For each choice feature, accumulate number of connections.
-    // - After loops, count number of features that are satisfied.
-    // - Return count.
+    TODO TODO TODO
+    - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
+    - Inner iteration over same (to lower indices).
+    - For each choice feature, accumulate number of connections.
+    - After loops, count number of features that are satisfied.
+    - Return count.
     return 0.0;
 }
 
@@ -209,7 +209,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function_difference(
     std::vector< masala::base::Size > const & /*candidate_solution_old*/,
     std::vector< masala::base::Size > const & /*candidate_solution_new*/
 ) const {
-    // TODO TODO TODO
+    TODO TODO TODO
     return 0.0;
 }
 
@@ -306,9 +306,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
         for( Size i(0), imax(vec.size()); i<imax; ++i ) {
             vec[i] = vec[i]->deep_clone();
             if( protected_finalized() ) {
-                // TODO TODO TODO
-                // - Update the choice_features_by_variable_node_and_choice_ map.
-                // - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
+                TODO TODO TODO
+                - Update the choice_features_by_variable_node_and_choice_ map.
+                - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
             }
         }
     }
