@@ -51,6 +51,13 @@ namespace feature_based {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Default constructor.
+/// @details Should not be used.  Only for naming functions.
+ChoiceFeature::ChoiceFeature() :
+    masala::base::managers::plugin_module::MasalaPlugin(),
+    finalized_(false)
+{}
+
 /// @brief Constructor with min and max connections for satisfaction, and
 /// the offset (number of connections from internal satisfaction or background).
 ChoiceFeature::ChoiceFeature(
@@ -260,7 +267,7 @@ ChoiceFeature::get_api_definition() {
     if( api_definition_ == nullptr ) {
         MasalaObjectAPIDefinitionSP apidef(
             masala::make_shared< MasalaObjectAPIDefinition >(
-                this,
+                *this,
                 "An object that stores one feature on a node choice in a "
                 "cost function optimization problem.  Features can make connections "
                 "to other node choices, and can be satisfied by having a number "
@@ -304,7 +311,7 @@ ChoiceFeature::get_api_definition() {
                 "n_connections", "The number of connections that are made from the features of the other "
                 "node choice to this feature.",
                 false, false,
-                std::bind( &add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+                std::bind( &ChoiceFeature::add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
         apidef->add_setter(
@@ -312,7 +319,7 @@ ChoiceFeature::get_api_definition() {
                 "finalize", "Indicate that data entry is complete, and that this object is now read-only.  Threadsafe.",
                 "variable_node_indices_by_absolute_node_index", "A map of all of the variable node indices for nodes "
                 "that have more than one choice, indexed by absolute node index.",
-                false, false, std::bind( &ChoiceFeature::finalize, this, std::placeholders::_1, std::placeholders::_2 )
+                false, false, std::bind( &ChoiceFeature::finalize, this, std::placeholders::_1 )
             )
         );
 

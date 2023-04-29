@@ -69,8 +69,9 @@ public:
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor, deleted.
-	ChoiceFeature() = delete;
+	/// @brief Default constructor.
+	/// @details Should not be used.  Only for naming functions.
+	ChoiceFeature();
 
 	/// @brief Constructor with min and max connections for satisfaction, and
 	/// the offset (number of connections from internal satisfaction or background).

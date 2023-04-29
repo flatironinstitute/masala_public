@@ -149,7 +149,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
     std::pair< Size, Size > key( absolute_node_index, choice_index );
     std::unordered_map<
 	    std::pair< masala::base::Size, masala::base::Size >,
-		std::vector< ChoiceFeatureCSP >,
+		std::vector< ChoiceFeatureSP >,
 		masala::base::size_pair_hash
 	>::iterator it(
         choice_features_by_absolute_node_and_choice_.find( key )
@@ -187,14 +187,15 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
 template< typename T >
 masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
-    std::vector< masala::base::Size > const & candidate_solution
+    std::vector< masala::base::Size > const & /*candidate_solution*/
 ) const {
-    TODO TODO TODO
-    - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
-    - Inner iteration over same (to lower indices).
-    - For each choice feature, accumulate number of connections.
-    - After loops, count number of features that are satisfied.
-    - Return count.
+    // TODO TODO TODO
+    // - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
+    // - Inner iteration over same (to lower indices).
+    // - For each choice feature, accumulate number of connections.
+    // - After loops, count number of features that are satisfied.
+    // - Return count.
+    return 0.0;
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,
@@ -205,10 +206,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
 template< typename T >
 masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function_difference(
-    std::vector< masala::base::Size > const & candidate_solution_old,
-    std::vector< masala::base::Size > const & candidate_solution_new
+    std::vector< masala::base::Size > const & /*candidate_solution_old*/,
+    std::vector< masala::base::Size > const & /*candidate_solution_new*/
 ) const {
-    TODO TODO TODO
+    // TODO TODO TODO
+    return 0.0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,11 +242,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
     // Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
     // Identify ChoiceFeatures that are now part of fixed background, and store these in a list.
     for(
-        std::unordered_map< std::pair< Size, Size >, std::vector< ChoiceFeatureCSP >, masala::base::size_pair_hash >::iterator it( choice_features_by_absolute_node_and_choice_.begin() );
+        std::unordered_map< std::pair< Size, Size >, std::vector< ChoiceFeatureSP >, masala::base::size_pair_hash >::iterator it( choice_features_by_absolute_node_and_choice_.begin() );
         it != choice_features_by_absolute_node_and_choice_.end();
         ++it
     ) {
-        std::vector< ChoiceFeatureCSP > & choice_feature_csp_vec( it->second );
+        std::vector< ChoiceFeatureSP > & choice_feature_csp_vec( it->second );
         std::vector< ChoiceFeature const * > choice_feature_csp_vec_copy( choice_feature_csp_vec.size() );
 
         //Finalize all choice features, and copy to a vector of raw pointers:
@@ -258,7 +260,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
         }
         Size const abs_node_index( it->first.first );
         Size const choice_index( it->first.second );
-        if( masala::base::utility::container::has_value( variable_node_indices, abs_node_index ) {
+        if( masala::base::utility::container::has_value( variable_node_indices, abs_node_index ) ) {
             // If this is a variable node.
             choice_features_by_variable_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
         } else {
@@ -304,9 +306,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
         for( Size i(0), imax(vec.size()); i<imax; ++i ) {
             vec[i] = vec[i]->deep_clone();
             if( protected_finalized() ) {
-                TODO TODO TODO
-                - Update the choice_features_by_variable_node_and_choice_ map.
-                - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
+                // TODO TODO TODO
+                // - Update the choice_features_by_variable_node_and_choice_ map.
+                // - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
             }
         }
     }
