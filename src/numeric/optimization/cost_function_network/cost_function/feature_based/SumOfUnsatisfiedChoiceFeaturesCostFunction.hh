@@ -228,7 +228,7 @@ private:
 	/// @details This is used only during setup, prior to finalization.  Access is mutex-controlled.
 	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >,
-		std::vector< ChoiceFeatureCSP >,
+		std::vector< ChoiceFeatureSP >,
 		masala::base::size_pair_hash
 	> choice_features_by_absolute_node_and_choice_;
 

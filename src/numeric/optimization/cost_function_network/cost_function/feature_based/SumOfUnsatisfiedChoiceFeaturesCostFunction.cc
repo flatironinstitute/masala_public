@@ -155,7 +155,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
         choice_features_by_absolute_node_and_choice_.find( key )
     );
     if( it == choice_features_by_absolute_node_and_choice_.end() ) {
-        choice_features_by_absolute_node_and_choice_[key] = std::vector< ChoiceFeature >{
+        choice_features_by_absolute_node_and_choice_[key] = std::vector< ChoiceFeatureSP >{
             masala::make_shared< ChoiceFeature >(
                 min_connections_to_satisfy_feature,
                 max_connections_to_satisfy_feature,
@@ -297,13 +297,18 @@ template< typename T >
 void
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
     using masala::base::Size;
-    for( std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, std::vector< ChoiceFeatureCSP >, masala::base::size_pair_hash >::iterator it(choice_features_by_absolute_node_and_choice_.begin());
+    for( std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, std::vector< ChoiceFeatureSP >, masala::base::size_pair_hash >::iterator it(choice_features_by_absolute_node_and_choice_.begin());
         it != choice_features_by_absolute_node_and_choice_.end();
         ++it
     ) {
-        std::vector< ChoiceFeatureCSP > & vec( it->second );
+        std::vector< ChoiceFeatureSP > & vec( it->second );
         for( Size i(0), imax(vec.size()); i<imax; ++i ) {
             vec[i] = vec[i]->deep_clone();
+            if( protected_finalized() ) {
+                TODO TODO TODO
+                - Update the choice_features_by_variable_node_and_choice_ map.
+                - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
+            }
         }
     }
     CostFunction::make_independent_mutex_locked();
