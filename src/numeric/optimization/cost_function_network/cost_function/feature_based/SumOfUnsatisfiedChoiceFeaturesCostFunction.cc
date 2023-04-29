@@ -38,6 +38,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.hh>
@@ -229,10 +230,45 @@ void
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
 ) {
-    TODO TODO TODO
-    - Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
-    - Identify ChoiceFeatures that are now part of fixed background, and store these in a list.
-    - Finalize all choice features.
+    using masala::base::Size;
+    // Make a map of variable node indices indexed by absolute node index:
+    std::unordered_map< Size, Size > variable_node_indices_by_absolute_node_index;
+    for( Size var_index(0), var_index_max(variable_node_indices.size()); var_index < var_index_max; ++var_index ) {
+        variable_node_indices_by_absolute_node_index[ variable_node_indices[var_index] ] = var_index;
+    }
+
+    // Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
+    // Identify ChoiceFeatures that are now part of fixed background, and store these in a list.
+    for(
+        std::unordered_map< std::pair< Size, Size >, std::vector< ChoiceFeatureCSP >, masala::base::size_pair_hash >::iterator it( choice_features_by_absolute_node_and_choice_.begin() );
+        it != choice_features_by_absolute_node_and_choice_.end();
+        ++it
+    ) {
+        std::vector< ChoiceFeatureCSP > & choice_feature_csp_vec( it->second );
+        std::vector< ChoiceFeature const * > choice_feature_csp_vec_copy( choice_feature_csp_vec.size() );
+
+        //Finalize all choice features, and copy to a vector of raw pointers:
+        for(
+            Size choice_feature_vec_index(0), choice_feature_vec_index_max( choice_feature_csp_vec.size() );
+            choice_feature_vec_index < choice_feature_vec_index_max;
+            ++choice_feature_vec_index
+        ) {
+            choice_feature_csp_vec.at(choice_feature_vec_index)->finalize( variable_node_indices_by_absolute_node_index );
+            choice_feature_csp_vec_copy[choice_feature_vec_index] = choice_feature_csp_vec.at(choice_feature_vec_index).get();
+        }
+        Size const abs_node_index( it->first.first );
+        Size const choice_index( it->first.second );
+        if( masala::base::utility::container::has_value( variable_node_indices, abs_node_index ) {
+            // If this is a variable node.
+            choice_features_by_variable_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
+        } else {
+            // If this is a fixed node.
+            fixed_choice_features_by_absolute_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
+        }
+    }
+
+    //Do NOT clear choice_features_by_absolute_node_and_choice_, since the shared pointers reside here, and the
+    //choice_features_by_variable_node_and_choice_ map stores raw pointers.
 
     CostFunction::protected_finalize( variable_node_indices );
 }
