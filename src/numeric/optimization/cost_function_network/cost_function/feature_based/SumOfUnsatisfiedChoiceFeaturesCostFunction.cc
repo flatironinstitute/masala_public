@@ -285,8 +285,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::assign_mutex_locked(
 
     choice_features_by_absolute_node_and_choice_ = src_cast_ptr->choice_features_by_absolute_node_and_choice_;
     choice_features_by_variable_node_and_choice_ = src_cast_ptr->choice_features_by_variable_node_and_choice_;
-
-    TODO TODO TODO
+    fixed_choice_features_by_absolute_node_and_choice_ = src_cast_ptr->fixed_choice_features_by_absolute_node_and_choice_;
 
     CostFunction::assign_mutex_locked( src );
 }
