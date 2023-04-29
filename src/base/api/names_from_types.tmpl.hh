@@ -32,6 +32,8 @@
 #include <base/managers/memory/util.hh>
 #include <set>
 #include <tuple>
+#include <map>
+#include <unordered_map>
 
 namespace masala {
 namespace base {
@@ -212,6 +214,34 @@ namespace api {
             + name_from_type( type<T1>() ) + ", "
             + name_from_type( type<T2>() ) + ", "
             + name_from_type( type<T3>() ) + " > const";
+    }
+
+    /// @brief Manually override for maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::map< T1, T2 > > ) {
+        return "std::map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ">";
+    }
+
+    /// @brief Manually override for const maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::map< T1, T2 > const > ) {
+        return "std::map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + "> const";
+    }
+
+    /// @brief Manually override for unordered maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2 > > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ">";
+    }
+
+    /// @brief Manually override for const unordered maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2 > const > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + "> const";
     }
 
     /// @brief Manually override for vectors.
