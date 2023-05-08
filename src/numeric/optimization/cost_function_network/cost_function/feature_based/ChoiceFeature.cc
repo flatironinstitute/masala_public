@@ -37,6 +37,8 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
@@ -332,6 +334,30 @@ ChoiceFeature::get_api_definition() {
                 "offset", "The offset in the number of connections (i.e. the number of connections that "
                 "are always satisfied).",
                 false, false, std::bind( &ChoiceFeature::offset, this )
+            )
+        );
+        apidef->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_TwoInput< Size, Size, Size > >(
+                "n_connections_to_feature_from_node_and_choice", "Get the number of connections that a "
+                "particular variable node choice makes to this feature.  Returns 0 by default, if the "
+                "variable node and/or choice are not in the other_variable_node_choices_that_satisfy_this_ "
+                "map.  Assumes finalized.  Throws in debug mode if not finalized.  Performs no mutex locking.",
+                "n_connections", "The number of connections that a particular variable node and choice make to this feature.",
+                "variable_node_index", "The index of the variable node.",
+                "choice_index", "The index of the choice at the variable node.",
+                false, false,
+                std::bind( &ChoiceFeature::n_connections_to_feature_from_node_and_choice, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        apidef->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< bool, Size const > >(
+                "is_satisfied", "Given a particular count of connections to a feature, return true if this "
+                "feature is satisfied and false if it is under- or over-satisfied.  Assumes finalized.  "
+                "Throws in debug mode if not finalized.  Performs no mutex locking.",
+                "is_satisfied", "True if this feature is satisfied given the count of connections; false otherwise.",
+                "connection_count", "The number of connections to this feature.",
+                false, false,
+                std::bind( &ChoiceFeature::is_satisfied, this, std::placeholders::_1 )
             )
         );
 
