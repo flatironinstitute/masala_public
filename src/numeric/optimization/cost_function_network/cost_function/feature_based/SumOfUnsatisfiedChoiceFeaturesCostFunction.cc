@@ -202,16 +202,23 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
     for(
         unordered_map< pair< Size, Size >, vector< ChoiceFeature const * >, size_pair_hash >::const_iterator it( choice_features_by_variable_node_and_choice_.begin() );
         it != fixed_choice_features_by_absolute_node_and_choice_.end();
-        { ++it; if( it == choice_features_by_variable_node_and_choice_.end() ) { it = fixed_choice_features_by_absolute_node_and_choice_.begin() } }
+        ++it
     ) {
+        if( it == choice_features_by_variable_node_and_choice_.end() ) {
+            it = fixed_choice_features_by_absolute_node_and_choice_.begin();
+        }
+        if( it == fixed_choice_features_by_absolute_node_and_choice_.end() ) {
+            break;
+        }
+
         // Loop over all choice features for position and choice:
-        for( auto const choicefeature( it->second.begin() ); choicefeature != it->second.end(); ++choicefeature ) {
+        for( auto const choicefeature : it->second ) {
             // Loop over all entries in the candidate solution.  Count the number of connections to this feature.
-            Size connection_count( (*choicefeature)->offset() );
+            Size connection_count( choicefeature->offset() );
             for( Size isol(0), isolmax(candidate_solution.size()); isol<isolmax; ++isol ) {
-                connection_count += (*choicefeature)->n_connections_to_feature_from_node_and_choice( isol, candidate_solution[isol] );
+                connection_count += choicefeature->n_connections_to_feature_from_node_and_choice( isol, candidate_solution[isol] );
             }
-            if( !(*choicefeature)->is_satisfied( connection_count ) ) {
+            if( !choicefeature->is_satisfied( connection_count ) ) {
                 ++unsatisfied_choice_features;
             }
         }
