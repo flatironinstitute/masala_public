@@ -327,17 +327,37 @@ template< typename T >
 void
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
     using masala::base::Size;
-    for( std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, std::vector< ChoiceFeatureSP >, masala::base::size_pair_hash >::iterator it(choice_features_by_absolute_node_and_choice_.begin());
+    using std::unordered_map;
+    using std::pair;
+    using masala::base::size_pair_hash;
+    using std::vector;
+
+    for( unordered_map< pair< Size, Size >, vector< ChoiceFeatureSP >, size_pair_hash >::iterator it(choice_features_by_absolute_node_and_choice_.begin());
         it != choice_features_by_absolute_node_and_choice_.end();
         ++it
     ) {
         std::vector< ChoiceFeatureSP > & vec( it->second );
         for( Size i(0), imax(vec.size()); i<imax; ++i ) {
             vec[i] = vec[i]->deep_clone();
-            if( protected_finalized() ) {
-                TODO TODO TODO
-                - Update the choice_features_by_variable_node_and_choice_ map.
-                - Update the fixed_choice_features_by_absolute_node_and_choice_ map.
+        }
+        if( protected_finalized() ) {
+            auto it2( fixed_choice_features_by_absolute_node_and_choice_.find( it->first ) );
+            if( it2 == fixed_choice_features_by_absolute_node_and_choice_.end() ) {
+                pair<Size, Size> const var_node_index_and_choice( TODO, it->first.second );
+                it2 = choice_features_by_variable_node_and_choice_.find( var_node_index_and_choice );
+                DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it2 != choice_features_by_variable_node_and_choice_.end(),
+                    "make_independent_mutex_locked", "Could not find absolute node "
+                    + std::to_string(it->first.first) + ", choice " + std::to_string(it->first.second)
+                    + " in either the variable nodes or the fixed nodes.  This is a program error."
+                );
+            }
+            std::vector< ChoiceFeature const * > & vec2( it2->second );
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( vec.size() == vec2.size(), "make_independent_mutex_locked",
+                "Expected vector size match.  Got vec1.size() == " + std::to_string(vec1.size()) + ", vec2.size() == "
+                + std::to_string(vec2.size()) + ".  This is a program error."
+            );
+            for( Size i2(0), i2max(vec2.size()); i2<=i2max; ++i2 ) {
+                vec2[i2] = vec[i2].get();
             }
         }
     }
