@@ -187,15 +187,37 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
 template< typename T >
 masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
-    std::vector< masala::base::Size > const & /*candidate_solution*/
+    std::vector< masala::base::Size > const & candidate_solution
 ) const {
-    TODO TODO TODO
-    - Outer iteration over all selected ChoiceFeatures at variable positions, and all fixed Choice Features at non-variable.
-    - Inner iteration over same (to lower indices).
-    - For each choice feature, accumulate number of connections.
-    - After loops, count number of features that are satisfied.
-    - Return count.
-    return 0.0;
+    using std::unordered_map;
+    using std::pair;
+    using std::vector;
+    using masala::base::Size;
+    using masala::base::Real;
+    using masala::base::size_pair_hash;
+
+    Size unsatisfied_choice_features(0);
+
+    // Loop over all positions and choices:
+    for(
+        unordered_map< pair< Size, Size >, vector< ChoiceFeature const * >, size_pair_hash >::const_iterator it( choice_features_by_variable_node_and_choice_.begin() );
+        it != fixed_choice_features_by_absolute_node_and_choice_.end();
+        { ++it; if( it == choice_features_by_variable_node_and_choice_.end() ) { it = fixed_choice_features_by_absolute_node_and_choice_.begin() } }
+    ) {
+        // Loop over all choice features for position and choice:
+        for( auto const choicefeature( it->second.begin() ); choicefeature != it->second.end(); ++choicefeature ) {
+            // Loop over all entries in the candidate solution.  Count the number of connections to this feature.
+            Size connection_count( (*choicefeature)->offset() );
+            for( Size isol(0), isolmax(candidate_solution.size()); isol<isolmax; ++isol ) {
+                connection_count += (*choicefeature)->n_connections_to_feature_from_node_and_choice( isol, candidate_solution[isol] );
+            }
+            if( !(*choicefeature)->is_satisfied( connection_count ) ) {
+                ++unsatisfied_choice_features;
+            }
+        }
+    }
+
+    return static_cast< Real >( unsatisfied_choice_features );
 }
 
 /// @brief Given an old selection of choices at variable nodes and a new selection,

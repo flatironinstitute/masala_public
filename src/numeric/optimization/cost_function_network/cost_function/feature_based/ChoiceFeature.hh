@@ -161,9 +161,27 @@ public:
 	masala::base::Size max_connections() const;
 
 	/// @brief Get the offset in the number of connections (the number of connections that are
-	/// @note Assumes finalized.  Throws in debug mode if not finalized.
-	/// always satisfied).
+	/// always satisfied)
+	/// @note Assumes finalized.  Throws in debug mode if not finalized.  Performs no mutex locking.
 	masala::base::Size offset() const;
+
+	/// @brief Get the number of connections that a particular variable node choice makes to this feature.
+	/// @details Returns 0 by default, if the variable node and/or choice are not in the
+	/// other_variable_node_choices_that_satisfy_this_ map.  Assumes finalized.  Throws in debug mode if
+	/// not finalized.  Performs no mutex locking.
+	masala::base::Size
+	n_connections_to_feature_from_node_and_choice(
+		masala::base::Size const variable_node_index,
+		masala::base::Size const choice_index
+	) const;
+
+	/// @brief Given a particular count of connections to a feature, return true if this feature is satisfied
+	/// and false if it is under- or over-satisfied.
+	/// @note Assumes finalized.  Throws in debug mode if not finalized.  Performs no mutex locking.
+	bool
+	is_satisfied(
+		masala::base::Size const connection_count
+	) const;
 
 public:
 

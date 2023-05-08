@@ -204,11 +204,45 @@ ChoiceFeature::max_connections() const {
 
 /// @brief Get the offset in the number of connections (the number of connections that are
 /// always satisfied).
-/// @note Assumes finalized.  Throws in debug mode if not finalized.
+/// @note Assumes finalized.  Throws in debug mode if not finalized.  Performs no mutex locking.
 masala::base::Size
 ChoiceFeature::offset() const {
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(), "offset", "This function must be called from a finalized object only!" );
     return offset_;
+}
+
+/// @brief Get the number of connections that a particular variable node choice makes to this feature.
+/// @details Returns 0 by default, if the variable node and/or choice are not in the
+/// other_variable_node_choices_that_satisfy_this_ map.  Assumes finalized.  Throws in debug mode if
+/// not finalized.  Performs no mutex locking.
+masala::base::Size
+ChoiceFeature::n_connections_to_feature_from_node_and_choice(
+    masala::base::Size const variable_node_index,
+    masala::base::Size const choice_index
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(),
+        "n_connections_to_feature_from_node_and_choice",
+        "This function must be called from a finalized object only!"
+    );
+    auto const it( other_variable_node_choices_that_satisfy_this_.find( std::make_pair( variable_node_index, choice_index ) ) );
+    if( it == other_variable_node_choices_that_satisfy_this_.end() ) {
+        return 0;
+    }
+    return it->second;
+}
+
+/// @brief Given a particular count of connections to a feature, return true if this feature is satisfied
+/// and false if it is under- or over-satisfied.
+/// @note Assumes finalized.  Throws in debug mode if not finalized.  Performs no mutex locking.
+bool
+ChoiceFeature::is_satisfied(
+    masala::base::Size const connection_count
+) const {
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( finalized_.load(),
+        "is_satisfied",
+        "This function must be called from a finalized object only!"
+    );
+    return (connection_count >= min_connections_ && connection_count <= max_connections_ );   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
