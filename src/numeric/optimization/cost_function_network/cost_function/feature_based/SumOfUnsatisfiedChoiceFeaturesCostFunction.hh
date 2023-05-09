@@ -253,6 +253,9 @@ private:
 		masala::base::size_pair_hash
 	> fixed_choice_features_by_absolute_node_and_choice_;
 
+    /// @brief A map of variable node indices indexed by absolute node index.
+    std::unordered_map< masala::base::Size, masala::base::Size > variable_node_indices_by_absolute_node_index_;
+
 }; // class SumOfUnsatisfiedChoiceFeaturesCostFunction
 
 } // namespace feature_based

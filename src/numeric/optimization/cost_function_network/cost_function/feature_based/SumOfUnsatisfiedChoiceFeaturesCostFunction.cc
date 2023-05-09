@@ -235,11 +235,10 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
 template< typename T >
 masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function_difference(
-    std::vector< masala::base::Size > const & /*candidate_solution_old*/,
-    std::vector< masala::base::Size > const & /*candidate_solution_new*/
+    std::vector< masala::base::Size > const & candidate_solution_old,
+    std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
-    TODO TODO TODO
-    return 0.0;
+    return compute_cost_function( candidate_solution_new ) - compute_cost_function( candidate_solution_old );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,10 +261,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
 ) {
     using masala::base::Size;
+
     // Make a map of variable node indices indexed by absolute node index:
-    std::unordered_map< Size, Size > variable_node_indices_by_absolute_node_index;
+    variable_node_indices_by_absolute_node_index_.clear();
     for( Size var_index(0), var_index_max(variable_node_indices.size()); var_index < var_index_max; ++var_index ) {
-        variable_node_indices_by_absolute_node_index[ variable_node_indices[var_index] ] = var_index;
+        variable_node_indices_by_absolute_node_index_[ variable_node_indices[var_index] ] = var_index;
     }
 
     // Copy data from choice_features_by_absolute_node_and_choice_ to choice_features_by_variable_node_and_choice_.
@@ -284,17 +284,17 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
             choice_feature_vec_index < choice_feature_vec_index_max;
             ++choice_feature_vec_index
         ) {
-            choice_feature_csp_vec.at(choice_feature_vec_index)->finalize( variable_node_indices_by_absolute_node_index );
+            choice_feature_csp_vec.at(choice_feature_vec_index)->finalize( variable_node_indices_by_absolute_node_index_ );
             choice_feature_csp_vec_copy[choice_feature_vec_index] = choice_feature_csp_vec.at(choice_feature_vec_index).get();
         }
         Size const abs_node_index( it->first.first );
         Size const choice_index( it->first.second );
         if( masala::base::utility::container::has_value( variable_node_indices, abs_node_index ) ) {
             // If this is a variable node.
-            choice_features_by_variable_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
+            choice_features_by_variable_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index_.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
         } else {
             // If this is a fixed node.
-            fixed_choice_features_by_absolute_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
+            fixed_choice_features_by_absolute_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index_.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
         }
     }
 
@@ -343,7 +343,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
         if( protected_finalized() ) {
             auto it2( fixed_choice_features_by_absolute_node_and_choice_.find( it->first ) );
             if( it2 == fixed_choice_features_by_absolute_node_and_choice_.end() ) {
-                pair<Size, Size> const var_node_index_and_choice( TODO, it->first.second );
+                pair<Size, Size> const var_node_index_and_choice( variable_node_indices_by_absolute_node_index_.at( it->first.first ), it->first.second );
                 it2 = choice_features_by_variable_node_and_choice_.find( var_node_index_and_choice );
                 DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it2 != choice_features_by_variable_node_and_choice_.end(),
                     "make_independent_mutex_locked", "Could not find absolute node "
