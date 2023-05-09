@@ -199,6 +199,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
     Size unsatisfied_choice_features(0);
 
     // Loop over all positions and choices:
+    TODO TODO TODO loop over SELECTED node choices, not ALL node choices.
     for(
         unordered_map< pair< Size, Size >, vector< ChoiceFeature const * >, size_pair_hash >::const_iterator it( choice_features_by_variable_node_and_choice_.begin() );
         it != fixed_choice_features_by_absolute_node_and_choice_.end();
