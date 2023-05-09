@@ -353,7 +353,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
             }
             std::vector< ChoiceFeature const * > & vec2( it2->second );
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( vec.size() == vec2.size(), "make_independent_mutex_locked",
-                "Expected vector size match.  Got vec1.size() == " + std::to_string(vec1.size()) + ", vec2.size() == "
+                "Expected vector size match.  Got vec.size() == " + std::to_string(vec.size()) + ", vec2.size() == "
                 + std::to_string(vec2.size()) + ".  This is a program error."
             );
             for( Size i2(0), i2max(vec2.size()); i2<=i2max; ++i2 ) {

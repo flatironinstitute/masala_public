@@ -180,7 +180,7 @@ public:
 	T0
 	function(
 		T1 input1,
-		T2 input2,
+		T2 input2
 	) const {
 		getter_function_(input1, input2);
 	}
