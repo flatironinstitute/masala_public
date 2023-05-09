@@ -350,7 +350,7 @@ ChoiceFeature::get_api_definition() {
             )
         );
         apidef->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< bool, Size const > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< bool, Size > >(
                 "is_satisfied", "Given a particular count of connections to a feature, return true if this "
                 "feature is satisfied and false if it is under- or over-satisfied.  Assumes finalized.  "
                 "Throws in debug mode if not finalized.  Performs no mutex locking.",
