@@ -197,23 +197,27 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
     using masala::base::size_pair_hash;
 
     Size unsatisfied_choice_features(0);
+    std::vector< std::vector< ChoiceFeature const * > const * > selected_and_fixed;
+    selected_and_fixed.reserve( candidate_solution.size() + fixed_choice_features_by_absolute_node_and_choice_.size() );
+    for( Size i(0), imax(candidate_solution.size()); i<imax; ++i ) {
+        pair< Size, Size > const key( std::make_pair(i, candidate_solution[i]) );
+        auto const it( choice_features_by_variable_node_and_choice_.find( key ) );
+        if( it != choice_features_by_variable_node_and_choice_.end() ) {
+            selected_and_fixed.push_back( &(it->second) );
+        }
+    }
+    for( auto it( fixed_choice_features_by_absolute_node_and_choice_.begin() ); it != fixed_choice_features_by_absolute_node_and_choice_.end(); ++it ) {
+        selected_and_fixed.push_back( &(it->second) );
+    }
 
-    // Loop over all positions and choices:
-    TODO TODO TODO loop over SELECTED node choices, not ALL node choices.
+    // Loop over all positions and choices currently selected, plus all fixed positions:
     for(
-        unordered_map< pair< Size, Size >, vector< ChoiceFeature const * >, size_pair_hash >::const_iterator it( choice_features_by_variable_node_and_choice_.begin() );
-        it != fixed_choice_features_by_absolute_node_and_choice_.end();
+        auto it( selected_and_fixed.begin() );
+        it != selected_and_fixed.end();
         ++it
     ) {
-        if( it == choice_features_by_variable_node_and_choice_.end() ) {
-            it = fixed_choice_features_by_absolute_node_and_choice_.begin();
-        }
-        if( it == fixed_choice_features_by_absolute_node_and_choice_.end() ) {
-            break;
-        }
-
         // Loop over all choice features for position and choice:
-        for( auto const choicefeature : it->second ) {
+        for( auto const choicefeature : (**it) ) {
             // Loop over all entries in the candidate solution.  Count the number of connections to this feature.
             Size connection_count( choicefeature->offset() );
             for( Size isol(0), isolmax(candidate_solution.size()); isol<isolmax; ++isol ) {
