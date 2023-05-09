@@ -21,7 +21,7 @@
 /// @details ChoiceFeatures are objects attached to node choices, which can form connections across
 /// choices at different nodes.  Each feature has a minimum and maximum number of connections that
 /// it must make to be satisfied.
-/// @note This class is a lightweight class.  It offers thread safety during setup only.  After finalization,
+/// @note This class offers thread safety during setup only.  After finalization,
 /// it is read-only.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -308,7 +308,7 @@ ChoiceFeature::get_api_definition() {
                 "cost function optimization problem.  Features can make connections "
                 "to other node choices, and can be satisfied by having a number "
                 "of connections between a minimum and a maximum value.",
-                true, false
+                false, false
             )
         );
 
