@@ -55,9 +55,8 @@ namespace feature_based {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Copy constructor.
-template< typename T >
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::SumOfUnsatisfiedChoiceFeaturesCostFunction(
-    SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const & src
+SumOfUnsatisfiedChoiceFeaturesCostFunction::SumOfUnsatisfiedChoiceFeaturesCostFunction(
+    SumOfUnsatisfiedChoiceFeaturesCostFunction const & src
 ) :
     CostFunction( src )
 {
@@ -68,10 +67,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::SumOfUnsatisfiedChoiceFeaturesCos
 }
 
 // @brief Assignment operator.
-template< typename T >
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T> &
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::operator=(
-    SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const & src
+SumOfUnsatisfiedChoiceFeaturesCostFunction &
+SumOfUnsatisfiedChoiceFeaturesCostFunction::operator=(
+    SumOfUnsatisfiedChoiceFeaturesCostFunction const & src
 ) {
     std::lock( src.mutex(), mutex() );
     std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
@@ -92,18 +90,16 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::operator=(
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
-template< typename T >
 std::vector< std::vector< std::string > >
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::get_categories() const {
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories() const {
 	return CostFunction::get_categories();
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
 /// @returns { "optimization_problem", "cost_function", "numeric", "unsatisfied_choice_feature_sum_based" }
-template< typename T >
 std::vector< std::string >
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::get_keywords() const {
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords() const {
 	std::vector< std::string > outvec( CostFunction::get_keywords() );
     outvec.push_back( "unsatisfied_choice_feature_sum_based" );
     return outvec;
@@ -132,9 +128,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::get_keywords() const {
 ///
 /// @returns The index of the newly-added choice feature in the vector of choice features for
 /// this position.
-template< typename T >
 masala::base::Size
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_node_index(
+SumOfUnsatisfiedChoiceFeaturesCostFunction::add_choice_feature_by_absolute_node_index(
     masala::base::Size const absolute_node_index,
     masala::base::Size const choice_index,
     masala::base::Size const min_connections_to_satisfy_feature,
@@ -184,9 +179,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::add_choice_feature_by_absolute_no
 /// @note No mutex-locking is performed!  Also note that this version does not multiply the
 /// result by the weight, since derived classes will likely do this after applying a nonlinear
 /// function.
-template< typename T >
 masala::base::Real
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
+SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     using std::unordered_map;
@@ -237,9 +231,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function(
 /// @note No mutex-locking is performed!  Also note that this version does not multiply the
 /// result by the weight, since derived classes will likely do this after applying a nonlinear
 /// function.
-template< typename T >
 masala::base::Real
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function_difference(
+SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_old,
     std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
@@ -260,9 +253,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::compute_cost_function_difference(
 /// for nodes that have more than one choice, indexed by variable node index.
 /// @details The base class function simply marks this object as finalized.  Should
 /// be overridden, and overrides should call parent class protected_finalize().
-template< typename T >
 void
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
+SumOfUnsatisfiedChoiceFeaturesCostFunction::protected_finalize(
     std::vector< masala::base::Size > const & variable_node_indices
 ) {
     using masala::base::Size;
@@ -311,12 +303,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::protected_finalize(
 
 /// @brief Override of assign_mutex_locked().  Calls parent function.
 /// @details Throws if src is not a SumOfUnsatisfiedChoiceFeaturesCostFunction.
-template< typename T >
 void
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::assign_mutex_locked(
+SumOfUnsatisfiedChoiceFeaturesCostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
-    SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const * const src_cast_ptr( dynamic_cast< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const * >( &src ) );
+    SumOfUnsatisfiedChoiceFeaturesCostFunction const * const src_cast_ptr( dynamic_cast< SumOfUnsatisfiedChoiceFeaturesCostFunction const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a SumOfUnsatisfiedChoiceFeaturesCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
 
     choice_features_by_absolute_node_and_choice_ = src_cast_ptr->choice_features_by_absolute_node_and_choice_;
@@ -328,9 +319,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::assign_mutex_locked(
 
 /// @brief Make this object fully independent.  Assumes mutex was already locked.
 /// Should be called by overrides.
-template< typename T >
 void
-SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
+SumOfUnsatisfiedChoiceFeaturesCostFunction::make_independent_mutex_locked() {
     using masala::base::Size;
     using std::unordered_map;
     using std::pair;
@@ -368,9 +358,6 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction<T>::make_independent_mutex_locked() {
     }
     CostFunction::make_independent_mutex_locked();
 }
-
-template class SumOfUnsatisfiedChoiceFeaturesCostFunction< masala::base::Real >;
-template class SumOfUnsatisfiedChoiceFeaturesCostFunction< signed long int >;
 
 } // namespace feature_based
 } // namespace cost_function

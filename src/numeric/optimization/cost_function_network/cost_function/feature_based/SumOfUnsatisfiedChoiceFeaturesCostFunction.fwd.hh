@@ -41,28 +41,23 @@ namespace cost_function_network {
 namespace cost_function {
 namespace feature_based {
 
-	template< typename T >
 	class SumOfUnsatisfiedChoiceFeaturesCostFunction;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	template< typename T >
-	using SumOfUnsatisfiedChoiceFeaturesCostFunctionSP = MASALA_SHARED_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> >;
+	using SumOfUnsatisfiedChoiceFeaturesCostFunctionSP = MASALA_SHARED_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	template< typename T >
-	using SumOfUnsatisfiedChoiceFeaturesCostFunctionCSP = MASALA_SHARED_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const >;
+	using SumOfUnsatisfiedChoiceFeaturesCostFunctionCSP = MASALA_SHARED_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	template< typename T >
-	using SumOfUnsatisfiedChoiceFeaturesCostFunctionWP = MASALA_WEAK_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> >;
+	using SumOfUnsatisfiedChoiceFeaturesCostFunctionWP = MASALA_WEAK_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	template< typename T >
-	using SumOfUnsatisfiedChoiceFeaturesCostFunctionCWP = MASALA_WEAK_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const >;
+	using SumOfUnsatisfiedChoiceFeaturesCostFunctionCWP = MASALA_WEAK_POINTER< SumOfUnsatisfiedChoiceFeaturesCostFunction const >;
 
 } // namespace feature_based
 } // namespace cost_function

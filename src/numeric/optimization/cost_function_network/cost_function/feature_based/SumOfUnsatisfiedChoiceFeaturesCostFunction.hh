@@ -67,7 +67,6 @@ namespace feature_based {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename T >
 class SumOfUnsatisfiedChoiceFeaturesCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::CostFunction {
 
 public:
@@ -81,12 +80,12 @@ public:
 
 	/// @brief Copy constructor.
 	SumOfUnsatisfiedChoiceFeaturesCostFunction(
-		SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const & src
+		SumOfUnsatisfiedChoiceFeaturesCostFunction const & src
 	);
 
 	// @brief Assignment operator.
-	SumOfUnsatisfiedChoiceFeaturesCostFunction<T> &
-	operator=( SumOfUnsatisfiedChoiceFeaturesCostFunction<T> const & src );
+	SumOfUnsatisfiedChoiceFeaturesCostFunction &
+	operator=( SumOfUnsatisfiedChoiceFeaturesCostFunction const & src );
 
 	/// @brief Destructor.
 	~SumOfUnsatisfiedChoiceFeaturesCostFunction() override = default;
