@@ -43,6 +43,9 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
 // Numeric headers:
@@ -169,6 +172,14 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
 
         // Setters:
         apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_weight", "Set the weight for this penalty function.  The object must not have been finalized already.",
+                "weight_in", "The weight for this penalty function.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::set_weight, this, std::placeholders::_1 )
+            )
+        );
+        apidef->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_FiveInput< Size, Size, Size, Size, Size > >(
                 "add_choice_feature_by_absolute_node_index", "Add a choice feature for a set of nodes, indexed by "
                 "absolute node index.  This can only be done prior to finalizing this object.",
@@ -192,6 +203,15 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
 
+        // Getters:
+        apidef->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "finalized", "Has this object been finalized?  Performs a mutex lock for the check.",
+                "finalized", "True if the object has been finalized, false otherwise.",
+                false, false, std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::finalized, this )
+            )
+        );
+
         // Work functions:
         apidef->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
@@ -207,7 +227,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         {
             work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
                 masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
-                    "compute_cost_function", " Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
+                    "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
                     true, false, false, true,
                     "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
                     "cost_function", "The square of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
@@ -216,6 +236,23 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             );
             compute_cost_function_def->set_triggers_no_mutex_lock();
             apidef->add_work_function( compute_cost_function_def );
+        }
+        {
+            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_difference_def(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, std::vector< Size > const &, std::vector< Size > const & > >(
+                    "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, "
+                    "compute the cost function difference.  Note that no mutex-locking is performed.",
+                    true, false, false, true,
+                    "candidate_solution_old", "The indices of the selected node choices for the OLD selection, indexed by variable node index.",
+                    "candidate_solution_new", "The indices of the selected node choices for the NEW selection, indexed by variable node index.",
+                    "cost_function", "The difference of the squares of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
+                    std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_difference,
+                        this, std::placeholders::_1, std::placeholders::_2
+                    )               
+                )
+            );
+            compute_cost_function_difference_def->set_triggers_no_mutex_lock();
+            apidef->add_work_function( compute_cost_function_difference_def );
         }
 
 
