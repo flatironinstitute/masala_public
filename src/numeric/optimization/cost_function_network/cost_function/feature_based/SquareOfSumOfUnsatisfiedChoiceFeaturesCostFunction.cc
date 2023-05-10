@@ -1,0 +1,216 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/numeric/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction.cc
+/// @brief Implementation for a pure virtual base class for SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunctions.
+/// @details SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunctions define a penalty function which is based on the following:
+/// - One or more features are defined for each choice at each node.  (A feature could be a hydrogen bond
+/// donor or acceptor, for instance, in a packing problem)
+/// - Each feature has an expected minimum and maximum number of connections that can be set.
+/// - For each pair of choices, the features that are connected can be set.
+/// - At calculation time, the number of unsatisfied features (total features minus features
+/// satisfied by connections) is returned.
+/// @note Since this class does not implement class_name() or class_namespace()
+/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+// Unit header:
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction.hh>
+
+// STL headers:
+#include <vector>
+#include <string>
+
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+#include <base/utility/container/container_util.tmpl.hh>
+
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.hh>
+
+namespace masala {
+namespace numeric {
+namespace optimization {
+namespace cost_function_network {
+namespace cost_function {
+namespace feature_based {
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction(
+    SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction const & src
+) :
+    SumOfUnsatisfiedChoiceFeaturesCostFunction()
+{
+    std::lock( src.mutex(), mutex() );
+    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
+    assign_mutex_locked( src );
+}
+
+// @brief Assignment operator.
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction &
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::operator=(
+    SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction const & src
+) {
+    std::lock( src.mutex(), mutex() );
+    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
+    assign_mutex_locked( src );
+    return *this;
+}
+
+/// @brief Return a shared pointer to a copy of this object.
+CostFunctionSP
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::clone() const {
+    return masala::make_shared< SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction >( *this );
+}
+
+/// @brief Deep-clone all data stored in this class.
+void
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex() );
+    make_independent_mutex_locked();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the category or categories for this plugin class.  Default for all
+/// optimization problems; may be overridden by derived classes.
+/// @returns { { "CostFunction" } }
+/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
+/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
+/// in more than one hierarchical category (in which case there would be more than one
+/// entry in the outer vector), but must be in at least one.  The first one is used as
+/// the primary key.
+std::vector< std::vector< std::string > >
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories() const {
+	return SumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories();
+}
+
+/// @brief Get the keywords for this plugin class.  Default for all
+/// optimization problems; may be overridden by derived classes.
+/// @returns { "optimization_problem", "cost_function", "numeric", "unsatisfied_choice_feature_sum_based" }
+std::vector< std::string >
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords() const {
+    return SumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords();
+}
+
+/// @brief Return the name of this class ("SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction").
+std::string
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::class_name() const {
+    return "SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction";
+}
+
+/// @brief Return the namespace of this class ("masala::numeric::optimization::cost_function_network::cost_function::feature_based");
+std::string
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::class_namespace() const {
+    return "masala::numeric::optimization::cost_function_network::cost_function::feature_based";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+// SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+// WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a selection of choices at variable nodes, compute the cost function.
+/// @note No mutex-locking is performed!
+masala::base::Real
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function(
+    std::vector< masala::base::Size > const & candidate_solution
+) const {
+    using masala::base::Real;
+    using masala::base::Size;
+    Size const count( protected_compute_cost_function_no_weight( candidate_solution ) );
+    return protected_weight() * static_cast< Real >( count*count );
+}
+
+/// @brief Given an old selection of choices at variable nodes and a new selection,
+/// compute the cost function difference.
+/// @note No mutex-locking is performed!
+masala::base::Real
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_difference(
+    std::vector< masala::base::Size > const & candidate_solution_old,
+    std::vector< masala::base::Size > const & candidate_solution_new
+) const {
+    using masala::base::Real;
+    using masala::base::Size;
+    Size const countnew( protected_compute_cost_function_no_weight( candidate_solution_new ) );
+    Size const countold( protected_compute_cost_function_no_weight( candidate_solution_old ) );
+    return protected_weight() * ( static_cast< Real >( countnew*countnew - countold*countold ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
+/// @param[in] variable_node_indices A list of all of the absolute node indices
+/// for nodes that have more than one choice, indexed by variable node index.
+/// @details The base class function simply marks this object as finalized.  Should
+/// be overridden, and overrides should call parent class protected_finalize().
+void
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::protected_finalize(
+    std::vector< masala::base::Size > const & variable_node_indices
+) {
+    SumOfUnsatisfiedChoiceFeaturesCostFunction::protected_finalize( variable_node_indices );
+}
+
+/// @brief Override of assign_mutex_locked().  Calls parent function.
+/// @details Throws if src is not a SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction.
+void
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::assign_mutex_locked(
+    CostFunction const & src
+) {
+    SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction const * const src_cast_ptr( dynamic_cast< SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction const * >( &src ) );
+    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "assign_mutex_locked", "Cannot assign a SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction given an input " + src.class_name() + " object!  Object types do not match." );
+    SumOfUnsatisfiedChoiceFeaturesCostFunction::assign_mutex_locked( src );
+}
+
+/// @brief Make this object fully independent.  Assumes mutex was already locked.
+/// Should be called by overrides.
+void
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::make_independent_mutex_locked() {
+    SumOfUnsatisfiedChoiceFeaturesCostFunction::make_independent_mutex_locked();
+}
+
+} // namespace feature_based
+} // namespace cost_function
+} // namespace cost_function_network
+} // namespace optimization
+} // namespace numeric
+} // namespace masala
