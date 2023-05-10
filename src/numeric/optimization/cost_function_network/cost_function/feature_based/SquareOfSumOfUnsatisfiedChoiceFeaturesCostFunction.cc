@@ -41,6 +41,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
 // Numeric headers:
@@ -189,6 +190,20 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 )
             )
         );
+
+        // Work functions:
+        apidef->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
+                "finalize", "Indicate that all setup is complete for this object, and "
+                "prepare it for use in high-efficiency calculations.",
+                false, false, false, false,
+                "variable_node_indices", "A list of all of the absolute node indices for "
+                "nodes that have more than one choice, indexed by variable node index.",
+                "void", "This function returns nothing.",
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::finalize, this, std::placeholders::_1 )               
+            )
+        );
+
 
         api_definition_mutex_locked() = apidef; // Nonconst to const;
     }
