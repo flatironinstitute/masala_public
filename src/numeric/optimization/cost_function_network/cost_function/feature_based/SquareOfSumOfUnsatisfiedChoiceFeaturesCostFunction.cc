@@ -41,6 +41,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
@@ -203,6 +204,19 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::finalize, this, std::placeholders::_1 )               
             )
         );
+        {
+            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
+                    "compute_cost_function", " Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
+                    true, false, false, true,
+                    "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
+                    "cost_function", "The square of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
+                    std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function, this, std::placeholders::_1 )               
+                )
+            );
+            compute_cost_function_def->set_triggers_no_mutex_lock();
+            apidef->add_work_function( compute_cost_function_def );
+        }
 
 
         api_definition_mutex_locked() = apidef; // Nonconst to const;
