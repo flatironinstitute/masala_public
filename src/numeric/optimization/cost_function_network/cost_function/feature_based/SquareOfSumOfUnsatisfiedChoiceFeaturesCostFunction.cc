@@ -41,6 +41,7 @@
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.hh>
@@ -163,6 +164,31 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         );
 
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction, apidef );
+
+        // Setters:
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_FiveInput< Size, Size, Size, Size, Size > >(
+                "add_choice_feature_by_absolute_node_index", "Add a choice feature for a set of nodes, indexed by "
+                "absolute node index.  This can only be done prior to finalizing this object.",
+                "absolute_node_index", "The index of this node (absolute).",
+                "choice_index", "The index of this choice.",
+                "min_connections_to_satisfy_feature", "The minimum number of connections that this feature "
+                "must make in order to be satisfied.",
+                "max_connections_to_satisfy_feature", "The maximum number of connections that this feature "
+                "must make in order to be satisfied.",
+                "feature_connection_offset", "The number of connections that this feature always "
+                "makes (e.g. to background, or to itself).",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::add_choice_feature_by_absolute_node_index,
+                    this,
+                    std::placeholders::_1,
+                    std::placeholders::_2,
+                    std::placeholders::_3,
+                    std::placeholders::_4,
+                    std::placeholders::_5
+                )
+            )
+        );
 
         api_definition_mutex_locked() = apidef; // Nonconst to const;
     }
