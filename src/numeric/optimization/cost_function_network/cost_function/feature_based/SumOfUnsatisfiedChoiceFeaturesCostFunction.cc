@@ -176,11 +176,40 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_choice_feature_by_absolute_node_
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Given a selection of choices at variable nodes, compute the cost function.
-/// @note No mutex-locking is performed!  Also note that this version does not multiply the
-/// result by the weight, since derived classes will likely do this after applying a nonlinear
-/// function.
+/// @note No mutex-locking is performed!
 masala::base::Real
 SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function(
+    std::vector< masala::base::Size > const & candidate_solution
+) const {
+    using masala::base::Real;
+    return protected_weight() * static_cast< Real >( protected_compute_cost_function_no_weight( candidate_solution ) );
+}
+
+/// @brief Given an old selection of choices at variable nodes and a new selection,
+/// compute the cost function difference.
+/// @note No mutex-locking is performed!
+masala::base::Real
+SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_difference(
+    std::vector< masala::base::Size > const & candidate_solution_old,
+    std::vector< masala::base::Size > const & candidate_solution_new
+) const {
+    using masala::base::Real;
+    return protected_weight() * ( static_cast< Real >( protected_compute_cost_function_no_weight( candidate_solution_new ) ) - static_cast< Real >( protected_compute_cost_function_no_weight( candidate_solution_old ) ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a selection of choices at variable nodes, compute the number of unsatisfied features   .
+/// @note No mutex-locking is performed, and the result is not multiplied by the weight.
+masala::base::Size
+SumOfUnsatisfiedChoiceFeaturesCostFunction::protected_compute_cost_function_no_weight(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
     using std::unordered_map;
@@ -189,6 +218,12 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function(
     using masala::base::Size;
     using masala::base::Real;
     using masala::base::size_pair_hash;
+
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        protected_finalized(),
+        "protected_compute_cost_function_no_weight",
+        "This object must be finalized before calling this function!"
+    );
 
     Size unsatisfied_choice_features(0);
     std::vector< std::vector< ChoiceFeature const * > const * > selected_and_fixed;
@@ -222,31 +257,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function(
             }
         }
     }
-
-    return static_cast< Real >( unsatisfied_choice_features );
+    return unsatisfied_choice_features;
 }
-
-/// @brief Given an old selection of choices at variable nodes and a new selection,
-/// compute the cost function difference.
-/// @note No mutex-locking is performed!  Also note that this version does not multiply the
-/// result by the weight, since derived classes will likely do this after applying a nonlinear
-/// function.
-masala::base::Real
-SumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_difference(
-    std::vector< masala::base::Size > const & candidate_solution_old,
-    std::vector< masala::base::Size > const & candidate_solution_new
-) const {
-    return compute_cost_function( candidate_solution_new ) - compute_cost_function( candidate_solution_old );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC INTERFACE DEFINITION
-////////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Indicate that all data input is complete.  Performs no mutex-locking.
 /// @param[in] variable_node_indices A list of all of the absolute node indices
