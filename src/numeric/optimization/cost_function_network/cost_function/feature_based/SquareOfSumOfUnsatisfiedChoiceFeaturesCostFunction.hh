@@ -167,13 +167,6 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given a selection of choices at variable nodes, compute the number of unsatisfied features.
-	/// @note No mutex-locking is performed, and the result is not multiplied by the weight.
-	masala::base::Size
-	protected_compute_cost_function_no_weight(
-		std::vector< masala::base::Size > const & candidate_solution
-	) const;
-
 	/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
 	/// @param[in] variable_node_indices A list of all of the absolute node indices
 	/// for nodes that have more than one choice, indexed by variable node index.
