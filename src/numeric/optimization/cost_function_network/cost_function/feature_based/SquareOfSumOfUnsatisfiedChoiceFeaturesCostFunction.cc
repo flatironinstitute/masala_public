@@ -39,6 +39,8 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.hh>
@@ -126,6 +128,46 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::class_name() const {
 std::string
 SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::class_namespace() const {
     return "masala::numeric::optimization::cost_function_network::cost_function::feature_based";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get an object describing the API for this object.
+/// @details Default implementation returns nullptr.  May be overridden by
+/// derived objects.
+/// @note This is a weak pointer rather than a shared pointer since the
+/// original object is expected to hold on to its API definition (which includes
+/// funciton pointers to the functions of the instance).  Querying whether the
+/// weak pointer can be converted to a shared pointer serves on a check as to
+/// whether it is safe to use the function pointers.  Not ideal, but better than
+/// nothing.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
+    using namespace masala::base::api;
+    using masala::base::Size;
+    using masala::base::Real;
+    std::lock_guard< std::mutex > lock( mutex() );
+
+    if( api_definition_mutex_locked() == nullptr ) {
+        MasalaObjectAPIDefinitionSP apidef(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "A cost function based on the square of the number of unsatisfied features in "
+                "the selected node choices.  During configuration, features can indicate which "
+                "other node choices will form a connection to them, and the number of connections "
+                "needed to be satisfied (i.e. not under- or over-satisfied).",
+                false, false
+            )
+        );
+
+        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction, apidef );
+
+        api_definition_mutex_locked() = apidef; // Nonconst to const;
+    }
+
+    return api_definition_mutex_locked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
