@@ -226,7 +226,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         );
         {
             work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, std::vector< Size > const & > >(
                     "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
                     true, false, false, true,
                     "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
@@ -239,7 +239,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         }
         {
             work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_difference_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< void, std::vector< Size > const &, std::vector< Size > const & > >(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, std::vector< Size > const & > >(
                     "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, "
                     "compute the cost function difference.  Note that no mutex-locking is performed.",
                     true, false, false, true,

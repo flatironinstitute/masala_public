@@ -98,7 +98,7 @@ public:
 		std::string const & input_parameter3_description,
 		bool const is_virtual_non_override_fxn,
 		bool const is_override_of_api_virtual_fxn,
-		std::function< void( T1, T2, T3 ) > const & setter_function
+		std::function< void( T1, T2, T3, T4 ) > const & setter_function
 	) :
 		MasalaObjectAPISetterDefinition(
 			setter_function_name,
