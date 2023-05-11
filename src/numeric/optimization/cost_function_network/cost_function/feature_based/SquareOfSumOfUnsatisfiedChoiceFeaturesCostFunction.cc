@@ -46,6 +46,7 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
 // Numeric headers:
@@ -200,6 +201,19 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                     std::placeholders::_4,
                     std::placeholders::_5
                 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< Size > > const & > >(
+                "increment_offsets_at_node", "For all choices at a given node, increment the offsets.  This can only be "
+                "called prior to object finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet "
+                "been declared, they are added.",
+                "absolute_node_index", "The index of the node for which we are updating choices.",
+                "offset_increments", "The amount by which we are incrementing the choices, provided as "
+                "a vector indexed by choice index of vectors indexed by choice feature index.  Any choices "
+                "or features not yet declared are added and initialized to the value provided.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
 
