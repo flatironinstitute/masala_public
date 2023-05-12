@@ -204,13 +204,13 @@ public:
 		std::vector< std::vector< masala::base::Size > > const & offset_increments
 	);
 
-	/// @brief Given a node and a choice, add node/choice pairs that satisfy one or more of its features.
+	/// @brief Given a node and a choice, add node/choice pairs that satisfy its features.
 	/// @details The node and choice and features must already have been added, or else this throws.  This function
 	/// is threadsafe (i.e. it locks the mutex), but can only be called before this object is finalized.
 	///
 	/// @param[in] absolute_node_index The node for which we are adding feature connections.
 	/// @param[in] choice_index The choice for which we are adding feature connections.
-	/// @param[in] connecting_node_choices_by_feature A vector indexed by feature index for the node and choice given by
+	/// @param[in] connecting_node_connections_by_feature A vector indexed by feature index for the node and choice given by
 	/// absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to
 	/// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
 	/// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
@@ -219,7 +219,23 @@ public:
 	add_connecting_node_choices_for_features_of_node_choice(
 		masala::base::Size const absolute_node_index,
 		masala::base::Size const choice_index,
-		std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
+		std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_connections_by_feature
+	);
+
+	/// @brief Given a node, add node/choice pairs that satisfy its choices' features.
+	/// @details The node and choice and features must already have been added, or else this throws.  This function
+	/// is threadsafe (i.e. it locks the mutex), but can only be called before this object is finalized.
+	///
+	/// @param[in] absolute_node_index The node for which we are adding feature connections.
+	/// @param[in] connecting_node_connections_by_choice_and_feature A vector indexed by choice index, containing vectors
+	/// indexed by feature index, pointing to maps indexed by other node/choice pairs, in turn pointing to
+	/// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
+	/// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
+	/// will be set to this amount.
+	void
+	add_connecting_node_choices_for_features_of_node_choices(
+		masala::base::Size const absolute_node_index,
+		std::vector< std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > > const & connecting_node_connections_by_choice_and_feature
 	);
 
 public:
@@ -301,13 +317,13 @@ private:
 		std::vector< std::vector< masala::base::Size > > const & offset_increments
 	);
 
-	/// @brief Given a node and a choice, add node/choice pairs that satisfy one or more of its features.
+	/// @brief Given a node and a choice, add node/choice pairs that satisfy its features.
 	/// @details The node and choice and features must already have been added, or else this throws.  This
 	/// version is used internally, and assumes that the mutex has already been locked.
 	///
 	/// @param[in] absolute_node_index The node for which we are adding feature connections.
 	/// @param[in] choice_index The choice for which we are adding feature connections.
-	/// @param[in] connecting_node_choices_by_feature A vector indexed by feature index for the node and choice given by
+	/// @param[in] connecting_node_connections_by_feature A vector indexed by feature index for the node and choice given by
 	/// absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to
 	/// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
 	/// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
@@ -316,7 +332,7 @@ private:
 	add_connecting_node_choices_for_features_of_node_choice_mutex_locked(
 		masala::base::Size const absolute_node_index,
 		masala::base::Size const choice_index,
-		std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
+		std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_connections_by_feature
 	);
 
 private:

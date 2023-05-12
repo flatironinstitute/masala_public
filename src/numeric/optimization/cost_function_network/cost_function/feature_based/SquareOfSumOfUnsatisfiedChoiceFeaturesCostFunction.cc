@@ -248,12 +248,12 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         apidef->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > const & > >(
                 "add_connecting_node_choices_for_features_of_node_choice", "Given a node and a choice, add node/choice "
-                "pairs that satisfy one or more of its features.  The node and choice and features must already have been "
+                "pairs that satisfy its features.  The node and choice and features must already have been "
                 "added, or else this throws.  This function is threadsafe (i.e. it locks the mutex), but can only be called "
                 "before this object is finalized.",
                 "absolute_node_index", "The node for which we are adding feature connections.",
                 "choice_index", "The choice for which we are adding feature connections.",
-                "connecting_node_choices_by_feature", "A vector indexed by feature index for the node and choice given by "
+                "connecting_node_connections_by_feature", "A vector indexed by feature index for the node and choice given by "
                 "absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to "
                 "the number of connections that this feature makes to those node/choice pairs.  The number of connections to those "
                 "node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs, "
@@ -261,6 +261,24 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 false, false,
                 std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_features_of_node_choice,
                     this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
+                )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, vector< vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > > const & > >(
+                "add_connecting_node_choices_for_features_of_node_choices", "Given a node, add node/choice pairs that satisfy "
+                "its choices' features.  The node and choice and features must already have been "
+                "added, or else this throws.  This function is threadsafe (i.e. it locks the mutex), but can only be called "
+                "before this object is finalized.",
+                "absolute_node_index", "The node for which we are adding feature connections.",
+                "connecting_node_connections_by_feature", "A vector indexed by choice index, containing vectors "
+	            "indexed by feature index, pointing to maps indexed by other node/choice pairs, in turn pointing to "
+	            "the number of connections that this feature makes to those node/choice pairs.  The number of connections to those "
+	            "node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs, "
+	            "will be set to this amount.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_features_of_node_choices,
+                    this, std::placeholders::_1, std::placeholders::_2
                 )
             )
         );
