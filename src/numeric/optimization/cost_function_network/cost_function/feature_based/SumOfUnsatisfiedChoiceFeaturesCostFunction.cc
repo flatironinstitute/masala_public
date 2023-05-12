@@ -173,12 +173,12 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_choice_feature_by_absolute_node_
 
 /// @brief For all choices at a given node, increment the offsets.
 /// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
-/// If node or choices have not yet been declared, they are added.
+/// If node or choices have not yet been declared, this function throws.
 ///
 /// @param[in] absolute_node_index The index of the node for which we are updating choices.
 /// @param[in] offset_increments The amount by which we are incrementing the choices, provided as
 /// a vector indexed by choice index of vectors indexed by choice feature index.  Any choices or features
-/// not yet declared are added and initialized to the value provided.
+/// not yet declared trigger an exception.
 void
 SumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node(
     masala::base::Size const absolute_node_index,
@@ -201,17 +201,23 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node(
         if( offset_increments_by_feature.empty() ) { continue; }
         pair< Size, Size > const key( absolute_node_index, ichoice );
         my_map_iterator it( choice_features_by_absolute_node_and_choice_.find( key ) );
-        if( it == choice_features_by_absolute_node_and_choice_.end() ) {
-            Size const ifeaturemax( offset_increments_by_feature.size() );
-            std::vector< ChoiceFeatureSP > vec;
-            vec.reserve(ifeaturemax);
-            for( Size ifeature(0); ifeature < ifeaturemax; ++ifeature ) {
-                vec.emplace_back( std::make_shared< ChoiceFeature >(  ) )
-            }
-            choice_features_by_absolute_node_and_choice_[key] = vec;
+        CHECK_OR_THROW_FOR_CLASS( it != choice_features_by_absolute_node_and_choice_.end(),
+            "increment_offsets_at_node",
+            "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( ichoice )
+            + " was specified, but no such node/choice combination has been added yet!  Nodes and choices "
+            "must be declared before they are incremented."
+        );
+        std::vector< ChoiceFeatureSP > & vec( it->second );
+        CHECK_OR_THROW_FOR_CLASS( vec.size() == offset_increments_by_feature.size(),
+            "increment_offsets_at_node", std::to_string(offset_increments_by_feature.size())
+            + " features to increment were specified for node " + std::to_string( absolute_node_index )
+            + ", choice " + std::to_string( ichoice ) + ", but there are " + std::to_string( vec.size() )
+            + " features for this node/choice combination.  One offset must be specified per feature."
+        );
+        for( Size ifeature(0), ifeaturemax( vec.size() ); ifeature<ifeaturemax; ++ifeature ) {
+            vec[ifeature]->increment_offset( offset_increments_by_feature[ifeature] );
         }
     }
-    
 }
 
 ////////////////////////////////////////////////////////////////////////////////

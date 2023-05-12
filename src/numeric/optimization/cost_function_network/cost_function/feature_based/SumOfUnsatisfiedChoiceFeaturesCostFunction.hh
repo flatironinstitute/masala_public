@@ -162,12 +162,12 @@ public:
 
 	/// @brief For all choices at a given node, increment the offsets.
 	/// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
-	/// If node or choices have not yet been declared, they are added.
+	/// If node or choices have not yet been declared, this function throws.
 	///
 	/// @param[in] absolute_node_index The index of the node for which we are updating choices.
 	/// @param[in] offset_increments The amount by which we are incrementing the choices, provided as
 	/// a vector indexed by choice index of vectors indexed by choice feature index.  Any choices or features
-	/// not yet declared are added and initialized to the value provided.
+	/// not yet declared trigger an exception.
 	void
 	increment_offsets_at_node(
 		masala::base::Size const absolute_node_index,
