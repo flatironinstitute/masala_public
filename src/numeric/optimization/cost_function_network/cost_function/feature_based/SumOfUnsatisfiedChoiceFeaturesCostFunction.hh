@@ -160,6 +160,25 @@ public:
 		masala::base::Size const feature_connection_offset
 	);
 
+	/// @brief Given an absolute node index, declare all features for all choices at that
+	/// index.
+	/// @details No choices must have been declared previously, or this function will throw.
+	/// If this object was previously finalized, this function will throw.  Locks mutex (i.e.
+	/// threadsafe).
+	///
+	/// @param[in] absolute_node_index The index of the node for which we are setting choices.
+	/// @param[in] min_and_max_connections_by_choice_and_feature A vector indexed by choice index, containing
+	/// vectors indexed by feature index, containing pairs of min connection count and max connection count
+	/// for each feature.
+	///
+	/// @note All choice features are initialized to offsets of zero.  The increment_offsets_at_node()
+	/// function can be used to adjust this.
+	void
+	declare_features_for_node_choices(
+		masala::base::Size const absolute_node_index,
+		std::vector< std::vector< std::pair< masala::base::Size, masala::base::Size > > > const & min_and_max_connections_by_choice_and_feature
+	);
+
 	/// @brief For all choices at a given node, increment the offsets.
 	/// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
 	/// If node or choices have not yet been declared, this function throws.

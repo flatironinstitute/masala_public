@@ -216,6 +216,19 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< std::pair< Size, Size > > > const & > >(
+                "declare_features_for_node_choices", "Given an absolute node index, declare all features for all choices at that "
+                "index.  No choices must have been declared previously, or this function will throw.  If this object was previously "
+                "finalized, this function will throw.  Locks mutex (i.e. threadsafe).  All choice features are initialized to offsets "
+                "of zero.  The increment_offsets_at_node() function can be used to adjust this.",
+                "absolute_node_index", "The index of the node for which we are setting choices.",
+                "min_and_max_connections_by_choice_and_feature", "A vector indexed by choice index, containing vectors indexed by feature "
+                "index, containing pairs of min connection count and max connection count for each feature.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::declare_features_for_node_choices, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
 
         // Getters:
         apidef->add_getter(

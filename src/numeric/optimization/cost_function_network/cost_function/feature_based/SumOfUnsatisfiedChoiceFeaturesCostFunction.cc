@@ -171,6 +171,53 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_choice_feature_by_absolute_node_
     return 0; // Keep older compilers happy, though we never reach here.
 }
 
+/// @brief Given an absolute node index, declare all features for all choices at that
+/// index.
+/// @details No choices must have been declared previously, or this function will throw.
+/// If this object was previously finalized, this function will throw.  Locks mutex (i.e.
+/// threadsafe).
+///
+/// @param[in] absolute_node_index The index of the node for which we are setting choices.
+/// @param[in] min_and_max_connections_by_choice_and_feature A vector indexed by choice index, containing
+/// vectors indexed by feature index, containing pairs of min connection count and max connection count
+/// for each feature.
+///
+/// @note All choice features are initialized to offsets of zero.  The increment_offsets_at_node()
+/// function can be used to adjust this.
+void
+SumOfUnsatisfiedChoiceFeaturesCostFunction::declare_features_for_node_choices(
+    masala::base::Size const absolute_node_index,
+    std::vector< std::vector< std::pair< masala::base::Size, masala::base::Size > > > const & min_and_max_connections_by_choice_and_feature
+) {
+    using masala::base::Size;
+    using std::pair;
+    using std::vector;
+
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "declare_features_for_node_choices",
+        "Choice features cannot be declared after this object has already been finalized!"
+    );
+
+    for( Size ichoice(0), ichoicemax(min_and_max_connections_by_choice_and_feature.size()); ichoice<ichoicemax; ++ichoice ) {
+        pair< Size, Size > key( absolute_node_index, ichoice );
+        CHECK_OR_THROW_FOR_CLASS( choice_features_by_absolute_node_and_choice_.count(key) == 0,
+            "declare_features_for_node_choices",
+            "Cannot declare features for node " + std::to_string( absolute_node_index )
+            + ", choice " + std::to_string( ichoice ) + ", since this node/choice combination "
+            + "has already been declared!"
+        );
+        vector< pair< Size, Size > > const & min_and_max_by_feature( min_and_max_connections_by_choice_and_feature[ichoice] );
+        if( min_and_max_by_feature.empty() ) { continue; }
+        std::vector< ChoiceFeatureSP > vec;
+        vec.reserve( min_and_max_by_feature.size() );
+        for( Size ifeature(0), ifeaturemax(min_and_max_by_feature.size()); ifeature<ifeaturemax; ++ifeature ) {
+            pair< Size, Size > const & min_max( min_and_max_by_feature[ifeature] );
+            vec.push_back( masala::make_shared< ChoiceFeature >( min_max.first, min_max.second, 0 ) );
+        }
+        choice_features_by_absolute_node_and_choice_[key] = vec;
+    }
+}
+
 /// @brief For all choices at a given node, increment the offsets.
 /// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
 /// If node or choices have not yet been declared, this function throws.
