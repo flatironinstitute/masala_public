@@ -244,6 +244,20 @@ namespace api {
         return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + "> const";
     }
 
+    /// @brief Manually override for unordered maps with custom hashes.
+    template< class T1, class T2, class T3 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2, T3 > > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " >";
+    }
+
+    /// @brief Manually override for const unordered maps with custom hashes.
+    template< class T1, class T2, class T3 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2, T3 > const > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " > const";
+    }
+
     /// @brief Manually override for vectors.
     template<class T>
     std::string
