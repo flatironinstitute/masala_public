@@ -276,6 +276,19 @@ ChoiceFeature::add_other_node_and_choice_that_satisfies_this(
     other_absolute_node_choices_that_satisfy_this_[key] = n_connections;
 }
 
+/// @brief Increase the offset for this choice.
+/// @param[in] increment The amount by which to increase the offset.  Must be positive.
+void
+ChoiceFeature::increment_offset(
+    masala::base::Size const increment
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !finalized_.load(), "increment_offset",
+        "This function cannot be called after this object has been finalized."
+    );
+    offset_ += increment;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -380,6 +393,14 @@ ChoiceFeature::get_api_definition() {
                 "variable_node_indices_by_absolute_node_index", "A map of all of the variable node indices for nodes "
                 "that have more than one choice, indexed by absolute node index.",
                 false, false, std::bind( &ChoiceFeature::finalize, this, std::placeholders::_1 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
+                "increment_offset", "Increase the offset for this choice.  This ChoiceFeature must not be finalized when this is called.",
+                "increment", "The amount by which to increase the offset.  Must be positive.",
+                false, false,
+                std::bind( &ChoiceFeature::increment_offset, this, std::placeholders::_1 )
             )
         );
 

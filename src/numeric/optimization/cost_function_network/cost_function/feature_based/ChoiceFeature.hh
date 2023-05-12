@@ -202,6 +202,13 @@ public:
     	masala::base::Size const n_connections
 	);
 
+	/// @brief Increase the offset for this choice.
+	/// @param[in] increment The amount by which to increase the offset.  Must be positive.
+	void
+	increment_offset(
+		masala::base::Size const increment
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
