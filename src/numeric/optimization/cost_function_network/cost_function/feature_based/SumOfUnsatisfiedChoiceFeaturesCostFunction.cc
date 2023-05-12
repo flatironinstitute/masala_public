@@ -276,7 +276,42 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
     masala::base::Size const choice_index,
     std::unordered_map< masala::base::Size, std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
 ) {
-    TODO TODO TODO
+    using masala::base::Size;
+    using std::pair;
+    using std::unordered_map;
+    using masala::base::size_pair_hash;
+
+    std::lock_guard< std::mutex > lock( mutex() );
+    CHECK_OR_THROW_FOR_CLASS( !protected_finalized(),
+        "add_connecting_node_choices_for_features_of_node_choice",
+        "Choice feature connections cannot be added after this " + class_name()
+        + "object has already been finalized!"
+    );
+
+    pair< Size, Size > const this_key( absolute_node_index, choice_index );
+    auto it( choice_features_by_absolute_node_and_choice_.find( this_key ) );
+    CHECK_OR_THROW_FOR_CLASS( it != choice_features_by_absolute_node_and_choice_.end(),
+        "add_connecting_node_choices_for_features_of_node_choice",
+        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
+        + " has not been added to this " + class_name() + " object.  Node/choice pairs must "
+        "be added before this function is called."
+    );
+    std::vector< ChoiceFeatureSP > & feature_vec( it->second );
+
+    for( unordered_map< Size, unordered_map< pair< Size, Size >, Size, size_pair_hash > >::const_iterator it2( connecting_node_choices_by_feature.begin() ); it2 != connecting_node_choices_by_feature.end(); ++it2 ) {
+        Size const feature_index( it2->first );
+        CHECK_OR_THROW_FOR_CLASS( feature_index < feature_vec.size(),
+            "add_connecting_node_choices_for_features_of_node_choice",
+            "Feature " + std::to_string(feature_index) + " is out of range.  "
+            + std::to_string(feature_vec.size()) + " features have been defined for node "
+            + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
+            + "."
+        );
+        ChoiceFeature & feature( *(feature_vec[feature_index]) );
+        for( unordered_map< pair< Size, Size >, Size, size_pair_hash >::const_iterator it3( it2->second.begin() ); it3 != it2->second.end(); ++it3 ) {
+            feature.increment_other_node_and_choice_that_satisfies_this( it3->first.first, it3->first.second, it3->second );
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -202,6 +202,21 @@ public:
     	masala::base::Size const n_connections
 	);
 
+	/// @brief Indicate that a particular choice at another node satisfies this feature.  If connections
+	/// have already been added for that node and choice, increment them by n_connections.
+	/// @details This feature must not be finalized yet.  Threadsafe.
+	/// @param other_node_absolute_index The other node index (absolute index, not variable index).
+	/// @param other_choice_index The other choice index.
+	/// @param n_connections The number of connections that are made from the features of the
+	/// other node choice to this feature.  If the other node and choice already have connections,
+	/// then this is the amount by which the connection count is incremented.
+	void
+	increment_other_node_and_choice_that_satisfies_this(
+		masala::base::Size const other_node_absolute_index,
+		masala::base::Size const other_choice_index,
+    	masala::base::Size const n_connections
+	);
+
 	/// @brief Increase the offset for this choice.
 	/// @param[in] increment The amount by which to increase the offset.  Must be positive.
 	void

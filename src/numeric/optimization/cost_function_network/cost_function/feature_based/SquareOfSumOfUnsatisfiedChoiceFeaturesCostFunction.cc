@@ -47,6 +47,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 
 // Numeric headers:
@@ -155,6 +156,10 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
     using namespace masala::base::api;
     using masala::base::Size;
     using masala::base::Real;
+    using std::unordered_map;
+    using std::pair;
+    using masala::base::size_pair_hash;
+
     std::lock_guard< std::mutex > lock( mutex() );
 
     if( api_definition_mutex_locked() == nullptr ) {
@@ -204,19 +209,6 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< Size > > const & > >(
-                "increment_offsets_at_node", "For all choices at a given node, increment the offsets.  This can only be "
-                "called prior to object finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet "
-                "been declared, this function throws.",
-                "absolute_node_index", "The index of the node for which we are updating choices.",
-                "offset_increments", "The amount by which we are incrementing the choices, provided as "
-                "a vector indexed by choice index of vectors indexed by choice feature index.  Any choices "
-                "or features not yet declared trigger an exception.",
-                false, false,
-                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node, this, std::placeholders::_1, std::placeholders::_2 )
-            )
-        );
-        apidef->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< std::pair< Size, Size > > > const & > >(
                 "declare_features_for_node_choices", "Given an absolute node index, declare all features for all choices at that "
                 "index.  No choices must have been declared previously, or this function will throw.  If this object was previously "
@@ -237,6 +229,38 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 "vectors indexed by feature index, of offset increments.  The offsets of features will be increased by these increments.",
                 false, false,
                 std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets, this, std::placeholders::_1 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< Size > > const & > >(
+                "increment_offsets_at_node", "For all choices at a given node, increment the offsets.  This can only be "
+                "called prior to object finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet "
+                "been declared, this function throws.",
+                "absolute_node_index", "The index of the node for which we are updating choices.",
+                "offset_increments", "The amount by which we are incrementing the choices, provided as "
+                "a vector indexed by choice index of vectors indexed by choice feature index.  Any choices "
+                "or features not yet declared trigger an exception.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, unordered_map< Size, unordered_map< pair< Size, Size >, Size, size_pair_hash > > const & > >(
+                "add_connecting_node_choices_for_features_of_node_choice", "Given a node and a choice, add node/choice "
+                "pairs that satisfy one or more of its features.  The node and choice and features must already have been "
+                "added, or else this throws.  This function is threadsafe (i.e. it locks the mutex), but can only be called "
+                "before this object is finalized.",
+                "absolute_node_index", "The node for which we are adding feature connections.",
+                "choice_index", "The choice for which we are adding feature connections.",
+                "connecting_node_choices_by_feature", "A map indexed by feature index for the node and choice given by "
+                "absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to "
+                "the number of connections that this feature makes to those node/choice pairs.  The number of connections to those "
+                "node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs, "
+	            "will be set to this amount.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_features_of_node_choice,
+                    this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
+                )
             )
         );
 

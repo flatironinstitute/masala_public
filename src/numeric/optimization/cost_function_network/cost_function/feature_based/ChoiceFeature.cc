@@ -276,6 +276,38 @@ ChoiceFeature::add_other_node_and_choice_that_satisfies_this(
     other_absolute_node_choices_that_satisfy_this_[key] = n_connections;
 }
 
+/// @brief Indicate that a particular choice at another node satisfies this feature.  If connections
+/// have already been added for that node and choice, increment them by n_connections.
+/// @details This feature must not be finalized yet.  Threadsafe.
+/// @param other_node_absolute_index The other node index (absolute index, not variable index).
+/// @param other_choice_index The other choice index.
+/// @param n_connections The number of connections that are made from the features of the
+/// other node choice to this feature.  If the other node and choice already have connections,
+/// then this is the amount by which the connection count is incremented.
+void
+ChoiceFeature::increment_other_node_and_choice_that_satisfies_this(
+    masala::base::Size const other_node_absolute_index,
+    masala::base::Size const other_choice_index,
+    masala::base::Size const n_connections
+) {
+    using std::pair;
+    using std::unordered_map;
+    using masala::base::Size;
+    using masala::base::size_pair_hash;
+
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !finalized_.load(), "increment_other_node_and_choice_that_satisfies_this", "This function "
+        "cannot be called after this object has been finalized."
+    );
+    pair< Size, Size > const key( other_node_absolute_index, other_choice_index );
+    unordered_map< pair<Size,Size>, Size, size_pair_hash >::iterator it( other_absolute_node_choices_that_satisfy_this_.find(key) );
+    if( it == other_absolute_node_choices_that_satisfy_this_.end() ) {
+        other_absolute_node_choices_that_satisfy_this_[key] = n_connections;
+    } else {
+        it->second += n_connections;
+    }
+}
+
 /// @brief Increase the offset for this choice.
 /// @param[in] increment The amount by which to increase the offset.  Must be positive.
 void
@@ -378,11 +410,26 @@ ChoiceFeature::get_api_definition() {
         apidef->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, Size > >(
                 "add_other_node_and_choice_that_satisfies_this", "Indicate that a particular choice at another node satisfies "
-                "this feature.  This feature must not be finalized yet.  Threadsafe.",
+                "this feature.  This feature must not be finalized yet.  Threadsafe.  Throws if the other node and choice have already "
+                "been added.",
                 "other_node_absolute_index", "The other node index (absolute index, not variable index).",
                 "other_choice_index", "The other choice index.",
                 "n_connections", "The number of connections that are made from the features of the other "
                 "node choice to this feature.",
+                false, false,
+                std::bind( &ChoiceFeature::add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+            )
+        );
+        apidef->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, Size > >(
+                "increment_other_node_and_choice_that_satisfies_this", "Indicate that a particular choice at another node satisfies "
+                "this feature.  If the choice and node have already been added, increment the number of connections by n_connections.  "
+                "This feature must not be finalized yet.  Threadsafe.",
+                "other_node_absolute_index", "The other node index (absolute index, not variable index).",
+                "other_choice_index", "The other choice index.",
+                "n_connections", "The number of connections that are made from the features of the other "
+                "node choice to this feature.  If the other node and choice already have connections, "
+                "then this is the amount by which the connection count is incremented.",
                 false, false,
                 std::bind( &ChoiceFeature::add_other_node_and_choice_that_satisfies_this, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
