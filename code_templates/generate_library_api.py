@@ -315,15 +315,22 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             additional_includes.append("<list>")
             return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
-            firstchevron = inputclass.find( "<" )
-            firstcomma = inputclass.find( "," )
-            lastchevron = inputclass.rfind( ">" )
+            firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<map>")
-            return "std::map< " \
-                + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
-                + ", " \
-                + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
-                + " >"
+            if( lastcomma == -1 ) :
+                return "std::map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
+            else :
+                return "std::map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
         elif inputclass.startswith( "unordered_map" ) or inputclass.startswith( "std::unordered_map" ) :
             firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<unordered_map>")
