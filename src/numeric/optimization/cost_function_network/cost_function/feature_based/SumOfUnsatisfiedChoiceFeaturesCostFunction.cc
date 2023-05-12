@@ -276,11 +276,6 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
     masala::base::Size const choice_index,
     std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
 ) {
-    using masala::base::Size;
-    using std::pair;
-    using std::unordered_map;
-    using masala::base::size_pair_hash;
-
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(),
         "add_connecting_node_choices_for_features_of_node_choice",
@@ -288,31 +283,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
         + "object has already been finalized!"
     );
 
-    pair< Size, Size > const this_key( absolute_node_index, choice_index );
-    auto it( choice_features_by_absolute_node_and_choice_.find( this_key ) );
-    CHECK_OR_THROW_FOR_CLASS( it != choice_features_by_absolute_node_and_choice_.end(),
-        "add_connecting_node_choices_for_features_of_node_choice",
-        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
-        + " has not been added to this " + class_name() + " object.  Node/choice pairs must "
-        "be added before this function is called."
-    );
-    std::vector< ChoiceFeatureSP > & feature_vec( it->second );
-    CHECK_OR_THROW_FOR_CLASS(
-        connecting_node_choices_by_feature.size() == feature_vec.size(),
-        "add_connecting_node_choices_for_features_of_node_choice",
-        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
-        + "has " + std::to_string( feature_vec.size() ) + " features, but a vector of "
-        + std::to_string( connecting_node_choices_by_feature.size() )
-        + "features was provided to this function."
-    );
-
-    for( Size ifeature(0), ifeaturemax(connecting_node_choices_by_feature.size()); ifeature<ifeaturemax; ++ifeature ) {
-        ChoiceFeature & feature( *(feature_vec[ifeature]) );
-        unordered_map< pair< Size, Size >, Size, size_pair_hash > const & nodechoice_to_connection_map( connecting_node_choices_by_feature[ifeature] );
-        for( unordered_map< pair< Size, Size >, Size, size_pair_hash >::const_iterator it2( nodechoice_to_connection_map.begin() ); it2 != nodechoice_to_connection_map.end(); ++it2 ) {
-            feature.increment_other_node_and_choice_that_satisfies_this( it2->first.first, it2->first.second, it2->second );
-        }
-    }
+    add_connecting_node_choices_for_features_of_node_choice_mutex_locked( absolute_node_index, choice_index, connecting_node_choices_by_feature );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -558,6 +529,55 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node_mutex_lock
         );
         for( Size ifeature(0), ifeaturemax( vec.size() ); ifeature<ifeaturemax; ++ifeature ) {
             vec[ifeature]->increment_offset( offset_increments_by_feature[ifeature] );
+        }
+    }
+}
+
+/// @brief Given a node and a choice, add node/choice pairs that satisfy one or more of its features.
+/// @details The node and choice and features must already have been added, or else this throws.  This
+/// version is used internally, and assumes that the mutex has already been locked.
+///
+/// @param[in] absolute_node_index The node for which we are adding feature connections.
+/// @param[in] choice_index The choice for which we are adding feature connections.
+/// @param[in] connecting_node_choices_by_feature A vector indexed by feature index for the node and choice given by
+/// absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to
+/// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
+/// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
+/// will be set to this amount.
+void
+SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_features_of_node_choice_mutex_locked(
+    masala::base::Size const absolute_node_index,
+    masala::base::Size const choice_index,
+    std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
+) {
+    using masala::base::Size;
+    using std::pair;
+    using std::unordered_map;
+    using masala::base::size_pair_hash;
+
+    pair< Size, Size > const this_key( absolute_node_index, choice_index );
+    auto it( choice_features_by_absolute_node_and_choice_.find( this_key ) );
+    CHECK_OR_THROW_FOR_CLASS( it != choice_features_by_absolute_node_and_choice_.end(),
+        "add_connecting_node_choices_for_features_of_node_choice_mutex_locked",
+        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
+        + " has not been added to this " + class_name() + " object.  Node/choice pairs must "
+        "be added before this function is called."
+    );
+    std::vector< ChoiceFeatureSP > & feature_vec( it->second );
+    CHECK_OR_THROW_FOR_CLASS(
+        connecting_node_choices_by_feature.size() == feature_vec.size(),
+        "add_connecting_node_choices_for_features_of_node_choice_mutex_locked",
+        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
+        + "has " + std::to_string( feature_vec.size() ) + " features, but a vector of "
+        + std::to_string( connecting_node_choices_by_feature.size() )
+        + "features was provided to this function."
+    );
+
+    for( Size ifeature(0), ifeaturemax(connecting_node_choices_by_feature.size()); ifeature<ifeaturemax; ++ifeature ) {
+        ChoiceFeature & feature( *(feature_vec[ifeature]) );
+        unordered_map< pair< Size, Size >, Size, size_pair_hash > const & nodechoice_to_connection_map( connecting_node_choices_by_feature[ifeature] );
+        for( unordered_map< pair< Size, Size >, Size, size_pair_hash >::const_iterator it2( nodechoice_to_connection_map.begin() ); it2 != nodechoice_to_connection_map.end(); ++it2 ) {
+            feature.increment_other_node_and_choice_that_satisfies_this( it2->first.first, it2->first.second, it2->second );
         }
     }
 }
