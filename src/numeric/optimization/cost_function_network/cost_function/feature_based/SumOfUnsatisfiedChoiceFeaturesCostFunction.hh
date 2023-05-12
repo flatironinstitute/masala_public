@@ -210,7 +210,7 @@ public:
 	///
 	/// @param[in] absolute_node_index The node for which we are adding feature connections.
 	/// @param[in] choice_index The choice for which we are adding feature connections.
-	/// @param[in] connecting_node_choices_by_feature A map indexed by feature index for the node and choice given by
+	/// @param[in] connecting_node_choices_by_feature A vector indexed by feature index for the node and choice given by
 	/// absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to
 	/// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
 	/// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
@@ -219,7 +219,7 @@ public:
 	add_connecting_node_choices_for_features_of_node_choice(
 		masala::base::Size const absolute_node_index,
 		masala::base::Size const choice_index,
-		std::unordered_map< masala::base::Size, std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
+		std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
 	);
 
 public:

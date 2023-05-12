@@ -265,7 +265,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets_at_node(
 ///
 /// @param[in] absolute_node_index The node for which we are adding feature connections.
 /// @param[in] choice_index The choice for which we are adding feature connections.
-/// @param[in] connecting_node_choices_by_feature A map indexed by feature index for the node and choice given by
+/// @param[in] connecting_node_choices_by_feature A vector indexed by feature index for the node and choice given by
 /// absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to
 /// the number of connections that this feature makes to those node/choice pairs.  The number of connections to those
 /// node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs,
@@ -274,7 +274,7 @@ void
 SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_features_of_node_choice(
     masala::base::Size const absolute_node_index,
     masala::base::Size const choice_index,
-    std::unordered_map< masala::base::Size, std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
+    std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > const & connecting_node_choices_by_feature
 ) {
     using masala::base::Size;
     using std::pair;
@@ -297,19 +297,20 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
         "be added before this function is called."
     );
     std::vector< ChoiceFeatureSP > & feature_vec( it->second );
+    CHECK_OR_THROW_FOR_CLASS(
+        connecting_node_choices_by_feature.size() == feature_vec.size(),
+        "add_connecting_node_choices_for_features_of_node_choice",
+        "Node " + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
+        + "has " + std::to_string( feature_vec.size() ) + " features, but a vector of "
+        + std::to_string( connecting_node_choices_by_feature.size() )
+        + "features was provided to this function."
+    );
 
-    for( unordered_map< Size, unordered_map< pair< Size, Size >, Size, size_pair_hash > >::const_iterator it2( connecting_node_choices_by_feature.begin() ); it2 != connecting_node_choices_by_feature.end(); ++it2 ) {
-        Size const feature_index( it2->first );
-        CHECK_OR_THROW_FOR_CLASS( feature_index < feature_vec.size(),
-            "add_connecting_node_choices_for_features_of_node_choice",
-            "Feature " + std::to_string(feature_index) + " is out of range.  "
-            + std::to_string(feature_vec.size()) + " features have been defined for node "
-            + std::to_string( absolute_node_index ) + ", choice " + std::to_string( choice_index )
-            + "."
-        );
-        ChoiceFeature & feature( *(feature_vec[feature_index]) );
-        for( unordered_map< pair< Size, Size >, Size, size_pair_hash >::const_iterator it3( it2->second.begin() ); it3 != it2->second.end(); ++it3 ) {
-            feature.increment_other_node_and_choice_that_satisfies_this( it3->first.first, it3->first.second, it3->second );
+    for( Size ifeature(0), ifeaturemax(connecting_node_choices_by_feature.size()); ifeature<ifeaturemax; ++ifeature ) {
+        ChoiceFeature & feature( *(feature_vec[ifeature]) );
+        unordered_map< pair< Size, Size >, Size, size_pair_hash > const & nodechoice_to_connection_map( connecting_node_choices_by_feature[ifeature] );
+        for( unordered_map< pair< Size, Size >, Size, size_pair_hash >::const_iterator it2( nodechoice_to_connection_map.begin() ); it2 != nodechoice_to_connection_map.end(); ++it2 ) {
+            feature.increment_other_node_and_choice_that_satisfies_this( it2->first.first, it2->first.second, it2->second );
         }
     }
 }

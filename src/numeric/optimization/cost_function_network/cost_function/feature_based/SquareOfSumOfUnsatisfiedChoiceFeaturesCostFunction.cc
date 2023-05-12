@@ -158,6 +158,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
     using masala::base::Real;
     using std::unordered_map;
     using std::pair;
+    using std::vector;
     using masala::base::size_pair_hash;
 
     std::lock_guard< std::mutex > lock( mutex() );
@@ -209,7 +210,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< std::pair< Size, Size > > > const & > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, vector< vector< pair< Size, Size > > > const & > >(
                 "declare_features_for_node_choices", "Given an absolute node index, declare all features for all choices at that "
                 "index.  No choices must have been declared previously, or this function will throw.  If this object was previously "
                 "finalized, this function will throw.  Locks mutex (i.e. threadsafe).  All choice features are initialized to offsets "
@@ -222,7 +223,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
         apidef->add_setter(
-            std::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::unordered_map< Size, std::vector< std::vector< Size > > > const & > >(
+            std::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< unordered_map< Size, vector< vector< Size > > > const & > >(
                 "increment_offsets", "Increment all choices at a specified set of nodes.  This can only be called prior to object "
                 "finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet been declared, this function throws.",
                 "offset_increments_by_node", "A map whose key is the absolute node index, of vectors indexed by choice index, of "
@@ -232,7 +233,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, std::vector< std::vector< Size > > const & > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Size, vector< vector< Size > > const & > >(
                 "increment_offsets_at_node", "For all choices at a given node, increment the offsets.  This can only be "
                 "called prior to object finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet "
                 "been declared, this function throws.",
@@ -245,14 +246,14 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
             )
         );
         apidef->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, unordered_map< Size, unordered_map< pair< Size, Size >, Size, size_pair_hash > > const & > >(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ThreeInput< Size, Size, vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > const & > >(
                 "add_connecting_node_choices_for_features_of_node_choice", "Given a node and a choice, add node/choice "
                 "pairs that satisfy one or more of its features.  The node and choice and features must already have been "
                 "added, or else this throws.  This function is threadsafe (i.e. it locks the mutex), but can only be called "
                 "before this object is finalized.",
                 "absolute_node_index", "The node for which we are adding feature connections.",
                 "choice_index", "The choice for which we are adding feature connections.",
-                "connecting_node_choices_by_feature", "A map indexed by feature index for the node and choice given by "
+                "connecting_node_choices_by_feature", "A vector indexed by feature index for the node and choice given by "
                 "absolute_node_index and choice_index, pointing to maps indexed by other node/choice pairs, in turn pointing to "
                 "the number of connections that this feature makes to those node/choice pairs.  The number of connections to those "
                 "node/choice pairs will be incremented by this amount, or, if there are no connections to those node/choice pairs, "
@@ -275,7 +276,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
 
         // Work functions:
         apidef->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, std::vector< Size > const & > >(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< void, vector< Size > const & > >(
                 "finalize", "Indicate that all setup is complete for this object, and "
                 "prepare it for use in high-efficiency calculations.",
                 false, false, false, false,
@@ -287,7 +288,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         );
         {
             work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, std::vector< Size > const & > >(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, vector< Size > const & > >(
                     "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
                     true, false, false, true,
                     "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
@@ -300,7 +301,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
         }
         {
             work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_difference_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, std::vector< Size > const & > >(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, vector< Size > const &, vector< Size > const & > >(
                     "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, "
                     "compute the cost function difference.  Note that no mutex-locking is performed.",
                     true, false, false, true,
