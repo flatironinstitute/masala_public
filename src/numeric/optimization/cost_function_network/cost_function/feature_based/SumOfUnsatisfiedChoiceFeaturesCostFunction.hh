@@ -179,6 +179,17 @@ public:
 		std::vector< std::vector< std::pair< masala::base::Size, masala::base::Size > > > const & min_and_max_connections_by_choice_and_feature
 	);
 
+	/// @brief Increment all choices at a specified set of nodes.
+	/// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
+	/// If node or choices have not yet been declared, this function throws.
+	/// @param[in] offset_increments A map whose key is the absolute node index, of vectors indexed by
+	/// choice index, of vectors indexed by feature index, of offset increments.  The offsets of features
+	/// will be increased by these increments.
+	void
+	increment_offsets(
+		std::unordered_map< masala::base::Size, std::vector< std::vector< masala::base::Size > > > const & offset_increments
+	);
+
 	/// @brief For all choices at a given node, increment the offsets.
 	/// @details This can only be called prior to object finalization.  Locks mutex (i.e. threadsafe).
 	/// If node or choices have not yet been declared, this function throws.
