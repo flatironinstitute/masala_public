@@ -229,6 +229,16 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_api_definition() {
                 std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::declare_features_for_node_choices, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+        apidef->add_setter(
+            std::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::unordered_map< Size, std::vector< std::vector< Size > > > const & > >(
+                "increment_offsets", "Increment all choices at a specified set of nodes.  This can only be called prior to object "
+                "finalization.  Locks mutex (i.e. threadsafe).  If node or choices have not yet been declared, this function throws.",
+                "offset_increments_by_node", "A map whose key is the absolute node index, of vectors indexed by choice index, of "
+                "vectors indexed by feature index, of offset increments.  The offsets of features will be increased by these increments.",
+                false, false,
+                std::bind( &SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::increment_offsets, this, std::placeholders::_1 )
+            )
+        );
 
         // Getters:
         apidef->add_getter(
