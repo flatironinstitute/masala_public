@@ -238,6 +238,31 @@ public:
 		std::vector< std::vector< std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Size, masala::base::size_pair_hash > > > const & connecting_node_connections_by_choice_and_feature
 	);
 
+	/// @brief Add node/choice pairs that satisfy several nodes' features.
+	/// @details The nodes, choices, and featuers must already have been added, or else this throws.  This function
+	/// is threadsafe (i.e. it locks the mutex) but it can only be called before this object is finalized.
+	///
+	/// @param[in] connecting_node_connections_by_node_and_choice_and_feature A map indexed by node index, containing vectors
+	/// indexed by choice index, containing vectors indexed by feature index, containing maps indexed by other node/choice pairs,
+	/// containing the number of connections that the node/choice/feature makes to the inner node/choice pairs.  The number of
+	/// connections for the outer node/choice/feature will be incremented by this amount, or, if there are no connections to those
+	/// node/choice pairs, will be set to this amount.
+	void
+	add_connecting_node_choices_for_features_of_nodes_choices(
+		std::unordered_map<
+			masala::base::Size,
+			std::vector<
+				std::vector<
+					std::unordered_map<
+						std::pair< masala::base::Size, masala::base::Size >,
+						masala::base::Size,
+						masala::base::size_pair_hash
+					>
+				>
+			>
+		> const & connecting_node_connections_by_node_and_choice_and_feature
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
