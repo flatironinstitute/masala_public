@@ -337,6 +337,13 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
         >
     > const & connecting_node_connections_by_node_and_choice_and_feature
 ) {
+    using std::unordered_map;
+    using std::vector;
+    using std::pair;
+    using masala::base::Size;
+    using masala::base::size_pair_hash;
+    typedef unordered_map< Size, vector< vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > > > datastruct;
+
     std::lock_guard< std::mutex > lock( mutex() );
     CHECK_OR_THROW_FOR_CLASS( !protected_finalized(),
         "add_connecting_node_choices_for_features_of_nodes_choices",
@@ -344,9 +351,13 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
         + "object has already been finalized!"
     );
 
-    for( auto const & it : connecting_node_connections_by_node_and_choice_and_feature ) {
-        masala::base::Size const absolute_node_index( it.first );
-        auto const & connecting_node_connections_by_choice_and_feature( it.second );
+    for(
+        datastruct::const_iterator it( connecting_node_connections_by_node_and_choice_and_feature.begin() );
+        it != connecting_node_connections_by_node_and_choice_and_feature.end();
+        ++it
+    ) {
+        masala::base::Size const absolute_node_index( it->first );
+        auto const & connecting_node_connections_by_choice_and_feature( it->second );
         for( masala::base::Size i(0), imax(connecting_node_connections_by_choice_and_feature.size()); i<imax; ++i ) {
             add_connecting_node_choices_for_features_of_node_choice_mutex_locked( absolute_node_index, i, connecting_node_connections_by_choice_and_feature[i] );
         }
