@@ -496,7 +496,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::protected_finalize(
             choice_features_by_variable_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index_.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
         } else {
             // If this is a fixed node.
-            fixed_choice_features_by_absolute_node_and_choice_[ std::make_pair( variable_node_indices_by_absolute_node_index_.at( abs_node_index ), choice_index ) ] = choice_feature_csp_vec_copy;
+            fixed_choice_features_by_absolute_node_and_choice_[ std::make_pair( abs_node_index, choice_index ) ] = choice_feature_csp_vec_copy;
         }
     }
 
