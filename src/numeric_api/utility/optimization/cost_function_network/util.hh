@@ -72,6 +72,72 @@ namespace cost_function_network {
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem( bool const gapped=false, bool const finalized = true );
 
+	/// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
+	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+	/// by default.
+	/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+	/// false, we leave the problem unfinalized, permitting additional stuff to be added.
+	/// @details  The solutions and solutions scores are as follows if ungapped:
+	/// 0 0 0 -> 86
+	/// 0 0 1 -> 114
+	/// 0 0 2 -> 118
+	/// 0 1 0 -> 156
+	/// 0 1 1 -> 98
+	/// 0 1 2 -> 223
+	/// 0 2 0 -> 55
+	/// 0 2 1 -> 57
+	/// 0 2 2 -> 61
+	/// 1 0 0 -> 76
+	/// 1 0 1 -> 73
+	/// 1 0 2 -> 72
+	/// 1 1 0 -> 115
+	/// 1 1 1 -> 146
+	/// 1 1 2 -> 146
+	/// 1 2 0 -> 69
+	/// 1 2 1 -> 40
+	/// 1 2 2 -> 99
+	/// 2 0 0 -> 53
+	/// 2 0 1 -> 82
+	/// 2 0 2 -> 83
+	/// 2 1 0 -> 127
+	/// 2 1 1 -> 70
+	/// 2 1 2 -> 192
+	/// 2 2 0 -> 18
+	/// 2 2 1 -> 21
+	/// 2 2 2 -> 142
+	///
+	/// The solutions and solutions scores are as follows if gapped:
+	/// 0 0 0 -> 
+	/// 0 0 1 -> 
+	/// 0 0 2 -> 
+	/// 0 1 0 -> 
+	/// 0 1 1 -> 
+	/// 0 1 2 -> 
+	/// 0 2 0 -> 
+	/// 0 2 1 -> 
+	/// 0 2 2 -> 
+	/// 1 0 0 -> 
+	/// 1 0 1 -> 
+	/// 1 0 2 -> 
+	/// 1 1 0 -> 
+	/// 1 1 1 -> 
+	/// 1 1 2 -> 
+	/// 1 2 0 -> 
+	/// 1 2 1 -> 
+	/// 1 2 2 -> 
+	/// 2 0 0 -> 
+	/// 2 0 1 -> 
+	/// 2 0 2 -> 
+	/// 2 1 0 -> 
+	/// 2 1 1 -> 
+	/// 2 1 2 -> 
+	/// 2 2 0 -> 
+	/// 2 2 1 -> 
+	/// 2 2 2 -> 
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	construct_test_problem_with_squared_unsatisfied_feature_penalties( bool const gapped=false, bool const finalized = true );
+
 	/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 	/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
 	/// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
