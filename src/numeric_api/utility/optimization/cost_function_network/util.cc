@@ -245,7 +245,7 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
     cost_function->add_choice_feature_by_absolute_node_index( 1, 1, 1, 1, 0 );
     cost_function->add_choice_feature_by_absolute_node_index( 1, 1, 1, 1, 0 ); // Two features for node 1, choice 1.
     cost_function->add_choice_feature_by_absolute_node_index( last_node, 1, 1, 1, 0 );
-    cost_function->add_choice_feature_by_absolute_node_index( last_node, 1, 2, 1, 0 );
+    cost_function->add_choice_feature_by_absolute_node_index( last_node, 2, 1, 1, 0 );
 
     unordered_map<Size, vector<vector<unordered_map<pair<Size, Size>, Size, size_pair_hash>>>> connection_data;
     // Node 0:
