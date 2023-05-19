@@ -450,6 +450,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::protected_compute_cost_function_no_w
             }
         }
     }
+
+    //write_to_tracer( "Unsatisfied features: " + std::to_string( unsatisfied_choice_features ) ); //DELETE ME.
+
     return unsatisfied_choice_features;
 }
 

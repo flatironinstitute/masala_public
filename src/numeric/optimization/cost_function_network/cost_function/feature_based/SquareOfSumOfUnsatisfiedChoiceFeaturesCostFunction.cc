@@ -414,7 +414,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::compute_cost_function_differ
     using masala::base::Size;
     Size const countnew( protected_compute_cost_function_no_weight( candidate_solution_new ) );
     Size const countold( protected_compute_cost_function_no_weight( candidate_solution_old ) );
-    return protected_weight() * ( static_cast< Real >( countnew*countnew - countold*countold ) );
+    return protected_weight() * ( static_cast< Real >( countnew*countnew ) - static_cast< Real >( countold*countold ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
