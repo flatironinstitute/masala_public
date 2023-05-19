@@ -633,6 +633,8 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::add_connecting_node_choices_for_feat
     using std::unordered_map;
     using masala::base::size_pair_hash;
 
+    if( connecting_node_choices_by_feature.empty() ) { return; }
+
     pair< Size, Size > const this_key( absolute_node_index, choice_index );
     auto it( choice_features_by_absolute_node_and_choice_.find( this_key ) );
     CHECK_OR_THROW_FOR_CLASS( it != choice_features_by_absolute_node_and_choice_.end(),
