@@ -135,6 +135,23 @@ public:
     );
 
 ////////////////////////////////////////////////////////////////////////////////
+// RANDOM SAMPLING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Given a container, generate a new container with a subset of the
+    /// samples in the original container.
+    template< class T >
+    T
+    random_sample(
+        masala::base::Size const n_samples,
+        T const & container
+    ) {
+        T outvec;
+        std::sample( container.begin(), container.end(), std::back_inserter( outvec ), n_samples, random_engine_ );
+        return outvec;
+    }
+
+////////////////////////////////////////////////////////////////////////////////
 // RANDOM NUMBER GENERATING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -188,14 +205,7 @@ public:
     /// with a given mean.
     base::Size
     poisson_size_distribution(
-        base::Size const mean
-    );
-
-    /// @brief Generate a signed long integer drawn from a Poisson distribution
-    /// with a given mean.
-    signed long int
-    poisson_signed_long_int_distribution(
-        signed long int const mean
+        base::Real const mean
     );
 
     /// @brief Given a vector, shuffle the order.
@@ -337,34 +347,8 @@ gaussian_float_distribution();
 /// random generator and call the class member function.
 base::Size
 poisson_size_distribution(
-    base::Size const mean
+    base::Real const mean
 );
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( 0 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-base::Size
-poisson_size_distribution();
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( mean )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-signed long int
-poisson_singed_long_int_distribution(
-    signed long int const mean
-);
-
-/// @brief Generate a signed long int number drawn from a Poisson distribution with a mean of 0.
-/// @details This is a convenience function that calls
-/// MasalaRandomNumberGenerator::get_instance()->poisson_unsinged_long_int_distribution( 0 )
-/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
-/// random generator and call the class member function.
-signed long int
-poisson_singed_long_int_distribution();
 
 /// @brief Apply the Metropolis criterion.
 /// @details This is a convenience function that calls MasalaRandomNumberGenerator::apply_metropolis_criterion()
