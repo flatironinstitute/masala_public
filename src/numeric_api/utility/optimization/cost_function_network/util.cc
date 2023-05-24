@@ -26,6 +26,7 @@
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/FunctionOfIntegerPenaltySumCostFunction_API.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.hh>
 
 // Base headers:
@@ -40,7 +41,7 @@ namespace utility {
 namespace optimization {
 namespace cost_function_network {
 
-/// @brief This is a utility funciton to construct a standard test problem for
+/// @brief This is a utility function to construct a standard test problem for
 /// testing out cost function network optimizers.  This problem has three nodes
 /// with three choices per node, for a total of 27 possible solutions.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
@@ -153,6 +154,171 @@ construct_test_problem(
     }
     
     // Return the problem.
+    return problem;
+}
+
+/// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
+/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
+/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
+/// by default.
+/// @param[in] finalized If true (the default), we return a finalized problem setup.  If
+/// false, we leave the problem unfinalized, permitting additional stuff to be added.
+/// @details  The solutions and solutions scores are as follows if ungapped:
+/// 0 0 0 -> 86
+/// 0 0 1 -> 114
+/// 0 0 2 -> 118
+/// 0 1 0 -> 156
+/// 0 1 1 -> 98
+/// 0 1 2 -> 223
+/// 0 2 0 -> 55
+/// 0 2 1 -> 57
+/// 0 2 2 -> 61
+/// 1 0 0 -> 76
+/// 1 0 1 -> 73
+/// 1 0 2 -> 72
+/// 1 1 0 -> 115
+/// 1 1 1 -> 146
+/// 1 1 2 -> 146
+/// 1 2 0 -> 69
+/// 1 2 1 -> 40
+/// 1 2 2 -> 99
+/// 2 0 0 -> 53
+/// 2 0 1 -> 82
+/// 2 0 2 -> 83
+/// 2 1 0 -> 127
+/// 2 1 1 -> 70
+/// 2 1 2 -> 192
+/// 2 2 0 -> 18
+/// 2 2 1 -> 21
+/// 2 2 2 -> 22
+///
+/// The solutions and solutions scores are as follows if gapped:
+/// 0 0 0 -> 103
+/// 0 0 1 -> 131
+/// 0 0 2 -> 135
+/// 0 1 0 -> 173
+/// 0 1 1 -> 115
+/// 0 1 2 -> 240
+/// 0 2 0 -> 72
+/// 0 2 1 -> 74
+/// 0 2 2 -> 78
+/// 1 0 0 -> 93
+/// 1 0 1 -> 90
+/// 1 0 2 -> 89
+/// 1 1 0 -> 132
+/// 1 1 1 -> 163
+/// 1 1 2 -> 163
+/// 1 2 0 -> 86
+/// 1 2 1 -> 57
+/// 1 2 2 -> 116
+/// 2 0 0 -> 70
+/// 2 0 1 -> 99
+/// 2 0 2 -> 100
+/// 2 1 0 -> 144
+/// 2 1 1 -> 87
+/// 2 1 2 -> 209
+/// 2 2 0 -> 35
+/// 2 2 1 -> 38
+/// 2 2 2 -> 39
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+construct_test_problem_with_squared_unsatisfied_feature_penalties(
+    bool const gapped /*=false*/,
+    bool const finalized /*=true*/
+) {
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
+    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function::feature_based;
+    using std::unordered_map;
+    using std::vector;
+    using std::pair;
+    using masala::base::Size;
+    using masala::base::size_pair_hash;
+
+    masala::base::Size const last_node( gapped ? 3 : 2 );
+
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false ) );
+
+    SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_APISP cost_function( masala::make_shared< SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_API >() );
+
+    cost_function->add_choice_feature_by_absolute_node_index( 0, 1, 1, 1, 0 );
+    cost_function->add_choice_feature_by_absolute_node_index( 1, 0, 1, 1, 0 );
+    cost_function->add_choice_feature_by_absolute_node_index( 1, 1, 1, 1, 0 );
+    cost_function->add_choice_feature_by_absolute_node_index( 1, 1, 1, 1, 0 ); // Two features for node 1, choice 1.
+    cost_function->add_choice_feature_by_absolute_node_index( last_node, 1, 1, 1, 0 );
+    cost_function->add_choice_feature_by_absolute_node_index( last_node, 2, 1, 1, 0 );
+
+    unordered_map<Size, vector<vector<unordered_map<pair<Size, Size>, Size, size_pair_hash>>>> connection_data;
+    // Node 0:
+    connection_data[0] = vector< vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > >{
+        // Choice 0 -- no features:
+        {},
+        // Choice 1:
+        {
+            // Feature 1:
+            {
+                {pair< Size, Size >( 1, 0 ), 1},
+                {pair< Size, Size >( 1, 1 ), 1},
+                {pair< Size, Size >( last_node, 1 ), 1}
+            }
+        },
+        // Choice 2 -- no features:
+        {}
+    };
+    // Node 1:
+    connection_data[1] = vector< vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > >{
+        // Choice 0:
+        {
+            // Feature 1:
+            {
+                {pair< Size, Size >( 0, 1 ), 1}
+            }
+        },
+        // Choice 1:
+        {
+            // Feature 1:
+            {
+                {pair< Size, Size >( 0, 1 ), 1}
+            },
+            // Feature 2:
+            {
+                {pair< Size, Size >( last_node, 1 ), 1}
+            }
+        },
+        // Choice 2 -- no features:
+        {}
+    };
+    // Node 2 (or 3 if gapped):
+    connection_data[last_node] = vector< vector< unordered_map< pair< Size, Size >, Size, size_pair_hash > > >{
+        // Choice 0 -- no features:
+        {},
+        // Choice 1:
+        {
+            // Feature 1:
+            {
+                {pair<Size, Size >( 0, 1 ), 1 },
+                {pair<Size, Size >( 1, 1 ), 1 }
+            }
+        },
+        // Choice 2:
+        {
+            // Feature 1:
+            {
+                // Not satisfied by anything.
+            }
+        }
+    };
+
+    cost_function->add_connecting_node_choices_for_features_of_nodes_choices(
+        connection_data
+    );
+    cost_function->set_weight( 15 );
+
+    problem->add_cost_function( cost_function );
+
+    if( finalized ) {
+        problem->finalize();
+    }
+
     return problem;
 }
 

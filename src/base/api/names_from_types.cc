@@ -148,6 +148,34 @@ namespace api {
         return "std::string const &";
     }
 
+    /// @brief Manually override for size pair hashes.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash >( type< masala::base::size_pair_hash > ) {
+        return "masala::base::size_pair_hash";
+    }
+
+    /// @brief Manually override for const size pair hashes.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash const >( type< masala::base::size_pair_hash const > ) {
+        return "masala::base::size_pair_hash const";
+    }
+
+    /// @brief Manually override for size pair hash instances.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash & >( type< masala::base::size_pair_hash & > ) {
+        return "masala::base::size_pair_hash &";
+    }
+
+    /// @brief Manually override for const size pair hash const instances.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash const & >( type< masala::base::size_pair_hash const & > ) {
+        return "masala::base::size_pair_hash const &";
+    }
+
 } // namespace api
 } // namespace base
 } // namespace masala

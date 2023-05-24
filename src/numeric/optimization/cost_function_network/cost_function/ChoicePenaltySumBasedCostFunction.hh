@@ -166,9 +166,7 @@ public:
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	/// @details This version just computes the sum of the penalties of the selected choices.
-	/// @note No mutex-locking is performed!  Also note that this version does not multiply the
-	/// result by the weight, since derived classes will likely do this after applying a nonlinear
-	/// function.
+	/// @note No mutex-locking is performed!
 	masala::base::Real
 	compute_cost_function(
 		std::vector< masala::base::Size > const & candidate_solution
@@ -179,9 +177,7 @@ public:
 	/// @details This version just computes the difference of the sums of the penalties of the
 	/// selected choices.  It isn't useful for much, and should probably not be called from other
 	/// code.
-	/// @note No mutex-locking is performed!  Also note that this version does not multiply the
-	/// result by the weight, since derived classes will likely do this after applying a nonlinear
-	/// function.
+	/// @note No mutex-locking is performed!
 	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
@@ -199,6 +195,16 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given a selection of choices at variable nodes, compute the cost function.
+	/// @details This version just computes the sum of the penalties of the selected choices.
+	/// @note No mutex-locking is performed!  Also note that this version does not multiply the
+	/// result by the weight, since derived classes will likely do this after applying a nonlinear
+	/// function.
+	T
+	protected_compute_cost_function_no_weight(
+		std::vector< masala::base::Size > const & candidate_solution
+	) const;
 
 	/// @brief Indicate that all data input is complete.  Performs no mutex-locking.
 	/// @param[in] variable_node_indices A list of all of the absolute node indices

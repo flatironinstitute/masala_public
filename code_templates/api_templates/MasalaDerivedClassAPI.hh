@@ -22,9 +22,6 @@
 // Forward declarations for additional API headers:
 <__CPP_ADDITIONAL_FWD_INCLUDES__>
 
-// STL headers:
-#include <mutex>
-
 <__CPP_NAMESPACE__>
 
 <__DOXYGEN_BRIEF_DESCRIPTION__>

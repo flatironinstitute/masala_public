@@ -245,6 +245,47 @@ def include_file_from_masala_api_class( inputclass : str ) -> str :
         outfile += inputclass_split[i]
     return outfile
 
+## @brief Given the definition of an unordered map, find the first and last chevrons, and the (one or two) commas.
+## @details If the second comma is not present, return -1 for its position.
+def parse_unordered_map( inputclass : str ) -> tuple :
+    inchevron = False
+    inchevron2 = 0
+    stringcopy = ""
+    for i in range(0, len(inputclass) ) :
+        if inchevron == False :
+            if inputclass[i] == "<" :
+                inchevron = True
+                stringcopy += inputclass[i]
+            else :
+                stringcopy += "#"
+        else :
+            if inchevron2 == 0 :
+                if inputclass[i] == "<" :
+                    inchevron2 = True
+                    stringcopy += "#"
+                elif inputclass[i] == ">" :
+                    inchevron = False
+                    stringcopy += inputclass[i]
+                else :
+                    stringcopy += inputclass[i]
+            else :
+                if inputclass[i] == ">" :
+                    inchevron2 -= 1
+                    stringcopy += "#"
+                elif inputclass[i] == "<" :
+                    inchevron2 += 1
+                    stringcopy += "#"
+                else :
+                    stringcopy += "#"
+    firstchevron = stringcopy.find( "<" )
+    lastchevron = stringcopy.rfind( ">" )
+    firstcomma = stringcopy.find( "," )
+    lastcomma = stringcopy.rfind( "," )
+    if lastcomma == firstcomma :
+        lastcomma = -1
+
+    return firstchevron, lastchevron, firstcomma, lastcomma
+
 ## @brief Given a class name, construct the name of the API class (if it is a Masala class)
 ## or do nothing (if it is not a Masala class.)
 ## @details Has certain exceptions, like masala::base::api::MasalaObjectAPIDefinition.
@@ -274,14 +315,39 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             additional_includes.append("<list>")
             return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
-            firstchevron = inputclass.find( "<" )
-            firstcomma = inputclass.find( "," )
-            lastchevron = inputclass.rfind( ">" )
+            firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<map>")
-            return "std::map< " \
-                + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
-                + correct_masala_types( project_name, inputclass[firstcomma + 1 : firstchevron].strip(), additional_includes, is_enum=is_enum ) \
-                + " >"
+            if( lastcomma == -1 ) :
+                return "std::map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
+            else :
+                return "std::map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
+        elif inputclass.startswith( "unordered_map" ) or inputclass.startswith( "std::unordered_map" ) :
+            firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
+            additional_includes.append("<unordered_map>")
+            if( lastcomma == -1 ) :
+                return "std::unordered_map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
+            else :
+                return "std::unordered_map< " \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + ", " \
+                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + " >"
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
@@ -289,6 +355,11 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         if is_masala_api_class( inputclass ) :
             additional_includes.append( include_file_from_masala_api_class( inputclass ) )
         return inputclass # Do nothing if ths isn't a masala class.
+
+    # Special case for hashes:
+    if inputclass.startswith( "size_pair_hash" ) or inputclass.startswith( "base::size_pair_hash" ) or inputclass.startswith( "masala::base::size_pair_hash" ) :
+        additional_includes.append( "<base/hash_types.hh>" )
+        return "masala::base::size_pair_hash"
     
     api_classname = ""
     api_filename = ""

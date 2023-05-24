@@ -385,7 +385,7 @@ masala::base::Real
 FunctionOfIntegerPenaltySumCostFunction::compute_cost_function(
     std::vector< masala::base::Size > const & candidate_solution
 ) const {
-    masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution ) );
+    masala::base::Real const sum( ChoicePenaltySumBasedCostFunction< signed long int >::protected_compute_cost_function_no_weight( candidate_solution ) );
     return protected_weight() * function_of_sum( sum );
 }
 
@@ -400,8 +400,8 @@ FunctionOfIntegerPenaltySumCostFunction::compute_cost_function_difference(
     std::vector< masala::base::Size > const & candidate_solution_old,
     std::vector< masala::base::Size > const & candidate_solution_new
 ) const {
-    masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution_old ) );
-    masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< signed long int >::compute_cost_function( candidate_solution_new ) );
+    masala::base::Real const oldsum( ChoicePenaltySumBasedCostFunction< signed long int >::protected_compute_cost_function_no_weight( candidate_solution_old ) );
+    masala::base::Real const newsum( ChoicePenaltySumBasedCostFunction< signed long int >::protected_compute_cost_function_no_weight( candidate_solution_new ) );
     return protected_weight() * ( function_of_sum( newsum ) - function_of_sum( oldsum ) );
 }
 

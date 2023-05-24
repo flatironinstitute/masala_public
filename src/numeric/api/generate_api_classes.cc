@@ -39,6 +39,8 @@
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 #include <numeric/optimization/cost_function_network/cost_function/FunctionOfIntegerPenaltySumCostFunction.hh>
 #include <numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.hh>
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction.hh>
 
 namespace masala {
 namespace numeric {
@@ -66,6 +68,8 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::CostFunction >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::FunctionOfIntegerPenaltySumCostFunction >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::SquareOfChoicePenaltySumCostFunction >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::feature_based::ChoiceFeature >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::feature_based::SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;

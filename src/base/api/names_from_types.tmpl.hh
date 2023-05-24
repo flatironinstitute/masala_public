@@ -26,12 +26,15 @@
 // Base headers
 #include <base/MasalaObject.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/hash_types.hh>
 
 // STL headers
 #include <string>
 #include <base/managers/memory/util.hh>
 #include <set>
 #include <tuple>
+#include <map>
+#include <unordered_map>
 
 namespace masala {
 namespace base {
@@ -214,6 +217,48 @@ namespace api {
             + name_from_type( type<T3>() ) + " > const";
     }
 
+    /// @brief Manually override for maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::map< T1, T2 > > ) {
+        return "std::map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ">";
+    }
+
+    /// @brief Manually override for const maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::map< T1, T2 > const > ) {
+        return "std::map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + "> const";
+    }
+
+    /// @brief Manually override for unordered maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2 > > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ">";
+    }
+
+    /// @brief Manually override for const unordered maps.
+    template< class T1, class T2 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2 > const > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + "> const";
+    }
+
+    /// @brief Manually override for unordered maps with custom hashes.
+    template< class T1, class T2, class T3 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2, T3 > > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " >";
+    }
+
+    /// @brief Manually override for const unordered maps with custom hashes.
+    template< class T1, class T2, class T3 >
+    std::string
+    name_from_type( type< std::unordered_map< T1, T2, T3 > const > ) {
+        return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " > const";
+    }
+
     /// @brief Manually override for vectors.
     template<class T>
     std::string
@@ -361,6 +406,26 @@ namespace api {
     template<>
     std::string
     name_from_type< std::string const & >(type<std::string const&>);
+
+    /// @brief Manually override for size pair hashes.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash >( type< masala::base::size_pair_hash > );
+
+    /// @brief Manually override for const size pair hashes.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash const >( type< masala::base::size_pair_hash const > );
+
+    /// @brief Manually override for size pair hash instances.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash & >( type< masala::base::size_pair_hash & > );
+
+    /// @brief Manually override for const size pair hash const instances.
+    template<>
+    std::string
+    name_from_type< masala::base::size_pair_hash const & >( type< masala::base::size_pair_hash const & > );
 
 } // namespace api
 } // namespace base
