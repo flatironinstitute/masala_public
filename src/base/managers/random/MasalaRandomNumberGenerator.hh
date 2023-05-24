@@ -135,6 +135,23 @@ public:
     );
 
 ////////////////////////////////////////////////////////////////////////////////
+// RANDOM SAMPLING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Given a container, generate a new container with a subset of the
+    /// samples in the original container.
+    template< class T >
+    T
+    random_sample(
+        masala::base::Size const n_samples,
+        T const & container
+    ) {
+        T outvec;
+        std::sample( container.begin(), container.end(), std::back_inserter( outvec ), n_samples, random_engine_ );
+        return outvec;
+    }
+
+////////////////////////////////////////////////////////////////////////////////
 // RANDOM NUMBER GENERATING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
