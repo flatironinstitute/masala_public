@@ -23,7 +23,6 @@
 ## root directory.
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-from dbm.ndbm import library
 from genericpath import isdir
 import json
 from re import split as regex_split
@@ -1161,7 +1160,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
 ## @returns A tuple of ( parent include file string, parent namespace and name string, root API class namespace and name string, boolean representing whether this is a class derived from another API class ).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list[str], is_plugin_class : bool ) -> tuple[ str, str, bool ] :
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list, is_plugin_class : bool ) -> tuple :
     #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
@@ -1584,4 +1583,4 @@ if json_api["Elements"] is not None :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
-    
+
