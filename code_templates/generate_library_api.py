@@ -23,7 +23,6 @@
 ## root directory.
 ## @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-from dbm.ndbm import library
 from genericpath import isdir
 import json
 from re import split as regex_split
@@ -1584,4 +1583,4 @@ if json_api["Elements"] is not None :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )
 
 print( "\tFinished generating API for library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
-    
+
