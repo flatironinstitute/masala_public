@@ -1161,7 +1161,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
 ## @returns A tuple of ( parent include file string, parent namespace and name string, root API class namespace and name string, boolean representing whether this is a class derived from another API class ).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list[str], is_plugin_class : bool ) -> tuple[ str, str, bool ] :
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list, is_plugin_class : bool ) -> tuple :
     #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
