@@ -21,6 +21,7 @@
 /// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
 /// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
+/// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_fwd_hh

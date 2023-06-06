@@ -21,6 +21,7 @@
 /// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
 /// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
+/// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_hh
@@ -53,6 +54,7 @@ namespace cost_function_network {
 /// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
 /// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
+/// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class PluginCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem {
 
@@ -74,10 +76,6 @@ public:
 
 	/// @brief Destructor.
 	~PluginCostFunctionNetworkOptimizationProblem() override = default;
-
-	// @brief Make a fully independent copy of this object.
-	// PluginCostFunctionNetworkOptimizationProblemSP
-	// deep_clone() const;
 
 	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	void make_independent();
@@ -142,29 +140,6 @@ public:
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
-	// @brief Given a candidate solution, compute the score.
-	// @details The candidate solution is expressed as a vector of choice indices, with
-	// one entry per variable position, in order of position indices.  (There may not be
-	// entries for every position, though, since not all positions have at least two choices.)
-	// @note This function does NOT lock the problem mutex.  This is only threadsafe from
-	// a read-only context.
-	// masala::base::Real
-	// compute_absolute_score(
-	// 	std::vector< base::Size > const & candidate_solution
-	// ) const override;
-
-	// @brief Given a pair of candidate solutions, compute the difference in their scores.
-	// @details The candidate solution is expressed as a vector of choice indices, with
-	// one entry per variable position, in order of position indices.  (There may not be
-	// entries for every position, though, since not all positions have at least two choices.)
-	// @note This function does NOT lock the problem mutex.  This is only threadsafe from
-	// a read-only context.
-	// masala::base::Real
-	// compute_score_change(
-	// 	std::vector< base::Size > const & old_solution,
-	// 	std::vector< base::Size > const & new_solution
-	// ) const override;
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +147,8 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get a description of the API for the PluginCostFunctionNetworkOptimizationProblem class.
+	/// @details This makes this class pure virtual.  This function must be implemented in derived classes
+	/// if they are to be instantiated.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override = 0;
 
