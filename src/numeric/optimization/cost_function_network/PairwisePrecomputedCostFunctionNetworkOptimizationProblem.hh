@@ -166,6 +166,7 @@ public:
 	/// @details If the node has not yet been listed, it's added to the n_choices_by_node_index_ map.
 	/// If the number of choices at the node is currently less than the node index, the number of
 	/// choices is increased.
+	virtual
 	void
 	set_onebody_penalty(
 		masala::base::Size const node_index,
@@ -183,6 +184,7 @@ public:
 	/// @details If a node has not yet been listed, it's added to the n_choices_by_node_index_ map.
 	/// If the number of choices at the node is currently less than the node index, the number of
 	/// choices is increased.
+	virtual
     void
     set_twobody_penalty(
         std::pair< masala::base::Size, masala::base::Size > const & node_indices,

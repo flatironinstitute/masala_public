@@ -462,6 +462,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 /// @details If the number of choices has already been set to greater than the
 /// specified number, this does nothing.
 /// @note This version assumes that the problem mutex has already been set.
+/*virtual*/
 void
 CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node_mutex_locked(
     masala::base::Size const node_index,
