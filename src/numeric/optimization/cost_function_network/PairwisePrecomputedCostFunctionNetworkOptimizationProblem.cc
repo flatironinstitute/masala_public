@@ -495,7 +495,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
                 "set_onebody_penalty", "Set the one-node penalty for a particular choice index selected at a particular node index.",
                 "node_index", "The index of the node for which we're setting a penalty.",
                 "choice_index", "The index of the choice at this node for which we're setting a penalty.",
-                "penalty", "The value of the penalty (or, if negative, bonus).", false, false,
+                "penalty", "The value of the penalty (or, if negative, bonus).", true, false,
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
         );
@@ -512,7 +512,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_api_definition() 
 
                 "penalty", "The value of the penalty (or, if negative, bonus).",
 
-                false, false,
+                true, false,
 
                 std::bind( &PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
             )
