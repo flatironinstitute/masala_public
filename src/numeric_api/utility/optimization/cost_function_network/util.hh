@@ -70,7 +70,7 @@ namespace cost_function_network {
 	/// 2 2 2 -> 7
 	/// If gapped, all solutions shift up by 17.
 	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
-	construct_test_problem( bool const gapped=false, bool const finalized = true );
+	construct_test_problem( std::string const & name_of_problem_class, bool const gapped=false, bool const finalized = true );
 
 	/// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
 	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only

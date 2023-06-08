@@ -31,6 +31,9 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // STL headers:
 #include <vector>
@@ -80,6 +83,7 @@ namespace cost_function_network {
 /// If gapped, all solutions shift up by 17.
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem(
+    std::string const & name_of_problem_class,
     bool const gapped,
     bool const finalized
 ) {
@@ -87,9 +91,15 @@ construct_test_problem(
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
-        masala::make_shared< PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API >()
+    masala::base::managers::plugin_module::MasalaPluginAPISP my_object(
+        masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name( std::vector< std::string >{"OptimizationProblem", "CostFunctionNetworkOptimizationProblem"}, name_of_problem_class, true )
     );
+
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
+        std::dynamic_pointer_cast< PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API >( my_object )
+    );
+
+    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem", "The returned " + name_of_problem_class + " object was not a PairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
 
     // Configure one-node penalties:
     problem->set_onebody_penalty( 0, 0, 25 );
