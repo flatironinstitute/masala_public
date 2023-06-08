@@ -107,7 +107,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -116,7 +116,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent() {
 std::vector< std::vector< std::string > >
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" }
+		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" }
 	};
 }
 

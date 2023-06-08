@@ -94,7 +94,11 @@ construct_test_problem(
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
     masala::base::managers::plugin_module::MasalaPluginAPISP my_object(
-        masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name( std::vector< std::string >{"OptimizationProblem", "CostFunctionNetworkOptimizationProblem"}, name_of_problem_class, true )
+        masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name(
+            std::vector< std::string >{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" },
+            name_of_problem_class,
+            true
+        )
     );
 
     PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
