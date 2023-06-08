@@ -47,6 +47,8 @@ namespace cost_function_network {
 /// @brief This is a utility function to construct a standard test problem for
 /// testing out cost function network optimizers.  This problem has three nodes
 /// with three choices per node, for a total of 27 possible solutions.
+/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
+/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -168,6 +170,8 @@ construct_test_problem(
 }
 
 /// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
+/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
+/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -232,6 +236,7 @@ construct_test_problem(
 /// 2 2 2 -> 39
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_squared_unsatisfied_feature_penalties(
+    std::string const & name_of_problem_class,
     bool const gapped /*=false*/,
     bool const finalized /*=true*/
 ) {
@@ -246,7 +251,7 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false ) );
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( name_of_problem_class, gapped, false ) );
 
     SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_APISP cost_function( masala::make_shared< SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_API >() );
 
@@ -335,6 +340,8 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
 /// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 /// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
 /// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
+/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
+/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -399,6 +406,7 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
 /// 2 2 2 -> 60
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_squared_choice_count_penalties(
+    std::string const & name_of_problem_class,
     bool const gapped,
     bool const finalized
 ) {
@@ -407,7 +415,7 @@ construct_test_problem_with_squared_choice_count_penalties(
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false) );
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( name_of_problem_class, gapped, false) );
 
     SquareOfChoicePenaltySumCostFunction_APISP cost_func( masala::make_shared< SquareOfChoicePenaltySumCostFunction_API >() );
 
@@ -434,6 +442,8 @@ construct_test_problem_with_squared_choice_count_penalties(
 /// category and a desired count of those choices.  That makes what was previously the second-lowest
 /// energy solution the new lowest-energy solution.  This emulates what is done in Rosetta with the
 /// aa_composition scoreterm.
+/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
+/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -498,6 +508,7 @@ construct_test_problem_with_squared_choice_count_penalties(
 /// 2 2 2 -> 112
 masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_function_of_integer_penalty_sum_penalties(
+    std::string const & name_of_problem_class,
     bool const gapped /*=false*/,
     bool const finalized /*=true*/
 ) {
@@ -506,7 +517,7 @@ construct_test_problem_with_function_of_integer_penalty_sum_penalties(
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( gapped, false) );
+    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem(name_of_problem_class, gapped, false) );
 
     FunctionOfIntegerPenaltySumCostFunction_APISP cost_func( masala::make_shared< FunctionOfIntegerPenaltySumCostFunction_API >() );
 
