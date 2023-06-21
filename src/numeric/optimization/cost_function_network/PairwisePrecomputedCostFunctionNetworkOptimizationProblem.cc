@@ -265,7 +265,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
-    std::unordered_map< std::pair< base::Size, base::Size >, Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it(
+    std::unordered_map< std::pair< base::Size, base::Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it(
         pairwise_node_penalties_.find( node_indices )
     );
     if( it == pairwise_node_penalties_.end() ) {
@@ -309,7 +309,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
         Size const choice_i_index( candidate_solution[i] );
         {
             //Retrieve onebody energy
-            std::unordered_map< Size, std::vector< float > >::const_iterator it( single_node_penalties_.find(node_i_index) );
+            std::unordered_map< Size, std::vector< Real > >::const_iterator it( single_node_penalties_.find(node_i_index) );
             if( it != single_node_penalties_.end() && choice_i_index < it->second.size() ) {
                 accumulator += it->second[choice_i_index];
             }
@@ -319,9 +319,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
             Size const node_j_index( variable_positions[j].first );
             Size const choice_j_index( candidate_solution[j] );
             // Retrieve twobody energy:
-            std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
+            std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
             if( it != pairwise_node_penalties_.end() ) {
-                Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic > const & choicepairs( it->second );
+                Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > const & choicepairs( it->second );
                 if( static_cast< Size >( choicepairs.rows() ) > choice_j_index && static_cast< Size >( choicepairs.cols() ) > choice_i_index ) {
                     accumulator += choicepairs( choice_j_index, choice_i_index );
                 }
@@ -591,13 +591,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
 /// @details This is the sum of onebody energies for nodes that have exactly
 /// one choice, plus the twobdy energies between those nodes.
 /// @note This function should be called from a mutex-locked context.
-float
+masala::base::Real
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_node_constant_offset() {
     using masala::base::Real;
     using masala::base::Size;
 
     // Accumulators for onebody and twobody energies:
-    float accumulator1( 0.0 ), accumulator2( 0.0 );
+    Real accumulator1( 0.0 ), accumulator2( 0.0 );
     
     // The set of nodes with only one choice:
     std::set< Size > one_choice_nodes;
@@ -620,7 +620,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     }
 
     // Accumulate the onebody energies of one-choice nodes:
-    for( std::unordered_map< Size, std::vector< float > >::const_iterator it( single_node_penalties_.cbegin() );
+    for( std::unordered_map< Size, std::vector< Real > >::const_iterator it( single_node_penalties_.cbegin() );
         it != single_node_penalties_.cend();
         ++it
     ) {
@@ -638,7 +638,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
     // Accumulate the twobody energies of pairs of one-choice nodes:
-    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.cbegin() );
+    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.cbegin() );
         it != pairwise_node_penalties_.cend();
         ++it
     ) {
@@ -686,7 +686,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         }
     }
 
-    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it( pairwise_node_penalties_.begin() );
+    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it( pairwise_node_penalties_.begin() );
         it!= pairwise_node_penalties_.end();
         // no increment here
     ) {
@@ -705,12 +705,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         }
 
         // Ensure that there are onebody energies for the other node.
-        std::unordered_map< Size, std::vector< float > >::iterator it_onebodynode( single_node_penalties_.find( other_node ) );
+        std::unordered_map< Size, std::vector< Real > >::iterator it_onebodynode( single_node_penalties_.find( other_node ) );
         if( it_onebodynode == single_node_penalties_.end() ) {
-            single_node_penalties_[ other_node ] = std::vector< float >{};
+            single_node_penalties_[ other_node ] = std::vector< Real >{};
             it_onebodynode = single_node_penalties_.find( other_node );
         }
-        std::vector< float > & onebody_choice_penalties_for_other( it_onebodynode->second );
+        std::vector< Real > & onebody_choice_penalties_for_other( it_onebodynode->second );
 
         // Update the onebody energies for the multi-choice node's choices:
         auto & mat( it->second );
@@ -731,12 +731,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
 /// @brief Create a vector of choice indices just large enough to store a given choice index.
 /// Set all entries to zero except for that index.
 /*static*/
-std::vector< float >
+std::vector< masala::base::Real >
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choice_vector(
     masala::base::Size const choice_index,
-    float const choice_penalty
+    masala::base::Real const choice_penalty
 ) {
-    std::vector< float > outvec( choice_index + 1, 0.0 );
+    std::vector< masala::base::Real > outvec( choice_index + 1, 0.0 );
     outvec[choice_index] = choice_penalty;
     return outvec;
 }
@@ -744,12 +744,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choice_vector(
 /// @brief Create an Eigen matrix just large enough to store a given pair of indices.  Fill it
 /// with zeros, except for the one entry specified.
 /*static*/
-Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >
+Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choicepair_matrix(
     std::pair< masala::base::Size, masala::base::Size > const & indices,
-    float const value
+    masala::base::Real const value
 ) {
-    Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic > outmatrix( indices.first + 1, indices.second + 1 );
+    Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > outmatrix( indices.first + 1, indices.second + 1 );
     outmatrix.setZero();
     outmatrix( indices.first, indices.second ) = value;
     return outmatrix;
@@ -760,9 +760,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choicepair_mat
 /*static*/
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_vector(
-    std::vector< float > & vec,
+    std::vector< masala::base::Real > & vec,
     masala::base::Size const index,
-    float const value
+    masala::base::Real const value
 ) {
     if( vec.size() > index ) {
         vec[index] = value;
@@ -777,9 +777,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_vector(
 /*static*/
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_matrix(
-    Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic > & mat,
+    Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > & mat,
     std::pair< masala::base::Size, masala::base::Size > const & indices,
-    float const value
+    masala::base::Real const value
 ) {
     using masala::base::Size;
 
@@ -817,9 +817,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_matrix(
 /*static*/
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::add_to_vector_index(
-    std::vector< float > & vec,
+    std::vector< masala::base::Real > & vec,
     masala::base::Size const index,
-    float const value
+    masala::base::Real const value
 ) {
     if( index < vec.size() ) {
         vec[index] += value;

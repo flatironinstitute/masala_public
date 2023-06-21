@@ -260,7 +260,7 @@ private:
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.
 	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
-	float
+	masala::base::Real
 	compute_one_choice_node_constant_offset();
 
 	/// @brief Find all twobody energies involving one node with one choice and another node with more than
@@ -273,19 +273,19 @@ private:
 	/// @brief Create a vector of choice indices just large enough to store a given choice index.
 	/// Set all entries to zero except for that index.
 	static
-	std::vector< float >
+	std::vector< masala::base::Real >
 	create_choice_vector(
 		masala::base::Size const choice_index,
-		float const choice_penalty
+		masala::base::Real const choice_penalty
 	);
 
 	/// @brief Create an Eigen matrix just large enough to store a given pair of indices.  Fill it
 	/// with zeros, except for the one entry specified.
 	static
-	Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >
+	Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >
 	create_choicepair_matrix(
 		std::pair< masala::base::Size, masala::base::Size > const & indices,
-		float const value
+		masala::base::Real const value
 	);
 
 	/// @brief Given a vector with a certain number of entries, set the value of entry N.  If the
@@ -293,9 +293,9 @@ private:
 	static
 	void
 	set_entry_in_vector(
-		std::vector< float > & vec,
+		std::vector< masala::base::Real > & vec,
 		masala::base::Size const index,
-		float const value
+		masala::base::Real const value
 	);
 
 	/// @brief Given a matrix with certain dimensions, set the value of an entry.  If the matrix
@@ -303,9 +303,9 @@ private:
 	static
 	void
 	set_entry_in_matrix(
-		Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic > & mat,
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > & mat,
 		std::pair< masala::base::Size, masala::base::Size > const & indices,
-		float const value
+		masala::base::Real const value
 	);
 
 	/// @brief Given a vector, add a value to the Nth entry, or, if the vector has fewer than N entries,
@@ -313,9 +313,9 @@ private:
 	static
 	void
 	add_to_vector_index(
-		std::vector< float > & vec,
+		std::vector< masala::base::Real > & vec,
 		masala::base::Size const index,
-		float const value
+		masala::base::Real const value
 	);
 
 private:
@@ -326,24 +326,24 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::unordered_map< masala::base::Size, std::vector< float > > single_node_penalties_;
+	std::unordered_map< masala::base::Size, std::vector< masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
 	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		Eigen::Matrix< float, Eigen::Dynamic, Eigen::Dynamic >, // Matrix of choice-choice interaction penalties.
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, // Matrix of choice-choice interaction penalties.
 		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
 
 	/// @brief A constant offset for the fixed background to a problem.
-	std::atomic< float > background_constant_offset_ = 0.0;
+	std::atomic< masala::base::Real > background_constant_offset_ = 0.0;
 
 	/// @brief The constant offset for the nodes with one choice.
 	/// @details This is the sum of onebody energies for nodes that have exactly
 	/// one choice, plus the twobdy energies between those nodes.  Computed at
 	/// finalize() time.
-	std::atomic< float > one_choice_node_constant_offset_ = 0.0;
+	std::atomic< masala::base::Real > one_choice_node_constant_offset_ = 0.0;
 
 }; // class PairwisePrecomputedCostFunctionNetworkOptimizationProblem
 
