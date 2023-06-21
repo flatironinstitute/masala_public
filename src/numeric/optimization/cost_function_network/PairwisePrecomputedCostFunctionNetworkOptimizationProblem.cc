@@ -715,12 +715,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         // Update the onebody energies for the multi-choice node's choices:
         auto & mat( it->second );
         //Sanity check:
-        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( (other_node_is_first ? mat.rows() : mat.cols() ) == 1,
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( (other_node_is_first ? mat.cols() : mat.rows() ) == 1,
             "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes",
             "Program error: got additional choice for a single-choice node when iterating."
         );
-        for( Size choiceindex(0); choiceindex < static_cast< Size >( other_node_is_first ? mat.cols() : mat.rows() ); ++choiceindex ) {
-            add_to_vector_index( onebody_choice_penalties_for_other, choiceindex, ( other_node_is_first ? mat(0, choiceindex) : mat(choiceindex, 0) ) );
+        for( Size choiceindex(0); choiceindex < static_cast< Size >( other_node_is_first ? mat.rows() : mat.cols() ); ++choiceindex ) {
+            add_to_vector_index( onebody_choice_penalties_for_other, choiceindex, ( other_node_is_first ? mat(choiceindex, 0) : mat(0, choiceindex) ) );
         }
 
         // Delete the twobody energy and update the iterator.
@@ -795,14 +795,14 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_matrix(
         } else {
             mat.conservativeResize( indices.first + 1, Eigen::NoChange );
             for( Size y(oldrows); y <= indices.first; ++y ) {
-                for( Size x(0); x <= indices.second; ++x ) {
+                for( Size x(0); x < oldcols; ++x ) {
                     mat(y,x) = 0.0;
                 }
             }
         }
     } else if( indices.second >= oldcols ) {
         mat.conservativeResize( Eigen::NoChange, indices.second + 1 );
-        for( Size y(0); y <= indices.first; ++y ) {
+        for( Size y(0); y < oldrows; ++y ) {
             for( Size x( oldcols ); x <= indices.second; ++x ) {
                 mat(y,x) = 0.0;
             }
