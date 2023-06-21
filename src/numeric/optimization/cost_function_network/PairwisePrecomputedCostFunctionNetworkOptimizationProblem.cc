@@ -218,7 +218,20 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_onebody_penalty(
     masala::base::Real const penalty
 ) {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    single_node_penalties_[std::make_pair(node_index, choice_index)] = penalty;
+    std::map< masala::base::Size, masala::base::Size >::iterator it( n_choices_by_node_index().find(node_index) );
+    if( it == n_choices_by_node_index().end() ) {
+        // Update the number of choices per node:
+        n_choices_by_node_index()[node_index] = choice_index + 1;
+        // Set the one-body penalty:
+        single_node_penalties_[node_index] = std::unordered_map< masala::base::Size, masala::base::Real >{ { choice_index, penalty} };
+    } else {
+        // Update the number of choices per node:
+        if( it->second <= choice_index ) {
+            it->second = choice_index + 1;
+        }
+        // Set the one-body penalty:
+        single_node_penalties_[node_index][choice_index] = penalty;
+    }
 }
 
 /// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
@@ -296,9 +309,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
         Size const choice_i_index( candidate_solution[i] );
         {
             //Retrieve onebody energy
-            std::map< std::pair<Size, Size >, Real >::const_iterator it( single_node_penalties_.find( std::make_pair( node_i_index, choice_i_index ) ) );
+            std::unordered_map< Size, std::unordered_map< Size, Real > >::const_iterator it( single_node_penalties_.find(node_i_index) );
             if( it != single_node_penalties_.end() ) {
-                accumulator += it->second;
+                std::unordered_map< Size, Real >::const_iterator it2( it->second.find( choice_i_index ) );
+                if( it2 != it->second.end() ) {
+                    accumulator += it2->second;
+                }
             }
         }
 
@@ -356,11 +372,14 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         Size const i_index( var_nodes_and_choices[i].first );
         // Sum onebody energy change:
         if( old_solution[i] != new_solution[i] ) {
-            auto const it_old( single_node_penalties_.find( std::make_pair( i_index, old_solution[i] ) ) );
-            Real const old_onebody_energy( it_old == single_node_penalties_.end() ? 0.0 : it_old->second );
-            auto const it_new( single_node_penalties_.find( std::make_pair( i_index, new_solution[i] ) ) );
-            Real const new_onebody_energy( it_new == single_node_penalties_.end() ? 0.0 : it_new->second );
-            accumulator += new_onebody_energy - old_onebody_energy;
+            auto const it_nodes( single_node_penalties_.find( i_index ) );
+            if( it_nodes != single_node_penalties_.end() ) {
+                auto const it_choices_old( it_nodes->second.find( old_solution[i] ) );
+                Real const old_onebody_energy( it_choices_old == it_nodes->second.end() ? 0.0 : it_choices_old->second );
+                auto const it_choices_new( it_nodes->second.find( new_solution[i] ) );
+                Real const new_onebody_energy( it_choices_new == it_nodes->second.end() ? 0.0 : it_choices_new->second );
+                accumulator += new_onebody_energy - old_onebody_energy;
+            }
         }
 
         // Sum twobody energy change:
@@ -607,12 +626,19 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     }
 
     // Accumulate the onebody energies of one-choice nodes:
-    for( std::map< std::pair< Size, Size >, Real >::const_iterator it( single_node_penalties_.cbegin() );
+    for( std::unordered_map< Size, std::unordered_map< Size, Real > >::const_iterator it( single_node_penalties_.cbegin() );
         it != single_node_penalties_.cend();
         ++it
     ) {
-        if( one_choice_nodes.count( it->first.first ) != 0 ) {
-            accumulator1 += it->second; // Add onebody energies of nodes with only one choice.
+        if( one_choice_nodes.count( it->first ) != 0 ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+                it->second.size() <= 1,
+                "one_choice_node_constant_offset",
+                "Program error: multiple choice assignments found in single-node energies!"
+            );
+            if( it->second.size() == 1 ) {
+                accumulator1 += it->second.cbegin()->second; // Add onebody energies of nodes with only one choice.
+            }
         }
     }
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
@@ -685,12 +711,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         }
 
         // Ensure that there are onebody energies for the other node.
-        // std::unordered_map< Size, std::unordered_map< Size, Real > >::iterator it_onebodynode( single_node_penalties_.find( other_node ) );
-        // if( it_onebodynode == single_node_penalties_.end() ) {
-        //     single_node_penalties_[ other_node ] = std::unordered_map< Size, Real >{};
-        //     it_onebodynode = single_node_penalties_.find( other_node );
-        // }
-        // std::unordered_map< Size, Real > & onebody_choice_penalties_for_other( it_onebodynode->second );
+        std::unordered_map< Size, std::unordered_map< Size, Real > >::iterator it_onebodynode( single_node_penalties_.find( other_node ) );
+        if( it_onebodynode == single_node_penalties_.end() ) {
+            single_node_penalties_[ other_node ] = std::unordered_map< Size, Real >{};
+            it_onebodynode = single_node_penalties_.find( other_node );
+        }
+        std::unordered_map< Size, Real > & onebody_choice_penalties_for_other( it_onebodynode->second );
 
         // Update the onebody energies for the multi-choice node's choices:
         for( std::unordered_map< std::pair< Size, Size >, Real >::iterator it_twobodychoices( it->second.begin() );
@@ -704,12 +730,12 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
             );
 
             Size const choiceindex( other_node_is_first ? it_twobodychoices->first.first : it_twobodychoices->first.second );
-            std::pair< Size, Size > const keypair( other_node, choiceindex );
-            std::map< std::pair< Size, Size >, Real >::iterator it_onebodychoice( single_node_penalties_.find( keypair ) );
-            if( it_onebodychoice == single_node_penalties_.end() ) {
-                single_node_penalties_[keypair] = it_twobodychoices->second;
+
+            std::unordered_map< Size, Real >::iterator it_onebodychoice( onebody_choice_penalties_for_other.find( choiceindex ) );
+            if( it_onebodychoice == onebody_choice_penalties_for_other.end() ) {
+                onebody_choice_penalties_for_other[ choiceindex ] = it_twobodychoices->second;
             } else {
-                single_node_penalties_[keypair] += it_twobodychoices->second;
+                it_onebodychoice->second += it_twobodychoices->second;
             }
         }
 

@@ -274,7 +274,7 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::map< std::pair<masala::base::Size, masala::base::Size>, masala::base::Real > single_node_penalties_;
+	std::unordered_map< masala::base::Size, std::unordered_map< masala::base::Size, masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
