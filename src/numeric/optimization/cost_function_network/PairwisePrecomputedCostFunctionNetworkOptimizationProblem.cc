@@ -265,13 +265,13 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_twobody_penalty(
     set_minimum_number_of_choices_at_node_mutex_locked( node_indices.second, choice_indices.second + 1 );
 
     // Update the penalties:
-    std::unordered_map< std::pair< base::Size, base::Size >, std::unordered_map< std::pair< base::Size, base::Size >, base::Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::iterator it(
+    std::unordered_map< std::pair< base::Size, base::Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it(
         pairwise_node_penalties_.find( node_indices )
     );
     if( it == pairwise_node_penalties_.end() ) {
-        pairwise_node_penalties_[node_indices] = std::unordered_map< std::pair< base::Size, base::Size >, base::Real, masala::base::size_pair_hash >{ { choice_indices, penalty } };
+        pairwise_node_penalties_[node_indices] = create_choicepair_matrix( choice_indices, penalty );
     } else {
-        it->second[choice_indices] = penalty;
+        set_entry_in_matrix( pairwise_node_penalties_[node_indices], choice_indices, penalty );
     }
 }
 
@@ -319,11 +319,11 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_scor
             Size const node_j_index( variable_positions[j].first );
             Size const choice_j_index( candidate_solution[j] );
             // Retrieve twobody energy:
-            std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
+            std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.find( std::make_pair( node_j_index, node_i_index ) ) );
             if( it != pairwise_node_penalties_.end() ) {
-                std::unordered_map< std::pair< Size, Size >, Real >::const_iterator it2( it->second.find( std::make_pair( choice_j_index, choice_i_index ) ) );
-                if( it2 != it->second.end() ) {
-                    accumulator += it2->second;
+                Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > const & choicepairs( it->second );
+                if( static_cast< Size >( choicepairs.rows() ) > choice_j_index && static_cast< Size >( choicepairs.cols() ) > choice_i_index ) {
+                    accumulator += choicepairs( choice_j_index, choice_i_index );
                 }
             }
         }
@@ -383,10 +383,9 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
                 Size const j_index( var_nodes_and_choices[j].first );
                 auto const it_nodepairs( pairwise_node_penalties_.find( std::make_pair( j_index, i_index ) ) );
                 if( it_nodepairs != pairwise_node_penalties_.end() ) {
-                    auto const it_choicepairs_old( it_nodepairs->second.find( std::make_pair( old_solution[j], old_solution[i] ) ) );
-                    Real const old_twobody_energy( it_choicepairs_old == it_nodepairs->second.end() ? 0.0 : it_choicepairs_old->second );
-                    auto const it_choicepairs_new( it_nodepairs->second.find( std::make_pair( new_solution[j], new_solution[i] ) ) );
-                    Real const new_twobody_energy( it_choicepairs_new == it_nodepairs->second.end() ? 0.0 : it_choicepairs_new->second );
+                    auto const & mat( it_nodepairs->second );
+                    Real const old_twobody_energy( ( old_solution[j] < static_cast< Size >(mat.rows()) && old_solution[i] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[j], old_solution[i] ) : 0.0 );
+                    Real const new_twobody_energy( ( new_solution[j] < static_cast< Size >(mat.rows()) && new_solution[i] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[j], new_solution[i] ) : 0.0 );
                     accumulator += new_twobody_energy - old_twobody_energy;
                 }
             }
@@ -639,19 +638,19 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_one_choice_no
     write_to_tracer( "Sum of one-body energies of nodes with only one choice: " + std::to_string( accumulator1 ) );
 
     // Accumulate the twobody energies of pairs of one-choice nodes:
-    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.cbegin() );
+    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::const_iterator it( pairwise_node_penalties_.cbegin() );
         it != pairwise_node_penalties_.cend();
         ++it
     ) {
         if( one_choice_nodes.count( it->first.first ) != 0 && one_choice_nodes.count( it->first.second ) != 0 ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
-                it->second.size() <= 1,
+                it->second.rows() <= 1 && it->second.cols() <= 1,
                 "one_choice_node_constant_offset",
                 "Program error: multiple choice assignments found in pairwise node energies at two positions "
                 "that are supposed to have one choice each!"
             );
-            if( it->second.size() == 1 ) {
-                accumulator2 += it->second.cbegin()->second; // Add twobody energies of pairs of nodes with only one choice.
+            if( it->second.rows() == 1 && it->second.cols() == 1 ) {
+                accumulator2 += it->second(0,0); // Add twobody energies of pairs of nodes with only one choice.
             }
         }
     }
@@ -687,7 +686,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         }
     }
 
-    for( std::unordered_map< std::pair< Size, Size >, std::unordered_map< std::pair< Size, Size >, Real, masala::base::size_pair_hash >, masala::base::size_pair_hash >::iterator it( pairwise_node_penalties_.begin() );
+    for( std::unordered_map< std::pair< Size, Size >, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, masala::base::size_pair_hash >::iterator it( pairwise_node_penalties_.begin() );
         it!= pairwise_node_penalties_.end();
         // no increment here
     ) {
@@ -714,19 +713,14 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
         std::vector< Real > & onebody_choice_penalties_for_other( it_onebodynode->second );
 
         // Update the onebody energies for the multi-choice node's choices:
-        for( std::unordered_map< std::pair< Size, Size >, Real >::iterator it_twobodychoices( it->second.begin() );
-            it_twobodychoices != it->second.end();
-            ++it_twobodychoices
-        ) {
-            //Sanity check:
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( (other_node_is_first ? it_twobodychoices->first.second : it_twobodychoices->first.first ) == 0,
-                "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes",
-                "Program error: got additional choice for a single-choice node when iterating."
-            );
-
-            Size const choiceindex( other_node_is_first ? it_twobodychoices->first.first : it_twobodychoices->first.second );
-
-            add_to_vector_index( onebody_choice_penalties_for_other, choiceindex, it_twobodychoices->second );
+        auto & mat( it->second );
+        //Sanity check:
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( (other_node_is_first ? mat.rows() : mat.cols() ) == 1,
+            "move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes",
+            "Program error: got additional choice for a single-choice node when iterating."
+        );
+        for( Size choiceindex(0); choiceindex < static_cast< Size >( other_node_is_first ? mat.cols() : mat.rows() ); ++choiceindex ) {
+            add_to_vector_index( onebody_choice_penalties_for_other, choiceindex, ( other_node_is_first ? mat(0, choiceindex) : mat(choiceindex, 0) ) );
         }
 
         // Delete the twobody energy and update the iterator.
@@ -747,6 +741,20 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choice_vector(
     return outvec;
 }
 
+/// @brief Create an Eigen matrix just large enough to store a given pair of indices.  Fill it
+/// with zeros, except for the one entry specified.
+/*static*/
+Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::create_choicepair_matrix(
+    std::pair< masala::base::Size, masala::base::Size > const & indices,
+    masala::base::Real const value
+) {
+    Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > outmatrix( indices.first + 1, indices.second + 1 );
+    outmatrix.setZero();
+    outmatrix( indices.first, indices.second ) = value;
+    return outmatrix;
+}
+
 /// @brief Given a vector with a certain number of entries, set the value of entry N.  If the
 /// vector length is less than N+1, extend the vector, padding it with zeros.
 /*static*/
@@ -762,6 +770,46 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_vector(
         vec.resize( index+1, 0.0 );
         vec[index] = value;
     }
+}
+
+/// @brief Given a matrix with certain dimensions, set the value of an entry.  If the matrix
+/// is too small, resize it appropriately, padding with zeros.
+/*static*/
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_entry_in_matrix(
+    Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > & mat,
+    std::pair< masala::base::Size, masala::base::Size > const & indices,
+    masala::base::Real const value
+) {
+    using masala::base::Size;
+
+    Size const oldrows( mat.rows() ), oldcols( mat.cols() );
+    if( indices.first >= oldrows ) {
+        if( indices.second >= oldcols ) {
+            mat.conservativeResize( indices.first + 1, indices.second + 1 );
+            for( Size y(0); y <= indices.first; ++y ) {
+                for( Size x( y < oldrows ? oldcols : 0 ); x <= indices.second; ++x ) {
+                    mat(y,x) = 0.0;
+                }
+            }
+        } else {
+            mat.conservativeResize( indices.first + 1, Eigen::NoChange );
+            for( Size y(oldrows); y <= indices.first; ++y ) {
+                for( Size x(0); x <= indices.second; ++x ) {
+                    mat(y,x) = 0.0;
+                }
+            }
+        }
+    } else if( indices.second >= oldcols ) {
+        mat.conservativeResize( Eigen::NoChange, indices.second + 1 );
+        for( Size y(0); y <= indices.first; ++y ) {
+            for( Size x( oldcols ); x <= indices.second; ++x ) {
+                mat(y,x) = 0.0;
+            }
+        }
+    }
+
+    mat( indices.first, indices.second ) = value;
 }
 
 /// @brief Given a vector, add a value to the Nth entry, or, if the vector has fewer than N entries,

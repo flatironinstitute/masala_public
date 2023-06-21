@@ -40,6 +40,9 @@
 #include <base/types.hh>
 #include <base/hash_types.hh>
 
+// External headers:
+#include <external/eigen/Eigen/Core>
+
 // STL headers:
 #include <vector>
 #include <atomic>
@@ -276,6 +279,15 @@ private:
 		masala::base::Real const choice_penalty
 	);
 
+	/// @brief Create an Eigen matrix just large enough to store a given pair of indices.  Fill it
+	/// with zeros, except for the one entry specified.
+	static
+	Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >
+	create_choicepair_matrix(
+		std::pair< masala::base::Size, masala::base::Size > const & indices,
+		masala::base::Real const value
+	);
+
 	/// @brief Given a vector with a certain number of entries, set the value of entry N.  If the
 	/// vector length is less than N+1, extend the vector, padding it with zeros.
 	static
@@ -283,6 +295,16 @@ private:
 	set_entry_in_vector(
 		std::vector< masala::base::Real > & vec,
 		masala::base::Size const index,
+		masala::base::Real const value
+	);
+
+	/// @brief Given a matrix with certain dimensions, set the value of an entry.  If the matrix
+	/// is too small, resize it appropriately, padding with zeros.
+	static
+	void
+	set_entry_in_matrix(
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > & mat,
+		std::pair< masala::base::Size, masala::base::Size > const & indices,
 		masala::base::Real const value
 	);
 
@@ -310,7 +332,7 @@ private:
 	/// by choice index (corresponding to node indices).
 	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, masala::base::size_pair_hash >, //The choice indices.
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, // Matrix of choice-choice interaction penalties.
 		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
 
