@@ -41,6 +41,7 @@
 #include <base/hash_types.hh>
 
 // STL headers:
+#include <vector>
 #include <atomic>
 #include <unordered_map>
 #include <utility> //For std::pair.
@@ -266,6 +267,35 @@ private:
 	void
 	move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
 
+	/// @brief Create a vector of choice indices just large enough to store a given choice index.
+	/// Set all entries to zero except for that index.
+	static
+	std::vector< masala::base::Real >
+	create_choice_vector(
+		masala::base::Size const choice_index,
+		masala::base::Real const choice_penalty
+	);
+
+	/// @brief Given a vector with a certain number of entries, set the value of entry N.  If the
+	/// vector length is less than N+1, extend the vector, padding it with zeros.
+	static
+	void
+	set_entry_in_vector(
+		std::vector< masala::base::Real > & vec,
+		masala::base::Size const index,
+		masala::base::Real const value
+	);
+
+	/// @brief Given a vector, add a value to the Nth entry, or, if the vector has fewer than N entries,
+	/// expand it with zero padding, then set the last entry to the value.
+	static
+	void
+	add_to_vector_index(
+		std::vector< masala::base::Real > & vec,
+		masala::base::Size const index,
+		masala::base::Real const value
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +304,7 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::unordered_map< masala::base::Size, std::unordered_map< masala::base::Size, masala::base::Real > > single_node_penalties_;
+	std::unordered_map< masala::base::Size, std::vector< masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
