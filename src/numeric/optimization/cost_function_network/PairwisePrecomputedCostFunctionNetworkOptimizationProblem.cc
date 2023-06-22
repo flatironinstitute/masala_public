@@ -346,6 +346,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 ) const {
     using masala::base::Real;
     using masala::base::Size;
+    typedef EigMatrix Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >;
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_score_change", "The problem setup must be finalized "
         "before compute_score_change() can be called."
     );
@@ -367,26 +368,25 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 
     for( base::Size i(0); i<npos; ++i ) {
         Size const i_index( var_nodes_and_choices[i].first );
-        // Sum onebody energy change:
+
         if( old_solution[i] != new_solution[i] ) {
+
+            // Sum onebody energy change:
             auto const it_nodes( single_node_penalties_.find( i_index ) );
             if( it_nodes != single_node_penalties_.end() ) {
                 Real const old_onebody_energy( old_solution[i] < it_nodes->second.size() ? it_nodes->second[old_solution[i]] : 0.0 );
                 Real const new_onebody_energy( new_solution[i] < it_nodes->second.size() ? it_nodes->second[new_solution[i]] : 0.0 );
                 accumulator += new_onebody_energy - old_onebody_energy;
             }
-        }
 
-        // Sum twobody energy change:
-        // THIS CAN BE MADE MORE EFFICIENT.
-        for( base::Size j(0); j<i; ++j ) {
-            if( old_solution[j] != new_solution[j] || old_solution[i] != new_solution[i] ) {
-                Size const j_index( var_nodes_and_choices[j].first );
-                auto const it_nodepairs( pairwise_node_penalties_.find( std::make_pair( j_index, i_index ) ) );
-                if( it_nodepairs != pairwise_node_penalties_.end() ) {
-                    auto const & mat( it_nodepairs->second );
-                    Real const old_twobody_energy( ( old_solution[j] < static_cast< Size >(mat.rows()) && old_solution[i] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[j], old_solution[i] ) : 0.0 );
-                    Real const new_twobody_energy( ( new_solution[j] < static_cast< Size >(mat.rows()) && new_solution[i] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[j], new_solution[i] ) : 0.0 );
+            // Sum twobody energy change:
+            for( std::pair< Size, EigMatrix const * > const & entry : interacting_variable_nodes_[i] ) {
+                DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
+                if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
+                    Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
+                    auto const & mat( *entry.second );
+                    Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
+                    Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
                     accumulator += new_twobody_energy - old_twobody_energy;
                 }
             }
