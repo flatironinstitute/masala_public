@@ -29,8 +29,6 @@
 #include <vector>
 #include <string>
 #include <set>
-#include <numeric>
-#include <execution>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -365,63 +363,32 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         "there are " + std::to_string( npos ) + " variable positions."
     );
 
-    std::vector< Size > indices( npos );
-    for( Size i(0); i<npos; ++i ) { indices[i] = i; }
-    
-    // for( Size i(0); i<npos; ++i ) { // i is variable node index, not absolute node index.
-    //     if( old_solution[i] != new_solution[i] ) {
+    for( base::Size i(0); i<npos; ++i ) { // i is variable node index, not absolute node index.
+        if( old_solution[i] != new_solution[i] ) {
 
-    //         // Sum onebody energy change:
-    //         std::vector< Real > const * onebody_vec( single_node_penalties_for_variable_nodes_[i] );
-    //         if( onebody_vec != nullptr ) {
-    //             Real const old_onebody_energy( old_solution[i] < onebody_vec->size() ? (*onebody_vec)[old_solution[i]] : 0.0 );
-    //             Real const new_onebody_energy( new_solution[i] < onebody_vec->size() ? (*onebody_vec)[new_solution[i]] : 0.0 );
-    //             accumulator += new_onebody_energy - old_onebody_energy;
-    //         }
-
-    //         // Sum twobody energy change:
-    //         for( std::pair< Size, EigMatrix const * > const & entry : interacting_variable_nodes_[i] ) {
-    //             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
-    //             if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
-    //                 Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
-    //                 auto const & mat( *entry.second );
-    //                 Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
-    //                 Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
-    //                 accumulator += new_twobody_energy - old_twobody_energy;
-    //             }
-    //         }
-    //     }
-    // }
-
-    return accumulator + std::transform_reduce( std::execution::seq, indices.cbegin(), indices.cend(), 0.0, std::plus{},
-        [ this, &old_solution, &new_solution ]( Size const i ) {
-            if( old_solution[i] != new_solution[i] ) {
-                Real accumulator(0.0);
-
-                // Sum onebody energy change:
-                std::vector< Real > const * onebody_vec( single_node_penalties_for_variable_nodes_[i] );
-                if( onebody_vec != nullptr ) {
-                    Real const old_onebody_energy( old_solution[i] < onebody_vec->size() ? (*onebody_vec)[old_solution[i]] : 0.0 );
-                    Real const new_onebody_energy( new_solution[i] < onebody_vec->size() ? (*onebody_vec)[new_solution[i]] : 0.0 );
-                    accumulator += new_onebody_energy - old_onebody_energy;
-                }
-
-                // Sum twobody energy change:
-                for( std::pair< Size, EigMatrix const * > const & entry : interacting_variable_nodes_[i] ) {
-                    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
-                    if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
-                        Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
-                        auto const & mat( *entry.second );
-                        Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
-                        Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
-                        accumulator += new_twobody_energy - old_twobody_energy;
-                    }
-                }
-                return accumulator;
+            // Sum onebody energy change:
+            std::vector< Real > const * onebody_vec( single_node_penalties_for_variable_nodes_[i] );
+            if( onebody_vec != nullptr ) {
+                Real const old_onebody_energy( old_solution[i] < onebody_vec->size() ? (*onebody_vec)[old_solution[i]] : 0.0 );
+                Real const new_onebody_energy( new_solution[i] < onebody_vec->size() ? (*onebody_vec)[new_solution[i]] : 0.0 );
+                accumulator += new_onebody_energy - old_onebody_energy;
             }
-            return 0.0;
+
+            // Sum twobody energy change:
+            for( std::pair< Size, EigMatrix const * > const & entry : interacting_variable_nodes_[i] ) {
+                DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
+                if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
+                    Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
+                    auto const & mat( *entry.second );
+                    Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
+                    Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
+                    accumulator += new_twobody_energy - old_twobody_energy;
+                }
+            }
         }
-    );
+    }
+
+    return accumulator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
