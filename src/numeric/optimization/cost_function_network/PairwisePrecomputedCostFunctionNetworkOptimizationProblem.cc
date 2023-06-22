@@ -579,6 +579,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
     move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
+    TODO TODO TODO populate interacting_variable_nodes_;
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
     write_to_tracer( "Finalized problem description." );

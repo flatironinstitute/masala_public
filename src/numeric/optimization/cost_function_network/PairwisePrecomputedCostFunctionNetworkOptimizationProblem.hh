@@ -336,6 +336,11 @@ private:
 		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
 
+	/// @brief For each variable node, a list of pairs of (variable node indices that interact with this variable node, pointers to the matrix
+	/// of node-node choice interactions).
+	/// @details Constructed at finalize() time.
+	std::vector< std::pair< masala::base::Size, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > const * > > interacting_variable_nodes_;
+
 	/// @brief A constant offset for the fixed background to a problem.
 	std::atomic< masala::base::Real > background_constant_offset_ = 0.0;
 
