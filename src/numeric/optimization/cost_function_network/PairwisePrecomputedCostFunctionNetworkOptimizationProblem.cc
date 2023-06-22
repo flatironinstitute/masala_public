@@ -580,8 +580,8 @@ void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
     move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
-    set_up_interacting_node_vector();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
+    set_up_interacting_node_vector(); // Must come after base class protected_finalize().
     write_to_tracer( "Finalized problem description." );
 }
 
@@ -737,7 +737,7 @@ void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_up_interacting_node_vector() {
     using masala::base::Size;
 
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_up_interacting_node_vector", "This function cannot be called prior to finalization." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "set_up_interacting_node_vector", "This function can only be called after base class finalization." );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( interacting_variable_nodes_.empty(), "set_up_interacting_node_vector", "The interacting_variables_nodes_ vector was not empty!" );
 
     std::vector< std::pair< Size, Size > > const var_nodes_and_choices( n_choices_at_variable_nodes() );
