@@ -378,6 +378,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         }
 
         // Sum twobody energy change:
+        // THIS CAN BE MADE MORE EFFICIENT.
         for( base::Size j(0); j<i; ++j ) {
             if( old_solution[j] != new_solution[j] || old_solution[i] != new_solution[i] ) {
                 Size const j_index( var_nodes_and_choices[j].first );
