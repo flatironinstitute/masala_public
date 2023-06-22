@@ -752,6 +752,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_up_interacting_no
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first.first != entry.first.second, "set_up_interacting_node_vector", "In the pairwise_node_penalties_ map, "
             "a node was found that interacts with itself.  This should not be possible.  Program error."
         );
+        if( entry.second.rows() < 2 || entry.second.cols() < 2 ) continue; // Single-choice nodes.
         Size varnode_i, varnode_j;
         try {
             varnode_i = var_node_by_abs_node.at(entry.first.first);
