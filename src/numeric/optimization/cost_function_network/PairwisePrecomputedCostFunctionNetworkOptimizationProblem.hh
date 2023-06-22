@@ -270,6 +270,11 @@ private:
 	void
 	move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
 
+	/// @brief Set up the vector that maps variable node index to a pointer to the vector of one-body penalties
+	/// for the choices for that node.
+	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+	void set_up_single_node_penalties_for_variable_nodes_vector();
+
 	/// @brief Set up the interacting_variable_nodes_ data structure, listing, for each variable node, the
 	/// nodes that interact and providing (raw) pointers to their choice interaction matrices.
 	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
@@ -341,11 +346,16 @@ private:
 		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
 
+	/// @brief For each variable node, a raw pointer to the single-node choice penalties vector.  Will be nullptr if no single-node penalties are defined.
+	/// @details Outer vector is indexed by variable node index.  Inner vector is indexed by choice.
+	/// @note Constructed at finalize() time.
+	std::vector< std::vector< masala::base::Real > const * > single_node_penalties_for_variable_nodes_;
+
 	/// @brief For each variable node, a list of pairs of (variable node indices that interact with this variable node, pointers to the matrix
 	/// of node-node choice interactions).
-	/// @brief Outer vector is indexed by variable node index.  Inner vector is a list of interacting nodes, with pairs of variablen node index and pointer
+	/// @details Outer vector is indexed by variable node index.  Inner vector is a list of interacting nodes, with pairs of variablen node index and pointer
 	/// to choice pair matrices.
-	/// @details Constructed at finalize() time.
+	/// @note Constructed at finalize() time.
 	std::vector< std::vector< std::pair< masala::base::Size, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > const * > > > interacting_variable_nodes_;
 
 	/// @brief A constant offset for the fixed background to a problem.

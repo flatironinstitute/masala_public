@@ -363,19 +363,14 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
         "there are " + std::to_string( npos ) + " variable positions."
     );
 
-    // The following is only safe to call in a finalized context:
-    std::vector< std::pair< Size, Size > > const & var_nodes_and_choices( protected_n_choices_at_variable_nodes() );
-
-    for( base::Size i(0); i<npos; ++i ) { // i is variable node index.
-        Size const i_index( var_nodes_and_choices[i].first ); // i_index is absolute index of current node
-
+    for( base::Size i(0); i<npos; ++i ) { // i is variable node index, not absolute node index.
         if( old_solution[i] != new_solution[i] ) {
 
             // Sum onebody energy change:
-            auto const it_nodes( single_node_penalties_.find( i_index ) );
-            if( it_nodes != single_node_penalties_.end() ) {
-                Real const old_onebody_energy( old_solution[i] < it_nodes->second.size() ? it_nodes->second[old_solution[i]] : 0.0 );
-                Real const new_onebody_energy( new_solution[i] < it_nodes->second.size() ? it_nodes->second[new_solution[i]] : 0.0 );
+            std::vector< Real > const * onebody_vec( single_node_penalties_for_variable_nodes_[i] );
+            if( onebody_vec != nullptr ) {
+                Real const old_onebody_energy( old_solution[i] < onebody_vec->size() ? (*onebody_vec)[old_solution[i]] : 0.0 );
+                Real const new_onebody_energy( new_solution[i] < onebody_vec->size() ? (*onebody_vec)[new_solution[i]] : 0.0 );
                 accumulator += new_onebody_energy - old_onebody_energy;
             }
 
@@ -582,6 +577,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() 
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
     set_up_interacting_node_vector(); // Must come after base class protected_finalize().
+    set_up_single_node_penalties_for_variable_nodes_vector(); // Must also come after base class protected_finalize();
     write_to_tracer( "Finalized problem description." );
 }
 
@@ -727,6 +723,29 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
 
         // Delete the twobody energy and update the iterator.
         it = pairwise_node_penalties_.erase(it);
+    }
+}
+
+/// @brief Set up the vector that maps variable node index to a pointer to the vector of one-body penalties
+/// for the choices for that node.
+/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_up_single_node_penalties_for_variable_nodes_vector() {
+    using masala::base::Real;
+    using masala::base::Size;
+
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "set_up_single_node_penalties_for_variable_nodes_vector", "This function can only be called after base class finalization." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( single_node_penalties_for_variable_nodes_.empty(), "set_up_single_node_penalties_for_variable_nodes_vector", "The single_node_penalties_for_variable_nodes_ vector was not empty!" );
+
+    std::vector< std::pair< Size, Size > > const var_nodes_and_choices( n_choices_at_variable_nodes() );
+    single_node_penalties_for_variable_nodes_.resize( var_nodes_and_choices.size(), nullptr );
+
+    for( Size i(0), imax(var_nodes_and_choices.size()); i<imax; ++i ) {
+        Size const absnode_index( var_nodes_and_choices[i].first );
+        std::unordered_map<masala::base::Size, std::vector<masala::base::Real>>::const_iterator const it( single_node_penalties_.find( absnode_index ) );
+        if( it != single_node_penalties_.cend() ) {
+            single_node_penalties_for_variable_nodes_[i] = &it->second;
+        }
     }
 }
 
