@@ -29,6 +29,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <iostream>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -751,8 +752,23 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_up_interacting_no
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first.first != entry.first.second, "set_up_interacting_node_vector", "In the pairwise_node_penalties_ map, "
             "a node was found that interacts with itself.  This should not be possible.  Program error."
         );
-        Size const varnode_i( var_node_by_abs_node.at(entry.first.first) );
-        Size const varnode_j( var_node_by_abs_node.at(entry.first.second) );
+        Size varnode_i, varnode_j;
+        try {
+            varnode_i = var_node_by_abs_node.at(entry.first.first);
+        } catch ( std::exception const & e ) {
+            std::cout << "PING!" << std::endl;
+            std::cout << e.what() << std::endl;
+            std::cout << entry.first.first << "\t" << entry.first.second << std::endl;
+            exit(1);
+        }
+        try {
+            varnode_j = var_node_by_abs_node.at(entry.first.second);
+        } catch ( std::exception const & e ) {
+            std::cout << "PONG!" << std::endl;
+            std::cout << e.what() << std::endl;
+            std::cout << entry.first.first << "\t" << entry.first.second << std::endl;
+            exit(1);
+        }
         interacting_variable_nodes_[varnode_i].push_back( std::make_pair( varnode_j, &entry.second ) );
         interacting_variable_nodes_[varnode_j].push_back( std::make_pair( varnode_i, &entry.second ) );
     }
