@@ -346,7 +346,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 ) const {
     using masala::base::Real;
     using masala::base::Size;
-    typedef EigMatrix Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >;
+    typedef Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > EigMatrix;
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_score_change", "The problem setup must be finalized "
         "before compute_score_change() can be called."
     );
@@ -366,8 +366,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
     // The following is only safe to call in a finalized context:
     std::vector< std::pair< Size, Size > > const & var_nodes_and_choices( protected_n_choices_at_variable_nodes() );
 
-    for( base::Size i(0); i<npos; ++i ) {
-        Size const i_index( var_nodes_and_choices[i].first );
+    for( base::Size i(0); i<npos; ++i ) { // i is variable node index.
+        Size const i_index( var_nodes_and_choices[i].first ); // i_index is absolute index of current node
 
         if( old_solution[i] != new_solution[i] ) {
 
@@ -579,8 +579,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
 void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
     move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
-    TODO TODO TODO populate interacting_variable_nodes_;
     one_choice_node_constant_offset_ = compute_one_choice_node_constant_offset();
+    set_up_interacting_node_vector();
     CostFunctionNetworkOptimizationProblem::protected_finalize();
     write_to_tracer( "Finalized problem description." );
 }
@@ -727,6 +727,34 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::move_twobody_energies
 
         // Delete the twobody energy and update the iterator.
         it = pairwise_node_penalties_.erase(it);
+    }
+}
+
+/// @brief Set up the interacting_variable_nodes_ data structure, listing, for each variable node, the
+/// nodes that interact and providing (raw) pointers to their choice interaction matrices.
+/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+void
+PairwisePrecomputedCostFunctionNetworkOptimizationProblem::set_up_interacting_node_vector() {
+    using masala::base::Size;
+
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_up_interacting_node_vector", "This function cannot be called prior to finalization." );
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( interacting_variable_nodes_.empty(), "set_up_interacting_node_vector", "The interacting_variables_nodes_ vector was not empty!" );
+
+    std::vector< std::pair< Size, Size > > const var_nodes_and_choices( n_choices_at_variable_nodes() );
+    std::unordered_map< Size, Size > var_node_by_abs_node;
+    for( Size i(0), imax(var_nodes_and_choices.size()); i<imax; ++i ) {
+        var_node_by_abs_node[ var_nodes_and_choices[i].first ] = i;
+    }
+    interacting_variable_nodes_.resize( var_nodes_and_choices.size() );
+    
+    for( auto const & entry : pairwise_node_penalties_ ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first.first != entry.first.second, "set_up_interacting_node_vector", "In the pairwise_node_penalties_ map, "
+            "a node was found that interacts with itself.  This should not be possible.  Program error."
+        );
+        Size const varnode_i( var_node_by_abs_node.at(entry.first.first) );
+        Size const varnode_j( var_node_by_abs_node.at(entry.first.second) );
+        interacting_variable_nodes_[varnode_i].push_back( std::make_pair( varnode_j, &entry.second ) );
+        interacting_variable_nodes_[varnode_j].push_back( std::make_pair( varnode_i, &entry.second ) );
     }
 }
 
