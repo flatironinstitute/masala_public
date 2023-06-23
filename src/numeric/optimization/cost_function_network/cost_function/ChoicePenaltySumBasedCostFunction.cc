@@ -236,21 +236,23 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function_difference(
         + " variable positions in the new candidate solution, but got " + std::to_string( nentries_new ) + "!" 
     );
 
-    T accumulator( 0.0 ); // We ignore the constant offset, since it won't appear in the difference.
+    T sum_new( 0 ), sum_old( 0 ); // We ignore the constant offset, since it won't appear in the difference.
 
     for( Size i(0); i<nentries_old; ++i ) {
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
             "compute_cost_function_difference", "Program error in accumulating choice penalties."
         );
-        std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
-        if( candidate_solution_old[i] < vec.size() ) {
-            accumulator -= vec[candidate_solution_old[i]];
-        }
-        if( candidate_solution_new[i] < vec.size() ) {
-            accumulator += vec[candidate_solution_new[i]];
+        if( candidate_solution_new[i] != candidate_solution_old[i] ) {
+            std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
+            if( candidate_solution_old[i] < vec.size() ) {
+                sum_old += vec[candidate_solution_old[i]];
+            }
+            if( candidate_solution_new[i] < vec.size() ) {
+                sum_new += vec[candidate_solution_new[i]];
+            }
         }
     }
-    return protected_weight() * static_cast< masala::base::Real >( accumulator );
+    return protected_weight() * ( static_cast< masala::base::Real >( sum_new ) - static_cast< masala::base::Real >( sum_old ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -307,8 +309,8 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
 ) {
     using masala::base::Size;
 
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_absolute_node_and_choice_.empty(),
-        "protected_finalize", "Program error: the penalties_by_absolute_node_and_choice_ vector isn't empty!"
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.empty(),
+        "protected_finalize", "Program error: the penalties_by_variable_node_and_choice_ vector isn't empty!"
     );
 
     std::unordered_map< Size, Size > absolute_to_variable_index;
@@ -337,10 +339,10 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
                 varindex < n_variable_positions_, "protected_finalize", "Program error: varindex out of range!"
             );
             std::vector< T > & vec( penalties_by_variable_node_and_choice_[varindex] );
-            if( vec.size() >= choiceindex ) {
+            if( vec.size() <= choiceindex ) {
                 vec.resize( choiceindex+1, T(0) );
-                vec[choiceindex] = penalty;
             }
+            vec[choiceindex] = penalty;
             //write_to_tracer( "<" + std::to_string( varindex ) + "," + std::to_string( choiceindex ) + ">=" + std::to_string(penalty) ); //DELETE ME
         } else {
 #ifndef NDEBUG

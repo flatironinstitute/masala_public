@@ -395,7 +395,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
                         return 0.0;
                     }
                 );
-                
+
                 return accumulator;
             }
             return 0.0;
@@ -576,6 +576,8 @@ void
 PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
     single_node_penalties_.clear();
     pairwise_node_penalties_.clear();
+    single_node_penalties_for_variable_nodes_.clear();
+    interacting_variable_nodes_.clear();
     background_constant_offset_ = 0.0;
     CostFunctionNetworkOptimizationProblem::protected_reset();
 }
