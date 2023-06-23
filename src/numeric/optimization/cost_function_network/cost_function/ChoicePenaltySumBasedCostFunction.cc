@@ -32,6 +32,8 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <numeric>
+#include <execution>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -284,17 +286,21 @@ ChoicePenaltySumBasedCostFunction<T>::protected_compute_cost_function_no_weight(
         "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
         + " variable positions, but got " + std::to_string( nentries ) + "!" 
     );
-    T accumulator( constant_offset_ );
-    for( Size i(0); i<nentries; ++i ) {
-        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
-            "protected_compute_cost_function_no_weight", "Program error: penalties_by_variable_node_and_choice_ too small!"
-        );
-        std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
-        if( candidate_solution[i] < vec.size() ) {
-            accumulator += vec[candidate_solution[i]];
+    std::vector< Size > indices( nentries );
+    for( Size i(0); i<nentries; ++i ) { indices[i] = i; }
+    return std::transform_reduce(
+        std::execution::seq, indices.cbegin(), indices.cend(), constant_offset_, std::plus{},
+        [this, &candidate_solution]( Size const i ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
+                "protected_compute_cost_function_no_weight", "Program error: penalties_by_variable_node_and_choice_ too small!"
+            );
+            std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
+            if( candidate_solution[i] < vec.size() ) {
+                return vec[candidate_solution[i]];
+            }
+            return T(0);
         }
-    }
-    return accumulator;
+    );
 }
 
 /// @brief Indicate that all data input is complete.  Performs no mutex-locking.
