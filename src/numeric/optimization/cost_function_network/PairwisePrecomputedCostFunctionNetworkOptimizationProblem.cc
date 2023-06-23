@@ -29,6 +29,8 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <numeric>
+#include <execution>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
@@ -346,7 +348,6 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 ) const {
     using masala::base::Real;
     using masala::base::Size;
-    typedef Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > EigMatrix;
     CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "compute_score_change", "The problem setup must be finalized "
         "before compute_score_change() can be called."
     );
@@ -375,16 +376,20 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
             }
 
             // Sum twobody energy change:
-            for( std::pair< Size, EigMatrix const * > const & entry : interacting_variable_nodes_[i] ) {
-                DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
-                if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
-                    Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
-                    auto const & mat( *entry.second );
-                    Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
-                    Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
-                    accumulator += new_twobody_energy - old_twobody_energy;
+            accumulator += std::transform_reduce(
+                std::execution::seq, interacting_variable_nodes_[i].cbegin(), interacting_variable_nodes_[i].cend(),
+                0.0, std::plus{}, [this, i, &old_solution, &new_solution ]( auto const & entry ) {
+                    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
+                    if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
+                        Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
+                        auto const & mat( *entry.second );
+                        Real const old_twobody_energy( ( old_solution[lowernode] < static_cast< Size >(mat.rows()) && old_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( old_solution[lowernode], old_solution[uppernode] ) : 0.0 );
+                        Real const new_twobody_energy( ( new_solution[lowernode] < static_cast< Size >(mat.rows()) && new_solution[uppernode] < static_cast< Size >(mat.cols()) ) ? mat( new_solution[lowernode], new_solution[uppernode] ) : 0.0 );
+                        return new_twobody_energy - old_twobody_energy;
+                    }
+                    return 0.0;
                 }
-            }
+            );
         }
     }
 
