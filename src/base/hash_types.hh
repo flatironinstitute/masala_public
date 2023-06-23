@@ -43,6 +43,19 @@ namespace base {
 		}
 	};
 
+	/// @brief Used for std::unordered_map with std::pair< std::pair< Size, Size >, std::pair< Size, Size > > as the key.
+    struct size_pair_of_pairs_hash {
+    std::size_t 
+    operator()( std::pair< std::pair< Size, Size >, std::pair< Size, Size > > const & key ) const {
+        Size h1 = std::hash< Size >{}( key.first.first );
+        Size h2 = std::hash< Size >{}( key.first.second );
+        Size h3 = std::hash< Size >{}( key.second.first );
+        Size h4 = std::hash< Size >{}( key.second.second );
+
+        return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3); // Hash function suggested by ChatGPT.
+    }
+};
+
 } // namespace base
 } // namespace masala
 
