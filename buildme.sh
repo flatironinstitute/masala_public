@@ -12,3 +12,4 @@ cd headers && ln -s ../external && cd ..
 python3 ./code_templates/copy_headers.py masala base src headers
 python3 ./code_templates/copy_headers.py masala numeric_api src headers
 python3 ./code_templates/copy_headers.py masala core_api src headers
+python3 ./code_templates/copy_headers.py masala numeric src headers
