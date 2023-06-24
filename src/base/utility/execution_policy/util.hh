@@ -31,7 +31,7 @@
 #define MASALA_PAR_EXECUTION_POLICY std::execution::par,
 #define MASALA_PAR_UNSEQ_EXECUTION_POLICY std::execution::par_unseq,
 
-#if __cplusplus >= 202002L
+#if defined __cplusplus && __cplusplus >= 202002L
 #define MASALA_UNSEQ_EXECUTION_POLICY std::execution::unseq,
 #else
 #define MASALA_UNSEQ_EXECUTION_POLICY std::execution::seq,
