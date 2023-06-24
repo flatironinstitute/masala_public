@@ -385,7 +385,7 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
                 accumulator += std::transform_reduce(
                     MASALA_UNSEQ_EXECUTION_POLICY
                     interacting_variable_nodes_[i].cbegin(), interacting_variable_nodes_[i].cend(),
-                    0.0, std::plus{}, [this, i, &old_solution, &new_solution ]( auto const & entry ) {
+                    0.0, std::plus{}, [i, &old_solution, &new_solution ]( auto const & entry ) {
                         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
                         if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
                             Size const lowernode( std::min( i, entry.first ) ), uppernode( std::max( i, entry.first ) );
