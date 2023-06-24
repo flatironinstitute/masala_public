@@ -33,9 +33,9 @@
 #include <vector>
 #include <string>
 #include <numeric>
-#include <execution>
 
 // Base headers:
+#include <base/utility/execution_policy/util.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -289,7 +289,8 @@ ChoicePenaltySumBasedCostFunction<T>::protected_compute_cost_function_no_weight(
     std::vector< Size > indices( nentries );
     for( Size i(0); i<nentries; ++i ) { indices[i] = i; }
     return std::transform_reduce(
-        std::execution::seq, indices.cbegin(), indices.cend(), constant_offset_, std::plus{},
+        MASALA_SEQ_EXECUTION_POLICY
+        indices.cbegin(), indices.cend(), constant_offset_, std::plus{},
         [this, &candidate_solution]( Size const i ) {
             DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
                 "protected_compute_cost_function_no_weight", "Program error: penalties_by_variable_node_and_choice_ too small!"
