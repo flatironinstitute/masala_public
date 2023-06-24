@@ -30,9 +30,9 @@
 #include <string>
 #include <set>
 #include <numeric>
-#include <execution>
 
 // Base headers:
+#include <base/utility/execution_policy/util.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
@@ -368,7 +368,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
     }
 
     return CostFunctionNetworkOptimizationProblem::compute_score_change( old_solution, new_solution ) + std::transform_reduce(
-        std::execution::seq, ivals.cbegin(), ivals.cend(), 0.0, std::plus{},
+        MASALA_SEQ_EXECUTION_POLICY
+        ivals.cbegin(), ivals.cend(), 0.0, std::plus{},
         [this, &old_solution, &new_solution]( Size const i ) {
             if( old_solution[i] != new_solution[i] ) {
                 Real accumulator(0.0);
@@ -382,7 +383,8 @@ PairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
 
                 // Sum twobody energy change:
                 accumulator += std::transform_reduce(
-                    std::execution::seq, interacting_variable_nodes_[i].cbegin(), interacting_variable_nodes_[i].cend(),
+                    MASALA_SEQ_EXECUTION_POLICY
+                    interacting_variable_nodes_[i].cbegin(), interacting_variable_nodes_[i].cend(),
                     0.0, std::plus{}, [this, i, &old_solution, &new_solution ]( auto const & entry ) {
                         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( entry.first != i, "compute_score_change", "Program error, since an interacting residue appeared in its own interacting residue list.  This should not happen." );
                         if( ( old_solution[entry.first] == new_solution[entry.first] ) || ( entry.first < i ) ) {
