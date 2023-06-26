@@ -152,6 +152,15 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 
 /// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
 /// the variable node's index, and the second indicates the number of choices at that node.
+/// @note Indices in this vector are node indices, since nodes with fewer than two choices are included.
+/// The length of the vector is total_nodes().
+std::map< masala::base::Size, masala::base::Size >
+CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes() const {
+    return n_choices_by_node_index_;
+}
+
+/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
+/// the variable node's index, and the second indicates the number of choices at that node.
 /// @note Indices in this vector are NOT node indices, since nodes with fewer than two choices are omitted.
 /// The length of the vector is total_variable_nodes(), not total_nodes().  This vector is guaranteed to be sorted
 /// in order of node index, though.
@@ -335,6 +344,18 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
                 false, false,
 
                 std::bind( &CostFunctionNetworkOptimizationProblem::total_variable_nodes, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<
+                std::map< base::Size, base::Size > >
+            >(
+                "n_choices_at_all_nodes", "Get a vector of pairs with one entry for each variable node, "
+                "where the first entry in the pair indicates the variable node's index, and the second "
+                "indicates the number of choices at that node.",
+                "n_choices_at_all_nodes", "A vector of pairs of ( node index, number of choices ) for all "
+                "node indices. The length of the vector total_nodes().", false, false,
+                std::bind( &CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes, this )
             )
         );
         api_def->add_getter(
