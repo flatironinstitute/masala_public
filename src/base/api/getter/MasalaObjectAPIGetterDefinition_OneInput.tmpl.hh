@@ -169,7 +169,7 @@ public:
 	function(
 		T1 input
 	) const {
-		getter_function_(input);
+		return getter_function_(input);
 	}
 
 	/// @brief Get a raw pointer to the function.

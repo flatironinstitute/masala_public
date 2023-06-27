@@ -182,7 +182,7 @@ public:
 		T1 input1,
 		T2 input2
 	) const {
-		getter_function_(input1, input2);
+		return getter_function_(input1, input2);
 	}
 
 	/// @brief Get a raw pointer to the function.
