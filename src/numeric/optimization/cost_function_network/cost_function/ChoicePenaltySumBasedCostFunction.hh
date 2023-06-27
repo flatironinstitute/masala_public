@@ -241,9 +241,9 @@ private:
 	/// @details Used during input/write phase.  Cleared by finalize() operation.
 	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, T, base::size_pair_hash > penalties_by_absolute_node_and_choice_;
 
-	/// @brief The penalties, stored as a pair of <variable node index, choice index >.
+	/// @brief The penalties, stored as vectors indexed first byvariable node index, then by choice index.
 	/// @details Used during output/read phase.  Populated by finalize() operation.
-	std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, T, base::size_pair_hash > penalties_by_variable_node_and_choice_;
+	std::vector< std::vector< T > > penalties_by_variable_node_and_choice_;
 
 	/// @brief The number of variable positions.
 	/// @details Set by finalize() function.

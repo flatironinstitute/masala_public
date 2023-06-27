@@ -40,7 +40,11 @@
 #include <base/types.hh>
 #include <base/hash_types.hh>
 
+// External headers:
+#include <external/eigen/Eigen/Core>
+
 // STL headers:
+#include <vector>
 #include <atomic>
 #include <unordered_map>
 #include <utility> //For std::pair.
@@ -266,6 +270,64 @@ private:
 	void
 	move_twobody_energies_involving_one_choice_nodes_to_onebody_for_variable_nodes();
 
+	/// @brief Set up the vector that maps variable node index to a pointer to the vector of one-body penalties
+	/// for the choices for that node.
+	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+	void set_up_single_node_penalties_for_variable_nodes_vector();
+
+	/// @brief Set up the interacting_variable_nodes_ data structure, listing, for each variable node, the
+	/// nodes that interact and providing (raw) pointers to their choice interaction matrices.
+	/// @note This function should be called from a mutex-locked context.  It is called from protected_finalized().
+	void set_up_interacting_node_vector();
+
+	/// @brief Create a vector of choice indices just large enough to store a given choice index.
+	/// Set all entries to zero except for that index.
+	static
+	std::vector< masala::base::Real >
+	create_choice_vector(
+		masala::base::Size const choice_index,
+		masala::base::Real const choice_penalty
+	);
+
+	/// @brief Create an Eigen matrix just large enough to store a given pair of indices.  Fill it
+	/// with zeros, except for the one entry specified.
+	static
+	Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >
+	create_choicepair_matrix(
+		std::pair< masala::base::Size, masala::base::Size > const & indices,
+		masala::base::Real const value
+	);
+
+	/// @brief Given a vector with a certain number of entries, set the value of entry N.  If the
+	/// vector length is less than N+1, extend the vector, padding it with zeros.
+	static
+	void
+	set_entry_in_vector(
+		std::vector< masala::base::Real > & vec,
+		masala::base::Size const index,
+		masala::base::Real const value
+	);
+
+	/// @brief Given a matrix with certain dimensions, set the value of an entry.  If the matrix
+	/// is too small, resize it appropriately, padding with zeros.
+	static
+	void
+	set_entry_in_matrix(
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > & mat,
+		std::pair< masala::base::Size, masala::base::Size > const & indices,
+		masala::base::Real const value
+	);
+
+	/// @brief Given a vector, add a value to the Nth entry, or, if the vector has fewer than N entries,
+	/// expand it with zero padding, then set the last entry to the value.
+	static
+	void
+	add_to_vector_index(
+		std::vector< masala::base::Real > & vec,
+		masala::base::Size const index,
+		masala::base::Real const value
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,15 +336,27 @@ private:
 
 	/// @brief The single-node penalties for each choice, indexed by node and then by choice index.
 	/// @details Any penalty not specified is assumed to be zero.
-	std::unordered_map< masala::base::Size, std::unordered_map< masala::base::Size, masala::base::Real > > single_node_penalties_;
+	std::unordered_map< masala::base::Size, std::vector< masala::base::Real > > single_node_penalties_;
 
 	/// @brief The penalties for each pair of choices, indexed first by node indices (lowest first) and then
 	/// by choice index (corresponding to node indices).
 	std::unordered_map<
 		std::pair< masala::base::Size, masala::base::Size >, //The node indices.
-		std::unordered_map< std::pair< masala::base::Size, masala::base::Size >, masala::base::Real, masala::base::size_pair_hash >, //The choice indices.
+		Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic >, // Matrix of choice-choice interaction penalties.
 		masala::base::size_pair_hash
 	> pairwise_node_penalties_;
+
+	/// @brief For each variable node, a raw pointer to the single-node choice penalties vector.  Will be nullptr if no single-node penalties are defined.
+	/// @details Outer vector is indexed by variable node index.  Inner vector is indexed by choice.
+	/// @note Constructed at finalize() time.
+	std::vector< std::vector< masala::base::Real > const * > single_node_penalties_for_variable_nodes_;
+
+	/// @brief For each variable node, a list of pairs of (variable node indices that interact with this variable node, pointers to the matrix
+	/// of node-node choice interactions).
+	/// @details Outer vector is indexed by variable node index.  Inner vector is a list of interacting nodes, with pairs of variablen node index and pointer
+	/// to choice pair matrices.
+	/// @note Constructed at finalize() time.
+	std::vector< std::vector< std::pair< masala::base::Size, Eigen::Matrix< masala::base::Real, Eigen::Dynamic, Eigen::Dynamic > const * > > > interacting_variable_nodes_;
 
 	/// @brief A constant offset for the fixed background to a problem.
 	std::atomic< masala::base::Real > background_constant_offset_ = 0.0;

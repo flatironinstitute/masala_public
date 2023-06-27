@@ -28,11 +28,13 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <numeric>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
 // Base headers:
+#include <base/utility/execution_policy/util.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
@@ -278,11 +280,13 @@ CostFunctionNetworkOptimizationProblem::compute_score_change(
     std::vector< base::Size > const & old_solution,
     std::vector< base::Size > const & new_solution
 ) const {
-    masala::base::Real accumulator(0.0);
-    for( auto const & entry : cost_functions_ ) {
-        accumulator += entry->compute_cost_function_difference( old_solution, new_solution );
-    }
-    return accumulator;
+    return std::transform_reduce(
+        MASALA_UNSEQ_EXECUTION_POLICY
+        cost_functions_.cbegin(), cost_functions_.cend(), 0.0, std::plus{},
+        [&old_solution, &new_solution]( masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & costfunction ) {
+            return costfunction->compute_cost_function_difference( old_solution, new_solution );
+        }
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
