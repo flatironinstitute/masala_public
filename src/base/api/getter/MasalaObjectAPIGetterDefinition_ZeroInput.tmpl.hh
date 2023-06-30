@@ -155,7 +155,7 @@ public:
 	/// @brief Provide an input to the function.
 	T0
 	function() const {
-		getter_function_();
+		return getter_function_();
 	}
 
 	/// @brief Get a raw pointer to the function.

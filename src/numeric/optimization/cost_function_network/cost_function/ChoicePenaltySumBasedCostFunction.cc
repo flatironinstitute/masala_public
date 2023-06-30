@@ -32,8 +32,10 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <numeric>
 
 // Base headers:
+#include <base/utility/execution_policy/util.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -236,24 +238,23 @@ ChoicePenaltySumBasedCostFunction<T>::compute_cost_function_difference(
         + " variable positions in the new candidate solution, but got " + std::to_string( nentries_new ) + "!" 
     );
 
-    T sum_old( 0.0 ), sum_new( 0.0 ); // We ignore the constant offset, since it won't appear in the difference.
+    T sum_new( 0 ), sum_old( 0 ); // We ignore the constant offset, since it won't appear in the difference.
 
     for( Size i(0); i<nentries_old; ++i ) {
-        typename std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it(
-            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_old[i]) )
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
+            "compute_cost_function_difference", "Program error in accumulating choice penalties."
         );
-        if( it != penalties_by_variable_node_and_choice_.end() ) {
-            sum_old += it->second;
-        }
-
-        typename std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it2(
-            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution_new[i]) )
-        );
-        if( it2 != penalties_by_variable_node_and_choice_.end() ) {
-            sum_new += it2->second;
+        if( candidate_solution_new[i] != candidate_solution_old[i] ) {
+            std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
+            if( candidate_solution_old[i] < vec.size() ) {
+                sum_old += vec[candidate_solution_old[i]];
+            }
+            if( candidate_solution_new[i] < vec.size() ) {
+                sum_new += vec[candidate_solution_new[i]];
+            }
         }
     }
-    return protected_weight() * static_cast< masala::base::Real >( sum_new - sum_old );
+    return protected_weight() * ( static_cast< masala::base::Real >( sum_new ) - static_cast< masala::base::Real >( sum_old ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -285,16 +286,22 @@ ChoicePenaltySumBasedCostFunction<T>::protected_compute_cost_function_no_weight(
         "a vector of " + std::to_string( n_variable_positions_ ) + " choices for " + std::to_string( n_variable_positions_ )
         + " variable positions, but got " + std::to_string( nentries ) + "!" 
     );
-    T accumulator( constant_offset_ );
-    for( Size i(0); i<nentries; ++i ) {
-        typename std::unordered_map< std::pair< Size, Size >, T, masala::base::size_pair_hash >::const_iterator it(
-            penalties_by_variable_node_and_choice_.find( std::make_pair(i, candidate_solution[i]) )
-        );
-        if( it != penalties_by_variable_node_and_choice_.end() ) {
-            accumulator += it->second;
+    std::vector< Size > indices( nentries );
+    for( Size i(0); i<nentries; ++i ) { indices[i] = i; }
+    return std::transform_reduce(
+        MASALA_SEQ_EXECUTION_POLICY
+        indices.cbegin(), indices.cend(), constant_offset_, std::plus{},
+        [this, &candidate_solution]( Size const i ) {
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( i < penalties_by_variable_node_and_choice_.size(),
+                "protected_compute_cost_function_no_weight", "Program error: penalties_by_variable_node_and_choice_ too small!"
+            );
+            std::vector< T > const & vec( penalties_by_variable_node_and_choice_[i] );
+            if( candidate_solution[i] < vec.size() ) {
+                return vec[candidate_solution[i]];
+            }
+            return T(0);
         }
-    }
-    return accumulator;
+    );
 }
 
 /// @brief Indicate that all data input is complete.  Performs no mutex-locking.
@@ -309,6 +316,10 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
 ) {
     using masala::base::Size;
 
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.empty(),
+        "protected_finalize", "Program error: the penalties_by_variable_node_and_choice_ vector isn't empty!"
+    );
+
     std::unordered_map< Size, Size > absolute_to_variable_index;
     for( Size i(0), imax(variable_node_indices.size()); i<imax; ++i ) {
         DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
@@ -318,6 +329,7 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
     }
 
     n_variable_positions_ = variable_node_indices.size();
+    penalties_by_variable_node_and_choice_.resize( n_variable_positions_ );
 
     for(
         typename std::unordered_map< std::pair< Size, Size >, T, base::size_pair_hash >::const_iterator it( penalties_by_absolute_node_and_choice_.cbegin() );
@@ -330,9 +342,14 @@ ChoicePenaltySumBasedCostFunction<T>::protected_finalize(
         std::unordered_map< Size, Size >::const_iterator it2( absolute_to_variable_index.find( absindex ) );
         if( it2 != absolute_to_variable_index.end() ) {
             Size const varindex( it2->second );
-            std::pair< Size, Size > const key( std::make_pair( varindex, choiceindex ) );
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( penalties_by_variable_node_and_choice_.count( key ) == 0, "protected_finalize", "The key (" + std::to_string( key.first ) + ", " + std::to_string( key.second ) + ") is already in the penalties_by_variable_node_and_choice_ map!" );
-            penalties_by_variable_node_and_choice_[key] = penalty;
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+                varindex < n_variable_positions_, "protected_finalize", "Program error: varindex out of range!"
+            );
+            std::vector< T > & vec( penalties_by_variable_node_and_choice_[varindex] );
+            if( vec.size() <= choiceindex ) {
+                vec.resize( choiceindex+1, T(0) );
+            }
+            vec[choiceindex] = penalty;
             //write_to_tracer( "<" + std::to_string( varindex ) + "," + std::to_string( choiceindex ) + ">=" + std::to_string(penalty) ); //DELETE ME
         } else {
 #ifndef NDEBUG
