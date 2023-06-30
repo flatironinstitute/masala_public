@@ -202,6 +202,26 @@ OptimizationSolution::set_n_times_solution_was_produced(
     n_times_solution_was_produced_ = n_times_produced;
 }
 
+/// @brief Set the solution vector for this problem.
+/// @details If the problem has been set, this solution vector must be of compatible size.
+/// @note Overloaded to allow different data type inputs in derived classes.
+void
+OptimizationSolution::set_solution_vector(
+    std::vector< masala::base::Size > const & solution_vector_in
+) {
+    (void)solution_vector_in;
+}
+
+/// @brief Set the solution vector for this problem.
+/// @details If the problem has been set, this solution vector must be of compatible size.
+/// @note Overloaded to allow different data type inputs in derived classes.
+void
+OptimizationSolution::set_solution_vector(
+    std::vector< bool > const & solution_vector_in
+) {
+    (void)solution_vector_in;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,6 +249,31 @@ OptimizationSolution::n_times_solution_was_produced() const {
     return n_times_solution_was_produced_;
 }
 
+/// @brief Get the solution vector for this problem.
+/// @details This returns the solution vector as one value per
+/// variable position, in order of variable positions.  Indices
+/// in the vector do NOT necessarily correspond to node indices,
+/// since nodes with zero or one choice are omitted.
+/// @note Problem and solution vector must have been set.
+std::vector< masala::base::Size >
+OptimizationSolution::solution_at_variable_positions() const {
+    // implementation in derived classes
+    std::vector< masala::base::Size > empty(1, 0);
+    return empty;
+}
+
+/// @brief Get the solution vector for this problem.
+/// @details This returns the solution vector as one value per
+/// position, in order of all positions.  Indices in the vector
+/// correspond to node indices.
+/// @note Problem and solution vector must have been set.
+std::vector< masala::base::Size >
+OptimizationSolution::solution_at_all_positions() const {
+    // implementation in derived classes
+    std::vector< masala::base::Size > empty(1, 0);
+    return empty;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -247,6 +292,26 @@ OptimizationSolution::recompute_score() {
     MASALA_THROW( class_namespace_and_name(), "recompute_score", "The recompute_score() function has not been "
         "implemented for the abstract OptimizationSolution base class.  It must be implemented for derived classes."
     );
+}
+
+/// @brief Determine whether this solution is the same as another.
+/// @details Compares the stored solution vector to a provided solution vector.
+/// @note Overloaded to allow different data type inputs in derived classes.
+bool 
+OptimizationSolution::operator==( std::vector< masala::base::Size > const & other_solution_vector ) const {
+    // actual implementation in derived classes
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    return other_solution_vector == other_solution_vector;
+}
+
+/// @brief Determine whether this solution is the same as another.
+/// @details Compares the stored solution vector to a provided solution vector.
+/// @note Overloaded to allow different data type inputs in derived classes.
+bool 
+OptimizationSolution::operator==( std::vector< bool > const & other_solution_vector ) const {
+    // actual implementation in derived classes
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+    return other_solution_vector == other_solution_vector;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

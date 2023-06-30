@@ -144,12 +144,6 @@ public:
 	/// the count of the number of times this solution was produced during optimization.
 	void set_n_times_solution_was_produced( masala::base::Size const n_times_produced );
 
-	/// @brief Set the problem that gave rise to this solution.
-	/// @details Stored directly (not cloned) on input.  This override checks that the problem
-	/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
-	/// set, the problem must match it.
-	virtual void set_problem( OptimizationProblemCSP const & problem );
-
 	/// @brief Set the solution vector for this problem.
 	/// @details If the problem has been set, this solution vector must be of compatible size.
 	/// @note Overloaded to allow different data type inputs in derived classes.
@@ -190,7 +184,7 @@ public:
 	/// since nodes with zero or one choice are omitted.
 	/// @note Problem and solution vector must have been set.
 	virtual 
-	std::vector< masala::base::Size > const &
+	std::vector< masala::base::Size >
 	solution_at_variable_positions() const;
 
 	/// @brief Get the solution vector for this problem.

@@ -222,7 +222,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > const & > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > > >(
                 "solution_at_variable_positions", "Get the solution "
                 "vector for this problem for variable nodes only.  "
                 "This returns the solution vector as one value per "
@@ -295,7 +295,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 /// in the vector do NOT necessarily correspond to node indices,
 /// since nodes with zero or one choice are omitted.
 /// @note Problem and solution vector must have been set.
-std::vector< masala::base::Size > const &
+std::vector< masala::base::Size >
 CostFunctionNetworkOptimizationSolution::solution_at_variable_positions() const {
     std::lock_guard< std::mutex > lock( solution_mutex() );
     CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "solution_at_variable_positions",

@@ -145,7 +145,7 @@ public:
 	/// in the vector do NOT necessarily correspond to node indices,
 	/// since nodes with zero or one choice are omitted.
 	/// @note Problem and solution vector must have been set.
-	std::vector< masala::base::Size > const &
+	std::vector< masala::base::Size >
 	solution_at_variable_positions() const override;
 
 	/// @brief Get the solution vector for this problem.
