@@ -144,6 +144,28 @@ public:
 	/// the count of the number of times this solution was produced during optimization.
 	void set_n_times_solution_was_produced( masala::base::Size const n_times_produced );
 
+	/// @brief Set the problem that gave rise to this solution.
+	/// @details Stored directly (not cloned) on input.  This override checks that the problem
+	/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
+	/// set, the problem must match it.
+	virtual void set_problem( OptimizationProblemCSP const & problem );
+
+	/// @brief Set the solution vector for this problem.
+	/// @details If the problem has been set, this solution vector must be of compatible size.
+	/// @note Overloaded to allow different data type inputs in derived classes.
+	virtual void
+	set_solution_vector(
+		std::vector< masala::base::Size > const & solution_vector_in
+	);
+
+	/// @brief Set the solution vector for this problem.
+	/// @details If the problem has been set, this solution vector must be of compatible size.
+	/// @note Overloaded to allow different data type inputs in derived classes.
+	virtual void
+	set_solution_vector(
+		std::vector< bool > const & solution_vector_in
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +183,25 @@ public:
 	/// the count of the number of times this solution was produced during optimization.
 	masala::base::Size n_times_solution_was_produced() const;
 
+	/// @brief Get the solution vector for this problem.
+	/// @details This returns the solution vector as one value per
+	/// variable position, in order of variable positions.  Indices
+	/// in the vector do NOT necessarily correspond to node indices,
+	/// since nodes with zero or one choice are omitted.
+	/// @note Problem and solution vector must have been set.
+	virtual 
+	std::vector< masala::base::Size > const &
+	solution_at_variable_positions() const;
+
+	/// @brief Get the solution vector for this problem.
+	/// @details This returns the solution vector as one value per
+	/// position, in order of all positions.  Indices in the vector
+	/// correspond to node indices.
+	/// @note Problem and solution vector must have been set.
+	virtual 
+	std::vector< masala::base::Size >
+	solution_at_all_positions() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +215,16 @@ public:
 	/// @note The base class recompute_score() function throws.  Derived classes
 	/// must override this and provide their own implementations.
 	virtual void recompute_score();
+
+	/// @brief Determine whether this solution is the same as another.
+	/// @details Compares the stored solution vector to a provided solution vector.
+	/// @note Overloaded to allow different data type inputs in derived classes.
+	virtual bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const;
+
+	/// @brief Determine whether this solution is the same as another.
+	/// @details Compares the stored solution vector to a provided solution vector.
+	/// @note Overloaded to allow different data type inputs in derived classes.
+	virtual bool operator==( std::vector< bool > const & other_solution_vector ) const;
 
 public:
 

@@ -52,7 +52,7 @@ namespace base {
         Size h3 = std::hash< Size >{}( key.second.first );
         Size h4 = std::hash< Size >{}( key.second.second );
 
-        return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3); // Hash function suggested by ChatGPT.
+        return (h1 << 48) | (h2 << 32 ) | (h3 << 16) | h4;
     }
 };
 
