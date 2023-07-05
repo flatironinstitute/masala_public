@@ -662,8 +662,7 @@ def generate_function_call( \
                     input_point_or_arrow = "."
 
                 inputtype = curinput_inner.split()[0]
-                assert inputtype in jsonfile["Elements"], "Could not find " + inputtype + " in JSON file."
-                if jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
+                if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
                     if input_is_masala_class :
