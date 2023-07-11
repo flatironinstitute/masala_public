@@ -146,7 +146,7 @@ public:
 	/// since nodes with zero or one choice are omitted.
 	/// @note Problem and solution vector must have been set.
 	std::vector< masala::base::Size >
-	solution_at_variable_positions() const override;
+	solution_at_variable_positions() const;
 
 	/// @brief Get the solution vector for this problem.
 	/// @details This returns the solution vector as one value per
@@ -154,7 +154,7 @@ public:
 	/// correspond to node indices.
 	/// @note Problem and solution vector must have been set.
 	std::vector< masala::base::Size >
-	solution_at_all_positions() const override;
+	solution_at_all_positions() const;
 
 public:
 
@@ -170,10 +170,7 @@ public:
 
 	/// @brief Set the solution vector for this problem.
 	/// @details If the problem has been set, this solution vector must be of compatible size.
-	void
-	set_solution_vector(
-		std::vector< masala::base::Size > const & solution_vector_in
-	) override;
+	void set_solution_vector( std::vector< masala::base::Size > const & solution_vector_in );
 
 public:
 
@@ -191,7 +188,7 @@ public:
 
 	/// @brief Determine whether this solution is the same as another.
 	/// @details Compares the stored solution vector to a provided solution vector.
-	bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const override;
+	bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const;
 
 private:
 
