@@ -59,7 +59,7 @@ namespace cost_function_network {
 /// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 void
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent() {
-    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent();
+    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::make_independent();
     //GNDN
 }
 
@@ -69,7 +69,7 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independen
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -78,7 +78,7 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independen
 std::vector< std::vector< std::string > >
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" }
+		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" }
 	};
 }
 
@@ -128,14 +128,14 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize() {
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
-    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset();
+    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_reset();
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
-    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize();
+    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 } // namespace cost_function_network

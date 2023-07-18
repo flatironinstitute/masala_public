@@ -31,7 +31,7 @@
 #include <numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
@@ -56,7 +56,7 @@ namespace cost_function_network {
 /// class does not contain any chemistry-specific concepts.
 /// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem {
+class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem {
 
 public:
 
@@ -88,7 +88,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -104,12 +104,12 @@ public:
 	get_keywords() const override;
 
 	/// @brief Get the name of this class.
-	/// @returns "PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem".
+	/// @returns Nothing -- must be implemented by derived classes.
 	std::string
 	class_name() const override = 0;
 
 	/// @brief Get the namespace for this class.
-	/// @returns "masala::numeric_api::base_classes::optimization::cost_function_network".
+	/// @returns Nothing -- must be implemented by derived classes.
 	std::string
 	class_namespace() const override = 0;
 
@@ -133,6 +133,32 @@ public:
 	/// the object should now be locked for read only.
 	void
 	finalize() override;
+
+	/// @brief Add onebody penalty for a choice at a node.
+	/// @details Must be implemented by derived classes.
+	virtual
+	void
+	set_onebody_penalty(
+		masala::base::Size const node_index,
+		masala::base::Size const choice_index,
+		masala::base::Real const penalty
+	) = 0;
+
+    /// @brief Set the two-node penalty for a particular pair of choice indices corresponding to a particular
+    /// pair of node indices.
+    /// @param[in] node_indices A pair of node indices.  The lower index should be first.  (This function should
+    /// throw if it is not, since it makes the choice indices ambiguous).
+    /// @param[in] choice_indices The corresponding pair of choice indices.  The first entry should be the choice
+    /// index for the lower-numbered node, and the second should be the choice index for the higher-numbered node.
+    /// @param[in] penalty The value of the two-node penalty (or, if negative, bonus).
+	/// @details Must be implemented by derived classes.
+    virtual
+	void
+    set_twobody_penalty(
+        std::pair< masala::base::Size, masala::base::Size > const & node_indices,
+        std::pair< masala::base::Size, masala::base::Size > const & choice_indices,
+        masala::base::Real penalty
+    ) = 0;
 
 public:
 
