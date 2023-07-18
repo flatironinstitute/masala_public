@@ -16,22 +16,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh
-/// @brief Headers for a base class for PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblems.
-/// @details A PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
-/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizationProblem.hh
+/// @brief Headers for a base class for PluginCostFunctionNetworkOptimizationProblems.
+/// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
+/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
 /// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_hh
+#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.fwd.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
@@ -50,13 +50,13 @@ namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 
-/// @brief A base class for PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblems.
-/// @details A PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
-/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
+/// @brief A base class for PluginCostFunctionNetworkOptimizationProblems.
+/// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
+/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
 /// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem {
+class PluginCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem {
 
 public:
 
@@ -65,17 +65,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem() = default;
+	PluginCostFunctionNetworkOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	PluginCostFunctionNetworkOptimizationProblem( PluginCostFunctionNetworkOptimizationProblem const & ) = default;
 
 	// @brief Assignment operator.
-	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem &
-	operator=( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	PluginCostFunctionNetworkOptimizationProblem &
+	operator=( PluginCostFunctionNetworkOptimizationProblem const & ) = default;
 
 	/// @brief Destructor.
-	~PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem() override = default;
+	~PluginCostFunctionNetworkOptimizationProblem() override = default;
 
 	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	void make_independent();
@@ -88,7 +88,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -104,7 +104,7 @@ public:
 	get_keywords() const override;
 
 	/// @brief Get the name of this class.
-	/// @returns "PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem".
+	/// @returns "PluginCostFunctionNetworkOptimizationProblem".
 	std::string
 	class_name() const override = 0;
 
@@ -146,7 +146,7 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem class.
+    /// @brief Get a description of the API for the PluginCostFunctionNetworkOptimizationProblem class.
 	/// @details This makes this class pure virtual.  This function must be implemented in derived classes
 	/// if they are to be instantiated.
     masala::base::api::MasalaObjectAPIDefinitionCWP
@@ -171,7 +171,7 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
+}; // class PluginCostFunctionNetworkOptimizationProblem
 
 } // namespace cost_function_network
 } // namespace optimization
@@ -179,4 +179,4 @@ private:
 } // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_hh

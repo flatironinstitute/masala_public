@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.fwd.hh
-/// @brief Forward declarations for a base class for PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblems.
-/// @details A PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
-/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizationProblem.fwd.hh
+/// @brief Forward declarations for a base class for PluginCostFunctionNetworkOptimizationProblems.
+/// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
+/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
 /// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_fwd_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_fwd_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_fwd_hh
+#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,23 +35,23 @@ namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 
-	class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem;
+	class PluginCostFunctionNetworkOptimizationProblem;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblemSP = MASALA_SHARED_POINTER< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem >;
+	using PluginCostFunctionNetworkOptimizationProblemSP = MASALA_SHARED_POINTER< PluginCostFunctionNetworkOptimizationProblem >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblemCSP = MASALA_SHARED_POINTER< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const >;
+	using PluginCostFunctionNetworkOptimizationProblemCSP = MASALA_SHARED_POINTER< PluginCostFunctionNetworkOptimizationProblem const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblemWP = MASALA_WEAK_POINTER< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem >;
+	using PluginCostFunctionNetworkOptimizationProblemWP = MASALA_WEAK_POINTER< PluginCostFunctionNetworkOptimizationProblem >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblemCWP = MASALA_WEAK_POINTER< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const >;
+	using PluginCostFunctionNetworkOptimizationProblemCWP = MASALA_WEAK_POINTER< PluginCostFunctionNetworkOptimizationProblem const >;
 
 } // namespace cost_function_network
 } // namespace optimization
@@ -59,4 +59,4 @@ namespace cost_function_network {
 } // namespace numeric_api
 } // namespace masala
 
-#endif //Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem_fwd_hh
+#endif //Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizationProblem_fwd_hh
