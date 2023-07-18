@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizationProblem.fwd.hh
-/// @brief Implementations for a base class for PluginCostFunctionNetworkOptimizationProblems.
-/// @details A PluginCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
-/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginCostFunctionNetworkOptimizationProblem
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.fwd.hh
+/// @brief Implementations for a base class for PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblems.
+/// @details A PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem defines a special case of a numerical cost function network optimization
+/// problem, defined in a plug-in library, to be solved by a suitable Optimizer.  The PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem
 /// class does not contain any chemistry-specific concepts.
 /// @note This class is a pure virtual base class, since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizationProblem.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
@@ -58,8 +58,8 @@ namespace cost_function_network {
 
 /// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 void
-PluginCostFunctionNetworkOptimizationProblem::make_independent() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::make_independent();
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent() {
+    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent();
     //GNDN
 }
 
@@ -69,16 +69,16 @@ PluginCostFunctionNetworkOptimizationProblem::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
+/// @returns { { "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-PluginCostFunctionNetworkOptimizationProblem::get_categories() const {
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" }
+		{ "OptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" }
 	};
 }
 
@@ -86,7 +86,7 @@ PluginCostFunctionNetworkOptimizationProblem::get_categories() const {
 /// optimization problems; may be overridden by derived classes.
 /// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
 std::vector< std::string >
-PluginCostFunctionNetworkOptimizationProblem::get_keywords() const {
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_keywords() const {
 	return std::vector< std::string > {
 		"optimization_problem",
 		"cost_function_network_optimization_problem",
@@ -104,17 +104,17 @@ PluginCostFunctionNetworkOptimizationProblem::get_keywords() const {
 
 /// @brief Reset all data in this object.
 void
-PluginCostFunctionNetworkOptimizationProblem::reset() {
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset() {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    PluginCostFunctionNetworkOptimizationProblem::protected_reset();
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset();
 }
 
 /// @brief Finalize problem setup: indicate that all problem setup is complete, and that
 /// the object should now be locked for read only.
 void
-PluginCostFunctionNetworkOptimizationProblem::finalize() {
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize() {
     std::lock_guard< std::mutex > lock( problem_mutex() );
-    PluginCostFunctionNetworkOptimizationProblem::protected_finalize();
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,15 +127,15 @@ PluginCostFunctionNetworkOptimizationProblem::finalize() {
 
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
-PluginCostFunctionNetworkOptimizationProblem::protected_reset() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_reset();
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
+    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset();
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
-PluginCostFunctionNetworkOptimizationProblem::protected_finalize() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_finalize();
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
+    masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize();
 }
 
 } // namespace cost_function_network
