@@ -24,7 +24,7 @@
 #define Masala_src_numeric_api_utility_optimization_cost_function_network_util_hh
 
 // Forward declarations:
-#include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.fwd.hh>
 
 namespace masala {
 namespace numeric_api {
@@ -36,7 +36,7 @@ namespace cost_function_network {
 	/// testing out cost function network optimizers.  This problem has three nodes
 	/// with three choices per node, for a total of 27 possible solutions.
 	/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-	/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+	/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 	/// by default.
@@ -71,12 +71,12 @@ namespace cost_function_network {
 	/// 2 2 1 -> 6  <-- lowest
 	/// 2 2 2 -> 7
 	/// If gapped, all solutions shift up by 17.
-	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem( std::string const & name_of_problem_class, bool const gapped=false, bool const finalized = true );
 
 	/// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
 	/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-	/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+	/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 	/// by default.
@@ -139,14 +139,14 @@ namespace cost_function_network {
 	/// 2 2 0 -> 35
 	/// 2 2 1 -> 38
 	/// 2 2 2 -> 39
-	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_squared_unsatisfied_feature_penalties(std::string const & name_of_problem_class,  bool const gapped=false, bool const finalized = true );
 
 	/// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 	/// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
 	/// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
 	/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-	/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+	/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 	/// by default.
@@ -209,7 +209,7 @@ namespace cost_function_network {
 	/// 2 2 0 -> 39  <-- lowest
 	/// 2 2 1 -> 59
 	/// 2 2 2 -> 60
-	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_squared_choice_count_penalties( std::string const & name_of_problem_class, bool const gapped=false, bool const finalized = true );
 
 	/// @brief Construct a variant of the problem above, with some of the choices in a "countable"
@@ -217,7 +217,7 @@ namespace cost_function_network {
 	/// energy solution the new lowest-energy solution.  This emulates what is done in Rosetta with the
 	/// aa_composition scoreterm.
 	/// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-	/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+	/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 	/// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 	/// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 	/// by default.
@@ -280,7 +280,7 @@ namespace cost_function_network {
 	/// 2 2 0 -> 57
 	/// 2 2 1 -> 45
 	/// 2 2 2 -> 112
-	masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+	masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 	construct_test_problem_with_function_of_integer_penalty_sum_penalties( std::string const & name_of_problem_class, bool const gapped=false, bool const finalized = true );
 
 } // namespace cost_function_network

@@ -27,7 +27,13 @@
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/FunctionOfIntegerPenaltySumCostFunction_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_API.hh>
-#include <numeric_api/auto_generated_api/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API.hh>
+#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
+
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/FunctionOfIntegerPenaltySumCostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/feature_based/SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -48,7 +54,7 @@ namespace cost_function_network {
 /// testing out cost function network optimizers.  This problem has three nodes
 /// with three choices per node, for a total of 27 possible solutions.
 /// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -83,29 +89,34 @@ namespace cost_function_network {
 /// 2 2 1 -> 6  <-- lowest
 /// 2 2 2 -> 7
 /// If gapped, all solutions shift up by 17.
-masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem(
     std::string const & name_of_problem_class,
     bool const gapped,
     bool const finalized
 ) {
+    using namespace masala::numeric_api::base_classes::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
     masala::base::managers::plugin_module::MasalaPluginAPISP my_object(
         masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name(
-            std::vector< std::string >{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" },
+            std::vector< std::string >{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" },
             name_of_problem_class,
             true
         )
     );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem(
-        std::dynamic_pointer_cast< PairwisePrecomputedCostFunctionNetworkOptimizationProblem_API >( my_object )
+    CostFunctionNetworkOptimizationProblem_APISP my_object_cast(
+        std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API >( my_object )
     );
+    CHECK_OR_THROW( my_object_cast != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem", "The returned " + name_of_problem_class + " object was not a CostFunctionNetworkOptimizationProblem." );
 
-    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem", "The returned " + name_of_problem_class + " object was not a PairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * problem(
+        dynamic_cast< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * >( my_object_cast->get_inner_object().get() )
+    );
+    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem", "The returned " + name_of_problem_class + " object was not a PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
 
     // Configure one-node penalties:
     problem->set_onebody_penalty( 0, 0, 25 );
@@ -170,12 +181,12 @@ construct_test_problem(
     }
     
     // Return the problem.
-    return problem;
+    return my_object_cast;
 }
 
 /// @brief Construct a variant of the problem above, satisfiable features on some of the choices.
 /// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -238,12 +249,13 @@ construct_test_problem(
 /// 2 2 0 -> 35
 /// 2 2 1 -> 38
 /// 2 2 2 -> 39
-masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_squared_unsatisfied_feature_penalties(
     std::string const & name_of_problem_class,
     bool const gapped /*=false*/,
     bool const finalized /*=true*/
 ) {
+    using namespace masala::numeric_api::base_classes::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function::feature_based;
@@ -255,7 +267,11 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( name_of_problem_class, gapped, false ) );
+    CostFunctionNetworkOptimizationProblem_APISP problem_cast( construct_test_problem( name_of_problem_class, gapped, false ) );
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * problem(
+        dynamic_cast< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * >( problem_cast->get_inner_object().get() )
+    );
+    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem_with_squared_unsatisfied_feature_penalties", "The returned " + name_of_problem_class + " object was not a PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
 
     SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_APISP cost_function( masala::make_shared< SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction_API >() );
 
@@ -332,20 +348,20 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
     );
     cost_function->set_weight( 15 );
 
-    problem->add_cost_function( cost_function );
+    problem->add_cost_function( cost_function->get_inner_object() );
 
     if( finalized ) {
         problem->finalize();
     }
 
-    return problem;
+    return problem_cast;
 }
 
 /// @brief Construct a variant of the problem above, with penalties on each of the choices and a desired
 /// penalty count that makes what was previously the third-lowest energy solution the new lowest-energy
 /// solution.  This emulates what is done in Rosetta with the voids_penalty scoreterm.
 /// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -408,18 +424,23 @@ construct_test_problem_with_squared_unsatisfied_feature_penalties(
 /// 2 2 0 -> 39  <-- lowest
 /// 2 2 1 -> 59
 /// 2 2 2 -> 60
-masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_squared_choice_count_penalties(
     std::string const & name_of_problem_class,
     bool const gapped,
     bool const finalized
 ) {
+    using namespace masala::numeric_api::base_classes::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem( name_of_problem_class, gapped, false) );
+    CostFunctionNetworkOptimizationProblem_APISP problem_cast( construct_test_problem( name_of_problem_class, gapped, false) );
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * problem(
+        dynamic_cast< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * >( problem_cast->get_inner_object().get() )
+    );
+    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem_with_squared_choice_count_penalties", "The returned " + name_of_problem_class + " object was not a PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
 
     SquareOfChoicePenaltySumCostFunction_APISP cost_func( masala::make_shared< SquareOfChoicePenaltySumCostFunction_API >() );
 
@@ -431,7 +452,7 @@ construct_test_problem_with_squared_choice_count_penalties(
     }
     cost_func->set_penalties_for_all_choices_at_node( last_node, std::vector< masala::base::Real >{ 1.0, 5.0, 5.0 } );
 
-    problem->add_cost_function( cost_func );
+    problem->add_cost_function( cost_func->get_inner_object() );
 
     if( finalized ) {
         // Finalize the problem.
@@ -439,7 +460,7 @@ construct_test_problem_with_squared_choice_count_penalties(
     }
     
     // Return the problem.
-    return problem;
+    return problem_cast;
 }
 
 /// @brief Construct a variant of the problem above, with some of the choices in a "countable"
@@ -447,7 +468,7 @@ construct_test_problem_with_squared_choice_count_penalties(
 /// energy solution the new lowest-energy solution.  This emulates what is done in Rosetta with the
 /// aa_composition scoreterm.
 /// @param[in] name_of_problem_class The class name for the problem container.  Must be derived from
-/// PairwisePrecomputedCostFunctionNetworkOptimizationProblem.
+/// PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem.
 /// @param[in] gapped If true, we define the problem for nodes 0, 1, and 3, with only
 /// one rotamer at node 2.  If false, we define the problem for nodes 0, 1, and 2.  False
 /// by default.
@@ -510,18 +531,23 @@ construct_test_problem_with_squared_choice_count_penalties(
 /// 2 2 0 -> 57
 /// 2 2 1 -> 45
 /// 2 2 2 -> 112
-masala::numeric_api::auto_generated_api::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP
+masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem_APISP
 construct_test_problem_with_function_of_integer_penalty_sum_penalties(
     std::string const & name_of_problem_class,
     bool const gapped /*=false*/,
     bool const finalized /*=true*/
 ) {
+    using namespace masala::numeric_api::base_classes::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
     using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network::cost_function;
 
     masala::base::Size const last_node( gapped ? 3 : 2 );
 
-    PairwisePrecomputedCostFunctionNetworkOptimizationProblem_APISP problem( construct_test_problem(name_of_problem_class, gapped, false) );
+    CostFunctionNetworkOptimizationProblem_APISP problem_cast( construct_test_problem(name_of_problem_class, gapped, false) );
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * problem(
+        dynamic_cast< PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem * >( problem_cast->get_inner_object().get() )
+    );
+    CHECK_OR_THROW( problem != nullptr, "masala::numeric_api::utility::optimization::cost_function_network", "construct_test_problem_with_squared_choice_count_penalties", "The returned " + name_of_problem_class + " object was not a PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem." );
 
     FunctionOfIntegerPenaltySumCostFunction_APISP cost_func( masala::make_shared< FunctionOfIntegerPenaltySumCostFunction_API >() );
 
@@ -536,7 +562,7 @@ construct_test_problem_with_function_of_integer_penalty_sum_penalties(
     cost_func->set_penalty_function_behaviour_high_by_string("quadratic");
     cost_func->set_penalty_function_behaviour_low_by_string("quadratic");
 
-    problem->add_cost_function( cost_func );
+    problem->add_cost_function( cost_func->get_inner_object() );
 
     if( finalized ) {
         // Finalize the problem.
@@ -544,7 +570,7 @@ construct_test_problem_with_function_of_integer_penalty_sum_penalties(
     }
     
     // Return the problem.
-    return problem;
+    return problem_cast;
 }
 
 } // namespace cost_function_network
