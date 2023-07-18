@@ -441,11 +441,11 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
         include_subcategories ?
-        plugins_by_hierarchical_subcategory_.find( category ) :
-        plugins_by_hierarchical_category_.find( category )
+        plugins_by_hierarchical_category_.find( category ) :
+        plugins_by_hierarchical_subcategory_.find( category )
     );
     CHECK_OR_THROW_FOR_CLASS(
-        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        include_subcategories ? (it != plugins_by_hierarchical_category_.end()) : (it != plugins_by_hierarchical_subcategory_.end()),
         "create_plugin_object_instance",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
@@ -482,11 +482,11 @@ MasalaPluginModuleManager::create_plugin_object_instance_by_short_name(
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
         include_subcategories ?
-        plugins_by_hierarchical_subcategory_.find( category ) :
-        plugins_by_hierarchical_category_.find( category )
+        plugins_by_hierarchical_category_.find( category ) :
+        plugins_by_hierarchical_subcategory_.find( category )
     );
     CHECK_OR_THROW_FOR_CLASS(
-        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        include_subcategories ? (it != plugins_by_hierarchical_category_.end()) : (it != plugins_by_hierarchical_subcategory_.end()),
         "create_plugin_object_instance_by_short_name",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
@@ -647,6 +647,7 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
                     plugins_by_hierarchical_category_.find( ss )
                 );
                 if( it == plugins_by_hierarchical_category_.end() ) {
+                    //write_to_tracer( "Created category [" + base::utility::container::container_to_string( ss, ", " ) + "]." );
                     plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
                 } else {
                     std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
