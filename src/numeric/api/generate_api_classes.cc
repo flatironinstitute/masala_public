@@ -32,8 +32,6 @@
 #include <numeric/optimization/annealing/AnnealingScheduleBase.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems.hh>
-#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblem.hh>
-#include <numeric/optimization/cost_function_network/PairwisePrecomputedCostFunctionNetworkOptimizationProblems.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
@@ -61,8 +59,6 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::annealing::AnnealingScheduleBase >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblems >() );
-        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblem >() );
-        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::PairwisePrecomputedCostFunctionNetworkOptimizationProblems >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolution >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolutions >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::CostFunction >() );
