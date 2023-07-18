@@ -359,7 +359,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
     if inputclass.startswith( "size_pair_hash" ) or inputclass.startswith( "base::size_pair_hash" ) or inputclass.startswith( "masala::base::size_pair_hash" ) :
         additional_includes.append( "<base/hash_types.hh>" )
         return "masala::base::size_pair_hash"
-    
+
     api_classname = ""
     api_filename = ""
     firstspace = inputclass.find(" ")
@@ -372,10 +372,11 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
     inputclass_split = inputclass_base.split("::")
     assert len(inputclass_split) > 2
     for i in range(len(inputclass_split)) :
-        if i == 0 :
-            continue # Skip "masala"
         curstring = inputclass_split[i]
         api_classname += curstring
+        if i == 0 :
+            api_classname += "::"
+            continue # Skip "masala"
         api_filename += curstring
         if i == 1 :
             if is_enum == False:
