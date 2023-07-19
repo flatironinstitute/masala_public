@@ -43,19 +43,6 @@ namespace base {
 		}
 	};
 
-	/// @brief Used for std::unordered_map with std::pair< std::pair< Size, Size >, std::pair< Size, Size > > as the key.
-    struct size_pair_of_pairs_hash {
-    std::size_t 
-    operator()( std::pair< std::pair< Size, Size >, std::pair< Size, Size > > const & key ) const {
-        Size h1 = std::hash< Size >{}( key.first.first );
-        Size h2 = std::hash< Size >{}( key.first.second );
-        Size h3 = std::hash< Size >{}( key.second.first );
-        Size h4 = std::hash< Size >{}( key.second.second );
-
-        return (h1 << 48) | (h2 << 32 ) | (h3 << 16) | h4;
-    }
-};
-
 } // namespace base
 } // namespace masala
 
