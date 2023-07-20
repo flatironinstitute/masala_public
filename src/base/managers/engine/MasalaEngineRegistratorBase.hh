@@ -48,7 +48,7 @@ public:
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~MasalaEngineRegistratorBase() = default;
+	virtual ~MasalaEngineRegistratorBase() = 0;
 
 }; // class MasalaEngineRegistratorBase
 
