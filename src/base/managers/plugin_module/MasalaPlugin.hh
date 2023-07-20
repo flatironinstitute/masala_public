@@ -53,7 +53,7 @@ public:
 	MasalaPlugin( MasalaPlugin const & ) = default;
 
 	/// @brief Virtual destructor.
-	~MasalaPlugin() override = default;
+	~MasalaPlugin() override = 0;
 
 public:
 

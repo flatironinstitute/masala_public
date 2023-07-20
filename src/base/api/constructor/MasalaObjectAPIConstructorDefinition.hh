@@ -75,7 +75,7 @@ public:
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	~MasalaObjectAPIConstructorDefinition() override = default;
+	~MasalaObjectAPIConstructorDefinition() override = 0;
 
 public:
 
