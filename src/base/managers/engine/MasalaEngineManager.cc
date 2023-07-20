@@ -25,7 +25,7 @@
 #include <base/managers/engine/MasalaEngineManager.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaEngineCreatorBase.hh>
+#include <base/managers/engine/MasalaEngineCreator.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -67,7 +67,7 @@ MasalaEngineManager::create_engine(
     bool const throw_if_missing /*= true*/
 ) const {
     std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
-    std::map< std::string, MasalaEngineCreatorBaseCSP >::const_iterator it( engine_creators_.find(engine_type) );
+    std::map< std::string, MasalaEngineCreatorCSP >::const_iterator it( engine_creators_.find(engine_type) );
     if( it == engine_creators_.end() ) {
         if( throw_if_missing ) {
             MASALA_THROW( class_namespace_and_name(), "create_engine", "Could not find engine \"" + engine_type + "\".  Has it been registered?" );
@@ -84,7 +84,7 @@ MasalaEngineManager::create_engine(
 void
 MasalaEngineManager::register_engine(
     std::string const & engine_name,
-    MasalaEngineCreatorBaseCSP engine_creator,
+    MasalaEngineCreatorCSP engine_creator,
     bool const throw_if_present /*= true*/
 ) {
     std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
@@ -103,7 +103,7 @@ MasalaEngineManager::unregister_engine(
     bool const throw_if_missing /*= true*/
 ) {
     std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
-    std::map< std::string, MasalaEngineCreatorBaseCSP >::const_iterator it( engine_creators_.find(engine_name) );
+    std::map< std::string, MasalaEngineCreatorCSP >::const_iterator it( engine_creators_.find(engine_name) );
     if( it == engine_creators_.end() ) {
         if( throw_if_missing ) {
             MASALA_THROW( class_namespace_and_name(), "unregister_engine", "No engine was registered with name \"" + engine_name + "\"." );

@@ -16,14 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaEngineCreatorBase.fwd.hh
+/// @file src/base/managers/engine/MasalaEngineCreator.fwd.hh
 /// @brief Forward declarations for a base class for creating Masala engines.
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaEngineCreatorBase_fwd_hh
-#define Masala_src_base_managers_engine_MasalaEngineCreatorBase_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaEngineCreator_fwd_hh
+#define Masala_src_base_managers_engine_MasalaEngineCreator_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -32,27 +32,27 @@ namespace base {
 namespace managers {
 namespace engine {
 
-	class MasalaEngineCreatorBase;
+	class MasalaEngineCreator;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using MasalaEngineCreatorBaseSP = MASALA_SHARED_POINTER< MasalaEngineCreatorBase >;
+	using MasalaEngineCreatorSP = MASALA_SHARED_POINTER< MasalaEngineCreator >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using MasalaEngineCreatorBaseCSP = MASALA_SHARED_POINTER< MasalaEngineCreatorBase const >;
+	using MasalaEngineCreatorCSP = MASALA_SHARED_POINTER< MasalaEngineCreator const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using MasalaEngineCreatorBaseWP = MASALA_WEAK_POINTER< MasalaEngineCreatorBase >;
+	using MasalaEngineCreatorWP = MASALA_WEAK_POINTER< MasalaEngineCreator >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using MasalaEngineCreatorBaseCWP = MASALA_WEAK_POINTER< MasalaEngineCreatorBase const >;
+	using MasalaEngineCreatorCWP = MASALA_WEAK_POINTER< MasalaEngineCreator const >;
 
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaEngineCreatorBase_fwd_hh
+#endif //Masala_src_base_managers_engine_MasalaEngineCreator_fwd_hh

@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaEngineCreatorBase.hh
+/// @file src/base/managers/engine/MasalaEngineCreator.hh
 /// @brief A pure virtual base class for creators for engines.
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaEngineCreatorBase_hh
-#define Masala_src_base_managers_engine_MasalaEngineCreatorBase_hh
+#ifndef Masala_src_base_managers_engine_MasalaEngineCreator_hh
+#define Masala_src_base_managers_engine_MasalaEngineCreator_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -43,7 +43,7 @@ namespace engine {
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineCreatorBase : public masala::base::MasalaObject {
+class MasalaEngineCreator : public masala::base::MasalaObject {
 
     friend class MasalaEngineRegistratorBase; // For creation.
     friend class MasalaEngineManager; // To call protected create_engine() function.
@@ -56,7 +56,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	MasalaEngineCreatorBase() = default;
+	MasalaEngineCreator() = default;
 
 public:
 
@@ -65,11 +65,11 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Copy constructor, deleted.
-	MasalaEngineCreatorBase( MasalaEngineCreatorBase const & ) = delete;
+	MasalaEngineCreator( MasalaEngineCreator const & ) = delete;
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~MasalaEngineCreatorBase() = default;
+	virtual ~MasalaEngineCreator() = default;
 
 protected:
 
@@ -82,11 +82,11 @@ protected:
 	MasalaEngineBaseSP
 	create_engine() const = 0;
 
-}; // class MasalaEngineCreatorBase
+}; // class MasalaEngineCreator
 
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaEngineCreatorBase_hh
+#endif //Masala_src_base_managers_engine_MasalaEngineCreator_hh

@@ -32,7 +32,7 @@
 
 // Base headers:
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
-#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -109,7 +109,7 @@ public:
     void
     register_engine(
         std::string const & engine_name,
-        MasalaEngineCreatorBaseCSP engine_creator,
+        MasalaEngineCreatorCSP engine_creator,
         bool const throw_if_present = true
     );
 
@@ -132,7 +132,7 @@ private:
     mutable std::mutex masala_engine_manager_mutex_;
 
     /// @brief A map of string to engine creator.
-    std::map< std::string, MasalaEngineCreatorBaseCSP > engine_creators_;
+    std::map< std::string, MasalaEngineCreatorCSP > engine_creators_;
 
 };
 

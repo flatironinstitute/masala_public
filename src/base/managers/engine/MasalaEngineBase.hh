@@ -34,7 +34,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
-#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -51,7 +51,7 @@ namespace engine {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngineBase : public masala::base::managers::plugin_module::MasalaPlugin {
 
-    friend class MasalaEngineCreatorBase;
+    friend class MasalaEngineCreator;
 
 protected:
 
