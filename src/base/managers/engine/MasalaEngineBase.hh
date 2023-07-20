@@ -33,7 +33,7 @@
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
 
 namespace masala {
@@ -49,7 +49,7 @@ namespace engine {
 /// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
 /// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineBase : public masala::base::MasalaObject {
+class MasalaEngineBase : public masala::base::managers::plugin_module::MasalaPlugin {
 
     friend class MasalaEngineCreatorBase;
 
@@ -73,7 +73,26 @@ public:
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~MasalaEngineBase() = default;
+	virtual ~MasalaEngineBase() = 0;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// ENGINE CATEGORIES
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Categories for engines.
+    /// @details Like plugin categories, engine categories are hierarchical.  The hieraruchy
+    /// is important for deciding what engines are equvalent. For instance, if I had
+    /// "Solver"->"KinematicSolver"->"AnalyticKinematicSolver", I could request only the analytic
+    /// kinematic solvers, all kinematic solvers, or all solvers in general.
+    /// @note An engine may exist in more than one hierarchical category.  The outer vector is
+    /// a list of hierarchical categories, and the inner vector is the particular hierarchical
+    /// category, from most general to most specific.  Also note that this function is pure
+    /// virtual, and must be defined for instantiable Engine subclasses.
+    virtual
+    std::vector< std::vector < std::string > >
+    get_engine_categories() const = 0;
 
 }; // class MasalaEngineBase
 
