@@ -67,6 +67,21 @@ Optimizer::get_keywords() const {
 	};
 }
 
+/// @brief Categories for engines.
+/// @details Like plugin categories, engine categories are hierarchical.  The hieraruchy
+/// is important for deciding what engines are equvalent. For instance, if I had
+/// "Solver"->"KinematicSolver"->"AnalyticKinematicSolver", I could request only the analytic
+/// kinematic solvers, all kinematic solvers, or all solvers in general.
+/// @note An engine may exist in more than one hierarchical category.  The outer vector is
+/// a list of hierarchical categories, and the inner vector is the particular hierarchical
+/// category, from most general to most specific.  Also note that this function is pure
+/// virtual, and must be defined for instantiable MasalaEngine subclasses.
+/// @returns { {"Optimizer"} }
+std::vector< std::vector < std::string > >
+Optimizer::get_engine_categories() const {
+    return std::vector< std::vector < std::string > >{ { "Optimizer" } };
+}
+
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
