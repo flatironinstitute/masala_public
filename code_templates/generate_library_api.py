@@ -1047,8 +1047,10 @@ def prepare_creator_header_file( \
     
     if is_engine == True :
         base_include_file = "base/managers/engine/MasalaEngineCreator.hh"
+        plugin_creator_base_class="masala::base::managers::engine::MasalaEngineCreator"
     else :
         base_include_file = "base/managers/plugin_module/MasalaPluginCreator.hh"
+        plugin_creator_base_class="masala::base::managers::plugin_module::MasalaPluginCreator"
 
     plugin_creator_hhfile = \
         plugin_creator_hhfile_template \
@@ -1067,7 +1069,8 @@ def prepare_creator_header_file( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string ) \
-        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <" + base_include_file + ">" )
+        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <" + base_include_file + ">" ) \
+        .replace( "<__PLUGIN_CREATOR_BASE_CLASS__>", plugin_creator_base_class )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_hhfile )

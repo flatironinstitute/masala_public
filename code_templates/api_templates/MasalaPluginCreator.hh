@@ -25,7 +25,7 @@
 /// @details Creators are needed to allow the Masala plugin system to use objects
 /// defined in plugin libraries.
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
-class <__CREATOR_CLASS_API_NAME__> : public masala::base::managers::plugin_module::MasalaPluginCreator {
+class <__CREATOR_CLASS_API_NAME__> : public <__PLUGIN_CREATOR_BASE_CLASS__> {
 
 public:
 
