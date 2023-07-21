@@ -31,7 +31,8 @@
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaEngineBase.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
 #include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 // STL headers:
@@ -97,7 +98,7 @@ public:
     /// @brief Create an engine, by name.
     /// @details If throw_if_missing is true, this function will throw an exception if it can't
     /// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
-    MasalaEngineBaseSP
+    masala::base::managers::plugin_module::MasalaPluginAPISP
     create_engine(
         std::string const & engine_type,
         bool const throw_if_missing = true

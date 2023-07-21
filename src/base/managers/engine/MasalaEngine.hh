@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaEngineBase.hh
+/// @file src/base/managers/engine/MasalaEngine.hh
 /// @brief A base class for Masala engines, which perform hard calculations of a given type using
 /// a given method.
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
@@ -26,11 +26,11 @@
 /// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaEngineBase_hh
-#define Masala_src_base_managers_engine_MasalaEngineBase_hh
+#ifndef Masala_src_base_managers_engine_MasalaEngine_hh
+#define Masala_src_base_managers_engine_MasalaEngine_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaEngineBase.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
@@ -49,7 +49,7 @@ namespace engine {
 /// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
 /// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineBase : public masala::base::managers::plugin_module::MasalaPlugin {
+class MasalaEngine : public masala::base::managers::plugin_module::MasalaPlugin {
 
     friend class MasalaEngineCreator;
 
@@ -60,7 +60,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	MasalaEngineBase() = default;
+	MasalaEngine() = default;
 
 public:
 
@@ -69,11 +69,11 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Copy constructor.
-	MasalaEngineBase( MasalaEngineBase const & ) = default;
+	MasalaEngine( MasalaEngine const & ) = default;
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~MasalaEngineBase() = 0;
+	virtual ~MasalaEngine() = 0;
 
 public:
 
@@ -94,11 +94,11 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const = 0;
 
-}; // class MasalaEngineBase
+}; // class MasalaEngine
 
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaEngineBase_hh
+#endif //Masala_src_base_managers_engine_MasalaEngine_hh

@@ -35,7 +35,7 @@
 #include <numeric_api/auto_generated_api/optimization/OptimizationSolutions_API.fwd.hh>
 
 // Parent header:
-#include <base/managers/engine/MasalaEngineBase.hh>
+#include <base/managers/engine/MasalaEngine.hh>
 
 namespace masala {
 namespace numeric_api {
@@ -48,7 +48,7 @@ namespace optimization {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Optimizer : public masala::base::managers::engine::MasalaEngineBase {
+class Optimizer : public masala::base::managers::engine::MasalaEngine {
 
 public:
 
