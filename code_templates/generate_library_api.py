@@ -1021,7 +1021,8 @@ def prepare_creator_header_file( \
     name_string : str, \
     namespace : list, \
     library_name : str, \
-    project_name : str \
+    project_name : str, \
+    is_engine : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1043,6 +1044,11 @@ def prepare_creator_header_file( \
         else :
             creator_namespace_string += "::"
         creator_namespace_string += entry
+    
+    if is_engine == True :
+        base_include_file = "base/managers/engine/MasalaEngineCreator.hh"
+    else :
+        base_include_file = "base/managers/plugin_module/MasalaPluginCreator.hh"
 
     plugin_creator_hhfile = \
         plugin_creator_hhfile_template \
@@ -1061,7 +1067,7 @@ def prepare_creator_header_file( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string ) \
-        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <base/managers/plugin_module/MasalaPluginCreator.hh>" )
+        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <" + base_include_file + ">" )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_hhfile )
@@ -1563,6 +1569,10 @@ if json_api["Elements"] is not None :
         assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
         dirname = prepare_directory( project_name, library_name, namespace )
         is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
+        if "Is_Engine_Class" in json_api["Elements"][element]["Properties"] :
+            is_engine_class = json_api["Elements"][element]["Properties"]["Is_Engine_Class"]
+        else :
+            is_engine_class = False
         if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
             prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class )
@@ -1577,7 +1587,7 @@ if json_api["Elements"] is not None :
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
             plugins_list.append( [creator_name,creator_namespace,creator_filename] )
             prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
-            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class  )
             prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
     
     if generate_registration_function == True :

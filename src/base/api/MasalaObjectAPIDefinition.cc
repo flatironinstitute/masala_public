@@ -31,6 +31,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 #include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaEngine.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -68,12 +69,22 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
     has_protected_constructors_( has_protected_constructors ),
     is_lightweight_( is_lightweight )
 {
-    using namespace base::managers::plugin_module;
-    MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
-    is_plugin_class_ = ( this_object_cast != nullptr );
-    if( is_plugin_class_ ) {
-        plugin_categories_ = this_object_cast->get_categories();
-        plugin_keywords_ = this_object_cast->get_keywords();
+    using namespace masala::base::managers::plugin_module;
+    using namespace masala::base::managers::engine;
+    {
+        MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
+        is_plugin_class_ = ( this_object_cast != nullptr );
+        if( is_plugin_class_ ) {
+            plugin_categories_ = this_object_cast->get_categories();
+            plugin_keywords_ = this_object_cast->get_keywords();
+        }
+    }
+    {
+        MasalaEngine const * this_object_engine_cast( dynamic_cast< MasalaEngine const * >(&this_object) );
+        is_engine_class_ = ( this_object_engine_cast != nullptr );
+        if( is_engine_class_ ) {
+            engine_categories_ = this_object_engine_cast->get_engine_categories();
+        }
     }
 }
 
@@ -187,7 +198,6 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
     ss << "Has_Protected_Constructors:\t" << ( has_protected_constructors_ ? "TRUE" : "FALSE" ) << "\n";
     ss << "Is_Lightweight:\t" << ( is_lightweight_ ? "TRUE" : "FALSE" ) << "\n";
     ss << "Is_Plugin_Class:\t" << ( is_plugin_class_ ? "TRUE" : "FALSE" ) << "\n";
-
     if( is_plugin_class_ ) {
         ss << "\nPLUGIN_CATEGORIES:\n";
         for( auto const & category : plugin_categories_ ) {
@@ -218,6 +228,23 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
         }
     }
 
+    ss << "Is_Engine_Class:\t" << ( is_engine_class_ ? "TRUE" : "FALSE" ) << "\n";
+    if( is_engine_class_ ) {
+        ss << "\nENGINE_CATEGORIES:\n";
+        for( auto const & category : engine_categories_ ) {
+            bool first( true );
+            for( auto const & level : category ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << level;
+            }
+            ss << "\n";
+        }
+    }
+
     return ss.str();
 }
 
@@ -241,6 +268,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
     json_api["Properties"] = std::map< std::string, bool >{
         { "Is_Lightweight", is_lightweight_ },
         { "Is_Plugin_Class", is_plugin_class_ },
+        { "Is_Engine_Class", is_engine_class_ },
         { "Has_Protected_Constructors", has_protected_constructors_ }
     };
 
@@ -248,6 +276,9 @@ MasalaObjectAPIDefinition::get_json_description() const {
         json_api[ "Plugin_Categories" ] = plugin_categories_;
         json_api[ "Plugin_Keywords" ] = plugin_keywords_;
     } 
+    if( is_engine_class_ ) {
+        json_api[ "Engine_Categories" ] = engine_categories_;
+    }
 
     return json_ptr;
 }
@@ -369,6 +400,15 @@ MasalaObjectAPIDefinition::plugin_categories() const {
 std::vector< std::string > const &
 MasalaObjectAPIDefinition::plugin_keywords() const {
     return plugin_keywords_;
+}
+
+/// @brief Get the categories that this object is in, if it is a MasalaEngine object.
+/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+/// An object can be in more than one category.
+std::vector< std::vector< std::string > > const &
+MasalaObjectAPIDefinition::engine_categories() const {
+    return engine_categories_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
