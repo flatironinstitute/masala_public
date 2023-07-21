@@ -71,9 +71,8 @@ public:
 	/// @brief Copy constructor.
 	MasalaEngine( MasalaEngine const & ) = default;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
-	virtual ~MasalaEngine() = 0;
+	/// @brief Destructor.
+	~MasalaEngine() override = default;
 
 public:
 
