@@ -1060,7 +1060,8 @@ def prepare_creator_header_file( \
         .replace( "<__SOURCE_CLASS_NAMESPACE__>", original_class_namespace_string ) \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
-        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string )
+        .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string ) \
+        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <base/managers/plugin_module/MasalaPluginCreator.hh>" )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_hhfile )

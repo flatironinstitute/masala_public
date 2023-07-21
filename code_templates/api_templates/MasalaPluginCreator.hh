@@ -13,8 +13,7 @@
 <__CREATOR_INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>
 
 // Base headers:
-#include <base/managers/plugin_module/MasalaPluginCreator.hh>
-#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>
 
 // STL headers:
 #include <vector>
