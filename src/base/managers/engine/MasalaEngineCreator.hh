@@ -30,8 +30,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
-#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
-#include <base/managers/engine/MasalaEngine.fwd.hh>
+#include <base/managers/engine/MasalaEngineAPI.fwd.hh>
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
 #include <base/managers/engine/MasalaEngineRegistratorBase.fwd.hh>
 
@@ -69,7 +68,7 @@ public:
 
 	/// @brief The create_engine() function just calls the
     /// create_plugin_object() function under the hood.
-	masala::base::managers::plugin_module::MasalaPluginAPISP
+	MasalaEngineAPISP
 	create_engine() const;
 
 }; // class MasalaEngineCreator

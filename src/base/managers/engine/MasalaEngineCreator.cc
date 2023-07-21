@@ -25,6 +25,12 @@
 // Forward declarations:
 #include <base/managers/engine/MasalaEngineCreator.hh>
 
+// Base headers:
+#include <base/managers/engine/MasalaEngineAPI.hh>
+#ifndef NDEBUG
+#include <base/error/ErrorHandling.hh>
+#endif
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -37,9 +43,17 @@ namespace engine {
 
 /// @brief The create_engine() function just calls the
 /// create_plugin_object() function under the hood.
-masala::base::managers::plugin_module::MasalaPluginAPISP
+MasalaEngineAPISP
 MasalaEngineCreator::create_engine() const {
-    return create_plugin_object();
+#ifndef NDEBUG
+    // In debiug builds, double-check return type.
+    MasalaEngineAPISP returnobj( std::dynamic_pointer_cast< MasalaEngineAPI >( create_plugin_object() ) );
+    CHECK_OR_THROW_FOR_CLASS( returnobj != nullptr, "create_engine", "The " + returnobj->inner_class_name() + " class is not an engine!" );
+    return returnobj;
+#else
+    // In release builds, assume that return type is fine.
+    return std::static_pointer_cast< MasalaEngineAPI >( create_plugin_object() );
+#endif
 }
 
 

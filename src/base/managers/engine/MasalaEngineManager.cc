@@ -61,7 +61,7 @@ MasalaEngineManager::class_namespace() const {
 /// @brief Create an engine, by name.
 /// @details If throw_if_missing is true, this function will throw an exception if it can't
 /// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
-masala::base::managers::plugin_module::MasalaPluginAPISP
+MasalaEngineAPISP
 MasalaEngineManager::create_engine(
     std::string const & engine_type,
     bool const throw_if_missing /*= true*/
