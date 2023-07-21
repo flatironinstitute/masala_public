@@ -29,7 +29,7 @@
 #include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/managers/engine/MasalaEngineBase.fwd.hh>
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
 #include <base/managers/engine/MasalaEngineRegistratorBase.fwd.hh>
@@ -43,20 +43,7 @@ namespace engine {
 /// @details Subclasses will be needed for each Masala engine type that a library defines.
 /// These must be registered with the MasalaEngineManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineCreator : public masala::base::MasalaObject {
-
-    friend class MasalaEngineRegistratorBase; // For creation.
-    friend class MasalaEngineManager; // To call protected create_engine() function.
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// CONSTRUCTOR -- PROTECTED TO ALLOW ONLY MasalaEngineRegistrators
-// TO CREATE CREATORS.
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Default constructor.
-	MasalaEngineCreator() = default;
+class MasalaEngineCreator : public masala::base::managers::plugin_module::MasalaPluginCreator {
 
 public:
 
@@ -64,23 +51,25 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Default constructor.
+	MasalaEngineCreator() = default;
+
 	/// @brief Copy constructor, deleted.
 	MasalaEngineCreator( MasalaEngineCreator const & ) = delete;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
-	virtual ~MasalaEngineCreator() = default;
+	/// @brief Destructor.
+	~MasalaEngineCreator() override = default;
 
-protected:
+public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
+// PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief All Masala engine creators must implement a create_engine() method.
-	virtual
+	/// @brief The create_engine() function just calls the
+    /// create_plugin_object() function under the hood.
 	MasalaEngineBaseSP
-	create_engine() const = 0;
+	create_engine() const;
 
 }; // class MasalaEngineCreator
 
