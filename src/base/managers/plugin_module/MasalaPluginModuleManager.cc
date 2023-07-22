@@ -33,6 +33,8 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
+#include <base/managers/engine/MasalaEngineCreator.hh>
+#include <base/managers/engine/MasalaEngineManager.hh>
 
 // STL headers:
 #include <string>
@@ -147,13 +149,25 @@ MasalaPluginModuleManager::add_plugins(
     
 /// @brief Add a plugin to the list of plugins that the manager knows about.
 /// @details Throws if the plugin has already been added.  Call has_plugin()
-/// first to query wiether the plugin has already been added.
+/// first to query wiether the plugin has already been added.  If the plugin
+/// is for a MasalaEngine, this also registers it with the MasalaEngineManager.
 void
 MasalaPluginModuleManager::add_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    add_plugin_mutex_locked( creator );
+    using namespace masala::base::managers::engine;
+    {
+        // Register the plugin.
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        add_plugin_mutex_locked( creator );
+    }
+    {
+        // If the plugin is an engine, register it with the MasalaEngineManager.
+        MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+        if( engine_creator != nullptr ) {
+            MasalaEngineManager::get_instance()->register_engine( engine_creator );
+        }
+    }
 }
 
 /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.

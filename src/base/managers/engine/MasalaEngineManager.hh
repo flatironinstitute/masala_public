@@ -106,13 +106,10 @@ public:
     ) const;
 
     /// @brief Register an engine, by name.
-    /// @details If throw_if_present is true, an exception is thrown if the engine_name is
-    /// already registered.  Otherwise, this silently replaces the registered engine.
+    /// @details An exception is thrown if the engine_name is already registered.
     void
     register_engine(
-        std::string const & engine_name,
-        MasalaEngineCreatorCSP engine_creator,
-        bool const throw_if_present = true
+        MasalaEngineCreatorCSP engine_creator
     );
 
     /// @brief Unregister an engine, by name.

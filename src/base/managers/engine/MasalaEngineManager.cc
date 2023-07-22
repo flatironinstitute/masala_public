@@ -79,19 +79,18 @@ MasalaEngineManager::create_engine(
 }
 
 /// @brief Register an engine, by name.
-/// @details If throw_if_present is true, an exception is thrown if the engine_name is
-/// already registered.  Otherwise, this silently replaces the registered engine.
+/// @details An exception is thrown if the engine_name is already registered.
 void
 MasalaEngineManager::register_engine(
-    std::string const & engine_name,
-    MasalaEngineCreatorCSP engine_creator,
-    bool const throw_if_present /*= true*/
+    MasalaEngineCreatorCSP engine_creator
 ) {
     std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
-    if( throw_if_present && engine_creators_.find(engine_name) != engine_creators_.end() ) {
+    std::string const engine_name( engine_creator->get_plugin_object_namespace_and_name() );
+    if( engine_creators_.find(engine_name) != engine_creators_.end() ) {
         MASALA_THROW( class_namespace_and_name(), "register_engine", "Engine \"" + engine_name + "\" has already been registered!"  );
     }
     engine_creators_[engine_name] = engine_creator;
+    write_to_tracer( "Registered engine " + engine_name + " with the MasalaEngineManager." );
 }
 
 /// @brief Unregister an engine, by name.

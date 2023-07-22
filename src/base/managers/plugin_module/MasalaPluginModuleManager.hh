@@ -145,7 +145,8 @@ public:
     
     /// @brief Add a plugin to the list of plugins that the manager knows about.
     /// @details Throws if the plugin has already been added.  Call has_plugin()
-    /// first to query wiether the plugin has already been added.
+    /// first to query wiether the plugin has already been added.  If the plugin
+    /// is for a MasalaEngine, this also registers it with the MasalaEngineManager.
     void
     add_plugin(
         MasalaPluginCreatorCSP const & creator
