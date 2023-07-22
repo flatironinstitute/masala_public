@@ -124,7 +124,8 @@ MasalaPluginModuleManager::has_plugin(
 }
 
 /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
-/// @details Throws if any plugin has already been added.
+/// @details Throws if any plugin has already been added.  If a plugin
+/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
@@ -153,7 +154,8 @@ MasalaPluginModuleManager::add_plugins(
 }
 
 /// @brief Add a set of plugins to the list of plugins that the manager knows about.
-/// @details Throws if any plugin has already been added.
+/// @details Throws if any plugin has already been added.  If a plugin
+/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
@@ -168,10 +170,10 @@ MasalaPluginModuleManager::add_plugins(
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
         for( auto const & creator : creators ) {
             add_plugin_mutex_locked( creator );
-            MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
-            if( engine_creator != nullptr ) {
-                engine_creators.push_back( engine_creator );
-            }
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
         }
     }
 
@@ -184,7 +186,7 @@ MasalaPluginModuleManager::add_plugins(
 /// @brief Add a plugin to the list of plugins that the manager knows about.
 /// @details Throws if the plugin has already been added.  Call has_plugin()
 /// first to query wiether the plugin has already been added.  If the plugin
-/// is for a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
 void
 MasalaPluginModuleManager::add_plugin(
     MasalaPluginCreatorCSP const & creator
@@ -205,59 +207,91 @@ MasalaPluginModuleManager::add_plugin(
 }
 
 /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered
+/// @details Throws if the plugin is not registered.  Also removes engines from the
+/// MasalaEngineManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
-    // write_to_tracer( "Removing a set of creators..." ); // DELETE ME
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
+	using namespace masala::base::managers::engine;
+	std::vector< MasalaEngineCreatorCSP > engine_creators;
+	engine_creators.reserve(creators.size());
 
-        // FOR DEBUGGING ONLY.  DELETE ME:
-        // write_to_tracer( "Removing " + creator->get_plugin_object_namespace_and_name() + ".  Current categories are:" );
-        // write_to_tracer( "Num_entries\tCategory" );
-        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
-		// 	std::ostringstream ss;
-		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
-		// 	write_to_tracer( ss.str() );
-		// }
+	{
+		// First, remove plugins and make a list of the subset that are engines.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		for( auto const & creator : creators ) {
+			remove_plugin_mutex_locked( creator );
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
+		}
+	}
 
-        remove_plugin_mutex_locked( creator );
-
-		// FOR DEBUGGING ONLY.  DELETE ME:
-		// write_to_tracer( "After removing " + creator->get_plugin_object_namespace_and_name() + ":" );
-		// write_to_tracer( "Num_entries\tCategory" );
-        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
-		// 	std::ostringstream ss;
-		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
-		// 	write_to_tracer( ss.str() );
-		// }
-    }
-    // write_to_tracer( "Finished removing a set of creators." ); // DELETE ME
+	{
+		// Then, remove engines from the MasalaEngineManager.
+		if( !engine_creators.empty() ) {
+			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
+		}
+	}
 }
 
 /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered
+/// @details Throws if the plugin is not registered.  Also removes engines from the
+/// MasalaEngineManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
-        remove_plugin_mutex_locked( creator );
-    }
+	using namespace masala::base::managers::engine;
+	std::vector< MasalaEngineCreatorCSP > engine_creators;
+	engine_creators.reserve(creators.size());
+
+	{
+		// First, remove plugins and make a list of the subset that are engines.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		for( auto const & creator : creators ) {
+			remove_plugin_mutex_locked( creator );
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
+		}
+	}
+
+	{
+		// Then, remove engines from the MasalaEngineManager.
+		if( !engine_creators.empty() ) {
+			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
+		}
+	}
 }
     
 /// @brief Remove a plugin from the list of plugins that the manager knows about.
 /// @details Throws if the plugin is not registered.  Call has_plugin()
-/// first to query wiether the plugin has already been added.
+/// first to query wiether the plugin has already been added.   Also removes
+/// engines from the MasalaEngineManager.
 void
 MasalaPluginModuleManager::remove_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    remove_plugin_mutex_locked( creator );
+	using namespace masala::base::managers::engine;
+
+	{
+		// First, remove this plugin.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		remove_plugin_mutex_locked( creator );
+	}
+
+	{
+		// Next, check whether the plugin is an engine, and remove it from the
+		// MasalaEngineManager if it is.
+		MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+		if( engine_creator != nullptr ) {
+			MasalaEngineManager::get_instance()->unregister_engine( engine_creator );
+		}
+	}
 }
 
 /// @brief Get a list of all plugins.
