@@ -88,7 +88,7 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 /// a list of hierarchical categories, and the inner vector is the particular hierarchical
 /// category, from most general to most specific.  Also note that this function is pure
 /// virtual, and must be defined for instantiable MasalaEngine subclasses.
-/// @returns { {"Optimizer"} }
+/// @returns { {"Optimizer", "CostFunctionNetworkOptimizer"} }
 std::vector< std::vector < std::string > >
 CostFunctionNetworkOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer", "CostFunctionNetworkOptimizer" } };
