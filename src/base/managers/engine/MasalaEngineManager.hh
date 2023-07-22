@@ -105,11 +105,18 @@ public:
         bool const throw_if_missing = true
     ) const;
 
-    /// @brief Register an engine, by name.
-    /// @details An exception is thrown if the engine_name is already registered.
+    /// @brief Register an engine.
+    /// @details An exception is thrown if the engine name is already registered.
     void
     register_engine(
-        MasalaEngineCreatorCSP engine_creator
+        MasalaEngineCreatorCSP const & engine_creator
+    );
+
+    /// @brief Register a set of engines.
+    /// @details An exception is thrown if any of the engine names are already registered.
+    void
+    register_engines(
+        std::vector< MasalaEngineCreatorCSP > const & engine_creators
     );
 
     /// @brief Unregister an engine, by name.
@@ -119,6 +126,20 @@ public:
     unregister_engine(
         std::string const & engine_name,
         bool const throw_if_missing = true
+    );
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Register an engine.
+    /// @note The masala_engine_manager_mutex_ must be locked before this function is called.
+    /// @details An exception is thrown if the engine name is already registered.
+    void
+    register_engine_mutex_locked(
+        MasalaEngineCreatorCSP const & engine_creator
     );
 
 private:

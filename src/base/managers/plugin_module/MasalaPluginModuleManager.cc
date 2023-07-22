@@ -141,9 +141,26 @@ void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
-        add_plugin_mutex_locked( creator );
+    using namespace masala::base::managers::engine;
+    std::vector< MasalaEngineCreatorCSP > engine_creators;
+    engine_creators.reserve(creators.size()); 
+
+    {
+        // First, register everything as plugins.  Build the list of the
+        // subset that are engines, too.
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        for( auto const & creator : creators ) {
+            add_plugin_mutex_locked( creator );
+            MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+            if( engine_creator != nullptr ) {
+                engine_creators.push_back( engine_creator );
+            }
+        }
+    }
+
+    // Then, register the subset that are engines with the MasalaEngineManager.
+    if( !engine_creators.empty() ) {
+        MasalaEngineManager::get_instance()->register_engines( engine_creators );
     }
 }
     
