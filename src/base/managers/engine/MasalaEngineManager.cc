@@ -164,6 +164,7 @@ MasalaEngineManager::unregister_engine_mutex_locked(
 		);
 	}
 	engine_creators_.erase(it);
+    write_to_tracer( "Unregistered engine " + engine_name + " from the MasalaEngineManager." );
 }
 
 } // namespace engine
