@@ -100,24 +100,26 @@ MasalaEngineManager::register_engines(
     }
 }
 
-/// @brief Unregister an engine, by name.
-/// @brief If the engine_name engine has not been registered, then (a) if throw_if_missing
-/// is true, an exception is thrown, or (b) if it is false, nothing happens.
+/// @brief Unregister an engine.
+/// @brief If the engine has not been registered, an exception is thrown.
 void
 MasalaEngineManager::unregister_engine(
-    std::string const & engine_name,
-    bool const throw_if_missing /*= true*/
+    MasalaEngineCreatorCSP const & engine_creator
 ) {
-    std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
-    std::map< std::string, MasalaEngineCreatorCSP >::const_iterator it( engine_creators_.find(engine_name) );
-    if( it == engine_creators_.end() ) {
-        if( throw_if_missing ) {
-            MASALA_THROW( class_namespace_and_name(), "unregister_engine", "No engine was registered with name \"" + engine_name + "\"." );
-        } else {
-            return;
-        }
-    }
-    engine_creators_.erase(it);
+	std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+	unregister_engine_mutex_locked( engine_creator );
+}
+
+/// @brief Unregister a set of engines.
+/// @brief If an engine has not been registered, an exception is thrown.
+void
+MasalaEngineManager::unregister_engines(
+    std::vector< MasalaEngineCreatorCSP > const & engine_creators
+) {
+	std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+	for( auto const & engine_creator : engine_creators ) {
+		unregister_engine_mutex_locked( engine_creator );
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,6 +143,27 @@ MasalaEngineManager::register_engine_mutex_locked(
     }
     engine_creators_[engine_name] = engine_creator;
     write_to_tracer( "Registered engine " + engine_name + " with the MasalaEngineManager." );
+}
+
+/// @brief Unregister an engine.
+/// @note The masala_engine_manager_mutex_ must be locked before this function is called.
+/// @details An exception is thrown if the engine name is not already registered.
+void
+MasalaEngineManager::unregister_engine_mutex_locked(
+	MasalaEngineCreatorCSP const & engine_creator
+) {
+    CHECK_OR_THROW_FOR_CLASS( engine_creator != nullptr, "unregister_engine_mutex_locked",
+        "A null pointer was passed to this function!  This is a program error, so consult the "
+        "developer of the Masala plugin suite that created the error."
+    );
+	std::string const engine_name( engine_creator->get_plugin_object_namespace_and_name() );
+	std::map< std::string, MasalaEngineCreatorCSP >::const_iterator it( engine_creators_.find(engine_name) );
+	if( it == engine_creators_.end() ) {
+		MASALA_THROW( class_namespace_and_name(), "unregister_engine_mutex_locked",
+			"No engine was previously registered with name \"" + engine_name + "\"."
+		);
+	}
+	engine_creators_.erase(it);
 }
 
 } // namespace engine
