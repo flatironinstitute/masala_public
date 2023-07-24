@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaEngineBase.hh
+/// @file src/base/managers/engine/MasalaEngine.hh
 /// @brief A base class for Masala engines, which perform hard calculations of a given type using
 /// a given method.
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
@@ -26,15 +26,15 @@
 /// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaEngineBase_hh
-#define Masala_src_base_managers_engine_MasalaEngineBase_hh
+#ifndef Masala_src_base_managers_engine_MasalaEngine_hh
+#define Masala_src_base_managers_engine_MasalaEngine_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaEngineBase.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
-#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -49,9 +49,9 @@ namespace engine {
 /// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
 /// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineBase : public masala::base::MasalaObject {
+class MasalaEngine : public masala::base::managers::plugin_module::MasalaPlugin {
 
-    friend class MasalaEngineCreatorBase;
+    friend class MasalaEngineCreator;
 
 protected:
 
@@ -60,7 +60,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	MasalaEngineBase() = default;
+	MasalaEngine() = default;
 
 public:
 
@@ -69,17 +69,35 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Copy constructor.
-	MasalaEngineBase( MasalaEngineBase const & ) = default;
+	MasalaEngine( MasalaEngine const & ) = default;
 
-	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
-	/// derived classes can.
-	virtual ~MasalaEngineBase() = default;
+	/// @brief Destructor.
+	~MasalaEngine() override = default;
 
-}; // class MasalaEngineBase
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// ENGINE CATEGORIES
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Categories for engines.
+    /// @details Like plugin categories, engine categories are hierarchical.  The hieraruchy
+    /// is important for deciding what engines are equvalent. For instance, if I had
+    /// "Solver"->"KinematicSolver"->"AnalyticKinematicSolver", I could request only the analytic
+    /// kinematic solvers, all kinematic solvers, or all solvers in general.
+    /// @note An engine may exist in more than one hierarchical category.  The outer vector is
+    /// a list of hierarchical categories, and the inner vector is the particular hierarchical
+    /// category, from most general to most specific.  Also note that this function is pure
+    /// virtual, and must be defined for instantiable Engine subclasses.
+    virtual
+    std::vector< std::vector < std::string > >
+    get_engine_categories() const = 0;
+
+}; // class MasalaEngine
 
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaEngineBase_hh
+#endif //Masala_src_base_managers_engine_MasalaEngine_hh

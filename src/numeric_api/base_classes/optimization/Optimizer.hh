@@ -35,7 +35,7 @@
 #include <numeric_api/auto_generated_api/optimization/OptimizationSolutions_API.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaEngine.hh>
 
 namespace masala {
 namespace numeric_api {
@@ -48,7 +48,7 @@ namespace optimization {
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Optimizer : public masala::base::managers::plugin_module::MasalaPlugin {
+class Optimizer : public masala::base::managers::engine::MasalaEngine {
 
 public:
 
@@ -83,6 +83,19 @@ public:
 	/// @returns { "optimizer", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Categories for engines.
+    /// @details Like plugin categories, engine categories are hierarchical.  The hieraruchy
+    /// is important for deciding what engines are equvalent. For instance, if I had
+    /// "Solver"->"KinematicSolver"->"AnalyticKinematicSolver", I could request only the analytic
+    /// kinematic solvers, all kinematic solvers, or all solvers in general.
+    /// @note An engine may exist in more than one hierarchical category.  The outer vector is
+    /// a list of hierarchical categories, and the inner vector is the particular hierarchical
+    /// category, from most general to most specific.  Also note that this function is pure
+    /// virtual, and must be defined for instantiable MasalaEngine subclasses.
+	/// @returns { {"Optimizer"} }
+    std::vector< std::vector < std::string > >
+    get_engine_categories() const override;
 
 	/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
