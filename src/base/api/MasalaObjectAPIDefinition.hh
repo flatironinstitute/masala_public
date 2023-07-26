@@ -214,6 +214,12 @@ public:
 	/// derive from MasalaEngineAPI.
 	inline bool is_engine_class() const { return is_engine_class_; }
 
+	/// @brief Is this a MasalaDataRepresentation class that should be registered with the data
+	/// representation manager?
+	/// @details If so, the API creator will derive from MasalaDataRepresentationCreator and the
+	/// API will derive from MasalaDataRepresentationAPI.
+	inline bool is_data_representation_class() const { return is_data_representation_class_; }
+
 	/// @brief Get the categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -231,6 +237,41 @@ public:
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > const &
 	engine_categories() const;
+
+	/// @brief Get the categories that this object is in, if it is a MasalaDataRepresentation
+	/// object.
+	std::vector< std::vector< std::string > > const &
+	data_representation_categories() const;
+
+	/// @brief Get the properties that this object definitely has, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_present_properties() const;
+
+	/// @brief Get the properties that this object definitely does not have , if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_absent_properties() const;
+
+	/// @brief Get the properties that this object could have, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_possibly_present_properties() const;
+
+	/// @brief Get the properties that this object could be lacking, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_possibly_absent_properties() const;
+
+	/// @brief Get the MasalaEngines that this object is definitely compatible with, if it is
+	/// a MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_compatible_engines() const;
+
+	/// @brief Get the MasalaEngines that this object is definitely not compatible with, if it
+	/// is a MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_incompatible_engines() const;
 
 private:
 
@@ -257,6 +298,10 @@ private:
 	/// @details Nothing is cached here, so this will generate a new JSON object
 	/// each time it is called.  This isn't super fast.
 	nlohmann::json get_json_description_for_work_functions() const;
+
+	/// @brief Given a vector of strings, write a header followed by the vector as a comma-separated list,
+	/// or [NONE] if the vector is empty.
+	void write_list_to_stream( std::ostringstream & ss, std::string const & header, std::vector< std::string > const & list_to_write ) const;
 
 private:
 
@@ -308,6 +353,12 @@ private:
 	/// MasalaPluginAPI.
 	bool is_engine_class_ = false;
 
+	/// @brief Is this a MasalaDataRepresentation class?
+	/// @details If so, the API creator is derived from MasalaDataRepresentationCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaDataRepresentationAPI instead of
+	/// MasalaPluginAPI.
+	bool is_data_representation_class_ = false;
+
 	/// @brief The categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -322,6 +373,36 @@ private:
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > engine_categories_;
+
+	/// @brief The categories that this object is in, if it is a MasalaDataRepresentation object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > data_representation_categories_;
+
+	/// @brief The properties that this object definitely has, if it is a MasalaDataRepresentation
+	/// object.
+	std::vector< std::string > data_representation_present_properties_;
+
+	/// @brief The properties that this object definitely does not have , if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_absent_properties_;
+
+	/// @brief The properties that this object could have, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_possibly_present_properties_;
+
+	/// @brief The properties that this object could be lacking, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_possibly_absent_properties_;
+
+	/// @brief The MasalaEngines that this object is definitely compatible with, if it is
+	/// a MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_compatible_engines_;
+
+	/// @brief The MasalaEngines that this object is definitely not compatible with, if it
+	/// is a MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_incompatible_engines_;
 
 }; // class MasalaObjectAPIDefinition
 
