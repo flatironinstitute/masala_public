@@ -29,7 +29,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
-#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 namespace masala {
@@ -59,18 +59,16 @@ public:
     // Destructor.
     ~MasalaDataRepresentationCreator() override = default;
 
-protected:
+public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
+// PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Creators must implement a create_data_representation() function.
-    /// @details Protected so that this can only be called by the MasalaDataRepresentationManager,
-    /// for which this is a friend class.
-    virtual
-    MasalaDataRepresentationSP
-    create_data_representation() const = 0;
+    /// @brief Creators must implement a create_data_representation() function.  Under the
+    /// hood this just calls create_plugin_object().
+    MasalaDataRepresentationAPISP
+    create_data_representation() const;
 
 };
 
