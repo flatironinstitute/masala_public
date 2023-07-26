@@ -569,6 +569,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             first = False
             if is_data_representation_class == True and fxn_type == "GETTER" :
                 outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+                outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+                outstring += tabchar + "/// object can nullify the thread safety that the API object provides."
                 outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
                 outstring += tabchar + "get_inner_data_representation_object() const override;"
         else :
@@ -726,9 +728,14 @@ def generate_function_implementations( \
             first = False
             if is_data_representation_class == True and fxn_type == "GETTER" :
                 outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+                outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+                outstring += tabchar + "/// object can nullify the thread safety that the API object provides."
                 outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
                 outstring += tabchar + apiclassname + "::get_inner_data_representation_object() const {\n"
-                outstring += tabchar + tabchar + "return inner_object_;\n"
+                if is_derived == True :
+                    outstring += tabchar + tabchar + "return inner_object();\n"
+                else :
+                    outstring += tabchar + tabchar + "return inner_object_;\n"
                 outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
                 outstring += tabchar + "}"
         else :

@@ -58,6 +58,8 @@ public:
 
     /// @brief Access the inner data representation object.
     /// @details Implemented by derived classes.
+    /// @note Use this function with care!  Holding a shared pointer to the inner
+    /// object can nullify the thread safety that the API object provides.
     virtual
     MasalaDataRepresentationSP
     get_inner_data_representation_object() const = 0;
