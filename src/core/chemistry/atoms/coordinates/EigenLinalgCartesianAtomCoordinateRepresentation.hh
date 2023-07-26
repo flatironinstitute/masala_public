@@ -94,6 +94,21 @@ public:
     std::vector< std::string >
     get_keywords() const override;
 
+    /// @brief Get the categories for this DataRepresentation.
+    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const override;
+
+    /// @brief Get the compatible engines for this data representation.
+    /// @returns Currently an empty list.  This may change in the future.
+    std::vector< std::string >
+    get_compatible_masala_engines() const override;
+
+    /// @brief Get the properties of this data representation.
+    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+    std::vector< std::string >
+    get_present_data_representation_properties() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

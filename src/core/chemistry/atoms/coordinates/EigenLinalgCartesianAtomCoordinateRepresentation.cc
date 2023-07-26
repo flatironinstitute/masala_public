@@ -77,7 +77,38 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_categories() const {
 /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
 std::vector< std::string >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_keywords() const {
-    return std::vector< std::string >{ "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" };
+    return std::vector< std::string >{
+        "atom_coordinate_representation",
+        "cartesian",
+        "linear_algebra",
+        "Eigen"
+    };
+}
+
+/// @brief Get the categories for this DataRepresentation.
+/// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+std::vector< std::vector< std::string > >
+EigenLinalgCartesianAtomCoordinateRepresentation::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
+}
+
+/// @brief Get the compatible engines for this data representation.
+/// @returns Currently an empty list.  This may change in the future.
+std::vector< std::string >
+EigenLinalgCartesianAtomCoordinateRepresentation::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this data representation.
+/// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+std::vector< std::string >
+EigenLinalgCartesianAtomCoordinateRepresentation::get_present_data_representation_properties() const {
+    return std::vector< std::string >{
+        "atom_coordinate_representation",
+        "cartesian",
+        "linear_algebra",
+        "Eigen" 
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
