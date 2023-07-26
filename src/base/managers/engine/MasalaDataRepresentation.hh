@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaDataRepresentationBase.hh
+/// @file src/base/managers/engine/MasalaDataRepresentation.hh
 /// @brief A pure virtual base class class for particular representations
 /// of data that can be requested by engines for efficient manipulation of
 /// those data.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationBase_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationBase_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentation_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentation_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -41,7 +41,7 @@ namespace engine {
 /// of data that can be requested by engines for efficient manipulation of
 /// those data.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationBase : public masala::base::MasalaObject {
+class MasalaDataRepresentation : public masala::base::MasalaObject {
 
     friend class MasalaDataRepresentationCreator;
 
@@ -52,7 +52,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaDataRepresentationBase() = default;
+    MasalaDataRepresentation() = default;
 
 public:
 
@@ -61,10 +61,10 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Copy constructor.
-    MasalaDataRepresentationBase( MasalaDataRepresentationBase const & ) = default;
+    MasalaDataRepresentation( MasalaDataRepresentation const & ) = default;
 
     // Destructor.
-    ~MasalaDataRepresentationBase() override = default;
+    ~MasalaDataRepresentation() override = default;
 
 };
 
@@ -73,4 +73,4 @@ public:
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_MasalaDataRepresentationBase_hh
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentation_hh

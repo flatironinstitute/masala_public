@@ -29,7 +29,7 @@
 
 // Base headers:
 #include <base/MasalaObject.hh>
-#include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 namespace masala {
@@ -67,7 +67,7 @@ protected:
     /// @details Protected so that this can only be called by the MasalaDataRepresentationManager,
     /// for which this is a friend class.
     virtual
-    MasalaDataRepresentationBaseSP
+    MasalaDataRepresentationSP
     create_data_representation() const = 0;
 
 };

@@ -62,7 +62,7 @@ MasalaDataRepresentationManager::class_namespace() const {
 /// @details If throw_if_missing is true, this function will throw an exception if it can't
 /// find an data representation creator for the specified data representation type.  Otherwise,
 /// it will return nullptr.
-MasalaDataRepresentationBaseSP
+MasalaDataRepresentationSP
 MasalaDataRepresentationManager::create_data_representation(
     std::string const & data_representation_type,
     bool const throw_if_missing /*= true*/

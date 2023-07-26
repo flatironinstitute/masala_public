@@ -31,7 +31,7 @@
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 // STL headers:
@@ -97,7 +97,7 @@ public:
     /// @brief Create a data representation, by name.
     /// @details If throw_if_missing is true, this function will throw an exception if it can't
     /// find a data representation creator for the specified data representation type.  Otherwise, it will return nullptr.
-    MasalaDataRepresentationBaseSP
+    MasalaDataRepresentationSP
     create_data_representation(
         std::string const & data_representation_type,
         bool const throw_if_missing = true
