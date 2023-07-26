@@ -48,7 +48,7 @@ namespace optimization {
 OptimizationProblem::OptimizationProblem(
     OptimizationProblem const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin(src)
+    masala::base::managers::engine::MasalaDataRepresentation(src)
 {
     std::lock_guard< std::mutex > lock( src.problem_mutex_ );
     finalized_ = src.finalized_.load();
@@ -59,7 +59,7 @@ OptimizationProblem &
 OptimizationProblem::operator=(
     OptimizationProblem const & src
 ) {
-    masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
     {
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );

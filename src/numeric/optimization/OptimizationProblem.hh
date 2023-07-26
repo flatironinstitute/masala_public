@@ -29,7 +29,7 @@
 #include <numeric/optimization/OptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // STL headers:
 #include <mutex>
@@ -43,7 +43,7 @@ namespace optimization {
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class OptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
+class OptimizationProblem : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
