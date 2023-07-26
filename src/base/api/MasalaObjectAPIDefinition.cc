@@ -33,6 +33,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <base/error/ErrorHandling.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -100,17 +101,38 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
             data_representation_incompatible_engines_ = this_object_datarep_cast->get_incompatible_masala_engines();
         }
     }
+
+    CHECK_OR_THROW( !( is_engine_class_ && is_data_representation_class_ ),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaObjectAPIDefinition",
+        "The " + api_class_name_ + " class was found to be both a MasalaEngine and a "
+        "MasalaDataRepresentation.  Masala's build system does not permit this!"
+    );
 }
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
 std::string
 MasalaObjectAPIDefinition::class_name() const {
-    return "MasalaObjectAPIDefinition";
+    return class_name_static();
 }
 
 /// @brief Every class can provide its own namespace.  This returns "masala::base::api".
 std::string
 MasalaObjectAPIDefinition::class_namespace() const {
+    return class_namespace_static();
+}
+
+/// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".  Static version.
+/*static*/
+std::string
+MasalaObjectAPIDefinition::class_name_static() {
+    return "MasalaObjectAPIDefinition";
+}
+
+/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
+/*static*/
+std::string
+MasalaObjectAPIDefinition::class_namespace_static() {
     return "masala::base::api";
 }
 
