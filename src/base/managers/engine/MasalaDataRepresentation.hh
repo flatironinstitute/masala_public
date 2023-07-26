@@ -43,22 +43,14 @@ namespace engine {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentation : public masala::base::managers::plugin_module::MasalaPlugin {
 
-    friend class MasalaDataRepresentationCreator;
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// CONSTRUCTOR -- PROTECTED
-////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Default constructor.
-    MasalaDataRepresentation() = default;
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor.
+    MasalaDataRepresentation() = default;
 
     /// @brief Copy constructor.
     MasalaDataRepresentation( MasalaDataRepresentation const & ) = default;
