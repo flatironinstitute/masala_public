@@ -25,11 +25,14 @@
 // Headers:
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 
+// STL headers:
+#include <vector>
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
