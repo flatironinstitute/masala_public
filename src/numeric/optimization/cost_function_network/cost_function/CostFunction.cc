@@ -51,7 +51,7 @@ namespace cost_function {
 
 /// @brief Default constructor (protected in API).
 CostFunction::CostFunction() :
-    masala::base::managers::plugin_module::MasalaPlugin(),
+    masala::base::managers::engine::MasalaDataRepresentation(),
     finalized_(false)
 {}
 
@@ -59,7 +59,7 @@ CostFunction::CostFunction() :
 CostFunction::CostFunction(
     CostFunction const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin( src )
+    masala::base::managers::engine::MasalaDataRepresentation( src )
 {
     std::lock( src.mutex_, mutex_ );
     std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
@@ -311,6 +311,7 @@ void
 CostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
+    masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
     finalized_ = src.finalized_.load();
     api_definition_ = nullptr; // Deliberately not assigned.
     weight_ = src.weight_;

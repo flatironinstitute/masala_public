@@ -30,7 +30,7 @@
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // Numeric headers:
 
@@ -52,7 +52,7 @@ namespace cost_function {
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
+class CostFunction : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
