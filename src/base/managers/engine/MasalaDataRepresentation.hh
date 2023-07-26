@@ -66,6 +66,47 @@ public:
     // Destructor.
     ~MasalaDataRepresentation() override = default;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the categories that this data representation plugin falls into.
+    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
+    /// strings.  One data representation category can be classified into multiple categories.
+    /// @note Must be implemented by derived classes.
+    virtual
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const = 0;
+
+    /// @brief Get the MasalaEngines that with which this data representation plugin
+    /// is DEFINITELY compatible.  (There may be other engines with which it is also
+    /// compatible, so this is not necessarily an exhaustive list.)
+    /// @note Must be implemented by derived classes.  The list is by full name (i.e.
+    /// namespace + name), so for instance
+    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+    virtual
+    std::vector< std::string >
+    get_compatible_masala_engines() const = 0;
+
+    /// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
+    /// a non-exhaustive list.  If one data representation says it has the property
+    /// "linearly-scaling", another could also be linearly scaling despite not listing this.)
+    /// @note Can be overridden by derived classes.  The base implementation lists
+    /// no properties.
+    virtual
+    std::vector< std::string >
+    get_present_data_representation_properties() const;
+
+    /// @brief Get the properties that this MasalaDataRepresentation DEFINITELY lacks.
+    /// Note that this is inevitably a non-exhaustive list.
+    /// @note Can be overridden by derived classes.  The base implementation lists
+    /// no properties.
+    virtual
+    std::vector< std::string >
+    get_absent_data_representation_properties() const;
+
 };
 
 } // namespace engine
