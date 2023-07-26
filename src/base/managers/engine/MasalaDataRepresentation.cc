@@ -81,7 +81,7 @@ MasalaDataRepresentation::get_absent_data_representation_properties() const {
 /// @details Obviously, this is a non-exhuastive list.
 /// @returns The base class returns an empty list.  Overrides could return other lists.
 std::vector< std::string >
-get_possibly_absent_data_representation_properties() const {
+MasalaDataRepresentation::get_possibly_absent_data_representation_properties() const {
     return std::vector< std::string >{};
 }
 
