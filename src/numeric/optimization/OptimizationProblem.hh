@@ -98,6 +98,23 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+    /// @brief Get the categories that this data representation plugin falls into.
+    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
+    /// strings.  One data representation category can be classified into multiple categories.
+    /// @returns {{ "OptimizationProblem" }}
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const override;
+
+    /// @brief Get the MasalaEngines that with which this data representation plugin
+    /// is DEFINITELY compatible.  (There may be other engines with which it is also
+    /// compatible, so this is not necessarily an exhaustive list.)
+    /// @note Must be implemented by derived classes.  The list is by full name (i.e.
+    /// namespace + name), so for instance
+    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+	/// @returns An empty list.
+    std::vector< std::string >
+    get_compatible_masala_engines() const override;
+
 	/// @brief Get the class name.
 	/// @returns "OptimizationProblem".
 	std::string class_name() const override;
