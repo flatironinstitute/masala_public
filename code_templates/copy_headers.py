@@ -218,7 +218,10 @@ for file in files :
             original_lib_name = lib_name[:-4] # If the library is "core_api", the original library is "core".
             path_and_file = file[ len( source_dir + "/" + lib_name + "/auto_generated_api/" ) : ]
             original_path = path.dirname( path_and_file )
-            original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
+            if file.endswith( "Creator.fwd.hh" ) :
+                original_file = path.basename( path_and_file )[ : -14 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
+            elif file.endswith( "_API.fwd.hh" ) :
+                original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
             original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
             iscreator = is_creator( file )
             if iscreator == False and is_lightweight( file ) == True :
