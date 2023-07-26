@@ -30,7 +30,6 @@
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentationRegistratorBase.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
 namespace masala {
@@ -39,29 +38,18 @@ namespace managers {
 namespace engine {
 
 /// @brief A pure virtual base class for creators for data representations.
-/// @details Creators must be registered with the MasalaDataRepresentationManager.  They
-/// can only be created with static registrators.
+/// @details Creators must be registered with the MasalaDataRepresentationManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationCreator : public masala::base::MasalaObject {
-
-    friend class MasalaDataRepresentationRegistratorBase; // For creation.
-    friend class MasalaDataRepresentationManager; // To call protected create_data_representation() function.
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// CONSTRUCTOR -- PROTECTED TO ALLOW ONLY MasalaDataRepresentationRegistrators
-// TO CREATE CREATORS.
-////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Default constructor.
-    MasalaDataRepresentationCreator() = default;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor.
+    MasalaDataRepresentationCreator() = default;
 
     /// @brief Copy constructor.
     MasalaDataRepresentationCreator( MasalaDataRepresentationCreator const & ) = delete;

@@ -22,8 +22,6 @@
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
-/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
-/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_MasalaEngine_hh
@@ -46,8 +44,6 @@ namespace engine {
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
-/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
-/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngine : public masala::base::managers::plugin_module::MasalaPlugin {
 

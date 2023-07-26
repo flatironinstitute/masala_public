@@ -32,7 +32,6 @@
 #include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/managers/engine/MasalaEngineAPI.fwd.hh>
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
-#include <base/managers/engine/MasalaEngineRegistratorBase.fwd.hh>
 
 namespace masala {
 namespace base {
