@@ -131,6 +131,28 @@ CostFunction::get_keywords() const {
 	};
 }
 
+/// @brief Get the category for this MasalaDataRepresentation.
+/// @returns { { "CostFunction" } }.
+std::vector< std::vector< std::string > >
+CostFunction::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{ { "CostFunction" } };
+}
+
+/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+/// is compatible.
+/// @returns An empty list.
+std::vector< std::string >
+CostFunction::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation.
+/// @returns { "cost_function" }.
+std::vector< std::string >
+CostFunction::get_present_data_representation_properties() const {
+    return std::vector< std::string >{ "cost_function" };
+}
+
 /// @brief Get the class name ("CostFunction").
 /*static*/
 std::string

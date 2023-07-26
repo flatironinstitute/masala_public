@@ -109,6 +109,22 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+	/// @brief Get the category for this MasalaDataRepresentation.
+	/// @returns { { "CostFunction" } }.
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+	/// is compatible.
+	/// @returns An empty list.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the properties of this MasalaDataRepresentation.
+	/// @returns { "cost_function" }.
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
+
 	/// @brief Get the class name ("CostFunction").
 	static
 	std::string class_name_static();
