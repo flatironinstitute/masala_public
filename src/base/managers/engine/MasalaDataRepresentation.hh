@@ -29,7 +29,7 @@
 #include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 namespace masala {
@@ -41,7 +41,7 @@ namespace engine {
 /// of data that can be requested by engines for efficient manipulation of
 /// those data.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentation : public masala::base::MasalaObject {
+class MasalaDataRepresentation : public masala::base::managers::plugin_module::MasalaPlugin {
 
     friend class MasalaDataRepresentationCreator;
 

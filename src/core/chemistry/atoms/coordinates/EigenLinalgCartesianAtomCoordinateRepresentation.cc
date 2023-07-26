@@ -63,6 +63,24 @@ EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PLUGIN CLASS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the categories for this plugin.
+/// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+std::vector< std::vector< std::string > >
+EigenLinalgCartesianAtomCoordinateRepresentation::get_categories() const {
+    return std::vector< std::vector< std::string > > {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
+}
+
+/// @brief Get the keywords for this plugin.
+/// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+std::vector< std::string >
+EigenLinalgCartesianAtomCoordinateRepresentation::get_keywords() const {
+    return std::vector< std::string >{ "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" };
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -28,7 +28,7 @@
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.hh>
 #include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.fwd.hh>
 
@@ -40,7 +40,9 @@ namespace engine {
 /// @brief A pure virtual base class for creators for data representations.
 /// @details Creators must be registered with the MasalaDataRepresentationManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationCreator : public masala::base::MasalaObject {
+class MasalaDataRepresentationCreator : public masala::base::managers::plugin_module::MasalaPluginCreator {
+
+    friend class masala::base::managers::engine::MasalaDataRepresentationManager;
 
 public:
 

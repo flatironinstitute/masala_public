@@ -81,6 +81,22 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PLUGIN CLASS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the categories for this plugin.
+    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+    std::vector< std::vector< std::string > >
+    get_categories() const override;
+
+    /// @brief Get the keywords for this plugin.
+    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+    std::vector< std::string >
+    get_keywords() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -32,7 +32,7 @@
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaDataRepresentationBase.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // STL headers:
 #include <set>
@@ -48,7 +48,7 @@ namespace coordinates {
 /// @brief A pure virtual base class class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentationBase {
+class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
