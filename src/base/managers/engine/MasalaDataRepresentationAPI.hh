@@ -62,7 +62,7 @@ public:
     /// object can nullify the thread safety that the API object provides.
     virtual
     MasalaDataRepresentationSP
-    get_inner_data_representation_object() const = 0;
+    get_inner_data_representation_object() = 0;
 
 }; // class MasalaDataRepresentationAPI
 

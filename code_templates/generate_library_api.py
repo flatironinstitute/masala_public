@@ -563,16 +563,18 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         groupname = "WorkFunctions"
         namepattern = "Work_Function"
 
+    if is_data_representation_class == True and fxn_type == "GETTER" :
+        outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+        outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+        outstring += tabchar + "get_inner_data_representation_object() override;"
+        first = False
+
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
         if first :
             first = False
-            if is_data_representation_class == True and fxn_type == "GETTER" :
-                outstring += tabchar + "/// @brief Get the inner data representation object.\n"
-                outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
-                outstring += tabchar + "/// object can nullify the thread safety that the API object provides."
-                outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
-                outstring += tabchar + "get_inner_data_representation_object() const override;"
         else :
             outstring += "\n\n"
 
@@ -722,22 +724,25 @@ def generate_function_implementations( \
 
     apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
 
+    if is_data_representation_class == True and fxn_type == "GETTER" :
+        outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+        outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+        outstring += tabchar + apiclassname + "::get_inner_data_representation_object() {\n"
+        if is_derived == True :
+            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+            outstring += tabchar + tabchar + "return inner_object();\n"
+        else :
+            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+            outstring += tabchar + tabchar + "return inner_object_;\n"
+        outstring += tabchar + "}"
+        first = False
+
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
         if first :
             first = False
-            if is_data_representation_class == True and fxn_type == "GETTER" :
-                outstring += tabchar + "/// @brief Get the inner data representation object.\n"
-                outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
-                outstring += tabchar + "/// object can nullify the thread safety that the API object provides."
-                outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
-                outstring += tabchar + apiclassname + "::get_inner_data_representation_object() const {\n"
-                if is_derived == True :
-                    outstring += tabchar + tabchar + "return inner_object();\n"
-                else :
-                    outstring += tabchar + tabchar + "return inner_object_;\n"
-                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-                outstring += tabchar + "}"
         else :
             outstring += "\n\n"
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
