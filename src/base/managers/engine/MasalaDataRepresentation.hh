@@ -110,6 +110,13 @@ public:
     std::vector< std::string >
     get_present_data_representation_properties() const;
 
+    /// @brief Get the properties of this MasalaDataRepresentation that might possibly be present.
+	/// @details Obviously, this is a non-exhuastive list.
+	/// @returns The base class returns an empty list.  Overrides could return other lists.
+    virtual
+	std::vector< std::string >
+	get_possibly_present_data_representation_properties() const;
+
     /// @brief Get the properties that this MasalaDataRepresentation DEFINITELY lacks.
     /// Note that this is inevitably a non-exhaustive list.
     /// @note Can be overridden by derived classes.  The base implementation lists
@@ -117,6 +124,13 @@ public:
     virtual
     std::vector< std::string >
     get_absent_data_representation_properties() const;
+
+    /// @brief Get the properties of this MasalaDataRepresentation that might possibly be absent.
+	/// @details Obviously, this is a non-exhuastive list.
+	/// @returns The base class returns an empty list.  Overrides could return other lists.
+    virtual
+	std::vector< std::string >
+	get_possibly_absent_data_representation_properties() const;
 
 };
 
