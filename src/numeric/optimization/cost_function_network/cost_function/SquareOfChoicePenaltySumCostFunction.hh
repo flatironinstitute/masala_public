@@ -107,7 +107,7 @@ public:
 	get_categories() const override;
 
 	/// @brief Get the keywords for this plugin class.
-	/// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based", "quadratic", "squared" }
+	/// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based", "not_pairwise_decomposible", "quadratic", "squared" }
 	std::vector< std::string >
 	get_keywords() const override;
 

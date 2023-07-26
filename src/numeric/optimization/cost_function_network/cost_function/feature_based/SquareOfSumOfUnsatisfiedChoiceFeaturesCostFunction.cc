@@ -120,7 +120,7 @@ SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "optimization_problem", "cost_function", "numeric", "unsatisfied_choice_feature_sum_based" }
+/// @returns { "optimization_problem", "cost_function", "numeric", "not_pairwise_decomposible", "unsatisfied_choice_feature_sum_based" }
 std::vector< std::string >
 SquareOfSumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords() const {
     return SumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords();

@@ -38,6 +38,18 @@ namespace engine {
 // DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY NOT compatible.  (There may be other engines with which it is also
+/// not compatible, so this is not necessarily an exhaustive list.)
+/// @details The default implementation returns an empty list.
+/// @note Can be implemented by derived classes.  The list is by full name (i.e.
+/// namespace + name), so for instance
+/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+std::vector< std::string >
+MasalaDataRepresentation::get_incompatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
 /// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
 /// a non-exhaustive list.  If one data representation says it has the property
 /// "linearly-scaling", another could also be linearly scaling despite not listing this.)

@@ -97,10 +97,11 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "optimization_problem", "cost_function", "numeric", "unsatisfied_choice_feature_sum_based" }
+/// @returns { "optimization_problem", "cost_function", "numeric", "not_pairwise_decomposible", "unsatisfied_choice_feature_sum_based" }
 std::vector< std::string >
 SumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords() const {
 	std::vector< std::string > outvec( CostFunction::get_keywords() );
+    outvec.push_back( "not_pairwise_decomposible" );
     outvec.push_back( "unsatisfied_choice_feature_sum_based" );
     return outvec;
 }

@@ -178,7 +178,7 @@ FunctionOfIntegerPenaltySumCostFunction::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based", "quadratic", "squared" }
+/// @returns { "optimization_problem", "cost_function", "numeric", "choice_penalty_sum_based", "not_pairwise_decomposible", "quadratic", "squared" }
 std::vector< std::string >
 FunctionOfIntegerPenaltySumCostFunction::get_keywords() const {
 	std::vector< std::string > outvec( ChoicePenaltySumBasedCostFunction< signed long int >::get_keywords() );
