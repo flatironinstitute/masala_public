@@ -84,7 +84,7 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::operator=(
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "CostFunction" } }
+/// @returns { { "CostFunction", "ChoiceFeatureBasedCostFunction" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -92,7 +92,9 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::operator=(
 /// the primary key.
 std::vector< std::vector< std::string > >
 SumOfUnsatisfiedChoiceFeaturesCostFunction::get_categories() const {
-	return CostFunction::get_categories();
+	return std::vector< std::vector< std::string > >{
+        { "CostFunction", "ChoiceFeatureBasedCostFunction" }
+    };
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
@@ -104,6 +106,42 @@ SumOfUnsatisfiedChoiceFeaturesCostFunction::get_keywords() const {
     outvec.push_back( "not_pairwise_decomposible" );
     outvec.push_back( "unsatisfied_choice_feature_sum_based" );
     return outvec;
+}
+
+/// @brief Get the category for this MasalaDataRepresentation.
+/// @returns { { "CostFunction", "ChoiceFeatureBasedCostFunction" } }.
+std::vector< std::vector< std::string > >
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{ { "CostFunction", "ChoiceFeatureBasedCostFunction" } };
+}
+
+/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+/// is compatible.
+/// @returns {"standard_masala_plugins::optimizers::cost_function_network::MonteCarloCostFunctionNetworkOptimizer"}.
+std::vector< std::string >
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_compatible_masala_engines() const {
+    return std::vector< std::string >{
+        "standard_masala_plugins::optimizers::cost_function_network::MonteCarloCostFunctionNetworkOptimizer"
+    };
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation.
+/// @returns { "choice_feature_based", "cost_function", "not_pairwise_decomposible" }.
+std::vector< std::string >
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_present_data_representation_properties() const {
+    return std::vector< std::string >{
+        "choice_feature_based",
+        "cost_function",
+        "not_pairwise_decomposible"
+    };
+}
+
+/// @brief Get the absent properties of this MasalaDataRepresentation.  This is of course a
+/// non-exhaustive list.
+/// @returns { "pairwise_decomposible" }.
+std::vector< std::string >
+SumOfUnsatisfiedChoiceFeaturesCostFunction::get_absent_data_representation_properties() const {
+    return std::vector< std::string >{ "pairwise_decomposible" };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
