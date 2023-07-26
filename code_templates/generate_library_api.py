@@ -1256,7 +1256,10 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
 
         if parent_has_api == True :
             include2, parent2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class, is_data_representation_class )
-            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
+            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or \
+                root_api_namespace_and_name == "masala::base::managers::engine::MasalaEngineAPI" or \
+                root_api_namespace_and_name == "masala::base::managers::engine::MasalaDataRepresentationAPI" or \
+                root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
                 root_api_namespace_and_name = parent_api_namespace_and_name
             return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else : # parent_has_api == False
