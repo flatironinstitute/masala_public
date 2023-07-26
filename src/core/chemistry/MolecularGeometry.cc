@@ -33,6 +33,7 @@
 // Base headers:
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>

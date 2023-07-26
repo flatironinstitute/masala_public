@@ -27,6 +27,7 @@
 #include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 
 // Base headers:
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
 
 namespace masala {
@@ -48,6 +49,18 @@ public:
 
 	/// @brief Destructor.
 	virtual ~MasalaDataRepresentationAPI() = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Access the inner data representation object.
+    /// @details Implemented by derived classes.
+    virtual
+    MasalaDataRepresentationSP
+    get_inner_data_representation_object() const = 0;
 
 }; // class MasalaDataRepresentationAPI
 
