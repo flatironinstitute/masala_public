@@ -25,7 +25,7 @@
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaDataRepresentationCreatorBase.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -68,7 +68,7 @@ MasalaDataRepresentationManager::create_data_representation(
     bool const throw_if_missing /*= true*/
 ) const {
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
-    std::map< std::string, MasalaDataRepresentationCreatorBaseCSP >::const_iterator it( data_representation_creators_.find(data_representation_type) );
+    std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_type) );
     if( it == data_representation_creators_.end() ) {
         if( throw_if_missing ) {
             MASALA_THROW( class_namespace_and_name(), "create_data_representation", "Could not find data representation \"" + data_representation_type + "\".  Has it been registered?" );
@@ -85,7 +85,7 @@ MasalaDataRepresentationManager::create_data_representation(
 void
 MasalaDataRepresentationManager::register_data_representation(
     std::string const & data_representation_name,
-    MasalaDataRepresentationCreatorBaseCSP data_representation_creator,
+    MasalaDataRepresentationCreatorCSP data_representation_creator,
     bool const throw_if_present /*= true*/
 ) {
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
@@ -106,7 +106,7 @@ MasalaDataRepresentationManager::unregister_data_representation(
     bool const throw_if_missing /*= true*/
 ) {
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
-    std::map< std::string, MasalaDataRepresentationCreatorBaseCSP >::const_iterator it( data_representation_creators_.find(data_representation_name) );
+    std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_name) );
     if( it == data_representation_creators_.end() ) {
         if( throw_if_missing ) {
             MASALA_THROW( class_namespace_and_name(), "unregister_data_representation", "No data representation was registered with name \"" + data_representation_name + "\"." );

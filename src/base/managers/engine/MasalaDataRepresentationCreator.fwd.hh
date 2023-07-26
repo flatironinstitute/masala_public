@@ -16,14 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh
+/// @file src/base/managers/engine/MasalaDataRepresentationCreator.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for creators for
 /// data representations.
 /// @details Creators must be registered with the MasalaDataRepresentationManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_fwd_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationCreator_fwd_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentationCreator_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
@@ -32,12 +32,12 @@ namespace base {
 namespace managers {
 namespace engine {
 
-    class MasalaDataRepresentationCreatorBase;
+    class MasalaDataRepresentationCreator;
 
-    using MasalaDataRepresentationCreatorBaseSP = MASALA_SHARED_POINTER< MasalaDataRepresentationCreatorBase >;
-    using MasalaDataRepresentationCreatorBaseCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationCreatorBase const >;
-    using MasalaDataRepresentationCreatorBaseWP = MASALA_WEAK_POINTER< MasalaDataRepresentationCreatorBase >;
-    using MasalaDataRepresentationCreatorBaseCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationCreatorBase const >;
+    using MasalaDataRepresentationCreatorSP = MASALA_SHARED_POINTER< MasalaDataRepresentationCreator >;
+    using MasalaDataRepresentationCreatorCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationCreator const >;
+    using MasalaDataRepresentationCreatorWP = MASALA_WEAK_POINTER< MasalaDataRepresentationCreator >;
+    using MasalaDataRepresentationCreatorCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationCreator const >;
 
 
 } // namespace engine
@@ -45,4 +45,4 @@ namespace engine {
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_fwd_hh
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreator_fwd_hh

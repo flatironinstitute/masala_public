@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaDataRepresentationCreatorBase.hh
+/// @file src/base/managers/engine/MasalaDataRepresentationCreator.hh
 /// @brief A pure virtual base class for creators for data representations.
 /// @details Creators must be registered with the MasalaDataRepresentationManager.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationCreator_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentationCreator_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
@@ -42,7 +42,7 @@ namespace engine {
 /// @details Creators must be registered with the MasalaDataRepresentationManager.  They
 /// can only be created with static registrators.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationCreatorBase : public masala::base::MasalaObject {
+class MasalaDataRepresentationCreator : public masala::base::MasalaObject {
 
     friend class MasalaDataRepresentationRegistratorBase; // For creation.
     friend class MasalaDataRepresentationManager; // To call protected create_data_representation() function.
@@ -55,7 +55,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaDataRepresentationCreatorBase() = default;
+    MasalaDataRepresentationCreator() = default;
 
 public:
 
@@ -64,10 +64,10 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Copy constructor.
-    MasalaDataRepresentationCreatorBase( MasalaDataRepresentationCreatorBase const & ) = delete;
+    MasalaDataRepresentationCreator( MasalaDataRepresentationCreator const & ) = delete;
 
     // Destructor.
-    ~MasalaDataRepresentationCreatorBase() override = default;
+    ~MasalaDataRepresentationCreator() override = default;
 
 protected:
 
@@ -89,4 +89,4 @@ protected:
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreatorBase_hh
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentationCreator_hh

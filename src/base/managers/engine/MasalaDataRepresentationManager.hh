@@ -32,7 +32,7 @@
 
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentationBase.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -109,7 +109,7 @@ public:
     void
     register_data_representation(
         std::string const & data_representation_name,
-        MasalaDataRepresentationCreatorBaseCSP data_representation_creator,
+        MasalaDataRepresentationCreatorCSP data_representation_creator,
         bool const throw_if_present = true
     );
 
@@ -133,7 +133,7 @@ private:
     mutable std::mutex masala_data_representation_manager_mutex_;
 
     /// @brief A map of string to data representation creator.
-    std::map< std::string, MasalaDataRepresentationCreatorBaseCSP > data_representation_creators_;
+    std::map< std::string, MasalaDataRepresentationCreatorCSP > data_representation_creators_;
 
 };
 

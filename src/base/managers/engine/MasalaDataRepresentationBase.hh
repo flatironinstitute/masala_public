@@ -32,7 +32,7 @@
 
 // Base headers:
 #include <base/MasalaObject.hh>
-#include <base/managers/engine/MasalaDataRepresentationCreatorBase.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -47,7 +47,7 @@ namespace engine {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationBase : public masala::base::MasalaObject {
 
-    friend class MasalaDataRepresentationCreatorBase;
+    friend class MasalaDataRepresentationCreator;
 
 protected:
 
