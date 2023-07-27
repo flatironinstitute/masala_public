@@ -179,60 +179,6 @@ PluginCostFunction::class_namespace() const {
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get the API definition for this (non-instantiable) class.
-masala::base::api::MasalaObjectAPIDefinitionCWP
-PluginCostFunction::get_api_definition() {
-    using namespace masala::base::api;
-    using masala::base::Size;
-    using masala::base::Real;
-
-    std::lock_guard< std::mutex > lock( mutex() );
-    if( api_definition_mutex_locked() == nullptr ) {
-        MasalaObjectAPIDefinitionSP api_def(
-            masala::make_shared< MasalaObjectAPIDefinition >(
-                *this, "A plugin cost function, used in cost function network optimization algorithms.",
-                false, true
-            )
-        );
-
-        ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( PluginCostFunction, api_def );
-
-        {
-            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< Real, std::vector< Size > const & > >(
-                    "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
-                    true, false, true, false,
-                    "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
-                    "cost_function", "The square of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
-                    std::bind( &PluginCostFunction::compute_cost_function, this, std::placeholders::_1 )               
-                )
-            );
-            compute_cost_function_def->set_triggers_no_mutex_lock();
-            api_def->add_work_function( compute_cost_function_def );
-        }
-        {
-            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_difference_def(
-                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, std::vector< Size > const & > >(
-                    "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, "
-                    "compute the cost function difference.  Note that no mutex-locking is performed.",
-                    true, false, true, false,
-                    "candidate_solution_old", "The indices of the selected node choices for the OLD selection, indexed by variable node index.",
-                    "candidate_solution_new", "The indices of the selected node choices for the NEW selection, indexed by variable node index.",
-                    "cost_function", "The difference of the squares of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
-                    std::bind( &PluginCostFunction::compute_cost_function_difference,
-                        this, std::placeholders::_1, std::placeholders::_2
-                    )               
-                )
-            );
-            compute_cost_function_difference_def->set_triggers_no_mutex_lock();
-            api_def->add_work_function( compute_cost_function_difference_def );
-        }
-
-        api_definition_mutex_locked() = api_def;
-    }
-    return api_definition_mutex_locked();
-}
-
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
