@@ -27,7 +27,7 @@
 #include <utility> // For std::pair
 
 #define MASALA_MAJOR_VERSION 0
-#define MASALA_MINOR_VERSION 1
+#define MASALA_MINOR_VERSION 2
 
 namespace masala {
 namespace base {
