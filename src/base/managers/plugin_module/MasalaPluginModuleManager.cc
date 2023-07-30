@@ -34,7 +34,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/managers/engine/MasalaEngineCreator.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.hh>
 #include <base/managers/engine/MasalaEngineManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationManager.hh>
 
 // STL headers:
 #include <string>
@@ -124,8 +126,10 @@ MasalaPluginModuleManager::has_plugin(
 }
 
 /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
-/// @details Throws if any plugin has already been added.  If a plugin
-/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// @details Throws if any plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
@@ -133,6 +137,8 @@ MasalaPluginModuleManager::add_plugins(
     using namespace masala::base::managers::engine;
     std::vector< MasalaEngineCreatorCSP > engine_creators;
     engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
 
 	{
 		// First, register everything as plugins.  Build the list of the
@@ -140,9 +146,15 @@ MasalaPluginModuleManager::add_plugins(
 		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
 		for( auto const & creator : creators ) {
 			add_plugin_mutex_locked( creator );
+
 			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
             if( engine_creator != nullptr ) {
                 engine_creators.push_back( engine_creator );
+            }
+
+			MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
             }
 		}
 	}
@@ -151,18 +163,27 @@ MasalaPluginModuleManager::add_plugins(
     if( !engine_creators.empty() ) {
         MasalaEngineManager::get_instance()->register_engines( engine_creators );
     }
+
+    // Finally, register the subset that are data representations with the MasalaDataRepresentationManager.
+    if( !data_rep_creators.empty() ) {
+        MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
+    }
 }
 
 /// @brief Add a set of plugins to the list of plugins that the manager knows about.
-/// @details Throws if any plugin has already been added.  If a plugin
-/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// @details Throws if any plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
     using namespace masala::base::managers::engine;
     std::vector< MasalaEngineCreatorCSP > engine_creators;
-    engine_creators.reserve(creators.size()); 
+    engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
 
     {
         // First, register everything as plugins.  Build the list of the
@@ -170,10 +191,16 @@ MasalaPluginModuleManager::add_plugins(
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
         for( auto const & creator : creators ) {
             add_plugin_mutex_locked( creator );
+
 			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
 			if( engine_creator != nullptr ) {
 				engine_creators.push_back( engine_creator );
 			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
         }
     }
 
@@ -181,12 +208,19 @@ MasalaPluginModuleManager::add_plugins(
     if( !engine_creators.empty() ) {
         MasalaEngineManager::get_instance()->register_engines( engine_creators );
     }
+
+    // Finally, register the subset that are data representations with the MasalaDataRepresentationManager.
+    if( !data_rep_creators.empty() ) {
+        MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
+    }
 }
     
 /// @brief Add a plugin to the list of plugins that the manager knows about.
 /// @details Throws if the plugin has already been added.  Call has_plugin()
-/// first to query wiether the plugin has already been added.  If the plugin
-/// is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// first to query wiether the plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::add_plugin(
     MasalaPluginCreatorCSP const & creator
@@ -204,11 +238,20 @@ MasalaPluginModuleManager::add_plugin(
             MasalaEngineManager::get_instance()->register_engine( engine_creator );
         }
     }
+    {
+        // If the plugin is a data representation, register it with the MasalaDataRepresentationManager.
+        MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+        if( data_rep_creator != nullptr ) {
+            MasalaDataRepresentationManager::get_instance()->register_data_representation( data_rep_creator );
+        }
+    }
 }
 
 /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered.  Also removes engines from the
-/// MasalaEngineManager.
+/// @details Throws if the plugin is not registered.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
@@ -216,16 +259,24 @@ MasalaPluginModuleManager::remove_plugins(
 	using namespace masala::base::managers::engine;
 	std::vector< MasalaEngineCreatorCSP > engine_creators;
 	engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
 
 	{
 		// First, remove plugins and make a list of the subset that are engines.
 		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
 		for( auto const & creator : creators ) {
 			remove_plugin_mutex_locked( creator );
+
 			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
 			if( engine_creator != nullptr ) {
 				engine_creators.push_back( engine_creator );
 			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
 		}
 	}
 
@@ -235,11 +286,20 @@ MasalaPluginModuleManager::remove_plugins(
 			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
 		}
 	}
+
+	{
+		// Finally, remove data representations from the MasalaDataRepresentationManager.
+		if( !data_rep_creators.empty() ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
 }
 
 /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered.  Also removes engines from the
-/// MasalaEngineManager.
+/// @details Throws if the plugin is not registered.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
@@ -247,16 +307,24 @@ MasalaPluginModuleManager::remove_plugins(
 	using namespace masala::base::managers::engine;
 	std::vector< MasalaEngineCreatorCSP > engine_creators;
 	engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
 
 	{
 		// First, remove plugins and make a list of the subset that are engines.
 		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
 		for( auto const & creator : creators ) {
 			remove_plugin_mutex_locked( creator );
+
 			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
 			if( engine_creator != nullptr ) {
 				engine_creators.push_back( engine_creator );
 			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
 		}
 	}
 
@@ -266,12 +334,21 @@ MasalaPluginModuleManager::remove_plugins(
 			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
 		}
 	}
+
+	{
+		// Finally, remove data representations from the MasalaDataRepresentationManager.
+		if( !data_rep_creators.empty() ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
 }
     
 /// @brief Remove a plugin from the list of plugins that the manager knows about.
 /// @details Throws if the plugin is not registered.  Call has_plugin()
-/// first to query wiether the plugin has already been added.   Also removes
-/// engines from the MasalaEngineManager.
+/// first to query wiether the plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.
 void
 MasalaPluginModuleManager::remove_plugin(
     MasalaPluginCreatorCSP const & creator
@@ -290,6 +367,15 @@ MasalaPluginModuleManager::remove_plugin(
 		MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
 		if( engine_creator != nullptr ) {
 			MasalaEngineManager::get_instance()->unregister_engine( engine_creator );
+		}
+	}
+
+	{
+		// Finally, check whether the plugin is a data representation, and remove it from the
+		// MasalaDataRepresentationManager if it is.
+		MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+		if( data_rep_creator != nullptr ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representation( data_rep_creator );
 		}
 	}
 }
