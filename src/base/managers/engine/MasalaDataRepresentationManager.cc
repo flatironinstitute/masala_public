@@ -100,6 +100,30 @@ MasalaDataRepresentationManager::unregister_data_representation(
     unregister_data_representation_mutex_locked( data_representation_creator );
 }
 
+/// @brief Register a set of data representations.
+/// @details An exception is thrown if a data representation name is already registered.
+void
+MasalaDataRepresentationManager::register_data_representations(
+    std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
+) {
+    std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+    for( auto const & creator : data_representation_creators ) {
+        register_data_representation_mutex_locked( creator );
+    }
+}
+
+/// @brief Unregister a set of data representations.
+/// @details Throws if a data representation has not been registered.
+void
+MasalaDataRepresentationManager::unregister_data_representations(
+    std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
+) {
+    std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+    for( auto const & creator : data_representation_creators ) {
+        unregister_data_representation_mutex_locked( creator );
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

@@ -117,6 +117,20 @@ public:
         MasalaDataRepresentationCreatorCSP const & data_representation_creator
     );
 
+    /// @brief Register a set of data representations.
+    /// @details An exception is thrown if a data representation name is already registered.
+    void
+    register_data_representations(
+        std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
+    );
+
+    /// @brief Unregister a set of data representations.
+    /// @details Throws if a data representation has not been registered.
+    void
+    unregister_data_representations(
+        std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
