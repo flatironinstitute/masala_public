@@ -104,23 +104,17 @@ public:
     ) const;
 
     /// @brief Register a data representation, by name.
-    /// @details If throw_if_present is true, an exception is thrown if the data_representation_name is
-    /// already registered.  Otherwise, this silently replaces the registered data representation.
+    /// @details An exception is thrown if the data representation name is already registered.
     void
     register_data_representation(
-        std::string const & data_representation_name,
-        MasalaDataRepresentationCreatorCSP data_representation_creator,
-        bool const throw_if_present = true
+        MasalaDataRepresentationCreatorCSP const & data_representation_creator
     );
 
     /// @brief Unregister a data representation, by name.
-    /// @brief If the data_representation_name data representation has not been registered,
-    /// then (a) if throw_if_missing is true, an exception is thrown, or (b) if it is false,
-    /// nothing happens.
+    /// @details Throws if the data representation has not been registered.
     void
     unregister_data_representation(
-        std::string const & data_representation_name,
-        bool const throw_if_missing = true
+        MasalaDataRepresentationCreatorCSP const & data_representation_creator
     );
 
 private:

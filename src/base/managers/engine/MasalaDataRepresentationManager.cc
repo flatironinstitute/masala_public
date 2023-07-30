@@ -81,31 +81,27 @@ MasalaDataRepresentationManager::create_data_representation(
 }
 
 /// @brief Register a data representation, by name.
-/// @details If throw_if_present is true, an exception is thrown if the data_representation_name is
-/// already registered.  Otherwise, this silently replaces the registered data representation.
+/// @details An exception is thrown if the data representation name is already registered.
 void
 MasalaDataRepresentationManager::register_data_representation(
-    std::string const & data_representation_name,
-    MasalaDataRepresentationCreatorCSP data_representation_creator,
-    bool const throw_if_present /*= true*/
+    MasalaDataRepresentationCreatorCSP const & data_representation_creator
 ) {
+    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
     if( throw_if_present && data_representation_creators_.find(data_representation_name) != data_representation_creators_.end() ) {
-        MASALA_THROW( class_namespace_and_name(), "register_data_representation", "DataRepresentation \"" + data_representation_name + "\" has already been registered!"  );
+        MASALA_THROW( class_namespace_and_name(), "register_data_representation", "MasalaDataRepresentation \"" + data_representation_name + "\" has already been registered!"  );
     }
-    write_to_tracer( "Registering " + data_representation_name + " with MasalaDataRepresentationManager." );
+    write_to_tracer( "Registering " + data_representation_name + " with the MasalaDataRepresentationManager." );
     data_representation_creators_[data_representation_name] = data_representation_creator;
 }
 
 /// @brief Unregister a data representation, by name.
-/// @brief If the data_representation_name data representation has not been registered,
-/// then (a) if throw_if_missing is true, an exception is thrown, or (b) if it is false,
-/// 
+/// @details Throws if the data representation has not been registered.
 void
 MasalaDataRepresentationManager::unregister_data_representation(
-    std::string const & data_representation_name,
-    bool const throw_if_missing /*= true*/
+    MasalaDataRepresentationCreatorCSP const & data_representation_creator
 ) {
+    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
     std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_name) );
     if( it == data_representation_creators_.end() ) {
@@ -115,6 +111,7 @@ MasalaDataRepresentationManager::unregister_data_representation(
             return;
         }
     }
+    write_to_tracer( "Unregistering " + data_representation_name + " from the MasalaDataRepresentationManager." );
     data_representation_creators_.erase(it);
 }
 
