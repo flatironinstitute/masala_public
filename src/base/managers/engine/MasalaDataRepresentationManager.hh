@@ -103,17 +103,37 @@ public:
         bool const throw_if_missing = true
     ) const;
 
-    /// @brief Register a data representation, by name.
+    /// @brief Register a data representation.
     /// @details An exception is thrown if the data representation name is already registered.
     void
     register_data_representation(
         MasalaDataRepresentationCreatorCSP const & data_representation_creator
     );
 
-    /// @brief Unregister a data representation, by name.
+    /// @brief Unregister a data representation.
     /// @details Throws if the data representation has not been registered.
     void
     unregister_data_representation(
+        MasalaDataRepresentationCreatorCSP const & data_representation_creator
+    );
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Register a data representation.  Must be called from a mutex-locked context.
+    /// @details An exception is thrown if the data representation name is already registered.
+    void
+    register_data_representation_mutex_locked(
+        MasalaDataRepresentationCreatorCSP const & data_representation_creator
+    );
+
+    /// @brief Unegister a data representation.  Must be called from a mutex-locked context.
+    /// @details Throws if the data representation has not been registered.
+    void
+    unregister_data_representation_mutex_locked(
         MasalaDataRepresentationCreatorCSP const & data_representation_creator
     );
 

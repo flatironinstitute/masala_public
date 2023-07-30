@@ -80,36 +80,58 @@ MasalaDataRepresentationManager::create_data_representation(
     return it->second->create_data_representation();
 }
 
-/// @brief Register a data representation, by name.
+/// @brief Register a data representation.
 /// @details An exception is thrown if the data representation name is already registered.
 void
 MasalaDataRepresentationManager::register_data_representation(
     MasalaDataRepresentationCreatorCSP const & data_representation_creator
 ) {
-    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
-    if( throw_if_present && data_representation_creators_.find(data_representation_name) != data_representation_creators_.end() ) {
-        MASALA_THROW( class_namespace_and_name(), "register_data_representation", "MasalaDataRepresentation \"" + data_representation_name + "\" has already been registered!"  );
-    }
-    write_to_tracer( "Registering " + data_representation_name + " with the MasalaDataRepresentationManager." );
-    data_representation_creators_[data_representation_name] = data_representation_creator;
+    register_data_representation_mutex_locked( data_representation_creator );
 }
 
-/// @brief Unregister a data representation, by name.
+/// @brief Unregister a data representation.
 /// @details Throws if the data representation has not been registered.
 void
 MasalaDataRepresentationManager::unregister_data_representation(
     MasalaDataRepresentationCreatorCSP const & data_representation_creator
 ) {
-    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
     std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+    unregister_data_representation_mutex_locked( data_representation_creator );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Register a data representation.  Must be called from a mutex-locked context.
+/// @details An exception is thrown if the data representation name is already registered.
+void
+MasalaDataRepresentationManager::register_data_representation_mutex_locked(
+    MasalaDataRepresentationCreatorCSP const & data_representation_creator
+) {
+    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
+    if( data_representation_creators_.find(data_representation_name) != data_representation_creators_.end() ) {
+        MASALA_THROW( class_namespace_and_name(), "register_data_representation_mutex_locked",
+            "MasalaDataRepresentation \"" + data_representation_name + "\" has already been registered!"
+        );
+    }
+    write_to_tracer( "Registering " + data_representation_name + " with the MasalaDataRepresentationManager." );
+    data_representation_creators_[data_representation_name] = data_representation_creator;
+}
+
+/// @brief Unegister a data representation.  Must be called from a mutex-locked context.
+/// @details Throws if the data representation has not been registered.
+void
+MasalaDataRepresentationManager::unregister_data_representation_mutex_locked(
+    MasalaDataRepresentationCreatorCSP const & data_representation_creator
+) {
+    std::string const data_representation_name( data_representation_creator->get_plugin_object_namespace_and_name() );
     std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_name) );
     if( it == data_representation_creators_.end() ) {
-        if( throw_if_missing ) {
-            MASALA_THROW( class_namespace_and_name(), "unregister_data_representation", "No data representation was registered with name \"" + data_representation_name + "\"." );
-        } else {
-            return;
-        }
+        MASALA_THROW( class_namespace_and_name(), "unregister_data_representation_mutex_locked",
+            "No data representation was registered with name \"" + data_representation_name + "\"."
+        );
     }
     write_to_tracer( "Unregistering " + data_representation_name + " from the MasalaDataRepresentationManager." );
     data_representation_creators_.erase(it);
