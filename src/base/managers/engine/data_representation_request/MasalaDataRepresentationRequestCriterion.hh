@@ -30,6 +30,9 @@
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -64,6 +67,7 @@ public:
     /// @brief Determine whether a particular data representation is compatible with this criterion.
     /// @returns True if it is compatible, false otherwise.
     /// @note Must be implemented by derived classes.
+    virtual
     bool
     data_representation_is_compatible_with_criterion(
         masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
