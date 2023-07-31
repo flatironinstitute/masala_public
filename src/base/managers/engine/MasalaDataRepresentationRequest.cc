@@ -27,7 +27,7 @@
 
 // Base headers:
 #include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
-//#include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
 // STL headers:
 #include <string>
@@ -156,7 +156,7 @@ MasalaDataRepresentationRequest::add_data_representation_category_requirement(
     MasalaDataRepresentationCategoryCriterionSP criterion( masala::make_shared< MasalaDataRepresentationCategoryCriterion >() );
     criterion->set_categories( categories );
     criterion->set_allow_subcategories( allow_subcategories );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterion::MUST_BE_IN_AT_LEAST_ONE_CATEGORY );
+    criterion->set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode::MUST_BE_IN_AT_LEAST_ONE_CATEGORY );
     request_criteria_.push_back( criterion );
 }
 
@@ -180,7 +180,7 @@ MasalaDataRepresentationRequest::add_data_representation_category_exclusion(
     MasalaDataRepresentationCategoryCriterionSP criterion( masala::make_shared< MasalaDataRepresentationCategoryCriterion >() );
     criterion->set_categories( categories );
     criterion->set_allow_subcategories( allow_subcategories );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterion::MUST_NOT_BE_IN_ANY_CATEGORY );
+    criterion->set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode::MUST_NOT_BE_IN_ANY_CATEGORIES );
     request_criteria_.push_back( criterion );
 }
 
