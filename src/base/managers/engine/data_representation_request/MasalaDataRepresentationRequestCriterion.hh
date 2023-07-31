@@ -36,9 +36,7 @@ namespace managers {
 namespace engine {
 namespace data_representation_request {
 
-/// @brief A pure virtual base class class for particular representations
-/// of data that can be requested by engines for efficient manipulation of
-/// those data.
+/// @brief A pure virtual base class for criteria for Masala data representation requests.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationRequestCriterion : public masala::base::MasalaObject {
 
