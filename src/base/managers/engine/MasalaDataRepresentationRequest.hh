@@ -29,6 +29,7 @@
 
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationRequestCriterion.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -76,6 +77,83 @@ public:
 	/// @brief Every class can provide its own namespace.  Static version.
     /// @returns "masala::base::managers::engine".
 	static std::string class_namespace_static();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Add a requirement that data representations are explicitly marked as compatible
+    /// with a particular MasalaEngine.
+    /// @note The engine must be provided as a full name (namespace + name).
+    void
+    add_engine_compatibility_requirement(
+        std::string const & engine_namespace_and_name
+    );
+
+    /// @brief Add a requirement that data representations are explicitly marked as incompatible
+    /// with a particular MasalaEngine.
+    /// @note The engine must be provided as a full name (namespace + name).
+    void
+    add_engine_incompatibility_requirement(
+        std::string const & engine_namespace_and_name
+    );
+
+    /// @brief Add a requirement that data representations be in one of a set of
+    /// data representation categories.
+    /// @details Categories are provided as a vector of vectors of strings.  For instance, if
+    /// we want to indicate that a data representation may be in Fruits->Apples->MacIntoshApples
+    /// or in Vegetables->RootVegetables->Carrots, we provide {
+    ///     { "Fruits", "Apples", "MacIntoshApples" },
+    ///     { "Vegetables", "RootVegetables", "Carrots" }, 
+    /// }.
+    /// @note If allow_subcategories is true, then representations may be in subcategories
+    /// of these categories.  A data representation matches if it is in ANY category listed.
+    void
+    add_data_representation_category_requirement(
+        std::vector< std::vector< std::string > > const & categories,
+        bool const allow_subcategories
+    );
+
+    /// @brief Add a requirement that data representations NOT be in ANY of a set of
+    /// data representation categories.
+    /// @details Categories are provided as a vector of vectors of strings.  For instance, if
+    /// we want to indicate that a data representation may not be in Fruits->Apples->MacIntoshApples
+    /// or in Vegetables->RootVegetables->Carrots, we provide {
+    ///     { "Fruits", "Apples", "MacIntoshApples" },
+    ///     { "Vegetables", "RootVegetables", "Carrots" }, 
+    /// }.
+    /// @note If allow_subcategories is true, then representations that are in subcategories
+    /// of these categories are also excluded.  A data representation is excluded if it is in ANY
+    /// category listed.
+    void
+    add_data_representation_category_exclusion(
+        std::vector< std::vector< std::string > > const & categories,
+        bool const allow_subcategories
+    );
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Check whether a particular creator is compatible with the criteria listed.
+    /// @returns True for compatibility, false for incompatibility.
+    bool
+    data_representation_is_compatible_with_criteria(
+        MasalaDataRepresentationCreator const & creator
+    ) const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER DATA
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The criteria that must be satisfied by this request.
+    std::vector< MasalaDataRepresentationRequestCriterionSP > request_criteria_;
 
 }; // class MasalaDataRepresentationRequest
 
