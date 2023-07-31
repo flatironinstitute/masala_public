@@ -68,7 +68,7 @@ MasalaObjectAPIDefinition::get_zeroinput_setter_function(
 			return setter;
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 /// @brief Get a one-parameter setter definition.
@@ -89,7 +89,7 @@ MasalaObjectAPIDefinition::get_oneinput_setter_function(
 			}
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 /// @brief Get a two-parameter setter definition.
@@ -110,7 +110,7 @@ MasalaObjectAPIDefinition::get_twoinput_setter_function(
 			}
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 /// @brief Get a three-parameter setter definition.
@@ -131,7 +131,7 @@ MasalaObjectAPIDefinition::get_threeinput_setter_function(
 			}
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 /// @brief Get a four-parameter setter definition.
@@ -152,7 +152,7 @@ MasalaObjectAPIDefinition::get_fourinput_setter_function(
 			}
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 /// @brief Get a five-parameter setter definition.
@@ -173,7 +173,7 @@ MasalaObjectAPIDefinition::get_fiveinput_setter_function(
 			}
 		}
 	}
-	return nullptr;
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
 }
 
 } // namespace api
