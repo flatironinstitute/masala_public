@@ -119,7 +119,7 @@ MasalaEngineCompatibilityCriterion::set_engine_namespace_and_name(
 void
 MasalaEngineCompatibilityCriterion::set_engines_namespace_and_name(
     std::vector< std::string > const & engine_namespaces_and_names,
-    bool const match_any = true
+    bool const match_any /*= true*/
 ) {
     engine_namespaces_and_names_ = engine_namespaces_and_names;
     match_any_ = match_any;
