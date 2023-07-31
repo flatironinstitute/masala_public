@@ -115,7 +115,7 @@ MasalaDataRepresentationCategoryCriterion::set_criterion_mode(
 }
 
 /// @brief Set whether we are matching subcategories.
-bool
+void
 MasalaDataRepresentationCategoryCriterion::set_allow_subcategories(
     bool const setting
 ) {

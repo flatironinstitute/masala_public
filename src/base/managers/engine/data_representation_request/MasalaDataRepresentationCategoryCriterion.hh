@@ -97,7 +97,7 @@ public:
     void set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode const mode );
 
     /// @brief Set whether we are matching subcategories.
-    bool set_allow_subcategories( bool const setting );
+    void set_allow_subcategories( bool const setting );
 
     /// @brief Set the categories that we are matching.
     /// @details Overwrites any previously-set categories.
