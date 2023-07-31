@@ -102,6 +102,65 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a zero-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_zeroinput_setter_function(
+		std::string const & function_name
+	) const;
+
+	/// @brief Get a one-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1 >
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_oneinput_setter_function(
+		std::string const & function_name
+	) const;
+
+	/// @brief Get a two-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2 >
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_twoinput_setter_function(
+		std::string const & function_name
+	) const;
+
+	/// @brief Get a three-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3 >
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_threeinput_setter_function(
+		std::string const & function_name
+	) const;
+
+	/// @brief Get a four-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4 >
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_fourinput_setter_function(
+		std::string const & function_name
+	) const;
+
+	/// @brief Get a five-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5 >
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_fiveinput_setter_function(
+		std::string const & function_name
+	) const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
