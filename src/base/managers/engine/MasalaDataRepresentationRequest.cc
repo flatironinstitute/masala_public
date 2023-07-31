@@ -27,7 +27,7 @@
 
 // Base headers:
 #include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
-#include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
+//#include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
 // STL headers:
 #include <string>
@@ -85,7 +85,24 @@ MasalaDataRepresentationRequest::add_engine_compatibility_requirement(
     using namespace data_representation_request;
     MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterion::MUST_BE_EXPLICITLY_COMPATIBLE );
+    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
+    request_criteria_.push_back( criterion );
+}
+
+/// @brief Add a requirement that data representations are explicitly marked as compatible
+/// with one of a set of MasalaEngines.
+/// @details If match_any is true (the default), then the Masala data representation must be compatible
+/// with at least one engine from the list.  Otherwise, it must be compatible with all of them.
+/// @note The engines must be provided as a full name (namespace + name).
+void
+MasalaDataRepresentationRequest::add_engines_compatibility_requirement(
+    std::vector< std::string > const & engine_namespaces_and_names,
+    bool const match_any = true
+) {
+    using namespace data_representation_request;
+    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
+    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -99,7 +116,24 @@ MasalaDataRepresentationRequest::add_engine_incompatibility_requirement(
     using namespace data_representation_request;
     MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterion::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    request_criteria_.push_back( criterion );
+}
+
+/// @brief Add a requirement that data representations are explicitly marked as incompatible
+/// with one of a set of MasalaEngines.
+/// @details If match_any is true (the default), then the Masala data representation must be incompatible
+/// with at least one engine from the list.  Otherwise, it must be incompatible with all of them.
+/// @note The engines must be provided as a full name (namespace + name).
+void
+MasalaDataRepresentationRequest::add_engines_incompatibility_requirement(
+    std::vector< std::string > const & engine_namespaces_and_names,
+    bool const match_any = true
+) {
+    using namespace data_representation_request;
+    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
+    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 

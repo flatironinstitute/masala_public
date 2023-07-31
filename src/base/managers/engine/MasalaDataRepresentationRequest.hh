@@ -92,12 +92,34 @@ public:
         std::string const & engine_namespace_and_name
     );
 
+    /// @brief Add a requirement that data representations are explicitly marked as compatible
+    /// with one of a set of MasalaEngines.
+    /// @details If match_any is true (the default), then the Masala data representation must be compatible
+    /// with at least one engine from the list.  Otherwise, it must be compatible with all of them.
+    /// @note The engines must be provided as a full name (namespace + name).
+    void
+    add_engines_compatibility_requirement(
+        std::vector< std::string > const & engine_namespaces_and_names,
+        bool const match_any = true
+    );
+
     /// @brief Add a requirement that data representations are explicitly marked as incompatible
     /// with a particular MasalaEngine.
     /// @note The engine must be provided as a full name (namespace + name).
     void
     add_engine_incompatibility_requirement(
         std::string const & engine_namespace_and_name
+    );
+
+    /// @brief Add a requirement that data representations are explicitly marked as incompatible
+    /// with one of a set of MasalaEngines.
+    /// @details If match_any is true (the default), then the Masala data representation must be incompatible
+    /// with at least one engine from the list.  Otherwise, it must be incompatible with all of them.
+    /// @note The engines must be provided as a full name (namespace + name).
+    void
+    add_engines_incompatibility_requirement(
+        std::vector< std::string > const & engine_namespaces_and_names,
+        bool const match_any = true
     );
 
     /// @brief Add a requirement that data representations be in one of a set of
