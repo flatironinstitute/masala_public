@@ -97,7 +97,7 @@ MasalaDataRepresentationRequest::add_engine_compatibility_requirement(
 void
 MasalaDataRepresentationRequest::add_engines_compatibility_requirement(
     std::vector< std::string > const & engine_namespaces_and_names,
-    bool const match_any = true
+    bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
     MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
@@ -128,7 +128,7 @@ MasalaDataRepresentationRequest::add_engine_incompatibility_requirement(
 void
 MasalaDataRepresentationRequest::add_engines_incompatibility_requirement(
     std::vector< std::string > const & engine_namespaces_and_names,
-    bool const match_any = true
+    bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
     MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );

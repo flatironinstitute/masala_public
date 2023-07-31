@@ -30,6 +30,7 @@
 // Base headers:
 #include <base/MasalaObject.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationRequestCriterion.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -175,7 +176,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The criteria that must be satisfied by this request.
-    std::vector< MasalaDataRepresentationRequestCriterionSP > request_criteria_;
+    std::vector< data_representation_request::MasalaDataRepresentationRequestCriterionSP > request_criteria_;
 
 }; // class MasalaDataRepresentationRequest
 
