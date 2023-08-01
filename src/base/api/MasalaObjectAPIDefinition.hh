@@ -33,10 +33,27 @@
 
 // Base headers.
 #include <base/types.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.fwd.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_FourInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -108,55 +125,128 @@ public:
 	/// @brief Get a zero-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_zeroinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 0 && setter->setter_function_name() == function_name ) {
+				return setter;
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 	/// @brief Get a one-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P1 >
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_oneinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_OneInputCSP< P1 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_OneInput< P1 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 	/// @brief Get a two-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P1, typename P2 >
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_twoinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_TwoInputCSP< P1, P2 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TwoInput< P1, P2 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 	/// @brief Get a three-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3 >
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_threeinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_ThreeInputCSP< P1, P2, P3 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ThreeInput< P1, P2, P3 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 	/// @brief Get a four-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4 >
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_fourinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_FourInputCSP< P1, P2, P3, P4 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FourInput< P1, P2, P3, P4 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 	/// @brief Get a five-parameter setter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4, typename P5 >
+	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
 	get_fiveinput_setter_function(
 		std::string const & function_name
-	) const;
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_FiveInputCSP< P1, P2, P3, P4, P5 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FiveInput< P1, P2, P3, P4, P5 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 public:
 
