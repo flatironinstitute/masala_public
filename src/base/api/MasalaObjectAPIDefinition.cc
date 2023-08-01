@@ -137,6 +137,26 @@ MasalaObjectAPIDefinition::class_namespace_static() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING SETTERS
+// (THE ONES WITH NO TEMPLATE PARAMETERS)
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a zero-parameter setter definition.
+/// @returns Nullptr if the function doesn't exist; a const weak pointer
+/// to the function otherwise.
+masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+MasalaObjectAPIDefinition::get_zeroinput_setter_function(
+	std::string const & function_name
+) const {
+	for( auto const & setter: setters_ ) {
+		if( setter->num_input_parameters() == 0 && setter->setter_function_name() == function_name ) {
+			return setter;
+		}
+	}
+	return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
