@@ -42,7 +42,7 @@ namespace engine {
 /*virtual*/
 bool
 MasalaEngine::data_representation_is_incompatible_with_engine(
-    MasalaDataRepresentation const & //representation
+    MasalaDataRepresentationCreator const & //representation
 ) const {
     return false;
 }

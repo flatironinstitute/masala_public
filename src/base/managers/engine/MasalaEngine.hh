@@ -33,7 +33,7 @@
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngineCreator.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -100,7 +100,7 @@ public:
     virtual
     bool
     data_representation_is_incompatible_with_engine(
-        MasalaDataRepresentation const & representation
+        MasalaDataRepresentationCreator const & representation
     ) const;
 
 }; // class MasalaEngine
