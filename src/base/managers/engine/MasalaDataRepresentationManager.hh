@@ -33,6 +33,7 @@
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationRequest.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -130,6 +131,12 @@ public:
     unregister_data_representations(
         std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
     );
+
+    /// @brief Get the data representations compatible with a set of criteria encoded in a request object.
+    std::vector< MasalaDataRepresentationCreatorCSP >
+    get_compatible_data_representation_creators(
+        MasalaDataRepresentationRequest const & request
+    ) const;
 
 private:
 

@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.hh>
+#include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -122,6 +123,22 @@ MasalaDataRepresentationManager::unregister_data_representations(
     for( auto const & creator : data_representation_creators ) {
         unregister_data_representation_mutex_locked( creator );
     }
+}
+
+/// @brief Get the data representations compatible with a set of criteria encoded in a request object.
+std::vector< MasalaDataRepresentationCreatorCSP >
+MasalaDataRepresentationManager::get_compatible_data_representation_creators(
+    MasalaDataRepresentationRequest const & request
+) const {
+    std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+    std::vector< MasalaDataRepresentationCreatorCSP > outvec;
+    for( auto const & creator : data_representation_creators_ ) {
+        if( request.data_representation_is_compatible_with_criteria( *(creator.second) ) ) {
+            outvec.push_back( creator.second );
+        }
+    }
+    outvec.shrink_to_fit();
+    return outvec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
