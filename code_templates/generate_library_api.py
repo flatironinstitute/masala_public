@@ -949,11 +949,54 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
                 outstr += newentry
     return outstr
 
+## @brief Generate the categories for a data representation class, from the JASON description.
+def generate_data_representation_categories( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json \
+    ) -> str :
+    outstr = ""
+    categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Data_Representation_Categories"]
+    firstcat = True
+    for category in categories :
+        if firstcat == True :
+            firstcat = False
+        else :
+            outstr += ", "
+        outstr += "{ "
+        first = True
+        for entry in category :
+            if first == True :
+                first = False
+            else :
+                outstr += ", "
+            outstr += "\"" + entry + "\""
+        outstr += " }"
+    return outstr
+
+## @brief Generate the compatible engines list for a data representation class, from the JASON description.
+def generate_data_representation_stringlist( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json, \
+    json_category_string : str, \
+    ) -> str :
+    outstr = ""
+    entries = json_api["Elements"][ namespace_string + "::" + name_string ][json_category_string]
+    first = True
+    for entry in entries :
+        if first == True :
+            first = False
+        else :
+            outstr += ", "
+        outstr += "\"" + entry + "\""
+    return outstr
+
 ## @brief Generate the categories for a plugin class, from the JSON description.
 def generate_plugin_categories( \
     name_string : str, \
     namespace_string : str, \
-    json_api : json
+    json_api : json \
     ) -> str :
 
     outstr = ""
@@ -996,6 +1039,7 @@ def generate_plugin_keywords( \
 ## @brief Auto-generate the forward declaration file (***Creator.fwd.hh) for the creator for a plugin class.
 def prepare_creator_forward_declarations( \
     plugin_creator_fwdfile_template : str, \
+    data_rep_creator_fwdfile_template : str, \
     licence : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -1004,7 +1048,8 @@ def prepare_creator_forward_declarations( \
     name_string : str, \
     namespace : list, \
     library_name : str, \
-    project_name : str \
+    project_name : str, \
+    is_data_representation_class : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1018,8 +1063,13 @@ def prepare_creator_forward_declarations( \
             header_guard_string += namespace[i] + "_"
     header_guard_string += creator_name + "_fwd_hh"
 
+    if is_data_representation_class == True :
+        plugin_creator_fwdfile = data_rep_creator_fwdfile_template
+    else :
+        plugin_creator_fwdfile = plugin_creator_fwdfile_template
+
     plugin_creator_fwdfile = \
-        plugin_creator_fwdfile_template \
+        plugin_creator_fwdfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_FWD_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".fwd.hh" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1037,6 +1087,7 @@ def prepare_creator_forward_declarations( \
 ## @brief Auto-generate the header file (***Creator.hh) for the creator for a plugin class.
 def prepare_creator_header_file( \
     plugin_creator_hhfile_template : str, \
+    data_rep_creator_hhfile_template : str, \
     licence_template : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -1080,8 +1131,20 @@ def prepare_creator_header_file( \
         base_include_file = "base/managers/plugin_module/MasalaPluginCreator.hh"
         plugin_creator_base_class="masala::base::managers::plugin_module::MasalaPluginCreator"
 
+    if is_data_representation_class == True :
+        plugin_creator_hhfile = data_rep_creator_hhfile_template \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    else :
+        plugin_creator_hhfile = plugin_creator_hhfile_template
+
     plugin_creator_hhfile = \
-        plugin_creator_hhfile_template \
+        plugin_creator_hhfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".hh" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1107,6 +1170,7 @@ def prepare_creator_header_file( \
 ## @brief Auto-generate the cc file (***Creator.cc) for the creator for a plugin class.
 def prepare_creator_cc_file( \
     plugin_creator_ccfile_template : str, \
+    data_rep_creator_ccfile_template : str, \
     licence_template : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -1117,6 +1181,7 @@ def prepare_creator_cc_file( \
     library_name : str, \
     project_name : str, \
     api_dirname : str, \
+    is_data_representation_class : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1136,8 +1201,20 @@ def prepare_creator_cc_file( \
             creator_namespace_string += "::"
         creator_namespace_string += entry
 
+    if is_data_representation_class == True :
+        plugin_creator_ccfile = data_rep_creator_ccfile_template \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    else :
+        plugin_creator_ccfile = plugin_creator_ccfile_template
+
     plugin_creator_ccfile = \
-        plugin_creator_ccfile_template \
+        plugin_creator_ccfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".cc" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1590,6 +1667,10 @@ plugin_creator_ccfile_template = read_file( "code_templates/api_templates/Masala
 plugin_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.hh" )
 plugin_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.fwd.hh" )
 
+data_rep_creator_ccfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.cc" )
+data_rep_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.hh" )
+data_rep_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.fwd.hh" )
+
 plugin_registration_ccfile_template = read_file( "code_templates/api_templates/register_plugins.cc" )
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
@@ -1638,9 +1719,9 @@ if json_api["Elements"] is not None :
             generate_registration_function = True
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
             plugins_list.append( [creator_name,creator_namespace,creator_filename] )
-            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
-            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class  )
-            prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
+            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, data_rep_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_data_representation_class=is_data_representation_class  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, data_rep_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class  )
     
     if generate_registration_function == True :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )
