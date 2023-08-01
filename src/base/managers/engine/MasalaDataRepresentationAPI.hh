@@ -64,6 +64,14 @@ public:
     MasalaDataRepresentationSP
     get_inner_data_representation_object() = 0;
 
+    /// @brief Access the inner data representation object (const access).
+    /// @details Implemented by derived classes.
+    /// @note Use this function with care!  Holding a const shared pointer to the inner
+    /// object can nullify the thread safety that the API object provides.
+    virtual
+    MasalaDataRepresentationCSP
+    get_inner_data_representation_object_const() const = 0;
+
 }; // class MasalaDataRepresentationAPI
 
 } // namespace engine

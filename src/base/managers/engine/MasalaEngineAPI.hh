@@ -49,6 +49,28 @@ public:
 	/// @brief Destructor.
 	virtual ~MasalaEngineAPI() = default;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Access the inner data representation object.
+    /// @details Implemented by derived classes.
+    /// @note Use this function with care!  Holding a shared pointer to the inner
+    /// object can nullify the thread safety that the API object provides.
+    virtual
+    MasalaEngineSP
+    get_inner_engine_object() = 0;
+
+    /// @brief Access the inner data representation object (const access).
+    /// @details Implemented by derived classes.
+    /// @note Use this function with care!  Holding a const shared pointer to the inner
+    /// object can nullify the thread safety that the API object provides.
+    virtual
+    MasalaEngineCSP
+    get_inner_engine_object_const() const = 0;
+
 }; // class MasalaEngineAPI
 
 } // namespace engine
