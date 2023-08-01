@@ -56,8 +56,26 @@ public:
     /// @brief Copy constructor.
     MasalaDataRepresentationCreator( MasalaDataRepresentationCreator const & ) = delete;
 
-    // Destructor.
+    /// @brief Destructor.
     ~MasalaDataRepresentationCreator() override = default;
+
+    /// @brief Get the class name, static version.
+    /// @returns "MasalaDataRepresentationCreator".
+    static
+    std::string
+    class_name_static();
+
+    /// @brief Get the class namespace, static version.
+    /// @returns "masala::base::managers::engine".
+    static
+    std::string
+    class_namespace_static();
+
+    /// @brief Get the class namespace and name, static version.
+    /// @returns "masala::base::managers::engine::MasalaDataRepresentationCreator".
+    static
+    std::string
+    class_namespace_and_name_static();
 
 public:
 

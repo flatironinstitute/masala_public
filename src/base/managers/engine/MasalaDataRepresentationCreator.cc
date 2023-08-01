@@ -30,6 +30,9 @@
 #include <base/error/ErrorHandling.hh>
 #endif
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -39,6 +42,30 @@ namespace engine {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the class name, static version.
+/// @returns "MasalaDataRepresentationCreator".
+/*static*/
+std::string
+MasalaDataRepresentationCreator::class_name_static() {
+    return "MasalaDataRepresentationCreator";
+}
+
+/// @brief Get the class namespace, static version.
+/// @returns "masala::base::managers::engine".
+/*static*/
+std::string
+MasalaDataRepresentationCreator::class_namespace_static() {
+    return "masala::base::managers::engine";
+}
+
+/// @brief Get the class namespace and name, static version.
+/// @returns "masala::base::managers::engine::MasalaDataRepresentationCreator".
+/*static*/
+std::string
+MasalaDataRepresentationCreator::class_namespace_and_name_static() {
+    return class_namespace_static() + "::" + class_name_static();
+}
 
 /// @brief Creators must implement a create_data_representation() function.  Under the
 /// hood this just calls create_plugin_object().
