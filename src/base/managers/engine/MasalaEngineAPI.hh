@@ -28,6 +28,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
 
 namespace masala {
 namespace base {
