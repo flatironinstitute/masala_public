@@ -569,6 +569,12 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
         outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
         outstring += tabchar + "get_inner_data_representation_object() override;"
+        outstring += tabchar + "\n"
+        outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
+        outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+        outstring += tabchar + "get_inner_data_representation_object_const() const override;"
         first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
@@ -730,6 +736,19 @@ def generate_function_implementations( \
         outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
         outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
         outstring += tabchar + apiclassname + "::get_inner_data_representation_object() {\n"
+        if is_derived == True :
+            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+            outstring += tabchar + tabchar + "return inner_object();\n"
+        else :
+            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+            outstring += tabchar + tabchar + "return inner_object_;\n"
+        outstring += tabchar + "}\n"
+        outstring += "\n"
+        outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
+        outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+        outstring += tabchar + apiclassname + "::get_inner_data_representation_object_const() const {\n"
         if is_derived == True :
             outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
             outstring += tabchar + tabchar + "return inner_object();\n"
