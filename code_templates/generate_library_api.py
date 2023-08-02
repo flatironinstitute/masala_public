@@ -548,7 +548,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_data_representation_class : bool) -> str :
+def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_engine_class : bool, is_data_representation_class : bool) -> str :
     outstring = ""
     first = True
 
@@ -563,19 +563,33 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         groupname = "WorkFunctions"
         namepattern = "Work_Function"
 
-    if is_data_representation_class == True and fxn_type == "GETTER" :
-        outstring += tabchar + "/// @brief Get the inner data representation object.\n"
-        outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
-        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
-        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
-        outstring += tabchar + "get_inner_data_representation_object() override;"
-        outstring += tabchar + "\n"
-        outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
-        outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
-        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
-        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
-        outstring += tabchar + "get_inner_data_representation_object_const() const override;"
-        first = False
+    if fxn_type == "GETTER" :
+        if is_data_representation_class == True :
+            outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+            outstring += tabchar + "get_inner_data_representation_object() override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+            outstring += tabchar + "get_inner_data_representation_object_const() const override;"
+            first = False
+        elif is_engine_class == True :
+            outstring += tabchar + "/// @brief Get the inner engine object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineSP\n"
+            outstring += tabchar + "get_inner_engine_object() override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the inner engine object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineCSP\n"
+            outstring += tabchar + "get_inner_engine_object_const() const override;"
+            first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
@@ -711,6 +725,7 @@ def generate_function_implementations( \
     additional_includes: list, \
     is_lightweight: bool, \
     is_derived : bool, \
+    is_engine_class : bool, \
     is_data_representation_class : bool \
     ) -> str :
 
@@ -730,33 +745,61 @@ def generate_function_implementations( \
 
     apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
 
-    if is_data_representation_class == True and fxn_type == "GETTER" :
-        outstring += tabchar + "/// @brief Get the inner data representation object.\n"
-        outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
-        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
-        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
-        outstring += tabchar + apiclassname + "::get_inner_data_representation_object() {\n"
-        if is_derived == True :
-            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
-            outstring += tabchar + tabchar + "return inner_object();\n"
-        else :
-            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-            outstring += tabchar + tabchar + "return inner_object_;\n"
-        outstring += tabchar + "}\n"
-        outstring += "\n"
-        outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
-        outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
-        outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
-        outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
-        outstring += tabchar + apiclassname + "::get_inner_data_representation_object_const() const {\n"
-        if is_derived == True :
-            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
-            outstring += tabchar + tabchar + "return inner_object();\n"
-        else :
-            outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-            outstring += tabchar + tabchar + "return inner_object_;\n"
-        outstring += tabchar + "}"
-        first = False
+    if fxn_type == "GETTER" :
+        if is_data_representation_class == True :
+            outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+            outstring += tabchar + apiclassname + "::get_inner_data_representation_object() {\n"
+            if is_derived == True :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + tabchar + "return inner_object_;\n"
+            outstring += tabchar + "}\n"
+            outstring += "\n"
+            outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+            outstring += tabchar + apiclassname + "::get_inner_data_representation_object_const() const {\n"
+            if is_derived == True :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + tabchar + "return inner_object_;\n"
+            outstring += tabchar + "}"
+            first = False
+        elif is_engine_class == True :
+            outstring += tabchar + "/// @brief Get the inner engine object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineSP\n"
+            outstring += tabchar + apiclassname + "::get_inner_engine_object() {\n"
+            if is_derived == True :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + tabchar + "return inner_object_;\n"
+            outstring += tabchar + "}\n"
+            outstring += "\n"
+            outstring += tabchar + "/// @brief Get the inner engine object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineCSP\n"
+            outstring += tabchar + apiclassname + "::get_inner_engine_object_const() const {\n"
+            if is_derived == True :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + tabchar + "return inner_object_;\n"
+            outstring += tabchar + "}"
+            first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
@@ -1461,9 +1504,9 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_data_representation_class) ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_data_representation_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_data_representation_class) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_engine_class, is_data_representation_class) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_engine_class, is_data_representation_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_engine_class, is_data_representation_class) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
@@ -1524,9 +1567,9 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_data_representation_class) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_data_representation_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_data_representation_class) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
