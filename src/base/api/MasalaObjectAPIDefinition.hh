@@ -172,7 +172,7 @@ public:
 		using namespace setter;
 
 		for( auto const & setter: setters_ ) {
-			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+			if( setter->num_input_parameters() == 2 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_TwoInputCSP< P1, P2 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TwoInput< P1, P2 > const >( setter ) );
 				if( setter_cast != nullptr ) {
 					return setter;
@@ -194,7 +194,7 @@ public:
 		using namespace setter;
 
 		for( auto const & setter: setters_ ) {
-			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+			if( setter->num_input_parameters() == 3 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_ThreeInputCSP< P1, P2, P3 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ThreeInput< P1, P2, P3 > const >( setter ) );
 				if( setter_cast != nullptr ) {
 					return setter;
@@ -216,7 +216,7 @@ public:
 		using namespace setter;
 
 		for( auto const & setter: setters_ ) {
-			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+			if( setter->num_input_parameters() == 4 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FourInputCSP< P1, P2, P3, P4 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FourInput< P1, P2, P3, P4 > const >( setter ) );
 				if( setter_cast != nullptr ) {
 					return setter;
@@ -238,7 +238,7 @@ public:
 		using namespace setter;
 
 		for( auto const & setter: setters_ ) {
-			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+			if( setter->num_input_parameters() == 5 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FiveInputCSP< P1, P2, P3, P4, P5 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FiveInput< P1, P2, P3, P4, P5 > const >( setter ) );
 				if( setter_cast != nullptr ) {
 					return setter;
