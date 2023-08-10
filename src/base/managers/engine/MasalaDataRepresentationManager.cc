@@ -31,6 +31,7 @@
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_comparison.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
 namespace base {
@@ -238,7 +239,9 @@ MasalaDataRepresentationManager::get_data_representation_creators_for_engine_wit
     for( auto const & preferred_representation : preferred_representations ) {
         for( auto const & creator : creatorlist ) {
             if( base::utility::string::masala_class_names_match( creator->get_plugin_object_namespace_and_name(), preferred_representation ) ) {
-                outlist.push_back( creator );
+                if( !base::utility::container::has_value( outlist, creator ) ) {
+                    outlist.push_back( creator );
+                }
             }
         }
     }
