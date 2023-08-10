@@ -189,7 +189,7 @@ MasalaDataRepresentationManager::get_data_representation_creators_for_engine(
 		}
 
         if( !creatorlist.empty() ) {
-            result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_PREFERRED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE;
+            result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE;
         } else {
             result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_NO_RESULTS;
         }
