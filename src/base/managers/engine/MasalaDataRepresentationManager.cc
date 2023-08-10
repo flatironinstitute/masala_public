@@ -182,9 +182,11 @@ MasalaDataRepresentationManager::get_data_representation_creators_for_engine(
 			/*No increment*/
 		) {
 			if( engine.data_representation_is_incompatible_with_engine( **it ) ) {
-				it = creatorlist.erase( it );
+                //write_to_tracer( "ERASING " + (**it).class_namespace_and_name() ); // DELETE ME
+                it = creatorlist.erase( it );
 			} else {
-				++it;
+                //write_to_tracer( "KEEPING " + (**it).class_namespace_and_name() ); // DELETE ME
+                ++it;
 			}
 		}
 
