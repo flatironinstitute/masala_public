@@ -30,6 +30,7 @@
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/string/string_comparison.hh>
 
 namespace masala {
 namespace base {
@@ -213,7 +214,57 @@ MasalaDataRepresentationManager::get_data_representation_creators_for_engine_wit
     std::vector< std::string > const & preferred_representations,
     MasalaDataRepresentationRequestResult & result_type
 ) const {
-    TODO TODO TODO
+    MasalaDataRepresentationRequestResult first_result_type( MasalaDataRepresentationRequestResult::UNKNOWN_RESULT_TYPE );
+    std::vector< MasalaDataRepresentationCreatorCSP > creatorlist(
+        get_data_representation_creators_for_engine( categories, allow_subcategories, engine, first_result_type )
+    );
+    CHECK_OR_THROW_FOR_CLASS( first_result_type != MasalaDataRepresentationRequestResult::UNKNOWN_RESULT_TYPE,
+        "get_data_representation_creators_for_engine_with_preferred",
+        "Initial attempt to get compatible data representations failed in an unexpected manner.  This is a program error.  Please consult a developer."
+    );
+    if( creatorlist.empty() || first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_NO_RESULTS ) {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( creatorlist.empty() && first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_NO_RESULTS,
+            "get_data_representation_creators_for_engine_with_preferred",
+            "Expected a 1:1 correspondence between creator list being empty and return type being REQUEST_RETURNED_NO_RESULTS, but this "
+            "was not found to be the case!  Program error.  Please consult a developer."
+        );
+        result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_NO_RESULTS;
+        return creatorlist;
+    }
+
+    //
+    std::vector< MasalaDataRepresentationCreatorCSP > outlist;
+    outlist.reserve( creatorlist.size() );
+    for( auto const & preferred_representation : preferred_representations ) {
+        for( auto const & creator : creatorlist ) {
+            if( base::utility::string::masala_class_names_match( creator->get_plugin_object_namespace_and_name(), preferred_representation ) ) {
+                outlist.push_back( creator );
+            }
+        }
+    }
+
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(
+        first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE ||
+        first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE,
+        "get_data_representation_creators_for_engine_with_preferred",
+        "Expected return type of REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE or REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE, but "
+        "got something else!  This is a program error.  Please cosult a developer."
+    )
+    if( outlist.empty() ) {
+        result_type = first_result_type;
+        return creatorlist;
+    }
+    if( first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE ) {
+        result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_PREFERRED_TYPES_COMPATIBLE_WITH_ENGINE;
+    } else {
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( first_result_type == MasalaDataRepresentationRequestResult::REQUEST_RETURNED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE,
+            "get_data_representation_creators_for_engine_with_preferred",
+            "Something went wrong.  Expected REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE, but got something else!  This is a "
+            "program error.  Please cosult a developer."
+        );
+        result_type = MasalaDataRepresentationRequestResult::REQUEST_RETURNED_PREFERRED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE;
+    }
+    return outlist;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
