@@ -34,6 +34,7 @@
 #include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationRequest.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -44,6 +45,17 @@ namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
+
+/// @brief The ways in which a request for a data representation might be satisfied.
+enum class MasalaDataRepresentationRequestResult {
+    UNKNOWN_RESULT_TYPE = 0, // Keep first
+    REQUEST_RETURNED_NO_RESULTS = 1, // Keep second
+    REQUEST_RETURNED_PREFERRED_TYPES_COMPATIBLE_WITH_ENGINE,
+    REQUEST_RETURNED_PREFERRED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE,
+    REQUEST_RETURNED_TYPES_COMPATIBLE_WITH_ENGINE,
+    REQUEST_RETURNED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE, // Keep second-to-last
+    N_RETURN_POSSIBILITIES = REQUEST_RETURNED_TYPES_NOT_INCOMPATIBLE_WITH_ENGINE
+};
 
 /// @brief A static singleton for managing available data representaitons.
 /// @details Modules may register and retrieve data representations by unique keystring.
@@ -136,6 +148,41 @@ public:
     std::vector< MasalaDataRepresentationCreatorCSP >
     get_compatible_data_representation_creators(
         MasalaDataRepresentationRequest const & request
+    ) const;
+
+    /// @brief Convenience function to get data representations from a given category or set of categories that:
+    /// (a) are explicitly compatible with a given engine.
+    /// (b) are not explicitly incompatible with a given engine if (a) is not satisfied.
+    /// @details Under the hood, this is handled by series of requests.
+    /// @param[in] categories The categories from which our data representations will be drawn.
+    /// @param[in] allow_subcategories If true, then data representations must be from at least one subcategory of at least one listed category.
+    /// @param[in] engine The engine with which we expect our data representations to be compatible, or, failing that, not incompatible.
+    /// @param[out] result_type The type of result.  For instance, did successfully match a preferred type?  Did we explicitly match the engine?
+    std::vector< MasalaDataRepresentationCreatorCSP >
+    get_data_representation_creators_for_engine(
+        std::vector< std::vector< std::string > > const & categories,
+        bool const allow_subcategories,
+        MasalaEngine const & engine,
+        MasalaDataRepresentationRequestResult & result_type
+    ) const;
+
+    /// @brief Convenience function to get data representations from a given category or set of categories that:
+    /// (a) are preferably from a list of preferred representations (with the first in the list most preferred).
+    /// (b) are explicitly compatible with a given engine.
+    /// (c) are not explicitly incompatible with a given engine if (b) is not satisfied.
+    /// @details Under the hood, this is handled by series of requests.
+    /// @param[in] categories The categories from which our data representations will be drawn.
+    /// @param[in] allow_subcategories If true, then data representations must be from at least one subcategory of at least one listed category.
+    /// @param[in] engine The engine with which we expect our data representations to be compatible, or, failing that, not incompatible.
+    /// @param[in] preferred_representations The representations that we would prefer.
+    /// @param[out] result_type The type of result.  For instance, did successfully match a preferred type?  Did we explicitly match the engine?
+    std::vector< MasalaDataRepresentationCreatorCSP >
+    get_data_representation_creators_for_engine_with_preferred(
+        std::vector< std::vector< std::string > > const & categories,
+        bool const allow_subcategories,
+        MasalaEngine const & engine,
+        std::vector< std::string > const & preferred_representations,
+        MasalaDataRepresentationRequestResult & result_type
     ) const;
 
 private:
