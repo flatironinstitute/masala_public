@@ -238,15 +238,15 @@ MasalaDataRepresentationManager::get_data_representation_creators_for_engine_wit
     // Get the subset of outputs that match the preferred list, if any:
     std::vector< MasalaDataRepresentationCreatorCSP > outlist;
     outlist.reserve( creatorlist.size() );
-    write_to_tracer( "Considering " + std::to_string( preferred_representations.size() ) + " preferred data representations." ); // DELETE ME
+    //write_to_tracer( "Considering " + std::to_string( preferred_representations.size() ) + " preferred data representations." ); // DELETE ME
     for( auto const & preferred_representation : preferred_representations ) {
-        write_to_tracer( "Trying " + preferred_representation + "." ); // DELETE ME
+        //write_to_tracer( "Trying " + preferred_representation + "." ); // DELETE ME
         for( auto const & creator : creatorlist ) {
-            write_to_tracer( "\tComparing " + preferred_representation + "to" + creator->get_plugin_object_namespace_and_name() + "." ); // DELETE ME
+            //write_to_tracer( "\tComparing " + preferred_representation + "to" + creator->get_plugin_object_namespace_and_name() + "." ); // DELETE ME
             if( base::utility::string::masala_class_names_match( creator->get_plugin_object_namespace_and_name(), preferred_representation ) ) {
-                write_to_tracer( "\t\tNames match!" ); // DELETE ME
+                //write_to_tracer( "\t\tNames match!" ); // DELETE ME
                 if( !base::utility::container::has_value( outlist, creator ) ) {
-                    write_to_tracer( "\t\tAdding!" ); // DELETE ME
+                    //write_to_tracer( "\t\tAdding!" ); // DELETE ME
                     outlist.push_back( creator );
                 }
             }
