@@ -77,11 +77,17 @@ MasalaPluginModuleManager::class_namespace() const {
 /// @details Unregisters all plugins.
 void
 MasalaPluginModuleManager::reset() {
+    using namespace masala::base::managers::engine;
+
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     plugins_by_hierarchical_category_all_levels_.clear();
     plugins_by_hierarchical_category_lowest_level_only_.clear();
     plugins_by_keyword_.clear();
     all_plugin_map_.clear();
+
+    MasalaEngineManager::get_instance()->reset();
+    MasalaDataRepresentationManager::get_instance()->reset();
+
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
 }
 

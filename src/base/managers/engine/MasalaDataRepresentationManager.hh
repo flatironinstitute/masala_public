@@ -144,6 +144,10 @@ public:
         std::vector< MasalaDataRepresentationCreatorCSP > const & data_representation_creators
     );
 
+    /// @brief Remove all data representations from the manager.
+    void
+    reset();
+
     /// @brief Get the data representations compatible with a set of criteria encoded in a request object.
     std::vector< MasalaDataRepresentationCreatorCSP >
     get_compatible_data_representation_creators(

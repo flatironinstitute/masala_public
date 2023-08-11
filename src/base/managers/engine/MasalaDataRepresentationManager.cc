@@ -128,6 +128,13 @@ MasalaDataRepresentationManager::unregister_data_representations(
     }
 }
 
+/// @brief Remove all data representations from the manager.
+void
+MasalaDataRepresentationManager::reset() {
+    std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+    data_representation_creators_.clear();
+}
+
 /// @brief Get the data representations compatible with a set of criteria encoded in a request object.
 std::vector< MasalaDataRepresentationCreatorCSP >
 MasalaDataRepresentationManager::get_compatible_data_representation_creators(
