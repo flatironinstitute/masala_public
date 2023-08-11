@@ -16,50 +16,42 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/cost_function/feature_based/ChoiceFeature.fwd.hh
-/// @brief Forward declarations for a class for ChoiceFeatures.
-/// @details ChoiceFeatures are objects attached to node choices, which can form connections across
-/// choices at different nodes.  Each feature has a minimum and maximum number of connections that
-/// it must make to be satisfied.
-/// @note This class offers thread safety during setup only.  After finalization,
-/// it is read-only.
+/// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.fwd.hh
+/// @brief Forward declarations for a class used to request data representations.
+/// @details This class stores a list of criteria that a data representation must satisfy.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_fwd_hh
-#define Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace numeric {
-namespace optimization {
-namespace cost_function_network {
-namespace cost_function {
-namespace feature_based {
+namespace base {
+namespace managers {
+namespace engine {
 
-	class ChoiceFeature;
+	class MasalaDataRepresentationRequest;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using ChoiceFeatureSP = MASALA_SHARED_POINTER< ChoiceFeature >;
+	using MasalaDataRepresentationRequestSP = MASALA_SHARED_POINTER< MasalaDataRepresentationRequest >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using ChoiceFeatureCSP = MASALA_SHARED_POINTER< ChoiceFeature const >;
+	using MasalaDataRepresentationRequestCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationRequest const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using ChoiceFeatureWP = MASALA_WEAK_POINTER< ChoiceFeature >;
+	using MasalaDataRepresentationRequestWP = MASALA_WEAK_POINTER< MasalaDataRepresentationRequest >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using ChoiceFeatureCWP = MASALA_WEAK_POINTER< ChoiceFeature const >;
+	using MasalaDataRepresentationRequestCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationRequest const >;
 
-} // namespace feature_based
-} // namespace cost_function
-} // namespace cost_function_network
-} // namespace optimization
-} // namespace numeric
+} // namespace engine
+} // namespace managers
+} // namespace base
 } // namespace masala
 
-#endif //Masala_src_numeric_optimization_cost_function_network_cost_function_feature_based_ChoiceFeature_fwd_hh
+#endif //Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh

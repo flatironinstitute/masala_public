@@ -76,7 +76,7 @@ CostFunctionNetworkOptimizationProblem::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "CostFunctionNetworkOptimizationProblem" } }
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -85,7 +85,7 @@ CostFunctionNetworkOptimizationProblem::make_independent() {
 std::vector< std::vector< std::string > >
 CostFunctionNetworkOptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "CostFunctionNetworkOptimizationProblem" }
+		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" }
 	};
 }
 
@@ -99,6 +99,30 @@ CostFunctionNetworkOptimizationProblem::get_keywords() const {
 		"cost_function_network_optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the category for this MasalaDataRepresentation.
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }.
+std::vector< std::vector< std::string > >
+CostFunctionNetworkOptimizationProblem::get_data_representation_categories() const {
+	return std::vector< std::vector< std::string > > {
+		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" }
+	};
+}
+
+/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+/// is compatible.
+/// @returns An empty list.
+std::vector< std::string >
+CostFunctionNetworkOptimizationProblem::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation.
+/// @returns { "optimization_problem", "cost_function_network_optimization_problem" }.
+std::vector< std::string >
+CostFunctionNetworkOptimizationProblem::get_present_data_representation_properties() const {
+    return std::vector< std::string >{ "optimization_problem", "cost_function_network_optimization_problem" };
 }
 
 /// @brief Get the name of this class.

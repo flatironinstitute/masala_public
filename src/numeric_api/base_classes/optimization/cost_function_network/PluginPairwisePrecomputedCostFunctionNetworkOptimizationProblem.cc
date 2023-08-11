@@ -69,7 +69,7 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independen
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -78,20 +78,65 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independen
 std::vector< std::vector< std::string > >
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" }
+		{ "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" }
 	};
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
+/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "pairwise_precomputed_cost_function_network_optimization_problem", "numeric" }
 std::vector< std::string >
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_keywords() const {
 	return std::vector< std::string > {
 		"optimization_problem",
 		"cost_function_network_optimization_problem",
+        "pairwise_precomputed_cost_function_network_optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the category for this MasalaDataRepresentation.
+/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem", "PairwisePrecomputedCostFunctionNetworkOptimizationProblem" } }.
+std::vector< std::vector< std::string > >
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{
+        {
+            "OptimizationProblem",
+            "CostFunctionNetworkOptimizationProblem",
+            "PairwisePrecomputedCostFunctionNetworkOptimizationProblem"
+        }
+    };
+}
+
+/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+/// is compatible.
+/// @returns An empty list.
+std::vector< std::string >
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation.
+/// @returns { "optimization_problem", "cost_function_network_optimization_problem" }.
+std::vector< std::string >
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_present_data_representation_properties() const {
+    return std::vector< std::string >{
+        "optimization_problem",
+        "cost_function_network_optimization_problem"
+    };
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation that might possibly be present.
+/// @details Obviously, this is a non-exhuastive list.
+/// @returns { "precomputed", "pairwise_decomposible", "partially_precomputed", "partially_pairwise_decomposible" }.
+std::vector< std::string >
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_possibly_present_data_representation_properties() const {
+    return std::vector< std::string >{
+        "precomputed",
+        "pairwise_decomposible",
+        "partially_precomputed",
+        "partially_pairwise_decomposible"
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////

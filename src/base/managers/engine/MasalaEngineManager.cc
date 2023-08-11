@@ -122,6 +122,13 @@ MasalaEngineManager::unregister_engines(
 	}
 }
 
+/// @brief Completely remove all engines.
+void
+MasalaEngineManager::reset() {
+	std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+    engine_creators_.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

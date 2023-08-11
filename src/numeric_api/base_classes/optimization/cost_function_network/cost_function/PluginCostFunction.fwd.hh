@@ -16,47 +16,49 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/cost_function_network/cost_function/SquareOfChoicePenaltySumCostFunction.fwd.hh
-/// @brief Forward declarations for a class for SquareOfChoicePenaltySumCostFunctions.
-/// @details SquareOfChoicePenaltySumCostFunctions define a penalty function which is based on the following:
-/// - A penalty is assigned to each choice.
-/// - The selected choices' penalties are summed, and a constant is added.
-/// - The sum is squared, and this is returned as the penalty.
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/cost_function/PluginCostFunction.fwd.hh
+/// @brief Forward declarations for a non-instantiable base class for PluginCostFunctions.
+/// @details PluginCostFunctions define a penalty function for a given solution to a cost
+/// function network optimization problem.  (That is, given a selection of one choice
+/// per node, produce a numerical value.)  The PluginCostFunction class derives from CostFunction,
+/// and permits cost functions to be defined in plug-in libraries.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
-#define Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_cost_function_PluginCostFunction_fwd_hh
+#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_cost_function_PluginCostFunction_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace numeric {
+namespace numeric_api {
+namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
 
-	class SquareOfChoicePenaltySumCostFunction;
+	class PluginCostFunction;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionSP = MASALA_SHARED_POINTER< SquareOfChoicePenaltySumCostFunction >;
+	using PluginCostFunctionSP = MASALA_SHARED_POINTER< PluginCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionCSP = MASALA_SHARED_POINTER< SquareOfChoicePenaltySumCostFunction const >;
+	using PluginCostFunctionCSP = MASALA_SHARED_POINTER< PluginCostFunction const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionWP = MASALA_WEAK_POINTER< SquareOfChoicePenaltySumCostFunction >;
+	using PluginCostFunctionWP = MASALA_WEAK_POINTER< PluginCostFunction >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using SquareOfChoicePenaltySumCostFunctionCWP = MASALA_WEAK_POINTER< SquareOfChoicePenaltySumCostFunction const >;
+	using PluginCostFunctionCWP = MASALA_WEAK_POINTER< PluginCostFunction const >;
 
 } // namespace cost_function
 } // namespace cost_function_network
 } // namespace optimization
-} // namespace numeric
+} // namespace base_classes
+} // namespace numeric_api
 } // namespace masala
 
-#endif //Masala_src_numeric_optimization_cost_function_network_cost_function_SquareOfChoicePenaltySumCostFunction_fwd_hh
+#endif //Masala_src_numeric_api_base_classes_optimization_cost_function_network_cost_function_PluginCostFunction_fwd_hh

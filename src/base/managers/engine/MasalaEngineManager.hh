@@ -133,6 +133,10 @@ public:
 		std::vector< MasalaEngineCreatorCSP > const & engine_creators
 	);
 
+    /// @brief Completely remove all engines.
+    void
+    reset();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

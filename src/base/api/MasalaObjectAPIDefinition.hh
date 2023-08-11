@@ -33,10 +33,27 @@
 
 // Base headers.
 #include <base/types.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.fwd.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_FourInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -92,6 +109,144 @@ public:
 
 	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".
 	std::string class_namespace() const override;
+
+	/// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".  Static version.
+	static std::string class_name_static();
+
+	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
+	static std::string class_namespace_static();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a zero-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_zeroinput_setter_function(
+		std::string const & function_name
+	) const {
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 0 && setter->setter_function_name() == function_name ) {
+				return setter;
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
+
+	/// @brief Get a one-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_oneinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_OneInputCSP< P1 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_OneInput< P1 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
+
+	/// @brief Get a two-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_twoinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 2 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_TwoInputCSP< P1, P2 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TwoInput< P1, P2 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
+
+	/// @brief Get a three-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_threeinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 3 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_ThreeInputCSP< P1, P2, P3 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ThreeInput< P1, P2, P3 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
+
+	/// @brief Get a four-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_fourinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 4 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_FourInputCSP< P1, P2, P3, P4 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FourInput< P1, P2, P3, P4 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
+
+	/// @brief Get a five-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	get_fiveinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 5 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_FiveInputCSP< P1, P2, P3, P4, P5 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FiveInput< P1, P2, P3, P4, P5 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter;
+				}
+			}
+		}
+		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+	}
 
 public:
 
@@ -214,6 +369,12 @@ public:
 	/// derive from MasalaEngineAPI.
 	inline bool is_engine_class() const { return is_engine_class_; }
 
+	/// @brief Is this a MasalaDataRepresentation class that should be registered with the data
+	/// representation manager?
+	/// @details If so, the API creator will derive from MasalaDataRepresentationCreator and the
+	/// API will derive from MasalaDataRepresentationAPI.
+	inline bool is_data_representation_class() const { return is_data_representation_class_; }
+
 	/// @brief Get the categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -231,6 +392,41 @@ public:
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > const &
 	engine_categories() const;
+
+	/// @brief Get the categories that this object is in, if it is a MasalaDataRepresentation
+	/// object.
+	std::vector< std::vector< std::string > > const &
+	data_representation_categories() const;
+
+	/// @brief Get the properties that this object definitely has, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_present_properties() const;
+
+	/// @brief Get the properties that this object definitely does not have , if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_absent_properties() const;
+
+	/// @brief Get the properties that this object could have, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_possibly_present_properties() const;
+
+	/// @brief Get the properties that this object could be lacking, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_possibly_absent_properties() const;
+
+	/// @brief Get the MasalaEngines that this object is definitely compatible with, if it is
+	/// a MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_compatible_engines() const;
+
+	/// @brief Get the MasalaEngines that this object is definitely not compatible with, if it
+	/// is a MasalaDataRepresentation object.
+	std::vector< std::string > const &
+	data_representation_incompatible_engines() const;
 
 private:
 
@@ -257,6 +453,10 @@ private:
 	/// @details Nothing is cached here, so this will generate a new JSON object
 	/// each time it is called.  This isn't super fast.
 	nlohmann::json get_json_description_for_work_functions() const;
+
+	/// @brief Given a vector of strings, write a header followed by the vector as a comma-separated list,
+	/// or [NONE] if the vector is empty.
+	void write_list_to_stream( std::ostringstream & ss, std::string const & header, std::vector< std::string > const & list_to_write ) const;
 
 private:
 
@@ -308,6 +508,12 @@ private:
 	/// MasalaPluginAPI.
 	bool is_engine_class_ = false;
 
+	/// @brief Is this a MasalaDataRepresentation class?
+	/// @details If so, the API creator is derived from MasalaDataRepresentationCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaDataRepresentationAPI instead of
+	/// MasalaPluginAPI.
+	bool is_data_representation_class_ = false;
+
 	/// @brief The categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -322,6 +528,36 @@ private:
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > engine_categories_;
+
+	/// @brief The categories that this object is in, if it is a MasalaDataRepresentation object.
+	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
+	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
+	/// An object can be in more than one category.
+	std::vector< std::vector< std::string > > data_representation_categories_;
+
+	/// @brief The properties that this object definitely has, if it is a MasalaDataRepresentation
+	/// object.
+	std::vector< std::string > data_representation_present_properties_;
+
+	/// @brief The properties that this object definitely does not have , if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_absent_properties_;
+
+	/// @brief The properties that this object could have, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_possibly_present_properties_;
+
+	/// @brief The properties that this object could be lacking, if it is a
+	/// MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_possibly_absent_properties_;
+
+	/// @brief The MasalaEngines that this object is definitely compatible with, if it is
+	/// a MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_compatible_engines_;
+
+	/// @brief The MasalaEngines that this object is definitely not compatible with, if it
+	/// is a MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_incompatible_engines_;
 
 }; // class MasalaObjectAPIDefinition
 

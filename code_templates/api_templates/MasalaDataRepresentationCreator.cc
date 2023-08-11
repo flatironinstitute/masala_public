@@ -3,7 +3,9 @@
 <__DOXYGEN_CREATOR_FILE_PATH_AND_CC_FILE_NAME__>
 /// @brief Function implementations for the creator for the <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class.
 /// @details Creators are needed to allow the Masala plugin system to use objects
-/// defined in plugin libraries.
+/// defined in plugin libraries, and for the Masala engine and data representation
+/// system to be able to create data representations compatible with particular
+/// engines.
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
 /// @note This file is an auto-generated API file.  Do not edit it, but instead
 /// edit the <__SOURCE_CLASS_NAMESPACE_AND_NAME__> class's
@@ -39,7 +41,7 @@ masala::base::managers::plugin_module::MasalaPluginAPISP
 <__CREATOR_CLASS_API_NAME__>::create_plugin_object() const {
 #ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
 	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "create_plugin_object",
-		"The <__SOURCE_CLASS_API_NAME__> plugin class is not instantiable."
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
 	);
 	return nullptr;
 #else
@@ -56,7 +58,7 @@ masala::base::managers::plugin_module::MasalaPluginAPISP
 ) const {
 #ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
 	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "encapsulate_plugin_object_instance",
-		"The <__SOURCE_CLASS_API_NAME__> plugin class is not instantiable."
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
 	);
 	return nullptr;
 #else
@@ -77,7 +79,7 @@ masala::base::managers::plugin_module::MasalaPluginAPICSP
 ) const {
 #ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
 	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "encapsulate_const_plugin_object_instance",
-		"The <__SOURCE_CLASS_API_NAME__> plugin class is not instantiable."
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
 	);
 	return nullptr;
 #else
@@ -143,6 +145,77 @@ std::string
 std::string
 <__CREATOR_CLASS_API_NAME__>::class_namespace() const {
 	return "<__CREATOR_CLASS_API_NAMESPACE__>";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS FOR MaslaDataRepresentations
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the categories that this data representation plugin falls into.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns { <__DATA_REPRESENTATION_CATEGORIES__> }
+std::vector< std::vector< std::string > >
+<__CREATOR_CLASS_API_NAME__>::get_data_representation_categories() const {
+	return std::vector< std::vector< std::string > > {
+		<__DATA_REPRESENTATION_CATEGORIES__>
+	};
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY compatible.  (There may be other engines with which it is also
+/// compatible, so this is not necessarily an exhaustive list.)
+/// @note The list is by full name (i.e. namespace + name), so for instance
+/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+/// @returns { <__DATA_REPRESENTATION_COMPATIBLE_ENGINES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_compatible_masala_engines() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_COMPATIBLE_ENGINES__> };
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY NOT compatible.  (There may be other engines with which it is also
+/// not compatible, so this is not necessarily an exhaustive list.)
+/// @details The default implementation returns an empty list.
+/// @note The list is by full name (i.e. namespace + name), so for instance
+/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+/// @returns { <__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_incompatible_masala_engines() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__> };
+}
+
+/// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
+/// a non-exhaustive list.  If one data representation says it has the property
+/// "linearly-scaling", another could also be linearly scaling despite not listing this.)
+/// @returns { <__DATA_REPRESENTATION_PRESENT_PROPERTIES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_present_data_representation_properties() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_PRESENT_PROPERTIES__> };
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation that might possibly be present.
+/// @details Obviously, this is a non-exhuastive list.
+/// @returns { <__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_possibly_present_data_representation_properties() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__> };
+}
+
+/// @brief Get the properties that this MasalaDataRepresentation DEFINITELY lacks.
+/// Note that this is inevitably a non-exhaustive list.
+/// @returns { <__DATA_REPRESENTATION_ABSENT_PROPERTIES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_absent_data_representation_properties() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_ABSENT_PROPERTIES__> };
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation that might possibly be absent.
+/// @details Obviously, this is a non-exhuastive list.
+/// @returns { <__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__> }
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_possibly_absent_data_representation_properties() const {
+	return std::vector< std::string >{ <__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__> };
 }
 
 <__CPP_END_NAMESPACE__>

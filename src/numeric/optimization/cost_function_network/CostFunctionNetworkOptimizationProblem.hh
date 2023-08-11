@@ -95,7 +95,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "CostFunctionNetworkOptimizationProblem" } }
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -109,6 +109,22 @@ public:
 	/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+	
+	/// @brief Get the category for this MasalaDataRepresentation.
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }.
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+	/// is compatible.
+	/// @returns An empty list.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the properties of this MasalaDataRepresentation.
+	/// @returns { "optimization_problem", "cost_function_network_optimization_problem" }.
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 	/// @brief Get the name of this class.
 	/// @returns "CostFunctionNetworkOptimizationProblem".

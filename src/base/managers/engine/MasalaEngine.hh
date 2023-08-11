@@ -22,8 +22,6 @@
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
-/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
-/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_MasalaEngine_hh
@@ -35,6 +33,7 @@
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngineCreator.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -46,8 +45,6 @@ namespace engine {
 /// @details Subclasses will be defined for kinematic calculations, packing calculations, minimization
 /// calculations, etc.  Each of these in turn will have subclasses for performing these using different
 /// math libraries, optimizers, hardware, etc.
-/// @note Only a MasalaEngineCreator can create a MasalaEngine.  Only a MasalaEngineRegistrator can
-/// create a MasalaEngineCreator.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngine : public masala::base::managers::plugin_module::MasalaPlugin {
 
@@ -77,7 +74,7 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// ENGINE CATEGORIES
+// ENGINE PUBLIC METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Categories for engines.
@@ -92,6 +89,19 @@ public:
     virtual
     std::vector< std::vector < std::string > >
     get_engine_categories() const = 0;
+
+    /// @brief Is a particular data representation INcompatible with this engine?  Returns true to signal
+    /// incompatibility, false otherwise.
+    /// @details Default implementation always returns false.  May be overridden to allow engines to perform
+    /// runtime checks to assess whether a particular data representation will definitely NOT work with this
+    /// engine.
+    /// @note If this function returns false, it is not a guarantee that a data representation will work with
+    /// this engine, or work efficiently with this engine.
+    virtual
+    bool
+    data_representation_is_incompatible_with_engine(
+        MasalaDataRepresentationCreator const & representation
+    ) const;
 
 }; // class MasalaEngine
 

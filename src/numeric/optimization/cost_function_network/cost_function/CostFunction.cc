@@ -51,7 +51,7 @@ namespace cost_function {
 
 /// @brief Default constructor (protected in API).
 CostFunction::CostFunction() :
-    masala::base::managers::plugin_module::MasalaPlugin(),
+    masala::base::managers::engine::MasalaDataRepresentation(),
     finalized_(false)
 {}
 
@@ -59,7 +59,7 @@ CostFunction::CostFunction() :
 CostFunction::CostFunction(
     CostFunction const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin( src )
+    masala::base::managers::engine::MasalaDataRepresentation( src )
 {
     std::lock( src.mutex_, mutex_ );
     std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
@@ -129,6 +129,28 @@ CostFunction::get_keywords() const {
 		"cost_function",
 		"numeric"
 	};
+}
+
+/// @brief Get the category for this MasalaDataRepresentation.
+/// @returns { { "CostFunction" } }.
+std::vector< std::vector< std::string > >
+CostFunction::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{ { "CostFunction" } };
+}
+
+/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+/// is compatible.
+/// @returns An empty list.
+std::vector< std::string >
+CostFunction::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this MasalaDataRepresentation.
+/// @returns { "cost_function" }.
+std::vector< std::string >
+CostFunction::get_present_data_representation_properties() const {
+    return std::vector< std::string >{ "cost_function" };
 }
 
 /// @brief Get the class name ("CostFunction").
@@ -311,6 +333,7 @@ void
 CostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
+    masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
     finalized_ = src.finalized_.load();
     api_definition_ = nullptr; // Deliberately not assigned.
     weight_ = src.weight_;

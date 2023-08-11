@@ -548,7 +548,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list) -> str :
+def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_engine_class : bool, is_data_representation_class : bool) -> str :
     outstring = ""
     first = True
 
@@ -562,6 +562,34 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
     elif fxn_type == "WORKFXN" :
         groupname = "WorkFunctions"
         namepattern = "Work_Function"
+
+    if fxn_type == "GETTER" :
+        if is_data_representation_class == True :
+            outstring += tabchar + "/// @brief Get the inner data representation object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+            outstring += tabchar + "get_inner_data_representation_object() override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+            outstring += tabchar + "get_inner_data_representation_object_const() const override;"
+            first = False
+        elif is_engine_class == True :
+            outstring += tabchar + "/// @brief Get the inner engine object.\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineSP\n"
+            outstring += tabchar + "get_inner_engine_object() override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the inner engine object (const access).\n"
+            outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += tabchar + "masala::base::managers::engine::MasalaEngineCSP\n"
+            outstring += tabchar + "get_inner_engine_object_const() const override;"
+            first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
@@ -696,7 +724,9 @@ def generate_function_implementations( \
     fxn_type: str, \
     additional_includes: list, \
     is_lightweight: bool, \
-    is_derived : bool \
+    is_derived : bool, \
+    is_engine_class : bool, \
+    is_data_representation_class : bool \
     ) -> str :
 
     outstring = ""
@@ -714,6 +744,62 @@ def generate_function_implementations( \
         namepattern = "Work_Function"
 
     apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
+
+    if fxn_type == "GETTER" :
+        if is_data_representation_class == True :
+            outstring += "/// @brief Get the inner data representation object.\n"
+            outstring += "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += "masala::base::managers::engine::MasalaDataRepresentationSP\n"
+            outstring += apiclassname + "::get_inner_data_representation_object() {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_;\n"
+            outstring += "}\n"
+            outstring += "\n"
+            outstring += "/// @brief Get the inner data representation object (const access).\n"
+            outstring += "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
+            outstring += apiclassname + "::get_inner_data_representation_object_const() const {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_;\n"
+            outstring += "}"
+            first = False
+        elif is_engine_class == True :
+            outstring += "/// @brief Get the inner engine object.\n"
+            outstring += "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
+            outstring += "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += "masala::base::managers::engine::MasalaEngineSP\n"
+            outstring += apiclassname + "::get_inner_engine_object() {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_;\n"
+            outstring += "}\n"
+            outstring += "\n"
+            outstring += "/// @brief Get the inner engine object (const access).\n"
+            outstring += "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
+            outstring += "/// object can nullify the thread safety that the API object provides.\n"
+            outstring += "masala::base::managers::engine::MasalaEngineCSP\n"
+            outstring += apiclassname + "::get_inner_engine_object_const() const {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_;\n"
+            outstring += "}"
+            first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
@@ -925,11 +1011,54 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
                 outstr += newentry
     return outstr
 
+## @brief Generate the categories for a data representation class, from the JASON description.
+def generate_data_representation_categories( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json \
+    ) -> str :
+    outstr = ""
+    categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Data_Representation_Categories"]
+    firstcat = True
+    for category in categories :
+        if firstcat == True :
+            firstcat = False
+        else :
+            outstr += ", "
+        outstr += "{ "
+        first = True
+        for entry in category :
+            if first == True :
+                first = False
+            else :
+                outstr += ", "
+            outstr += "\"" + entry + "\""
+        outstr += " }"
+    return outstr
+
+## @brief Generate the compatible engines list for a data representation class, from the JASON description.
+def generate_data_representation_stringlist( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json, \
+    json_category_string : str, \
+    ) -> str :
+    outstr = ""
+    entries = json_api["Elements"][ namespace_string + "::" + name_string ][json_category_string]
+    first = True
+    for entry in entries :
+        if first == True :
+            first = False
+        else :
+            outstr += ", "
+        outstr += "\"" + entry + "\""
+    return outstr
+
 ## @brief Generate the categories for a plugin class, from the JSON description.
 def generate_plugin_categories( \
     name_string : str, \
     namespace_string : str, \
-    json_api : json
+    json_api : json \
     ) -> str :
 
     outstr = ""
@@ -972,6 +1101,7 @@ def generate_plugin_keywords( \
 ## @brief Auto-generate the forward declaration file (***Creator.fwd.hh) for the creator for a plugin class.
 def prepare_creator_forward_declarations( \
     plugin_creator_fwdfile_template : str, \
+    data_rep_creator_fwdfile_template : str, \
     licence : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -980,7 +1110,8 @@ def prepare_creator_forward_declarations( \
     name_string : str, \
     namespace : list, \
     library_name : str, \
-    project_name : str \
+    project_name : str, \
+    is_data_representation_class : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -994,8 +1125,13 @@ def prepare_creator_forward_declarations( \
             header_guard_string += namespace[i] + "_"
     header_guard_string += creator_name + "_fwd_hh"
 
+    if is_data_representation_class == True :
+        plugin_creator_fwdfile = data_rep_creator_fwdfile_template
+    else :
+        plugin_creator_fwdfile = plugin_creator_fwdfile_template
+
     plugin_creator_fwdfile = \
-        plugin_creator_fwdfile_template \
+        plugin_creator_fwdfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_FWD_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".fwd.hh" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1013,6 +1149,7 @@ def prepare_creator_forward_declarations( \
 ## @brief Auto-generate the header file (***Creator.hh) for the creator for a plugin class.
 def prepare_creator_header_file( \
     plugin_creator_hhfile_template : str, \
+    data_rep_creator_hhfile_template : str, \
     licence_template : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -1022,7 +1159,8 @@ def prepare_creator_header_file( \
     namespace : list, \
     library_name : str, \
     project_name : str, \
-    is_engine : bool \
+    is_engine : bool, \
+    is_data_representation_class : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1045,15 +1183,30 @@ def prepare_creator_header_file( \
             creator_namespace_string += "::"
         creator_namespace_string += entry
     
-    if is_engine == True :
-        base_include_file = "base/managers/engine/MasalaEngineCreator.hh"
-        plugin_creator_base_class="masala::base::managers::engine::MasalaEngineCreator"
+    parent_api_include, parent_api_namespace_and_name, root_api_name, next_is_plugin = get_api_class_include_and_classname( project_name, library_name, name_string, namespace, True, is_engine, is_data_representation_class )
+    if parent_api_include.endswith( "_API.hh>" ) :
+        base_include_file = parent_api_include[:-8] + "Creator.hh>"
     else :
-        base_include_file = "base/managers/plugin_module/MasalaPluginCreator.hh"
-        plugin_creator_base_class="masala::base::managers::plugin_module::MasalaPluginCreator"
+        base_include_file = parent_api_include[:-7] + "Creator.hh>"
+    if parent_api_namespace_and_name.endswith( "_API") :
+        plugin_creator_base_class = parent_api_namespace_and_name[:-4] + "Creator"
+    else :
+        plugin_creator_base_class = parent_api_namespace_and_name[:-3] + "Creator"
+
+    if is_data_representation_class == True :
+        plugin_creator_hhfile = data_rep_creator_hhfile_template \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    else :
+        plugin_creator_hhfile = plugin_creator_hhfile_template
 
     plugin_creator_hhfile = \
-        plugin_creator_hhfile_template \
+        plugin_creator_hhfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_HH_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".hh" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1069,7 +1222,7 @@ def prepare_creator_header_file( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string ) \
-        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <" + base_include_file + ">" ) \
+        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", base_include_file ) \
         .replace( "<__PLUGIN_CREATOR_BASE_CLASS__>", plugin_creator_base_class )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
@@ -1079,6 +1232,7 @@ def prepare_creator_header_file( \
 ## @brief Auto-generate the cc file (***Creator.cc) for the creator for a plugin class.
 def prepare_creator_cc_file( \
     plugin_creator_ccfile_template : str, \
+    data_rep_creator_ccfile_template : str, \
     licence_template : str, \
     creator_name : str, \
     creator_namespace : list, \
@@ -1089,6 +1243,8 @@ def prepare_creator_cc_file( \
     library_name : str, \
     project_name : str, \
     api_dirname : str, \
+    is_data_representation_class : bool, \
+    has_protected_constructors : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1108,8 +1264,27 @@ def prepare_creator_cc_file( \
             creator_namespace_string += "::"
         creator_namespace_string += entry
 
+    if has_protected_constructors == True :
+        instantiable_string = "#define " + name_string + "_API_NOT_INSTANTIABLE"
+        object_string = "/*object*/"
+    else :
+        instantiable_string = ""
+        object_string = "object"
+
+    if is_data_representation_class == True :
+        plugin_creator_ccfile = data_rep_creator_ccfile_template \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
+            .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
+            .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_data_representation_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    else :
+        plugin_creator_ccfile = plugin_creator_ccfile_template
+
     plugin_creator_ccfile = \
-        plugin_creator_ccfile_template \
+        plugin_creator_ccfile \
         .replace( "<__COMMENTED_LICENCE__>", "/*\n" + licence_template + "\n*/\n" ) \
         .replace( "<__DOXYGEN_CREATOR_FILE_PATH_AND_CC_FILE_NAME__>", "/// @file " + creator_filename[4:] + ".cc" ) \
         .replace( "<__SOURCE_CLASS_NAMESPACE_AND_NAME__>", original_class_namespace_string + "::" + name_string ) \
@@ -1125,7 +1300,9 @@ def prepare_creator_cc_file( \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( name_string, namespace, ".hh" ) + ">" ) \
         .replace( "<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + api_dirname_short + name_string + "_API.hh>" ) \
-        .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" )
+        .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" ) \
+        .replace( "<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>", instantiable_string ) \
+        .replace( "<__OBJECT_OR_COMMENTED__>", object_string )
 
     with open( creator_filename + ".cc", 'w' ) as filehandle :
         filehandle.write( plugin_creator_ccfile )
@@ -1170,7 +1347,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
 ## @details If the parent class of the inner object has an API, use the API class for that object as the parent.  Otherwise,
 ## use MasalaPluginAPI (if it is a plug-in class) or MasalaObjectAPI (if it is not).
 ## @returns A tuple of ( parent include file string, parent namespace and name string, root API class namespace and name string, boolean representing whether this is a class derived from another API class ).
-def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list, is_plugin_class : bool, is_engine_class : bool ) -> tuple :
+def get_api_class_include_and_classname( project_name : str, libraryname : str, classname : str, namespace : list, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool ) -> tuple :
     #print( classname, namespace, flush=True )
     # First, find the parent class name.
     assert len(namespace) > 1
@@ -1251,13 +1428,16 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             parent_api_hhfile = "#include <" + parent_api_hhfile[17 + len(parentsplit[0]):] + ">"
 
         if parent_has_api == True :
-            include2, parent2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class )
-            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
+            include2, parent2, root_api_namespace_and_name, next_is_plugin = get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class, is_data_representation_class )
+            if root_api_namespace_and_name == "masala::base::managers::plugin_module::MasalaPluginAPI" or \
+                root_api_namespace_and_name == "masala::base::managers::engine::MasalaEngineAPI" or \
+                root_api_namespace_and_name == "masala::base::managers::engine::MasalaDataRepresentationAPI" or \
+                root_api_namespace_and_name == "masala::base::MasalaObjectAPI" :
                 root_api_namespace_and_name = parent_api_namespace_and_name
             return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else : # parent_has_api == False
             print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
-            return get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class )
+            return get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
     # If we reach here, there's no parent class with an API.
     if is_plugin_class == True :
@@ -1265,6 +1445,11 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             return ( "#include <base/managers/engine/MasalaEngineAPI.hh>", \
             "masala::base::managers::engine::MasalaEngineAPI", \
             "masala::base::managers::engine::MasalaEngineAPI", \
+            False )
+        elif is_data_representation_class == True :
+            return ( "#include <base/managers/engine/MasalaDataRepresentationAPI.hh>", \
+            "masala::base::managers::engine::MasalaDataRepresentationAPI", \
+            "masala::base::managers::engine::MasalaDataRepresentationAPI", \
             False )
         return ( "#include <base/managers/plugin_module/MasalaPluginAPI.hh>", \
             "masala::base::managers::plugin_module::MasalaPluginAPI", \
@@ -1277,7 +1462,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             False )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool, is_engine_class : bool ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
@@ -1289,7 +1474,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
             header_guard_string += namespace[i] + "_"
     header_guard_string += apiclassname + "_hh"
 
-    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class, is_engine_class )
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
     if is_derived == False :
         hhfile_template_to_use = hhfile_template
@@ -1329,9 +1514,9 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes) ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes) ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_engine_class, is_data_representation_class) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_engine_class, is_data_representation_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_engine_class, is_data_representation_class) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
@@ -1348,7 +1533,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool, is_engine_class : bool  ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -1366,7 +1551,7 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         protected_constructor_comment_start = ""
         protected_constructor_comment_end = ""
 
-    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class, is_engine_class )
+    api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
     if is_derived == False :
         ccfile_template_to_use = ccfile_template
@@ -1392,9 +1577,9 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
@@ -1554,6 +1739,10 @@ plugin_creator_ccfile_template = read_file( "code_templates/api_templates/Masala
 plugin_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.hh" )
 plugin_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaPluginCreator.fwd.hh" )
 
+data_rep_creator_ccfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.cc" )
+data_rep_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.hh" )
+data_rep_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.fwd.hh" )
+
 plugin_registration_ccfile_template = read_file( "code_templates/api_templates/register_plugins.cc" )
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
@@ -1576,27 +1765,39 @@ if json_api["Elements"] is not None :
         assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
         assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
         dirname = prepare_directory( project_name, library_name, namespace )
+
         is_plugin_class = json_api["Elements"][element]["Properties"]["Is_Plugin_Class"]
+
         if "Is_Engine_Class" in json_api["Elements"][element]["Properties"] :
             is_engine_class = json_api["Elements"][element]["Properties"]["Is_Engine_Class"]
         else :
             is_engine_class = False
+
+        if "Is_Data_Representation_Class" in json_api["Elements"][element]["Properties"] :
+            is_data_representation_class = json_api["Elements"][element]["Properties"]["Is_Data_Representation_Class"]
+        else :
+            is_data_representation_class = False
+
         if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
         else :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
         
-        if is_plugin_class == True and json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
-            generate_registration_function = True
+        if is_plugin_class == True :
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
-            plugins_list.append( [creator_name,creator_namespace,creator_filename] )
-            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name  )
-            prepare_creator_header_file( plugin_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class  )
-            prepare_creator_cc_file( plugin_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname  )
+            if json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
+                has_protected_constructors = False
+                generate_registration_function = True
+                plugins_list.append( [creator_name,creator_namespace,creator_filename] )
+            else :
+                has_protected_constructors = True
+            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, data_rep_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_data_representation_class=is_data_representation_class  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, data_rep_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class, has_protected_constructors=has_protected_constructors  )
     
     if generate_registration_function == True :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )

@@ -16,39 +16,39 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/plugin_module/MasalaEngineAPI.hh
-/// @brief A base class for all Masala derived API classes for MasalaEngines.
+/// @file src/base/managers/plugin_module/MasalaDataRepresentationAPI.hh
+/// @brief A base class for all Masala derived API classes for MasalaDataRepresentations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaEngineAPI_hh
-#define Masala_src_base_managers_engine_MasalaEngineAPI_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationAPI_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentationAPI_hh
 
 // Forward declarations:
-#include <base/managers/engine/MasalaEngineAPI.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 
 // Base headers:
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
-#include <base/managers/engine/MasalaEngine.fwd.hh>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
 
-/// @brief A base class for Masala API derived classes for MasalaEngines.
+/// @brief A base class for Masala API derived classes for MasalaDataRepresentations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineAPI : public masala::base::managers::plugin_module::MasalaPluginAPI {
+class MasalaDataRepresentationAPI : public masala::base::managers::plugin_module::MasalaPluginAPI {
 
 public:
 
 	/// @brief Default constructor.
-	MasalaEngineAPI() = default;
+	MasalaDataRepresentationAPI() = default;
 
 	/// @brief Copy constructor.
-	MasalaEngineAPI( MasalaEngineAPI const & ) = default;
+	MasalaDataRepresentationAPI( MasalaDataRepresentationAPI const & ) = default;
 
 	/// @brief Destructor.
-	virtual ~MasalaEngineAPI() = default;
+	virtual ~MasalaDataRepresentationAPI() = default;
 
 public:
 
@@ -61,22 +61,22 @@ public:
     /// @note Use this function with care!  Holding a shared pointer to the inner
     /// object can nullify the thread safety that the API object provides.
     virtual
-    MasalaEngineSP
-    get_inner_engine_object() = 0;
+    MasalaDataRepresentationSP
+    get_inner_data_representation_object() = 0;
 
     /// @brief Access the inner data representation object (const access).
     /// @details Implemented by derived classes.
     /// @note Use this function with care!  Holding a const shared pointer to the inner
     /// object can nullify the thread safety that the API object provides.
     virtual
-    MasalaEngineCSP
-    get_inner_engine_object_const() const = 0;
+    MasalaDataRepresentationCSP
+    get_inner_data_representation_object_const() const = 0;
 
-}; // class MasalaEngineAPI
+}; // class MasalaDataRepresentationAPI
 
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaEngineAPI_hh
+#endif //Masala_src_base_managers_engine_MasalaDataRepresentationAPI_hh

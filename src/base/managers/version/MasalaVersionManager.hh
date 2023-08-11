@@ -121,6 +121,9 @@ public:
     masala::base::Size
     n_modules_registered() const;
 
+    /// @brief Remove all version information (except for the core libraries).
+    void reset();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

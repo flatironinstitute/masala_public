@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/MasalaDataRepresentationBase.fwd.hh
+/// @file src/base/managers/engine/MasalaDataRepresentation.fwd.hh
 /// @brief Forward declarations for a pure virtual base class class for particular representations
 /// of data that can be requested by engines for efficient manipulation of those data.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentation_fwd_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentation_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
@@ -31,12 +31,12 @@ namespace base {
 namespace managers {
 namespace engine {
 
-    class MasalaDataRepresentationBase;
+    class MasalaDataRepresentation;
 
-    using MasalaDataRepresentationBaseSP = MASALA_SHARED_POINTER< MasalaDataRepresentationBase >;
-    using MasalaDataRepresentationBaseCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationBase const >;
-    using MasalaDataRepresentationBaseWP = MASALA_WEAK_POINTER< MasalaDataRepresentationBase >;
-    using MasalaDataRepresentationBaseCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationBase const >;
+    using MasalaDataRepresentationSP = MASALA_SHARED_POINTER< MasalaDataRepresentation >;
+    using MasalaDataRepresentationCSP = MASALA_SHARED_POINTER< MasalaDataRepresentation const >;
+    using MasalaDataRepresentationWP = MASALA_WEAK_POINTER< MasalaDataRepresentation >;
+    using MasalaDataRepresentationCWP = MASALA_WEAK_POINTER< MasalaDataRepresentation const >;
 
 
 } // namespace engine
@@ -44,4 +44,4 @@ namespace engine {
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_MasalaDataRepresentationBase_fwd_hh
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentation_fwd_hh

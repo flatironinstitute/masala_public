@@ -48,7 +48,7 @@ namespace optimization {
 OptimizationProblem::OptimizationProblem(
     OptimizationProblem const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin(src)
+    masala::base::managers::engine::MasalaDataRepresentation(src)
 {
     std::lock_guard< std::mutex > lock( src.problem_mutex_ );
     finalized_ = src.finalized_.load();
@@ -59,7 +59,7 @@ OptimizationProblem &
 OptimizationProblem::operator=(
     OptimizationProblem const & src
 ) {
-    masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
     {
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
@@ -112,6 +112,27 @@ OptimizationProblem::get_keywords() const {
 		"optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the categories that this data representation plugin falls into.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns {{ "OptimizationProblem" }}
+std::vector< std::vector< std::string > >
+OptimizationProblem::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{{"OptimizationProblem"}};
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY compatible.  (There may be other engines with which it is also
+/// compatible, so this is not necessarily an exhaustive list.)
+/// @note Must be implemented by derived classes.  The list is by full name (i.e.
+/// namespace + name), so for instance
+/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+/// @returns An empty list.
+std::vector< std::string >
+OptimizationProblem::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
 }
 
 /// @brief Get the class name.

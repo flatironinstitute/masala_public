@@ -26,12 +26,10 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 
 // Base headers
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
-#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngine.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <base/error/ErrorHandling.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -86,17 +84,51 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
             engine_categories_ = this_object_engine_cast->get_engine_categories();
         }
     }
+    {
+        MasalaDataRepresentation const * this_object_datarep_cast( dynamic_cast< MasalaDataRepresentation const * >(&this_object) );
+        is_data_representation_class_ = ( this_object_datarep_cast != nullptr );
+        if( is_data_representation_class_ ) {
+            data_representation_categories_ = this_object_datarep_cast->get_data_representation_categories();
+            data_representation_present_properties_ = this_object_datarep_cast->get_present_data_representation_properties();
+            data_representation_absent_properties_ = this_object_datarep_cast->get_absent_data_representation_properties();
+            data_representation_possibly_present_properties_ = this_object_datarep_cast->get_possibly_present_data_representation_properties();
+            data_representation_possibly_absent_properties_ = this_object_datarep_cast->get_possibly_absent_data_representation_properties();
+            data_representation_compatible_engines_ = this_object_datarep_cast->get_compatible_masala_engines();
+            data_representation_incompatible_engines_ = this_object_datarep_cast->get_incompatible_masala_engines();
+        }
+    }
+
+    CHECK_OR_THROW( !( is_engine_class_ && is_data_representation_class_ ),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaObjectAPIDefinition",
+        "The " + api_class_name_ + " class was found to be both a MasalaEngine and a "
+        "MasalaDataRepresentation.  Masala's build system does not permit this!"
+    );
 }
 
 /// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".
 std::string
 MasalaObjectAPIDefinition::class_name() const {
-    return "MasalaObjectAPIDefinition";
+    return class_name_static();
 }
 
 /// @brief Every class can provide its own namespace.  This returns "masala::base::api".
 std::string
 MasalaObjectAPIDefinition::class_namespace() const {
+    return class_namespace_static();
+}
+
+/// @brief Every class can name itself.  This returns "MasalaObjectAPIDefinition".  Static version.
+/*static*/
+std::string
+MasalaObjectAPIDefinition::class_name_static() {
+    return "MasalaObjectAPIDefinition";
+}
+
+/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
+/*static*/
+std::string
+MasalaObjectAPIDefinition::class_namespace_static() {
     return "masala::base::api";
 }
 
@@ -245,6 +277,29 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
         }
     }
 
+    ss << "Is_Data_Representation_Class:\t" << ( is_data_representation_class_ ? "TRUE" : "FALSE" ) << "\n";
+    if( is_data_representation_class_ ) {
+        ss << "\nDATA_REPRESENTATION_CATEGORIES:\n";
+        for( auto const & category : data_representation_categories_ ) {
+            bool first( true );
+            for( auto const & level : category ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << level;
+            }
+            ss << "\n";
+        }
+        write_list_to_stream( ss, "DATA_REPRESENTATION_PRESENT_PROPERTIES", data_representation_present_properties_ );
+        write_list_to_stream( ss, "DATA_REPRESENTATION_ABSENT_PROPERTIES", data_representation_absent_properties_ );
+        write_list_to_stream( ss, "DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES", data_representation_possibly_present_properties_ );
+        write_list_to_stream( ss, "DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES", data_representation_possibly_absent_properties_ );
+        write_list_to_stream( ss, "DATA_REPRESENTATION_COMPATIBLE_ENGINES", data_representation_compatible_engines_ );
+        write_list_to_stream( ss, "DATA_REPRESENTATION_INCOMPATIBLE_ENGINES", data_representation_incompatible_engines_ );
+    }
+
     return ss.str();
 }
 
@@ -269,15 +324,25 @@ MasalaObjectAPIDefinition::get_json_description() const {
         { "Is_Lightweight", is_lightweight_ },
         { "Is_Plugin_Class", is_plugin_class_ },
         { "Is_Engine_Class", is_engine_class_ },
+        { "Is_Data_Representation_Class", is_data_representation_class_ },
         { "Has_Protected_Constructors", has_protected_constructors_ }
     };
 
     if( is_plugin_class_ ) {
         json_api[ "Plugin_Categories" ] = plugin_categories_;
         json_api[ "Plugin_Keywords" ] = plugin_keywords_;
-    } 
+    }
     if( is_engine_class_ ) {
         json_api[ "Engine_Categories" ] = engine_categories_;
+    }
+    if( is_data_representation_class_ ) {
+        json_api[ "Data_Representation_Categories" ] = data_representation_categories_;
+        json_api[ "Data_Representation_Present_Properties" ] = data_representation_present_properties_;
+        json_api[ "Data_Representation_Absent_Properties" ] = data_representation_absent_properties_;
+        json_api[ "Data_Representation_Possibly_Present_Properties" ] = data_representation_possibly_present_properties_;
+        json_api[ "Data_Representation_Possibly_Absent_Properties" ] = data_representation_possibly_absent_properties_;
+        json_api[ "Data_Representation_Compatible_Engines" ] = data_representation_compatible_engines_;
+        json_api[ "Data_Representation_Incompatible_Engines" ] = data_representation_incompatible_engines_;
     }
 
     return json_ptr;
@@ -411,6 +476,55 @@ MasalaObjectAPIDefinition::engine_categories() const {
     return engine_categories_;
 }
 
+/// @brief Get the categories that this object is in, if it is a MasalaDataRepresentation
+/// object.
+std::vector< std::vector< std::string > > const &
+MasalaObjectAPIDefinition::data_representation_categories() const {
+    return data_representation_categories_;
+}
+
+/// @brief Get the properties that this object definitely has, if it is a
+/// MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_present_properties() const {
+    return data_representation_present_properties_;
+}
+
+/// @brief Get the properties that this object definitely does not have , if it is a
+/// MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_absent_properties() const {
+    return data_representation_absent_properties_;
+}
+
+/// @brief Get the properties that this object could have, if it is a
+/// MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_possibly_present_properties() const {
+    return data_representation_possibly_present_properties_;
+}
+
+/// @brief Get the properties that this object could be lacking, if it is a
+/// MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_possibly_absent_properties() const {
+    return data_representation_possibly_absent_properties_;
+}
+
+/// @brief Get the MasalaEngines that this object is definitely compatible with, if it is
+/// a MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_compatible_engines() const {
+    return data_representation_compatible_engines_;
+}
+
+/// @brief Get the MasalaEngines that this object is definitely not compatible with, if it
+/// is a MasalaDataRepresentation object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_incompatible_engines() const {
+    return data_representation_incompatible_engines_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -481,6 +595,31 @@ MasalaObjectAPIDefinition::get_json_description_for_work_functions() const {
 
     json_api["Work_Function_APIs"] = work_function_jsons;
     return json_api;
+}
+
+/// @brief Given a vector of strings, write a header followed by the vector as a comma-separated list,
+/// or [NONE] if the vector is empty.
+void
+MasalaObjectAPIDefinition::write_list_to_stream(
+    std::ostringstream & ss,
+    std::string const & header,
+    std::vector< std::string > const & list_to_write
+) const {
+    ss << "\n" << header << ":\n";
+    bool first( true );
+    if( list_to_write.empty() ) {
+        ss << "[NONE]\n";
+    } else {
+        for( auto const & entry : list_to_write ) {
+            if( first ) {
+                first = false;
+            } else {
+                ss << ", ";
+            }
+            ss << entry;
+        }
+        ss << "\n";
+    }
 }
 
 } // namespace api
