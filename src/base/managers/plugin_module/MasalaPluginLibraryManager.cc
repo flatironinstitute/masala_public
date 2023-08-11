@@ -73,6 +73,8 @@ MasalaPluginLibraryManager::class_namespace() const {
 /// @note Calls reset() on the MasalaPluginModuleManager.
 void
 MasalaPluginLibraryManager::reset() {
+	using namespace masala::base::managers::version;
+
     std::lock_guard< std::mutex > lock( plugin_libraries_mutex_ );
     MasalaPluginModuleManager::get_instance()->reset();
     for(
@@ -83,6 +85,9 @@ MasalaPluginLibraryManager::reset() {
         dlclose( it->second );
     }
     plugin_libraries_name_to_handle_map_.clear();
+
+	MasalaVersionManagerHandle vm( MasalaVersionManager::get_instance() );
+	vm->reset();
 }
 
 /// @brief Get the number of registered plugin libraries.
