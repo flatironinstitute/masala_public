@@ -1183,15 +1183,15 @@ def prepare_creator_header_file( \
             creator_namespace_string += "::"
         creator_namespace_string += entry
     
-    if is_engine == True :
-        base_include_file = "base/managers/engine/MasalaEngineCreator.hh"
-        plugin_creator_base_class="masala::base::managers::engine::MasalaEngineCreator"
-    elif is_data_representation_class == True :
-        base_include_file = "base/managers/engine/MasalaDataRepresentationCreator.hh"
-        plugin_creator_base_class="masala::base::managers::engine::MasalaDataRepresentationCreator"
+    parent_api_include, parent_api_namespace_and_name, root_api_name, next_is_plugin = get_api_class_include_and_classname( project_name, library_name, name_string, namespace, True, is_engine, is_data_representation_class )
+    if parent_api_include.endswith( "_API.hh>" ) :
+        base_include_file = parent_api_include[:-8] + "Creator.hh>"
     else :
-        base_include_file = "base/managers/plugin_module/MasalaPluginCreator.hh"
-        plugin_creator_base_class="masala::base::managers::plugin_module::MasalaPluginCreator"
+        base_include_file = parent_api_include[:-7] + "Creator.hh>"
+    if parent_api_namespace_and_name.endswith( "_API") :
+        plugin_creator_base_class = parent_api_namespace_and_name[:-4] + "Creator"
+    else :
+        plugin_creator_base_class = parent_api_namespace_and_name[:-3] + "Creator"
 
     if is_data_representation_class == True :
         plugin_creator_hhfile = data_rep_creator_hhfile_template \
@@ -1222,7 +1222,7 @@ def prepare_creator_header_file( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif //" + header_guard_string ) \
-        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", "#include <" + base_include_file + ">" ) \
+        .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", base_include_file ) \
         .replace( "<__PLUGIN_CREATOR_BASE_CLASS__>", plugin_creator_base_class )
 
     with open( creator_filename + ".hh", 'w' ) as filehandle :
@@ -1243,7 +1243,8 @@ def prepare_creator_cc_file( \
     library_name : str, \
     project_name : str, \
     api_dirname : str, \
-    is_data_representation_class : bool \
+    is_data_representation_class : bool, \
+    has_protected_constructors : bool \
     ) -> None :
 
     original_class_namespace_string = ""
@@ -1262,6 +1263,13 @@ def prepare_creator_cc_file( \
         else :
             creator_namespace_string += "::"
         creator_namespace_string += entry
+
+    if has_protected_constructors == True :
+        instantiable_string = "#define " + name_string + "_API_NOT_INSTANTIABLE"
+        object_string = "/*object*/"
+    else :
+        instantiable_string = ""
+        object_string = "object"
 
     if is_data_representation_class == True :
         plugin_creator_ccfile = data_rep_creator_ccfile_template \
@@ -1292,7 +1300,9 @@ def prepare_creator_cc_file( \
         .replace( "<__CREATOR_CLASS_API_NAMESPACE__>", creator_namespace_string ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( name_string, namespace, ".hh" ) + ">" ) \
         .replace( "<__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + api_dirname_short + name_string + "_API.hh>" ) \
-        .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" )
+        .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" ) \
+        .replace( "<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>", instantiable_string ) \
+        .replace( "<__OBJECT_OR_COMMENTED__>", object_string )
 
     with open( creator_filename + ".cc", 'w' ) as filehandle :
         filehandle.write( plugin_creator_ccfile )
@@ -1777,13 +1787,17 @@ if json_api["Elements"] is not None :
             prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
             prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
         
-        if is_plugin_class == True and json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
-            generate_registration_function = True
+        if is_plugin_class == True :
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )
-            plugins_list.append( [creator_name,creator_namespace,creator_filename] )
+            if json_api["Elements"][element]["Properties"]["Has_Protected_Constructors"] == False :
+                has_protected_constructors = False
+                generate_registration_function = True
+                plugins_list.append( [creator_name,creator_namespace,creator_filename] )
+            else :
+                has_protected_constructors = True
             prepare_creator_forward_declarations( plugin_creator_fwdfile_template, data_rep_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_data_representation_class=is_data_representation_class  )
             prepare_creator_header_file( plugin_creator_hhfile_template, data_rep_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class  )
-            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class, has_protected_constructors=has_protected_constructors  )
     
     if generate_registration_function == True :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )

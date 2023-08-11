@@ -18,8 +18,13 @@
 <__API_INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>
 <__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 #include <string>
+
+<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>
 
 <__CPP_NAMESPACE__>
 
@@ -34,7 +39,14 @@
 /// @details Must be implemented by derived classes.
 masala::base::managers::plugin_module::MasalaPluginAPISP
 <__CREATOR_CLASS_API_NAME__>::create_plugin_object() const {
+#ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
+	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "create_plugin_object",
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
+	);
+	return nullptr;
+#else
 	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >();
+#endif
 }
 
 /// @brief Create an object of the desired type (or, more precisely, an API container
@@ -42,13 +54,20 @@ masala::base::managers::plugin_module::MasalaPluginAPISP
 /// @details Must be implemented by derived classes.
 masala::base::managers::plugin_module::MasalaPluginAPISP
 <__CREATOR_CLASS_API_NAME__>::encapsulate_plugin_object_instance(
-	masala::base::managers::plugin_module::MasalaPluginSP const & object
+	masala::base::managers::plugin_module::MasalaPluginSP const & <__OBJECT_OR_COMMENTED__>
 ) const {
+#ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
+	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "encapsulate_plugin_object_instance",
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
+	);
+	return nullptr;
+#else
 	return masala::make_shared< <__SOURCE_CLASS_API_NAME__> >(
 		std::static_pointer_cast< <__SOURCE_CLASS_NAMESPACE_AND_NAME__> >(
 			object
 		)
 	);
+#endif
 }
 
 /// @brief Create an object of the desired type (or, more precisely, an API container
@@ -56,8 +75,14 @@ masala::base::managers::plugin_module::MasalaPluginAPISP
 /// @details Must be implemented by derived classes.
 masala::base::managers::plugin_module::MasalaPluginAPICSP
 <__CREATOR_CLASS_API_NAME__>::encapsulate_const_plugin_object_instance(
-	masala::base::managers::plugin_module::MasalaPluginCSP const & object
+	masala::base::managers::plugin_module::MasalaPluginCSP const & <__OBJECT_OR_COMMENTED__>
 ) const {
+#ifdef <__SOURCE_CLASS_API_NAME__>_NOT_INSTANTIABLE
+	MASALA_THROW( "<__CREATOR_CLASS_API_NAME__>", "encapsulate_const_plugin_object_instance",
+		"The <__SOURCE_CLASS_API_NAME__> data representation class is not instantiable."
+	);
+	return nullptr;
+#else
     // On the following line, note that std::const_pointer_cast is safe to use.  We might
     // cast away the constness of the object, but if we do, we effectively restore it by
     // encapsulating it in a const API object (in that case) that only allows const access.
@@ -70,6 +95,7 @@ masala::base::managers::plugin_module::MasalaPluginAPICSP
 			)
 		)
 	);
+#endif
 }
 
 /// @brief Return the names of the categories for this type of plugin object.
