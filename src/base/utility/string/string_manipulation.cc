@@ -230,10 +230,10 @@ replace_all_instances_of_text(
     std::string const & text_to_find,
     std::string const & replacement_text
 ) {
-    CHECK_OR_THROW( replacement_text != text_to_find, /*Suitable error message, since this would make an infinite loop*/ );
+    CHECK_OR_THROW( replacement_text != text_to_find, "masala::base::utility::string", "replace_all_instances_of_text", "Text to find is identical to the replacement text! Please replace the text to find with something new." );
     size_t startloc( string_to_modify.find( text_to_find ) );
     while( startloc != std::string::npos ){
-        string_to_modify.replace( startloc, startloc + text_to_find.size() - 1, replacement_text );
+        string_to_modify.replace( startloc, text_to_find.size(), replacement_text );
         startloc = string_to_modify.find( text_to_find );
     }
 }
