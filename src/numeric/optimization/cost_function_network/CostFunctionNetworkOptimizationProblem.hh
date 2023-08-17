@@ -154,11 +154,11 @@ public:
 	masala::base::Size
 	total_variable_nodes() const;
 
-	/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
-	/// the variable node's index, and the second indicates the number of choices at that node.
-	/// @note Indices in this vector are node indices, since nodes with fewer than two choices are included.
+	/// @brief Get a map with one entry for each node (variable or not), where the key is
+	/// the node's global index, and the value is the number of choices at that node.
+	/// @note Keys in this map are node indices, since nodes with fewer than two choices are included.
 	/// The length of the vector is total_nodes().
-	std::map< masala::base::Size, masala::base::Size >
+	std::map< masala::base::Size, masala::base::Size > const &
 	n_choices_at_all_nodes() const;
 
 	/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
