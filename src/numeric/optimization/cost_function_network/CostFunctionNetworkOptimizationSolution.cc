@@ -381,6 +381,12 @@ CostFunctionNetworkOptimizationSolution::set_solution_vector(
 void
 CostFunctionNetworkOptimizationSolution::recompute_score() {
     std::lock_guard< std::mutex > lock( solution_mutex() );
+
+    if( !protected_solution_is_valid_const() ) {
+        // Do not recompute score for invalid solution.
+        return;
+    }
+
     CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "recompute_score", "Cannot compute score until a "
         "problem has been associated with this solution.  Please finish configuring this problem by calling "
         "set_problem() before calling recompute_score()."
@@ -428,11 +434,15 @@ CostFunctionNetworkOptimizationSolution::protected_set_solution_vector(
 ) {
     if( protected_problem() != nullptr ) {
         CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == problem_cast->total_variable_nodes(),
-            "set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
+        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == 0 || solution_vector_in.size() == problem_cast->total_variable_nodes(),
+            "protected_set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
             "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
             + std::to_string( solution_vector_in.size() ) + " entries."
         );
+
+        if( solution_vector_in.size() == 0 && problem_cast->total_variable_nodes() > 0 ) {
+            protected_solution_is_valid() = false;
+        }
     }
     solution_vector_ = solution_vector_in;
 }
