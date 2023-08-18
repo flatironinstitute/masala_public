@@ -161,6 +161,11 @@ public:
 	/// the count of the number of times this solution was produced during optimization.
 	masala::base::Size n_times_solution_was_produced() const;
 
+	/// @brief Get whether this solution can be interpreted as a valid solution.
+	/// @details Depending on the solver and the problem type, some outputs from the solver
+	/// might not correspond to valid solutions.
+	bool solution_is_valid() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +224,16 @@ protected:
 	/// context only.  May return nullptr.
 	OptimizationProblemCSP const & protected_problem() const;
 
+	/// @brief Access whether the solution is valid (nonconst).
+	/// @details Performs no mutex-locking.  Should be called from a mutex-locked
+	/// context only.
+	inline bool & protected_solution_is_valid() { return solution_is_valid_; }
+
+	/// @brief Access whether the solution is valid (const).
+	/// @details Performs no mutex-locking.  Should be called from a mutex-locked
+	/// context only.
+	inline bool protected_solution_is_valid_const() const { return solution_is_valid_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +255,10 @@ private:
 	/// @brief An optimizer might produce the same solution many times.  This is
 	/// the count of the number of times this solution was produced during optimization.
 	masala::base::Size n_times_solution_was_produced_ = 1;
+
+	/// @brief Is this solution valid?
+	/// @details Not all solutions that a solver might return are interpretable as valid solutions.
+	bool solution_is_valid_ = true;
 
 }; // class OptimizationSolution
 
