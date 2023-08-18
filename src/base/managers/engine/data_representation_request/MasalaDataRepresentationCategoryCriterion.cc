@@ -28,7 +28,7 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.hh>
-#include <base/managers/tracer/MasalaTracerManager.hh> // DELETE ME
+// #include <base/managers/tracer/MasalaTracerManager.hh> // DELETE ME
 
 // STL headers:
 #include <vector>
@@ -158,9 +158,9 @@ MasalaDataRepresentationCategoryCriterion::is_in_category(
         CHECK_OR_THROW( !dr_category.empty(), class_namespace_static() + "::" + class_name_static(), "is_in_category",
             creator.get_plugin_object_name() + " lists itself as belonging to an empty category!  This is a program error.  Consult a developer."
         );
-        base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
-            "For " + creator.class_name() + ", checking whether " + container_to_string( dr_category, "::" ) + " matches " + container_to_string( category, "::" ) + "."
-        ); // DELETE ME
+        // base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
+        //     "For " + creator.class_name() + ", checking whether " + container_to_string( dr_category, "::" ) + " matches " + container_to_string( category, "::" ) + "."
+        // ); // DELETE ME
         if( !allow_subcategories ) {
             if( dr_category == category ) {
                 return true;
@@ -175,13 +175,13 @@ MasalaDataRepresentationCategoryCriterion::is_in_category(
                 for( masala::base::Size i(0), imax(category.size()); i<imax; ++i ) {
                     parent_category[i] = dr_category[i];
                 }
-                base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
-                    "\tComparing " + container_to_string( dr_category, "::" ) + " to " + container_to_string( parent_category, "::" ) + "."
-                ); // DELETE ME
+                // base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
+                //     "\tComparing " + container_to_string( dr_category, "::" ) + " to " + container_to_string( parent_category, "::" ) + "."
+                // ); // DELETE ME
                 if( category == parent_category ) {
-                    base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
-                        "\tMatch!"
-                    ); // DELETE ME
+                    // base::managers::tracer::MasalaTracerManager::get_instance()->write_to_tracer( class_namespace_static() + "::" + class_name_static(), 
+                    //     "\tMatch!"
+                    // ); // DELETE ME
                     return true;
                 }
             }
