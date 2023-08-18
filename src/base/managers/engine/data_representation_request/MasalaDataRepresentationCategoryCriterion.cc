@@ -160,14 +160,18 @@ MasalaDataRepresentationCategoryCriterion::is_in_category(
                 return true;
             }
         } else {
-            if( dr_category.size() > category.size() ) {
+            if( dr_category.size() < category.size() ) {
+                return false;
+            } else if( dr_category.size() == category.size() && dr_category == category ) {
+                return true;
+            } else { //dr_category.size() > category.size()
                 std::vector< std::string > parent_category( category.size() );
                 for( masala::base::Size i(0), imax(category.size()); i<imax; ++i ) {
                     parent_category[i] = dr_category[i];
                 }
-            }
-            if( dr_category == category ) {
-                return true;
+                if( dr_category == parent_category ) {
+                    return true;
+                }
             }
         }
     }
