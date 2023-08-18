@@ -161,7 +161,7 @@ MasalaDataRepresentationCategoryCriterion::is_in_category(
             }
         } else {
             if( dr_category.size() < category.size() ) {
-                return false;
+                continue;
             } else if( dr_category.size() == category.size() && dr_category == category ) {
                 return true;
             } else { //dr_category.size() > category.size()
