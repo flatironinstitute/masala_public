@@ -365,15 +365,7 @@ CostFunctionNetworkOptimizationSolution::set_solution_vector(
     std::vector< masala::base::Size > const & solution_vector_in
 ) {
     std::lock_guard< std::mutex > lock( solution_mutex() );
-    if( protected_problem() != nullptr ) {
-        CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == problem_cast->total_variable_nodes(),
-            "set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
-            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
-            + std::to_string( solution_vector_in.size() ) + " entries."
-        );
-    }
-    solution_vector_ = solution_vector_in;
+    protected_set_solution_vector( solution_vector_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -422,6 +414,27 @@ CostFunctionNetworkOptimizationSolution::operator==(
 ) const {
     std::lock_guard< std::mutex > lock( solution_mutex() );
     return solution_vector_ == other_solution_vector;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the solution vector for this problem.  This function assumes that the mutex has been locked.
+/// @details If the problem has been set, this solution vector must be of compatible size.
+void
+CostFunctionNetworkOptimizationSolution::protected_set_solution_vector(
+    std::vector< masala::base::Size > const & solution_vector_in
+) {
+    if( protected_problem() != nullptr ) {
+        CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == problem_cast->total_variable_nodes(),
+            "set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
+            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
+            + std::to_string( solution_vector_in.size() ) + " entries."
+        );
+    }
+    solution_vector_ = solution_vector_in;
 }
 
 } // namespace cost_function_network
