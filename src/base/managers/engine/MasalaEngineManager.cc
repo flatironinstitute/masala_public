@@ -125,8 +125,11 @@ MasalaEngineManager::unregister_engines(
 /// @brief Completely remove all engines.
 void
 MasalaEngineManager::reset() {
-	std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
-    engine_creators_.clear();
+    {
+        std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+        engine_creators_.clear();
+    }
+    write_to_tracer( "Reset the MasalaEngineManager.  No engines are registered." );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
