@@ -35,6 +35,7 @@
 
 // STL headers:
 #include <mutex>
+#include <regex>
 
 namespace masala {
 namespace base {
@@ -145,6 +146,16 @@ public:
     std::vector< std::string >
     get_files(
         std::string const & directory_path
+    ) const;
+
+
+    /// @brief Given a path to a directory and a regex expression, get the path and filename of each
+    /// file matching the regex expression in that directory.
+    /// @details Threadsafe (locks mutex).
+    std::vector< std::string >
+    get_files_regex(
+        std::string const & directory_path,
+        std::regex const & filename_pattern
     ) const;
 
     /// @brief A utility function to get a filename given a path and a filename.

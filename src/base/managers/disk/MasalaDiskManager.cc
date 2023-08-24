@@ -34,6 +34,7 @@
 #include <string>
 #include <filesystem> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
+#include <regex>
 
 namespace masala {
 namespace base {
@@ -185,6 +186,27 @@ MasalaDiskManager::get_files(
     for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
         if( it.is_regular_file() ) {
             filelist.push_back( std::string( it.path().c_str() ) );
+        }
+    }
+    return filelist;
+}
+
+/// @brief Given a path to a directory, get the path and filename of each
+/// file in that directory.
+std::vector< std::string >
+MasalaDiskManager::get_files_regex(
+    std::string const & directory_path,
+    std::regex const & filename_pattern
+) const {
+    std::vector< std::string > filelist;
+    std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
+    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+        if( it.is_regular_file() ) {
+            std::string filename = it.path().filename().string();
+            if( std::regex_match( filename, filename_pattern ) ) {
+                filelist.push_back( filename );
+            }
         }
     }
     return filelist;
