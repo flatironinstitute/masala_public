@@ -133,6 +133,42 @@ MasalaDiskManager::read_ascii_file_to_string(
     return outstring;
 }
 
+/// @brief Read the contents of an pickled Python dictionary to a string.
+/// @details Threadsafe (locks mutex).
+std::string
+MasalaDiskManager::read_pickled_python_dictionary_to_string(
+    std::string const & file_name
+) const {
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
+    std::ifstream filehandle( file_name, std::ios::binary | std::ios::ate );
+    CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_pickled_python_dictionary_to_string", "Could not open \"" + file_name + "\" for read." );
+
+    // Get the size of the file.
+    std::streamsize size = filehandle.tellg();
+    filehandle.seekg(0, std::ios::beg);
+
+    // Read the content into a vector of bytes.
+    std::vector< char > buffer( size );
+    filehandle.read( buffer.data(), size );
+
+    // Close the file.
+    filehandle.close();
+
+    // Convert the bytes to a string that resembles a Python dictionary (excluding non-printable characters).
+    std::stringstream dict;
+    dict << "{";
+    for (const char& c : buffer) {
+        if (c >= 32 && c < 127) { 
+            dict << c;
+        } else {
+            dict << "\\x" << std::hex << (int)c;
+        }
+    }
+    dict << "}";
+    write_to_tracer( "Read \"" + file_name + "\"." );
+    return dict.str();
+}
+
 /// @brief Read the contents of a JSON file and produce an nlohmann json object.
 /// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
 /// locks mutex.  (So this is threadsafe.)

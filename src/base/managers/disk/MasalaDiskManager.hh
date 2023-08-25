@@ -125,6 +125,13 @@ public:
         std::string const & file_name
     ) const;
 
+    /// @brief Read the contents of an pickled Python dictionary to a string.
+    /// @details Threadsafe (locks mutex).
+    std::string
+    read_pickled_python_dictionary_to_string(
+        std::string const & file_name
+    ) const;
+
     /// @brief Given a path, get the absolute path.
     /// @details Threadsafe (locks mutex).
     std::string
