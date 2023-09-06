@@ -230,6 +230,15 @@ OptimizationSolution::n_times_solution_was_produced() const {
     return n_times_solution_was_produced_;
 }
 
+/// @brief Get whether this solution can be interpreted as a valid solution.
+/// @details Depending on the solver and the problem type, some outputs from the solver
+/// might not correspond to valid solutions.
+bool
+OptimizationSolution::solution_is_valid() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return solution_is_valid_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -304,6 +313,16 @@ OptimizationSolution::get_api_definition() {
                 "n_times_solution_was_produced", "The number of times this solution was produced by the optimizer.",
                 false, false,
                 std::bind( &OptimizationSolution::n_times_solution_was_produced, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+                "solution_is_valid", "Get whether this solution can be interpreted as a valid solution.  "
+	            "Depending on the solver and the problem type, some outputs from the solver "
+	            "might not correspond to valid solutions.",
+                "solution_is_valid", "True if the solution is valid, false otherwise.",
+                false, false,
+                std::bind( &OptimizationSolution::solution_is_valid, this )
             )
         );
 

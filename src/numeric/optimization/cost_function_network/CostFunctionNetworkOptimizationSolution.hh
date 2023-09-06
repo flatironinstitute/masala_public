@@ -170,6 +170,7 @@ public:
 
 	/// @brief Set the solution vector for this problem.
 	/// @details If the problem has been set, this solution vector must be of compatible size.
+	/// @note Calls protected_set_solution_vector().
 	void set_solution_vector( std::vector< masala::base::Size > const & solution_vector_in );
 
 public:
@@ -189,6 +190,16 @@ public:
 	/// @brief Determine whether this solution is the same as another.
 	/// @details Compares the stored solution vector to a provided solution vector.
 	bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the solution vector for this problem.  This function assumes that the mutex has been locked.
+	/// @details If the problem has been set, this solution vector must be of compatible size.
+	void protected_set_solution_vector( std::vector< masala::base::Size > const & solution_vector_in );
 
 private:
 
