@@ -298,6 +298,13 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "Eigen::Matrix<" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            secondcomma = inputclass.rfind( ",", lastchevron )
+            firstcomma = inputclass.rfind( ",", secondcomma )
+            additional_includes.append("<external/eigen/Eigen/Dense>")
+            return "Eigen::Matrix< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + inputclass[firstcomma:]
         elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
