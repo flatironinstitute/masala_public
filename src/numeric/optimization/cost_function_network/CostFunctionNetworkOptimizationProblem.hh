@@ -282,7 +282,7 @@ protected:
 	/// @note This assumes that the problem mutex has already been set.
 	inline
 	std::map< masala::base::Size, masala::base::Size > const &
-	n_choices_by_node_index() const {
+	n_choices_by_node_index_const() const {
 		return n_choices_by_node_index_;
 	}
 
