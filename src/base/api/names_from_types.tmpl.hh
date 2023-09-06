@@ -28,6 +28,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/hash_types.hh>
 
+// Eigen headers
+#include <external/eigen/Eigen/Dense>
+
 // STL headers
 #include <string>
 #include <base/managers/memory/util.hh>
@@ -426,6 +429,13 @@ namespace api {
     template<>
     std::string
     name_from_type< masala::base::size_pair_hash const & >( type< masala::base::size_pair_hash const & > );
+
+    /// @brief Manually override for Eigen matrices.
+    template<class T>
+    std::string
+    name_from_type(type<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>) {
+        return "Eigen::Matrix< " + name_from_type(type<T>()) + ", Eigen::Dynamic, Eigen::Dynamic >";
+    }
 
 } // namespace api
 } // namespace base
