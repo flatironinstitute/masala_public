@@ -35,6 +35,7 @@
 #include <filesystem> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <regex>
+#include <sstream>
 
 namespace masala {
 namespace base {
