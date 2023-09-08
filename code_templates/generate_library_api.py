@@ -939,7 +939,7 @@ def generate_function_implementations( \
                         + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
                         + " );\n"
                     outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
-                        + outtype_inner + "\" ) {\n"
+                        + drop_const( outtype_inner ) + "\" ) {\n"
                     outstring += tabchar + tabchar + "return masala::make_shared< " \
                         + output_api_class_name \
                         + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
