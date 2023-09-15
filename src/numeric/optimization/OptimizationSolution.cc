@@ -497,24 +497,6 @@ OptimizationSolution::api_definition() {
     return api_definition_;
 }
 
-/// @brief Access the solution score from derived classes.
-/// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.  This is the exact score, recomputed once the solution has
-/// been produced.
-masala::base::Real &
-OptimizationSolution::protected_solution_score() {
-	return solution_score_;
-}
-
-/// @brief Const access to the solution score from derived classes.
-/// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.  This is the exact score, recomputed once the solution has
-/// been produced.
-masala::base::Real const &
-OptimizationSolution::protected_solution_score() const {
-	return solution_score_;
-}
-
 /// @brief Access the problem.
 /// @details Performs no mutex locking.  Should be called from a mutex-locked
 /// context only.  May return nullptr.

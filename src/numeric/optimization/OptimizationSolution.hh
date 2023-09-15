@@ -232,13 +232,39 @@ protected:
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
 	/// context only.  This is the exact score, recomputed once the solution has
 	/// been produced.
-	masala::base::Real & protected_solution_score();
+	inline masala::base::Real & protected_solution_score() { return solution_score_; }
+
+	/// @brief Access the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real & protected_solution_score_data_representation_approximation() { return solution_score_data_representation_approximation_; }
+
+	/// @brief Access the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real & protected_solution_score_solver_approximation() { return solution_score_solver_approximation_; }
 
 	/// @brief Const access to the solution score from derived classes.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
 	/// context only.  This is the exact score, recomputed once the solution has
 	/// been produced.
-	masala::base::Real const & protected_solution_score() const;
+	inline masala::base::Real const & protected_solution_score() const { return solution_score_; }
+
+	/// @brief Const access the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real const & protected_solution_score_data_representation_approximation() const { return solution_score_data_representation_approximation_; }
+
+	/// @brief Const access the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real const & protected_solution_score_solver_approximation() const { return solution_score_solver_approximation_; }
 
 	/// @brief Access the problem.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
