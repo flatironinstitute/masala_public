@@ -215,10 +215,35 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         // Getters:
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score", "Get the score associated with this solution.",
-                "solution_score", "The score associated with this solution.",
+                "solution_score", "Get the score associated with this CFN solution.  This is the exact "
+				"score, recomputed once the solution has been produced.",
+                "solution_score", "The exact score associated with this CFN solution.",
                 false, false,
                 std::bind( &CostFunctionNetworkOptimizationSolution::solution_score, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"with this CFN solution, given the CFN data representation.  Certain data representations may use "
+				"reduced floating point precision or other approximations for greater efficiency.",
+                "solution_score_data_representation_approximation", "The approximate score with this CFN solution, "
+				"given the CFN data representation",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score_data_representation_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_solver_approximation", "Get the approximate score returned by the CFN solver that produced "
+				"this CFN solution.  In addition to approximation from the data representation, a solver may accumulate "
+				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solution_score_solver_approximation", "The approximate score associated with this CFN solution, returned "
+				"by the solver.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score_solver_approximation, this )
             )
         );
         api_def->add_getter(
