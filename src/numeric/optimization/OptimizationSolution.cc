@@ -232,6 +232,7 @@ OptimizationSolution::set_n_times_solution_was_produced(
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the score for this solution.
+/// @details This is the exact score, recomputed once the solution has been produced.
 masala::base::Real
 OptimizationSolution::solution_score() const {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
@@ -335,10 +336,35 @@ OptimizationSolution::get_api_definition() {
         // Getters:
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score", "Get the score associated with this solution.",
-                "solution_score", "The score associated with this solution.",
+                "solution_score", "Get the score associated with this solution.  This is the exact "
+				"score, recomputed once the solution has been produced.",
+                "solution_score", "The exact score associated with this solution.",
                 false, false,
                 std::bind( &OptimizationSolution::solution_score, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use "
+				"reduced floating point precision or other approximations for greater efficiency.",
+                "solution_score_data_representation_approximation", "The approximate score with this solution, "
+				"given the data representation",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score_data_representation_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_solver_approximation", "Get the approximate score returned by the solver that produced "
+				"this solution.  In addition to approximation from the data representation, a solver may accumulate "
+				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solution_score_solver_approximation", "The approximate score associated with this solution, returned "
+				"by the solver.",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score_solver_approximation, this )
             )
         );
         api_def->add_getter(
