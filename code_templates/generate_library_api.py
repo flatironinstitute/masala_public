@@ -718,6 +718,15 @@ def generate_function_call( \
     outstring += ")"
     return outstring
 
+## @brief Return true if and only if (a) a class is defined in a JSON file, and (b) it has protected constructors.
+def class_exists_and_has_protected_constructors( \
+        namespace_and_name : str, \
+        jsonfile : json \
+    ) -> bool :
+    if namespace_and_name in jsonfile["Elements"] :
+        return jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"]
+    return False
+
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
@@ -938,12 +947,13 @@ def generate_function_implementations( \
                         + " > returnobj( " \
                         + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
                         + " );\n"
-                    outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
-                        + outtype_inner + "\" ) {\n"
-                    outstring += tabchar + tabchar + "return masala::make_shared< " \
-                        + output_api_class_name \
-                        + " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
-                    outstring += tabchar + "}\n"
+                    if( class_exists_and_has_protected_constructors( drop_const( outtype_inner ), jsonfile ) == False ) :
+                        outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
+							+ drop_const( outtype_inner ) + "\" ) {\n"
+                        outstring += tabchar + tabchar + "return masala::make_shared< " \
+							+ output_api_class_name \
+							+ " >( std::const_pointer_cast< " + drop_const( outtype_inner ) + " >( returnobj ) );\n"
+                        outstring += tabchar + "}\n"
                     tempsplit = outtype_inner.strip().split()
                     outstring += tabchar + "return std::static_pointer_cast< " \
                         + output_api_class_name
