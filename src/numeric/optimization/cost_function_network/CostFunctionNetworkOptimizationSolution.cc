@@ -218,7 +218,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 "solution_score", "Get the score associated with this solution.",
                 "solution_score", "The score associated with this solution.",
                 false, false,
-                std::bind( &OptimizationSolution::solution_score, this )
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score, this )
             )
         );
         api_def->add_getter(
@@ -253,10 +253,32 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score", "Set the score associated with this solution.",
+                "set_solution_score", "Set the score associated with this solution.  This is the "
+                "exact score, recomputed once the solution has been produced.",
                 "score_in", "The score to set.",
                 false, false,
-                std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_data_representation_approximation", "Set an approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use reduced "
+				"floating point precision or other approximations for greater efficiency.",
+                "dr_approx_score_in", "The approximate score (from the data representation) to set.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
+				"produced this solution. In addition to approximation from the data representation, a solver may "
+				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
             ) 
         );
         api_def->add_setter(
