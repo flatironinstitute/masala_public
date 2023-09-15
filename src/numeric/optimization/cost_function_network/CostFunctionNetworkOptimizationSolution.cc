@@ -302,6 +302,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
 				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
 				"their own error.",
+                "solver_approx_score_in", "The approximate score (from the solver) to set.",
                 false, false,
                 std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
             ) 
