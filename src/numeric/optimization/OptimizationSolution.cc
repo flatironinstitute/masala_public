@@ -238,6 +238,25 @@ OptimizationSolution::solution_score() const {
     return solution_score_;
 }
 
+/// @brief Get the approximate score associated with this solution, given the data representation.
+/// @details Certain data representations may use reduced floating point precision or other approximations
+/// for greater efficiency.
+masala::base::Real
+OptimizationSolution::solution_score_data_representation_approximation() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return solution_score_data_representation_approximation_;
+}
+
+/// @brief Get the approximate score returned by the solver that produced this solution.
+/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+masala::base::Real
+OptimizationSolution::solution_score_solver_approximation() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return solution_score_solver_approximation_;
+}
+
 /// @brief Access the problem.
 OptimizationProblemCSP
 OptimizationSolution::problem() const {
@@ -454,7 +473,8 @@ OptimizationSolution::api_definition() {
 
 /// @brief Access the solution score from derived classes.
 /// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.
+/// context only.  This is the exact score, recomputed once the solution has
+/// been produced.
 masala::base::Real &
 OptimizationSolution::protected_solution_score() {
 	return solution_score_;
@@ -462,7 +482,8 @@ OptimizationSolution::protected_solution_score() {
 
 /// @brief Const access to the solution score from derived classes.
 /// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.
+/// context only.  This is the exact score, recomputed once the solution has
+/// been produced.
 masala::base::Real const &
 OptimizationSolution::protected_solution_score() const {
 	return solution_score_;

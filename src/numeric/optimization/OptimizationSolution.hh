@@ -166,9 +166,16 @@ public:
 	/// @details This is the exact score, recomputed once the solution has been produced.
 	masala::base::Real solution_score() const;
 
-	/// @brief Get the score for this solution.
-	/// @details This is the exact score, recomputed once the solution has been produced.
-	masala::base::Real solution_score() const;
+	/// @brief Get the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	masala::base::Real solution_score_data_representation_approximation() const;
+
+	/// @brief Get the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	masala::base::Real solution_score_solver_approximation() const;
 
 	/// @brief Access the problem.
 	OptimizationProblemCSP problem() const;
@@ -225,7 +232,6 @@ protected:
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
 	/// context only.  This is the exact score, recomputed once the solution has
 	/// been produced.
-	masala::base::Real solution_score() const;
 	masala::base::Real & protected_solution_score();
 
 	/// @brief Const access to the solution score from derived classes.
