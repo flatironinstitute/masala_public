@@ -66,7 +66,9 @@ public:
 	CostFunctionNetworkOptimizationSolution(
 		CostFunctionNetworkOptimizationProblemCSP const & problem_in,
 		std::vector< masala::base::Size > const & solution_vector_in,
-		masala::base::Real const solution_score
+		masala::base::Real const solution_score,
+		masala::base::Real const solution_score_data_representation_approximation,
+		masala::base::Real const solution_score_solver_approximation
 	);
 
 	/// @brief Copy constructor.

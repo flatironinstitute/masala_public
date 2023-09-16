@@ -33,7 +33,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_FiveInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -59,13 +59,17 @@ namespace cost_function_network {
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
     CostFunctionNetworkOptimizationProblemCSP const & problem_in,
     std::vector< masala::base::Size > const & solution_vector_in,
-    masala::base::Real const solution_score
+    masala::base::Real const solution_score,
+    masala::base::Real const solution_score_data_representation_approximation,
+    masala::base::Real const solution_score_solver_approximation
 ) :
     masala::numeric::optimization::OptimizationSolution()
 {
-    set_problem( problem_in );
-    set_solution_vector( solution_vector_in );
-    set_solution_score( solution_score );
+    protected_problem() = problem_in;
+    protected_set_solution_vector( solution_vector_in );
+    protected_solution_score() = solution_score;
+    protected_solution_score_data_representation_approximation() = solution_score_data_representation_approximation;
+    protected_solution_score_solver_approximation() = solution_score_solver_approximation;
 }
 
 /// @brief Make a copy of this object.
@@ -169,11 +173,11 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         );
         api_def->add_constructor(
             masala::make_shared<
-                constructor::MasalaObjectAPIConstructorDefinition_ThreeInput <
+                constructor::MasalaObjectAPIConstructorDefinition_FiveInput <
                     CostFunctionNetworkOptimizationSolution,
                     CostFunctionNetworkOptimizationProblemCSP,
                     std::vector< masala::base::Size > const &,
-                    Real
+                    Real, Real, Real
                 >
             > (
                 class_name(),
@@ -181,7 +185,9 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 "stored directly -- i.e. not deep-cloned -- for future reference).",
                 "problem_in", "The problem definition.  Unaltered by this operation.",
                 "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices.",
-                "solution_score_in", "The solution score."
+                "solution_score_in", "The solution score.  This is the actual, non-approximate solution score.",
+                "solution_score_data_representation_approximation_in", "The solution score given the data representation.  Data representations may use exact solution scores, or may make approximations for speed.",
+                "solution_score_solver_approximation_in", "The solution score returned by the solver.  This may be exact, or may be approximate both due to the data representation used and due to reduced precision of the solver."
             )
         );
         api_def->add_constructor(
