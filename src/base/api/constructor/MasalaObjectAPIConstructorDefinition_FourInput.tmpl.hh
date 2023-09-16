@@ -20,7 +20,7 @@
 /// @brief A template class that stores the definition for a constructor, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for three-input constructors.  The types T1, T2, and T3
+/// @details This is a derived class for four-input constructors.  The types T1, T2, T3, and T4
 /// define the input type, and the type T0 defines the type for which we're defining
 /// a constructor.
 /// @note A constructor must take zero or more inputs, and must return void.
@@ -52,7 +52,7 @@ namespace constructor {
 /// @brief A class that stores the definition for a constructor, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for three-input constructors.  The types T1, T2, and T3
+/// @details This is a derived class for four-input constructors.  The types T1, T2, T3, and T4
 /// define the input type, and the type T0 defines the type for which we're defining
 /// a constructor.
 /// @note A constructor must take zero or more inputs, and must return void.
