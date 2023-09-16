@@ -180,9 +180,12 @@ public:
 
 	/// @brief Given another collection of solutions, merge-sort the solutions
 	/// and keep up to the lowest-scoring N.
+	/// @note 
 	/// @param[in] other_solutions The other solutions, represented as a vector of
 	/// tuples of (solution vector for variable positions only, solution score,
-	/// solution count).
+	/// solution count).  The solution score is the score returned by the solver (which
+	/// may be approximate, both because the data representation may make approximations
+	/// and because the solver's precision may be limited.)
 	/// @param[in] max_solutions_to_store_total The maximum number of solutions that we
 	/// want to be storing at the end of this operation.  The lowest-scoring solutions
 	/// from the union of both sets are stored, and any solutions past the lowest N are
