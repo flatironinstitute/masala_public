@@ -180,7 +180,8 @@ public:
 
 	/// @brief Given another collection of solutions, merge-sort the solutions
 	/// and keep up to the lowest-scoring N.
-	/// @note 
+	/// @details The scores passed in are the solver scores.  This function will compute the
+	/// data representation scores and the actual scores, and then merge-sort by actual score. 
 	/// @param[in] other_solutions The other solutions, represented as a vector of
 	/// tuples of (solution vector for variable positions only, solution score,
 	/// solution count).  The solution score is the score returned by the solver (which

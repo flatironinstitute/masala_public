@@ -210,9 +210,10 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
-	            "and keep up to the lowest-scoring N.  Note: if both sets contain the same solution, the number of times "
-                "that solution was produced will be incremented in this set by the number of times it was produced "
-                "in the other set.",
+	            "and keep up to the lowest-scoring N.  The scores passed in are the solver scores.  This function will "
+                "compute the data representation scores and the actual scores, and then merge-sort by actual score.  "
+                "Note: if both sets contain the same solution, the number of times that solution was produced will be "
+                "incremented in this set by the number of times it was produced in the other set.",
                 false, false, false, false,
                 "other_solutions", "The other solutions, represented as a vector of "
 				"tuples of (solution vector for variable positions only, solution score, "
@@ -307,6 +308,8 @@ CostFunctionNetworkOptimizationSolutions::solution_matches(
 
 /// @brief Given another collection of solutions, merge-sort the solutions
 /// and keep up to the lowest-scoring N.
+/// @details The scores passed in are the solver scores.  This function will compute the
+/// data representation scores and the actual scores, and then merge-sort by actual score. 
 /// @param[in] other_solutions The other solutions, represented as a vector of
 /// tuples of (solution vector for variable positions only, solution score,
 /// solution count).  The solution score is the score returned by the solver (which
@@ -330,12 +333,23 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     using masala::base::Real;
     std::lock_guard< std::mutex > lock( solutions_mutex() );
     
-    std::vector< std::tuple< Size, bool, Real > > solution_summaries; //Store solution index, whether it is in this (true) or other (false), and the score.
+    // Store solution index, whether it is in this
+    // (true) or other (false), and the actual score,
+    // data representation score, and solver score:
+    std::vector< std::tuple< Size, bool, Real, Real, Real > > solution_summaries; 
 
     solution_summaries.reserve( optimization_solutions().size() + other_solutions.size() );
     for( Size i(0), imax(optimization_solutions().size()); i<imax; ++i ) {
         // Add solutions from THIS container.
-        solution_summaries.push_back( std::make_tuple( i, true, optimization_solutions()[i]->solution_score() ) );
+        solution_summaries.push_back(
+            std::make_tuple(
+                i,
+                true,
+                optimization_solutions()[i]->solution_score(),
+                optimization_solutions()[i]->solution_score_data_representation_approximation(),
+                optimization_solutions()[i]->solution_score_solver_approximation()
+            )
+        );
     }
     for( Size i(0), imax(other_solutions.size()); i<imax; ++i ) {
         // Add solutions from THAT container.  Skip any that are already in this container, though.
@@ -343,16 +357,28 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
         std::vector< Size > const & other_solution_vec( std::get<0>( other_solution ) );
         bool found(false);
         for( Size j(0), jmax(optimization_solutions().size()); j<jmax; ++j ) {
-            CostFunctionNetworkOptimizationSolutionSP this_solution( std::static_pointer_cast< CostFunctionNetworkOptimizationSolution >( optimization_solutions()[j] ) );
-            if( this_solution->operator==( other_solution_vec ) ) {
-                // If the solution is already in this container, increment the number times it was produced.
+            CostFunctionNetworkOptimizationSolutionSP this_solution(
+                std::static_pointer_cast< CostFunctionNetworkOptimizationSolution >( optimization_solutions()[j] )
+            );
+
+            // This uses CostFunctionNetworkOptimizationSolution::operator==( std::vector< Size > const & ):
+            if( (*this_solution) == other_solution_vec ) {
+                // If the solution is already in this container, increment the number times it was produced:
                 this_solution->increment_n_times_solution_was_produced( std::get<2>( other_solution ) );
                 found = true;
                 break;
             }
         }
         if( !found ) {
-            solution_summaries.push_back( std::make_tuple( i, false, std::get<1>( other_solution ) ) );
+            solution_summaries.push_back(
+                std::make_tuple(
+                    i,
+                    false,
+                    problem->compute_non_approximate_absolute_score( other_solution_vec ), /*The computed actual score.*/
+                    problem->compute_absolute_score( other_solution_vec ), /*The computed data representation approximate score.*/
+                    std::get<1>( other_solution ) /*The input solver approximate score.*/
+                )
+            );
         }
     }
     
@@ -360,8 +386,8 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     std::sort(
         solution_summaries.begin(), solution_summaries.end(),
         [](
-            std::tuple< Size, bool, Real > const & a,
-            std::tuple< Size, bool, Real > const & b
+            std::tuple< Size, bool, Real, Real, Real > const & a,
+            std::tuple< Size, bool, Real, Real, Real > const & b
         ){
             return std::get<2>(a) < std::get<2>(b);
         }
@@ -380,7 +406,15 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
             std::tuple< std::vector< Size >, Real, Size > const & other_solution( other_solutions[ std::get<0>( solution_summaries[i] ) ] );
             std::vector< Size > const & other_solution_vec( std::get<0>( other_solution ) );
             Real const other_solution_score( std::get<1>(other_solution) );
-            CostFunctionNetworkOptimizationSolutionSP new_solution( masala::make_shared< CostFunctionNetworkOptimizationSolution >( problem, other_solution_vec, other_solution_score ) );
+            CostFunctionNetworkOptimizationSolutionSP new_solution(
+                masala::make_shared< CostFunctionNetworkOptimizationSolution >(
+                    problem,
+                    other_solution_vec,
+                    std::get<2>( solution_summaries[i] ), // Absolute, accurate score, calculated above.
+                    std::get<3>( solution_summaries[i] ), // Data representation score (possibly approximate), calculated above.
+                    other_solution_score // Score from solver, provided as input.
+                )
+            );
             new_solution->set_n_times_solution_was_produced( std::get<2>(other_solution) );
             new_solutions.push_back( new_solution );
         }
