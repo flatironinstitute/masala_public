@@ -200,15 +200,6 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 
         // Work functions:
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput <void> > (
-				"recompute_score", "Recompute the score for this solution.  This is useful, for instance, after "
-				"an optimizer that uses approximate methods or low floating-point precision completes "
-				"its work, to allow scores to be stored with full floating-point precision and accuracy.",
-				false, false, false, true,
-				"void", "Returns nothing", std::bind( &CostFunctionNetworkOptimizationSolution::recompute_score, this )
-            )
-        );
-        api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput <bool, std::vector< base::Size > const & > > (
                 "operator==", "Compare this solution to the solution vector of another solution.  Return true if they match, false otherwise.",
                 true, false, false, false,
@@ -425,46 +416,6 @@ CostFunctionNetworkOptimizationSolution::set_solution_vector(
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Recompute the score of this solution.  This is useful, for instance, after
-/// an optimizer that uses approximate methods or low floating-point precision completes
-/// its work, to allow scores to be stored with full floating-point precision and accuracy.
-/// @details The problem_ pointer must be set.
-/// @note The base class recompute_score() function throws.  This override calls the
-/// CostFunctionNetworkOptimizationProblem's calculators.
-void
-CostFunctionNetworkOptimizationSolution::recompute_score() {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
-
-    if( !protected_solution_is_valid_const() ) {
-        // Do not recompute score for invalid solution.
-        return;
-    }
-
-    CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "recompute_score", "Cannot compute score until a "
-        "problem has been associated with this solution.  Please finish configuring this problem by calling "
-        "set_problem() before calling recompute_score()."
-    );
-    CHECK_OR_THROW_FOR_CLASS( !solution_vector_.empty(), "recompute_score", "No solution vector has been set yet.  "
-        "Please call set_solution_vector() before calling this function."
-    );
-#ifndef NDEBUG
-    // In debug mode, use dynamic_pointer_cast with a check.
-    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( problem_cast != nullptr, "recompute_score", "Somehow the problem associated with this "
-        "solution was not a CostFunctionNetworkOptimizationProblem.  This should not be possible, and indicates a programming bug."
-    );
-#else
-    // In release mode, use static_pointer_cast.  It shouldn't be possible for the pointer to be nonconst.
-    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-#endif
-    CHECK_OR_THROW_FOR_CLASS( solution_vector_.size() == problem_cast->total_variable_nodes(),
-        "set_problem", "The solution vector must have one choice for each variable node.  The problem "
-        "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
-        + std::to_string( solution_vector_.size() ) + " entries."
-    );
-    protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
-}
 
 /// @brief Determine whether this solution is the same as another.
 /// @details Compares the stored solution vector to a provided solution vector.

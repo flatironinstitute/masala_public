@@ -181,14 +181,6 @@ public:
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Recompute the score of this solution.  This is useful, for instance, after
-	/// an optimizer that uses approximate methods or low floating-point precision completes
-	/// its work, to allow scores to be stored with full floating-point precision and accuracy.
-	/// @details The problem_ pointer must be set.
-	/// @note The base class recompute_score() function throws.  This override calls the
-	/// CostFunctionNetworkOptimizationProblem's calculators.
-	void recompute_score() override;
-
 	/// @brief Determine whether this solution is the same as another.
 	/// @details Compares the stored solution vector to a provided solution vector.
 	bool operator==( std::vector< masala::base::Size > const & other_solution_vector ) const;
