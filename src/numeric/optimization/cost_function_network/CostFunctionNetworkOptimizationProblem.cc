@@ -287,7 +287,25 @@ CostFunctionNetworkOptimizationProblem::add_cost_function(
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
-/// @brief Given a candidate solution, compute the score.
+/// @brief Given a candidate solution, compute the score.  This computes the actual,
+/// non-approximate score (possibly more slowly), not the score that the data approximation
+/// uses (computed in a manner optimized for speed, which may involve approximations).
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.  The default implementation calls compute_absolute_score(), but this
+/// may be overridden if the data representation uses an approximation or lower level of precision
+/// to compute the score.
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score(
+	std::vector< base::Size > const & candidate_solution
+) const {
+	return compute_absolute_score( candidate_solution ); /*This behaviour should be override if a derived class uses an approximation.*/
+}
+
+/// @brief Given a candidate solution, compute the data representation score (which
+/// may be approximate).
 /// @details The candidate solution is expressed as a vector of choice indices, with
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
@@ -305,6 +323,8 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 }
 
 /// @brief Given a pair of candidate solutions, compute the difference in their scores.
+/// This is the difference in the data representation scores (which may be an approximation
+/// of the actual scores).
 /// @details The candidate solution is expressed as a vector of choice indices, with
 /// one entry per variable position, in order of position indices.  (There may not be
 /// entries for every position, though, since not all positions have at least two choices.)
@@ -464,9 +484,28 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Work functions:
+		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn_nonapprox(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
+				"compute_non_approximate_absolute_score", "Given a candidate solution, compute the score.  "
+				"This computes the actual, non-approximate score (possibly more slowly), not the score "
+				"that the data approximation uses (computed in a manner optimized for speed, which may "
+				"involve approximations).  The candidate solution is expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.",
+				true, false, true, false,
+				"candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.  (There may not be "
+				"entries for every position, though, since not all positions have at least two choices.)",
+				"score", "The score for this candidate solution, computed by this function.",
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score, this, std::placeholders::_1 )
+			)
+		);
+		comp_abs_score_fxn_nonapprox->set_triggers_no_mutex_lock();
+		api_def->add_work_function( comp_abs_score_fxn_nonapprox );
+
 		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
-				"compute_absolute_score", "Given a candidate solution, compute the score.  "
+				"compute_absolute_score", "Given a candidate solution, compute the score (which "
+				"may be approximate, depending on the data representation).  "
 				"The candidate solution is expressed as a vector of choice indices, with "
 				"one entry per variable position, in order of position indices.",
 				true, false, true, false,
@@ -483,8 +522,9 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 
 		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > comp_score_change_fxn(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
-				"compute_score_change", "Given two candidate solutions, compute the score difference.  "
-				"The candidate solutions are expressed as a vector of choice indices, with "
+				"compute_score_change", "Given two candidate solutions, compute the score difference.  This "
+				"is the difference in the data representation scores (which may be an approximation of the "
+				"actual scores).  The candidate solutions are expressed as a vector of choice indices, with "
 				"one entry per variable position, in order of position indices. (There may not be "
 				"entries for every position, though, since not all positions have at least two choices.)",
 				true, false, true, false,
