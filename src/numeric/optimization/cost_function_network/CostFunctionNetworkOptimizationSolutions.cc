@@ -208,7 +208,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP > > (
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP const & > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
 	            "and keep up to the lowest-scoring N.  The scores passed in are the solver scores.  This function will "
                 "compute the data representation scores and the actual scores, and then merge-sort by actual score.  "
@@ -329,7 +329,7 @@ void
 CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
     masala::base::Size const max_solutions_to_store_total,
-    CostFunctionNetworkOptimizationProblemCSP problem
+    CostFunctionNetworkOptimizationProblemCSP const & problem
 ) {
     using masala::base::Size;
     using masala::base::Real;

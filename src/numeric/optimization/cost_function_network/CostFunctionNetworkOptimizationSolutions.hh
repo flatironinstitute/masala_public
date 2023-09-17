@@ -201,7 +201,7 @@ public:
 	merge_in_lowest_scoring_solutions(
 		std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
 		masala::base::Size const max_solutions_to_store_total,
-		CostFunctionNetworkOptimizationProblemCSP problem
+		CostFunctionNetworkOptimizationProblemCSP const & problem
 	);
 
 protected:
