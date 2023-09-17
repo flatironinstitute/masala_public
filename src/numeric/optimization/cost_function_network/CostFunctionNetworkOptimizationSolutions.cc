@@ -322,7 +322,9 @@ CostFunctionNetworkOptimizationSolutions::solution_matches(
 /// @param[in] problem The problem for all of these solutions.
 /// @note If both sets contain the same solution, the number of times that solution
 /// was produced will be incremented in this set by the number of times it was produced
-/// in the other set.
+/// in the other set.  This function calls create_cost_function_network_optimization_solution(),
+/// which may be overridden by derived classes to create CFN solution containers of a given
+/// derived type.
 void
 CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
@@ -407,7 +409,7 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
             std::vector< Size > const & other_solution_vec( std::get<0>( other_solution ) );
             Real const other_solution_score( std::get<1>(other_solution) );
             CostFunctionNetworkOptimizationSolutionSP new_solution(
-                masala::make_shared< CostFunctionNetworkOptimizationSolution >(
+                create_cost_function_network_optimization_solution(
                     problem,
                     other_solution_vec,
                     std::get<2>( solution_summaries[i] ), // Absolute, accurate score, calculated above.
@@ -420,6 +422,29 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
         }
     }
     optimization_solutions() = new_solutions;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a cost function network optimization solution of an appropriate type.
+/// @details The base class version of this function creates a CostFunctionNetworkOptimizationSolution object
+/// and returns a shared pointer to it.  Derived classes may override this function to return other types of
+/// object (presumably subclasses of CostFunctionNetworkOptimizationSolution).
+CostFunctionNetworkOptimizationSolutionSP
+CostFunctionNetworkOptimizationSolutions::create_cost_function_network_optimization_solution(
+	CostFunctionNetworkOptimizationProblemCSP const & problem,
+	std::vector< masala::base::Size > const & solution_vector,
+	masala::base::Real const solution_score,
+	masala::base::Real const solution_score_data_representation_approximation,
+	masala::base::Real const solution_score_solver_approximation
+) const {
+	return masala::make_shared< CostFunctionNetworkOptimizationSolution >(
+		problem, solution_vector, solution_score,
+		solution_score_data_representation_approximation,
+		solution_score_solver_approximation
+	);
 }
 
 } // namespace cost_function_network
