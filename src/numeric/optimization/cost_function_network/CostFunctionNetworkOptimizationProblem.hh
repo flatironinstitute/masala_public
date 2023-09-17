@@ -257,6 +257,12 @@ public:
 		std::vector< base::Size > const & new_solution
 	) const;
 
+	/// @brief Create a solutions container for this type of optimization problem.
+	/// @details Base class implementation creates a generic OptimizationSolutions container.
+	/// This override creates a CostFunctionNetworkOptimizationSolutions container.
+	OptimizationSolutionsSP
+	create_solutions_container() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

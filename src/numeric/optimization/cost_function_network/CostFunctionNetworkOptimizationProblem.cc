@@ -31,6 +31,7 @@
 #include <numeric>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
 // Base headers:
@@ -344,6 +345,14 @@ CostFunctionNetworkOptimizationProblem::compute_score_change(
 	);
 }
 
+/// @brief Create a solutions container for this type of optimization problem.
+/// @details Base class implementation creates a generic OptimizationSolutions container.
+/// This override creates a CostFunctionNetworkOptimizationSolutions container.",
+OptimizationSolutionsSP
+CostFunctionNetworkOptimizationProblem::create_solutions_container() const {
+	return masala::make_shared< CostFunctionNetworkOptimizationSolutions >();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +528,6 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		comp_abs_score_fxn->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_abs_score_fxn );
 
-
 		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > comp_score_change_fxn(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
 				"compute_score_change", "Given two candidate solutions, compute the score difference.  This "
@@ -538,6 +546,18 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 		comp_score_change_fxn->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_score_change_fxn );
+
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
+                "create_solutions_container", "Create a solutions container for this type of optimization problem.  "
+				"Base class implementation creates a generic OptimizationSolutions container.  This override creates a "
+				"CostFunctionNetworkOptimizationSolutions container.",
+				true, false, false, true,
+				"solutions_container", "An OptimizationSolutions object (or instance of a derived class thereof) for holding "
+				"solutions to this optimization problem.",
+				std::bind( &CostFunctionNetworkOptimizationProblem::create_solutions_container, this )
+            )
+        );
 
 		api_definition() = api_def; //Make const.
 	}
