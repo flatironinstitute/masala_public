@@ -46,6 +46,7 @@
     return *this;
 }
 
+<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 /// @brief Clone operation: make a copy of this object and return
 /// a shared pointer to the copy.
 <__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>SP
@@ -62,6 +63,7 @@
     object_copy->make_independent();
     return object_copy;
 }
+<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>
 
 /// @brief Deep clone all of the internal data for this object, making it fully
 /// independent of any other object.

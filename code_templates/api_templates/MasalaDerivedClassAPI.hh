@@ -54,13 +54,13 @@ public:
     /// @brief Clone operation: make a copy of this object and return
     /// a shared pointer to the copy.
     <__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>SP
-    clone() const override;
+    clone() const override<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone operation: make a copy of this object and return
     /// a shared pointer to the copy, where the copy is fully independent
     /// (all contents also deep-cloned).
     <__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>SP
-    deep_clone() const override;
+    deep_clone() const override<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>;
 
     /// @brief Deep clone all of the internal data for this object, making it fully
     /// independent of any other object.
