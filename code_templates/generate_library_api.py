@@ -1519,15 +1519,6 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
 
-    if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
-        pure_virtuals_for_protected_constructor_classes = " = 0"
-        protected_constructor_comment_start = "/*\n\t// (Commented out because this API class has protected constructors.)"
-        protected_constructor_comment_end = "*/"
-    else :
-        pure_virtuals_for_protected_constructor_classes = ""
-        protected_constructor_comment_start = ""
-        protected_constructor_comment_end = ""
-
     additional_includes = []
 
     hhfile = \
@@ -1556,10 +1547,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
-        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include ) \
-        .replace( "<__PURE_VIRTUALS_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", pure_virtuals_for_protected_constructor_classes ) \
-        .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
-        .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+        .replace( "<__INCLUDE_BASE_API_CLASS_HH_FILE__>", api_base_class_include )
 
 
     fname = dirname + apiclassname + ".hh"
@@ -1578,13 +1566,6 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
 
     dirname_short = dirname.replace("src/", "")
     namespace_and_source_class = original_class_namespace_string + "::" + classname
-
-    if jsonfile["Elements"][namespace_and_source_class]["Properties"]["Has_Protected_Constructors"] == True :
-        protected_constructor_comment_start = "/*\n// (Commented out because this API class has protected constructors and these functions are pure virtual.)"
-        protected_constructor_comment_end = "*/"
-    else :
-        protected_constructor_comment_start = ""
-        protected_constructor_comment_end = ""
 
     api_base_class_include, api_base_class, api_root_base_class, is_derived = get_api_class_include_and_classname( project_name, libraryname, classname, namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
@@ -1617,9 +1598,7 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
-        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
-        .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
-        .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+        .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
