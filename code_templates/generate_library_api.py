@@ -31,6 +31,8 @@ import os
 import shutil
 import re
 
+VERBOSE_SCRIPT_OUTPUT = False
+
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
 ## these two options aren't provided.
@@ -150,7 +152,8 @@ def separate_namespace( namespace_string ) -> list :
 def read_file( filename : str ) -> list :
     with open( filename, 'r' ) as filehandle :
         filecontents = filehandle.read()
-    print( "\tRead contents of \"" + filename + "\" into memory." )
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "\tRead contents of \"" + filename + "\" into memory." )
     return filecontents
 
 ## @brief Determine whether an object is an API type, and if so, access the
@@ -209,7 +212,8 @@ def directory_and_name_from_namespace_and_name( namespace_and_name : str ) :
 def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_name : str ) -> None :
     enum_directory, enum_name = directory_and_name_from_namespace_and_name( enum_namespace_and_name )
 
-    print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
     found = False
     for filename in os.listdir( "src/" + enum_directory ) :
         if filename.endswith(".fwd.hh") == False :
@@ -1391,7 +1395,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             parent_namespace_and_name = linesplit[startentry+1]
             if parent_namespace_and_name.endswith("{") :
                 parent_namespace_and_name = parent_namespace_and_name[:-1]
-            print("\t\tFound parent class " + parent_namespace_and_name + ".")
+            if VERBOSE_SCRIPT_OUTPUT == True :
+                print("\t\tFound parent class " + parent_namespace_and_name + ".")
             break
 
     if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
@@ -1432,7 +1437,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 lines[i+6] != "0":
 
                 parent_has_api = True
-                print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
+                if VERBOSE_SCRIPT_OUTPUT == True :
+                    print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
 
         parent_classname = parentsplit[len(parentsplit) - 1]
@@ -1453,7 +1459,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 root_api_namespace_and_name = parent_api_namespace_and_name
             return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else : # parent_has_api == False
-            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
+            if VERBOSE_SCRIPT_OUTPUT == True :
+                print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
             return get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
     # If we reach here, there's no parent class with an API.
