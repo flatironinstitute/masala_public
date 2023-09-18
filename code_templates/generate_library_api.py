@@ -67,11 +67,18 @@ def is_masala_plugin_class( \
                 return False
 
     # Check the class inheritence:
-    fname = namesplit[1]
+    #print(namesplit) # DELETE ME
+    if namesplit[0] != project_name :
+        fname = "headers/" + namesplit[0] + "/headers/" + namesplit[1]
+    else :
+        fname = namesplit[1]
     for i in range (2, len(namesplit)) :
         fname += "/" + namesplit[i]
     fname += ".hh"
-    fcontents = slurp_file_and_remove_comments( fname ).replace(":", " : ").replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "\tLoading " + fname )
+    fcontents = slurp_file_and_remove_comments( fname ).replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    #print( fcontents ) # DELETE ME
     parentclass = None
     for i in range( len(fcontents) - 4 ) :
         if fcontents[i] == "class" and \
@@ -79,6 +86,8 @@ def is_masala_plugin_class( \
             fcontents[i+2] == ":" and \
             fcontents[i+3] == "public" :
             parentclass = fcontents[i+4]
+            break
+    #print( parentclass ) # DELETE ME
     if parentclass == None : return False
     elif parentclass == "masala::base::managers::plugin_module::MasalaPlugin" : return True
 
@@ -903,6 +912,8 @@ def generate_function_implementations( \
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner )  ) :
                 is_masala_API_ptr = True
+                if VERBOSE_SCRIPT_OUTPUT == True:
+                    print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
                 if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
                     is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
@@ -1396,7 +1407,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             if parent_namespace_and_name.endswith("{") :
                 parent_namespace_and_name = parent_namespace_and_name[:-1]
             if VERBOSE_SCRIPT_OUTPUT == True :
-                print("\t\tFound parent class " + parent_namespace_and_name + ".")
+                print("\t\tFound parent class of " + classname + ":\t" + parent_namespace_and_name + ".")
             break
 
     if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
