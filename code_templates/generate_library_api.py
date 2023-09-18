@@ -731,13 +731,13 @@ def generate_function_call( \
     outstring += ")"
     return outstring
 
-## @brief Return true if and only if (a) a class is defined in a JSON file, and (b) it has protected constructors.
-def class_exists_and_has_protected_constructors( \
+## @brief Return true if and only if (a) a class is defined in a JSON file, and (b) it has public constructors.
+def class_exists_and_has_public_constructors( \
         namespace_and_name : str, \
         jsonfile : json \
     ) -> bool :
     if namespace_and_name in jsonfile["Elements"] :
-        return jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"]
+        return ( jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"] == False )
     return False
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
@@ -962,7 +962,7 @@ def generate_function_implementations( \
                         + " > returnobj( " \
                         + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
                         + " );\n"
-                    if( class_exists_and_has_protected_constructors( drop_const( outtype_inner ), jsonfile ) == False ) :
+                    if( class_exists_and_has_public_constructors( drop_const( outtype_inner ), jsonfile ) == True ) :
                         outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
 							+ drop_const( outtype_inner ) + "\" ) {\n"
                         outstring += tabchar + tabchar + "return masala::make_shared< " \
