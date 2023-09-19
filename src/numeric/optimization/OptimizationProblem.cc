@@ -25,11 +25,15 @@
 // Unit header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
+// Numeric headers:
+#include <numeric/optimization/OptimizationSolutions.hh>
+
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -228,10 +232,35 @@ OptimizationProblem::get_api_definition() {
             )
         );
 
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
+                "create_solutions_container", "Create a solutions container for this type of optimization problem.  "
+				"Base class implementation creates a generic OptimizationSolutions container.  Derived classes may "
+				"override this to create specialized solutions containers.",
+				true, false, true, false,
+				"solutions_container", "An OptimizationSolutions object (or instance of a derived class thereof) for holding "
+				"solutions to this optimization problem.",
+				std::bind( &OptimizationProblem::create_solutions_container, this )
+            )
+        );
+
         api_definition_ = api_def; //Make const.
     }
 
     return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a solutions container for this type of optimization problem.
+/// @details Base class implementation creates a generic OptimizationSolutions container.  Derived
+/// classes may override this to create specialized solutions containers.
+OptimizationSolutionsSP
+OptimizationProblem::create_solutions_container() const {
+    return masala::make_shared< OptimizationSolutions >();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

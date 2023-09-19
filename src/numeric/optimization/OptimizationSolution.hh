@@ -122,7 +122,19 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Set the score for this solution.
+	/// @details This is the exact score, recomputed once the solution has been produced.
 	void set_solution_score( masala::base::Real const score_in );
+
+	/// @brief Set an approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	void set_solution_score_data_representation_approximation( masala::base::Real const dr_approx_score_in );
+
+	/// @brief Set an approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	void set_solution_score_solver_approximation( masala::base::Real const solver_approx_score_in );
 
 	/// @brief Set the problem that gave rise to this solution.
 	/// @details Cloned on input.  Can be overridden by derived classes
@@ -151,7 +163,19 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the score for this solution.
+	/// @details This is the exact score, recomputed once the solution has been produced.
 	masala::base::Real solution_score() const;
+
+	/// @brief Get the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	masala::base::Real solution_score_data_representation_approximation() const;
+
+	/// @brief Get the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	masala::base::Real solution_score_solver_approximation() const;
 
 	/// @brief Access the problem.
 	OptimizationProblemCSP problem() const;
@@ -206,13 +230,41 @@ protected:
 
 	/// @brief Access the solution score from derived classes.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
-	/// context only.
-	masala::base::Real & protected_solution_score();
+	/// context only.  This is the exact score, recomputed once the solution has
+	/// been produced.
+	inline masala::base::Real & protected_solution_score() { return solution_score_; }
+
+	/// @brief Access the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real & protected_solution_score_data_representation_approximation() { return solution_score_data_representation_approximation_; }
+
+	/// @brief Access the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real & protected_solution_score_solver_approximation() { return solution_score_solver_approximation_; }
 
 	/// @brief Const access to the solution score from derived classes.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
-	/// context only.
-	masala::base::Real const & protected_solution_score() const;
+	/// context only.  This is the exact score, recomputed once the solution has
+	/// been produced.
+	inline masala::base::Real const & protected_solution_score() const { return solution_score_; }
+
+	/// @brief Const access the approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real const & protected_solution_score_data_representation_approximation() const { return solution_score_data_representation_approximation_; }
+
+	/// @brief Const access the approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	/// @note Assumes mutex was set.
+	inline masala::base::Real const & protected_solution_score_solver_approximation() const { return solution_score_solver_approximation_; }
 
 	/// @brief Access the problem.
 	/// @details Performs no mutex locking.  Should be called from a mutex-locked
@@ -247,7 +299,19 @@ private:
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 	/// @brief A score associated with this solution.
+	/// @details This is the exact score, recomputed once the solution has been produced.
 	masala::base::Real solution_score_ = 0.0;
+
+	/// @brief An approximate score associated with this solution, given the data representation.
+	/// @details Certain data representations may use reduced floating point precision or other approximations
+	/// for greater efficiency.
+	masala::base::Real solution_score_data_representation_approximation_ = 0.0;
+
+	/// @brief An approximate score returned by the solver that produced this solution.
+	/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+	/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+	/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+	masala::base::Real solution_score_solver_approximation_ = 0.0;
 
 	/// @brief The problem that gave rise to this solution.
 	OptimizationProblemCSP problem_;

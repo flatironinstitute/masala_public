@@ -180,9 +180,13 @@ public:
 
 	/// @brief Given another collection of solutions, merge-sort the solutions
 	/// and keep up to the lowest-scoring N.
+	/// @details The scores passed in are the solver scores.  This function will compute the
+	/// data representation scores and the actual scores, and then merge-sort by actual score. 
 	/// @param[in] other_solutions The other solutions, represented as a vector of
 	/// tuples of (solution vector for variable positions only, solution score,
-	/// solution count).
+	/// solution count).  The solution score is the score returned by the solver (which
+	/// may be approximate, both because the data representation may make approximations
+	/// and because the solver's precision may be limited.)
 	/// @param[in] max_solutions_to_store_total The maximum number of solutions that we
 	/// want to be storing at the end of this operation.  The lowest-scoring solutions
 	/// from the union of both sets are stored, and any solutions past the lowest N are
@@ -190,13 +194,35 @@ public:
 	/// @param[in] problem The problem for all of these solutions.
 	/// @note If both sets contain the same solution, the number of times that solution
 	/// was produced will be incremented in this set by the number of times it was produced
-	/// in the other set.
+	/// in the other set.  This function calls create_cost_function_network_optimization_solution(),
+	/// which may be overridden by derived classes to create CFN solution containers of a given
+	/// derived type.
 	void
 	merge_in_lowest_scoring_solutions(
 		std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
 		masala::base::Size const max_solutions_to_store_total,
-		CostFunctionNetworkOptimizationProblemCSP problem
+		CostFunctionNetworkOptimizationProblemCSP const & problem
 	);
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create a cost function network optimization solution of an appropriate type.
+	/// @details The base class version of this function creates a CostFunctionNetworkOptimizationSolution object
+	/// and returns a shared pointer to it.  Derived classes may override this function to return other types of
+	/// object (presumably subclasses of CostFunctionNetworkOptimizationSolution).
+	virtual
+	CostFunctionNetworkOptimizationSolutionSP
+	create_cost_function_network_optimization_solution(
+		CostFunctionNetworkOptimizationProblemCSP const & problem,
+		std::vector< masala::base::Size > const & solution_vector,
+		masala::base::Real const solution_score,
+		masala::base::Real const solution_score_data_representation_approximation,
+		masala::base::Real const solution_score_solver_approximation
+	) const;
 
 private:
 

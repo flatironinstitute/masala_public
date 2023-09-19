@@ -30,6 +30,7 @@
 
 // Parent header:
 #include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <numeric/optimization/OptimizationSolutions.fwd.hh>
 
 // STL headers:
 #include <mutex>
@@ -146,6 +147,19 @@ public:
     /// @brief Get a description of the API for the OptimizationProblem class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create a solutions container for this type of optimization problem.
+	/// @details Base class implementation creates a generic OptimizationSolutions container.  Derived
+	/// classes may override this to create specialized solutions containers.
+	virtual
+	OptimizationSolutionsSP
+	create_solutions_container() const;
 
 protected:
 

@@ -213,7 +213,24 @@ public:
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given a candidate solution, compute the score.
+	/// @brief Given a candidate solution, compute the score.  This computes the actual,
+	/// non-approximate score (possibly more slowly), not the score that the data approximation
+	/// uses (computed in a manner optimized for speed, which may involve approximations).
+	/// @details The candidate solution is expressed as a vector of choice indices, with
+	/// one entry per variable position, in order of position indices.  (There may not be
+	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+	/// a read-only context.  The default implementation calls compute_absolute_score(), but this
+	/// may be overridden if the data representation uses an approximation or lower level of precision
+	/// to compute the score.
+	virtual
+	masala::base::Real
+	compute_non_approximate_absolute_score(
+		std::vector< base::Size > const & candidate_solution
+	) const;
+
+	/// @brief Given a candidate solution, compute the data representation score (which
+	/// may be approximate).
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
@@ -226,6 +243,8 @@ public:
 	) const;
 
 	/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+	/// This is the difference in the data representation scores (which may be an approximation
+	/// of the actual scores).
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
@@ -237,6 +256,12 @@ public:
 		std::vector< base::Size > const & old_solution,
 		std::vector< base::Size > const & new_solution
 	) const;
+
+	/// @brief Create a solutions container for this type of optimization problem.
+	/// @details Base class implementation creates a generic OptimizationSolutions container.
+	/// This override creates a CostFunctionNetworkOptimizationSolutions container.
+	OptimizationSolutionsSP
+	create_solutions_container() const override;
 
 public:
 
