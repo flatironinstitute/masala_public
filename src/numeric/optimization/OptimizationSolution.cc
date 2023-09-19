@@ -153,12 +153,36 @@ OptimizationSolution::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Set the score for this solution.
+/// @details This is the exact score, recomputed once the solution has been produced.
 void
 OptimizationSolution::set_solution_score(
     masala::base::Real const score_in
 ) {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
     solution_score_ = score_in;
+}
+
+/// @brief Set an approximate score associated with this solution, given the data representation.
+/// @details Certain data representations may use reduced floating point precision or other approximations
+/// for greater efficiency.
+void
+OptimizationSolution::set_solution_score_data_representation_approximation(
+    masala::base::Real const dr_approx_score_in
+) {
+	std::lock_guard< std::mutex > lock( solution_mutex_ );
+	solution_score_data_representation_approximation_ = dr_approx_score_in;
+}
+
+/// @brief Set an approximate score returned by the solver that produced this solution.
+/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+/// use lower-precision math, perform arithmetic that accumulates floating-point error, or use external analogue
+/// methods (e.g. quantum computation) that introduce their own error.
+void
+OptimizationSolution::set_solution_score_solver_approximation(
+	masala::base::Real const solver_approx_score_in
+) {
+	std::lock_guard< std::mutex > lock( solution_mutex_ );
+	solution_score_solver_approximation_ = solver_approx_score_in;
 }
 
 
@@ -208,10 +232,30 @@ OptimizationSolution::set_n_times_solution_was_produced(
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the score for this solution.
+/// @details This is the exact score, recomputed once the solution has been produced.
 masala::base::Real
 OptimizationSolution::solution_score() const {
     std::lock_guard< std::mutex > lock( solution_mutex_ );
     return solution_score_;
+}
+
+/// @brief Get the approximate score associated with this solution, given the data representation.
+/// @details Certain data representations may use reduced floating point precision or other approximations
+/// for greater efficiency.
+masala::base::Real
+OptimizationSolution::solution_score_data_representation_approximation() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return solution_score_data_representation_approximation_;
+}
+
+/// @brief Get the approximate score returned by the solver that produced this solution.
+/// @details In addition to approximation from the data representation, a solver may accumulate numerical error,
+/// over a trajectory use lower-precision math, perform arithmetic that accumulates floating-point error, or
+/// use external analogue methods (e.g. quantum computation) that introduce their own error.
+masala::base::Real
+OptimizationSolution::solution_score_solver_approximation() const {
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    return solution_score_solver_approximation_;
 }
 
 /// @brief Access the problem.
@@ -292,10 +336,35 @@ OptimizationSolution::get_api_definition() {
         // Getters:
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score", "Get the score associated with this solution.",
-                "solution_score", "The score associated with this solution.",
+                "solution_score", "Get the score associated with this solution.  This is the exact "
+				"score, recomputed once the solution has been produced.",
+                "solution_score", "The exact score associated with this solution.",
                 false, false,
                 std::bind( &OptimizationSolution::solution_score, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use "
+				"reduced floating point precision or other approximations for greater efficiency.",
+                "solution_score_data_representation_approximation", "The approximate score with this solution, "
+				"given the data representation",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score_data_representation_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_solver_approximation", "Get the approximate score returned by the solver that produced "
+				"this solution.  In addition to approximation from the data representation, a solver may accumulate "
+				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solution_score_solver_approximation", "The approximate score associated with this solution, returned "
+				"by the solver.",
+                false, false,
+                std::bind( &OptimizationSolution::solution_score_solver_approximation, this )
             )
         );
         api_def->add_getter(
@@ -329,10 +398,33 @@ OptimizationSolution::get_api_definition() {
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score", "Set the score associated with this solution.",
+                "set_solution_score", "Set the score associated with this solution.  This is the "
+                "exact score, recomputed once the solution has been produced.",
                 "score_in", "The score to set.",
                 false, false,
                 std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_data_representation_approximation", "Set an approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use reduced "
+				"floating point precision or other approximations for greater efficiency.",
+                "dr_approx_score_in", "The approximate score (from the data representation) to set.",
+                false, false,
+                std::bind( &OptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
+				"produced this solution. In addition to approximation from the data representation, a solver may "
+				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solver_approx_score_in", "The approximate score (from the solver) to set.",
+                false, false,
+                std::bind( &OptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
             ) 
         );
         api_def->add_setter(
@@ -404,22 +496,6 @@ OptimizationSolution::solution_mutex() const {
 masala::base::api::MasalaObjectAPIDefinitionCSP &
 OptimizationSolution::api_definition() {
     return api_definition_;
-}
-
-/// @brief Access the solution score from derived classes.
-/// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.
-masala::base::Real &
-OptimizationSolution::protected_solution_score() {
-	return solution_score_;
-}
-
-/// @brief Const access to the solution score from derived classes.
-/// @details Performs no mutex locking.  Should be called from a mutex-locked
-/// context only.
-masala::base::Real const &
-OptimizationSolution::protected_solution_score() const {
-	return solution_score_;
 }
 
 /// @brief Access the problem.

@@ -205,23 +205,6 @@ public:
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Sort all of the solutions stored in this object by score.
-	void sort_by_score();
-
-	/// @brief Recompute all of the scores for all of the stored solutions.
-	/// @details This can be useful when, for instance, problems are solved with inexact
-	/// optimizers that use reduced numerical precision, or which accumulate numerical
-	/// error through long Monte Carlo trajectories.
-	void recompute_all_scores();
-	
-	/// @brief Recompute all of the scores for all of the stored solutions.
-	/// @details This can be useful when, for instance, problems are solved with inexact
-	/// optimizers that use reduced numerical precision, or which accumulate numerical
-	/// error through long Monte Carlo trajectories.
-	/// @note This version throws if any score's value changes by more than the old value
-	/// multiplied by max_fractional_error.
-	void recompute_all_scores( masala::base::Real const max_fractional_error );
-
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////

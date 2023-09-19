@@ -31,6 +31,8 @@ import os
 import shutil
 import re
 
+VERBOSE_SCRIPT_OUTPUT = False
+
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
 ## these two options aren't provided.
@@ -65,11 +67,18 @@ def is_masala_plugin_class( \
                 return False
 
     # Check the class inheritence:
-    fname = namesplit[1]
+    #print(namesplit) # DELETE ME
+    if namesplit[0] != project_name :
+        fname = "headers/" + namesplit[0] + "/headers/" + namesplit[1]
+    else :
+        fname = namesplit[1]
     for i in range (2, len(namesplit)) :
         fname += "/" + namesplit[i]
     fname += ".hh"
-    fcontents = slurp_file_and_remove_comments( fname ).replace(":", " : ").replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "\tLoading " + fname )
+    fcontents = slurp_file_and_remove_comments( fname ).replace( "{", " { " ).replace( "}", " } " ).replace( "(", " ( " ).replace( ")", " ) " ).replace( "<", " < " ).replace( ">", " > " ).replace( ";", " ; " ).split()
+    #print( fcontents ) # DELETE ME
     parentclass = None
     for i in range( len(fcontents) - 4 ) :
         if fcontents[i] == "class" and \
@@ -77,6 +86,8 @@ def is_masala_plugin_class( \
             fcontents[i+2] == ":" and \
             fcontents[i+3] == "public" :
             parentclass = fcontents[i+4]
+            break
+    #print( parentclass ) # DELETE ME
     if parentclass == None : return False
     elif parentclass == "masala::base::managers::plugin_module::MasalaPlugin" : return True
 
@@ -150,7 +161,8 @@ def separate_namespace( namespace_string ) -> list :
 def read_file( filename : str ) -> list :
     with open( filename, 'r' ) as filehandle :
         filecontents = filehandle.read()
-    print( "\tRead contents of \"" + filename + "\" into memory." )
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "\tRead contents of \"" + filename + "\" into memory." )
     return filecontents
 
 ## @brief Determine whether an object is an API type, and if so, access the
@@ -209,7 +221,8 @@ def directory_and_name_from_namespace_and_name( namespace_and_name : str ) :
 def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_name : str ) -> None :
     enum_directory, enum_name = directory_and_name_from_namespace_and_name( enum_namespace_and_name )
 
-    print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
+    if VERBOSE_SCRIPT_OUTPUT == True :
+        print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
     found = False
     for filename in os.listdir( "src/" + enum_directory ) :
         if filename.endswith(".fwd.hh") == False :
@@ -718,13 +731,13 @@ def generate_function_call( \
     outstring += ")"
     return outstring
 
-## @brief Return true if and only if (a) a class is defined in a JSON file, and (b) it has protected constructors.
-def class_exists_and_has_protected_constructors( \
+## @brief Return true if and only if (a) a class is defined in a JSON file, and (b) it has public constructors.
+def class_exists_and_has_public_constructors( \
         namespace_and_name : str, \
         jsonfile : json \
     ) -> bool :
     if namespace_and_name in jsonfile["Elements"] :
-        return jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"]
+        return ( jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"] == False )
     return False
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
@@ -899,6 +912,8 @@ def generate_function_implementations( \
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner )  ) :
                 is_masala_API_ptr = True
+                if VERBOSE_SCRIPT_OUTPUT == True:
+                    print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
                 if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
                     is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
@@ -947,7 +962,7 @@ def generate_function_implementations( \
                         + " > returnobj( " \
                         + generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile ) \
                         + " );\n"
-                    if( class_exists_and_has_protected_constructors( drop_const( outtype_inner ), jsonfile ) == False ) :
+                    if( class_exists_and_has_public_constructors( drop_const( outtype_inner ), jsonfile ) == True ) :
                         outstring += tabchar + "if( returnobj->class_namespace_and_name() == \"" \
 							+ drop_const( outtype_inner ) + "\" ) {\n"
                         outstring += tabchar + tabchar + "return masala::make_shared< " \
@@ -1391,7 +1406,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             parent_namespace_and_name = linesplit[startentry+1]
             if parent_namespace_and_name.endswith("{") :
                 parent_namespace_and_name = parent_namespace_and_name[:-1]
-            print("\t\tFound parent class " + parent_namespace_and_name + ".")
+            if VERBOSE_SCRIPT_OUTPUT == True :
+                print("\t\tFound parent class of " + classname + ":\t" + parent_namespace_and_name + ".")
             break
 
     if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
@@ -1432,7 +1448,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 lines[i+6] != "0":
 
                 parent_has_api = True
-                print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
+                if VERBOSE_SCRIPT_OUTPUT == True :
+                    print( "\t\tParent class " + parent_namespace_and_name + " has an API definition." )
                 break
 
         parent_classname = parentsplit[len(parentsplit) - 1]
@@ -1453,7 +1470,8 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 root_api_namespace_and_name = parent_api_namespace_and_name
             return( parent_api_hhfile, parent_api_namespace_and_name, root_api_namespace_and_name, True )
         else : # parent_has_api == False
-            print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
+            if VERBOSE_SCRIPT_OUTPUT == True :
+                print( "\t\tParent class " + parent_namespace_and_name + " lacks an API definition.", flush=True )
             return get_api_class_include_and_classname( project_name, parentsplit[1], parent_classname, parent_namespace, is_plugin_class, is_engine_class, is_data_representation_class )
 
     # If we reach here, there's no parent class with an API.
