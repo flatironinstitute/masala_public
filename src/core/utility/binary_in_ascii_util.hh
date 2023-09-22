@@ -36,7 +36,7 @@ namespace utility {
 	/// @brief Convert the characters A-Z,a-z,0-9,+ to integers from 0 to 63.
 	/// @returns An integer, from 0 to 63.
 	masala::base::Size
-	size_from_char(
+	decode_size_from_char(
 		char const character
 	);
 
