@@ -26,9 +26,43 @@
 // Unit header:
 #include <core/utility/binary_in_ascii_util.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
+// STL headers:
+#include <sstream>
+
 namespace masala {
 namespace core {
 namespace utility {
+
+/// @brief Convert the characters A-Z,a-z,0-9,+ to integers from 0 to 63.
+/// @returns An integer, from 0 to 63.
+masala::base::Size
+size_from_char(
+	char const character
+) {
+	using masala::base::Size;
+
+	Size const character_as_size( static_cast<Size>(character) );
+
+    if ( character_as_size >= static_cast<Size>('A') && character_as_size <= static_cast<Size>('Z') ) {
+        return character_as_size - static_cast<Size>('A');
+	} else if( character_as_size >= static_cast<Size>('a') && character_as_size <= static_cast<Size>('z') ) {
+        return character_as_size - static_cast<Size>('a') + 26;
+	} else if( character_as_size >= static_cast<Size>('0') && character_as_size <= static_cast<Size>('9') ) {
+        return character_as_size - static_cast<Size>('0') + 52;
+	} else if( character == '+' ) {
+		return 62;
+	} else if( character == '/' ) {
+		return 62;
+	} else {
+		std::stringstream errmsg;
+		errmsg << "Character '" << character << "' is not in the range 'A'-'Z', 'a'-'z', '0'-'9', '+' or '/'.";
+		MASALA_THROW( "masala::core::utility", "integer_from_char", errmsg.str() );
+	}
+	return 0;
+}
 
 } // namespace utility
 } // namespace core

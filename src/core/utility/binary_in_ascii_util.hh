@@ -26,9 +26,19 @@
 #ifndef Masala_src_core_utility_binary_in_ascii_util_hh
 #define Masala_src_core_utility_binary_in_ascii_util_hh
 
+// Masala base headers:
+#include <base/types.hh>
+
 namespace masala {
 namespace core {
 namespace utility {
+
+	/// @brief Convert the characters A-Z,a-z,0-9,+ to integers from 0 to 63.
+	/// @returns An integer, from 0 to 63.
+	masala::base::Size
+	size_from_char(
+		char const character
+	);
 
 } // namespace utility
 } // namespace core
