@@ -40,15 +40,15 @@ namespace utility {
 	/// @returns An integer, from 0 to 63.
 	masala::base::Size
 	decode_size_from_char(
-		char const character
+		unsigned char const character
 	);
 
 	/// @brief Convert the characters A-Z,a-z,0-9,+ to chars corresponding to
 	/// integers from 00000000 (i.e. 0) to 00111111 (i.e. 63).
 	/// @returns An integer, from 0 to 63.
-	char
+	unsigned char
 	decode_char_from_char(
-		char const character
+		unsigned char const character
 	);
 
 	/// @brief Given a pointer to the first byte of a block of memory and a string, interpret every
