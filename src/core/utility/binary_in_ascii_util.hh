@@ -40,6 +40,14 @@ namespace utility {
 		char const character
 	);
 
+	/// @brief Convert the characters A-Z,a-z,0-9,+ to chars corresponding to
+	/// integers from 00000000 (i.e. 0) to 00111111 (i.e. 63).
+	/// @returns An integer, from 0 to 63.
+	char
+	decode_char_from_char(
+		char const character
+	);
+
 } // namespace utility
 } // namespace core
 } // namespace masala

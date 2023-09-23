@@ -40,7 +40,7 @@ namespace utility {
 /// @returns An integer, from 0 to 63.
 masala::base::Size
 decode_size_from_char(
-	char const character
+	unsigned char const character
 ) {
 	using masala::base::Size;
 
@@ -55,11 +55,36 @@ decode_size_from_char(
 	} else if( character == '+' ) {
 		return 62;
 	} else if( character == '/' ) {
-		return 62;
+		return 63;
 	} else {
 		std::stringstream errmsg;
 		errmsg << "Character '" << character << "' is not in the range 'A'-'Z', 'a'-'z', '0'-'9', '+' or '/'.";
-		MASALA_THROW( "masala::core::utility", "integer_from_char", errmsg.str() );
+		MASALA_THROW( "masala::core::utility", "decode_size_from_char", errmsg.str() );
+	}
+	return 0;
+}
+
+/// @brief Convert the characters A-Z,a-z,0-9,+ to chars corresponding to
+/// integers from 00000000 (i.e. 0) to 00111111 (i.e. 63).
+/// @returns An integer, from 0 to 63.
+unsigned char
+decode_char_from_char(
+	unsigned char const character
+) {
+    if ( character >= 'A' && character <= 'Z' ) {
+        return character - 'A';
+	} else if( character >= 'a' && character <= 'z' ) {
+        return character - 'a' + static_cast<unsigned char>(26);
+	} else if( character >= '0' && character <= '9' ) {
+        return character - '0' + static_cast<unsigned char>(52);
+	} else if( character == '+' ) {
+		return static_cast<unsigned char>(62);
+	} else if( character == '/' ) {
+		return static_cast<unsigned char>(63);
+	} else {
+		std::stringstream errmsg;
+		errmsg << "Character '" << character << "' is not in the range 'A'-'Z', 'a'-'z', '0'-'9', '+' or '/'.";
+		MASALA_THROW( "masala::core::utility", "decode_char_from_char", errmsg.str() );
 	}
 	return 0;
 }
