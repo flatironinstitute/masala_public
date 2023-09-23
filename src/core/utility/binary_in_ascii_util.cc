@@ -114,11 +114,11 @@ decode_data_from_string(
 			c3( bytes_to_read > 2 ? decode_char_from_char( datastring[istring + 2] ) : static_cast< unsigned char >(0) ),
 			c4( bytes_to_read > 3 ? decode_char_from_char( datastring[istring + 3] ) : static_cast< unsigned char >(0) );
 
-		data[idata] = (c1 << 2) & (c2 >> 4);
+		data[idata] = (c1) | (c2 << 6);
 		if( bytes_to_write > 1 ) {
-			data[idata+1] = (c2 << 4) & (c3 >> 2);
+			data[idata+1] = (c2 >> 2) | (c3 << 4);
 			if( bytes_to_write > 2 ) {
-				data[idata+2] = (c3 << 6) & c4;
+				data[idata+2] = (c3 >> 4) | (c4 << 2);
 			}
 		} 
 
