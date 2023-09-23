@@ -30,7 +30,7 @@
 #include <core/utility/binary_in_ascii_util.hh>
 
 namespace masala {
-namespace core {
+namespace core_api {
 namespace utility {
 
 /// @brief Given a pointer to the first byte of a block of memory and a string, interpret every
@@ -47,5 +47,5 @@ decode_data_from_string(
 }
 
 } // namespace utility
-} // namespace core
+} // namespace core_api
 } // namespace masala

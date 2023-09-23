@@ -29,6 +29,9 @@
 // Masala base headers:
 #include <base/types.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace core {
 namespace utility {
