@@ -35,10 +35,7 @@
 #include <base/api/names_from_types.tmpl.hh>
 
 // STL headers:
-#include <map>
 #include <mutex>
-#include <vector>
-#include <set>
 
 namespace masala {
 namespace base {
@@ -113,6 +110,8 @@ private:
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief A mutex for locking this singleton.
+	mutable std::mutex file_interpreter_manager_mutex_;
 
 };
 

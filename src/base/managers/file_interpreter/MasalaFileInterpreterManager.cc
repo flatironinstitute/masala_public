@@ -26,19 +26,9 @@
 
 // Base headers:
 #include <base/types.hh>
-#include <base/managers/file_interpreter/MasalaPluginCreator.hh>
-#include <base/managers/file_interpreter/MasalaPlugin.hh>
 #include <base/error/ErrorHandling.hh>
-#include <base/utility/container/container_util.tmpl.hh>
-#include <base/managers/engine/MasalaEngineCreator.hh>
-#include <base/managers/engine/MasalaDataRepresentationCreator.hh>
-#include <base/managers/engine/MasalaEngineManager.hh>
-#include <base/managers/engine/MasalaDataRepresentationManager.hh>
 
 // STL headers:
-#include <string>
-#include <sstream>
-//#include <iomanip> // DELETE ME
 
 namespace masala {
 namespace base {
@@ -74,8 +64,6 @@ MasalaFileInterpreterManager::class_namespace() const {
 /// @details Unregisters all file interpreters.
 void
 MasalaFileInterpreterManager::reset() {
-    using namespace masala::base::managers::engine;
-
     std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
 	// TODO TODO TODO
     write_to_tracer( "Reset the MasalaFileInterpreterManager.  No file interpreters are registered." );
