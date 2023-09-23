@@ -89,6 +89,49 @@ decode_char_from_char(
 	return 0;
 }
 
+/// @brief Given a pointer to the first byte of a block of memory and a string, interpret every
+/// four bytes of the string as three bytes of data and start filling the block of memory.
+/// @details Fills up to max_bytes bytes, or until the string is exhausted, whichever comes first.
+/// @returns The number of bytes filled.
+masala::base::Size
+decode_data_from_string(
+	unsigned char * data,
+	std::string const & datastring,
+	masala::base::Size const max_bytes
+) {
+	using masala::base::Size;
+	
+	Size idata(0);
+	Size bytes_processed(0);
+	
+	// Process up to four bytes of string at a time.
+	for( Size istring(0), istringmax(datastring.size()); istring<istringmax; istring += 4 ) {
+		Size const bytes_to_read( std::min( static_cast<Size>(4), istringmax - istring ) );
+		Size const bytes_to_write( std::min( static_cast<Size>(3), max_bytes - idata ) );
+
+		unsigned char c1( decode_char_from_char( datastring[istring] ) ),
+			c2( bytes_to_read > 1 ? decode_char_from_char( datastring[istring + 1] ) : static_cast< unsigned char >(0) ),
+			c3( bytes_to_read > 2 ? decode_char_from_char( datastring[istring + 2] ) : static_cast< unsigned char >(0) ),
+			c4( bytes_to_read > 3 ? decode_char_from_char( datastring[istring + 3] ) : static_cast< unsigned char >(0) );
+
+		data[idata] = (c1 << 2) & (c2 >> 4);
+		if( bytes_to_write > 1 ) {
+			data[idata+1] = (c2 << 4) & (c3 >> 2);
+			if( bytes_to_write > 2 ) {
+				data[idata+2] = (c3 << 6) & c4;
+			}
+		} 
+
+		bytes_processed += bytes_to_write;
+		idata +=3;
+		if( idata > max_bytes ) {
+			break;
+		} 
+	}
+
+	return bytes_processed;
+}
+
 } // namespace utility
 } // namespace core
 } // namespace masala

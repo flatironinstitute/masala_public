@@ -48,6 +48,17 @@ namespace utility {
 		char const character
 	);
 
+	/// @brief Given a pointer to the first byte of a block of memory and a string, interpret every
+	/// four bytes of the string as three bytes of data and start filling the block of memory.
+	/// @details Fills up to max_bytes bytes, or until the string is exhausted, whichever comes first.
+	/// @returns The number of bytes filled.
+	masala::base::Size
+	decode_data_from_string(
+		unsigned char * data,
+		std::string const & datastring,
+		masala::base::Size const max_bytes
+	);
+
 } // namespace utility
 } // namespace core
 } // namespace masala
