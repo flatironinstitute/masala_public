@@ -42,7 +42,7 @@ namespace file_interpreter {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaFileInterpreterCreator : public masala::base::managers::plugin_module::MasalaPluginCreator {
 
-    friend class masala::base::managers::engine::MasalaFileInterpreterManager;
+    friend class masala::base::managers::file_interpreter::MasalaFileInterpreterManager;
 
 public:
 
