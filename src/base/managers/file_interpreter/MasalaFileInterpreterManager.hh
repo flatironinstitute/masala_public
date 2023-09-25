@@ -29,6 +29,7 @@
 
 // Forward declarations:
 #include <base/managers/file_interpreter/MasalaFileInterpreterManager.fwd.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreterCreator.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -96,7 +97,29 @@ public:
     void reset();
 
     /// @brief Get the number of registered file interpreters.
-    base::Size total_file_interpreters() const;
+    masala::base::Size total_file_interpreters() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS FOR REGISTERING AND UNREGISTERING FILE INTERPRETERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Add a file interpreter to the ones registered with this manager.
+	/// @details Throws if the file interpreter has already been added.
+	/// @param creator_in The creator for the new file interpreter plugin type.
+	void
+	register_file_interpreter(
+		MasalaFileInterpreterCreatorCSP const & creator_in
+	);
+
+	/// @brief Add some new file interpreters to the ones registered with this manager.
+	/// @details Throws if any of the file interpreters has already been added.
+	/// @param creators_in A vector of creators for the new file interpreter plugin types.
+	void
+	register_file_interpreters(
+		std::vector< MasalaFileInterpreterCreatorCSP > const & creators_in
+	);
 
 private:
 

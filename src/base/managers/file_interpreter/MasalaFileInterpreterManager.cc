@@ -70,11 +70,39 @@ MasalaFileInterpreterManager::reset() {
 }
 
 /// @brief Get the number of registered plugins.
-base::Size
+masala::base::Size
 MasalaFileInterpreterManager::total_file_interpreters() const {
     std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
     //return all_file_interpreter_map_.size();
 	return 0; // TODO TODO TODO
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS FOR REGISTERING AND UNREGISTERING FILE INTERPRETERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Add a file interpreter to the ones registered with this manager.
+/// @details Throws if the file interpreter has already been added.
+/// @param creator_in The creator for the new file interpreter plugin type.
+void
+MasalaFileInterpreterManager::register_file_interpreter(
+	MasalaFileInterpreterCreatorCSP const & creator_in
+) {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	protected_register_file_interpreter( creator_in );	
+}
+
+/// @brief Add some new file interpreters to the ones registered with this manager.
+/// @details Throws if any of the file interpreters has already been added.
+/// @param creators_in A vector of creators for the new file interpreter plugin types.
+void
+MasalaFileInterpreterManager::register_file_interpreters(
+	std::vector< MasalaFileInterpreterCreatorCSP > const & creators_in
+) {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	for( MasalaFileInterpreterCreatorCSP const & creator_in : creators_in ) {
+		protected_register_file_interpreter( creator_in );
+	}
 }
 
 
