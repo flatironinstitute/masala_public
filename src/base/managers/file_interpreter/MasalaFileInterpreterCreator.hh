@@ -88,6 +88,22 @@ public:
     MasalaFileInterpreterAPISP
     create_file_interpreter() const;
 
+	/// @brief Get the descriptors for the file types that the file interpreter created by this creator manages.
+	/// @details Descriptors may be something like "protein_data_bank_file".  A given file interpreter may
+	/// manage more than one file type.
+	/// @note Must be implemented by derived classes.
+	virtual
+	std::vector< std::string >
+	get_file_interpreter_file_descriptors() const = 0;
+
+	/// @brief Get the extensions for the file types that the file interpreter created by this creator manages.
+	/// @details Extensions may be something like "pdb".  A given file interpreter may
+	/// manage more than one file extension.
+	/// @note Must be implemented by derived classes.
+	virtual
+	std::vector< std::string >
+	get_file_interpreter_file_extensions() const = 0;
+
 };
 
 } // namespace file_interpreter
