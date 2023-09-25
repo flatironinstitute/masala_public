@@ -621,7 +621,21 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
             outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
             outstring += tabchar + "masala::base::managers::file_interpreter::MasalaFileInterpreterCSP\n"
-            outstring += tabchar + "get_inner_file_interpreter_object_const() const override;"
+            outstring += tabchar + "get_inner_file_interpreter_object_const() const override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the descriptors for the file types that the file interpreter created by this creator manages.\n"
+            outstring += tabchar + "/// @details Descriptors may be something like \"protein_data_bank_file\".  A given file interpreter may\n"
+            outstring += tabchar + "/// manage more than one file type.\n"
+            outstring += tabchar + "/// @note Must be implemented by derived classes."
+            outstring += tabchar + "std::vector< std::string >\n"
+            outstring += tabchar + "get_file_interpreter_file_descriptors() const override;\n"
+            outstring += tabchar + "\n"
+            outstring += tabchar + "/// @brief Get the extensions for the file types that the file interpreter created by this creator manages.\n"
+            outstring += tabchar + "/// @details Extensions may be something like \"pdb\" (in lowercase).  A given file interpreter may\n"
+            outstring += tabchar + "/// manage more than one file type extension.\n"
+            outstring += tabchar + "/// @note Must be implemented by derived classes."
+            outstring += tabchar + "std::vector< std::string >\n"
+            outstring += tabchar + "get_file_interpreter_file_extensions() const override;"
             first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
@@ -842,7 +856,7 @@ def generate_function_implementations( \
                 outstring += tabchar + "return inner_object_;\n"
             outstring += "}"
             first = False
-        elif is_data_representation_class == True :
+        elif is_file_interpreter_class == True :
             outstring += "/// @brief Get the inner file interpreter object.\n"
             outstring += "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
             outstring += "/// object can nullify the thread safety that the API object provides.\n"
@@ -868,6 +882,33 @@ def generate_function_implementations( \
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
                 outstring += tabchar + "return inner_object_;\n"
             outstring += "}"
+            outstring += "\n\n"
+            outstring += "/// @brief Get the descriptors for the file types that the file interpreter created by this creator manages.\n"
+            outstring += "/// @details Descriptors may be something like \"protein_data_bank_file\".  A given file interpreter may\n"
+            outstring += "/// manage more than one file type.\n"
+            outstring += "/// @note Must be implemented by derived classes."
+            outstring += "std::vector< std::string >\n"
+            outstring += apiclassname + "::get_file_interpreter_file_descriptors() const {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object()->get_file_descriptors();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_->get_file_descriptors();\n"
+            outstring += "}\n\n"
+            outstring += "/// @brief Get the extensions for the file types that the file interpreter created by this creator manages.\n"
+            outstring += "/// @details Extensions may be something like \"pdb\" (in lowercase).  A given file interpreter may\n"
+            outstring += "/// manage more than one file type extension.\n"
+            outstring += "/// @note Must be implemented by derived classes."
+            outstring += "std::vector< std::string >\n"
+            outstring += apiclassname + "::get_file_interpreter_file_extensions() const {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object()->get_file_extensions();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_->get_file_extensions();\n"
+            outstring += "}\n"
             first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
