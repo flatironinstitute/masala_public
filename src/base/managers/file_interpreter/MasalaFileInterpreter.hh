@@ -30,6 +30,10 @@
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 
+// STL headers:
+#include <vector>
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -54,6 +58,20 @@ public:
 
     // Destructor.
     ~MasalaFileInterpreter() override = default;
+
+public:
+
+	/// @brief All MasalaFileInterpreter subclasses must list the file types that they create.  These are
+	/// provided as short descriptors (e.g. "protein_data_bank_file").
+	virtual
+	std::vector< std::string >
+	get_file_descriptors() const = 0;
+
+	/// @brief All MasalaFileInterpreter subclasses must list the file type extensions that they create.
+	/// @details Extensions are provided in lower-case (e.g. "pdb").
+	virtual
+	std::vector< std::string >
+	get_file_extensions() const = 0;
 
 };
 
