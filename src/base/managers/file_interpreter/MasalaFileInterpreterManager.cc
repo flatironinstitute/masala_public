@@ -89,7 +89,7 @@ MasalaFileInterpreterManager::register_file_interpreter(
 	MasalaFileInterpreterCreatorCSP const & creator_in
 ) {
 	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
-	protected_register_file_interpreter( creator_in );	
+	private_register_file_interpreter( creator_in );	
 }
 
 /// @brief Add some new file interpreters to the ones registered with this manager.
@@ -101,9 +101,36 @@ MasalaFileInterpreterManager::register_file_interpreters(
 ) {
 	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
 	for( MasalaFileInterpreterCreatorCSP const & creator_in : creators_in ) {
-		protected_register_file_interpreter( creator_in );
+		private_register_file_interpreter( creator_in );
 	}
 }
+
+/// @brief Remove a file interpreter from the ones registered with this manager.
+/// @details Throws if the file interpreter has not already been added.
+/// @param creator_to_remove A creator for the file interpreter plugin type
+/// to remove.
+void
+MasalaFileInterpreterManager::unregister_file_interpreter(
+	MasalaFileInterpreterCreatorCSP const & creator_to_remove
+) {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	private_unregister_file_interpreter( creator_to_remove );	
+}
+
+/// @brief Remove some file interpreters from the ones registered with this manager.
+/// @details Throws if any of the file interpreters have not already been added.
+/// @param creators_to_remove A vector of creators for the file interpreter plugin types
+/// to remove.
+void
+MasalaFileInterpreterManager::unregister_file_interpreters(
+	std::vector< MasalaFileInterpreterCreatorCSP > const & creators_to_remove
+) {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	for( MasalaFileInterpreterCreatorCSP const & creator_to_remove : creators_to_remove ) {
+		private_unregister_file_interpreter( creator_to_remove );
+	}
+}
+
 
 
 } // namespace file_interpreter

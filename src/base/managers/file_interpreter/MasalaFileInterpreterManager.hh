@@ -121,6 +121,24 @@ public:
 		std::vector< MasalaFileInterpreterCreatorCSP > const & creators_in
 	);
 
+	/// @brief Remove a file interpreter from the ones registered with this manager.
+	/// @details Throws if the file interpreter has not already been added.
+	/// @param creator_to_remove A creator for the file interpreter plugin type
+	/// to remove.
+	void
+	unregister_file_interpreter(
+		MasalaFileInterpreterCreatorCSP const & creator_to_remove
+	);
+
+	/// @brief Remove some file interpreters from the ones registered with this manager.
+	/// @details Throws if any of the file interpreters have not already been added.
+	/// @param creators_to_remove A vector of creators for the file interpreter plugin types
+	/// to remove.
+	void
+	unregister_file_interpreters(
+		std::vector< MasalaFileInterpreterCreatorCSP > const & creators_to_remove
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
