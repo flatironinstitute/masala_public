@@ -290,7 +290,7 @@ MasalaPluginModuleManager::add_plugin(
         // If the plugin is a data representation, register it with the MasalaDataRepresentationManager.
         MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
         if( file_interp_creator != nullptr ) {
-            MasalaFileInterpreterManager::get_instance()->register_data_representation( file_interp_creator );
+            MasalaFileInterpreterManager::get_instance()->register_file_interpreter( file_interp_creator );
         }
     }
 }
