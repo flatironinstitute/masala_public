@@ -145,6 +145,22 @@ private:
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Register a file interpreter creator.
+	/// @details To be called from a mutex-locked context (i.e. does not lock the mutex itself).
+	/// Throws if the file interpreter has already been added.
+	void
+	private_register_file_interpreter(
+		MasalaFileInterpreterCreatorCSP const & creator_in
+	);
+
+	/// @brief Unregister a file interpreter creator.
+	/// @details To be called from a mutex-locked context (i.e. does not lock the mutex itself).
+	/// Throws if the file interpreter has not been added.
+	void
+	private_unregister_file_interpreter(
+		MasalaFileInterpreterCreatorCSP const & creator_to_remove
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +169,19 @@ private:
 
 	/// @brief A mutex for locking this singleton.
 	mutable std::mutex file_interpreter_manager_mutex_;
+
+	/// @brief A map of file interpreters, by (full) name.
+	std::map< std::string, MasalaFileInterpreterCreatorCSP > file_interpreters_by_name_;
+
+	/// @brief A map of file interpreters, by file type descriptor.
+	/// @details File type descriptor is something like "protein_data_bank_file".  More than one file
+	/// interpreter could handle the same file type descriptor.
+	std::map< std::string, std::vector< MasalaFileInterpreterCreatorCSP > > file_interpreters_by_file_type_descriptor_;
+
+	/// @brief A map of file interpreters, by file type extension.
+	/// @details File type extension is something like "pdb" (in lowercase).  More than one file
+	/// interpreter could handle the same file type extension.
+	std::map< std::string, std::vector< MasalaFileInterpreterCreatorCSP > > file_interpreters_by_file_type_extension_;
 
 };
 
