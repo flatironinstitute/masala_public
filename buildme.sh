@@ -16,4 +16,4 @@ python3 ./code_templates/copy_headers.py masala base src headers
 python3 ./code_templates/copy_headers.py masala numeric_api src headers
 python3 ./code_templates/copy_headers.py masala core_api src headers
 python3 ./code_templates/copy_headers.py masala numeric src headers
-echo "Finished building and copying headers."
+echo "Finished building project and copying headers."
