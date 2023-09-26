@@ -374,6 +374,12 @@ public:
 	/// @details If so, the API creator will derive from MasalaDataRepresentationCreator and the
 	/// API will derive from MasalaDataRepresentationAPI.
 	inline bool is_data_representation_class() const { return is_data_representation_class_; }
+	
+	/// @brief Is this a MasalaFileInterpreter class?
+	/// @details If so, the API creator is derived from MasalaFileInterpreterCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaFileInterpreterAPI instead of
+	/// MasalaPluginAPI.
+	inline bool is_file_interpreter_class() const { return is_file_interpreter_class_; }
 
 	/// @brief Get the categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
@@ -427,6 +433,16 @@ public:
 	/// is a MasalaDataRepresentation object.
 	std::vector< std::string > const &
 	data_representation_incompatible_engines() const;
+
+	/// @brief Get the descriptions of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > const &
+	file_interpreter_file_descriptions() const;
+
+	/// @brief Get the file extension(s) of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > const &
+	file_interpreter_file_extensions() const;
 
 private:
 
@@ -514,6 +530,12 @@ private:
 	/// MasalaPluginAPI.
 	bool is_data_representation_class_ = false;
 
+	/// @brief Is this a MasalaFileInterpreter class?
+	/// @details If so, the API creator is derived from MasalaFileInterpreterCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaFileInterpreterAPI instead of
+	/// MasalaPluginAPI.
+	bool is_file_interpreter_class_ = false;
+
 	/// @brief The categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -558,6 +580,14 @@ private:
 	/// @brief The MasalaEngines that this object is definitely not compatible with, if it
 	/// is a MasalaDataRepresentation object.
 	std::vector< std::string > data_representation_incompatible_engines_;
+
+	/// @brief The descriptions of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > file_interpreter_file_descriptions_;
+
+	/// @brief The file extension(s) of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > file_interpreter_file_extensions_;
 
 }; // class MasalaObjectAPIDefinition
 
