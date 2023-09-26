@@ -4,7 +4,10 @@ mkdir build && echo "Created build/ directory." || echo "Directory build/ alread
 cd build
 mkdir cmake_generated && echo "Created build/cmake_generated/ sub-directory." || echo "Sub-directory build/cmake_generated/ already exists."
 cmake ../cmake/
-make -j `nproc` && echo "Build completed." || echo "Build errors!  Check output log."
+make -j `nproc`
+
+test "${PIPESTATUS[0]}" != '0' && { echo "Build errors!  Check output log for details." && exit 1 } || echo "Build completed."
+
 cd ..
 mkdir headers && echo "Created headers/ directory." || echo "Directory headers/ already exists."
 rm -r headers/*
