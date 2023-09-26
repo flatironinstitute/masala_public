@@ -6,7 +6,7 @@ mkdir cmake_generated && echo "Created build/cmake_generated/ sub-directory." ||
 cmake ../cmake/
 make -j `nproc`
 
-test "${PIPESTATUS[0]}" != '0' && { echo "Build errors!  Check output log for details." && exit 1 } || echo "Build completed."
+test "${PIPESTATUS[0]}" != '0' && { echo "Build errors!  Check output log for details."; exit 1; } || { echo "Build completed."; }
 
 cd ..
 mkdir headers && echo "Created headers/ directory." || echo "Directory headers/ already exists."
@@ -16,3 +16,4 @@ python3 ./code_templates/copy_headers.py masala base src headers
 python3 ./code_templates/copy_headers.py masala numeric_api src headers
 python3 ./code_templates/copy_headers.py masala core_api src headers
 python3 ./code_templates/copy_headers.py masala numeric src headers
+echo "Finished building and copying headers."
