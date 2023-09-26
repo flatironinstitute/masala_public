@@ -31,6 +31,10 @@
 #include <base/managers/file_interpreter/MasalaFileInterpreter.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
 
+// STL headers:
+#include <vector>
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
@@ -73,6 +77,22 @@ public:
     virtual
     MasalaFileInterpreterCSP
     get_inner_file_interpreter_object_const() const = 0;
+
+    /// @brief Get the descriptors for the file types that the file interpreter created by this creator manages.
+    /// @details Descriptors may be something like "protein_data_bank_file".  A given file interpreter may
+    /// manage more than one file type.
+    /// @note Must be implemented by derived classes.
+	virtual
+    std::vector< std::string >
+    get_file_interpreter_file_descriptors() const = 0;
+
+    /// @brief Get the extensions for the file types that the file interpreter created by this creator manages.
+    /// @details Extensions may be something like "pdb" (in lowercase).  A given file interpreter may
+    /// manage more than one file type extension.
+    /// @note Must be implemented by derived classes.
+	virtual
+    std::vector< std::string >
+    get_file_interpreter_file_extensions() const = 0;
 
 }; // class MasalaFileInterpreterAPI
 
