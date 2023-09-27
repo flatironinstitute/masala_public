@@ -151,5 +151,24 @@ std::string
 // PUBLIC MEMBER FUNCTIONS FOR MaslaFileInterpreters
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get the descriptors for the file types that the file interpreter created by this creator manages.
+/// @details Descriptors may be something like "protein_data_bank_file".  A given file interpreter may
+/// manage more than one file type.
+/// @returns { <__FILE_INTERPRETER_FILE_DESCRIPTIONS__> }
+/// @note Must be implemented by derived classes.
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_file_interpreter_file_descriptors() const {
+	return { <__FILE_INTERPRETER_FILE_DESCRIPTIONS__> };
+}
+
+/// @brief Get the extensions for the file types that the file interpreter created by this creator manages.
+/// @details Extensions may be something like "pdb".  A given file interpreter may
+/// manage more than one file extension.
+/// @returns { <__FILE_INTERPRETER_FILE_EXTENSIONS__> }
+/// @note Must be implemented by derived classes.
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_file_interpreter_file_extensions() const {
+	return { <__FILE_INTERPRETER_FILE_EXTENSIONS__> };
+}
 
 <__CPP_END_NAMESPACE__>
