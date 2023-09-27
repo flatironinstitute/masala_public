@@ -173,12 +173,12 @@ MasalaFileInterpreterManager::private_register_file_interpreter(
 	std::vector< std::string > const extensions( creator_in->get_file_interpreter_file_extensions() );
 	for( std::string const & extension : extensions ) {
 		std::map< std::string, std::vector< MasalaFileInterpreterCreatorCSP > >::iterator it_ext(
-			file_interpreters_by_file_type_descriptor_.find( extension )
+			file_interpreters_by_file_type_extension_.find( extension )
 		);
-		if( it_ext != file_interpreters_by_file_type_descriptor_.end() ) {
+		if( it_ext != file_interpreters_by_file_type_extension_.end() ) {
 			it_ext->second.push_back( creator_in );
 		} else {
-			file_interpreters_by_file_type_descriptor_[ extension ] = { creator_in };
+			file_interpreters_by_file_type_extension_[ extension ] = { creator_in };
 		}
 	}
 
@@ -224,6 +224,9 @@ MasalaFileInterpreterManager::private_unregister_file_interpreter(
 				++itvec;
 			}
 		}
+		if( vec.empty() ) {
+			file_interpreters_by_file_type_descriptor_.erase( it_desc );
+		}
 		CHECK_OR_THROW_FOR_CLASS( counter > 0, "private_unregister_file_interpreter", "Could not find a creator "
 			"for " + fi_name + " file interpreters in the list of creators for files of descriptor \"" +
 			descriptor + ".  This is a program error; it ought not to happen.  Please consult a developer."
@@ -250,6 +253,9 @@ MasalaFileInterpreterManager::private_unregister_file_interpreter(
 			} else {
 				++itvec;
 			}
+		}
+		if( vec.empty() ) {
+			file_interpreters_by_file_type_extension_.erase( it_ext );
 		}
 		CHECK_OR_THROW_FOR_CLASS( counter > 0, "private_unregister_file_interpreter", "Could not find a creator "
 			"for " + fi_name + " file interpreters in the list of creators for files of extension \"" +
