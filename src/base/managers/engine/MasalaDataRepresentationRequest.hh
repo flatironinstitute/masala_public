@@ -85,6 +85,14 @@ public:
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Add a requirement that data representations have a particular name.
+	/// @details The input name may or may not include namespace.  If it DOES, then the full
+	/// name must match.  If it does NOT, then the short name must match.
+	void
+	add_data_representation_name_requirement(
+		std::string const & name_in
+	);
+
     /// @brief Add a requirement that data representations are explicitly marked as compatible
     /// with a particular MasalaEngine.
     /// @note The engine must be provided as a full name (namespace + name).

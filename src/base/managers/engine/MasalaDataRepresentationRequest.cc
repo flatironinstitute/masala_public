@@ -26,6 +26,7 @@
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 
 // Base headers:
+#include <base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
@@ -74,6 +75,18 @@ MasalaDataRepresentationRequest::class_namespace_static() {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Add a requirement that data representations have a particular name.
+/// @details The input name may or may not include namespace.  If it DOES, then the full
+/// name must match.  If it does NOT, then the short name must match.
+void
+MasalaDataRepresentationRequest::add_data_representation_name_requirement(
+	std::string const & name_in
+) {
+	using namespace data_representation_request;
+    MasalaNameRequirementCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >( name_in ) );
+    request_criteria_.push_back( criterion );
+}
 
 /// @brief Add a requirement that data representations are explicitly marked as compatible
 /// with a particular MasalaEngine.
