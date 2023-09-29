@@ -27,7 +27,7 @@
 
 // Base headers:
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh>
-#include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
 // STL headers:
@@ -96,9 +96,9 @@ MasalaDataRepresentationRequest::add_engine_compatibility_requirement(
     std::string const & engine_namespace_and_name
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -113,9 +113,9 @@ MasalaDataRepresentationRequest::add_engines_compatibility_requirement(
     bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -127,9 +127,9 @@ MasalaDataRepresentationRequest::add_engine_incompatibility_requirement(
     std::string const & engine_namespace_and_name
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -144,9 +144,9 @@ MasalaDataRepresentationRequest::add_engines_incompatibility_requirement(
     bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
