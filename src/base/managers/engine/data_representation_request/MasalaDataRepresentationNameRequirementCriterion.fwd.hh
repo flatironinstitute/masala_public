@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.fwd.hh
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.fwd.hh
 /// @brief Forward declarations for a class for imposing the condition that a particular data representation
 /// have a particular name.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_fwd_hh
-#define Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_fwd_hh
+#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_fwd_hh
+#define Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
@@ -32,12 +32,12 @@ namespace managers {
 namespace engine {
 namespace data_representation_request {
 
-    class MasalaNameRequirementCriterion;
+    class MasalaDataRepresentationNameRequirementCriterion;
 
-    using MasalaNameRequirementCriterionSP = MASALA_SHARED_POINTER< MasalaNameRequirementCriterion >;
-    using MasalaNameRequirementCriterionCSP = MASALA_SHARED_POINTER< MasalaNameRequirementCriterion const >;
-    using MasalaNameRequirementCriterionWP = MASALA_WEAK_POINTER< MasalaNameRequirementCriterion >;
-    using MasalaNameRequirementCriterionCWP = MASALA_WEAK_POINTER< MasalaNameRequirementCriterion const >;
+    using MasalaDataRepresentationNameRequirementCriterionSP = MASALA_SHARED_POINTER< MasalaDataRepresentationNameRequirementCriterion >;
+    using MasalaDataRepresentationNameRequirementCriterionCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationNameRequirementCriterion const >;
+    using MasalaDataRepresentationNameRequirementCriterionWP = MASALA_WEAK_POINTER< MasalaDataRepresentationNameRequirementCriterion >;
+    using MasalaDataRepresentationNameRequirementCriterionCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationNameRequirementCriterion const >;
 
 
 } // namespace data_representation_request
@@ -46,4 +46,4 @@ namespace data_representation_request {
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_fwd_hh
+#endif // Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_fwd_hh

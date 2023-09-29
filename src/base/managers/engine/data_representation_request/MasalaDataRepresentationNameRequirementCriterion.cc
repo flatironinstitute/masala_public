@@ -16,12 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.cc
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.cc
 /// @brief A class for imposing the condition that a particular data representation be in (or not in) a particular category.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Headers:
-#include <base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh>
 
 // Base headers:
 #include <base/utility/container/container_util.tmpl.hh>
@@ -45,7 +45,7 @@ namespace data_representation_request {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Options constructor.
-MasalaNameRequirementCriterion::MasalaNameRequirementCriterion(
+MasalaDataRepresentationNameRequirementCriterion::MasalaDataRepresentationNameRequirementCriterion(
 	std::string const & name_in
 ) :
 	MasalaDataRepresentationRequestCriterion()
@@ -54,39 +54,39 @@ MasalaNameRequirementCriterion::MasalaNameRequirementCriterion(
 }
 
 /// @brief Get the name of this class.
-/// @returns "MasalaNameRequirementCriterion".
+/// @returns "MasalaDataRepresentationNameRequirementCriterion".
 std::string
-MasalaNameRequirementCriterion::class_name() const {
+MasalaDataRepresentationNameRequirementCriterion::class_name() const {
     return class_name_static();
 }
 
 /// @brief Get the namespace of this class.
 /// @returns "masala::base::managers::engine::data_representation_request".
 std::string
-MasalaNameRequirementCriterion::class_namespace() const {
+MasalaDataRepresentationNameRequirementCriterion::class_namespace() const {
     return class_namespace_static();
 }
 
 /// @brief Get the name of this class.
-/// @returns "MasalaNameRequirementCriterion".
+/// @returns "MasalaDataRepresentationNameRequirementCriterion".
 /*static*/
 std::string
-MasalaNameRequirementCriterion::class_name_static() {
-    return "MasalaNameRequirementCriterion";
+MasalaDataRepresentationNameRequirementCriterion::class_name_static() {
+    return "MasalaDataRepresentationNameRequirementCriterion";
 }
 
 /// @brief Get the namespace of this class.
 /// @returns "masala::base::managers::engine::data_representation_request".
 /*static*/
 std::string
-MasalaNameRequirementCriterion::class_namespace_static() {
+MasalaDataRepresentationNameRequirementCriterion::class_namespace_static() {
     return "masala::base::managers::engine::data_representation_request";
 }
 
 /// @brief Determine whether a particular data representation is compatible with this criterion.
 /// @returns True if it is compatible, false otherwise.
 bool
-MasalaNameRequirementCriterion::data_representation_is_compatible_with_criterion(
+MasalaDataRepresentationNameRequirementCriterion::data_representation_is_compatible_with_criterion(
     masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
 ) const {
     CHECK_OR_THROW_FOR_CLASS( !class_name_to_match_.empty(), "data_representation_is_compatible_with_criterion",
@@ -108,7 +108,7 @@ MasalaNameRequirementCriterion::data_representation_is_compatible_with_criterion
 /// @details The name string may or may not include the namespace.  If it does not, any short
 /// name that matches is a match.  If it does, then the full name including namespace must match.
 void
-MasalaNameRequirementCriterion::set_name(
+MasalaDataRepresentationNameRequirementCriterion::set_name(
 	std::string const & name_in
 ) {
 	get_name_and_namespace( name_in, class_name_to_match_, class_namespace_to_match_ );
@@ -122,7 +122,7 @@ MasalaNameRequirementCriterion::set_name(
 /// into a name string and a namespace vector.
 /*static*/
 void
-MasalaNameRequirementCriterion::get_name_and_namespace(
+MasalaDataRepresentationNameRequirementCriterion::get_name_and_namespace(
 	std::string const & namespace_and_name_in,
 	std::string & name_out,
 	std::vector< std::string > & namespace_out

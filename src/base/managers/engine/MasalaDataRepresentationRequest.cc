@@ -26,7 +26,7 @@
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 
 // Base headers:
-#include <base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
@@ -84,7 +84,7 @@ MasalaDataRepresentationRequest::add_data_representation_name_requirement(
 	std::string const & name_in
 ) {
 	using namespace data_representation_request;
-    MasalaNameRequirementCriterionSP criterion( masala::make_shared< MasalaNameRequirementCriterion >( name_in ) );
+    MasalaDataRepresentationNameRequirementCriterionSP criterion( masala::make_shared< MasalaDataRepresentationNameRequirementCriterion >( name_in ) );
     request_criteria_.push_back( criterion );
 }
 

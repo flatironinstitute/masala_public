@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.hh
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh
 /// @brief Headers for a class for imposing the condition that a particular data representation
 /// have a particular name.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_hh
-#define Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_hh
+#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_hh
+#define Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_hh
 
 // Forward declarations:
-#include <base/managers/engine/data_representation_request/MasalaNameRequirementCriterion.fwd.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.fwd.hh>
 
 // Parent header:
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationRequestCriterion.hh>
@@ -41,7 +41,7 @@ namespace data_representation_request {
 
 /// @brief A class for imposing the condition that a particular data representation have a particular name.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaNameRequirementCriterion : public masala::base::managers::engine::data_representation_request::MasalaDataRepresentationRequestCriterion {
+class MasalaDataRepresentationNameRequirementCriterion : public masala::base::managers::engine::data_representation_request::MasalaDataRepresentationRequestCriterion {
 
 public:
 
@@ -50,16 +50,16 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaNameRequirementCriterion() = default;
+    MasalaDataRepresentationNameRequirementCriterion() = default;
 
     /// @brief Options constructor.
-    MasalaNameRequirementCriterion( std::string const & name_in );
+    MasalaDataRepresentationNameRequirementCriterion( std::string const & name_in );
 
     /// @brief Copy constructor.
-    MasalaNameRequirementCriterion( MasalaNameRequirementCriterion const & ) = default;
+    MasalaDataRepresentationNameRequirementCriterion( MasalaDataRepresentationNameRequirementCriterion const & ) = default;
 
     // Destructor.
-    ~MasalaNameRequirementCriterion() override = default;
+    ~MasalaDataRepresentationNameRequirementCriterion() override = default;
 
 public:
 
@@ -68,7 +68,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the name of this class.
-    /// @returns "MasalaNameRequirementCriterion".
+    /// @returns "MasalaDataRepresentationNameRequirementCriterion".
     std::string class_name() const override;
 
     /// @brief Get the namespace of this class.
@@ -76,7 +76,7 @@ public:
     std::string class_namespace() const override;
 
     /// @brief Get the name of this class.
-    /// @returns "MasalaNameRequirementCriterion".
+    /// @returns "MasalaDataRepresentationNameRequirementCriterion".
     static std::string class_name_static();
 
     /// @brief Get the namespace of this class.
@@ -132,4 +132,4 @@ private:
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_data_representation_request_MasalaNameRequirementCriterion_hh
+#endif // Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationNameRequirementCriterion_hh
