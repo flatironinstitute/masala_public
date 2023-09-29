@@ -19,6 +19,8 @@
 /// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.cc
 /// @brief A class used to request data representations.
 /// @details This class stores a list of criteria that a data representation must satisfy.
+/// @note This class is not threadsafe.  It is expected to be created, used, and destroyed
+/// by a single thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 
