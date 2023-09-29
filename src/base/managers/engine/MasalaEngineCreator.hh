@@ -70,6 +70,13 @@ public:
 	MasalaEngineAPISP
 	create_engine() const;
 
+    /// @brief Get the categories that this engine plugin falls into.
+    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
+    /// strings.  One engine can be classified into multiple categories.
+    virtual
+    std::vector< std::vector< std::string > >
+    get_engine_categories() const = 0;
+
 }; // class MasalaEngineCreator
 
 } // namespace engine
