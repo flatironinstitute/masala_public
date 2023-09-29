@@ -26,6 +26,7 @@
 
 // Base headers:
 #include <base/managers/engine/MasalaEngineCreator.hh>
+#include <base/managers/engine/MasalaEngineRequest.hh>
 #include <base/error/ErrorHandling.hh>
 
 namespace masala {
@@ -130,6 +131,22 @@ MasalaEngineManager::reset() {
         engine_creators_.clear();
     }
     write_to_tracer( "Reset the MasalaEngineManager.  No engines are registered." );
+}
+
+/// @brief Get the data representations compatible with a set of criteria encoded in a request object.
+std::vector< MasalaEngineCreatorCSP >
+MasalaEngineManager::get_compatible_engine_creators(
+    MasalaEngineRequest const & request
+) const {
+    std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+    std::vector< MasalaEngineCreatorCSP > outvec;
+    for( auto const & creator : engine_creators_ ) {
+        if( request.engine_is_compatible_with_criteria( *(creator.second) ) ) {
+            outvec.push_back( creator.second );
+        }
+    }
+    outvec.shrink_to_fit();
+    return outvec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
