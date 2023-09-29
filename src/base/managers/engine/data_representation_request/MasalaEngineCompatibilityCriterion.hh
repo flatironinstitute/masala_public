@@ -85,7 +85,7 @@ public:
     bool
     data_representation_is_compatible_with_criterion(
         masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
-    ) const;
+    ) const override;
 
     /// @brief Set the Masala engine with which the data representation must be compatible/incompatible.
     /// @details Adds to list if other have been set.
