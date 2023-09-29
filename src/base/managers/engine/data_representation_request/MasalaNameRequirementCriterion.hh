@@ -103,6 +103,16 @@ private:
 
 private:
 
+	/// @brief Static function that splits a namespace and name string (separated by double colons)
+	/// into a name string and a namespace vector.
+	static
+	void
+	get_name_and_namespace(
+		std::string const & namespace_and_name_in,
+		std::string & name_out,
+		std::vector< std::string > & namespace_out
+	);
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
