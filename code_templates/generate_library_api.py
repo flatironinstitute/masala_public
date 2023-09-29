@@ -1125,13 +1125,21 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
     return outstr
 
 ## @brief Generate the categories for a data representation class, from the JASON description.
-def generate_data_representation_categories( \
+def generate_dr_or_eng_categories( \
     name_string : str, \
     namespace_string : str, \
-    json_api : json \
+    json_api : json, \
+	is_dr_class : bool, \
+	is_engine_class : bool
     ) -> str :
     outstr = ""
-    categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Data_Representation_Categories"]
+    if is_dr_class == True :
+        categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Data_Representation_Categories"]
+    elif is_engine_class == True :
+        categories = json_api["Elements"][ namespace_string + "::" + name_string ]["Engine_Categories"]
+    else :
+        assert False, "Expected an engine or data representation!"
+        
     firstcat = True
     for category in categories :
         if firstcat == True :
@@ -1216,6 +1224,7 @@ def generate_plugin_keywords( \
 def prepare_creator_forward_declarations( \
     plugin_creator_fwdfile_template : str, \
     data_rep_creator_fwdfile_template : str, \
+    engine_creator_fwdfile_template : str, \
     file_interpreter_creator_fwdfile_template : str, \
     licence : str, \
     creator_name : str, \
@@ -1245,6 +1254,8 @@ def prepare_creator_forward_declarations( \
         plugin_creator_fwdfile = data_rep_creator_fwdfile_template
     elif is_file_interpreter_class == True :
         plugin_creator_fwdfile = file_interpreter_creator_fwdfile_template
+    elif is_engine_class == True :
+        plugin_creator_fwdfile = engine_creator_fwdfile_template
     else :
         plugin_creator_fwdfile = plugin_creator_fwdfile_template
 
@@ -1268,6 +1279,7 @@ def prepare_creator_forward_declarations( \
 def prepare_creator_header_file( \
     plugin_creator_hhfile_template : str, \
     data_rep_creator_hhfile_template : str, \
+    engine_creator_fwdfile_template : str, \
     file_interpreter_creator_hhfile_template : str, \
     licence_template : str, \
     creator_name : str, \
@@ -1315,13 +1327,16 @@ def prepare_creator_header_file( \
 
     if is_data_representation_class == True :
         plugin_creator_hhfile = data_rep_creator_hhfile_template \
-            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api ) ) \
             .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    elif is_engine_class == True :
+        plugin_creator_hhfile = engine_creator_hhfile_template \
+            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api ) )
     elif is_file_interpreter_class == True :
         plugin_creator_hhfile = file_interpreter_creator_hhfile_template \
 			.replace( "<__FILE_INTERPRETER_FILE_DESCRIPTIONS__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "File_Interpreter_FileType_Descriptions" ) ) \
@@ -1357,6 +1372,7 @@ def prepare_creator_header_file( \
 def prepare_creator_cc_file( \
     plugin_creator_ccfile_template : str, \
     data_rep_creator_ccfile_template : str, \
+    engine_creator_fwdfile_template : str, \
     file_interpreter_creator_ccfile_template : str, \
     licence_template : str, \
     creator_name : str, \
@@ -1399,13 +1415,16 @@ def prepare_creator_cc_file( \
 
     if is_data_representation_class == True :
         plugin_creator_ccfile = data_rep_creator_ccfile_template \
-            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_data_representation_categories( name_string, original_class_namespace_string, json_api ) ) \
+            .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api ) ) \
             .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Absent_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Present_Properties" ) ) \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
+    elif is_engine_class == True :
+        plugin_creator_ccfile = engine_creator_ccfile_template \
+            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api ) )
     elif is_file_interpreter_class == True :
         plugin_creator_ccfile = file_interpreter_creator_ccfile_template \
 			.replace( "<__FILE_INTERPRETER_FILE_DESCRIPTIONS__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "File_Interpreter_FileType_Descriptions" ) ) \
@@ -1882,6 +1901,10 @@ data_rep_creator_ccfile_template = read_file( "code_templates/api_templates/Masa
 data_rep_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.hh" )
 data_rep_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaDataRepresentationCreator.fwd.hh" )
 
+engine_creator_ccfile_template = read_file( "code_templates/api_templates/MasalaEngineCreator.cc" )
+engine_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaEngineCreator.hh" )
+engine_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaEngineCreator.fwd.hh" )
+
 file_interpreter_creator_ccfile_template = read_file( "code_templates/api_templates/MasalaFileInterpreterCreator.cc" )
 file_interpreter_creator_hhfile_template = read_file( "code_templates/api_templates/MasalaFileInterpreterCreator.hh" )
 file_interpreter_creator_fwdfile_template = read_file( "code_templates/api_templates/MasalaFileInterpreterCreator.fwd.hh" )
@@ -1943,9 +1966,9 @@ if json_api["Elements"] is not None :
                 plugins_list.append( [creator_name,creator_namespace,creator_filename] )
             else :
                 has_protected_constructors = True
-            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, data_rep_creator_fwdfile_template, file_interpreter_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class  )
-            prepare_creator_header_file( plugin_creator_hhfile_template, data_rep_creator_hhfile_template, file_interpreter_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class  )
-            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, file_interpreter_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class, has_protected_constructors=has_protected_constructors  )
+            prepare_creator_forward_declarations( plugin_creator_fwdfile_template, data_rep_creator_fwdfile_template, engine_creator_fwdfile_template, file_interpreter_creator_fwdfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class  )
+            prepare_creator_header_file( plugin_creator_hhfile_template, data_rep_creator_hhfile_template, engine_creator_hhfile_template, file_interpreter_creator_hhfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, is_engine=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class  )
+            prepare_creator_cc_file( plugin_creator_ccfile_template, data_rep_creator_ccfile_template, engine_creator_ccfile_template, file_interpreter_creator_ccfile_template, licence_template, creator_name, creator_namespace, creator_filename, json_api, name_string, namespace, library_name, project_name, dirname, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class, has_protected_constructors=has_protected_constructors  )
     
     if generate_registration_function == True :
         do_generate_registration_function( project_name, library_name, plugins_list, plugin_registration_ccfile_template, plugin_registration_hhfile_template, licence_template )
