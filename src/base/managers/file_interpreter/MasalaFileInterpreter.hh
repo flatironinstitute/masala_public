@@ -73,6 +73,31 @@ public:
 	std::vector< std::string >
 	get_file_extensions() const = 0;
 
+	/// @brief Is the file type read by this file interpreter ASCII or binary?
+	/// @details Must be implemented by subclasses.  Returns true if the file interpreter interprets ASCII
+	/// files, and false if it interprets binary files.
+	virtual
+	bool
+	filetype_is_ascii() const = 0;
+
+	/// @brief MasalaFileInterpreter subclasses can implement a function to generate a Masala class
+	/// from the contents of a text file (expressed as a vector of strings).
+	/// @details The base class version of this function throws.
+	virtual
+	masala::base::MasalaObjectSP
+	object_from_ascii_file_contents(
+		std::vector< std::string > const & file_contents
+	) const;
+
+	/// @brief The MasalaFileInterpreter base class can read a file (using the MasalaDiskAccessManager)
+	/// and produce an object.  This function calls object_from_ascii_file_contents() or
+	/// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
+	/// returns true or false.
+	masala::base::MasalaObjectSP
+	object_from_file(
+		std::string const & filename
+	) const;
+
 };
 
 } // namespace file_interpreter
