@@ -40,7 +40,7 @@ namespace file_interpreter {
 /// @brief MasalaFileInterpreter subclasses can implement a function to generate a Masala class
 /// from the contents of a text file (expressed as a vector of strings).
 /// @details The base class version of this function throws.
-masala::base::MasalaObjectSP
+masala::base::MasalaObjectAPISP
 MasalaFileInterpreter::object_from_ascii_file_contents(
 	std::vector< std::string > const & /*file_contents*/
 ) const {
@@ -55,7 +55,7 @@ MasalaFileInterpreter::object_from_ascii_file_contents(
 /// and produce an object.  This function calls object_from_ascii_file_contents() or
 /// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
 /// returns true or false.
-masala::base::MasalaObjectSP
+masala::base::MasalaObjectAPISP
 MasalaFileInterpreter::object_from_file(
 	std::string const & filename
 ) const {
