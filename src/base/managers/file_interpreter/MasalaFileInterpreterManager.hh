@@ -153,6 +153,15 @@ public:
 		std::string const & name_in
 	) const;
 
+	/// @brief Get a vector of file interpreter creators, by the short name (excluding namespace)
+	/// of the file interpreter that the creator should create.
+	/// @returns A vector of shared pointers to the creator(s) that match the short name.  Could
+	/// be an empty vector if nothing matches.
+	std::vector< MasalaFileInterpreterCreatorCSP >
+	get_file_interpreters_by_short_name(
+		std::string const & name_in
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

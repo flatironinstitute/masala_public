@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/managers/file_interpreter/MasalaFileInterpreterCreator.hh>
 #include <base/types.hh>
+#include <base/utility/string/string_manipulation.hh>
 #include <base/error/ErrorHandling.hh>
 
 // STL headers:
@@ -154,6 +155,30 @@ MasalaFileInterpreterManager::get_file_interpreter_by_full_name(
 		return it->second;
 	}
 	return nullptr;
+}
+
+/// @brief Get a vector of file interpreter creators, by the short name (excluding namespace)
+/// of the file interpreter that the creator should create.
+/// @returns A vector of shared pointers to the creator(s) that match the short name.  Could
+/// be an empty vector if nothing matches.
+std::vector< MasalaFileInterpreterCreatorCSP >
+MasalaFileInterpreterManager::get_file_interpreters_by_short_name(
+	std::string const & name_in
+) const {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	std::vector< MasalaFileInterpreterCreatorCSP > outvec;
+	outvec.reserve( file_interpreters_by_name_.size() );
+
+	for( auto const & entry : file_interpreters_by_name_ ) {
+		std::vector< std::string > const namesplit( masala::base::utility::string::split_by_character( entry.first, ':' ) );
+		CHECK_OR_THROW_FOR_CLASS( !namesplit.empty(), "get_file_interpreters_by_short_name", "Program error: empty name found!" );
+		if( namesplit[ namesplit.size() - 1] == name_in ) {
+			outvec.push_back( entry.second );
+		}
+	}
+
+	outvec.shrink_to_fit();
+	return outvec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
