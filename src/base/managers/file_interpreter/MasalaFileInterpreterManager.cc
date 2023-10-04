@@ -138,6 +138,25 @@ MasalaFileInterpreterManager::unregister_file_interpreters(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// FUNCTIONS FOR RETRIEVING FILE INTERPRETER CREATORS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a file interpreter creator, by the full name (including namespace)
+/// of the file interpreter that it creates.
+/// @returns A shared pointer to the creator, or nullptr if the name can't be matched.
+MasalaFileInterpreterCreatorCSP
+MasalaFileInterpreterManager::get_file_interpreter_by_full_name(
+	std::string const & name_in
+) const {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+	std::map< std::string, MasalaFileInterpreterCreatorCSP >::const_iterator it( file_interpreters_by_name_.find( name_in ) );
+	if( it != file_interpreters_by_name_.end() ) {
+		return it->second;
+	}
+	return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

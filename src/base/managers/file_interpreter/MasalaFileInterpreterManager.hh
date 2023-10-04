@@ -139,6 +139,20 @@ public:
 		std::vector< MasalaFileInterpreterCreatorCSP > const & creators_to_remove
 	);
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// FUNCTIONS FOR RETRIEVING FILE INTERPRETER CREATORS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a file interpreter creator, by the full name (including namespace)
+	/// of the file interpreter that it creates.
+	/// @returns A shared pointer to the creator, or nullptr if the name can't be matched.
+	MasalaFileInterpreterCreatorCSP
+	get_file_interpreter_by_full_name(
+		std::string const & name_in
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
