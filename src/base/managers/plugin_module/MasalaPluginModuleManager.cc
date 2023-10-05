@@ -80,6 +80,7 @@ MasalaPluginModuleManager::class_namespace() const {
 void
 MasalaPluginModuleManager::reset() {
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
 
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     plugins_by_hierarchical_category_all_levels_.clear();
@@ -89,6 +90,7 @@ MasalaPluginModuleManager::reset() {
 
     MasalaEngineManager::get_instance()->reset();
     MasalaDataRepresentationManager::get_instance()->reset();
+    MasalaFileInterpreterManager::get_instance()->reset();
 
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
 }
