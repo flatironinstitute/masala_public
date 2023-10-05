@@ -126,16 +126,21 @@ public:
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_ZeroInputCWP
 	get_zeroinput_setter_function(
 		std::string const & function_name
 	) const {
+		using namespace setter;
+
 		for( auto const & setter: setters_ ) {
 			if( setter->num_input_parameters() == 0 && setter->setter_function_name() == function_name ) {
-				return setter;
+				MasalaObjectAPISetterDefinition_ZeroInputCSP setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ZeroInput const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return MasalaObjectAPISetterDefinition_ZeroInputCWP();
 	}
 
 	/// @brief Get a one-parameter setter definition.
@@ -143,7 +148,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_OneInputCWP<P1>
 	get_oneinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -153,11 +158,11 @@ public:
 			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_OneInputCSP< P1 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_OneInput< P1 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_OneInputCWP<P1>();
 	}
 
 	/// @brief Get a two-parameter setter definition.
@@ -165,7 +170,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_TwoInputCWP<P1,P2>
 	get_twoinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -175,11 +180,11 @@ public:
 			if( setter->num_input_parameters() == 2 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_TwoInputCSP< P1, P2 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TwoInput< P1, P2 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_TwoInputCWP<P1,P2>();
 	}
 
 	/// @brief Get a three-parameter setter definition.
@@ -187,7 +192,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_ThreeInputCWP<P1,P2,P3>
 	get_threeinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -197,11 +202,11 @@ public:
 			if( setter->num_input_parameters() == 3 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_ThreeInputCSP< P1, P2, P3 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ThreeInput< P1, P2, P3 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_ThreeInputCWP<P1,P2,P3>();
 	}
 
 	/// @brief Get a four-parameter setter definition.
@@ -209,7 +214,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_FourInputCWP<P1,P2,P3,P4>
 	get_fourinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -219,11 +224,11 @@ public:
 			if( setter->num_input_parameters() == 4 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FourInputCSP< P1, P2, P3, P4 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FourInput< P1, P2, P3, P4 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_FourInputCWP<P1,P2,P3,P4>();
 	}
 
 	/// @brief Get a five-parameter setter definition.
@@ -231,7 +236,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4, typename P5 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_FiveInputCWP<P1,P2,P3,P4,P5>
 	get_fiveinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -241,11 +246,11 @@ public:
 			if( setter->num_input_parameters() == 5 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FiveInputCSP< P1, P2, P3, P4, P5 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FiveInput< P1, P2, P3, P4, P5 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return MasalaObjectAPISetterDefinition_FiveInputCWP<P1,P2,P3,P4,P5>();
 	}
 
 public:
