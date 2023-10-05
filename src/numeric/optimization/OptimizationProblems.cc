@@ -222,7 +222,9 @@ OptimizationProblems::get_api_definition() {
 		// Work functions:
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< OptimizationProblemSP, masala::base::Size > >(
-                "problem_nonconst", "Access the problem (nonconst) with the given index.  Throws if index is out of range.",
+                "problem_nonconst", "Access the problem (nonconst) with the given index.  Throws if index is out of range.  Note "
+				"that it can be dangerous to hang on to a nonconst pointer to an object in this container, especially if you "
+				"move into a const context!",
 				false, false, false, false,
                 "index", "The index of the problem to get.  (Note that this is zero-based.)",
                 "problem", "A const shared pointer to the problem with the given index.",
