@@ -126,9 +126,13 @@ public:
 		return work_function_();
 	}
 
-
 	/// @brief Get a raw pointer to the function.
 	std::function< T0() > const * function_raw_ptr() const { return &work_function_; }
+
+	/// @brief Get the number of input parameters.
+	/// @details Must be implemented by derived classes.
+	/// @returns Override returns 0.
+	masala::base::Size num_input_parameters() const override { return 0; }
 
 public:
 

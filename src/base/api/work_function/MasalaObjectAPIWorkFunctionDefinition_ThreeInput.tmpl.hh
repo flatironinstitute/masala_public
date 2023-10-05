@@ -151,6 +151,11 @@ public:
 	/// @brief Get a raw pointer to the function.
 	std::function< T0(T1, T2, T3) > const * function_raw_ptr() const { return &work_function_; }
 
+	/// @brief Get the number of input parameters.
+	/// @details Must be implemented by derived classes.
+	/// @returns Override returns 3.
+	masala::base::Size num_input_parameters() const override { return 3; }
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
