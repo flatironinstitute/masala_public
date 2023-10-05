@@ -281,7 +281,7 @@ public:
 	template< typename P0, typename P1 >
 	inline
 	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputCWP< P0, P1 >
-	get_zeroinput_work_function(
+	get_oneinput_work_function(
 		std::string const & function_name
 	) const {
 		using namespace masala::base::api::work_function;
@@ -294,6 +294,48 @@ public:
 			}
 		}
 		return MasalaObjectAPIWorkFunctionDefinition_OneInputCWP< P0, P1 >();
+	}
+
+	/// @brief Get a two-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputCWP< P0, P1, P2 >
+	get_twoinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 2 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_TwoInputCSP<P0,P1,P2> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_TwoInput< P0, P1, P2 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_TwoInputCWP< P0, P1, P2 >();
+	}
+
+	/// @brief Get a three-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInputCWP< P0, P1, P2, P3 >
+	get_threeinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 3 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_ThreeInputCSP<P0,P1,P2,P3> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_ThreeInput< P0, P1, P2, P3 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_ThreeInputCWP< P0, P1, P2, P3 >();
 	}
 
 public:
