@@ -210,21 +210,23 @@ OptimizationProblems::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< OptimizationProblemSP, masala::base::Size > >(
-                "problem_nonconst", "Access the problem (nonconst) with the given index.  Throws if index is out of range.",
-                "index", "The index of the problem to get.  (Note that this is zero-based.)",
-                "problem", "A const shared pointer to the problem with the given index.",
-                false, false,
-                std::bind( &OptimizationProblems::problem_nonconst, this, std::placeholders::_1 )
-            )
-        );
-        api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::Size > >(
                 "n_problems", "Get the number of problems stored in this object.",
                 "n_problems", "The number of problems stored in this object, or one more than th zero-based "
                 "index of the last problem.",
                 false, false,
                 std::bind( &OptimizationProblems::n_problems, this )
+            )
+        );
+
+		// Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< OptimizationProblemSP, masala::base::Size > >(
+                "problem_nonconst", "Access the problem (nonconst) with the given index.  Throws if index is out of range.",
+				false, false, false, false,
+                "index", "The index of the problem to get.  (Note that this is zero-based.)",
+                "problem", "A const shared pointer to the problem with the given index.",
+                std::bind( &OptimizationProblems::problem_nonconst, this, std::placeholders::_1 )
             )
         );
 
