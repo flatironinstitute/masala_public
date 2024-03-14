@@ -168,7 +168,7 @@ public:
     /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
     /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
     /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
-	/// also registers it with the MasalaFileInterpreterManager.
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugins(
         std::vector< MasalaPluginCreatorCSP > const & creators
@@ -179,7 +179,7 @@ public:
     /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
     /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
     /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
-	/// also registers it with the MasalaFileInterpreterManager.
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugins(
         std::set< MasalaPluginCreatorCSP > const & creators
@@ -191,7 +191,7 @@ public:
     /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
     /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
     /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
-	/// also registers it with the MasalaFileInterpreterManager.
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugin(
         MasalaPluginCreatorCSP const & creator
