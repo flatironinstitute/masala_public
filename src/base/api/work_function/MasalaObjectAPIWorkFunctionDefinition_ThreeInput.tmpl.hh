@@ -173,7 +173,8 @@ public:
 			<< masala::base::api::name_from_type( base::api::type<T0>() )
 			<< " " << work_function_name() << "( "
 			<< masala::base::api::name_from_type( base::api::type<T1>() ) << ", "
-			<< masala::base::api::name_from_type( base::api::type<T2>() )
+			<< masala::base::api::name_from_type( base::api::type<T2>() ) << ", "
+			<< masala::base::api::name_from_type( base::api::type<T3>() )
 			<< " )"
 			<< (is_const() ? " const" : "" )
 			<< (is_override_of_api_virtual_fxn() ? " override" : "")
