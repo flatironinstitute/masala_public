@@ -29,6 +29,7 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreter.hh>
 #include <base/error/ErrorHandling.hh>
 
 // External headers
@@ -69,6 +70,7 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
 {
     using namespace masala::base::managers::plugin_module;
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
     {
         MasalaPlugin const * this_object_cast( dynamic_cast< MasalaPlugin const * >(&this_object) );
         is_plugin_class_ = ( this_object_cast != nullptr );
@@ -97,12 +99,32 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
             data_representation_incompatible_engines_ = this_object_datarep_cast->get_incompatible_masala_engines();
         }
     }
+    {
+        MasalaFileInterpreter const * this_object_fileint_cast( dynamic_cast< MasalaFileInterpreter const * >(&this_object) );
+        is_file_interpreter_class_ = ( this_object_fileint_cast != nullptr );
+        if( is_file_interpreter_class_ ) {
+            file_interpreter_file_descriptions_ = this_object_fileint_cast->get_file_descriptors();
+            file_interpreter_file_extensions_ = this_object_fileint_cast->get_file_extensions();
+        }
+    }
 
     CHECK_OR_THROW( !( is_engine_class_ && is_data_representation_class_ ),
         class_namespace_static() + "::" + class_name_static(),
         "MasalaObjectAPIDefinition",
         "The " + api_class_name_ + " class was found to be both a MasalaEngine and a "
         "MasalaDataRepresentation.  Masala's build system does not permit this!"
+    );
+    CHECK_OR_THROW( !( is_engine_class_ && is_file_interpreter_class_ ),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaObjectAPIDefinition",
+        "The " + api_class_name_ + " class was found to be both a MasalaEngine and a "
+        "MasalaFileInterpreter.  Masala's build system does not permit this!"
+    );
+    CHECK_OR_THROW( !( is_data_representation_class_ && is_file_interpreter_class_ ),
+        class_namespace_static() + "::" + class_name_static(),
+        "MasalaObjectAPIDefinition",
+        "The " + api_class_name_ + " class was found to be both a MasalaDataRepresentation and a "
+        "MasalaFileInterpreter.  Masala's build system does not permit this!"
     );
 }
 
@@ -300,6 +322,12 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
         write_list_to_stream( ss, "DATA_REPRESENTATION_INCOMPATIBLE_ENGINES", data_representation_incompatible_engines_ );
     }
 
+	ss << "Is_File_Interpreter_Class:\t" << ( is_file_interpreter_class_ ? "TRUE" : "FALSE" ) << "\n";
+	if( is_file_interpreter_class_ ) {
+		write_list_to_stream( ss, "FILE_INTERPRETER_FILETYPE_DESCRIPTIONS", file_interpreter_file_descriptions_ );
+		write_list_to_stream( ss, "FILE_INTERPRETER_FILETYPE_EXTENSIONS", file_interpreter_file_extensions_ );
+	}
+
     return ss.str();
 }
 
@@ -324,6 +352,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
         { "Is_Lightweight", is_lightweight_ },
         { "Is_Plugin_Class", is_plugin_class_ },
         { "Is_Engine_Class", is_engine_class_ },
+		{ "Is_File_Interpreter_Class", is_file_interpreter_class_ },
         { "Is_Data_Representation_Class", is_data_representation_class_ },
         { "Has_Protected_Constructors", has_protected_constructors_ }
     };
@@ -344,6 +373,11 @@ MasalaObjectAPIDefinition::get_json_description() const {
         json_api[ "Data_Representation_Compatible_Engines" ] = data_representation_compatible_engines_;
         json_api[ "Data_Representation_Incompatible_Engines" ] = data_representation_incompatible_engines_;
     }
+
+	if( is_file_interpreter_class_ ) {
+        json_api[ "File_Interpreter_FileType_Descriptions" ] = file_interpreter_file_descriptions_;
+        json_api[ "File_Interpreter_FileType_Extensions" ] = file_interpreter_file_extensions_;
+	}
 
     return json_ptr;
 }
@@ -523,6 +557,20 @@ MasalaObjectAPIDefinition::data_representation_compatible_engines() const {
 std::vector< std::string > const &
 MasalaObjectAPIDefinition::data_representation_incompatible_engines() const {
     return data_representation_incompatible_engines_;
+}
+
+/// @brief Get the descriptions of the file type(s) that this file interpreter interprets, if this
+/// is a file interpreter class.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::file_interpreter_file_descriptions() const {
+	return file_interpreter_file_descriptions_;
+}
+
+/// @brief Get the file extension(s) of the file type(s) that this file interpreter interprets, if this
+/// is a file interpreter class.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::file_interpreter_file_extensions() const {
+	return file_interpreter_file_extensions_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

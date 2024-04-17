@@ -19,6 +19,8 @@
 /// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.cc
 /// @brief A class used to request data representations.
 /// @details This class stores a list of criteria that a data representation must satisfy.
+/// @note This class is not threadsafe.  It is expected to be created, used, and destroyed
+/// by a single thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 
@@ -26,7 +28,8 @@
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 
 // Base headers:
-#include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
 
 // STL headers:
@@ -75,6 +78,18 @@ MasalaDataRepresentationRequest::class_namespace_static() {
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Add a requirement that data representations have a particular name.
+/// @details The input name may or may not include namespace.  If it DOES, then the full
+/// name must match.  If it does NOT, then the short name must match.
+void
+MasalaDataRepresentationRequest::add_data_representation_name_requirement(
+	std::string const & name_in
+) {
+	using namespace data_representation_request;
+    MasalaDataRepresentationNameRequirementCriterionSP criterion( masala::make_shared< MasalaDataRepresentationNameRequirementCriterion >( name_in ) );
+    request_criteria_.push_back( criterion );
+}
+
 /// @brief Add a requirement that data representations are explicitly marked as compatible
 /// with a particular MasalaEngine.
 /// @note The engine must be provided as a full name (namespace + name).
@@ -83,9 +98,9 @@ MasalaDataRepresentationRequest::add_engine_compatibility_requirement(
     std::string const & engine_namespace_and_name
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -100,9 +115,9 @@ MasalaDataRepresentationRequest::add_engines_compatibility_requirement(
     bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -114,9 +129,9 @@ MasalaDataRepresentationRequest::add_engine_incompatibility_requirement(
     std::string const & engine_namespace_and_name
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engine_namespace_and_name( engine_namespace_and_name );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 
@@ -131,9 +146,9 @@ MasalaDataRepresentationRequest::add_engines_incompatibility_requirement(
     bool const match_any /*= true*/
 ) {
     using namespace data_representation_request;
-    MasalaEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaEngineCompatibilityCriterion >() );
+    MasalaDataRepresentationEngineCompatibilityCriterionSP criterion( masala::make_shared< MasalaDataRepresentationEngineCompatibilityCriterion >() );
     criterion->set_engines_namespace_and_name( engine_namespaces_and_names, match_any );
-    criterion->set_criterion_mode( MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
+    criterion->set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE );
     request_criteria_.push_back( criterion );
 }
 

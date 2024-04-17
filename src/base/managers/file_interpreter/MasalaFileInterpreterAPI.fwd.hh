@@ -16,44 +16,42 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.fwd.hh
-/// @brief Forward declarations for a class used to request data representations.
-/// @details This class stores a list of criteria that a data representation must satisfy.
-/// @note This class is not threadsafe.  It is expected to be created, used, and destroyed
-/// by a single thread.
+/// @file src/base/managers/file_interpreter/MasalaFileInterpreterAPI.fwd.hh
+/// @brief Forward declarations for a base class for all Masala file interpreter APIs.
+/// @details Derived file interpreter subclasses have API classes derived from this.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh
-#define Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh
+#ifndef Masala_src_base_managers_file_interpreter_MasalaFileInterpreterAPI_fwd_hh
+#define Masala_src_base_managers_file_interpreter_MasalaFileInterpreterAPI_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
 namespace managers {
-namespace engine {
+namespace file_interpreter {
 
-	class MasalaDataRepresentationRequest;
+	class MasalaFileInterpreterAPI;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using MasalaDataRepresentationRequestSP = MASALA_SHARED_POINTER< MasalaDataRepresentationRequest >;
+	using MasalaFileInterpreterAPISP = MASALA_SHARED_POINTER< MasalaFileInterpreterAPI >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using MasalaDataRepresentationRequestCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationRequest const >;
+	using MasalaFileInterpreterAPICSP = MASALA_SHARED_POINTER< MasalaFileInterpreterAPI const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using MasalaDataRepresentationRequestWP = MASALA_WEAK_POINTER< MasalaDataRepresentationRequest >;
+	using MasalaFileInterpreterAPIWP = MASALA_WEAK_POINTER< MasalaFileInterpreterAPI >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using MasalaDataRepresentationRequestCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationRequest const >;
+	using MasalaFileInterpreterAPICWP = MASALA_WEAK_POINTER< MasalaFileInterpreterAPI const >;
 
-} // namespace engine
+} // namespace file_interpreter
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh
+#endif //Masala_src_base_managers_file_interpreter_MasalaFileInterpreterAPI_fwd_hh

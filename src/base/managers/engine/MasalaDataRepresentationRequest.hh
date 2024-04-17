@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.hh
-/// @brief A class used to request data representations.
+/// @brief Headers for a class used to request data representations.
 /// @details This class stores a list of criteria that a data representation must satisfy.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -39,6 +39,8 @@ namespace engine {
 
 /// @brief A class used to request data representations.
 /// @details This class stores a list of criteria that a data representation must satisfy.
+/// @note This class is not threadsafe.  It is expected to be created, used, and destroyed
+/// by a single thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaDataRepresentationRequest : public masala::base::MasalaObject {
 
@@ -84,6 +86,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Add a requirement that data representations have a particular name.
+	/// @details The input name may or may not include namespace.  If it DOES, then the full
+	/// name must match.  If it does NOT, then the short name must match.
+	void
+	add_data_representation_name_requirement(
+		std::string const & name_in
+	);
 
     /// @brief Add a requirement that data representations are explicitly marked as compatible
     /// with a particular MasalaEngine.

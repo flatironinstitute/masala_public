@@ -158,6 +158,14 @@ public:
 		masala::base::Size const index
 	) const;
 
+	/// @brief Nonconst access to the ith problem in this object, where the index is zero-based.
+	/// @details Does bounds-checking.  Throws if out of range.  Use the
+	/// n_problems() method to check number of problems.
+	OptimizationProblemSP
+	problem_nonconst(
+		masala::base::Size const index
+	);
+
 	/// @brief Get the number of problems stored in this object.
 	masala::base::Size n_problems() const;
 

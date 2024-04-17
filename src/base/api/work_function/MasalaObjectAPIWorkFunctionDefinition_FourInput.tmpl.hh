@@ -16,22 +16,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.tmpl.hh
+/// @file src/base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FourInput.tmpl.hh
 /// @brief A template class that stores the definition for a work function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for three-input work functions.  The types T1, T2, and T3
+/// @details This is a derived class for four-input work functions.  The types T1, T2, T3, and T4
 /// define the input types and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_ThreeInput_tmpl_hh
-#define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_ThreeInput_tmpl_hh
+#ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_tmpl_hh
+#define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_tmpl_hh
 
 // Base class.
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.hh>
 
 // Forward declarations.
-#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.fwd.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FourInput.fwd.hh>
 
 // Base headers.
 #include <base/api/names_from_types.tmpl.hh>
@@ -55,8 +55,8 @@ namespace work_function {
 /// define the input types and the type T0 defines the output type.
 /// @note A work function can take zero or more inputs, and can return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-template< typename T0, typename T1, typename T2, typename T3 >
-class MasalaObjectAPIWorkFunctionDefinition_ThreeInput : public MasalaObjectAPIWorkFunctionDefinition {
+template< typename T0, typename T1, typename T2, typename T3, typename T4 >
+class MasalaObjectAPIWorkFunctionDefinition_FourInput : public MasalaObjectAPIWorkFunctionDefinition {
 
 public:
 
@@ -65,7 +65,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	MasalaObjectAPIWorkFunctionDefinition_ThreeInput() = delete;
+	MasalaObjectAPIWorkFunctionDefinition_FourInput() = delete;
 
 	/// @brief Options constructor, to be called by derived classes.
 	/// @param[in] work_function_name The name of the work function that
@@ -84,10 +84,12 @@ public:
 	/// @param[in] input_parameter1_description The description of the input parameter 2.
 	/// @param[in] input_parameter2_name The name for the input parameter 3.
 	/// @param[in] input_parameter2_description The description of the input parameter 3.
+	/// @param[in] input_parameter3_name The name for the input parameter 4.
+	/// @param[in] input_parameter3_description The description of the input parameter 4.
 	/// @param[in] output_parameter_name The name for what the work function returns.
 	/// @param[in] output_parameter_description The description of what the work function returns.
 	/// @param[in] work_function The actual work function.
-	MasalaObjectAPIWorkFunctionDefinition_ThreeInput(
+	MasalaObjectAPIWorkFunctionDefinition_FourInput(
 		std::string const & work_function_name,
 		std::string const & work_function_description,
 		bool const is_const,
@@ -100,9 +102,11 @@ public:
 		std::string const & input_parameter1_description,
 		std::string const & input_parameter2_name,
 		std::string const & input_parameter2_description,
+		std::string const & input_parameter3_name,
+		std::string const & input_parameter3_description,
 		std::string const & output_parameter_name,
 		std::string const & output_parameter_description,
-		std::function< T0( T1, T2, T3 ) > const & work_function
+		std::function< T0( T1, T2, T3, T4 ) > const & work_function
 	) :
 		MasalaObjectAPIWorkFunctionDefinition(
 			work_function_name, work_function_description,
@@ -115,21 +119,23 @@ public:
 		input_parameter1_description_(input_parameter1_description),
 		input_parameter2_name_(input_parameter2_name),
 		input_parameter2_description_(input_parameter2_description),
+		input_parameter3_name_(input_parameter3_name),
+		input_parameter3_description_(input_parameter3_description),
 		output_name_( output_parameter_name ),
 		output_description_( output_parameter_description ),
 		work_function_( work_function )
 	{}
 
 	/// @brief Copy constructor.
-	MasalaObjectAPIWorkFunctionDefinition_ThreeInput( MasalaObjectAPIWorkFunctionDefinition_ThreeInput const & ) = default;
+	MasalaObjectAPIWorkFunctionDefinition_FourInput( MasalaObjectAPIWorkFunctionDefinition_FourInput const & ) = default;
 
 	/// @brief Pure virtual destructor.
-	~MasalaObjectAPIWorkFunctionDefinition_ThreeInput() override = default;
+	~MasalaObjectAPIWorkFunctionDefinition_FourInput() override = default;
 
-	/// @brief Every class can name itself.  This returns "MasalaObjectAPIWorkFunctionDefinition_ThreeInput".
+	/// @brief Every class can name itself.  This returns "MasalaObjectAPIWorkFunctionDefinition_FourInput".
 	std::string
 	class_name() const override {
-		return "MasalaObjectAPIWorkFunctionDefinition_ThreeInput";
+		return "MasalaObjectAPIWorkFunctionDefinition_FourInput";
 	}
 
 	/// @brief Every class can provide its own namespace.  This returns "masala::base::api::work_function".
@@ -143,18 +149,19 @@ public:
 	function(
 		T1 input1,
 		T2 input2,
-		T3 input3
+		T3 input3,
+		T3 input4
 	) const {
-		return work_function_( input1, input2, input3 );
+		return work_function_( input1, input2, input3, input4 );
 	}
 
 	/// @brief Get a raw pointer to the function.
-	std::function< T0(T1, T2, T3) > const * function_raw_ptr() const { return &work_function_; }
+	std::function< T0(T1, T2, T3, T4) > const * function_raw_ptr() const { return &work_function_; }
 
 	/// @brief Get the number of input parameters.
 	/// @details Must be implemented by derived classes.
-	/// @returns Override returns 3.
-	masala::base::Size num_input_parameters() const override { return 3; }
+	/// @returns Override returns 4.
+	masala::base::Size num_input_parameters() const override { return 4; }
 
 public:
 
@@ -174,7 +181,8 @@ public:
 			<< " " << work_function_name() << "( "
 			<< masala::base::api::name_from_type( base::api::type<T1>() ) << ", "
 			<< masala::base::api::name_from_type( base::api::type<T2>() ) << ", "
-			<< masala::base::api::name_from_type( base::api::type<T3>() )
+			<< masala::base::api::name_from_type( base::api::type<T3>() ) << ", "
+			<< masala::base::api::name_from_type( base::api::type<T4>() )
 			<< " )"
 			<< (is_const() ? " const" : "" )
 			<< (is_override_of_api_virtual_fxn() ? " override" : "")
@@ -189,6 +197,7 @@ public:
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Input 1:\t" << input_parameter1_name_ << "\t" << input_parameter1_description_ << std::endl;
 		ss << "Input 2:\t" << input_parameter2_name_ << "\t" << input_parameter2_description_ << std::endl;
+		ss << "Input 2:\t" << input_parameter3_name_ << "\t" << input_parameter3_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}
@@ -232,10 +241,17 @@ public:
 		json_input2["Input_Description"] = input_parameter2_description_;
 		json_input2["Input_Name"] = input_parameter2_name_;
 
+		nlohmann::json json_input3;
+		json_input2["Input_Index"] = 3;
+		json_input2["Input_Type"] = masala::base::api::name_from_type( base::api::type<T4>() );
+		json_input2["Input_Description"] = input_parameter3_description_;
+		json_input2["Input_Name"] = input_parameter3_name_;
+
 		nlohmann::json json_inputs;
 		json_inputs["Input_0"] = json_input0;
 		json_inputs["Input_1"] = json_input1;
 		json_inputs["Input_2"] = json_input2;
+		json_inputs["Input_3"] = json_input3;
 		json_api["Inputs"] = json_inputs;
 
 		// Outputs:
@@ -272,6 +288,12 @@ private:
 	/// @brief A description of input parameter 3.
 	std::string const input_parameter2_description_;
 
+	/// @brief A name for input parameter 4.
+	std::string const input_parameter3_name_;
+
+	/// @brief A description of input parameter 4.
+	std::string const input_parameter3_description_;
+
 	/// @brief A name for what this work function returns.
 	std::string const output_name_;
 
@@ -279,13 +301,13 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0( T1, T2, T3 ) > const work_function_;
+	std::function< T0( T1, T2, T3, T4 ) > const work_function_;
 
-}; // class MasalaObjectAPIWorkFunctionDefinition_ThreeInput
+}; // class MasalaObjectAPIWorkFunctionDefinition_FourInput
 
 } // namespace work_function
 } // namespace api
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_ThreeInput_tmpl_hh
+#endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_tmpl_hh

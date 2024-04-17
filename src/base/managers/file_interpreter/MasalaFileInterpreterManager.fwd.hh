@@ -16,32 +16,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/version/masala_version.hh
-/// @brief Contains only a single function that returns the minor and major version of Masala's core libraries.
+/// @file src/base/managers/file_interpreter/MasalaFileInterpreterManager.fwd.hh
+/// @brief Forward declarations for a static singleton for managing modules responsible for reading and writing particular
+/// file formats, and converting these to and from particular data representations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-/// Base headers:
-#include <base/types.hh>
-
-/// STL headers:
-#include <utility> // For std::pair
-
-#define MASALA_MAJOR_VERSION 0
-#define MASALA_MINOR_VERSION 3
+#ifndef Masala_src_base_managers_file_interpreter_MasalaFileInterpreterManager_fwd_hh
+#define Masala_src_base_managers_file_interpreter_MasalaFileInterpreterManager_fwd_hh
 
 namespace masala {
 namespace base {
 namespace managers {
-namespace version {
+namespace file_interpreter {
 
-    /// @brief Returns the major and minor version of Masala's core libraries.
-    inline
-    std::pair< masala::base::Size, masala::base::Size >
-    masala_version() {
-        return std::make_pair( MASALA_MAJOR_VERSION, MASALA_MINOR_VERSION );
-    }
+    class MasalaFileInterpreterManager;
 
-} // namespace version
+    /// Note that singletons define no shared pointers or weak pointers.  Nonconst to allow
+    /// lazy loading of data.
+    using MasalaFileInterpreterManagerHandle = MasalaFileInterpreterManager *;
+
+} // namespace file_interpreter
 } // namespace managers
 } // namespace base
 } // namespace masala
+
+#endif // Masala_src_base_managers_file_interpreter_MasalaFileInterpreterManager_fwd_hh

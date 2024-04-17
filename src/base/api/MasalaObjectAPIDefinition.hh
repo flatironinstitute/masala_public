@@ -126,16 +126,21 @@ public:
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_ZeroInputCWP
 	get_zeroinput_setter_function(
 		std::string const & function_name
 	) const {
+		using namespace setter;
+
 		for( auto const & setter: setters_ ) {
 			if( setter->num_input_parameters() == 0 && setter->setter_function_name() == function_name ) {
-				return setter;
+				MasalaObjectAPISetterDefinition_ZeroInputCSP setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ZeroInput const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return MasalaObjectAPISetterDefinition_ZeroInputCWP();
 	}
 
 	/// @brief Get a one-parameter setter definition.
@@ -143,7 +148,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_OneInputCWP<P1>
 	get_oneinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -153,11 +158,11 @@ public:
 			if( setter->num_input_parameters() == 1 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_OneInputCSP< P1 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_OneInput< P1 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_OneInputCWP<P1>();
 	}
 
 	/// @brief Get a two-parameter setter definition.
@@ -165,7 +170,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_TwoInputCWP<P1,P2>
 	get_twoinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -175,11 +180,11 @@ public:
 			if( setter->num_input_parameters() == 2 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_TwoInputCSP< P1, P2 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TwoInput< P1, P2 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_TwoInputCWP<P1,P2>();
 	}
 
 	/// @brief Get a three-parameter setter definition.
@@ -187,7 +192,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_ThreeInputCWP<P1,P2,P3>
 	get_threeinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -197,11 +202,11 @@ public:
 			if( setter->num_input_parameters() == 3 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_ThreeInputCSP< P1, P2, P3 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_ThreeInput< P1, P2, P3 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_ThreeInputCWP<P1,P2,P3>();
 	}
 
 	/// @brief Get a four-parameter setter definition.
@@ -209,7 +214,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_FourInputCWP<P1,P2,P3,P4>
 	get_fourinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -219,11 +224,11 @@ public:
 			if( setter->num_input_parameters() == 4 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FourInputCSP< P1, P2, P3, P4 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FourInput< P1, P2, P3, P4 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return masala::base::api::setter::MasalaObjectAPISetterDefinition_FourInputCWP<P1,P2,P3,P4>();
 	}
 
 	/// @brief Get a five-parameter setter definition.
@@ -231,7 +236,7 @@ public:
 	/// to the function otherwise.
 	template< typename P1, typename P2, typename P3, typename P4, typename P5 >
 	inline
-	masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_FiveInputCWP<P1,P2,P3,P4,P5>
 	get_fiveinput_setter_function(
 		std::string const & function_name
 	) const {
@@ -241,11 +246,101 @@ public:
 			if( setter->num_input_parameters() == 5 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_FiveInputCSP< P1, P2, P3, P4, P5 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_FiveInput< P1, P2, P3, P4, P5 > const >( setter ) );
 				if( setter_cast != nullptr ) {
-					return setter;
+					return setter_cast;
 				}
 			}
 		}
-		return masala::base::api::setter::MasalaObjectAPISetterDefinitionCWP();
+		return MasalaObjectAPISetterDefinition_FiveInputCWP<P1,P2,P3,P4,P5>();
+	}
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a zero-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInputCWP< P0 >
+	get_zeroinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 0 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_ZeroInputCSP<P0> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_ZeroInput< P0 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_ZeroInputCWP< P0 >();
+	}
+
+	/// @brief Get a one-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputCWP< P0, P1 >
+	get_oneinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 1 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_OneInputCSP<P0,P1> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_OneInput< P0, P1 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_OneInputCWP< P0, P1 >();
+	}
+
+	/// @brief Get a two-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputCWP< P0, P1, P2 >
+	get_twoinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 2 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_TwoInputCSP<P0,P1,P2> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_TwoInput< P0, P1, P2 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_TwoInputCWP< P0, P1, P2 >();
+	}
+
+	/// @brief Get a three-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInputCWP< P0, P1, P2, P3 >
+	get_threeinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 3 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_ThreeInputCSP<P0,P1,P2,P3> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_ThreeInput< P0, P1, P2, P3 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_ThreeInputCWP< P0, P1, P2, P3 >();
 	}
 
 public:
@@ -374,6 +469,12 @@ public:
 	/// @details If so, the API creator will derive from MasalaDataRepresentationCreator and the
 	/// API will derive from MasalaDataRepresentationAPI.
 	inline bool is_data_representation_class() const { return is_data_representation_class_; }
+	
+	/// @brief Is this a MasalaFileInterpreter class?
+	/// @details If so, the API creator is derived from MasalaFileInterpreterCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaFileInterpreterAPI instead of
+	/// MasalaPluginAPI.
+	inline bool is_file_interpreter_class() const { return is_file_interpreter_class_; }
 
 	/// @brief Get the categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
@@ -427,6 +528,16 @@ public:
 	/// is a MasalaDataRepresentation object.
 	std::vector< std::string > const &
 	data_representation_incompatible_engines() const;
+
+	/// @brief Get the descriptions of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > const &
+	file_interpreter_file_descriptions() const;
+
+	/// @brief Get the file extension(s) of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > const &
+	file_interpreter_file_extensions() const;
 
 private:
 
@@ -514,6 +625,12 @@ private:
 	/// MasalaPluginAPI.
 	bool is_data_representation_class_ = false;
 
+	/// @brief Is this a MasalaFileInterpreter class?
+	/// @details If so, the API creator is derived from MasalaFileInterpreterCreator instead of
+	/// MasalaPluginCreator, and the API is derived from MasalaFileInterpreterAPI instead of
+	/// MasalaPluginAPI.
+	bool is_file_interpreter_class_ = false;
+
 	/// @brief The categories that this object is in, if it is a plugin object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
@@ -558,6 +675,14 @@ private:
 	/// @brief The MasalaEngines that this object is definitely not compatible with, if it
 	/// is a MasalaDataRepresentation object.
 	std::vector< std::string > data_representation_incompatible_engines_;
+
+	/// @brief The descriptions of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > file_interpreter_file_descriptions_;
+
+	/// @brief The file extension(s) of the file type(s) that this file interpreter interprets, if this
+	/// is a file interpreter class.
+	std::vector< std::string > file_interpreter_file_extensions_;
 
 }; // class MasalaObjectAPIDefinition
 

@@ -35,6 +35,7 @@
 #include <base/managers/engine/MasalaEngine.fwd.hh>
 #include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 #include <base/managers/engine/MasalaEngineAPI.hh>
+#include <base/managers/engine/MasalaEngineRequest.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -136,6 +137,12 @@ public:
     /// @brief Completely remove all engines.
     void
     reset();
+
+    /// @brief Get the engines compatible with a set of criteria encoded in a request object.
+    std::vector< MasalaEngineCreatorCSP >
+    get_compatible_engine_creators(
+        MasalaEngineRequest const & request
+    ) const;
 
 private:
 

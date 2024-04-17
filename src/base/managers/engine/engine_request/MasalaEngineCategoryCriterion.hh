@@ -16,38 +16,38 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh
-/// @brief A class for imposing the condition that a particular data representation be in (or not in) a particular category.
+/// @file src/base/managers/engine/engine_request/MasalaEngineCategoryCriterion.hh
+/// @brief A class for imposing the condition that a particular engine be in (or not in) a particular category.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationCategoryCriterion_hh
-#define Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationCategoryCriterion_hh
+#ifndef Masala_src_base_managers_engine_engine_request_MasalaEngineCategoryCriterion_hh
+#define Masala_src_base_managers_engine_engine_request_MasalaEngineCategoryCriterion_hh
 
 // Forward declarations:
-#include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.fwd.hh>
+#include <base/managers/engine/engine_request/MasalaEngineCategoryCriterion.fwd.hh>
 
 // Parent header:
-#include <base/managers/engine/data_representation_request/MasalaDataRepresentationRequestCriterion.hh>
+#include <base/managers/engine/engine_request/MasalaEngineRequestCriterion.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
-namespace data_representation_request {
+namespace engine_request {
 
-enum class MasalaDataRepresentationCategoryCompatibilityCriterionMode {
+enum class MasalaEngineCategoryCompatibilityCriterionMode {
     INVALID_MODE = 0, // Keep first
     MUST_BE_IN_AT_LEAST_ONE_CATEGORY = 1, // Keep second
     MUST_NOT_BE_IN_ANY_CATEGORIES, // Keep second-to-last
     N_MODES = MUST_NOT_BE_IN_ANY_CATEGORIES // Keep last
 };
 
-/// @brief A class for imposing the condition that a particular data representation be in (or not in) a particular category.
+/// @brief A class for imposing the condition that a particular engine be in (or not in) a particular category.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaDataRepresentationCategoryCriterion : public masala::base::managers::engine::data_representation_request::MasalaDataRepresentationRequestCriterion {
+class MasalaEngineCategoryCriterion : public masala::base::managers::engine::engine_request::MasalaEngineRequestCriterion {
 
 public:
 
@@ -56,13 +56,13 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaDataRepresentationCategoryCriterion() = default;
+    MasalaEngineCategoryCriterion() = default;
 
     /// @brief Copy constructor.
-    MasalaDataRepresentationCategoryCriterion( MasalaDataRepresentationCategoryCriterion const & ) = default;
+    MasalaEngineCategoryCriterion( MasalaEngineCategoryCriterion const & ) = default;
 
     // Destructor.
-    ~MasalaDataRepresentationCategoryCriterion() override = default;
+    ~MasalaEngineCategoryCriterion() override = default;
 
 public:
 
@@ -71,30 +71,30 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the name of this class.
-    /// @returns "MasalaDataRepresentationCategoryCriterion".
+    /// @returns "MasalaEngineCategoryCriterion".
     std::string class_name() const override;
 
     /// @brief Get the namespace of this class.
-    /// @returns "masala::base::managers::engine::data_representation_request".
+    /// @returns "masala::base::managers::engine::engine_request".
     std::string class_namespace() const override;
 
     /// @brief Get the name of this class.
-    /// @returns "MasalaDataRepresentationCategoryCriterion".
+    /// @returns "MasalaEngineCategoryCriterion".
     static std::string class_name_static();
 
     /// @brief Get the namespace of this class.
-    /// @returns "masala::base::managers::engine::data_representation_request".
+    /// @returns "masala::base::managers::engine::engine_request".
     static std::string class_namespace_static();
 
-    /// @brief Determine whether a particular data representation is compatible with this criterion.
+    /// @brief Determine whether a particular engine is compatible with this criterion.
     /// @returns True if it is compatible, false otherwise.
     bool
-    data_representation_is_compatible_with_criterion(
-        masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
+    engine_is_compatible_with_criterion(
+        masala::base::managers::engine::MasalaEngineCreator const & creator
     ) const override;
 
-    /// @brief Are we enforcing that the data representation be in categories or not in categories?
-    void set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode const mode );
+    /// @brief Are we enforcing that the engine be in categories or not in categories?
+    void set_criterion_mode( MasalaEngineCategoryCompatibilityCriterionMode const mode );
 
     /// @brief Set whether we are matching subcategories.
     void set_allow_subcategories( bool const setting );
@@ -111,16 +111,16 @@ private:
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Return true if a data representation is in a category, false otherwise.
+    /// @brief Return true if an engine is in a category, false otherwise.
     /// @param category The category to consider.
-    /// @param creator The creator for the data representation that we are considering.
-    /// @param allow_subcategories If true, we return true if the data representation is in
+    /// @param creator The creator for the engine that we are considering.
+    /// @param allow_subcategories If true, we return true if the engine is in
     /// any subcategory of the category that we are considering.
     static
     bool
     is_in_category(
         std::vector< std::string > const & category,
-        masala::base::managers::engine::MasalaDataRepresentationCreator const & creator,
+        masala::base::managers::engine::MasalaEngineCreator const & creator,
         bool const allow_subcategories
     );
 
@@ -136,15 +136,15 @@ private:
     /// @brief Are we matching subcategories?
     bool allow_subcategories_ = true;
 
-    /// @brief Are we enforcing that the data representation be in categories or not in categories?
-    MasalaDataRepresentationCategoryCompatibilityCriterionMode mode_ = MasalaDataRepresentationCategoryCompatibilityCriterionMode::MUST_BE_IN_AT_LEAST_ONE_CATEGORY;
+    /// @brief Are we enforcing that the engine be in categories or not in categories?
+    MasalaEngineCategoryCompatibilityCriterionMode mode_ = MasalaEngineCategoryCompatibilityCriterionMode::MUST_BE_IN_AT_LEAST_ONE_CATEGORY;
 
 };
 
-} // namespace data_representation_request
+} // namespace engine_request
 } // namespace engine
 } // namespace managers
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationCategoryCriterion_hh
+#endif // Masala_src_base_managers_engine_engine_request_MasalaEngineCategoryCriterion_hh

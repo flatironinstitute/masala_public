@@ -37,6 +37,8 @@
 #include <base/managers/engine/MasalaDataRepresentationCreator.hh>
 #include <base/managers/engine/MasalaEngineManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreterCreator.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreterManager.hh>
 
 // STL headers:
 #include <string>
@@ -78,6 +80,7 @@ MasalaPluginModuleManager::class_namespace() const {
 void
 MasalaPluginModuleManager::reset() {
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
 
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     plugins_by_hierarchical_category_all_levels_.clear();
@@ -87,6 +90,7 @@ MasalaPluginModuleManager::reset() {
 
     MasalaEngineManager::get_instance()->reset();
     MasalaDataRepresentationManager::get_instance()->reset();
+    MasalaFileInterpreterManager::get_instance()->reset();
 
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
 }
@@ -135,16 +139,21 @@ MasalaPluginModuleManager::has_plugin(
 /// @details Throws if any plugin has already been added.
 /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also registers it with the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
     std::vector< MasalaEngineCreatorCSP > engine_creators;
     engine_creators.reserve(creators.size());
     std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
     data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
 
 	{
 		// First, register everything as plugins.  Build the list of the
@@ -162,6 +171,11 @@ MasalaPluginModuleManager::add_plugins(
             if( data_rep_creator != nullptr ) {
                 data_rep_creators.push_back( data_rep_creator );
             }
+
+			MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
 		}
 	}
 
@@ -170,26 +184,36 @@ MasalaPluginModuleManager::add_plugins(
         MasalaEngineManager::get_instance()->register_engines( engine_creators );
     }
 
-    // Finally, register the subset that are data representations with the MasalaDataRepresentationManager.
+    // Then, register the subset that are data representations with the MasalaDataRepresentationManager.
     if( !data_rep_creators.empty() ) {
         MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
     }
+
+	// Finally, register the subset that are file interpreters with the MasalaFileInterpreterManager.
+	if( !file_interp_creators.empty() ) {
+		MasalaFileInterpreterManager::get_instance()->register_file_interpreters( file_interp_creators );
+	}
 }
 
 /// @brief Add a set of plugins to the list of plugins that the manager knows about.
 /// @details Throws if any plugin has already been added.
 /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also registers it with the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
     std::vector< MasalaEngineCreatorCSP > engine_creators;
     engine_creators.reserve(creators.size());
     std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
     data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
 
     {
         // First, register everything as plugins.  Build the list of the
@@ -207,6 +231,11 @@ MasalaPluginModuleManager::add_plugins(
             if( data_rep_creator != nullptr ) {
                 data_rep_creators.push_back( data_rep_creator );
             }
+
+			MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
         }
     }
 
@@ -219,6 +248,11 @@ MasalaPluginModuleManager::add_plugins(
     if( !data_rep_creators.empty() ) {
         MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
     }
+
+	// Finally, register the subset that are file interpreters with the MasalaFileInterpreterManager.
+	if( !file_interp_creators.empty() ) {
+		MasalaFileInterpreterManager::get_instance()->register_file_interpreters( file_interp_creators );
+	}
 }
     
 /// @brief Add a plugin to the list of plugins that the manager knows about.
@@ -226,12 +260,15 @@ MasalaPluginModuleManager::add_plugins(
 /// first to query wiether the plugin has already been added.
 /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also registers it with the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
     using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
     {
         // Register the plugin.
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
@@ -251,22 +288,34 @@ MasalaPluginModuleManager::add_plugin(
             MasalaDataRepresentationManager::get_instance()->register_data_representation( data_rep_creator );
         }
     }
+    {
+        // If the plugin is a data representation, register it with the MasalaDataRepresentationManager.
+        MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+        if( file_interp_creator != nullptr ) {
+            MasalaFileInterpreterManager::get_instance()->register_file_interpreter( file_interp_creator );
+        }
+    }
 }
 
 /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
 /// @details Throws if the plugin is not registered.
 /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
 	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
+
 	std::vector< MasalaEngineCreatorCSP > engine_creators;
 	engine_creators.reserve(creators.size());
     std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
     data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
 
 	{
 		// First, remove plugins and make a list of the subset that are engines.
@@ -283,6 +332,11 @@ MasalaPluginModuleManager::remove_plugins(
             if( data_rep_creator != nullptr ) {
                 data_rep_creators.push_back( data_rep_creator );
             }
+
+            MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
 		}
 	}
 
@@ -294,9 +348,16 @@ MasalaPluginModuleManager::remove_plugins(
 	}
 
 	{
-		// Finally, remove data representations from the MasalaDataRepresentationManager.
+		// Then, remove data representations from the MasalaDataRepresentationManager.
 		if( !data_rep_creators.empty() ) {
 			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
+
+	{
+		// Finally, remove file interpreters from the MasalaDataRepresentationManager.
+		if( !file_interp_creators.empty() ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreters( file_interp_creators );
 		}
 	}
 }
@@ -305,16 +366,21 @@ MasalaPluginModuleManager::remove_plugins(
 /// @details Throws if the plugin is not registered.
 /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
 	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
+	
 	std::vector< MasalaEngineCreatorCSP > engine_creators;
 	engine_creators.reserve(creators.size());
     std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
     data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
 
 	{
 		// First, remove plugins and make a list of the subset that are engines.
@@ -331,6 +397,11 @@ MasalaPluginModuleManager::remove_plugins(
             if( data_rep_creator != nullptr ) {
                 data_rep_creators.push_back( data_rep_creator );
             }
+
+            MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
 		}
 	}
 
@@ -342,9 +413,16 @@ MasalaPluginModuleManager::remove_plugins(
 	}
 
 	{
-		// Finally, remove data representations from the MasalaDataRepresentationManager.
+		// Next, remove data representations from the MasalaDataRepresentationManager.
 		if( !data_rep_creators.empty() ) {
 			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
+
+	{
+		// Then, remove data representations from the MasalaDataRepresentationManager.
+		if( !file_interp_creators.empty() ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreters( file_interp_creators );
 		}
 	}
 }
@@ -354,12 +432,14 @@ MasalaPluginModuleManager::remove_plugins(
 /// first to query wiether the plugin has already been added.
 /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
 /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
-/// MasalaDataRepresentationManager.
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
 	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
 
 	{
 		// First, remove this plugin.
@@ -377,11 +457,20 @@ MasalaPluginModuleManager::remove_plugin(
 	}
 
 	{
-		// Finally, check whether the plugin is a data representation, and remove it from the
+		// Then, check whether the plugin is a data representation, and remove it from the
 		// MasalaDataRepresentationManager if it is.
 		MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
 		if( data_rep_creator != nullptr ) {
 			MasalaDataRepresentationManager::get_instance()->unregister_data_representation( data_rep_creator );
+		}
+	}
+
+	{
+		// Finally, check whether the plugin is a file intertpreter, and remove it from the
+		// MasalaFileInterpreterManager if it is.
+		MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+		if( file_interp_creator != nullptr ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreter( file_interp_creator );
 		}
 	}
 }

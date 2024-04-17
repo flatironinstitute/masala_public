@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.cc
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.cc
 /// @brief A class for imposing the condition that a particular data representation be compatible with (or
 /// be incompatible with) a particular Masala engine.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Headers:
-#include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.hh>
 
 // Base headers:
 #include <base/utility/container/container_util.tmpl.hh>
@@ -44,26 +44,26 @@ namespace data_representation_request {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the name of this class.
-/// @returns "MasalaEngineCompatibilityCriterion".
+/// @returns "MasalaDataRepresentationEngineCompatibilityCriterion".
 std::string
-MasalaEngineCompatibilityCriterion::class_name() const {
-    return "MasalaEngineCompatibilityCriterion";
+MasalaDataRepresentationEngineCompatibilityCriterion::class_name() const {
+    return "MasalaDataRepresentationEngineCompatibilityCriterion";
 }
 
 /// @brief Get the namespace of this class.
 /// @returns "masala::base::managers::engine::data_representation_request".
 std::string
-MasalaEngineCompatibilityCriterion::class_namespace() const {
+MasalaDataRepresentationEngineCompatibilityCriterion::class_namespace() const {
     return "masala::base::managers::engine::data_representation_request";
 }
 
 /// @brief Determine whether a particular data representation is compatible with this criterion.
 /// @returns True if it is compatible, false otherwise.
 bool
-MasalaEngineCompatibilityCriterion::data_representation_is_compatible_with_criterion(
+MasalaDataRepresentationEngineCompatibilityCriterion::data_representation_is_compatible_with_criterion(
     masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
 ) const {
-    CHECK_OR_THROW_FOR_CLASS( mode_ != MasalaEngineCompatibilityCriterionMode::INVALID_MODE,
+    CHECK_OR_THROW_FOR_CLASS( mode_ != MasalaDataRepresentationEngineCompatibilityCriterionMode::INVALID_MODE,
         "data_representation_is_compatible_with_criterion",
         "An invalid mode was set for this class!"
     );
@@ -72,7 +72,7 @@ MasalaEngineCompatibilityCriterion::data_representation_is_compatible_with_crite
     }
 
     for( auto const & engine : engine_namespaces_and_names_ ) {
-        if( mode_ == MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE ) {
+        if( mode_ == MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE ) {
             if( match_any_ ) {
                 if( masala::base::utility::container::has_value( creator.get_compatible_masala_engines(), engine ) ) {
                     return true;
@@ -82,7 +82,7 @@ MasalaEngineCompatibilityCriterion::data_representation_is_compatible_with_crite
                     return false;
                 }
             }
-        } else if( mode_ == MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE ) {
+        } else if( mode_ == MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_INCOMPATIBLE ) {
             if( match_any_ ) {
                 if( masala::base::utility::container::has_value( creator.get_incompatible_masala_engines(), engine ) ) {
                     return true;
@@ -104,7 +104,7 @@ MasalaEngineCompatibilityCriterion::data_representation_is_compatible_with_crite
 /// @brief Set the Masala engine with which the data representation must be compatible/incompatible.
 /// @details Adds to list if other have been set.
 void
-MasalaEngineCompatibilityCriterion::set_engine_namespace_and_name(
+MasalaDataRepresentationEngineCompatibilityCriterion::set_engine_namespace_and_name(
     std::string const & engine_namespace_and_name
 ) {
     if( !masala::base::utility::container::has_value( engine_namespaces_and_names_, engine_namespace_and_name ) ) {
@@ -117,7 +117,7 @@ MasalaEngineCompatibilityCriterion::set_engine_namespace_and_name(
 /// with at least one engine from the list.  Otherwise, it must be compatible/incompatible with all of them.
 /// @note Overwrites any existing engine namespaces or names.
 void
-MasalaEngineCompatibilityCriterion::set_engines_namespace_and_name(
+MasalaDataRepresentationEngineCompatibilityCriterion::set_engines_namespace_and_name(
     std::vector< std::string > const & engine_namespaces_and_names,
     bool const match_any /*= true*/
 ) {
@@ -127,8 +127,8 @@ MasalaEngineCompatibilityCriterion::set_engines_namespace_and_name(
 
 /// @brief Set whether this criterion requres compatibility or incompatibility with (a) Masala engine(s).
 void
-MasalaEngineCompatibilityCriterion::set_criterion_mode(
-    MasalaEngineCompatibilityCriterionMode const mode
+MasalaDataRepresentationEngineCompatibilityCriterion::set_criterion_mode(
+    MasalaDataRepresentationEngineCompatibilityCriterionMode const mode
 ) {
     mode_ = mode;
 }
