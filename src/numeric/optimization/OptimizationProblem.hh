@@ -29,7 +29,8 @@
 #include <numeric/optimization/OptimizationProblem.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <numeric/optimization/OptimizationSolutions.fwd.hh>
 
 // STL headers:
 #include <mutex>
@@ -43,7 +44,7 @@ namespace optimization {
 /// @details OptimizationProblems define a numerical optimization problem to be solved
 /// by a suitable Optimizer.  They do not contain any chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class OptimizationProblem : public masala::base::managers::plugin_module::MasalaPlugin {
+class OptimizationProblem : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
@@ -98,6 +99,23 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
+    /// @brief Get the categories that this data representation plugin falls into.
+    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
+    /// strings.  One data representation category can be classified into multiple categories.
+    /// @returns {{ "OptimizationProblem" }}
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const override;
+
+    /// @brief Get the MasalaEngines that with which this data representation plugin
+    /// is DEFINITELY compatible.  (There may be other engines with which it is also
+    /// compatible, so this is not necessarily an exhaustive list.)
+    /// @note Must be implemented by derived classes.  The list is by full name (i.e.
+    /// namespace + name), so for instance
+    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+	/// @returns An empty list.
+    std::vector< std::string >
+    get_compatible_masala_engines() const override;
+
 	/// @brief Get the class name.
 	/// @returns "OptimizationProblem".
 	std::string class_name() const override;
@@ -129,6 +147,19 @@ public:
     /// @brief Get a description of the API for the OptimizationProblem class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Create a solutions container for this type of optimization problem.
+	/// @details Base class implementation creates a generic OptimizationSolutions container.  Derived
+	/// classes may override this to create specialized solutions containers.
+	virtual
+	OptimizationSolutionsSP
+	create_solutions_container() const;
 
 protected:
 

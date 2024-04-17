@@ -29,11 +29,11 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 #include <core/chemistry/MolecularGeometryConfiguration.hh>
-#include <core/initialization/registrators/CoreAtomCoordinateRepresentationRegistrator.hh>
 
 // Base headers:
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -295,7 +295,6 @@ MolecularGeometry::get_atom_coordinates(
 core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
 MolecularGeometry::master_atom_coordinate_representation_mutex_locked() {
     if( master_atom_coordinate_representation_ == nullptr ) {
-        masala::core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
         master_atom_coordinate_representation_ = std::dynamic_pointer_cast< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
             masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
                 configuration_->default_atom_coordinate_representation()

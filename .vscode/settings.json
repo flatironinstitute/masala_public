@@ -101,7 +101,8 @@
         "hash_map": "cpp",
         "typeindex": "cpp",
         "alignedvector3": "cpp",
-        "__verbose_abort": "cpp"
+        "__verbose_abort": "cpp",
+        "core": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }

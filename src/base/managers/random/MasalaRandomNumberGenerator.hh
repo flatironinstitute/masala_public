@@ -155,6 +155,10 @@ public:
 // RANDOM NUMBER GENERATING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get a random, uniformly-distributed Boolean.
+    bool
+    uniform_boolean_distribution( );
+
     /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
     base::Size
     uniform_size_distribution(
@@ -233,6 +237,14 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // NON-CLASS FUNCTIONS FOR CONVENIENCE
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random, uniformly-distributed Boolean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_boolean_distribution()
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+bool
+uniform_boolean_distribution();
 
 /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
 /// @details This is a convenience function that calls

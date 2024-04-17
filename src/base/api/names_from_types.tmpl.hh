@@ -28,6 +28,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/hash_types.hh>
 
+// Eigen headers
+#include <external/eigen/Eigen/Dense>
+
 // STL headers
 #include <string>
 #include <base/managers/memory/util.hh>
@@ -215,6 +218,52 @@ namespace api {
             + name_from_type( type<T1>() ) + ", "
             + name_from_type( type<T2>() ) + ", "
             + name_from_type( type<T3>() ) + " > const";
+    }
+
+    /// @brief Manually override for 4-tuples.
+    template<class T1, class T2, class T3, class T4>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4 >> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + " >";
+    }
+
+    /// @brief Manually override for const 4-tuples.
+    template<class T1, class T2, class T3, class T4>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4 > const> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + " > const";
+    }
+
+    /// @brief Manually override for 5-tuples.
+    template<class T1, class T2, class T3, class T4, class T5>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4, T5 >> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + ", "
+            + name_from_type( type<T5>() ) + " >";
+    }
+
+    /// @brief Manually override for const 5-tuples.
+    template<class T1, class T2, class T3, class T4, class T5>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4, T5 > const> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + ", "
+            + name_from_type( type<T5>() ) + " > const";
     }
 
     /// @brief Manually override for maps.
@@ -426,6 +475,13 @@ namespace api {
     template<>
     std::string
     name_from_type< masala::base::size_pair_hash const & >( type< masala::base::size_pair_hash const & > );
+
+    /// @brief Manually override for Eigen matrices.
+    template<class T>
+    std::string
+    name_from_type(type<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>) {
+        return "Eigen::Matrix< " + name_from_type(type<T>()) + ", Eigen::Dynamic, Eigen::Dynamic >";
+    }
 
 } // namespace api
 } // namespace base

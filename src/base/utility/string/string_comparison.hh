@@ -47,6 +47,17 @@ namespace string {
 		std::string const & expected_ending
 	);
 
+	/// @brief Determinew whether two Masala class names match.
+	/// @details Names match if:
+	/// - They both contain namespace and name, and match fully.
+	/// - They both only name, and the name matches.
+	/// - One contains namespace and name, and the other contains only name, and the name matches.
+	bool
+	masala_class_names_match(
+		std::string const & name1,
+		std::string const & name2
+	);
+
 } // namespace string
 } // namespace utility
 } // namespace base

@@ -95,7 +95,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "CostFunctionNetworkOptimizationProblem" } }
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -109,6 +109,22 @@ public:
 	/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+	
+	/// @brief Get the category for this MasalaDataRepresentation.
+	/// @returns { { "OptimizationProblem", "CostFunctionNetworkOptimizationProblem" } }.
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+	/// is compatible.
+	/// @returns An empty list.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the properties of this MasalaDataRepresentation.
+	/// @returns { "optimization_problem", "cost_function_network_optimization_problem" }.
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 	/// @brief Get the name of this class.
 	/// @returns "CostFunctionNetworkOptimizationProblem".
@@ -137,6 +153,13 @@ public:
 	/// two choices associated with them.
 	masala::base::Size
 	total_variable_nodes() const;
+
+	/// @brief Get a map with one entry for each node (variable or not), where the key is
+	/// the node's global index, and the value is the number of choices at that node.
+	/// @note Keys in this map are node indices, since nodes with fewer than two choices are included.
+	/// The length of the vector is total_nodes().
+	std::map< masala::base::Size, masala::base::Size > const &
+	n_choices_at_all_nodes() const;
 
 	/// @brief Get a vector of pairs with one entry for each variable node, where the first entry in the pair indicates
 	/// the variable node's index, and the second indicates the number of choices at that node.
@@ -190,7 +213,24 @@ public:
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Given a candidate solution, compute the score.
+	/// @brief Given a candidate solution, compute the score.  This computes the actual,
+	/// non-approximate score (possibly more slowly), not the score that the data approximation
+	/// uses (computed in a manner optimized for speed, which may involve approximations).
+	/// @details The candidate solution is expressed as a vector of choice indices, with
+	/// one entry per variable position, in order of position indices.  (There may not be
+	/// entries for every position, though, since not all positions have at least two choices.)
+	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+	/// a read-only context.  The default implementation calls compute_absolute_score(), but this
+	/// may be overridden if the data representation uses an approximation or lower level of precision
+	/// to compute the score.
+	virtual
+	masala::base::Real
+	compute_non_approximate_absolute_score(
+		std::vector< base::Size > const & candidate_solution
+	) const;
+
+	/// @brief Given a candidate solution, compute the data representation score (which
+	/// may be approximate).
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
@@ -203,6 +243,8 @@ public:
 	) const;
 
 	/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+	/// This is the difference in the data representation scores (which may be an approximation
+	/// of the actual scores).
 	/// @details The candidate solution is expressed as a vector of choice indices, with
 	/// one entry per variable position, in order of position indices.  (There may not be
 	/// entries for every position, though, since not all positions have at least two choices.)
@@ -214,6 +256,12 @@ public:
 		std::vector< base::Size > const & old_solution,
 		std::vector< base::Size > const & new_solution
 	) const;
+
+	/// @brief Create a solutions container for this type of optimization problem.
+	/// @details Base class implementation creates a generic OptimizationSolutions container.
+	/// This override creates a CostFunctionNetworkOptimizationSolutions container.
+	OptimizationSolutionsSP
+	create_solutions_container() const override;
 
 public:
 
@@ -235,6 +283,7 @@ protected:
 	/// @details If the number of choices has already been set to greater than the
 	/// specified number, this does nothing.
 	/// @note This version assumes that the problem mutex has already been set.
+	virtual
 	void
 	set_minimum_number_of_choices_at_node_mutex_locked(
 		masala::base::Size const node_index,
@@ -258,7 +307,7 @@ protected:
 	/// @note This assumes that the problem mutex has already been set.
 	inline
 	std::map< masala::base::Size, masala::base::Size > const &
-	n_choices_by_node_index() const {
+	n_choices_by_node_index_const() const {
 		return n_choices_by_node_index_;
 	}
 

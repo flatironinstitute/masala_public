@@ -33,6 +33,12 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/container/container_util.tmpl.hh>
+#include <base/managers/engine/MasalaEngineCreator.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.hh>
+#include <base/managers/engine/MasalaEngineManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreterCreator.hh>
+#include <base/managers/file_interpreter/MasalaFileInterpreterManager.hh>
 
 // STL headers:
 #include <string>
@@ -73,11 +79,19 @@ MasalaPluginModuleManager::class_namespace() const {
 /// @details Unregisters all plugins.
 void
 MasalaPluginModuleManager::reset() {
+    using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    plugins_by_hierarchical_category_.clear();
-    plugins_by_hierarchical_subcategory_.clear();
+    plugins_by_hierarchical_category_all_levels_.clear();
+    plugins_by_hierarchical_category_lowest_level_only_.clear();
     plugins_by_keyword_.clear();
     all_plugin_map_.clear();
+
+    MasalaEngineManager::get_instance()->reset();
+    MasalaDataRepresentationManager::get_instance()->reset();
+    MasalaFileInterpreterManager::get_instance()->reset();
+
     write_to_tracer( "Reset the MasalaPluginModuleManager.  No plugins are registered." );
 }
 
@@ -123,93 +137,342 @@ MasalaPluginModuleManager::has_plugin(
 
 /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
 /// @details Throws if any plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
-        add_plugin_mutex_locked( creator );
+    using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
+    std::vector< MasalaEngineCreatorCSP > engine_creators;
+    engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
+
+	{
+		// First, register everything as plugins.  Build the list of the
+		// subset that are engines, too.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		for( auto const & creator : creators ) {
+			add_plugin_mutex_locked( creator );
+
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+            if( engine_creator != nullptr ) {
+                engine_creators.push_back( engine_creator );
+            }
+
+			MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
+
+			MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
+		}
+	}
+
+	// Then, register the subset that are engines with the MasalaEngineManager.
+    if( !engine_creators.empty() ) {
+        MasalaEngineManager::get_instance()->register_engines( engine_creators );
     }
+
+    // Then, register the subset that are data representations with the MasalaDataRepresentationManager.
+    if( !data_rep_creators.empty() ) {
+        MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
+    }
+
+	// Finally, register the subset that are file interpreters with the MasalaFileInterpreterManager.
+	if( !file_interp_creators.empty() ) {
+		MasalaFileInterpreterManager::get_instance()->register_file_interpreters( file_interp_creators );
+	}
 }
 
 /// @brief Add a set of plugins to the list of plugins that the manager knows about.
 /// @details Throws if any plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
-        add_plugin_mutex_locked( creator );
+    using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
+    std::vector< MasalaEngineCreatorCSP > engine_creators;
+    engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
+
+    {
+        // First, register everything as plugins.  Build the list of the
+        // subset that are engines, too.
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        for( auto const & creator : creators ) {
+            add_plugin_mutex_locked( creator );
+
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
+
+			MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
+        }
     }
+
+    // Then, register the subset that are engines with the MasalaEngineManager.
+    if( !engine_creators.empty() ) {
+        MasalaEngineManager::get_instance()->register_engines( engine_creators );
+    }
+
+    // Finally, register the subset that are data representations with the MasalaDataRepresentationManager.
+    if( !data_rep_creators.empty() ) {
+        MasalaDataRepresentationManager::get_instance()->register_data_representations( data_rep_creators );
+    }
+
+	// Finally, register the subset that are file interpreters with the MasalaFileInterpreterManager.
+	if( !file_interp_creators.empty() ) {
+		MasalaFileInterpreterManager::get_instance()->register_file_interpreters( file_interp_creators );
+	}
 }
     
 /// @brief Add a plugin to the list of plugins that the manager knows about.
 /// @details Throws if the plugin has already been added.  Call has_plugin()
 /// first to query wiether the plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also registers it with the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also registers it with the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::add_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    add_plugin_mutex_locked( creator );
+    using namespace masala::base::managers::engine;
+    using namespace masala::base::managers::file_interpreter;
+
+    {
+        // Register the plugin.
+        std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+        add_plugin_mutex_locked( creator );
+    }
+    {
+        // If the plugin is an engine, register it with the MasalaEngineManager.
+        MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+        if( engine_creator != nullptr ) {
+            MasalaEngineManager::get_instance()->register_engine( engine_creator );
+        }
+    }
+    {
+        // If the plugin is a data representation, register it with the MasalaDataRepresentationManager.
+        MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+        if( data_rep_creator != nullptr ) {
+            MasalaDataRepresentationManager::get_instance()->register_data_representation( data_rep_creator );
+        }
+    }
+    {
+        // If the plugin is a data representation, register it with the MasalaDataRepresentationManager.
+        MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+        if( file_interp_creator != nullptr ) {
+            MasalaFileInterpreterManager::get_instance()->register_file_interpreter( file_interp_creator );
+        }
+    }
 }
 
 /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered
+/// @details Throws if the plugin is not registered.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::vector< MasalaPluginCreatorCSP > const & creators
 ) {
-    // write_to_tracer( "Removing a set of creators..." ); // DELETE ME
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
 
-        // FOR DEBUGGING ONLY.  DELETE ME:
-        // write_to_tracer( "Removing " + creator->get_plugin_object_namespace_and_name() + ".  Current categories are:" );
-        // write_to_tracer( "Num_entries\tCategory" );
-        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
-		// 	std::ostringstream ss;
-		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
-		// 	write_to_tracer( ss.str() );
-		// }
+	std::vector< MasalaEngineCreatorCSP > engine_creators;
+	engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
 
-        remove_plugin_mutex_locked( creator );
+	{
+		// First, remove plugins and make a list of the subset that are engines.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		for( auto const & creator : creators ) {
+			remove_plugin_mutex_locked( creator );
 
-		// FOR DEBUGGING ONLY.  DELETE ME:
-		// write_to_tracer( "After removing " + creator->get_plugin_object_namespace_and_name() + ":" );
-		// write_to_tracer( "Num_entries\tCategory" );
-        // for( auto it( plugins_by_hierarchical_subcategory_.cbegin() ); it!=plugins_by_hierarchical_subcategory_.cend(); ++it ) {
-		// 	std::ostringstream ss;
-		// 	ss << std::setw(11) << it->second.size() << "\t[" << base::utility::container::container_to_string( it->first, "," ) << "]";
-		// 	write_to_tracer( ss.str() );
-		// }
-    }
-    // write_to_tracer( "Finished removing a set of creators." ); // DELETE ME
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
+
+            MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
+		}
+	}
+
+	{
+		// Then, remove engines from the MasalaEngineManager.
+		if( !engine_creators.empty() ) {
+			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
+		}
+	}
+
+	{
+		// Then, remove data representations from the MasalaDataRepresentationManager.
+		if( !data_rep_creators.empty() ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
+
+	{
+		// Finally, remove file interpreters from the MasalaDataRepresentationManager.
+		if( !file_interp_creators.empty() ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreters( file_interp_creators );
+		}
+	}
 }
 
 /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
-/// @details Throws if the plugin is not registered
+/// @details Throws if the plugin is not registered.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugins(
     std::set< MasalaPluginCreatorCSP > const & creators
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    for( auto const & creator : creators ) {
-        remove_plugin_mutex_locked( creator );
-    }
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
+	
+	std::vector< MasalaEngineCreatorCSP > engine_creators;
+	engine_creators.reserve(creators.size());
+    std::vector< MasalaDataRepresentationCreatorCSP > data_rep_creators;
+    data_rep_creators.reserve(creators.size());
+    std::vector< MasalaFileInterpreterCreatorCSP > file_interp_creators;
+    file_interp_creators.reserve(creators.size());
+
+	{
+		// First, remove plugins and make a list of the subset that are engines.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		for( auto const & creator : creators ) {
+			remove_plugin_mutex_locked( creator );
+
+			MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+			if( engine_creator != nullptr ) {
+				engine_creators.push_back( engine_creator );
+			}
+
+            MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+            if( data_rep_creator != nullptr ) {
+                data_rep_creators.push_back( data_rep_creator );
+            }
+
+            MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+            if( file_interp_creator != nullptr ) {
+                file_interp_creators.push_back( file_interp_creator );
+            }
+		}
+	}
+
+	{
+		// Then, remove engines from the MasalaEngineManager.
+		if( !engine_creators.empty() ) {
+			MasalaEngineManager::get_instance()->unregister_engines( engine_creators );
+		}
+	}
+
+	{
+		// Next, remove data representations from the MasalaDataRepresentationManager.
+		if( !data_rep_creators.empty() ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representations( data_rep_creators );
+		}
+	}
+
+	{
+		// Then, remove data representations from the MasalaDataRepresentationManager.
+		if( !file_interp_creators.empty() ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreters( file_interp_creators );
+		}
+	}
 }
     
 /// @brief Remove a plugin from the list of plugins that the manager knows about.
 /// @details Throws if the plugin is not registered.  Call has_plugin()
 /// first to query wiether the plugin has already been added.
+/// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+/// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+/// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+/// also unregisters it from the MasalaFileInterpreterManager.
 void
 MasalaPluginModuleManager::remove_plugin(
     MasalaPluginCreatorCSP const & creator
 ) {
-    std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    remove_plugin_mutex_locked( creator );
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::file_interpreter;
+
+	{
+		// First, remove this plugin.
+		std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
+		remove_plugin_mutex_locked( creator );
+	}
+
+	{
+		// Next, check whether the plugin is an engine, and remove it from the
+		// MasalaEngineManager if it is.
+		MasalaEngineCreatorCSP engine_creator( std::dynamic_pointer_cast< MasalaEngineCreator const >( creator ) );
+		if( engine_creator != nullptr ) {
+			MasalaEngineManager::get_instance()->unregister_engine( engine_creator );
+		}
+	}
+
+	{
+		// Then, check whether the plugin is a data representation, and remove it from the
+		// MasalaDataRepresentationManager if it is.
+		MasalaDataRepresentationCreatorCSP data_rep_creator( std::dynamic_pointer_cast< MasalaDataRepresentationCreator const >( creator ) );
+		if( data_rep_creator != nullptr ) {
+			MasalaDataRepresentationManager::get_instance()->unregister_data_representation( data_rep_creator );
+		}
+	}
+
+	{
+		// Finally, check whether the plugin is a file intertpreter, and remove it from the
+		// MasalaFileInterpreterManager if it is.
+		MasalaFileInterpreterCreatorCSP file_interp_creator( std::dynamic_pointer_cast< MasalaFileInterpreterCreator const >( creator ) );
+		if( file_interp_creator != nullptr ) {
+			MasalaFileInterpreterManager::get_instance()->unregister_file_interpreter( file_interp_creator );
+		}
+	}
 }
 
 /// @brief Get a list of all plugins.
@@ -230,10 +493,10 @@ MasalaPluginModuleManager::get_all_plugin_list() const {
 std::vector< std::vector< std::string > >
 MasalaPluginModuleManager::get_all_categories() const {
     std::vector< std::vector< std::string > > outvec;
-    outvec.reserve( plugins_by_hierarchical_subcategory_.size() );
+    outvec.reserve( plugins_by_hierarchical_category_lowest_level_only_.size() );
     {
         std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-        for( auto const & entry : plugins_by_hierarchical_subcategory_ ) {
+        for( auto const & entry : plugins_by_hierarchical_category_lowest_level_only_ ) {
             outvec.push_back( entry.first );
         }
     }
@@ -342,14 +605,14 @@ MasalaPluginModuleManager::get_list_of_plugins_by_category(
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it;
     std::vector< std::string > outvec;
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
-    if( include_subcategories ) {
-        it = plugins_by_hierarchical_subcategory_.find( category );
-        if( it == plugins_by_hierarchical_subcategory_.end() ) {
+    if( !include_subcategories ) {
+        it = plugins_by_hierarchical_category_lowest_level_only_.find( category );
+        if( it == plugins_by_hierarchical_category_lowest_level_only_.end() ) {
             return outvec;
         }
     } else {
-        it = plugins_by_hierarchical_category_.find( category );
-        if( it == plugins_by_hierarchical_category_.end() ) {
+        it = plugins_by_hierarchical_category_all_levels_.find( category );
+        if( it == plugins_by_hierarchical_category_all_levels_.end() ) {
             return outvec;
         }
     }
@@ -441,11 +704,11 @@ MasalaPluginModuleManager::create_plugin_object_instance(
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
         include_subcategories ?
-        plugins_by_hierarchical_subcategory_.find( category ) :
-        plugins_by_hierarchical_category_.find( category )
+        plugins_by_hierarchical_category_all_levels_.find( category ) :
+        plugins_by_hierarchical_category_lowest_level_only_.find( category )
     );
     CHECK_OR_THROW_FOR_CLASS(
-        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        include_subcategories ? (it != plugins_by_hierarchical_category_all_levels_.end()) : (it != plugins_by_hierarchical_category_lowest_level_only_.end()),
         "create_plugin_object_instance",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
@@ -482,11 +745,11 @@ MasalaPluginModuleManager::create_plugin_object_instance_by_short_name(
     std::lock_guard< std::mutex > lock( plugin_map_mutex_ );
     std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::const_iterator it(
         include_subcategories ?
-        plugins_by_hierarchical_subcategory_.find( category ) :
-        plugins_by_hierarchical_category_.find( category )
+        plugins_by_hierarchical_category_all_levels_.find( category ) :
+        plugins_by_hierarchical_category_lowest_level_only_.find( category )
     );
     CHECK_OR_THROW_FOR_CLASS(
-        include_subcategories ? (it != plugins_by_hierarchical_subcategory_.end()) : (it != plugins_by_hierarchical_category_.end()),
+        include_subcategories ? (it != plugins_by_hierarchical_category_all_levels_.end()) : (it != plugins_by_hierarchical_category_lowest_level_only_.end()),
         "create_plugin_object_instance_by_short_name",
         "Could not find plugin category [ " + base::utility::container::container_to_string( category, ", " ) +
         " ] when attempting to create a plugin instance of type \"" + plugin_name + "\"."
@@ -644,10 +907,11 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
                 
                 // Update the map that DOES put plugins in parent categories.
                 std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it(
-                    plugins_by_hierarchical_category_.find( ss )
+                    plugins_by_hierarchical_category_all_levels_.find( ss )
                 );
-                if( it == plugins_by_hierarchical_category_.end() ) {
-                    plugins_by_hierarchical_category_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
+                if( it == plugins_by_hierarchical_category_all_levels_.end() ) {
+                    //write_to_tracer( "Created category [" + base::utility::container::container_to_string( ss, ", " ) + "]." );
+                    plugins_by_hierarchical_category_all_levels_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
                 } else {
                     std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
                     CHECK_OR_THROW_FOR_CLASS(
@@ -663,10 +927,10 @@ MasalaPluginModuleManager::add_plugin_mutex_locked(
 
             // Update the map that does NOT put plugins in parent categories.
             std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > >::iterator it2(
-                plugins_by_hierarchical_subcategory_.find( ss )
+                plugins_by_hierarchical_category_lowest_level_only_.find( ss )
             );
-            if( it2 == plugins_by_hierarchical_subcategory_.end() ) {
-                plugins_by_hierarchical_subcategory_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
+            if( it2 == plugins_by_hierarchical_category_lowest_level_only_.end() ) {
+                plugins_by_hierarchical_category_lowest_level_only_[ ss ] = std::set< MasalaPluginCreatorCSP >{ creator };
             } else {
                 std::string const plugin_namespace_and_name( creator->get_plugin_object_namespace_and_name() );
                 CHECK_OR_THROW_FOR_CLASS(
@@ -740,12 +1004,12 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
         for( std::string const & category : categories ) {
             ss.push_back( category );
 
-            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_.count( ss ) > 0,
+            DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_all_levels_.count( ss ) > 0,
                 "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
                 base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
                 "category map."
             );
-            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_.at(ss) );
+            std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_all_levels_.at(ss) );
             bool found( false );
             for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
                 if( (**it) == (*creator) ) {
@@ -759,16 +1023,16 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
                 "category [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
             );
             if( myset.empty() ) {
-                plugins_by_hierarchical_category_.erase( ss );
+                plugins_by_hierarchical_category_all_levels_.erase( ss );
             }
         }
 
-        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_subcategory_.count( ss ) > 0,
+        DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( plugins_by_hierarchical_category_lowest_level_only_.count( ss ) > 0,
             "remove_plugin_mutex_locked", "Program error! Could not find category [ " +
             base::utility::container::container_to_string( ss, ", " ) + " ] in hierarchical "
             "category map."
         );
-        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_subcategory_.at(ss) );
+        std::set< MasalaPluginCreatorCSP > & myset( plugins_by_hierarchical_category_lowest_level_only_.at(ss) );
         bool found( false );
         for( std::set< MasalaPluginCreatorCSP >::iterator it( myset.begin() ); it != myset.end(); ++it ) {
             if( (**it) == (*creator) ) {
@@ -782,7 +1046,7 @@ MasalaPluginModuleManager::remove_plugin_mutex_locked(
             "subcategory [ " + base::utility::container::container_to_string( ss, ", " ) + " ]."
         );
         if( myset.empty() ) {
-            plugins_by_hierarchical_subcategory_.erase( ss );
+            plugins_by_hierarchical_category_lowest_level_only_.erase( ss );
         }
     }
     write_to_tracer( "Removed plugin \"" + plugin_object_name + "\"." );

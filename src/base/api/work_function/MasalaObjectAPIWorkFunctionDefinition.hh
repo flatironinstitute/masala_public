@@ -31,6 +31,9 @@
 // Forward declarations.
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
 
+// Base headers.
+#include <base/types.hh>
+
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
@@ -135,6 +138,10 @@ public:
 
 	/// @brief Is this function one that triggers no mutex-locking?
 	bool triggers_no_mutex_lock() const;
+
+	/// @brief Get the number of input parameters.
+	/// @details Must be implemented by derived classes.
+	virtual masala::base::Size num_input_parameters() const = 0;
 
 public:
 

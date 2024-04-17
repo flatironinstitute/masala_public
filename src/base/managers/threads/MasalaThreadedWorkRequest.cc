@@ -61,7 +61,9 @@ MasalaThreadedJob &
 MasalaThreadedJob::operator=(
     MasalaThreadedJob const & src
 ) {
-    std::lock_guard< std::mutex > lock( src.job_mutex_ );
+	std::lock( src.job_mutex_, job_mutex_ );
+    std::lock_guard< std::mutex > lockthat( src.job_mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lockthis( job_mutex_, std::adopt_lock );
     work_function_ = src.work_function_;
     job_was_completed_.store( src.job_was_completed_.load() );
     return *this;

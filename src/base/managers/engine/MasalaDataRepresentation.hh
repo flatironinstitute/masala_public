@@ -1,0 +1,134 @@
+/*
+    Masala
+    Copyright (C) 2022 Vikram K. Mulligan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/// @file src/base/managers/engine/MasalaDataRepresentation.hh
+/// @brief A pure virtual base class class for particular representations
+/// of data that can be requested by engines for efficient manipulation of
+/// those data.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+
+#ifndef Masala_src_base_managers_engine_MasalaDataRepresentation_hh
+#define Masala_src_base_managers_engine_MasalaDataRepresentation_hh
+
+// Forward declarations:
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
+
+// Base headers:
+#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
+
+namespace masala {
+namespace base {
+namespace managers {
+namespace engine {
+
+/// @brief A pure virtual base class class for particular representations
+/// of data that can be requested by engines for efficient manipulation of
+/// those data.
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class MasalaDataRepresentation : public masala::base::managers::plugin_module::MasalaPlugin {
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor.
+    MasalaDataRepresentation() = default;
+
+    /// @brief Copy constructor.
+    MasalaDataRepresentation( MasalaDataRepresentation const & ) = default;
+
+    // Destructor.
+    ~MasalaDataRepresentation() override = default;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the categories that this data representation plugin falls into.
+    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
+    /// strings.  One data representation category can be classified into multiple categories.
+    /// @note Must be implemented by derived classes.
+    virtual
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const = 0;
+
+    /// @brief Get the MasalaEngines that with which this data representation plugin
+    /// is DEFINITELY compatible.  (There may be other engines with which it is also
+    /// compatible, so this is not necessarily an exhaustive list.)
+    /// @note Must be implemented by derived classes.  The list is by full name (i.e.
+    /// namespace + name), so for instance
+    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+    virtual
+    std::vector< std::string >
+    get_compatible_masala_engines() const = 0;
+
+    /// @brief Get the MasalaEngines that with which this data representation plugin
+    /// is DEFINITELY NOT compatible.  (There may be other engines with which it is also
+    /// not compatible, so this is not necessarily an exhaustive list.)
+    /// @details The default implementation returns an empty list.
+    /// @note Can be implemented by derived classes.  The list is by full name (i.e.
+    /// namespace + name), so for instance
+    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+    virtual
+    std::vector< std::string >
+    get_incompatible_masala_engines() const;
+
+    /// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
+    /// a non-exhaustive list.  If one data representation says it has the property
+    /// "linearly-scaling", another could also be linearly scaling despite not listing this.)
+    /// @note Can be overridden by derived classes.  The base implementation lists
+    /// no properties.
+    virtual
+    std::vector< std::string >
+    get_present_data_representation_properties() const;
+
+    /// @brief Get the properties of this MasalaDataRepresentation that might possibly be present.
+	/// @details Obviously, this is a non-exhuastive list.
+	/// @returns The base class returns an empty list.  Overrides could return other lists.
+    virtual
+	std::vector< std::string >
+	get_possibly_present_data_representation_properties() const;
+
+    /// @brief Get the properties that this MasalaDataRepresentation DEFINITELY lacks.
+    /// Note that this is inevitably a non-exhaustive list.
+    /// @note Can be overridden by derived classes.  The base implementation lists
+    /// no properties.
+    virtual
+    std::vector< std::string >
+    get_absent_data_representation_properties() const;
+
+    /// @brief Get the properties of this MasalaDataRepresentation that might possibly be absent.
+	/// @details Obviously, this is a non-exhuastive list.
+	/// @returns The base class returns an empty list.  Overrides could return other lists.
+    virtual
+	std::vector< std::string >
+	get_possibly_absent_data_representation_properties() const;
+
+};
+
+} // namespace engine
+} // namespace managers
+} // namespace base
+} // namespace masala
+
+#endif // Masala_src_base_managers_engine_MasalaDataRepresentation_hh

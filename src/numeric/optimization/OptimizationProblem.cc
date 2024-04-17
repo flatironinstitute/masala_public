@@ -25,11 +25,15 @@
 // Unit header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
+// Numeric headers:
+#include <numeric/optimization/OptimizationSolutions.hh>
+
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -48,7 +52,7 @@ namespace optimization {
 OptimizationProblem::OptimizationProblem(
     OptimizationProblem const & src
 ) :
-    masala::base::managers::plugin_module::MasalaPlugin(src)
+    masala::base::managers::engine::MasalaDataRepresentation(src)
 {
     std::lock_guard< std::mutex > lock( src.problem_mutex_ );
     finalized_ = src.finalized_.load();
@@ -59,7 +63,7 @@ OptimizationProblem &
 OptimizationProblem::operator=(
     OptimizationProblem const & src
 ) {
-    masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
+    masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
     {
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
@@ -112,6 +116,27 @@ OptimizationProblem::get_keywords() const {
 		"optimization_problem",
 		"numeric"
 	};
+}
+
+/// @brief Get the categories that this data representation plugin falls into.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns {{ "OptimizationProblem" }}
+std::vector< std::vector< std::string > >
+OptimizationProblem::get_data_representation_categories() const {
+    return std::vector< std::vector< std::string > >{{"OptimizationProblem"}};
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY compatible.  (There may be other engines with which it is also
+/// compatible, so this is not necessarily an exhaustive list.)
+/// @note Must be implemented by derived classes.  The list is by full name (i.e.
+/// namespace + name), so for instance
+/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+/// @returns An empty list.
+std::vector< std::string >
+OptimizationProblem::get_compatible_masala_engines() const {
+    return std::vector< std::string >{};
 }
 
 /// @brief Get the class name.
@@ -207,10 +232,35 @@ OptimizationProblem::get_api_definition() {
             )
         );
 
+        // Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
+                "create_solutions_container", "Create a solutions container for this type of optimization problem.  "
+				"Base class implementation creates a generic OptimizationSolutions container.  Derived classes may "
+				"override this to create specialized solutions containers.",
+				true, false, true, false,
+				"solutions_container", "An OptimizationSolutions object (or instance of a derived class thereof) for holding "
+				"solutions to this optimization problem.",
+				std::bind( &OptimizationProblem::create_solutions_container, this )
+            )
+        );
+
         api_definition_ = api_def; //Make const.
     }
 
     return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Create a solutions container for this type of optimization problem.
+/// @details Base class implementation creates a generic OptimizationSolutions container.  Derived
+/// classes may override this to create specialized solutions containers.
+OptimizationSolutionsSP
+OptimizationProblem::create_solutions_container() const {
+    return masala::make_shared< OptimizationSolutions >();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
