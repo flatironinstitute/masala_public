@@ -68,6 +68,12 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Override to make class pure virtual.
+	std::string class_name() const override = 0;
+
+	/// @brief Override to make class pure virtual.
+	std::string class_namespace() const override = 0;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
