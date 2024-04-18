@@ -16,31 +16,64 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/ScoringTerm.cc
-/// @brief A base class for all Masala scoring terms.
+/// @file src/core_api/base_classes/scoring/ScoringTerm.hh
+/// @brief Headers for a base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
+/// @note Since this class does not implement class_name() or class_namespace(),
+/// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Class headers:
-#include <core/scoring/ScoringTerm.hh>
+#ifndef Masala_src_core_api_base_classes_scoring_ScoringTerm_hh
+#define Masala_src_core_api_base_classes_scoring_ScoringTerm_hh
+
+// Forward declarations:
+#include <core_api/base_classes/scoring/ScoringTerm.fwd.hh>
 
 // Base headers:
+#include <base/MasalaObject.hh>
 
 // STL headers:
 
 namespace masala {
-namespace core {
+namespace core_api {
+namespace base_classes {
 namespace scoring {
+
+/// @brief A base class for all Masala scoring terms.
+/// @details Masala scoring terms are components of Masala scoring functions.
+/// @note Since this class does not implement class_name() or class_namespace(),
+/// it remains pure virtual. 
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class ScoringTerm {
+
+public:
+
+	/// @brief Default constructor.
+	ScoringTerm() = default;
+
+	/// @brief Copy constructor.
+	ScoringTerm( ScoringTerm const & ) = default;
+
+	/// @brief Virtual destructor.
+	virtual ~ScoringTerm() = default;
+
+public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+protected:
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+}; // class ScoringTerm
 
 } // namespace scoring
-} // namespace core
+} // namespace base_classes
+} // namespace core_api
 } // namespace masala
+
+#endif //Masala_src_core_api_base_classes_scoring_ScoringTerm_hh

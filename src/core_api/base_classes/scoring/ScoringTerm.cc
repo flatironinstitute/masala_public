@@ -16,60 +16,34 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/ScoringTerm.hh
-/// @brief Headers for a base class for all Masala scoring terms.
-/// @details Masala scoring terms are components of Masala scoring functions.
-/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-
-#ifndef Masala_src_core_scoring_ScoringTerm_hh
-#define Masala_src_core_scoring_ScoringTerm_hh
-
-// Forward declarations:
-#include <core/scoring/ScoringTerm.hh>
-
-// Base headers:
-#include <base/MasalaObject.hh>
-
-// STL headers:
-
-namespace masala {
-namespace core {
-namespace scoring {
-
+/// @file src/core_api/base_classes/scoring/ScoringTerm.cc
 /// @brief A base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ScoringTerm {
 
-public:
+// Class headers:
+#include <core_api/base_classes/scoring/ScoringTerm.hh>
 
-	/// @brief Default constructor.
-	ScoringTerm() = default;
+// Base headers:
 
-	/// @brief Copy constructor.
-	ScoringTerm( ScoringTerm const & ) = default;
+// STL headers:
 
-	/// @brief Virtual destructor.
-	virtual ~ScoringTerm() = default;
-
-public:
+namespace masala {
+namespace core_api {
+namespace base_classes {
+namespace scoring {
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-protected:
-
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class ScoringTerm
-
 } // namespace scoring
-} // namespace core
+} // namespace base_classes
+} // namespace core_api
 } // namespace masala
-
-#endif //Masala_src_core_scoring_ScoringTerm_hh

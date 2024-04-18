@@ -19,15 +19,18 @@
 /// @file src/core/scoring/ScoringTerm.fwd.hh
 /// @brief Forward declarations for a base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
+/// @note Since this class does not implement class_name() or class_namespace(),
+/// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_scoring_ScoringTerm_fwd_hh
-#define Masala_src_core_scoring_ScoringTerm_fwd_hh
+#ifndef Masala_src_core_api_base_classes_scoring_ScoringTerm_fwd_hh
+#define Masala_src_core_api_base_classes_scoring_ScoringTerm_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
-namespace core {
+namespace core_api {
+namespace base_classes {
 namespace scoring {
 
 	class ScoringTerm;
@@ -49,7 +52,8 @@ namespace scoring {
 	using ScoringTermCWP = MASALA_WEAK_POINTER< ScoringTerm const >;
 
 } // namespace scoring
-} // namespace core
+} // namespace base_classes
+} // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_scoring_ScoringTerm_fwd_hh
+#endif //Masala_src_core_api_base_classes_scoring_ScoringTerm_fwd_hh
