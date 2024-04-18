@@ -30,7 +30,7 @@
 #include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.fwd.hh>
 
 // Parent class:
-#include <core/scoring/ScoringTerm.hh>
+#include <core_api/base_classes/scoring/PluginScoringTerm.hh>
 
 // Core API headers:
 #include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
@@ -58,7 +58,7 @@ namespace molecular_system {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginWholeMolecularSystemScoringTerm : public masala::core::scoring::ScoringTerm {
+class PluginWholeMolecularSystemScoringTerm : public masala::core_api::base_classes::scoring::PluginScoringTerm {
 
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API MolecularSystem_API;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
@@ -99,25 +99,15 @@ public:
 	/// @brief Override to make class pure virtual.
 	std::string class_namespace() const override = 0;
 
-	/// @brief Score a vector of structures (molecular systems), and produce a
-	/// corresponding vector of scores.
-	/// @param[in] molecular_systems A vector of at least one molecular system to score.
-	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
-	/// inputs.  Can be nullptr.  If non-null, the vector must contain one entry for each
-	/// molecular system.
-	/// @param[in] caches_ptr A pointer to a vector of (optional) cache containers to permit
-	/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
-	/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
-	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
-	/// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
-	/// with one output per molecular system.
-	std::vector< masala::base::Real >
-	score(
-		std::vector< MolecularSystem_APICSP > const & molecular_systems,
-		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
-		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
-	) const;
+    /// @brief Get a list of categories that this object could be sorted into.
+    /// @returns { { "scoring_term", "whole_molecular_system_scoring_term" } }
+    std::vector< std::vector< std::string > >
+    get_categories() const override;
+
+    /// @brief Get a list of keywords associated with this object.
+    /// @returns { "scoring_term", "whole_molecular_system" }
+    std::vector< std::string >
+    get_keywords() const override;
 
 protected:
 
@@ -139,7 +129,6 @@ protected:
 	/// outputs.  Can be nullptr.  If non-null, this vector will empty (length zero).  The derived
 	/// class is responsible for ensuring that the vector is either kept at length zero
 	/// or populated with one output per molecular system.
-	virtual
 	std::vector< masala::base::Real >
 	score_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,

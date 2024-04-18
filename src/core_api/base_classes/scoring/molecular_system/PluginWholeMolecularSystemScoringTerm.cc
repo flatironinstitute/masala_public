@@ -36,8 +36,6 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
-#include <base/managers/plugin_module/MasalaPluginWholeMolecularSystemModuleManager.hh>
-#include <base/managers/plugin_module/MasalaPluginWholeMolecularSystemCreator.hh>
 
 // STL headers:
 
@@ -51,105 +49,30 @@ namespace molecular_system {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Score a vector of structures (molecular systems), and produce a
-/// corresponding vector of scores.
-/// @param[in] molecular_systems A vector of at least one molecular system to score.
-/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
-/// inputs.  Can be nullptr.  If non-null, the vector must contain one entry for each
-/// molecular system.
-/// @param[in] caches_ptr A pointer to a vector of (optional) cache containers to permit
-/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
-/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
-/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
-/// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
-/// with one output per molecular system.
-std::vector< masala::base::Real >
-PluginWholeMolecularSystemScoringTerm::score(
-    std::vector< MolecularSystem_APICSP > const & molecular_systems,
-    std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
-    std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-    std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
-) const {
-    CHECK_OR_THROW_FOR_CLASS( molecular_systems.size() >= 1, "score", "At least one molecular system must be "
-        "present in the ensemble to score."
-    );
-    if( additional_inputs_ptr != nullptr ) {
-        CHECK_OR_THROW_FOR_CLASS( additional_inputs_ptr->size() == molecular_systems.size(),
-            "score", "The number of additional inputs (" + std::to_string( additional_inputs_ptr->size() )
-            + " did not match the number of molecular systems being scored (" + std::to_string( molecular_systems.size() )
-            + ")."
-        );
-    }
-    if( caches_ptr != nullptr ) {
-        CHECK_OR_THROW_FOR_CLASS( caches_ptr->size() == molecular_systems.size(),
-            "score", "The number of scoring caches (" + std::to_string( caches_ptr->size() )
-            + " did not match the number of molecular systems being scored (" + std::to_string( molecular_systems.size() )
-            + ")."
-        );
-    }
-    if( additional_outputs_ptr != nullptr ) {
-        additional_outputs_ptr->clear();
-    }
+/// @brief Get a list of categories that this object could be sorted into.
+/// @returns { { "scoring_term", "whole_molecular_system_scoring_term" } }
+std::vector< std::vector< std::string > >
+PluginWholeMolecularSystemScoringTerm::get_categories() const {
+	std::vector< std::vector< std::string > > base_categories( core_api::base_classes::scoring::PluginScoringTerm::get_categories() );
+	for( auto & entry : base_categories ) {
+		entry.push_back( "whole_molecular_system_scoring_term" );
+	}
+	return base_categories;
+}
 
-    // Convert vectors of API containers to vectors of inner objects:
-    std::vector< PluginWholeMolecularSystemScoringTermAdditionalInputCSP > additional_inputs_inner( additional_inputs_ptr == nullptr ? 0 : additional_inputs_ptr->size() );
-    if( additional_inputs_ptr != nullptr ) {
-        for( masala::base::Size i(0); i<additional_inputs_ptr->size(); ++i ) {
-            additional_inputs_inner[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermAdditionalInput const >( (*additional_inputs_ptr)[i]->get_inner_object() );
-        }
-    }
-    std::vector< PluginWholeMolecularSystemScoringTermCacheSP > caches_inner( caches_ptr == nullptr ? 0 : caches_ptr->size() );
-    if( caches_ptr != nullptr ) {
-        for( masala::base::Size i(0); i<caches_ptr->size(); ++i ) {
-            caches_inner[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermCache >( (*caches_ptr)[i]->get_inner_object() );
-        }
-    }
-    std::vector< PluginWholeMolecularSystemScoringTermAdditionalOutputCSP > additional_outputs_inner;
-
-    std::vector< masala::base::Real > const outval(
-        score_derived(
-            molecular_systems,
-            ( additional_inputs_ptr == nullptr ? nullptr : &additional_inputs_inner ),
-            ( caches_ptr == nullptr ? nullptr : &caches_inner ),
-            ( additional_outputs_ptr == nullptr ? nullptr : &additional_outputs_inner )
-        )
-    );
-
-	CHECK_OR_THROW_FOR_CLASS( outval.size() == molecular_systems.size(),
-		"score", "The output vector of scores had size " + std::to_string( outval.size() )
-		+ ", but we had " + std::to_string( molecular_systems.size() ) + " molecular systems."
-	);
-
-    // Encapsulate additional outputs in API containers.
-    if( additional_outputs_ptr != nullptr ) {
-        CHECK_OR_THROW_FOR_CLASS( additional_outputs_inner.empty() || additional_outputs_inner.size() == molecular_systems.size(),
-            "score", "Expected additional outputs from scoring to be empty or of equal size to the molecular systems vector ("
-            + std::to_string( molecular_systems.size() ) + "), but got a vector of length " + std::to_string( additional_outputs_inner.size() )
-            + "."
-        );
-        if( !additional_outputs_inner.empty() ) {
-            additional_outputs_ptr->clear();
-            additional_outputs_ptr->resize( additional_outputs_inner.size() );
-            
-            // Get a handle for the plugin manager:
-            masala::base::managers::plugin_module::MasalaPluginWholeMolecularSystemModuleManagerHandle pman(
-                masala::base::managers::plugin_module::MasalaPluginWholeMolecularSystemModuleManager::get_instance()
-            );
-
-            for( masala::base::Size i(0); i<additional_outputs_inner.size(); ++i ) {
-                (*additional_outputs_ptr)[i] = std::static_pointer_cast< ScoringTermAdditionalOutput_API const >(
-                    pman->encapsulate_const_plugin_object_instance( additional_outputs_inner[i] )
-                );
-            }
-        }
-    }
-
-    return outval;
+/// @brief Get a list of keywords associated with this object.
+/// @returns { "scoring_term", "whole_molecular_system" }
+std::vector< std::string >
+PluginWholeMolecularSystemScoringTerm::get_keywords() const {
+	std::vector< std::string > base_keywords( core_api::base_classes::scoring::PluginScoringTerm::get_keywords() );
+	base_keywords.push_back( "whole_molecular_system" );
+	return base_keywords;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
 
 } // namespace molecular_system
 } // namespace scoring
