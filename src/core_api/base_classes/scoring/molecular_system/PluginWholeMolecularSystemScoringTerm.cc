@@ -102,7 +102,7 @@ PluginWholeMolecularSystemScoringTerm::score_derived(
     );
     if( additional_inputs_ptr != nullptr ) {
         for( Size i(0); i<additional_inputs_ptr->size(); ++i ) {
-            additional_inputs_cast[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermAdditionalInput const >( (*additional_outputs_ptr)[i] );
+            additional_inputs_cast[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermAdditionalInput const >( (*additional_inputs_ptr)[i] );
         }
     }
 
@@ -119,11 +119,13 @@ PluginWholeMolecularSystemScoringTerm::score_derived(
 
     std::vector< PluginWholeMolecularSystemScoringTermAdditionalOutputCSP > additional_outputs;
 
-    score_molecular_systems_derived(
-        molecular_systems,
-        ( additional_inputs_ptr == nullptr ) ? nullptr : &additional_inputs_cast,
-        ( caches_ptr == nullptr ) ? nullptr : &caches_cast,
-        ( additional_outputs_ptr == nullptr ) ? nullptr : &additional_outputs
+    std::vector< masala::base::Real > const outval(
+        score_molecular_systems_derived(
+            molecular_systems,
+            ( additional_inputs_ptr == nullptr ) ? nullptr : &additional_inputs_cast,
+            ( caches_ptr == nullptr ) ? nullptr : &caches_cast,
+            ( additional_outputs_ptr == nullptr ) ? nullptr : &additional_outputs
+        )
     );
 
     if( additional_outputs_ptr != nullptr && !additional_outputs.empty() ) {
@@ -133,6 +135,8 @@ PluginWholeMolecularSystemScoringTerm::score_derived(
             (*additional_outputs_ptr)[i] = additional_outputs[i];
         }
     }
+
+    return outval;
 }
 
 } // namespace molecular_system

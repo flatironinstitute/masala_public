@@ -150,6 +150,7 @@ protected:
 	/// outputs.  Can be nullptr.  If non-null, this vector will empty (length zero).  The derived
 	/// class is responsible for ensuring that the vector is either kept at length zero
 	/// or populated with one output per molecular system.
+	virtual
 	std::vector< masala::base::Real >
 	score_molecular_systems_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
