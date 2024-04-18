@@ -40,6 +40,20 @@ namespace scoring {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get a list of categories that this object could be sorted into.
+/// @returns { { "scoring_term" } }
+std::vector< std::vector< std::string > >
+PluginScoringTerm::get_categories() const {
+	return { { "scoring_term" } };
+}
+
+/// @brief Get a list of keywords associated with this object.
+/// @returns { scoring_term }
+std::vector< std::string >
+PluginScoringTerm::get_keywords() const {
+	return { "scoring_term" };
+}
+
 /// @brief Score a vector of structures (molecular systems), and produce a
 /// corresponding vector of scores.
 /// @param[in] molecular_systems A vector of at least one molecular system to score.
