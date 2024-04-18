@@ -115,6 +115,28 @@ public:
 		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
 	) const;
 
+	/// @brief Score a vector of structures (molecular systems), and produce a
+	/// corresponding vector of scores.  This function must be implemented by derived
+	/// classes.
+	/// @param[in] molecular_systems A vector of at least one molecular system to score.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// inputs.  Can be nullptr.  If non-null, the vector must contain one entry for each
+	/// molecular system.
+	/// @param[in] caches_ptr A pointer to a vector of (optional) cache containers to permit
+	/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
+	/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
+	/// with one output per molecular system.
+	virtual
+	std::vector< masala::base::Real >
+	score_derived(
+		std::vector< MolecularSystem_APICSP > const & molecular_systems,
+		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
+		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
+		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
+	) const = 0;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
