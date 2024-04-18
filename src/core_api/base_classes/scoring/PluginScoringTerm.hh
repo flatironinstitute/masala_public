@@ -112,7 +112,7 @@ public:
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
 		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
 		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutput_APICSP > const * additional_outputs_ptr
+		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
 	) const;
 
 protected:

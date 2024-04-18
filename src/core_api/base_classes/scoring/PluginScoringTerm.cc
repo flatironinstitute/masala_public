@@ -57,7 +57,7 @@ PluginScoringTerm::score(
 	std::vector< MolecularSystem_APICSP > const & molecular_systems,
 	std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
 	std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-	std::vector< ScoringTermAdditionalOutput_APICSP > const * additional_outputs_ptr
+	std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
 ) const {
     CHECK_OR_THROW_FOR_CLASS( molecular_systems.size() >= 1, "score", "At least one molecular system must be "
         "present in the ensemble to score."
@@ -80,7 +80,12 @@ PluginScoringTerm::score(
         additional_outputs_ptr->clear();
     }
 
-    masala::base::Real const outval( score_derived( molecular_systems, additional_inputs_ptr, caches_ptr, additional_outputs_ptr ) );
+    std::vector< masala::base::Real > const outval( score_derived( molecular_systems, additional_inputs_ptr, caches_ptr, additional_outputs_ptr ) );
+
+	CHECK_OR_THROW_FOR_CLASS( outval.size() == molecular_systems.size(),
+		"score", "The output vector of scores had size " + std::to_string( outval.size() )
+		+ ", but we had " + std::to_string( molecular_systems.size() ) + " molecular systems."
+	);
 
     if( additional_outputs_ptr != nullptr ) {
         CHECK_OR_THROW_FOR_CLASS( additional_outputs_ptr->empty() || additional_outputs_ptr->size() == molecular_systems.size(),
