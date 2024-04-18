@@ -40,7 +40,6 @@ namespace scoring {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-
 /// @brief Copy constructor.
 /// @details Explicit copy constructor needed due to mutex.
 ScoringTerm::ScoringTerm(

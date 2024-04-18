@@ -36,6 +36,19 @@ namespace core {
 namespace scoring {
 
 ////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.
+/// @details Explicit copy constructor needed due to mutex.
+ScoringTermCache::ScoringTermCache(
+	ScoringTermCache const &
+) :
+	masala::base::MasalaObject()
+	// Deliberately do not copy mutex or API definition.
+{}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -52,8 +65,22 @@ ScoringTermCache::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
+// PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Allow derived classes to access the mutex for this object.
+/// @note The mutex is mutable, and can be locked from a const function.
+std::mutex &
+ScoringTermCache::mutex() const {
+    return mutex_;
+}
+
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+ScoringTermCache::api_definition() {
+    return api_definition_;
+}
 
 } // namespace scoring
 } // namespace core
