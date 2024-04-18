@@ -27,12 +27,28 @@
 #include <core/scoring/ScoringTerm.hh>
 
 // Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 // STL headers:
 
 namespace masala {
 namespace core {
 namespace scoring {
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+
+/// @brief Copy constructor.
+/// @details Explicit copy constructor needed due to mutex.
+ScoringTerm::ScoringTerm(
+	ScoringTerm const &
+) :
+	masala::base::MasalaObject()
+	// Deliberately do not copy mutex or API definition.
+{}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -51,8 +67,53 @@ ScoringTerm::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
+// PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+ScoringTerm::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+
+	if( api_definition() == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The ScoringTerm class defines a base class for scoring terms.  This is "
+				"not intended to be instantiated by protocols.",
+				false, false
+			)
+		);
+
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( ScoringTerm, api_def );
+
+		api_definition() = api_def; //Make const.
+	}
+
+	return api_definition();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Allow derived classes to access the mutex for this object.
+/// @note The mutex is mutable, and can be locked from a const function.
+std::mutex &
+ScoringTerm::mutex() const {
+    return mutex_;
+}
+
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+ScoringTerm::api_definition() {
+    return api_definition_;
+}
 
 } // namespace scoring
 } // namespace core

@@ -40,6 +40,7 @@
 
 // STL headers:
 #include <vector>
+#include <mutex>
 
 namespace masala {
 namespace core {
@@ -54,11 +55,16 @@ class ScoringTerm : public masala::base::MasalaObject {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	ScoringTerm() = default;
 
 	/// @brief Copy constructor.
-	ScoringTerm( ScoringTerm const & ) = default;
+	/// @details Explicit copy constructor needed due to mutex.
+	ScoringTerm( ScoringTerm const & src );
 
 	/// @brief Virtual destructor.
 	virtual ~ScoringTerm() = default;
@@ -75,11 +81,41 @@ public:
 	/// @brief Needed for API definition.
 	std::string class_namespace() const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Allow derived classes to access the mutex for this object.
+	/// @note The mutex is mutable, and can be locked from a const function.
+	std::mutex & mutex() const;
+
+	/// @brief Allow derived classes to access the API definition.
+	/// @note Could be nullptr.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex for accessing this class.
+	mutable std::mutex mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class ScoringTerm
 
