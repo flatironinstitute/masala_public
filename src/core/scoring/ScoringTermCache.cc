@@ -85,7 +85,7 @@ ScoringTermCache::get_api_definition() {
 				"The ScoringTermCache class defines a base class for a container for caching data that "
                 "should persist from scoring attempt to scoring attempt.  This is not intended to be "
                 "instantiated by protocols.",
-				false, false
+				false, true
 			)
 		);
 

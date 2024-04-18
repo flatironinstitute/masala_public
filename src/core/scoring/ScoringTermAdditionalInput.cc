@@ -85,7 +85,7 @@ ScoringTermAdditionalInput::get_api_definition() {
 				"The ScoringTermAdditionalInput class defines a base class for a container "
                 "for additional input to scoring terms.  This is not intended to be instantiated by "
                 "protocols.",
-				false, false
+				false, true
 			)
 		);
 

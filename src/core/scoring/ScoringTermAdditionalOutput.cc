@@ -84,7 +84,7 @@ ScoringTermAdditionalOutput::get_api_definition() {
 				"The ScoringTermAdditionalOutput class defines a base class for a container "
                 "for additional output from scoring terms.  This is not intended to be instantiated by "
                 "protocols.",
-				false, false
+				false, true
 			)
 		);
 
