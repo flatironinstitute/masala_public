@@ -42,6 +42,27 @@ namespace molecular_system {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get a list of categories that this object could be sorted into.
+/// @returns { { "scoring_term_additional_input", "whole_molecular_system_scoring_term_additional_input" } }
+std::vector< std::vector< std::string > >
+PluginWholeMolecularSystemScoringTermAdditionalInput::get_categories() const {
+	std::vector< std::vector< std::string > > base_categories( core_api::base_classes::scoring::PluginScoringTermAdditionalInput::get_categories() );
+	for( auto & entry : base_categories ) {
+		entry.push_back( "whole_molecular_system_scoring_term_additional_input" );
+	}
+	return base_categories;
+}
+
+/// @brief Get a list of keywords associated with this object.
+/// @returns { "scoring_term_additional_input", "whole_molecular_system" }
+std::vector< std::string >
+PluginWholeMolecularSystemScoringTermAdditionalInput::get_keywords() const {
+	std::vector< std::string > base_keywords( core_api::base_classes::scoring::PluginScoringTermAdditionalInput::get_keywords() );
+	base_keywords.push_back( "whole_molecular_system" );
+	return base_keywords;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

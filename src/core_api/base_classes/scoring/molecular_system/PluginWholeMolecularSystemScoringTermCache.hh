@@ -76,6 +76,16 @@ public:
 	/// @brief Override to make class pure virtual.
 	std::string class_namespace() const override = 0;
 
+    /// @brief Get a list of categories that this object could be sorted into.
+    /// @returns { { "scoring_term_additional_cache", "whole_molecular_system_scoring_term_additional_cache" } }
+    std::vector< std::vector< std::string > >
+    get_categories() const override;
+
+    /// @brief Get a list of keywords associated with this object.
+    /// @returns { "scoring_term_additional_cache", "whole_molecular_system" }
+    std::vector< std::string >
+    get_keywords() const override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
