@@ -17,7 +17,7 @@
 */
 
 /// @file src/core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.hh
-/// @brief Headers for a base class a container for additional
+/// @brief Headers for a base class for a container for additional
 /// output from a scoring term.
 /// @details Scoring terms may optionally produce additional output, beyond
 /// a single score.
@@ -44,7 +44,7 @@ namespace core_api {
 namespace base_classes {
 namespace scoring {
 
-/// @brief A base class a container for additional output from a scoring term.
+/// @brief A base class for a container for additional output from a scoring term.
 /// @details Scoring terms may optionally produce additional output, beyond
 /// a single score.
 /// @note Since this class does not implement class_name() or class_namespace(),

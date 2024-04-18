@@ -17,7 +17,7 @@
 */
 
 /// @file src/core/scoring/PluginScoringTermAdditionalOutput.fwd.hh
-/// @brief Forward declarations for a base class a container for additional
+/// @brief Forward declarations for a base class for a container for additional
 /// output from a scoring term.
 /// @details Scoring terms may optionally produce additional output, beyond
 /// a single score.

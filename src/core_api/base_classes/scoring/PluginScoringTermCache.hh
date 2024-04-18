@@ -17,7 +17,7 @@
 */
 
 /// @file src/core_api/base_classes/scoring/PluginScoringTermCache.hh
-/// @brief Headers for a base class a container anything that a scoring term may
+/// @brief Headers for a base class for a container anything that a scoring term may
 /// need to cache to facilitate repeated similar calculations.
 /// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),
@@ -43,7 +43,7 @@ namespace core_api {
 namespace base_classes {
 namespace scoring {
 
-/// @brief A base class a container anything that a scoring term may need to cache
+/// @brief A base class for a container anything that a scoring term may need to cache
 /// to facilitate repeated similar calculations.
 /// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),

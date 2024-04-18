@@ -17,7 +17,7 @@
 */
 
 /// @file src/core_api/base_classes/scoring/PluginScoringTermAdditionalInput.cc
-/// @brief A base class a container for additional input into a scoring term.
+/// @brief A base class for a container for additional input into a scoring term.
 /// @details Scoring terms may optionally accept additional inputs, beyond a
 /// vector of structures.
 /// @note Since this class does not implement class_name() or class_namespace(),

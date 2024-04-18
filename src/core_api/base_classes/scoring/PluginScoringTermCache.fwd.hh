@@ -17,7 +17,7 @@
 */
 
 /// @file src/core/scoring/PluginScoringTermCache.fwd.hh
-/// @brief Forward declarations for a base class a container anything that a scoring term may
+/// @brief Forward declarations for a base class for a container anything that a scoring term may
 /// need to cache to facilitate repeated similar calculations.
 /// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),

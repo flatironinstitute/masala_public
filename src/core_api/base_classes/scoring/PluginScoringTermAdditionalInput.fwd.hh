@@ -17,7 +17,7 @@
 */
 
 /// @file src/core/scoring/PluginScoringTermAdditionalInput.fwd.hh
-/// @brief Forward declarations for a base class a container for additional
+/// @brief Forward declarations for a base class for a container for additional
 /// input into a scoring term.
 /// @details Scoring terms may optionally accept additional inputs, beyond a
 /// vector of structures.
