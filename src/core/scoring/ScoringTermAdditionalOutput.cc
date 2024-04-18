@@ -43,11 +43,26 @@ namespace scoring {
 /// @brief Copy constructor.
 /// @details Explicit copy constructor needed due to mutex.
 ScoringTermAdditionalOutput::ScoringTermAdditionalOutput(
-	ScoringTermAdditionalOutput const &
+	ScoringTermAdditionalOutput const & src
 ) :
-	masala::base::MasalaObject()
+	masala::base::MasalaObject(src)
 	// Deliberately do not copy mutex or API definition.
 {}
+
+/// @brief Assignment operator.
+/// @details Explicit assignment operator needed due to mutex.
+ScoringTermAdditionalOutput &
+ScoringTermAdditionalOutput::operator=(
+	ScoringTermAdditionalOutput const & src
+) {
+	masala::base::MasalaObject::operator=(src);
+	// {
+	// 	std::lock( mutex_, src.mutex_ );
+	// 	std::lock_guard< std::mutex > lock( mutex_, std::adopt_lock );
+	// 	std::lock_guard< std::mutex > lock2( src.mutex_, std::adopt_lock );
+	// }
+	return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS

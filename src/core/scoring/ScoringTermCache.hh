@@ -57,6 +57,13 @@ public:
 	/// @details Explicit copy constructor needed due to mutex.
 	ScoringTermCache( ScoringTermCache const & src );
 
+	/// @brief Assignment operator.
+	/// @details Explicit assignment operator needed due to mutex.
+	ScoringTermCache &
+	operator=(
+		ScoringTermCache const & src
+	);
+
 	/// @brief Virtual destructor.
 	virtual ~ScoringTermCache() = default;
 

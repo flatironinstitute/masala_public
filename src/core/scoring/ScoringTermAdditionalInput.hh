@@ -58,6 +58,13 @@ public:
 	/// @details Explicit copy constructor needed due to mutex.
 	ScoringTermAdditionalInput( ScoringTermAdditionalInput const & src );
 
+	/// @brief Assignment operator.
+	/// @details Explicit assignment operator needed due to mutex.
+	ScoringTermAdditionalInput &
+	operator=(
+		ScoringTermAdditionalInput const & src
+	);
+
 	/// @brief Virtual destructor.
 	virtual ~ScoringTermAdditionalInput() = default;
 
