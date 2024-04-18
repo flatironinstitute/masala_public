@@ -166,7 +166,7 @@ def api_definition_has_protected_constructors( ccfile : str, project_name : str 
     if found == False :
         explanation = "No \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be found in the " + classname + " ::get_api_definition() function."
     else :
-        explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be parsed in the " + classname + " ::get_api_definition() function."
+        explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could not be parsed in the " + classname + " ::get_api_definition() function."
     raise Exception( "Could not parse file "  + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  " + explanation )
 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
