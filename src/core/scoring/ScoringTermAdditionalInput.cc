@@ -39,6 +39,18 @@ namespace scoring {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Needed for API definition.
+std::string
+ScoringTermAdditionalInput::class_name() const {
+	return "ScoringTermAdditionalInput";
+}
+
+/// @brief Needed for API definition.
+std::string
+ScoringTermAdditionalInput::class_namespace() const {
+	return "masala::core::scoring";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
