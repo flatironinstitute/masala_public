@@ -27,6 +27,7 @@
 #include <core_api/base_classes/scoring/PluginScoringTerm.hh>
 
 // Base headers:
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 
@@ -58,7 +59,38 @@ PluginScoringTerm::score(
 	std::vector< ScoringTermCache_APISP > const * const caches_ptr,
 	std::vector< ScoringTermAdditionalOutput_APICSP > const * additional_outputs_ptr
 ) const {
-	TODO TODO TODO;
+    CHECK_OR_THROW_FOR_CLASS( molecular_systems.size() >= 1, "score", "At least one molecular system must be "
+        "present in the ensemble to score."
+    );
+    if( additional_inputs_ptr != nullptr ) {
+        CHECK_OR_THROW_FOR_CLASS( additional_inputs_ptr->size() == molecular_systems.size(),
+            "score", "The number of additional inputs (" + std::to_string( additional_inputs_ptr->size() )
+            + " did not match the number of molecular systems being scored (" + std::to_string( molecular_systems.size() )
+            + ")."
+        );
+    }
+    if( caches_ptr != nullptr ) {
+        CHECK_OR_THROW_FOR_CLASS( caches_ptr->size() == molecular_systems.size(),
+            "score", "The number of scoring caches (" + std::to_string( caches_ptr->size() )
+            + " did not match the number of molecular systems being scored (" + std::to_string( molecular_systems.size() )
+            + ")."
+        );
+    }
+    if( additional_outputs_ptr != nullptr ) {
+        additional_outputs_ptr->clear();
+    }
+
+    masala::base::Real const outval( score_derived( molecular_systems, additional_inputs_ptr, caches_ptr, additional_outputs_ptr ) );
+
+    if( additional_outputs_ptr != nullptr ) {
+        CHECK_OR_THROW_FOR_CLASS( additional_outputs_ptr->empty() || additional_outputs_ptr->size() == molecular_systems.size(),
+            "score", "Expected additional outputs from scoring to be empty or of equal size to the molecular systems vector ("
+            + std::to_string( molecular_systems.size() ) + "), but got a vector of length " + std::to_string( additional_inputs_ptr->size() )
+            + "."
+        );
+    }
+
+    return outval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
