@@ -29,10 +29,18 @@
 // Forward declarations:
 #include <core_api/base_classes/scoring/ScoringTerm.fwd.hh>
 
+// Core API headers:
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
+#include <core_api/base_classes/scoring/ScoringTermAdditionalInput.fwd.hh>
+#include <core_api/base_classes/scoring/ScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/ScoringTermCache.fwd.hh>
+
 // Base headers:
 #include <base/MasalaObject.hh>
+#include <base/types.hh>
 
 // STL headers:
+#include <vector>
 
 namespace masala {
 namespace core_api {
@@ -45,6 +53,10 @@ namespace scoring {
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class ScoringTerm {
+
+	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API MolecularSystem_API;
+	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
+	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APICSP MolecularSystem_APICSP;
 
 public:
 
@@ -62,6 +74,26 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Score a vector of structures (molecular systems), and produce a
+	/// corresponding vector of scores.
+	/// @param[in] molecular_systems A vector of at least one molecular system to score.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// inputs.  Can be nullptr.  If non-null, the vector must contain one entry for each
+	/// molecular system.
+	/// @param[in] caches_ptr A pointer to a vector of (optional) cache containers to permit
+	/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
+	/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
+	/// with one output per molecular system.
+	std::vector< masala::base::Real >
+	score(
+		std::vector< MolecularSystem_APICSP > const & molecular_systems,
+		std::vector< ScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+		std::vector< ScoringTermCacheSP > const * const caches_ptr,
+		std::vector< ScoringTermAdditionalOutputCSP > const * additional_outputs_ptr
+	) const;
 
 protected:
 
