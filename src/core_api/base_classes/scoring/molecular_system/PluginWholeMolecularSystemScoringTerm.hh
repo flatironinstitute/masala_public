@@ -17,7 +17,7 @@
 */
 
 /// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.hh
-/// @brief Headers for a base class for all Masala scoring terms.
+/// @brief Headers for a base class for all Masala scoring terms that score a whole structure.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
@@ -53,7 +53,7 @@ namespace base_classes {
 namespace scoring {
 namespace molecular_system {
 
-/// @brief A base class for all Masala scoring terms.
+/// @brief A base class for all Masala scoring terms that score a whole structure.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
@@ -116,6 +116,27 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Score a vector of structures (molecular systems), and produce a
+	/// corresponding vector of scores.
+	/// @param[in] molecular_systems A vector of at least one molecular system to score.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// inputs.  Can be nullptr.  If non-null, the vector must contain one entry for each
+	/// molecular system.
+	/// @param[in] caches_ptr A pointer to a vector of (optional) cache containers to permit
+	/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
+	/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
+	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
+	/// outputs.  Can be nullptr.  If non-null, this vector will empty (length zero).  The derived
+	/// class is responsible for ensuring that the vector is either kept at length zero
+	/// or populated with one output per molecular system.
+	std::vector< masala::base::Real >
+	score_derived(
+		std::vector< MolecularSystem_APICSP > const & molecular_systems,
+		std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+		std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
+		std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
+	) const override;
+
+	/// @brief Score a vector of structures (molecular systems), and produce a
 	/// corresponding vector of scores.  This function must be implemented by derived
 	/// classes.
 	/// @param[in] molecular_systems A vector of at least one molecular system to score.
@@ -130,7 +151,7 @@ protected:
 	/// class is responsible for ensuring that the vector is either kept at length zero
 	/// or populated with one output per molecular system.
 	std::vector< masala::base::Real >
-	score_derived(
+	score_molecular_systems_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
 		std::vector< PluginWholeMolecularSystemScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
 		std::vector< PluginWholeMolecularSystemScoringTermCacheSP > const * const caches_ptr,

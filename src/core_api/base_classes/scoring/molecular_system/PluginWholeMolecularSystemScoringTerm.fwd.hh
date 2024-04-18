@@ -17,7 +17,7 @@
 */
 
 /// @file src/core/scoring/PluginWholeMolecularSystemScoringTerm.fwd.hh
-/// @brief Forward declarations for a base class for all Masala scoring terms.
+/// @brief Forward declarations for a base class for all Masala scoring terms that score a whole structure.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
