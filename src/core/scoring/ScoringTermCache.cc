@@ -28,6 +28,8 @@
 #include <core/scoring/ScoringTermCache.hh>
 
 // Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 // STL headers:
 
@@ -62,6 +64,38 @@ ScoringTermCache::class_name() const {
 std::string
 ScoringTermCache::class_namespace() const {
 	return "masala::core::scoring";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the ScoringTermCache class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+ScoringTermCache::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+
+	if( api_definition() == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The ScoringTermCache class defines a base class for a container for caching data that "
+                "should persist from scoring attempt to scoring attempt.  This is not intended to be "
+                "instantiated by protocols.",
+				false, false
+			)
+		);
+
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( ScoringTermCache, api_def );
+
+		api_definition() = api_def; //Make const.
+	}
+
+	return api_definition();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -34,6 +34,7 @@
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <mutex>
 
 namespace masala {
 namespace core {
@@ -72,6 +73,16 @@ public:
 	/// @brief Needed for API definition.
 	std::string
 	class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the ScoringTermCache class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
 protected:
 

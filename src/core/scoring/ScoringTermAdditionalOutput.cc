@@ -27,6 +27,8 @@
 #include <core/scoring/ScoringTermAdditionalOutput.hh>
 
 // Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 // STL headers:
 
@@ -61,6 +63,38 @@ ScoringTermAdditionalOutput::class_name() const {
 std::string
 ScoringTermAdditionalOutput::class_namespace() const {
 	return "masala::core::scoring";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the ScoringTermAdditionalOutput class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+ScoringTermAdditionalOutput::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+
+	if( api_definition() == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The ScoringTermAdditionalOutput class defines a base class for a container "
+                "for additional output from scoring terms.  This is not intended to be instantiated by "
+                "protocols.",
+				false, false
+			)
+		);
+
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( ScoringTermAdditionalOutput, api_def );
+
+		api_definition() = api_def; //Make const.
+	}
+
+	return api_definition();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

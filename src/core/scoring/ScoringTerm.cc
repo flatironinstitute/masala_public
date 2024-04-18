@@ -69,7 +69,7 @@ ScoringTerm::class_namespace() const {
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+/// @brief Get a description of the API for the ScoringTerm class.
 masala::base::api::MasalaObjectAPIDefinitionCWP
 ScoringTerm::get_api_definition() {
 	using namespace masala::base::api;

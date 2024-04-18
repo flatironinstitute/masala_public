@@ -39,7 +39,6 @@
 #include <base/MasalaObject.hh>
 
 // STL headers:
-#include <vector>
 #include <mutex>
 
 namespace masala {
@@ -87,7 +86,7 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+    /// @brief Get a description of the API for the ScoringTerm class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
