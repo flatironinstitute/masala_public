@@ -126,9 +126,7 @@ ScoringTermCache::get_api_definition() {
 		MasalaObjectAPIDefinitionSP api_def(
 			masala::make_shared< MasalaObjectAPIDefinition >(
 				*this,
-				"The ScoringTermCache class defines a base class for a container for caching data that "
-                "should persist from scoring attempt to scoring attempt.  This is not intended to be "
-                "instantiated by protocols.",
+				"The ScoringTermCache class defines a base class for a container for caching data that should persist from scoring attempt to scoring attempt.  This is not intended to be instantiated by protocols.",
 				false, true
 			)
 		);

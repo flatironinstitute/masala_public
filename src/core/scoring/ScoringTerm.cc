@@ -125,8 +125,7 @@ ScoringTerm::get_api_definition() {
 		MasalaObjectAPIDefinitionSP api_def(
 			masala::make_shared< MasalaObjectAPIDefinition >(
 				*this,
-				"The ScoringTerm class defines a base class for scoring terms.  This is "
-				"not intended to be instantiated by protocols.",
+				"The ScoringTerm class defines a base class for scoring terms.  This is not intended to be instantiated by protocols.",
 				false, true
 			)
 		);
