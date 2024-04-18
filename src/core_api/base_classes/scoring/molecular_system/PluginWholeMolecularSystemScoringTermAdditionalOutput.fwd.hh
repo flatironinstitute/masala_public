@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/PluginMolecularSystemScoringTermAdditionalInput.fwd.hh
+/// @file src/core/scoring/PluginWholeMolecularSystemScoringTermAdditionalOutput.fwd.hh
 /// @brief Forward declarations for a base class for a container for additional
-/// input into a scoring term that scores a whole molecular system.
-/// @details Scoring terms may optionally accept additional inputs, beyond a
-/// vector of structures.
+/// output from a scoring term that scores a whole molecular system.
+/// @details Scoring terms may optionally produce additional output, beyond
+/// a single score.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalInput_fwd_hh
-#define Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalInput_fwd_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalOutput_fwd_hh
+#define Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalOutput_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -36,23 +36,23 @@ namespace base_classes {
 namespace scoring {
 namespace molecular_system {
 
-	class PluginMolecularSystemScoringTermAdditionalInput;
+	class PluginWholeMolecularSystemScoringTermAdditionalOutput;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using PluginMolecularSystemScoringTermAdditionalInputSP = MASALA_SHARED_POINTER< PluginMolecularSystemScoringTermAdditionalInput >;
+	using PluginWholeMolecularSystemScoringTermAdditionalOutputSP = MASALA_SHARED_POINTER< PluginWholeMolecularSystemScoringTermAdditionalOutput >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using PluginMolecularSystemScoringTermAdditionalInputCSP = MASALA_SHARED_POINTER< PluginMolecularSystemScoringTermAdditionalInput const >;
+	using PluginWholeMolecularSystemScoringTermAdditionalOutputCSP = MASALA_SHARED_POINTER< PluginWholeMolecularSystemScoringTermAdditionalOutput const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using PluginMolecularSystemScoringTermAdditionalInputWP = MASALA_WEAK_POINTER< PluginMolecularSystemScoringTermAdditionalInput >;
+	using PluginWholeMolecularSystemScoringTermAdditionalOutputWP = MASALA_WEAK_POINTER< PluginWholeMolecularSystemScoringTermAdditionalOutput >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using PluginMolecularSystemScoringTermAdditionalInputCWP = MASALA_WEAK_POINTER< PluginMolecularSystemScoringTermAdditionalInput const >;
+	using PluginWholeMolecularSystemScoringTermAdditionalOutputCWP = MASALA_WEAK_POINTER< PluginWholeMolecularSystemScoringTermAdditionalOutput const >;
 
 } // namespace molecular_system
 } // namespace scoring
@@ -60,4 +60,4 @@ namespace molecular_system {
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalInput_fwd_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalOutput_fwd_hh

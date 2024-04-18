@@ -16,27 +16,27 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTerm.hh
+/// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.hh
 /// @brief Headers for a base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTerm_hh
-#define Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTerm_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTerm_hh
+#define Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTerm_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTerm.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.fwd.hh>
 
 // Parent class:
 #include <core/scoring/ScoringTerm.hh>
 
 // Core API headers:
 #include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalInput.fwd.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.fwd.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermCache.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalInput.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.fwd.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalInput_API.fwd.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalOutput_API.fwd.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermCache_API.fwd.hh>
@@ -58,7 +58,7 @@ namespace molecular_system {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginMolecularSystemScoringTerm : public masala::core::scoring::ScoringTerm {
+class PluginWholeMolecularSystemScoringTerm : public masala::core::scoring::ScoringTerm {
 
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API MolecularSystem_API;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
@@ -79,13 +79,13 @@ class PluginMolecularSystemScoringTerm : public masala::core::scoring::ScoringTe
 public:
 
 	/// @brief Default constructor.
-	PluginMolecularSystemScoringTerm() = default;
+	PluginWholeMolecularSystemScoringTerm() = default;
 
 	/// @brief Copy constructor.
-	PluginMolecularSystemScoringTerm( PluginMolecularSystemScoringTerm const & ) = default;
+	PluginWholeMolecularSystemScoringTerm( PluginWholeMolecularSystemScoringTerm const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~PluginMolecularSystemScoringTerm() = default;
+	virtual ~PluginWholeMolecularSystemScoringTerm() = default;
 
 public:
 
@@ -143,12 +143,12 @@ protected:
 	std::vector< masala::base::Real >
 	score_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
-		std::vector< PluginMolecularSystemScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
-		std::vector< PluginMolecularSystemScoringTermCacheSP > const * const caches_ptr,
-		std::vector< PluginMolecularSystemScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
+		std::vector< PluginWholeMolecularSystemScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+		std::vector< PluginWholeMolecularSystemScoringTermCacheSP > const * const caches_ptr,
+		std::vector< PluginWholeMolecularSystemScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
 	) const = 0;
 
-}; // class PluginMolecularSystemScoringTerm
+}; // class PluginWholeMolecularSystemScoringTerm
 
 } // namespace molecular_system
 } // namespace scoring
@@ -156,4 +156,4 @@ protected:
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTerm_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTerm_hh

@@ -16,23 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.hh
+/// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalInput.hh
 /// @brief Headers for a base class for a container for additional
-/// output from a scoring term that scores a whole molecular system.
-/// @details Scoring terms may optionally produce additional output, beyond
-/// a single score.
+/// input into a scoring term that scores a whole molecular system.
+/// @details Scoring terms may optionally accept additional inputs, beyond a
+/// vector of structures.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalOutput_hh
-#define Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalOutput_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalInput_hh
+#define Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalInput_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalInput.fwd.hh>
 
 // Parent class:
-#include <core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.hh>
 
 // Base headers:
 
@@ -45,24 +45,25 @@ namespace base_classes {
 namespace scoring {
 namespace molecular_system {
 
-/// @brief A base class for a container for additional output from a scoring term that scores a whole molecular system.
-/// @details Scoring terms may optionally produce additional output, beyond
-/// a single score.
+/// @brief A base class for a container for additional input into a scoring term
+/// that scores a whole molecular system.
+/// @details Scoring terms may optionally accept additional inputs, beyond a
+/// vector of structures.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginMolecularSystemScoringTermAdditionalOutput : public masala::core_api::base_classes::scoring::PluginScoringTermAdditionalOutput {
+class PluginWholeMolecularSystemScoringTermAdditionalInput : public masala::core_api::base_classes::scoring::PluginScoringTermAdditionalInput {
 
 public:
 
 	/// @brief Default constructor.
-	PluginMolecularSystemScoringTermAdditionalOutput() = default;
+	PluginWholeMolecularSystemScoringTermAdditionalInput() = default;
 
 	/// @brief Copy constructor.
-	PluginMolecularSystemScoringTermAdditionalOutput( PluginMolecularSystemScoringTermAdditionalOutput const & ) = default;
+	PluginWholeMolecularSystemScoringTermAdditionalInput( PluginWholeMolecularSystemScoringTermAdditionalInput const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~PluginMolecularSystemScoringTermAdditionalOutput() = default;
+	virtual ~PluginWholeMolecularSystemScoringTermAdditionalInput() = default;
 
 public:
 
@@ -82,7 +83,7 @@ protected:
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class PluginMolecularSystemScoringTermAdditionalOutput
+}; // class PluginWholeMolecularSystemScoringTermAdditionalInput
 
 } // namespace molecular_system
 } // namespace scoring
@@ -90,4 +91,4 @@ protected:
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermAdditionalOutput_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermAdditionalInput_hh

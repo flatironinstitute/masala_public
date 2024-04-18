@@ -16,15 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.cc
-/// @brief A base class for a container for additional output from a scoring term that scores a whole molecular system.
-/// @details Scoring terms may optionally produce additional output, beyond a single score.
+/// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.cc
+/// @brief A base class for a container anything that a scoring term that scores a
+/// whole molecular system may need to cache to facilitate repeated similar calculations.
+/// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.hh>
 
 // Base headers:
 

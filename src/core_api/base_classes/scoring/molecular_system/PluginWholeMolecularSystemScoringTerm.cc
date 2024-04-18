@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTerm.cc
+/// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.cc
 /// @brief A base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
@@ -24,20 +24,20 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTerm.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTerm.hh>
 
 // Core-API headers:
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalInput_API.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalOutput_API.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermCache_API.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalInput.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermAdditionalOutput.hh>
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermCache.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalInput.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermAdditionalOutput.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
-#include <base/managers/plugin_module/MasalaPluginMolecularSystemModuleManager.hh>
-#include <base/managers/plugin_module/MasalaPluginMolecularSystemCreator.hh>
+#include <base/managers/plugin_module/MasalaPluginWholeMolecularSystemModuleManager.hh>
+#include <base/managers/plugin_module/MasalaPluginWholeMolecularSystemCreator.hh>
 
 // STL headers:
 
@@ -64,7 +64,7 @@ namespace molecular_system {
 /// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
 /// with one output per molecular system.
 std::vector< masala::base::Real >
-PluginMolecularSystemScoringTerm::score(
+PluginWholeMolecularSystemScoringTerm::score(
     std::vector< MolecularSystem_APICSP > const & molecular_systems,
     std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
     std::vector< ScoringTermCache_APISP > const * const caches_ptr,
@@ -92,19 +92,19 @@ PluginMolecularSystemScoringTerm::score(
     }
 
     // Convert vectors of API containers to vectors of inner objects:
-    std::vector< PluginMolecularSystemScoringTermAdditionalInputCSP > additional_inputs_inner( additional_inputs_ptr == nullptr ? 0 : additional_inputs_ptr->size() );
+    std::vector< PluginWholeMolecularSystemScoringTermAdditionalInputCSP > additional_inputs_inner( additional_inputs_ptr == nullptr ? 0 : additional_inputs_ptr->size() );
     if( additional_inputs_ptr != nullptr ) {
         for( masala::base::Size i(0); i<additional_inputs_ptr->size(); ++i ) {
-            additional_inputs_inner[i] = std::static_pointer_cast< PluginMolecularSystemScoringTermAdditionalInput const >( (*additional_inputs_ptr)[i]->get_inner_object() );
+            additional_inputs_inner[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermAdditionalInput const >( (*additional_inputs_ptr)[i]->get_inner_object() );
         }
     }
-    std::vector< PluginMolecularSystemScoringTermCacheSP > caches_inner( caches_ptr == nullptr ? 0 : caches_ptr->size() );
+    std::vector< PluginWholeMolecularSystemScoringTermCacheSP > caches_inner( caches_ptr == nullptr ? 0 : caches_ptr->size() );
     if( caches_ptr != nullptr ) {
         for( masala::base::Size i(0); i<caches_ptr->size(); ++i ) {
-            caches_inner[i] = std::static_pointer_cast< PluginMolecularSystemScoringTermCache >( (*caches_ptr)[i]->get_inner_object() );
+            caches_inner[i] = std::static_pointer_cast< PluginWholeMolecularSystemScoringTermCache >( (*caches_ptr)[i]->get_inner_object() );
         }
     }
-    std::vector< PluginMolecularSystemScoringTermAdditionalOutputCSP > additional_outputs_inner;
+    std::vector< PluginWholeMolecularSystemScoringTermAdditionalOutputCSP > additional_outputs_inner;
 
     std::vector< masala::base::Real > const outval(
         score_derived(
@@ -132,8 +132,8 @@ PluginMolecularSystemScoringTerm::score(
             additional_outputs_ptr->resize( additional_outputs_inner.size() );
             
             // Get a handle for the plugin manager:
-            masala::base::managers::plugin_module::MasalaPluginMolecularSystemModuleManagerHandle pman(
-                masala::base::managers::plugin_module::MasalaPluginMolecularSystemModuleManager::get_instance()
+            masala::base::managers::plugin_module::MasalaPluginWholeMolecularSystemModuleManagerHandle pman(
+                masala::base::managers::plugin_module::MasalaPluginWholeMolecularSystemModuleManager::get_instance()
             );
 
             for( masala::base::Size i(0); i<additional_outputs_inner.size(); ++i ) {

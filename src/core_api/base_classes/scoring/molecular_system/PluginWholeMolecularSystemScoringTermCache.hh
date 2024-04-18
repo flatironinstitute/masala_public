@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermCache.hh
+/// @file src/core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.hh
 /// @brief Headers for a base class for a container anything that a scoring term that
 /// scores a whole molecular system. may need to cache to facilitate repeated similar
 /// calculations.
@@ -25,11 +25,11 @@
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_hh
-#define Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_hh
+#define Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/molecular_system/PluginMolecularSystemScoringTermCache.fwd.hh>
+#include <core_api/base_classes/scoring/molecular_system/PluginWholeMolecularSystemScoringTermCache.fwd.hh>
 
 // Parent class:
 #include <core_api/base_classes/scoring/PluginScoringTermCache.hh>
@@ -51,18 +51,18 @@ namespace molecular_system {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PluginMolecularSystemScoringTermCache : public masala::core_api::base_classes::scoring::PluginScoringTermCache {
+class PluginWholeMolecularSystemScoringTermCache : public masala::core_api::base_classes::scoring::PluginScoringTermCache {
 
 public:
 
 	/// @brief Default constructor.
-	PluginMolecularSystemScoringTermCache() = default;
+	PluginWholeMolecularSystemScoringTermCache() = default;
 
 	/// @brief Copy constructor.
-	PluginMolecularSystemScoringTermCache( PluginMolecularSystemScoringTermCache const & ) = default;
+	PluginWholeMolecularSystemScoringTermCache( PluginWholeMolecularSystemScoringTermCache const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~PluginMolecularSystemScoringTermCache() = default;
+	virtual ~PluginWholeMolecularSystemScoringTermCache() = default;
 
 public:
 
@@ -82,7 +82,7 @@ protected:
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class PluginMolecularSystemScoringTermCache
+}; // class PluginWholeMolecularSystemScoringTermCache
 
 } // namespace molecular_system
 } // namespace scoring
@@ -90,4 +90,4 @@ protected:
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_hh

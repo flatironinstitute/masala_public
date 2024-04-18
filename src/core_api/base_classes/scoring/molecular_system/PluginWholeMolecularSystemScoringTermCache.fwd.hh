@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/PluginMolecularSystemScoringTermCache.fwd.hh
+/// @file src/core/scoring/PluginWholeMolecularSystemScoringTermCache.fwd.hh
 /// @brief Forward declarations for a base class for a container anything that a scoring term
 /// that scores a whole molecular system may need to cache to facilitate repeated similar
 /// calculations.
@@ -25,8 +25,8 @@
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_fwd_hh
-#define Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_fwd_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_fwd_hh
+#define Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -36,23 +36,23 @@ namespace base_classes {
 namespace scoring {
 namespace molecular_system {
 
-	class PluginMolecularSystemScoringTermCache;
+	class PluginWholeMolecularSystemScoringTermCache;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using PluginMolecularSystemScoringTermCacheSP = MASALA_SHARED_POINTER< PluginMolecularSystemScoringTermCache >;
+	using PluginWholeMolecularSystemScoringTermCacheSP = MASALA_SHARED_POINTER< PluginWholeMolecularSystemScoringTermCache >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using PluginMolecularSystemScoringTermCacheCSP = MASALA_SHARED_POINTER< PluginMolecularSystemScoringTermCache const >;
+	using PluginWholeMolecularSystemScoringTermCacheCSP = MASALA_SHARED_POINTER< PluginWholeMolecularSystemScoringTermCache const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using PluginMolecularSystemScoringTermCacheWP = MASALA_WEAK_POINTER< PluginMolecularSystemScoringTermCache >;
+	using PluginWholeMolecularSystemScoringTermCacheWP = MASALA_WEAK_POINTER< PluginWholeMolecularSystemScoringTermCache >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using PluginMolecularSystemScoringTermCacheCWP = MASALA_WEAK_POINTER< PluginMolecularSystemScoringTermCache const >;
+	using PluginWholeMolecularSystemScoringTermCacheCWP = MASALA_WEAK_POINTER< PluginWholeMolecularSystemScoringTermCache const >;
 
 } // namespace molecular_system
 } // namespace scoring
@@ -60,4 +60,4 @@ namespace molecular_system {
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_PluginMolecularSystemScoringTermCache_fwd_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginWholeMolecularSystemScoringTermCache_fwd_hh
