@@ -34,9 +34,9 @@
 
 // Core API headers:
 #include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
-#include <core_api/auto_generated_api/scoring/ScoringTermAdditionalInput_API.fwd.hh>
-#include <core_api/auto_generated_api/scoring/ScoringTermAdditionalOutput_API.fwd.hh>
-#include <core_api/auto_generated_api/scoring/ScoringTermCache_API.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermCache.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -59,18 +59,6 @@ class PluginScoringTerm : public masala::core::scoring::ScoringTerm {
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API MolecularSystem_API;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APICSP MolecularSystem_APICSP;
-
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_API ScoringTermAdditionalInput_API;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_APISP ScoringTermAdditionalInput_APISP;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_APICSP ScoringTermAdditionalInput_APICSP;
-
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_API ScoringTermAdditionalOutput_API;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_APISP ScoringTermAdditionalOutput_APISP;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_APICSP ScoringTermAdditionalOutput_APICSP;
-
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_API ScoringTermCache_API;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_APISP ScoringTermCache_APISP;
-	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_APICSP ScoringTermCache_APICSP;
 
 public:
 
@@ -110,9 +98,9 @@ public:
 	std::vector< masala::base::Real >
 	score(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
-		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
-		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
+		std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+		std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
+		std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
 	) const;
 
 	/// @brief Score a vector of structures (molecular systems), and produce a
@@ -132,9 +120,9 @@ public:
 	std::vector< masala::base::Real >
 	score_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
-		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
-		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
+		std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+		std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
+		std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
 	) const = 0;
 
 protected:

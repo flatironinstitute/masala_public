@@ -55,9 +55,9 @@ namespace scoring {
 std::vector< masala::base::Real >
 PluginScoringTerm::score(
 	std::vector< MolecularSystem_APICSP > const & molecular_systems,
-	std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
-	std::vector< ScoringTermCache_APISP > const * const caches_ptr,
-	std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
+	std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
+	std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
+	std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
 ) const {
     CHECK_OR_THROW_FOR_CLASS( molecular_systems.size() >= 1, "score", "At least one molecular system must be "
         "present in the ensemble to score."
