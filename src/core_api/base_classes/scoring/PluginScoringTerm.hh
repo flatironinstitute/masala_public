@@ -83,16 +83,6 @@ public:
 	/// @brief Override to make class pure virtual.
 	std::string class_namespace() const override = 0;
 
-	/// @brief Get a list of categories that this object could be sorted into.
-	/// @returns { { scoring_term } }
-	std::vector< std::vector< std::string > >
-	get_categories() const;
-
-	/// @brief Get a list of keywords associated with this object.
-	/// @returns { scoring_term }
-	std::vector< std::string >
-	get_keywords() const;
-
 	/// @brief Score a vector of structures (molecular systems), and produce a
 	/// corresponding vector of scores.
 	/// @param[in] molecular_systems A vector of at least one molecular system to score.
