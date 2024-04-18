@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/ScoringTermAdditionalInput.fwd.hh
+/// @file src/core/scoring/PluginScoringTermAdditionalInput.fwd.hh
 /// @brief Forward declarations for a base class a container for additional
 /// input into a scoring term.
 /// @details Scoring terms may optionally accept additional inputs, beyond a
@@ -25,8 +25,8 @@
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_fwd_hh
-#define Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_fwd_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_fwd_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,27 +35,27 @@ namespace core_api {
 namespace base_classes {
 namespace scoring {
 
-	class ScoringTermAdditionalInput;
+	class PluginScoringTermAdditionalInput;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using ScoringTermAdditionalInputSP = MASALA_SHARED_POINTER< ScoringTermAdditionalInput >;
+	using PluginScoringTermAdditionalInputSP = MASALA_SHARED_POINTER< PluginScoringTermAdditionalInput >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using ScoringTermAdditionalInputCSP = MASALA_SHARED_POINTER< ScoringTermAdditionalInput const >;
+	using PluginScoringTermAdditionalInputCSP = MASALA_SHARED_POINTER< PluginScoringTermAdditionalInput const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using ScoringTermAdditionalInputWP = MASALA_WEAK_POINTER< ScoringTermAdditionalInput >;
+	using PluginScoringTermAdditionalInputWP = MASALA_WEAK_POINTER< PluginScoringTermAdditionalInput >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using ScoringTermAdditionalInputCWP = MASALA_WEAK_POINTER< ScoringTermAdditionalInput const >;
+	using PluginScoringTermAdditionalInputCWP = MASALA_WEAK_POINTER< PluginScoringTermAdditionalInput const >;
 
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_fwd_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_fwd_hh

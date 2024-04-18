@@ -16,27 +16,29 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTerm.hh
+/// @file src/core_api/base_classes/scoring/PluginScoringTerm.hh
 /// @brief Headers for a base class for all Masala scoring terms.
 /// @details Masala scoring terms are components of Masala scoring functions.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_ScoringTerm_hh
-#define Masala_src_core_api_base_classes_scoring_ScoringTerm_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTerm_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTerm_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/ScoringTerm.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTerm.fwd.hh>
+
+// Parent class:
+#include <core/scoring/ScoringTerm.hh>
 
 // Core API headers:
 #include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.fwd.hh>
-#include <core_api/base_classes/scoring/ScoringTermAdditionalInput.fwd.hh>
-#include <core_api/base_classes/scoring/ScoringTermAdditionalOutput.fwd.hh>
-#include <core_api/base_classes/scoring/ScoringTermCache.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermCache.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
 #include <base/types.hh>
 
 // STL headers:
@@ -52,7 +54,7 @@ namespace scoring {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ScoringTerm {
+class PluginScoringTerm : public masala::core::scoring::ScoringTerm {
 
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API MolecularSystem_API;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
@@ -61,13 +63,13 @@ class ScoringTerm {
 public:
 
 	/// @brief Default constructor.
-	ScoringTerm() = default;
+	PluginScoringTerm() = default;
 
 	/// @brief Copy constructor.
-	ScoringTerm( ScoringTerm const & ) = default;
+	PluginScoringTerm( PluginScoringTerm const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~ScoringTerm() = default;
+	virtual ~PluginScoringTerm() = default;
 
 public:
 
@@ -90,9 +92,9 @@ public:
 	std::vector< masala::base::Real >
 	score(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
-		std::vector< ScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
-		std::vector< ScoringTermCacheSP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutputCSP > const * additional_outputs_ptr
+		std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
+		std::vector< ScoringTermCache_APISP > const * const caches_ptr,
+		std::vector< ScoringTermAdditionalOutput_APICSP > const * additional_outputs_ptr
 	) const;
 
 protected:
@@ -101,11 +103,11 @@ protected:
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class ScoringTerm
+}; // class PluginScoringTerm
 
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_ScoringTerm_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTerm_hh

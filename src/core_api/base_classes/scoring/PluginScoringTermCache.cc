@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTermCache.cc
+/// @file src/core_api/base_classes/scoring/PluginScoringTermCache.cc
 /// @brief A base class a container anything that a scoring term may need to cache
 /// to facilitate repeated similar calculations.
 /// @details Scoring terms may optionally read from AND write to this, during scoring.
@@ -25,7 +25,7 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <core_api/base_classes/scoring/ScoringTermCache.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermCache.hh>
 
 // Base headers:
 

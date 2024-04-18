@@ -16,17 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/scoring/ScoringTermAdditionalOutput.fwd.hh
-/// @brief Forward declarations for a base class a container for additional
-/// output from a scoring term.
-/// @details Scoring terms may optionally produce additional output, beyond
-/// a single score.
+/// @file src/core/scoring/PluginScoringTermCache.fwd.hh
+/// @brief Forward declarations for a base class a container anything that a scoring term may
+/// need to cache to facilitate repeated similar calculations.
+/// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_fwd_hh
-#define Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_fwd_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_fwd_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,27 +34,27 @@ namespace core_api {
 namespace base_classes {
 namespace scoring {
 
-	class ScoringTermAdditionalOutput;
+	class PluginScoringTermCache;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using ScoringTermAdditionalOutputSP = MASALA_SHARED_POINTER< ScoringTermAdditionalOutput >;
+	using PluginScoringTermCacheSP = MASALA_SHARED_POINTER< PluginScoringTermCache >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using ScoringTermAdditionalOutputCSP = MASALA_SHARED_POINTER< ScoringTermAdditionalOutput const >;
+	using PluginScoringTermCacheCSP = MASALA_SHARED_POINTER< PluginScoringTermCache const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using ScoringTermAdditionalOutputWP = MASALA_WEAK_POINTER< ScoringTermAdditionalOutput >;
+	using PluginScoringTermCacheWP = MASALA_WEAK_POINTER< PluginScoringTermCache >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using ScoringTermAdditionalOutputCWP = MASALA_WEAK_POINTER< ScoringTermAdditionalOutput const >;
+	using PluginScoringTermCacheCWP = MASALA_WEAK_POINTER< PluginScoringTermCache const >;
 
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_fwd_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_fwd_hh

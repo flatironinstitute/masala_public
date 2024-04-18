@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTermAdditionalInput.hh
+/// @file src/core_api/base_classes/scoring/PluginScoringTermAdditionalInput.hh
 /// @brief Headers for a base class a container for additional
 /// input into a scoring term.
 /// @details Scoring terms may optionally accept additional inputs, beyond a
@@ -25,14 +25,17 @@
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_hh
-#define Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/ScoringTermAdditionalInput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.fwd.hh>
+
+// Parent class:
+#include <core/scoing/ScoringTermAdditionalInput.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+
 
 // STL headers:
 
@@ -47,18 +50,18 @@ namespace scoring {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ScoringTermAdditionalInput {
+class PluginScoringTermAdditionalInput : public masala::core::scoring::ScoringTermAdditionalInput {
 
 public:
 
 	/// @brief Default constructor.
-	ScoringTermAdditionalInput() = default;
+	PluginScoringTermAdditionalInput() = default;
 
 	/// @brief Copy constructor.
-	ScoringTermAdditionalInput( ScoringTermAdditionalInput const & ) = default;
+	PluginScoringTermAdditionalInput( PluginScoringTermAdditionalInput const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~ScoringTermAdditionalInput() = default;
+	virtual ~PluginScoringTermAdditionalInput() = default;
 
 public:
 
@@ -72,11 +75,11 @@ protected:
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class ScoringTermAdditionalInput
+}; // class PluginScoringTermAdditionalInput
 
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalInput_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalInput_hh

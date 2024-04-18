@@ -16,15 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTerm.cc
-/// @brief A base class for all Masala scoring terms.
-/// @details Masala scoring terms are components of Masala scoring functions.
+/// @file src/core_api/base_classes/scoring/PluginScoringTermAdditionalInput.cc
+/// @brief A base class a container for additional input into a scoring term.
+/// @details Scoring terms may optionally accept additional inputs, beyond a
+/// vector of structures.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Class headers:
-#include <core_api/base_classes/scoring/ScoringTerm.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.hh>
 
 // Base headers:
 

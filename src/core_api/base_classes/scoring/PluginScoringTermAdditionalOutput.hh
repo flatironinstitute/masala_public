@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTermAdditionalOutput.hh
+/// @file src/core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.hh
 /// @brief Headers for a base class a container for additional
 /// output from a scoring term.
 /// @details Scoring terms may optionally produce additional output, beyond
@@ -25,14 +25,17 @@
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_hh
-#define Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_hh
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalOutput_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalOutput_hh
 
 // Forward declarations:
-#include <core_api/base_classes/scoring/ScoringTermAdditionalOutput.fwd.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.fwd.hh>
+
+// Parent class:
+#include <core/scoring/ScoringTermAdditionalOutput.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+
 
 // STL headers:
 
@@ -47,18 +50,18 @@ namespace scoring {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ScoringTermAdditionalOutput {
+class PluginScoringTermAdditionalOutput : public masala::core::scoring::ScoringTermAdditionalOutput {
 
 public:
 
 	/// @brief Default constructor.
-	ScoringTermAdditionalOutput() = default;
+	PluginScoringTermAdditionalOutput() = default;
 
 	/// @brief Copy constructor.
-	ScoringTermAdditionalOutput( ScoringTermAdditionalOutput const & ) = default;
+	PluginScoringTermAdditionalOutput( PluginScoringTermAdditionalOutput const & ) = default;
 
 	/// @brief Virtual destructor.
-	virtual ~ScoringTermAdditionalOutput() = default;
+	virtual ~PluginScoringTermAdditionalOutput() = default;
 
 public:
 
@@ -72,11 +75,11 @@ protected:
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class ScoringTermAdditionalOutput
+}; // class PluginScoringTermAdditionalOutput
 
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
 
-#endif //Masala_src_core_api_base_classes_scoring_ScoringTermAdditionalOutput_hh
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTermAdditionalOutput_hh

@@ -16,17 +16,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core_api/base_classes/scoring/ScoringTermAdditionalOutput.cc
-/// @brief A base class a container for additional output from a scoring term.
-/// @details Scoring terms may optionally produce additional output, beyond a single score.
+/// @file src/core_api/base_classes/scoring/PluginScoringTermCache.hh
+/// @brief Headers for a base class a container anything that a scoring term may
+/// need to cache to facilitate repeated similar calculations.
+/// @details Scoring terms may optionally read from AND write to this, during scoring.
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// Class headers:
-#include <core_api/base_classes/scoring/ScoringTermAdditionalOutput.hh>
+#ifndef Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_hh
+#define Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_hh
+
+// Forward declarations:
+#include <core_api/base_classes/scoring/PluginScoringTermCache.fwd.hh>
+
+// Parent class:
+#include <core/scoring/ScoringTermCache.hh>
 
 // Base headers:
+#include <base/MasalaObject.hh>
 
 // STL headers:
 
@@ -35,15 +43,42 @@ namespace core_api {
 namespace base_classes {
 namespace scoring {
 
+/// @brief A base class a container anything that a scoring term may need to cache
+/// to facilitate repeated similar calculations.
+/// @details Scoring terms may optionally read from AND write to this, during scoring.
+/// @note Since this class does not implement class_name() or class_namespace(),
+/// it remains pure virtual. 
+/// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+class PluginScoringTermCache : public masala::core::scoring::ScoringTermCache {
+
+public:
+
+	/// @brief Default constructor.
+	PluginScoringTermCache() = default;
+
+	/// @brief Copy constructor.
+	PluginScoringTermCache( PluginScoringTermCache const & ) = default;
+
+	/// @brief Virtual destructor.
+	virtual ~PluginScoringTermCache() = default;
+
+public:
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+}; // class PluginScoringTermCache
+
 } // namespace scoring
 } // namespace base_classes
 } // namespace core_api
 } // namespace masala
+
+#endif //Masala_src_core_api_base_classes_scoring_PluginScoringTermCache_hh
