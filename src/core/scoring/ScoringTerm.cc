@@ -103,7 +103,7 @@ ScoringTerm::get_categories() const {
 }
 
 /// @brief Get a list of keywords associated with this object.
-/// @returns { scoring_term }
+/// @returns { "scoring_term" }
 std::vector< std::string >
 ScoringTerm::get_keywords() const {
 	return { "scoring_term" };

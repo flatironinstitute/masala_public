@@ -46,7 +46,7 @@ namespace scoring {
 ScoringTermCache::ScoringTermCache(
 	ScoringTermCache const & src
 ) :
-	masala::base::MasalaObject(src)
+	masala::base::managers::plugin_module::MasalaPlugin(src)
 	// Deliberately do not copy mutex or API definition.
 {}
 
@@ -56,7 +56,7 @@ ScoringTermCache &
 ScoringTermCache::operator=(
 	ScoringTermCache const & src
 ) {
-	masala::base::MasalaObject::operator=(src);
+	masala::base::managers::plugin_module::MasalaPlugin::operator=(src);
 	// {
 	// 	std::lock( mutex_, src.mutex_ );
 	// 	std::lock_guard< std::mutex > lock( mutex_, std::adopt_lock );
@@ -94,6 +94,20 @@ ScoringTermCache::class_name() const {
 std::string
 ScoringTermCache::class_namespace() const {
 	return "masala::core::scoring";
+}
+
+/// @brief Get a list of categories that this object could be sorted into.
+/// @returns { { "scoring_term_cache" } }
+std::vector< std::vector< std::string > >
+ScoringTermCache::get_categories() const {
+	return { { "scoring_term_cache" } };
+}
+
+/// @brief Get a list of keywords associated with this object.
+/// @returns { "scoring_term_cache" }
+std::vector< std::string >
+ScoringTermCache::get_keywords() const {
+	return { "scoring_term_cache" };
 }
 
 ////////////////////////////////////////////////////////////////////////////////

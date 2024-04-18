@@ -32,7 +32,7 @@
 #include <core/scoring/ScoringTermAdditionalOutput.fwd.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // STL headers:
 #include <mutex>
@@ -47,7 +47,7 @@ namespace scoring {
 /// @note Since this class does not implement class_name() or class_namespace(),
 /// it remains pure virtual. 
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class ScoringTermAdditionalOutput : public masala::base::MasalaObject {
+class ScoringTermAdditionalOutput : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
@@ -89,6 +89,16 @@ public:
 	/// @brief Needed for API definition.
 	std::string
 	class_namespace() const override;
+
+	/// @brief Get a list of categories that this object could be sorted into.
+	/// @returns { { "scoring_term_additional_output" } }
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get a list of keywords associated with this object.
+	/// @returns { "scoring_term_additional_output" }
+	std::vector< std::string >
+	get_keywords() const override;
 
 public:
 

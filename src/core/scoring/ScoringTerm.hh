@@ -96,12 +96,12 @@ public:
 	std::string class_namespace() const override;
 
 	/// @brief Get a list of categories that this object could be sorted into.
-	/// @returns { { scoring_term } }
+	/// @returns { { "scoring_term" } }
 	std::vector< std::vector< std::string > >
 	get_categories() const override;
 
 	/// @brief Get a list of keywords associated with this object.
-	/// @returns { scoring_term }
+	/// @returns { "scoring_term" }
 	std::vector< std::string >
 	get_keywords() const override;
 
