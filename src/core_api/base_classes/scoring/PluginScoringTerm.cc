@@ -26,6 +26,11 @@
 // Class headers:
 #include <core_api/base_classes/scoring/PluginScoringTerm.hh>
 
+// Core-API headers:
+#include <core_api/auto_generated_api/scoring/ScoringTermAdditionalInput_API.hh>
+#include <core_api/auto_generated_api/scoring/ScoringTermAdditionalOutput_API.hh>
+#include <core_api/auto_generated_api/scoring/ScoringTermCache_API.hh>
+
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 
@@ -54,10 +59,10 @@ namespace scoring {
 /// with one output per molecular system.
 std::vector< masala::base::Real >
 PluginScoringTerm::score(
-	std::vector< MolecularSystem_APICSP > const & molecular_systems,
-	std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
-	std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
-	std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
+    std::vector< MolecularSystem_APICSP > const & molecular_systems,
+    std::vector< ScoringTermAdditionalInput_APICSP > const * const additional_inputs_ptr,
+    std::vector< ScoringTermCache_APISP > const * const caches_ptr,
+    std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
 ) const {
     CHECK_OR_THROW_FOR_CLASS( molecular_systems.size() >= 1, "score", "At least one molecular system must be "
         "present in the ensemble to score."
@@ -80,7 +85,28 @@ PluginScoringTerm::score(
         additional_outputs_ptr->clear();
     }
 
-    std::vector< masala::base::Real > const outval( score_derived( molecular_systems, additional_inputs_ptr, caches_ptr, additional_outputs_ptr ) );
+    // Convert vectors of API containers to vectors of inner objects:
+    std::vector< PluginScoringTermAdditionalInputCSP > additional_inputs_inner( additional_inputs_ptr == nullptr ? 0 : additional_inputs_ptr->size() );
+    if( additional_inputs_ptr != nullptr ) {
+        for( masala::base::Size i(0); i<additional_inputs_ptr->size(); ++i ) {
+            additional_inputs_inner[i] = std::static_pointer_cast< PluginScoringTermAdditionalInput const >( (*additional_inputs_ptr)[i]->get_inner_object() );
+        }
+    }
+    std::vector< PluginScoringTermCacheSP > caches_inner( caches_ptr == nullptr ? 0 : caches_ptr->size() );
+    if( caches_ptr != nullptr ) {
+        for( masala::base::Size i(0); i<caches_ptr->size(); ++i ) {
+            caches_inner[i] = std::static_pointer_cast< PluginScoringTermCache >( (*caches_ptr)[i]->get_inner_object() );
+        }
+    }
+
+    std::vector< masala::base::Real > const outval(
+        score_derived(
+            molecular_systems,
+            ( additional_inputs_ptr == nullptr ? nullptr : &additional_inputs_inner ),
+            ( caches_ptr == nullptr ? nullptr : &caches_inner ),
+            additional_outputs_ptr
+        )
+    );
 
 	CHECK_OR_THROW_FOR_CLASS( outval.size() == molecular_systems.size(),
 		"score", "The output vector of scores had size " + std::to_string( outval.size() )
