@@ -60,17 +60,17 @@ class PluginScoringTerm : public masala::core::scoring::ScoringTerm {
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP MolecularSystem_APISP;
 	typedef masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APICSP MolecularSystem_APICSP;
 
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalInput_API ScoringTermAdditionalInput_API;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalInput_APISP ScoringTermAdditionalInput_APISP;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalInput_APICSP ScoringTermAdditionalInput_APICSP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_API ScoringTermAdditionalInput_API;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_APISP ScoringTermAdditionalInput_APISP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalInput_APICSP ScoringTermAdditionalInput_APICSP;
 
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalOutput_API ScoringTermAdditionalOutput_API;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalOutput_APISP ScoringTermAdditionalOutput_APISP;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermAdditionalOutput_APICSP ScoringTermAdditionalOutput_APICSP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_API ScoringTermAdditionalOutput_API;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_APISP ScoringTermAdditionalOutput_APISP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermAdditionalOutput_APICSP ScoringTermAdditionalOutput_APICSP;
 
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermCache_API ScoringTermCache_API;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermCache_APISP ScoringTermCache_APISP;
-	typedef masala::core_api::auto_generated_api::molecular_system::ScoringTermCache_APICSP ScoringTermCache_APICSP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_API ScoringTermCache_API;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_APISP ScoringTermCache_APISP;
+	typedef masala::core_api::auto_generated_api::scoring::ScoringTermCache_APICSP ScoringTermCache_APICSP;
 
 public:
 

@@ -32,7 +32,7 @@
 #include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.fwd.hh>
 
 // Parent class:
-#include <core/scoing/ScoringTermAdditionalInput.hh>
+#include <core/scoring/ScoringTermAdditionalInput.hh>
 
 // Base headers:
 
