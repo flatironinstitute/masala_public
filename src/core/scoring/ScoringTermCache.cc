@@ -65,6 +65,21 @@ ScoringTermCache::operator=(
 	return *this;
 }
 
+/// @brief Make a fully independent copy of this object.
+ScoringTermCacheSP
+ScoringTermCache::deep_clone() const {
+    ScoringTermCacheSP new_object( masala::make_shared< ScoringTermCache >( *this ) );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+ScoringTermCache::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    api_definition_ = nullptr;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

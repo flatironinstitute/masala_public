@@ -64,6 +64,21 @@ ScoringTerm::operator=(
 	return *this;
 }
 
+/// @brief Make a fully independent copy of this object.
+ScoringTermSP
+ScoringTerm::deep_clone() const {
+    ScoringTermSP new_object( masala::make_shared< ScoringTerm >( *this ) );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+ScoringTerm::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    api_definition_ = nullptr;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

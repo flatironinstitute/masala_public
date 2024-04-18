@@ -65,6 +65,21 @@ ScoringTermAdditionalInput::operator=(
 	return *this;
 }
 
+/// @brief Make a fully independent copy of this object.
+ScoringTermAdditionalInputSP
+ScoringTermAdditionalInput::deep_clone() const {
+    ScoringTermAdditionalInputSP new_object( masala::make_shared< ScoringTermAdditionalInput >( *this ) );
+    new_object->make_independent();
+    return new_object;
+}
+
+/// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
+void
+ScoringTermAdditionalInput::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    api_definition_ = nullptr;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
