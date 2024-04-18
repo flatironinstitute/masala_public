@@ -118,6 +118,12 @@ public:
 		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
 	) const;
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Score a vector of structures (molecular systems), and produce a
 	/// corresponding vector of scores.  This function must be implemented by derived
 	/// classes.
@@ -129,22 +135,17 @@ public:
 	/// data that persists from scoring attempt to scoring attempt to be stored.  Can be
 	/// nullptr.  If non-null, the vector must contain one entry for each molecular system.
 	/// @param[in] additional_inputs_ptr A pointer to a vector of (optional) additional
-	/// outputs.  Can be nullptr.  If non-null, this vector will be cleared and populated
-	/// with one output per molecular system.
+	/// outputs.  Can be nullptr.  If non-null, this vector will empty (length zero).  The derived
+	/// class is responsible for ensuring that the vector is either kept at length zero
+	/// or populated with one output per molecular system.
 	virtual
 	std::vector< masala::base::Real >
 	score_derived(
 		std::vector< MolecularSystem_APICSP > const & molecular_systems,
 		std::vector< PluginScoringTermAdditionalInputCSP > const * const additional_inputs_ptr,
 		std::vector< PluginScoringTermCacheSP > const * const caches_ptr,
-		std::vector< ScoringTermAdditionalOutput_APICSP > * const additional_outputs_ptr
+		std::vector< PluginScoringTermAdditionalOutputCSP > * const additional_outputs_ptr
 	) const = 0;
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
 
 }; // class PluginScoringTerm
 

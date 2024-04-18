@@ -30,9 +30,14 @@
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalInput_API.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermAdditionalOutput_API.hh>
 #include <core_api/auto_generated_api/scoring/ScoringTermCache_API.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalInput.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermAdditionalOutput.hh>
+#include <core_api/base_classes/scoring/PluginScoringTermCache.hh>
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
+#include <base/managers/plugin_module/MasalaPluginCreator.hh>
 
 // STL headers:
 
@@ -98,13 +103,14 @@ PluginScoringTerm::score(
             caches_inner[i] = std::static_pointer_cast< PluginScoringTermCache >( (*caches_ptr)[i]->get_inner_object() );
         }
     }
+    std::vector< PluginScoringTermAdditionalOutputCSP > additional_outputs_inner;
 
     std::vector< masala::base::Real > const outval(
         score_derived(
             molecular_systems,
             ( additional_inputs_ptr == nullptr ? nullptr : &additional_inputs_inner ),
             ( caches_ptr == nullptr ? nullptr : &caches_inner ),
-            additional_outputs_ptr
+            ( additional_outputs_ptr == nullptr ? nullptr : &additional_outputs_inner )
         )
     );
 
@@ -113,12 +119,28 @@ PluginScoringTerm::score(
 		+ ", but we had " + std::to_string( molecular_systems.size() ) + " molecular systems."
 	);
 
+    // Encapsulate additional outputs in API containers.
     if( additional_outputs_ptr != nullptr ) {
-        CHECK_OR_THROW_FOR_CLASS( additional_outputs_ptr->empty() || additional_outputs_ptr->size() == molecular_systems.size(),
+        CHECK_OR_THROW_FOR_CLASS( additional_outputs_inner.empty() || additional_outputs_inner.size() == molecular_systems.size(),
             "score", "Expected additional outputs from scoring to be empty or of equal size to the molecular systems vector ("
-            + std::to_string( molecular_systems.size() ) + "), but got a vector of length " + std::to_string( additional_inputs_ptr->size() )
+            + std::to_string( molecular_systems.size() ) + "), but got a vector of length " + std::to_string( additional_outputs_inner.size() )
             + "."
         );
+        if( !additional_outputs_inner.empty() ) {
+            additional_outputs_ptr->clear();
+            additional_outputs_ptr->resize( additional_outputs_inner.size() );
+            
+            // Get a handle for the plugin manager:
+            masala::base::managers::plugin_module::MasalaPluginModuleManagerHandle pman(
+                masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()
+            );
+
+            for( masala::base::Size i(0); i<additional_outputs_inner.size(); ++i ) {
+                (*additional_outputs_ptr)[i] = std::static_pointer_cast< ScoringTermAdditionalOutput_API const >(
+                    pman->encapsulate_const_plugin_object_instance( additional_outputs_inner[i] )
+                );
+            }
+        }
     }
 
     return outval;
