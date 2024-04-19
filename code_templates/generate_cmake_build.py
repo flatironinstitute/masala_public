@@ -318,7 +318,7 @@ testsdir = "../tests/unit/" + lib_name
 testlibname = lib_name + "_tests"
 if output_file_tests != None :
     print( "\tChecking " + testsdir + " for tests." )
-    assert path.isdir( testsdir ), errmsg + "Could not find test directory.  Directory " + testdir + " does not exist!"
+    assert path.isdir( testsdir ), errmsg + "Could not find test directory.  Directory " + testsdir + " does not exist!"
     testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, project_name, testsdir, False )
     test_depend_list = get_library_dependencies( testsdir )
 else :
