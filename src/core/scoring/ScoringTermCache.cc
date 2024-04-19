@@ -97,10 +97,10 @@ ScoringTermCache::class_namespace() const {
 }
 
 /// @brief Get a list of categories that this object could be sorted into.
-/// @returns { { "scoring_term_cache" } }
+/// @returns { { "ScoringTermCache" } }
 std::vector< std::vector< std::string > >
 ScoringTermCache::get_categories() const {
-	return { { "scoring_term_cache" } };
+	return { { "ScoringTermCache" } };
 }
 
 /// @brief Get a list of keywords associated with this object.

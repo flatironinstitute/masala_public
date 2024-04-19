@@ -41,12 +41,12 @@ namespace molecular_system {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a list of categories that this object could be sorted into.
-/// @returns { { "scoring_term_additional_output", "whole_molecular_system_scoring_term_additional_output" } }
+/// @returns { { "ScoringTermAdditionalOutput", "WholeMolecularSystemScoringTermAdditionalOutput" } }
 std::vector< std::vector< std::string > >
 PluginWholeMolecularSystemScoringTermAdditionalOutput::get_categories() const {
 	std::vector< std::vector< std::string > > base_categories( core_api::base_classes::scoring::PluginScoringTermAdditionalOutput::get_categories() );
 	for( auto & entry : base_categories ) {
-		entry.push_back( "whole_molecular_system_scoring_term_additional_output" );
+		entry.push_back( "WholeMolecularSystemScoringTermAdditionalOutput" );
 	}
 	return base_categories;
 }

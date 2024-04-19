@@ -100,7 +100,7 @@ public:
 	std::string class_namespace() const override = 0;
 
     /// @brief Get a list of categories that this object could be sorted into.
-    /// @returns { { "scoring_term", "whole_molecular_system_scoring_term" } }
+    /// @returns { { "ScoringTerm", "WholeMolecularSystemScoringTerm" } }
     std::vector< std::vector< std::string > >
     get_categories() const override;
 

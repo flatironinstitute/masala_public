@@ -42,12 +42,12 @@ namespace molecular_system {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get a list of categories that this object could be sorted into.
-/// @returns { { "scoring_term_cache", "whole_molecular_system_scoring_term_cache" } }
+/// @returns { { "ScoringTermCache", "WholeMolecularSystemScoringTermCache" } }
 std::vector< std::vector< std::string > >
 PluginWholeMolecularSystemScoringTermCache::get_categories() const {
 	std::vector< std::vector< std::string > > base_categories( core_api::base_classes::scoring::PluginScoringTermCache::get_categories() );
 	for( auto & entry : base_categories ) {
-		entry.push_back( "whole_molecular_system_scoring_term_cache" );
+		entry.push_back( "WholeMolecularSystemScoringTermCache" );
 	}
 	return base_categories;
 }

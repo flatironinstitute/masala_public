@@ -96,10 +96,10 @@ ScoringTermAdditionalOutput::class_namespace() const {
 }
 
 /// @brief Get a list of categories that this object could be sorted into.
-/// @returns { { "scoring_term_additional_output" } }
+/// @returns { { "ScoringTermAdditionalOutput" } }
 std::vector< std::vector< std::string > >
 ScoringTermAdditionalOutput::get_categories() const {
-	return { { "scoring_term_additional_output" } };
+	return { { "ScoringTermAdditionalOutput" } };
 }
 
 /// @brief Get a list of keywords associated with this object.

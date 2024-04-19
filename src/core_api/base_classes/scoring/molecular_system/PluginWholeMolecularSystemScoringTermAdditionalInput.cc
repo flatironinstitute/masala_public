@@ -48,7 +48,7 @@ std::vector< std::vector< std::string > >
 PluginWholeMolecularSystemScoringTermAdditionalInput::get_categories() const {
 	std::vector< std::vector< std::string > > base_categories( core_api::base_classes::scoring::PluginScoringTermAdditionalInput::get_categories() );
 	for( auto & entry : base_categories ) {
-		entry.push_back( "whole_molecular_system_scoring_term_additional_input" );
+		entry.push_back( "WholeMolecularSystemScoringTermAdditionalInput" );
 	}
 	return base_categories;
 }

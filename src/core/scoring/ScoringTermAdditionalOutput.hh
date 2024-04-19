@@ -91,7 +91,7 @@ public:
 	class_namespace() const override;
 
 	/// @brief Get a list of categories that this object could be sorted into.
-	/// @returns { { "scoring_term_additional_output" } }
+	/// @returns { { "ScoringTermAdditionalOutput" } }
 	std::vector< std::vector< std::string > >
 	get_categories() const override;
 
