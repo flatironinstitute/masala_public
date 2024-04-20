@@ -242,10 +242,10 @@ public:
 		json_input2["Input_Name"] = input_parameter2_name_;
 
 		nlohmann::json json_input3;
-		json_input2["Input_Index"] = 3;
-		json_input2["Input_Type"] = masala::base::api::name_from_type( base::api::type<T4>() );
-		json_input2["Input_Description"] = input_parameter3_description_;
-		json_input2["Input_Name"] = input_parameter3_name_;
+		json_input3["Input_Index"] = 3;
+		json_input3["Input_Type"] = masala::base::api::name_from_type( base::api::type<T4>() );
+		json_input3["Input_Description"] = input_parameter3_description_;
+		json_input3["Input_Name"] = input_parameter3_name_;
 
 		nlohmann::json json_inputs;
 		json_inputs["Input_0"] = json_input0;
