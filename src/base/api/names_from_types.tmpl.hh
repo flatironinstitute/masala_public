@@ -98,6 +98,20 @@ namespace api {
         return typeid(T).name();
     }
 
+    /// @brief Manually override for pointers.
+    template< class T >
+    std::string
+    name_from_type(type<T*>) {
+        return name_from_type(type<T>()) + " *";
+    }
+
+    /// @brief Manually override for const pointers.
+    template< class T >
+    std::string
+    name_from_type(type<T* const>) {
+        return name_from_type(type<T>()) + " * const";
+    }
+
     /// @brief Manually override for references.
     template< class T >
     std::string
