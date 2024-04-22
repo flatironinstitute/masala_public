@@ -54,6 +54,7 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FourInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -341,6 +342,27 @@ public:
 			}
 		}
 		return MasalaObjectAPIWorkFunctionDefinition_ThreeInputCWP< P0, P1, P2, P3 >();
+	}
+
+	/// @brief Get a four-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_FourInputCWP< P0, P1, P2, P3, P4 >
+	get_fourinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 4 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_FourInputCSP<P0,P1,P2,P3,P4> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_FourInput< P0, P1, P2, P3, P4 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_FourInputCWP< P0, P1, P2, P3, P4 >();
 	}
 
 public:
