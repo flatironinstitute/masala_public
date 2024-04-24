@@ -228,6 +228,14 @@ MolecularGeometry::get_api_definition() {
                 std::bind( &MolecularGeometry::get_atom_coordinates, this, std::placeholders::_1 )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_OneInput< bool, masala::core::chemistry::atoms::AtomInstanceCSP const & > >(
+                "has_atom", "Check whether an atom exists in this object.  Returns true if it does, false otherwise.",
+                "atom", "The atom which may or may not be in this object.",
+                "present", "True if atom is present in the object; false otherwise.",
+                false, false, std::bind( &MolecularGeometry::has_atom, this, std::placeholders::_1 )
+            )
+        );
 
         api_definition_ = api_def; // Nonconst to const.
     }
