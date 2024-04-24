@@ -35,6 +35,51 @@ namespace core {
 namespace chemistry {
 namespace bonds {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Atoms constructor.
+ChemicalBondInstance::ChemicalBondInstance(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & atom1,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & atom2,
+    ChemicalBondType const bond_type
+) :
+    masala::base::MasalaObject(),
+    atom1_(atom1),
+    atom2_(atom2),
+    bond_type_(bond_type)
+{
+    if( atom1_.get() > atom2_.get() ) {
+        std::swap( atom1_, atom2_ );
+    }
+}
+
+/// @brief Comparison operator.
+bool
+ChemicalBondInstance::operator==(
+    ChemicalBondInstance const & src
+) const {
+    return (
+        src.atom1_.get() == atom1_.get() &&
+        src.atom2_.get() == atom2_.get() &&
+        src.bond_type_ == bond_type_
+    );
+}
+
+/// @brief Comparison operator to a pair of atoms: is this a bond between these atoms?
+/// @details Returns true if either order matches.
+bool
+ChemicalBondInstance::operator==(
+    std::pair<
+        masala::core::chemistry::atoms::AtomInstanceCSP,
+        masala::core::chemistry::atoms::AtomInstanceCSP
+    > const & src
+) const {
+    return ( src.first.get() == atom1_.get() && src.second.get() == atom2_.get() ) ||
+        ( src.first.get() == atom2_.get() && src.second.get() == atom1_.get() );
+}
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 ChemicalBondInstanceSP
