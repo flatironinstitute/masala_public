@@ -176,7 +176,34 @@ MolecularSystem::add_atom(
     std::array< masala::base::Real, 3 > const & coords
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !molecular_geometry_->has_atom( new_atom ), "add_atom",
+        "The molecular system already contains the atom!"
+    );
     molecular_geometry_->add_atom( new_atom, coords );
+}
+
+/// @brief Add an atom to this molecular system, along with all of the bonds that it
+/// makes to existing atoms.
+/// @param[in] new_atom The new atom instance to add.
+/// @param[in] new_bonds_to_existing_atoms The new bonds to add between the new atom and existing atoms, expressed as a vector of atom/bondtype pairs.
+/// @param[in] coords The coordinates of the new atom instance to add.
+void
+MolecularSystem::add_atom_and_bonds(
+    masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
+    std::vector< std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::bonds::ChemicalBondType > > const & new_bonds_to_existing_atoms,
+    std::array< masala::base::Real, 3 > const & coords
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !molecular_geometry_->has_atom( new_atom ), "add_atom_and_bonds",
+        "The molecular system already contains the atom!"
+    );
+    molecular_geometry_->add_atom( new_atom, coords );
+    for( auto const & entry : new_bonds_to_existing_atoms ) {
+        CHECK_OR_THROW_FOR_CLASS( molecular_geometry_->has_atom( entry.first ), "add_atom_and_bonds",
+            "The molecular system does not contain one of the atoms to which we are attempting to declare a bond."
+        );
+        TODO TODO TODO;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

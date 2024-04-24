@@ -137,6 +137,14 @@ public:
         atoms::AtomInstanceConstIterator const atom_iterator
     ) const;
 
+    /// @brief Add a bond to this molecule.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        masala::core::chemistry::bonds::ChemicalBondType const bond_type
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

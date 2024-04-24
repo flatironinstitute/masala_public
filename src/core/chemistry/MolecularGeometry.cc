@@ -290,6 +290,33 @@ MolecularGeometry::get_atom_coordinates(
     return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
 }
 
+/// @brief Add a bond to this molecule.
+void
+MolecularGeometry::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    masala::core::chemistry::bonds::ChemicalBondType const bond_type
+) {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS(
+        atoms_const_.count( first_atom ) != 0, "add_bond",
+        "The first atom for this chemical bond was not found in the molecular geometry object."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        atoms_const_.count( second_atom ) != 0, "add_bond",
+        "The second atom for this chemical bond was not found in the molecular geometry object."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        !has_bond_mutex_locked( first_atom, second_atom ), "add_bond",
+        "The molecular geometry object already has a bond between the specified atoms."
+    )
+    bonds_.insert(
+        masala::make_shared< masala::core::chemistry::bonds::ChemicalBondInstance >(
+            TODO TODO TODO;
+        )
+    );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
