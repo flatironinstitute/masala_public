@@ -38,6 +38,9 @@
 #include <base/types.hh>
 #include <base/MasalaObject.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace core {
 namespace molecular_system {
@@ -62,11 +65,15 @@ public:
     /// @details Ensures that the molecular_geometry_ object always exists.
     MolecularSystem();
 
-    /// @brief Copy constructor.
-    MolecularSystem( MolecularSystem const & ) = default;
+    /// @brief Copy constructor (explicit due to mutex).
+    /// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
+    MolecularSystem( MolecularSystem const & src );
 
     /// @brief Default destructor.
     ~MolecularSystem() override = default;
+
+    /// @brief Assignment operator (explicit due to mutex).
+    MolecularSystem & operator=( MolecularSystem const & src );
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
@@ -192,6 +199,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief A mutex for this object.
+    mutable std::mutex mutex_;
 
     /// @brief The MolecularGeometry object in this MolecularSystem.
     /// @details The MolecularGeometry object contains the coordinates and properties of atoms

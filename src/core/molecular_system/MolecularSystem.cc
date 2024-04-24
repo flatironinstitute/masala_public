@@ -54,6 +54,30 @@ MolecularSystem::MolecularSystem() :
     molecular_geometry_( masala::make_shared< masala::core::chemistry::MolecularGeometry >() )
 {}
 
+/// @brief Copy constructor (explicit due to mutex).
+/// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
+MolecularSystem::MolecularSystem(
+    MolecularSystem const & src
+) :
+    masala::base::MasalaObject(src)
+{
+    (*this) = src;
+}
+
+/// @brief Assignment operator (explicit due to mutex).
+MolecularSystem &
+MolecularSystem::operator=(
+    MolecularSystem const & src
+) {
+    std::lock( mutex_, src.mutex_ );
+    std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+    molecular_geometry_ = src.molecular_geometry_;
+    // Deliberately do not copy api definition.
+    return *this;
+}
+
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 MolecularSystemSP
@@ -74,6 +98,7 @@ MolecularSystem::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 MolecularSystem::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
     molecular_geometry_ = molecular_geometry_->deep_clone();
 }
 
@@ -114,6 +139,7 @@ MolecularSystem::class_namespace_static() {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometryCSP
 MolecularSystem::molecular_geometry_shared_ptr() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -124,6 +150,7 @@ MolecularSystem::molecular_geometry_shared_ptr() const {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometryCWP
 MolecularSystem::molecular_geometry_weak_ptr() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -134,6 +161,7 @@ MolecularSystem::molecular_geometry_weak_ptr() const {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometry const &
 MolecularSystem::molecular_geometry() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return *molecular_geometry_;
 }
 
@@ -146,6 +174,7 @@ MolecularSystem::molecular_geometry() const {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometrySP
 MolecularSystem::molecular_geometry_shared_ptr_nonconst() {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -158,6 +187,7 @@ MolecularSystem::molecular_geometry_shared_ptr_nonconst() {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometryWP
 MolecularSystem::molecular_geometry_weak_ptr_nonconst() {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -170,6 +200,7 @@ MolecularSystem::molecular_geometry_weak_ptr_nonconst() {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometry &
 MolecularSystem::molecular_geometry_nonconst() {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return *molecular_geometry_;
 }
 
@@ -183,7 +214,7 @@ MolecularSystem::add_atom(
     masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
     std::array< masala::base::Real, 3 > const & coords
 ) {
-    //std::lock_guard< std::mutex > lock( mutex_ );
+    std::lock_guard< std::mutex > lock( mutex_ );
     molecular_geometry_->add_atom( new_atom, coords );
 }
 
@@ -195,6 +226,8 @@ MolecularSystem::add_atom(
 base::api::MasalaObjectAPIDefinitionCWP
 MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
+
+    std::lock_guard< std::mutex > lock( mutex_ );
 
     if( api_definition_ == nullptr ) {
 
