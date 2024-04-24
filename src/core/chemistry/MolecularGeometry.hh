@@ -164,6 +164,19 @@ private:
 		base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 	) const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Check whether an atom exists in this object.
+    /// @returns True if the atom exists, false otherwise.
+    bool
+    has_atom(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & atom
+    ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
