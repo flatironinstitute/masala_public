@@ -165,45 +165,6 @@ MolecularSystem::molecular_geometry() const {
     return *molecular_geometry_;
 }
 
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst shared pointer.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometrySP
-MolecularSystem::molecular_geometry_shared_ptr_nonconst() {
-    std::lock_guard< std::mutex > lock( mutex_ );
-    return molecular_geometry_;
-}
-
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst weak pointer.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometryWP
-MolecularSystem::molecular_geometry_weak_ptr_nonconst() {
-    std::lock_guard< std::mutex > lock( mutex_ );
-    return molecular_geometry_;
-}
-
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst reference.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometry &
-MolecularSystem::molecular_geometry_nonconst() {
-    std::lock_guard< std::mutex > lock( mutex_ );
-    return *molecular_geometry_;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
