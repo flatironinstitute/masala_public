@@ -333,11 +333,7 @@ MolecularGeometry::has_atom(
     masala::core::chemistry::atoms::AtomInstanceCSP const & atom
 ) const {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
-    // Note that std::const_pointer_cast should generally not be used.  Here,
-    // we are using it safely only to check whether the atom (which was passed
-    // as an AtomInstanceCSP) exists in a set of AtomInstanceSPs.  We are NOT
-    // modifying the atom.
-    return (atoms_.count( std::const_pointer_cast< masala::core::chemistry::atoms::AtomInstance >(atom) ) != 0);
+    return (atoms_const_.count( atom ) != 0);
 }
 
 } // namespace chemistry
