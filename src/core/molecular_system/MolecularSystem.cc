@@ -29,6 +29,7 @@
 
 // Core headers:
 #include <core/chemistry/MolecularGeometry.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -36,6 +37,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 
 namespace masala {
 namespace core {
@@ -172,6 +174,20 @@ MolecularSystem::molecular_geometry_nonconst() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Add an atom to this molecular system.
+void
+MolecularSystem::add_atom(
+    masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
+    std::array< masala::base::Real, 3 > const & coords
+) {
+    //std::lock_guard< std::mutex > lock( mutex_ );
+    molecular_geometry_->add_atom( new_atom, coords );
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -240,6 +256,22 @@ MolecularSystem::get_api_definition() {
         //         std::bind( &MolecularSystem::molecular_geometry, this )
         //     )
         // );
+
+        // Setters:
+        api_def->add_setter(
+            masala::make_shared<
+                setter::MasalaObjectAPISetterDefinition_TwoInput<
+                    masala::core::chemistry::atoms::AtomInstanceSP const &,
+                    std::array< masala::base::Real, 3 > const &
+                > 
+            > (
+                    "add_atom", "Add an atom to this molecular system.",
+                    "atom_in", "The atom object to add.  Used directly; not cloned.",
+                    "coords", "The atomic coordinates of this atom.",
+                    false, false,
+                    std::bind( &MolecularSystem::add_atom, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
 
         api_definition_ = api_def; //Make const.
     }

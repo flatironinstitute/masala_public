@@ -32,8 +32,10 @@
 
 // Core headers:
 #include <core/chemistry/MolecularGeometry.fwd.hh>
+#include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:
+#include <base/types.hh>
 #include <base/MasalaObject.hh>
 
 namespace masala {
@@ -161,6 +163,19 @@ public:
     /// not all form one contiguously-bonded set).
     masala::core::chemistry::MolecularGeometry &
     molecular_geometry_nonconst();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Add an atom to this molecular system.
+    void
+    add_atom(
+        masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
+        std::array< masala::base::Real, 3 > const & coords
+    );
 
 public:
 
