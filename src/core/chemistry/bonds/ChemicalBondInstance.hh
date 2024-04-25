@@ -118,14 +118,14 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief The type of bond this is.
-    ChemicalBondType bond_type_ = ChemicalBondType::SINGLE_BOND;
-
     /// @brief The first atom (ordered by memory index).
     masala::core::chemistry::atoms::AtomInstanceCSP atom1_;
 
     /// @brief The second atom (ordered by memory index).
     masala::core::chemistry::atoms::AtomInstanceCSP atom2_;
+
+    /// @brief The type of bond this is.
+    ChemicalBondType bond_type_ = ChemicalBondType::SINGLE_BOND;
 
 };
 
