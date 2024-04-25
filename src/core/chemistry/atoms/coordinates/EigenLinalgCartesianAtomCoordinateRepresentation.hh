@@ -75,6 +75,11 @@ public:
     AtomCoordinateRepresentationSP
     clone() const override;
 
+    /// @brief Deep clone operation: make a deep copy of this object and return a shared
+    /// pointer to the deep copy.
+    EigenLinalgCartesianAtomCoordinateRepresentationSP
+    deep_clone() const;
+
     /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
     std::string
     class_name() const override;

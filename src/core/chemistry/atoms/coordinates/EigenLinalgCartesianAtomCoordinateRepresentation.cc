@@ -81,6 +81,15 @@ EigenLinalgCartesianAtomCoordinateRepresentation::clone() const {
     return masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
 }
 
+/// @brief Deep clone operation: make a deep copy of this object and return a shared
+/// pointer to the deep copy.
+EigenLinalgCartesianAtomCoordinateRepresentationSP
+EigenLinalgCartesianAtomCoordinateRepresentation::deep_clone() const {
+    EigenLinalgCartesianAtomCoordinateRepresentationSP new_object( masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >( *this ) );
+    new_object->make_independent();
+    return new_object;
+}
+
 /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
