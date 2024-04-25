@@ -43,6 +43,13 @@ namespace api {
         return "bool";
     }
 
+	/// @brief Manually override for const booleans.
+    template<>
+    std::string
+    name_from_type< bool const >(type<bool const>) {
+		return "bool const";
+	}
+
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
@@ -50,11 +57,25 @@ namespace api {
         return "unsigned short int";
     }
 
+	/// @brief Manually override for const unsigned short ints.
+    template<>
+    std::string
+    name_from_type< unsigned short const >(type<unsigned short const>) {
+        return "unsigned short int const";
+	}
+
     /// @brief Manually override for unsigned ints.
     template<>
     std::string
     name_from_type< unsigned int >(type<unsigned int>) {
         return "unsigned int";
+    }
+
+    /// @brief Manually override for const unsigned ints.
+    template<>
+    std::string
+    name_from_type< unsigned int const >(type<unsigned int const>) {
+        return "unsigned int const";
     }
 
     /// @brief Manually override for unsigned long ints.
@@ -64,6 +85,13 @@ namespace api {
         return "unsigned long int";
     }
 
+    /// @brief Manually override for const unsigned long ints.
+    template<>
+    std::string
+    name_from_type< unsigned long const >(type<unsigned long const>) {
+        return "unsigned long int const";
+    }
+
     /// @brief Manually override for signed short ints.
     template<>
     std::string
@@ -71,11 +99,26 @@ namespace api {
         return "signed short int";
     }
 
+    /// @brief Manually override for const signed short ints.
+    template<>
+    std::string
+    name_from_type< signed short const >(type<signed short const>) {
+        return "signed short int const";
+    }
+
+
     /// @brief Manually override for signed ints.
     template<>
     std::string
     name_from_type< signed int >(type<signed int>) {
         return "signed int";
+    }
+
+    /// @brief Manually override for const signed ints.
+    template<>
+    std::string
+    name_from_type< signed int const >(type<signed int const>) {
+        return "signed int const";
     }
 
     /// @brief Manually override for signed long ints.
@@ -85,11 +128,25 @@ namespace api {
         return "signed long int";
     }
 
+    /// @brief Manually override for const signed long ints.
+    template<>
+    std::string
+    name_from_type< signed long const >(type<signed long const>) {
+        return "signed long int const";
+    }
+
     /// @brief Manually override for floats.
     template<>
     std::string
     name_from_type< float >(type<float>) {
         return "float";
+    }
+
+    /// @brief Manually override for const floats.
+    template<>
+    std::string
+    name_from_type< float const >(type<float const>) {
+        return "float const";
     }
 
     /// @brief Manually override for float instances.
@@ -111,6 +168,13 @@ namespace api {
     std::string
     name_from_type< double >(type<double>) {
         return "double";
+    }
+
+    /// @brief Manually override for const doubles.
+    template<>
+    std::string
+    name_from_type< double const >(type<double const>) {
+        return "double const";
     }
 
     /// @brief Manually override for double instances.

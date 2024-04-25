@@ -395,40 +395,80 @@ namespace api {
     std::string
     name_from_type< bool >(type<bool>);
 
+    /// @brief Manually override for const booleans.
+    template<>
+    std::string
+    name_from_type< bool const >(type<bool const>);
+
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
     name_from_type< unsigned short >(type<unsigned short>);
+
+    /// @brief Manually override for const unsigned short ints.
+    template<>
+    std::string
+    name_from_type< unsigned short const >(type<unsigned short const>);
 
     /// @brief Manually override for unsigned ints.
     template<>
     std::string
     name_from_type< unsigned int >(type<unsigned int>);
 
+    /// @brief Manually override for const unsigned ints.
+    template<>
+    std::string
+    name_from_type< unsigned int const >(type<unsigned int const>);
+
     /// @brief Manually override for unsigned long ints.
     template<>
     std::string
     name_from_type< unsigned long >(type<unsigned long>);
+
+    /// @brief Manually override for const unsigned long ints.
+    template<>
+    std::string
+    name_from_type< unsigned long const >(type<unsigned long const>);
 
     /// @brief Manually override for signed short ints.
     template<>
     std::string
     name_from_type< signed short >(type<signed short>);
 
+    /// @brief Manually override for const signed short ints.
+    template<>
+    std::string
+    name_from_type< signed short const >(type<signed short const>);
+
     /// @brief Manually override for signed ints.
     template<>
     std::string
     name_from_type< signed int >(type<signed int>);
+
+    /// @brief Manually override for const signed ints.
+    template<>
+    std::string
+    name_from_type< signed int const >(type<signed int const>);
 
     /// @brief Manually override for signed long ints.
     template<>
     std::string
     name_from_type< signed long >(type<signed long>);
 
+    /// @brief Manually override for const signed long ints.
+    template<>
+    std::string
+    name_from_type< signed long const >(type<signed long const>);
+
     /// @brief Manually override for floats.
     template<>
     std::string
     name_from_type< float >(type<float>);
+
+    /// @brief Manually override for const floats.
+    template<>
+    std::string
+    name_from_type< float const >(type<float const>);
 
     /// @brief Manually override for float instances.
     template<>
@@ -444,6 +484,11 @@ namespace api {
     template<>
     std::string
     name_from_type< double >(type<double>);
+
+    /// @brief Manually override for const doubles.
+    template<>
+    std::string
+    name_from_type< double const >(type<double const>);
 
     /// @brief Manually override for double instances.
     template<>
