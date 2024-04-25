@@ -46,12 +46,15 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 	using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API;
 	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APISP;
 	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_API;
+	using masala::base::Real;
 
     REQUIRE_NOTHROW([&](){
        MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
         my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
 		AtomInstance_APISP atom1( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
 		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
+		my_molecular_system->add_atom( atom1, std::array< Real, 3 >{ 0, 0, 0 } );
+		my_molecular_system->add_atom( atom2, std::array< Real, 3 >{ 0.74, 0, 0 } );
     }() );
 }
 
