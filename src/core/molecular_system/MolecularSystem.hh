@@ -155,16 +155,20 @@ public:
         std::array< masala::base::Real, 3 > const & coords
     );
 
-    /// @brief Add an atom to this molecular system, along with all of the bonds that it
-    /// makes to existing atoms.
-    /// @param[in] new_atom The new atom instance to add.
-    /// @param[in] new_bonds_to_existing_atoms The new bonds to add between the new atom and existing atoms, expressed as a vector of atom/bondtype pairs.
-    /// @param[in] coords The coordinates of the new atom instance to add.
+    /// @brief Add a bond to this molecule, with the bond type specified by string.
     void
-    add_atom_and_bonds(
-        masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
-        std::vector< std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::bonds::ChemicalBondType > > const & new_bonds_to_existing_atoms,
-        std::array< masala::base::Real, 3 > const & coords
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        std::string const & bond_type_string
+    );
+
+    /// @brief Add a bond to this molecule.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        masala::core::chemistry::bonds::ChemicalBondType const bond_type
     );
 
 public:

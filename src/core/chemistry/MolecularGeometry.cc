@@ -225,6 +225,33 @@ MolecularGeometry::get_api_definition() {
 				)
 			)
 		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::bonds::ChemicalBondType const
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond, specified by enum.",
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularGeometry::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::bonds::ChemicalBondType const
+						)
+					> (&MolecularGeometry::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(

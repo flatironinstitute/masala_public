@@ -30,6 +30,7 @@
 // Core headers:
 #include <core/chemistry/MolecularGeometry.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -183,28 +184,26 @@ MolecularSystem::add_atom(
     molecular_geometry_->add_atom( new_atom, coords );
 }
 
-/// @brief Add an atom to this molecular system, along with all of the bonds that it
-/// makes to existing atoms.
-/// @param[in] new_atom The new atom instance to add.
-/// @param[in] new_bonds_to_existing_atoms The new bonds to add between the new atom and existing atoms, expressed as a vector of atom/bondtype pairs.
-/// @param[in] coords The coordinates of the new atom instance to add.
+/// @brief Add a bond to this molecule, with the bond type specified by string.
 void
-MolecularSystem::add_atom_and_bonds(
-    masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
-    std::vector< std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::bonds::ChemicalBondType > > const & new_bonds_to_existing_atoms,
-    std::array< masala::base::Real, 3 > const & coords
+MolecularSystem::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    std::string const & bond_type_string
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
-    CHECK_OR_THROW_FOR_CLASS( !molecular_geometry_->has_atom( new_atom ), "add_atom_and_bonds",
-        "The molecular system already contains the atom!"
-    );
-    molecular_geometry_->add_atom( new_atom, coords );
-    for( auto const & entry : new_bonds_to_existing_atoms ) {
-        CHECK_OR_THROW_FOR_CLASS( molecular_geometry_->has_atom( entry.first ), "add_atom_and_bonds",
-            "The molecular system does not contain one of the atoms to which we are attempting to declare a bond."
-        );
-        molecular_geometry_->add_bond( new_atom, entry.first, entry.second );
-    }
+    molecular_geometry_->add_bond( first_atom, second_atom, bond_type_string );
+}
+
+/// @brief Add a bond to this molecule.
+void
+MolecularSystem::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    masala::core::chemistry::bonds::ChemicalBondType const bond_type
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    molecular_geometry_->add_bond( first_atom, second_atom, bond_type );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -297,19 +296,58 @@ MolecularSystem::get_api_definition() {
 		api_def->add_setter(
 			masala::make_shared<
 				setter::MasalaObjectAPISetterDefinition_ThreeInput<
-					masala::core::chemistry::atoms::AtomInstanceSP const &,
-					std::vector< std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::bonds::ChemicalBondType > > const &,
-					std::array< masala::base::Real, 3 > const &
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					std::string const &
 				>
 			>(
-				"add_atom_and_bonds", "Add an atom to this molecular system, along with all of the bonds "
-				"that it makes to existing atoms.",
-				"new_atom", "The new atom instance to add.",
-				"new_bonds_to_existing_atoms", "The new bonds to add between the new atom and existing atoms, "
-				"expressed as a vector of atom/bondtype pairs.",
-				"coords", "The coordinates of the new atom instance to add.",
+                "add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond.  Allowed types are: "
+				+ masala::core::chemistry::bonds::list_bond_types( ", ", true ),
 				false, false,
-				std::bind( &MolecularSystem::add_atom_and_bonds, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+				std::bind(
+					static_cast<
+						void(MolecularSystem::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							std::string const &
+						)
+					> (&MolecularSystem::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared<
+                setter::MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::bonds::ChemicalBondType const
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond, specified by enum.",
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularSystem::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::bonds::ChemicalBondType const
+						)
+					> (&MolecularSystem::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
 			)
 		);
 

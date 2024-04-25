@@ -41,6 +41,18 @@ namespace api {
         return true;
     }
 
+    /// @brief Is a particular enum type a known type defined in masala::base?
+    /// @details Override for masala::base::managers::database::elements::ElementTypeEnum const
+    template<>
+    bool
+    is_known_base_enum_type<masala::base::managers::database::elements::ElementTypeEnum const>(
+        type<masala::base::managers::database::elements::ElementTypeEnum const>,
+        std::string & enum_name
+    ) {
+        enum_name = "masala::base::managers::database::elements::ElementTypeEnum const";
+        return true;
+    }
+
 	/// @brief Is a particular enum type a known type defined in masala::base?
 	/// @details Override for masala::base::enums::ChemicalBondType
 	template<>
@@ -50,6 +62,18 @@ namespace api {
 		std::string & enum_name
 	) {
         enum_name = "masala::base::enums::ChemicalBondType";
+        return true;
+    }
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::ChemicalBondType const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::ChemicalBondType const>(
+		type<masala::base::enums::ChemicalBondType const>,
+		std::string & enum_name
+	) {
+        enum_name = "masala::base::enums::ChemicalBondType const";
         return true;
     }
 

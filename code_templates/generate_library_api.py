@@ -780,7 +780,11 @@ def is_known_masala_base_enum( \
 
     if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
         return True
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum const" :
+        return True
     elif objtype == "masala::base::enums::ChemicalBondType" :
+        return True
+    elif objtype == "masala::base::enums::ChemicalBondType const" :
         return True
     
     return False
@@ -788,9 +792,9 @@ def is_known_masala_base_enum( \
 ## @brief Given a known enum that can be taken or returned by functions, defined in masala::base,
 ## return the known header file to include that defines the enum.
 def include_file_for_known_masala_base_enum( objtype : str ) -> str :
-    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" or objtype == "masala::base::managers::database::elements::ElementTypeEnum const" :
         return "<base/managers/database/elements/ElementType.fwd.hh>"
-    elif objtype == "masala::base::enums::ChemicalBondType" :
+    elif objtype == "masala::base::enums::ChemicalBondType" or objtype == "masala::base::enums::ChemicalBondType const" :
         return "<base/enums/ChemicalBondTypeEnum.fwd.hh>"
 
     assert False, "Error!  Do not know filename for enum type " + objtype + "!"
