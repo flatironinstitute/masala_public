@@ -116,7 +116,7 @@ list_all_hybridization_states(
 /// @brief Constructor from PDB atom.
 AtomInstance::AtomInstance(
     std::string const & pdb_atom_name,
-    signed long pdb_atom_index,
+    signed long const pdb_atom_index,
     std::string const & pdb_element_name
 ) :
     masala::base::MasalaObject(),
@@ -134,7 +134,7 @@ AtomInstance::AtomInstance(
 AtomInstance::AtomInstance(
 	std::string const & element_type,
 	std::string const & hybridization_state,
-	signed int const formal_charge,
+	signed long int const formal_charge,
 	masala::base::Real const partial_charge
 ) :
 	masala::base::MasalaObject(),
@@ -207,7 +207,7 @@ AtomInstance::class_namespace_static() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the formal charge for this atom instance.
-signed int
+signed long int
 AtomInstance::formal_charge() const {
     return formal_charge_;
 }
@@ -261,7 +261,7 @@ AtomInstance::get_api_definition() {
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( AtomInstance, api_def );
 
 		api_def->add_constructor(
-			masala::make_shared< MasalaObjectAPIConstructorDefinition_ThreeInput< AtomInstance, std::string const &, signed long, std::string const & > >(
+			masala::make_shared< MasalaObjectAPIConstructorDefinition_ThreeInput< AtomInstance, std::string const &, signed long const, std::string const & > >(
 				"AtomInstance", "Constructor from PDB atom.",
 				"pdb_atom_name", "The name of the atom, as it appears in the PDB file.",
 				"pdb_atom_index", "The index of the atom in the PDB file.",
@@ -274,20 +274,20 @@ AtomInstance::get_api_definition() {
 					AtomInstance,
 					std::string const &,
 					std::string const &,
-					signed int const,
+					signed long int const,
 					masala::base::Real const
 				>
 			> (
 				"AtomInstance", "Constructor from element type, hybridization state, formal charge, and partial charge.",
-				"element_type", "The element type, in standard representation (e.g. \"C\", \"N\", \"Cu\").",
-				"hybridization_state", "The hybridization state (\"sp3\", \"sp2\", \"sp\", \"s\", etc.).",
+				"element_type", "The element type, in standard representation (e.g. 'C', 'N', 'Cu').",
+				"hybridization_state", "The hybridization state.  Allowed states are: " + list_all_hybridization_states( ", ", true ) + ".",
 				"formal_charge", "The atom's formal charge.",
 				"partial_charge", "The atom's partial charge."
 			)
 		);
 
         api_def->add_getter(
-            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed long int > >(
                 "formal_charge", "Get the formal charge on this atom.  Formal charges are integer values.",
                 "formal_charge", "The formal charge on this atom.", false, false,
                 std::bind( &AtomInstance::formal_charge, this )

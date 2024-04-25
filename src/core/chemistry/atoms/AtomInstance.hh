@@ -94,7 +94,7 @@ public:
 	/// @param[in] pdb_element_name The element type, in uppercase representation (e.g. "C", "N", "CU").
     AtomInstance(
         std::string const & pdb_atom_name,
-        signed long pdb_atom_index,
+        signed long const pdb_atom_index,
         std::string const & pdb_element_name
     );
 
@@ -106,7 +106,7 @@ public:
 	AtomInstance(
 		std::string const & element_type,
 		std::string const & hybridization_state,
-		signed int const formal_charge,
+		signed long int const formal_charge,
 		masala::base::Real const partial_charge
 	);
 
@@ -143,12 +143,12 @@ public:
 	/// @brief Returns "AtomInstance".
 	static
 	std::string
-	AtomInstance::class_name_static();
+	class_name_static();
 
 	/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
 	static
 	std::string
-	AtomInstance::class_namespace_static();
+	class_namespace_static();
 
 public:
 
@@ -157,7 +157,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the formal charge for this atom instance.
-    signed int formal_charge() const;
+    signed long int formal_charge() const;
 
     /// @brief Get the partial charge for this atom instance.
     masala::base::Real partial_charge() const;
@@ -196,7 +196,7 @@ private:
     AtomHybridizationState hybridization_state_ = AtomHybridizationState::sp3;
 
     /// @brief The formal charge on this atom.
-    signed int formal_charge_ = 0;
+    signed long int formal_charge_ = 0;
 
     /// @brief The partial charge on this atom.
     masala::base::Real partial_charge_ = 0.0;
