@@ -37,6 +37,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_FourInput.tmpl.hh>
 #include <base/managers/database/elements/ElementType.hh>
 #include <base/managers/database/elements/MasalaElementDatabase.hh>
 #include <base/managers/database/MasalaDatabaseManager.hh>
@@ -265,6 +266,23 @@ AtomInstance::get_api_definition() {
 				"pdb_atom_name", "The name of the atom, as it appears in the PDB file.",
 				"pdb_atom_index", "The index of the atom in the PDB file.",
 				"pdb_element_name", "The element, as it appears in the PDB file."
+			)
+		);
+		api_def->add_constructor(
+			masala::make_shared<
+				MasalaObjectAPIConstructorDefinition_FourInput<
+					AtomInstance,
+					std::string const &,
+					std::string const &,
+					signed int const,
+					masala::base::Real const
+				>
+			> (
+				"AtomInstance", "Constructor from element type, hybridization state, formal charge, and partial charge.",
+				"element_type", "The element type, in standard representation (e.g. \"C\", \"N\", \"Cu\").",
+				"hybridization_state", "The hybridization state (\"sp3\", \"sp2\", \"sp\", \"s\", etc.).",
+				"formal_charge", "The atom's formal charge.",
+				"partial_charge", "The atom's partial charge."
 			)
 		);
 
