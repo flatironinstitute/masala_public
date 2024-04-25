@@ -380,6 +380,12 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         additional_includes.append( "<base/hash_types.hh>" )
         return "masala::base::size_pair_hash"
 
+    if is_known_masala_base_enum( inputclass ) :
+        enum_filename = include_file_for_known_masala_base_enum( inputclass )
+        if enum_filename not in additional_includes :
+            additional_includes.append( enum_filename )
+        return inputclass
+
     api_classname = ""
     api_filename = ""
     firstspace = inputclass.find(" ")
@@ -767,6 +773,16 @@ def is_known_masala_base_enum( \
         return True
     
     return False
+
+## @brief Given a known enum that can be taken or returned by functions, defined in masala::base,
+## return the known header file to include that defines the enum.
+def include_file_for_known_masala_base_enum( objtype : str ) -> str :
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
+        return "base/managers/database/elements/ElementType"
+    elif objtype == "masala::base::enums::ChemicalBondType" :
+        return "base/enums/ChemicalBondTypeEnum"
+
+    assert False, "Error!  Do not know filename for enum type " + objtype + "!"
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
@@ -1908,7 +1924,7 @@ plugin_registration_ccfile_template = read_file( "code_templates/api_templates/r
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
 project_name_capitalized = capitalize_project_name( project_name ).replace( "_", " " )
-licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
+licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2024) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
 generate_registration_function = False
