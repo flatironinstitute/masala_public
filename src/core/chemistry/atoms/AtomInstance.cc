@@ -69,7 +69,7 @@ string_from_atom_hybridization_state_enum(
 		case AtomHybridizationState::OTHER_HYBRIDIZATION_STATE :
 			return "other";
 		default:
-			MASALA_THROW( "masala::core::cehmistry::atoms", "string_from_atom_hybridization_state_enum",
+			MASALA_THROW( "masala::core::chemistry::atoms", "string_from_atom_hybridization_state_enum",
 				"Invalid hybridization state provided to this function!"
 			);
 	}
