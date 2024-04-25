@@ -38,6 +38,7 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 namespace masala {
 namespace core {
@@ -293,6 +294,24 @@ MolecularSystem::get_api_definition() {
                     std::bind( &MolecularSystem::add_atom, this, std::placeholders::_1, std::placeholders::_2 )
             )
         );
+		api_def->add_setter(
+			masala::make_shared<
+				setter::MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceSP const &,
+					std::vector< std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::bonds::ChemicalBondType > > const &,
+					std::array< masala::base::Real, 3 > const &
+				>
+			>(
+				"add_atom_and_bonds", "Add an atom to this molecular system, along with all of the bonds "
+				"that it makes to existing atoms.",
+				"new_atom", "The new atom instance to add.",
+				"new_bonds_to_existing_atoms", "The new bonds to add between the new atom and existing atoms, "
+				"expressed as a vector of atom/bondtype pairs.",
+				"coords", "The coordinates of the new atom instance to add.",
+				false, false,
+				std::bind( &MolecularSystem::add_atom_and_bonds, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+			)
+		);
 
         api_definition_ = api_def; //Make const.
     }
