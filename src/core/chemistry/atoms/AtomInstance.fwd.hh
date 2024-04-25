@@ -44,10 +44,11 @@ namespace atoms {
     using AtomInstanceCWP = MASALA_WEAK_POINTER< AtomInstance const >;
 
     /// @brief An enum for the hybridization state of an atom.
+	/// @details If this is added to, then string_from_atom_hybridization_state_enum() should be updated.
     enum class AtomHybridizationState {
         INVALID_HYBRIDIZATION_STATE = -1, // Keep first.
         UNKNOWN_HYBRIDIZATION_STATE = 0, // Keep second.
-        sp, // Keep third.
+        sp = 1, // Keep third.
         FIRST_HYBRIDIZATION_STATE = sp, // Keep fourth.
         sp2,
         sp3,

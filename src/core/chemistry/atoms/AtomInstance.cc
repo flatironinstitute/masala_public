@@ -43,11 +43,74 @@
 
 // STL headers:
 #include <string>
+#include <sstream>
 
 namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
+
+/// @brief Utility function to get hybridization state string from hybridization state enum.
+std::string
+string_from_atom_hybridization_state_enum(
+	AtomHybridizationState const hybstate
+) {
+	switch(hybstate) {
+		case AtomHybridizationState::UNKNOWN_HYBRIDIZATION_STATE :
+			return "unknown";
+		case AtomHybridizationState::sp3 :
+			return "sp3";
+		case AtomHybridizationState::sp2 :
+			return "sp2";
+		case AtomHybridizationState::sp :
+			return "sp";
+		case AtomHybridizationState::s :
+			return "s";
+		case AtomHybridizationState::OTHER_HYBRIDIZATION_STATE :
+			return "other";
+		default:
+			MASALA_THROW( "masala::core::cehmistry::atoms", "string_from_atom_hybridization_state_enum",
+				"Invalid hybridization state provided to this function!"
+			);
+	}
+	return "";
+}
+
+/// @brief Utility function to get hybridization state enum from hybridization state string.
+/// @details Returns INVALID_HYBRIDIZATION_STATE if string can't be parsed.
+AtomHybridizationState
+string_from_atom_hybridization_state_enum(
+	std::string const & hybstate_string
+) {
+	using masala::base::Size;
+	for( Size i(0); i<=static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES); ++i ) {
+		if( string_from_atom_hybridization_state_enum( static_cast<AtomHybridizationState>(i) ) == hybstate_string ) {
+			return static_cast<AtomHybridizationState>(i);
+		}
+	}
+	return AtomHybridizationState::INVALID_HYBRIDIZATION_STATE;
+}
+
+/// @brief Get a list of all hybridization states, separated by a delimiter (e.g. ", ").
+/// @details If include_and is true, the final entry is preceded by "and".
+std::string
+list_all_hybridization_states(
+	std::string const & delimiter,
+	bool const include_and
+) {
+	std::ostringstream ss;
+	using masala::base::Size;
+	for( Size i(0); i<=static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES); ++i ) {
+		if( i>0 ) {
+			ss << delimiter;
+		}
+		if( include_and && i == static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES) ) {
+			ss << "and ";
+		}
+		ss << string_from_atom_hybridization_state_enum( static_cast<AtomHybridizationState>(i) );
+	}
+	return ss.str();
+}
 
 /// @brief Constructor from PDB atom.
 AtomInstance::AtomInstance(
