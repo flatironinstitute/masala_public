@@ -72,6 +72,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::operator=(
     AtomCoordinateRepresentation::operator=( src );
     atom_coordinates_ = src.atom_coordinates_;
     atom_instance_to_column_ = src.atom_instance_to_column_;
+    return *this;
 }
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
