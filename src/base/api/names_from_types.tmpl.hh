@@ -28,6 +28,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/hash_types.hh>
 
+// Known base enums
+#include <base/managers/database/elements/ElementType.fwd.hh> // ElementTypeEnum
+
 // Eigen headers
 #include <external/eigen/Eigen/Dense>
 
@@ -56,16 +59,52 @@ namespace api {
 
     };
 
+////////////////////////////////////////////////////////////////////////////////
+// KNOWN ENUM TYPES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Returns false by default.
+	template< class T >
+	bool
+	is_known_base_enum_type(
+		type<T>,
+		std::string & enum_name
+	) {
+		enum_name.clear();
+		return false;
+	}
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::managers::database::elements::ElementTypeEnum
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::managers::database::elements::ElementTypeEnum>(
+		type<masala::base::managers::database::elements::ElementTypeEnum>,
+		std::string & enum_name
+	);
+
+////////////////////////////////////////////////////////////////////////////////
+// NAMES FROM TYPES
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
     std::string
-    name_from_type(type<T>) {
-        CHECK_OR_THROW(
-            !std::is_enum<T>::value, "base::api", "name_from_type",
-            "Error in use of name_from_type() function: this function cannot be used for enums!  "
-            "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
-            "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
-        );
+    name_from_type(type<T> t) {
+
+        {
+            std::string enum_name;
+
+            CHECK_OR_THROW(
+                (!std::is_enum<T>::value) || is_known_base_enum_type(t, enum_name ), "base::api", "name_from_type",
+                "Error in use of name_from_type() function: this function cannot be used for enums other than those defined in masala::base!"
+            );
+
+            if( std::is_enum<T>::value ) {
+                return enum_name;
+            }
+        }
 
         if constexpr( std::is_class<T>::value ) {
             if constexpr( std::is_abstract<T>::value ) {

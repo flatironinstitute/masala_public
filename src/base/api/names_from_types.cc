@@ -29,6 +29,18 @@ namespace masala {
 namespace base {
 namespace api {
 
+    /// @brief Is a particular enum type a known type defined in masala::base?
+    /// @details Override for masala::base::managers::database::elements::ElementTypeEnum
+    template<>
+    bool
+    is_known_base_enum_type<masala::base::managers::database::elements::ElementTypeEnum>(
+        type<masala::base::managers::database::elements::ElementTypeEnum>,
+        std::string & enum_name
+    ) {
+        enum_name = "masala::base::managers::database::elements::ElementTypeEnum";
+        return true;
+    }
+
     /// @brief Manually override for void.
     template<>
     std::string
