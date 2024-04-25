@@ -57,7 +57,7 @@ string_from_atom_hybridization_state_enum(
 /// @brief Utility function to get hybridization state enum from hybridization state string.
 /// @details Returns INVALID_HYBRIDIZATION_STATE if string can't be parsed.
 AtomHybridizationState
-string_from_atom_hybridization_state_enum(
+enum_from_atom_hybridization_state_string(
 	std::string const & hybstate_string
 );
 
@@ -89,11 +89,26 @@ public:
     AtomInstance() = default;
 
     /// @brief Constructor from PDB atom.
+	/// @param[in] pdb_atom_name The atom name as it appears in the PDB file.
+	/// @param[in] pdb_atom_index Atom index in the PDB file.
+	/// @param[in] pdb_element_name The element type, in uppercase representation (e.g. "C", "N", "CU").
     AtomInstance(
         std::string const & pdb_atom_name,
         signed long pdb_atom_index,
         std::string const & pdb_element_name
     );
+
+	/// @brief Constructor from atom properties.
+	/// @param[in] element_type The element type, in standard representation (e.g. "C", "N", "Cu").
+	/// @param[in] hybridization_state The hybridization state ("sp3", "sp2", "sp", "s", etc.).
+	/// @param[in] formal_charge The atom's formal charge.
+	/// @param[in] partial_charge The atom's partial charge.
+	AtomInstance(
+		std::string const & element_type,
+		std::string const & hybridization_state,
+		signed int const formal_charge,
+		masala::base::Real const partial_charge
+	);
 
     /// @brief Copy constructor.
     AtomInstance( AtomInstance const & ) = default;
@@ -124,6 +139,16 @@ public:
 
     /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
     std::string class_namespace() const override;
+
+	/// @brief Returns "AtomInstance".
+	static
+	std::string
+	AtomInstance::class_name_static();
+
+	/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
+	static
+	std::string
+	AtomInstance::class_namespace_static();
 
 public:
 

@@ -79,7 +79,7 @@ string_from_atom_hybridization_state_enum(
 /// @brief Utility function to get hybridization state enum from hybridization state string.
 /// @details Returns INVALID_HYBRIDIZATION_STATE if string can't be parsed.
 AtomHybridizationState
-string_from_atom_hybridization_state_enum(
+enum_from_atom_hybridization_state_string(
 	std::string const & hybstate_string
 ) {
 	using masala::base::Size;
@@ -125,6 +125,35 @@ AtomInstance::AtomInstance(
     additional_atom_data_{ masala::make_shared< data::PDBAtomData >( pdb_atom_name, pdb_atom_index, pdb_element_name ) }
 {}
 
+/// @brief Constructor from atom properties.
+/// @param[in] element_type The element type, in standard representation (e.g. "C", "N", "Cu").
+/// @param[in] hybridization_state The hybridization state ("sp3", "sp2", "sp", "s", etc.).
+/// @param[in] formal_charge The atom's formal charge.
+/// @param[in] partial_charge The atom's partial charge.
+AtomInstance::AtomInstance(
+	std::string const & element_type,
+	std::string const & hybridization_state,
+	signed int const formal_charge,
+	masala::base::Real const partial_charge
+) :
+	masala::base::MasalaObject(),
+	element_type_(
+        masala::base::managers::database::MasalaDatabaseManager::get_instance()->element_database().element_type_from_abbreviation( element_type )
+	),
+	hybridization_state_(
+		enum_from_atom_hybridization_state_string( hybridization_state )
+	),
+	formal_charge_(formal_charge),
+	partial_charge_(partial_charge)
+{
+	CHECK_OR_THROW( hybridization_state_ != AtomHybridizationState::INVALID_HYBRIDIZATION_STATE,
+		class_namespace_static() + "::" + class_name_static(),
+		"AtomInstance",
+		"Error in atom constructor: the string \"" + hybridization_state + "\" could not be interpreted as a valid "
+		"hybridization state.  Valid strings are: " + list_all_hybridization_states( ", ", true ) + "."
+	)
+}
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 AtomInstanceSP
@@ -151,12 +180,24 @@ AtomInstance::make_independent() {
 /// @brief Returns "AtomInstance".
 std::string
 AtomInstance::class_name() const {
-    return "AtomInstance";
+    return class_name_static();
 }
 
 /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
 std::string
 AtomInstance::class_namespace() const {
+    return class_namespace_static();
+}
+
+/// @brief Returns "AtomInstance".
+std::string
+AtomInstance::class_name_static() {
+    return "AtomInstance";
+}
+
+/// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms".
+std::string
+AtomInstance::class_namespace_static() {
     return "masala::core::chemistry::atoms";
 }
 
