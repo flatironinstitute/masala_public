@@ -40,6 +40,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -179,6 +180,7 @@ MolecularGeometry::get_api_definition() {
     using namespace base::api;
     using namespace base::api::constructor;
     using namespace base::api::getter;
+    using namespace base::api::setter;
 
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
@@ -194,6 +196,22 @@ MolecularGeometry::get_api_definition() {
         );
 
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( MolecularGeometry, api_def );
+
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::bonds::ChemicalBondType const
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond.",
+				false, false,
+				std::bind( &MolecularGeometry::add_bond, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+			)
+		);
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
