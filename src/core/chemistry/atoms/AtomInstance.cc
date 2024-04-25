@@ -36,6 +36,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
 #include <base/managers/database/elements/ElementType.hh>
 #include <base/managers/database/elements/MasalaElementDatabase.hh>
 #include <base/managers/database/MasalaDatabaseManager.hh>
@@ -153,6 +154,15 @@ AtomInstance::get_api_definition() {
         );
 
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( AtomInstance, api_def );
+
+		api_def->add_constructor(
+			masala::make_shared< MasalaObjectAPIConstructorDefinition_ThreeInput< AtomInstance, std::string const &, signed long, std::string const & > >(
+				"AtomInstance", "Constructor from PDB atom.",
+				"pdb_atom_name", "The name of the atom, as it appears in the PDB file.",
+				"pdb_atom_index", "The index of the atom in the PDB file.",
+				"pdb_element_name", "The element, as it appears in the PDB file."
+			)
+		);
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < signed int > >(
