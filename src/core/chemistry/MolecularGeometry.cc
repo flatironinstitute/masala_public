@@ -312,7 +312,7 @@ MolecularGeometry::add_bond(
     )
     bonds_.insert(
         masala::make_shared< masala::core::chemistry::bonds::ChemicalBondInstance >(
-            TODO TODO TODO;
+			first_atom, second_atom, bond_type
         )
     );
 }
