@@ -727,6 +727,7 @@ def generate_function_call( \
 
             input_is_masala_API_ptr = False
             input_is_masala_class = False
+            input_is_known_enum = is_known_masala_base_enum( curinputname )
             if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
                 firstchevron = curinputname.find("<")
                 lastchevron = curinputname.rfind(">")
@@ -747,12 +748,14 @@ def generate_function_call( \
                 if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
-                    if input_is_masala_class :
+                    if input_is_masala_class and input_is_known_enum == False :
                         outstring += " *( "
                     else :
                         outstring += " "
-                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                    if input_is_masala_class :
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                    if input_is_known_enum == False:
+                        outstring += input_point_or_arrow + "get_inner_object()"
+                    if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
             else:
 
