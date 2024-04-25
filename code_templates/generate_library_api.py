@@ -323,6 +323,17 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<vector>")
             return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "pair" ) or inputclass.startswith( "std::pair" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            lastcomma = inputclass.rfind( ",", 0, lastchevron )
+            if( "<utility>" not in additional_includes ) :
+                additional_includes.append("<utility>")
+            return "std::pair< " \
+                + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastcomma].strip(), additional_includes ) \
+                + ", " \
+                + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
+                + inputclass[lastchevron:]
         elif inputclass.startswith( "set" ) or inputclass.startswith( "std::set" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
@@ -778,9 +789,9 @@ def is_known_masala_base_enum( \
 ## return the known header file to include that defines the enum.
 def include_file_for_known_masala_base_enum( objtype : str ) -> str :
     if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
-        return "base/managers/database/elements/ElementType"
+        return "<base/managers/database/elements/ElementType.fwd.hh>"
     elif objtype == "masala::base::enums::ChemicalBondType" :
-        return "base/enums/ChemicalBondTypeEnum"
+        return "<base/enums/ChemicalBondTypeEnum.fwd.hh>"
 
     assert False, "Error!  Do not know filename for enum type " + objtype + "!"
 
