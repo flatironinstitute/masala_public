@@ -301,7 +301,7 @@ AtomInstance::get_api_definition() {
         );
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< masala::base::managers::database::elements::ElementTypeEnum > >(
-                "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEneum).",
+                "element_type_enum", "Gets the element type for this atom instance, by enum (ElementTypeEnum).",
                 "element_type_enum", "The element type, represented as an ElementTypeEnum.",
                 false, false,
                 std::bind( &AtomInstance::element_type_enum, *this )
