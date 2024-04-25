@@ -41,6 +41,18 @@ namespace api {
         return true;
     }
 
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::ChemicalBondType
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::ChemicalBondType>(
+		type<masala::base::enums::ChemicalBondType>,
+		std::string & enum_name
+	) {
+        enum_name = "masala::base::enums::ChemicalBondType";
+        return true;
+    }
+
     /// @brief Manually override for void.
     template<>
     std::string

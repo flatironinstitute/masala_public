@@ -76,27 +76,6 @@ public:
 		bool const is_override_of_api_virtual_fxn
 	);
 
-	/// @brief Options constructor, to be called by derived classes in cases in which we have a
-	/// custom output type (e.g. enums).
-	/// @param[in] getter_function_name The name of the getter function that
-	///			   we are describing here.
-	/// @param[in] getter_function_description The description of the getter function that
-	///			   we are describing here.
-	/// @param[in] output_type_name The name of the output type.
-	/// @param[in] output_type_namespace The namespace of the output type.
-	/// @param[in] is_virtual_non_override_fxn Is this function a virtual function (one that
-	///            is NOT an override of a virtual function in a parent API class)?
-	/// @param[in] is_override_of_api_virtual_fxn Is this function a virtual override function of
-	///            a function in a base API class?
-	MasalaObjectAPIGetterDefinition(
-		std::string const & getter_function_name,
-		std::string const & getter_function_description,
-		std::string const & output_type_name,
-		std::string const & output_type_namespace,
-		bool const is_virtual_non_override_fxn,
-		bool const is_override_of_api_virtual_fxn
-	);
-
 	/// @brief Copy constructor.
 	MasalaObjectAPIGetterDefinition( MasalaObjectAPIGetterDefinition const & ) = default;
 
@@ -136,12 +115,6 @@ public:
 	/// @brief Get the getter function's description.
 	std::string const & getter_function_description() const;
 
-	/// @brief Does this class define a custom output type name?
-	bool has_custom_output_type_name() const;
-
-	/// @brief Get the custom output type name and namespace.
-	std::string get_custom_output_type_namespace_and_name() const;
-
 	/// @brief Is this function a virtual function that does NOT override
 	/// a function in a base class that has a defined API?
 	bool is_virtual_non_override_fxn() const;
@@ -163,14 +136,6 @@ private:
 	/// @brief The description of the getter function.
 	/// @details Must be set on construction.
 	std::string const getter_function_description_;
-
-	/// @brief The custom output type name, in cases in which a class does not
-	/// define its own output type name (e.g. enums).
-	std::string const custom_output_type_name_;
-
-	/// @brief The custom output type namespace, in cases in which a class does not
-	/// define its own output type namespace (e.g. enums).
-	std::string const custom_output_type_namespace_;
 
 	/// @brief Is this function a virtual function that does NOT override
 	/// a function in a base class that has a defined API?
