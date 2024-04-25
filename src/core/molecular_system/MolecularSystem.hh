@@ -33,6 +33,7 @@
 // Core headers:
 #include <core/chemistry/MolecularGeometry.fwd.hh>
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>

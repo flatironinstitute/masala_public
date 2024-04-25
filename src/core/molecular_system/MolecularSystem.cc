@@ -202,7 +202,7 @@ MolecularSystem::add_atom_and_bonds(
         CHECK_OR_THROW_FOR_CLASS( molecular_geometry_->has_atom( entry.first ), "add_atom_and_bonds",
             "The molecular system does not contain one of the atoms to which we are attempting to declare a bond."
         );
-        TODO TODO TODO;
+        molecular_geometry_->add_bond( new_atom, entry.first, entry.second );
     }
 }
 
