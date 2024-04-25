@@ -756,6 +756,18 @@ def class_exists_and_has_public_constructors( \
         return ( jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"] == False )
     return False
 
+## @brief List known enums that can be taken or returned by functions, defined in masala::base.
+def is_known_masala_base_enum( \
+    objtype : str \
+    ) -> bool :
+
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
+        return True
+    elif objtype == "masala::base::enums::ChemicalBondType" :
+        return True
+    
+    return False
+
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
@@ -921,9 +933,10 @@ def generate_function_implementations( \
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
         if is_masala_class( project_name, outtype_base )  :
-            assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
-            if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
-                output_is_lightweight = True
+            if is_known_masala_base_enum( outtype_base ) == False :
+                assert (outtype_base in jsonfile["Elements"]), "ERROR: " + outtype_base + " not found in JSON Elements."
+                if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
+                    output_is_lightweight = True
 
         if ( "Returns_This_Ref" in fxn ) and ( fxn["Returns_This_Ref"] == True ) :
             returns_this_ref = True
@@ -978,7 +991,7 @@ def generate_function_implementations( \
                     print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
                 if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
                     is_masala_plugin_ptr = True
-        elif is_masala_class( project_name, outtype )  and returns_this_ref == False :
+        elif is_masala_class( project_name, outtype ) and returns_this_ref == False and is_known_masala_base_enum( outtype ) == False :
             is_masala_API_obj = True
             # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
             #     is_masala_plugin_obj = True
