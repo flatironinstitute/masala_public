@@ -371,6 +371,23 @@ MolecularGeometry::has_atom(
     return (atoms_const_.count( atom ) != 0);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Does a bond exist between two atoms?
+/// @details Intended to be called from a mutex-locked context.
+bool
+MolecularGeometry::has_bond_mutex_locked(
+	masala::core::chemistry::atoms::AtomInstanceCSP const & atom1,
+	masala::core::chemistry::atoms::AtomInstanceCSP const & atom2
+) const {
+	for( auto const & bond : bonds_ ) {
+		if( (*bond) == std::make_pair( atom1, atom2 ) ) { return true; }
+	}
+	return false;
+}
+
 } // namespace chemistry
 } // namespace core
 } // namespace masala
