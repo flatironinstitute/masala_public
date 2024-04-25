@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file tests/unit/core/molecular_system/MolecularSystemUnitTests.cc
+/// @file tests/unit/core/molecular_system/MolecularSystemTests.cc
 /// @brief Unit tests for the MolecularSystem class.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -25,6 +25,8 @@
 
 // Unit headers:
 #include <core/molecular_system/MolecularSystem.hh>
+#include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.hh>
+#include <core_api/auto_generated_api/chemistry/atoms/AtomInstance_API.hh>
 
 namespace masala {
 namespace tests {
@@ -36,6 +38,20 @@ TEST_CASE( "Instantiate a molecular system", "[core::molecular_system::Molecular
     REQUIRE_NOTHROW([&](){
         masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
         my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
+    }() );
+}
+
+TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bonds.", "[core::molecular_system::MolecularSystem][core_api::auto_generated_api::molecular_system::MolecularSystem_API][instantiation]" ) {
+	using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP;
+	using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API;
+	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APISP;
+	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_API;
+
+    REQUIRE_NOTHROW([&](){
+       MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
+        my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
+		AtomInstance_APISP atom1( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
+		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
     }() );
 }
 
