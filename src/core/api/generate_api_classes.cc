@@ -29,6 +29,7 @@
 #include <core/chemistry/MolecularGeometry.hh>
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/atoms/AtomInstanceConstIterator.hh>
+#include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentation.hh>
 #include <core/selection/atom_selection/AtomSelection.hh>
 #include <core/io/pdb/BasicPDBReader.hh>
 #include <core/scoring/ScoringTerm.hh>
@@ -52,6 +53,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::MolecularGeometry >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstance >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::AtomInstanceConstIterator >() );
+        outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::coordinates::EigenLinalgCartesianAtomCoordinateRepresentation >() );
         outvec.emplace_back( masala::make_shared< masala::core::selection::atom_selection::AtomSelection >() );
         outvec.emplace_back( masala::make_shared< masala::core::io::pdb::BasicPDBReader >() );
         outvec.emplace_back( masala::make_shared< masala::core::scoring::ScoringTerm >() );

@@ -27,6 +27,8 @@
 #include <core/molecular_system/MolecularSystem.hh>
 #include <core_api/auto_generated_api/molecular_system/MolecularSystem_API.hh>
 #include <core_api/auto_generated_api/chemistry/atoms/AtomInstance_API.hh>
+#include <core_api/auto_generated_api/registration/register_core.hh>
+#include <numeric_api/auto_generated_api/registration/register_numeric.hh>
 
 namespace masala {
 namespace tests {
@@ -48,6 +50,9 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_API;
 	using masala::base::Real;
 
+    masala::numeric_api::auto_generated_api::registration::register_numeric();
+    masala::core_api::auto_generated_api::registration::register_core();
+
     REQUIRE_NOTHROW([&](){
        MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
         my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
@@ -56,6 +61,9 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 		my_molecular_system->add_atom( atom1, std::array< Real, 3 >{ 0, 0, 0 } );
 		my_molecular_system->add_atom( atom2, std::array< Real, 3 >{ 0.74, 0, 0 } );
     }() );
+
+    masala::core_api::auto_generated_api::registration::unregister_core();
+    masala::numeric_api::auto_generated_api::registration::unregister_numeric();
 }
 
 } // namespace molecular_system

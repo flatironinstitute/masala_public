@@ -1567,7 +1567,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             parent_hhfile = "headers/" + parentsplit[0] + "/headers"
             parent_api_hhfile = "headers/" + parentsplit[0] + "/headers"
         parent_api_namespace_and_name = parentsplit[0]
-        assert len(parentsplit) > 2
+        assert len(parentsplit) > 2, "Could not properly parse parent namespace (" + parent_namespace_and_name + ") for class " + classname + "."
         for i in range( 1, len(parentsplit) ) :
             parent_hhfile += "/" + parentsplit[i]
             if i == 2 :

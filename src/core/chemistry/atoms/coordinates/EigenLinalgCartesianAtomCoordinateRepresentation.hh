@@ -37,6 +37,7 @@
 #include <external/eigen/Eigen/Core>
 
 // STL headers:
+#include <mutex>
 #include <map>
 
 namespace masala {
@@ -48,7 +49,7 @@ namespace coordinates {
 
 /// @brief A container of atom coordinates, using the Eigen linear algebra library's data structures.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class EigenLinalgCartesianAtomCoordinateRepresentation : public AtomCoordinateRepresentation {
+class EigenLinalgCartesianAtomCoordinateRepresentation : public masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation {
 
 public:
 
@@ -60,10 +61,14 @@ public:
     EigenLinalgCartesianAtomCoordinateRepresentation() = default;
 
     /// @brief Copy constructor.
-    EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & ) = default;
+    EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
     // Destructor ommitted to keep class pure virtual.
     ~EigenLinalgCartesianAtomCoordinateRepresentation() override = default;
+
+    /// @brief Assignment operator.
+    EigenLinalgCartesianAtomCoordinateRepresentation &
+    operator=( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
@@ -112,7 +117,7 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC FUNCTIONS
+// PUBLIC SETTER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -134,18 +139,40 @@ public:
         std::array< masala::base::Real, 3 > const & new_atom_coordinates
     ) override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
-    std::array< masala::base::Real, 3 > const
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION GETTER
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get an object describing the API for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief A mutex for locking this object.
+    mutable std::mutex mutex_;
+
+    /// @brief The API definition for this object.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
     /// @brief Data storage for atom coordinates.
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
