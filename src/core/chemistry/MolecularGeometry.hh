@@ -137,6 +137,14 @@ public:
         atoms::AtomInstanceConstIterator const atom_iterator
     ) const;
 
+    /// @brief Add a bond to this molecule, with the bond type specified by string.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        std::string const & bond_type_string
+    );
+
     /// @brief Add a bond to this molecule.
     void
     add_bond(

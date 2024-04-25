@@ -201,15 +201,28 @@ MolecularGeometry::get_api_definition() {
 			masala::make_shared< MasalaObjectAPISetterDefinition_ThreeInput<
 					masala::core::chemistry::atoms::AtomInstanceCSP const &,
 					masala::core::chemistry::atoms::AtomInstanceCSP const &,
-					masala::core::chemistry::bonds::ChemicalBondType const
+					std::string const &
 				>
 			>(
 				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
 				"atom1", "The first atom in this molecule that will be connected by the bond.",
 				"atom2", "The second atom in this molecule that will be connected by the bond.",
-				"bond_type", "The type of chemical bond.",
+				"bond_type", "The type of chemical bond.  Allowed types are: "
+				+ masala::core::chemistry::bonds::list_bond_types( ", ", true ),
 				false, false,
-				std::bind( &MolecularGeometry::add_bond, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+				std::bind(
+					static_cast<
+						void(MolecularGeometry::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							std::string const &
+						)
+					> (&MolecularGeometry::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
 			)
 		);
 
@@ -306,6 +319,21 @@ MolecularGeometry::get_atom_coordinates(
 ) const {
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
     return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
+}
+
+/// @brief Add a bond to this molecule, with the bond type specified by string.
+void
+MolecularGeometry::add_bond(
+	masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+	masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+	std::string const & bond_type_string
+) {
+	using namespace core::chemistry::bonds;
+	ChemicalBondType const bond_type( bond_type_from_string( bond_type_string ) );
+	CHECK_OR_THROW_FOR_CLASS( bond_type != ChemicalBondType::INVALID_CHEMICAL_BOND_TYPE, "add_bond",
+		"The string \"" + bond_type_string + "\" could not be parsed as a valid bond type."
+	);
+	add_bond( first_atom, second_atom, bond_type );
 }
 
 /// @brief Add a bond to this molecule.

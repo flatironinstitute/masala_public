@@ -39,6 +39,7 @@ namespace bonds {
     using ChemicalBondInstanceCWP = MASALA_WEAK_POINTER< ChemicalBondInstance const >;
 
     /// @brief An enum for the type of bond.
+	/// @details If this list is expanded, the string_from_bond_type() function must be updated.
     enum class ChemicalBondType {
         INVALID_CHEMICAL_BOND_TYPE = -1, // Keep first.
         UNSPECIFIED_CHEMICAL_BOND_TYPE = 0, // Keep second.
@@ -52,7 +53,7 @@ namespace bonds {
         PI_PI_BOND,
         HALOGEN_BOND,
         VIRTUAL_BOND, //Keep second-to-last.
-        N_HYBRIDIZATION_STATES = VIRTUAL_BOND //Keep last.
+        N_CHEMICAL_BOND_TYPES = VIRTUAL_BOND //Keep last.
     };
 
 } // namespace bonds
