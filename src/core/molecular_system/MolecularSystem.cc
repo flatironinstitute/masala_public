@@ -29,6 +29,8 @@
 
 // Core headers:
 #include <core/chemistry/MolecularGeometry.hh>
+#include <core/chemistry/atoms/AtomInstance.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -36,6 +38,9 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
 namespace core {
@@ -51,6 +56,30 @@ MolecularSystem::MolecularSystem() :
     masala::base::MasalaObject(),
     molecular_geometry_( masala::make_shared< masala::core::chemistry::MolecularGeometry >() )
 {}
+
+/// @brief Copy constructor (explicit due to mutex).
+/// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
+MolecularSystem::MolecularSystem(
+    MolecularSystem const & src
+) :
+    masala::base::MasalaObject(src)
+{
+    (*this) = src;
+}
+
+/// @brief Assignment operator (explicit due to mutex).
+MolecularSystem &
+MolecularSystem::operator=(
+    MolecularSystem const & src
+) {
+    std::lock( mutex_, src.mutex_ );
+    std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+    std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+    molecular_geometry_ = src.molecular_geometry_;
+    // Deliberately do not copy api definition.
+    return *this;
+}
+
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
@@ -72,6 +101,7 @@ MolecularSystem::deep_clone() const {
 /// @details Be sure to update this function whenever a private member is added!
 void
 MolecularSystem::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
     molecular_geometry_ = molecular_geometry_->deep_clone();
 }
 
@@ -112,6 +142,7 @@ MolecularSystem::class_namespace_static() {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometryCSP
 MolecularSystem::molecular_geometry_shared_ptr() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -122,6 +153,7 @@ MolecularSystem::molecular_geometry_shared_ptr() const {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometryCWP
 MolecularSystem::molecular_geometry_weak_ptr() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return molecular_geometry_;
 }
 
@@ -132,43 +164,47 @@ MolecularSystem::molecular_geometry_weak_ptr() const {
 /// not all form one contiguously-bonded set).
 core::chemistry::MolecularGeometry const &
 MolecularSystem::molecular_geometry() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     return *molecular_geometry_;
 }
 
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst shared pointer.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometrySP
-MolecularSystem::molecular_geometry_shared_ptr_nonconst() {
-    return molecular_geometry_;
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Add an atom to this molecular system.
+void
+MolecularSystem::add_atom(
+    masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
+    std::array< masala::base::Real, 3 > const & coords
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    CHECK_OR_THROW_FOR_CLASS( !molecular_geometry_->has_atom( new_atom ), "add_atom",
+        "The molecular system already contains the atom!"
+    );
+    molecular_geometry_->add_atom( new_atom, coords );
 }
 
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst weak pointer.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometryWP
-MolecularSystem::molecular_geometry_weak_ptr_nonconst() {
-    return molecular_geometry_;
+/// @brief Add a bond to this molecule, with the bond type specified by string.
+void
+MolecularSystem::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    std::string const & bond_type_string
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    molecular_geometry_->add_bond( first_atom, second_atom, bond_type_string );
 }
 
-/// @brief Access the MolecularGeometry object in this molecular system, by nonconst reference.
-/// @details The MolecularGeometry object contains the coordinates and properties of atoms
-/// and chemical bonds.  We will use an observer system to ensure that direct updates
-/// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-/// access is safe.
-/// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-/// not all form one contiguously-bonded set).
-core::chemistry::MolecularGeometry &
-MolecularSystem::molecular_geometry_nonconst() {
-    return *molecular_geometry_;
+/// @brief Add a bond to this molecule.
+void
+MolecularSystem::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    masala::core::chemistry::bonds::ChemicalBondType const bond_type
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    molecular_geometry_->add_bond( first_atom, second_atom, bond_type );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,6 +215,8 @@ MolecularSystem::molecular_geometry_nonconst() {
 base::api::MasalaObjectAPIDefinitionCWP
 MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
+
+    std::lock_guard< std::mutex > lock( mutex_ );
 
     if( api_definition_ == nullptr ) {
 
@@ -240,6 +278,79 @@ MolecularSystem::get_api_definition() {
         //         std::bind( &MolecularSystem::molecular_geometry, this )
         //     )
         // );
+
+        // Setters:
+        api_def->add_setter(
+            masala::make_shared<
+                setter::MasalaObjectAPISetterDefinition_TwoInput<
+                    masala::core::chemistry::atoms::AtomInstanceSP const &,
+                    std::array< masala::base::Real, 3 > const &
+                > 
+            > (
+                    "add_atom", "Add an atom to this molecular system.",
+                    "atom_in", "The atom object to add.  Used directly; not cloned.",
+                    "coords", "The atomic coordinates of this atom.",
+                    false, false,
+                    std::bind( &MolecularSystem::add_atom, this, std::placeholders::_1, std::placeholders::_2 )
+            )
+        );
+		api_def->add_setter(
+			masala::make_shared<
+				setter::MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					std::string const &
+				>
+			>(
+                "add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond.  Allowed types are: "
+				+ masala::base::enums::list_bond_types( ", ", true ),
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularSystem::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							std::string const &
+						)
+					> (&MolecularSystem::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared<
+                setter::MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::bonds::ChemicalBondType const
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond, specified by enum.",
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularSystem::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::bonds::ChemicalBondType const
+						)
+					> (&MolecularSystem::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
 
         api_definition_ = api_def; //Make const.
     }

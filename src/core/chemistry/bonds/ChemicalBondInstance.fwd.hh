@@ -25,6 +25,7 @@
 #define Masala_src_core_chemistry_bonds_ChemicalBondInstance_fwd_hh
 
 #include <base/managers/memory/util.hh>
+#include <base/enums/ChemicalBondTypeEnum.fwd.hh>
 
 namespace masala {
 namespace core {
@@ -38,22 +39,7 @@ namespace bonds {
     using ChemicalBondInstanceWP = MASALA_WEAK_POINTER< ChemicalBondInstance >;
     using ChemicalBondInstanceCWP = MASALA_WEAK_POINTER< ChemicalBondInstance const >;
 
-    /// @brief An enum for the type of bond.
-    enum class ChemicalBondType {
-        INVALID_CHEMICAL_BOND_TYPE = -1, // Keep first.
-        UNSPECIFIED_CHEMICAL_BOND_TYPE = 0, // Keep second.
-        SINGLE_BOND = 1, // Keep third.
-        DOUBLE_BOND = 2, // Keep fourth.
-        TRIPLE_BOND = 3, // Keep fifth.
-        PARTIAL_DOUBLE_BOND,
-        COORDINATE_COVALENT_BOND, // To metals
-        HYDROGEN_BOND,
-        CATION_PI_BOND,
-        PI_PI_BOND,
-        HALOGEN_BOND,
-        VIRTUAL_BOND, //Keep second-to-last.
-        N_HYBRIDIZATION_STATES = VIRTUAL_BOND //Keep last.
-    };
+    using ChemicalBondType = masala::base::enums::ChemicalBondType;
 
 } // namespace bonds
 } // namespace chemistry

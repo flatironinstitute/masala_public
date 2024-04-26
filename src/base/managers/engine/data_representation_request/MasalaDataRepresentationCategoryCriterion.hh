@@ -91,7 +91,7 @@ public:
     bool
     data_representation_is_compatible_with_criterion(
         masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
-    ) const;
+    ) const override;
 
     /// @brief Are we enforcing that the data representation be in categories or not in categories?
     void set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode const mode );

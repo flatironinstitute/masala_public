@@ -101,7 +101,7 @@ public:
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
     virtual
-    std::array< masala::base::Real, 3 > const
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const = 0;

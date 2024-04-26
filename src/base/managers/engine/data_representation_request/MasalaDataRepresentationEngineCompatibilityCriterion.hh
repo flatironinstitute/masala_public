@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.hh
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.hh
 /// @brief A class for imposing the condition that a particular data representation be compatible with (or
 /// be incompatible with) a particular Masala engine.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_hh
-#define Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_hh
+#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_hh
+#define Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_hh
 
 // Forward declarations:
-#include <base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.fwd.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.fwd.hh>
 
 // Parent header:
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationRequestCriterion.hh>
@@ -39,7 +39,7 @@ namespace managers {
 namespace engine {
 namespace data_representation_request {
 
-enum class MasalaEngineCompatibilityCriterionMode {
+enum class MasalaDataRepresentationEngineCompatibilityCriterionMode {
     INVALID_MODE = 0, // Keep first
     MUST_BE_EXPLICITLY_COMPATIBLE = 1, // Keep second
     MUST_BE_EXPLICITLY_INCOMPATIBLE, // Keep second-to-last
@@ -49,7 +49,7 @@ enum class MasalaEngineCompatibilityCriterionMode {
 /// @brief A class for imposing the condition that a particular data representation be compatible with (or
 /// be incompatible with) a particular Masala engine.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaEngineCompatibilityCriterion : public masala::base::managers::engine::data_representation_request::MasalaDataRepresentationRequestCriterion {
+class MasalaDataRepresentationEngineCompatibilityCriterion : public masala::base::managers::engine::data_representation_request::MasalaDataRepresentationRequestCriterion {
 
 public:
 
@@ -58,13 +58,13 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor.
-    MasalaEngineCompatibilityCriterion() = default;
+    MasalaDataRepresentationEngineCompatibilityCriterion() = default;
 
     /// @brief Copy constructor.
-    MasalaEngineCompatibilityCriterion( MasalaEngineCompatibilityCriterion const & ) = default;
+    MasalaDataRepresentationEngineCompatibilityCriterion( MasalaDataRepresentationEngineCompatibilityCriterion const & ) = default;
 
     // Destructor.
-    ~MasalaEngineCompatibilityCriterion() override = default;
+    ~MasalaDataRepresentationEngineCompatibilityCriterion() override = default;
 
 public:
 
@@ -73,7 +73,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Get the name of this class.
-    /// @returns "MasalaEngineCompatibilityCriterion".
+    /// @returns "MasalaDataRepresentationEngineCompatibilityCriterion".
     std::string class_name() const override;
 
     /// @brief Get the namespace of this class.
@@ -85,7 +85,7 @@ public:
     bool
     data_representation_is_compatible_with_criterion(
         masala::base::managers::engine::MasalaDataRepresentationCreator const & creator
-    ) const;
+    ) const override;
 
     /// @brief Set the Masala engine with which the data representation must be compatible/incompatible.
     /// @details Adds to list if other have been set.
@@ -102,7 +102,7 @@ public:
     );
 
     /// @brief Set whether this criterion requres compatibility or incompatibility with (a) Masala engine(s).
-    void set_criterion_mode( MasalaEngineCompatibilityCriterionMode const mode );
+    void set_criterion_mode( MasalaDataRepresentationEngineCompatibilityCriterionMode const mode );
 
 private:
 
@@ -117,7 +117,7 @@ private:
     bool match_any_ = true;
 
     /// @brief Are we enforcing compatibility or incompatibility?
-    MasalaEngineCompatibilityCriterionMode mode_ = MasalaEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE;
+    MasalaDataRepresentationEngineCompatibilityCriterionMode mode_ = MasalaDataRepresentationEngineCompatibilityCriterionMode::MUST_BE_EXPLICITLY_COMPATIBLE;
 
 };
 
@@ -127,4 +127,4 @@ private:
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_hh
+#endif // Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_hh

@@ -19,6 +19,8 @@
 /// @file src/base/managers/plugin_module/MasalaDataRepresentationRequest.fwd.hh
 /// @brief Forward declarations for a class used to request data representations.
 /// @details This class stores a list of criteria that a data representation must satisfy.
+/// @note This class is not threadsafe.  It is expected to be created, used, and destroyed
+/// by a single thread.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_MasalaDataRepresentationRequest_fwd_hh

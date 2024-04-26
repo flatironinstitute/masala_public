@@ -99,6 +99,9 @@ public:
 	/// @returns A const shared pointer to the ElementType object for that element.
 	ElementTypeCSP element_type_from_ucase_abbreviation( std::string const & abbreviation ) const;
 
+	/// @brief Given the enum of an element, get an ElementType object.
+	ElementTypeCSP element_type_from_enum( ElementTypeEnum const element_type_enum ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

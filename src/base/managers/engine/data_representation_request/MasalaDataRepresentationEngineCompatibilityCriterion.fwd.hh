@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/managers/engine/data_representation_request/MasalaEngineCompatibilityCriterion.fwd.hh
+/// @file src/base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.fwd.hh
 /// @brief A class for imposing the condition that a particular data representation be compatible with (or
 /// be incompatible with) a particular Masala engine.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_fwd_hh
-#define Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_fwd_hh
+#ifndef Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_fwd_hh
+#define Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_fwd_hh
 
 #include <base/managers/memory/util.hh>
 
@@ -32,12 +32,12 @@ namespace managers {
 namespace engine {
 namespace data_representation_request {
 
-    class MasalaEngineCompatibilityCriterion;
+    class MasalaDataRepresentationEngineCompatibilityCriterion;
 
-    using MasalaEngineCompatibilityCriterionSP = MASALA_SHARED_POINTER< MasalaEngineCompatibilityCriterion >;
-    using MasalaEngineCompatibilityCriterionCSP = MASALA_SHARED_POINTER< MasalaEngineCompatibilityCriterion const >;
-    using MasalaEngineCompatibilityCriterionWP = MASALA_WEAK_POINTER< MasalaEngineCompatibilityCriterion >;
-    using MasalaEngineCompatibilityCriterionCWP = MASALA_WEAK_POINTER< MasalaEngineCompatibilityCriterion const >;
+    using MasalaDataRepresentationEngineCompatibilityCriterionSP = MASALA_SHARED_POINTER< MasalaDataRepresentationEngineCompatibilityCriterion >;
+    using MasalaDataRepresentationEngineCompatibilityCriterionCSP = MASALA_SHARED_POINTER< MasalaDataRepresentationEngineCompatibilityCriterion const >;
+    using MasalaDataRepresentationEngineCompatibilityCriterionWP = MASALA_WEAK_POINTER< MasalaDataRepresentationEngineCompatibilityCriterion >;
+    using MasalaDataRepresentationEngineCompatibilityCriterionCWP = MASALA_WEAK_POINTER< MasalaDataRepresentationEngineCompatibilityCriterion const >;
 
 
 } // namespace data_representation_request
@@ -46,4 +46,4 @@ namespace data_representation_request {
 } // namespace base
 } // namespace masala
 
-#endif // Masala_src_base_managers_engine_data_representation_request_MasalaEngineCompatibilityCriterion_fwd_hh
+#endif // Masala_src_base_managers_engine_data_representation_request_MasalaDataRepresentationEngineCompatibilityCriterion_fwd_hh

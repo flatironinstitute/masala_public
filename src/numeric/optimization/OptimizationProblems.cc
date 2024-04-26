@@ -219,6 +219,19 @@ OptimizationProblems::get_api_definition() {
             )
         );
 
+		// Work functions:
+        api_def->add_work_function(
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< OptimizationProblemSP, masala::base::Size > >(
+                "problem_nonconst", "Access the problem (nonconst) with the given index.  Throws if index is out of range.  Note "
+				"that it can be dangerous to hang on to a nonconst pointer to an object in this container, especially if you "
+				"move into a const context!",
+				false, false, false, false,
+                "index", "The index of the problem to get.  (Note that this is zero-based.)",
+                "problem", "A const shared pointer to the problem with the given index.",
+                std::bind( &OptimizationProblems::problem_nonconst, this, std::placeholders::_1 )
+            )
+        );
+
         api_definition_ = api_def; //Make const.
     }
 
@@ -263,6 +276,23 @@ OptimizationProblems::problem(
     CHECK_OR_THROW_FOR_CLASS(
         index < optimization_problems_.size(),
         "problem",
+        "Could not access problem with index " + std::to_string(index) + ", since only "
+        + std::to_string(optimization_problems_.size()) + " problems are stored in this object."
+    );
+    return optimization_problems_[index];
+}
+
+/// @brief Nonconst access to the ith problem in this object, where the index is zero-based.
+/// @details Does bounds-checking.  Throws if out of range.  Use the
+/// n_problems() method to check number of problems.
+OptimizationProblemSP
+OptimizationProblems::problem_nonconst(
+	masala::base::Size const index
+) {
+    std::lock_guard< std::mutex > lock( problems_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS(
+        index < optimization_problems_.size(),
+        "problem_nonconst",
         "Could not access problem with index " + std::to_string(index) + ", since only "
         + std::to_string(optimization_problems_.size()) + " problems are stored in this object."
     );
