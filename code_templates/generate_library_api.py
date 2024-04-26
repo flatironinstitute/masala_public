@@ -176,6 +176,8 @@ def access_needed_object( project_name: str, classname : str, instancename : str
             if is_masala_class( project_name, innerclass ) :
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
+    if is_known_masala_base_enum( classname ) :
+        return instancename
     classtype = classname.split()[0]
     assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
