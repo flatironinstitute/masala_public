@@ -77,6 +77,30 @@ namespace api {
         return true;
     }
 
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState>(
+		type<masala::base::enums::AtomHybridizationState>,
+		std::string & enum_name
+	) {
+        enum_name = "masala::base::enums::AtomHybridizationState";
+        return true;
+    }
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState const>(
+		type<masala::base::enums::AtomHybridizationState const>,
+		std::string & enum_name
+	) {
+        enum_name = "masala::base::enums::AtomHybridizationState const";
+        return true;
+    }
+
     /// @brief Manually override for void.
     template<>
     std::string

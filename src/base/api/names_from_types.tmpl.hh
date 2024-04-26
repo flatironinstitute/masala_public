@@ -30,7 +30,8 @@
 
 // Known base enums
 #include <base/managers/database/elements/ElementType.fwd.hh> // ElementTypeEnum
-#include <base/enums/ChemicalBondTypeEnum.fwd.hh> // ChemicalBondType
+#include <base/enums/ChemicalBondTypeEnum.fwd.hh> // ChemicalBondType enum
+#include <base/enums/AtomHybridizationStateEnum.fwd.hh> // AtomHybridizationState enum
 
 // Eigen headers
 #include <external/eigen/Eigen/Dense>
@@ -109,6 +110,24 @@ namespace api {
 	bool
 	is_known_base_enum_type<masala::base::enums::ChemicalBondType const>(
 		type<masala::base::enums::ChemicalBondType const>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState>(
+		type<masala::base::enums::AtomHybridizationState>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState const>(
+		type<masala::base::enums::AtomHybridizationState const>,
 		std::string & enum_name
 	);
 

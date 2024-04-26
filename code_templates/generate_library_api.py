@@ -177,7 +177,7 @@ def access_needed_object( project_name: str, classname : str, instancename : str
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
     classtype = classname.split()[0]
-    assert classtype in jsonfile["Elements"]
+    assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
     return "*( " + instancename + ".get_inner_object() )"
@@ -789,6 +789,10 @@ def is_known_masala_base_enum( \
         return True
     elif objtype == "masala::base::enums::ChemicalBondType const" :
         return True
+    elif objtype == "masala::base::enums::AtomHybridizationState" :
+        return True
+    elif objtype == "masala::base::enums::AtomHybridizationState const" :
+        return True
     
     return False
 
@@ -799,6 +803,8 @@ def include_file_for_known_masala_base_enum( objtype : str ) -> str :
         return "<base/managers/database/elements/ElementType.fwd.hh>"
     elif objtype == "masala::base::enums::ChemicalBondType" or objtype == "masala::base::enums::ChemicalBondType const" :
         return "<base/enums/ChemicalBondTypeEnum.fwd.hh>"
+    elif objtype == "masala::base::enums::AtomHybridizationState" or objtype == "masala::base::enums::AtomHybridizationState const" :
+        return "<base/enums/AtomHybridizationStateEnum.fwd.hh>"
 
     assert False, "Error!  Do not know filename for enum type " + objtype + "!"
 
