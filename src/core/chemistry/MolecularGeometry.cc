@@ -406,7 +406,7 @@ MolecularGeometry::master_atom_coordinate_representation_mutex_locked() {
         master_atom_coordinate_representation_ = std::dynamic_pointer_cast< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
             masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
                 configuration_->default_atom_coordinate_representation()
-            )
+            )->get_inner_data_representation_object()
         );
         CHECK_OR_THROW_FOR_CLASS( master_atom_coordinate_representation_ != nullptr, "master_atom_coordinate_representation", configuration_->default_atom_coordinate_representation() + " was not an AtomCoordinateRepresentation!" );
     }
