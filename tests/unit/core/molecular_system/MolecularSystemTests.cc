@@ -29,6 +29,9 @@
 #include <core_api/auto_generated_api/chemistry/atoms/AtomInstance_API.hh>
 #include <core_api/auto_generated_api/registration/register_core.hh>
 #include <numeric_api/auto_generated_api/registration/register_numeric.hh>
+#include <base/enums/ChemicalBondTypeEnum.fwd.hh>
+#include <base/enums/AtomHybridizationStateEnum.fwd.hh>
+#include <base/managers/database/elements/ElementType.fwd.hh>
 
 namespace masala {
 namespace tests {
@@ -49,17 +52,26 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_APISP;
 	using masala::core_api::auto_generated_api::chemistry::atoms::AtomInstance_API;
 	using masala::base::Real;
+	using masala::base::managers::database::elements::ElementTypeEnum;
+	using masala::base::enums::AtomHybridizationState;
+	using masala::base::enums::ChemicalBondType;
 
     masala::numeric_api::auto_generated_api::registration::register_numeric();
     masala::core_api::auto_generated_api::registration::register_core();
 
     REQUIRE_NOTHROW([&](){
-       MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
-        my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
-		AtomInstance_APISP atom1( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
-		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( "H", "s", 0, 0 ) );
+		MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
+		my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
+		// Build carbon dioxide:
+		AtomInstance_APISP atom1( masala::make_shared< AtomInstance_API >( "C", "sp2", 0, 0 ) ); // Less efficient -- requires string parsing.
+		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( ElementTypeEnum::O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
+		AtomInstance_APISP atom3( masala::make_shared< AtomInstance_API >( ElementTypeEnum::O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
 		my_molecular_system->add_atom( atom1, std::array< Real, 3 >{ 0, 0, 0 } );
-		my_molecular_system->add_atom( atom2, std::array< Real, 3 >{ 0.74, 0, 0 } );
+		my_molecular_system->add_atom( atom2, std::array< Real, 3 >{ 1.16, 0, 0 } );
+		my_molecular_system->add_atom( atom3, std::array< Real, 3 >{ -1.16, 0, 0 } );
+		my_molecular_system->add_bond( atom1, atom2, ChemicalBondType::DOUBLE_BOND ); // Enum is more efficient than parsing strings.
+		my_molecular_system->add_bond( atom1, atom3, "double_bond" ); // Strings are less efficient.
+		my_molecular_system->write_to_tracer( "Built carbon dioxide (O=C=O)." );
     }() );
 
     masala::core_api::auto_generated_api::registration::unregister_core();
