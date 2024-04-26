@@ -38,26 +38,6 @@ namespace core {
 namespace chemistry {
 namespace bonds {
 
-/// @brief Utility function to get a bond type from a string.
-/// @details Returns INVALID_CHEMICAL_BOND_TYPE if string can't be parsed.
-ChemicalBondType
-bond_type_from_string(
-	std::string const & bond_type_string
-);
-
-/// @brief Utility function to get a bond type string from a bbond type.
-std::string
-string_from_bond_type(
-	ChemicalBondType const bond_type
-);
-
-/// @brief Provide a string listing all allowed bond types.
-std::string
-list_bond_types(
-	std::string const & delimiter,
-	bool const include_and
-);
-
 /// @brief A class containing a particular chemical bond between a pair of atoms.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class ChemicalBondInstance : public masala::base::MasalaObject {

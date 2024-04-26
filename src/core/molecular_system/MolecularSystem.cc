@@ -40,6 +40,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
 namespace core {
@@ -305,7 +306,7 @@ MolecularSystem::get_api_definition() {
 				"atom1", "The first atom in this molecule that will be connected by the bond.",
 				"atom2", "The second atom in this molecule that will be connected by the bond.",
 				"bond_type", "The type of chemical bond.  Allowed types are: "
-				+ masala::core::chemistry::bonds::list_bond_types( ", ", true ),
+				+ masala::base::enums::list_bond_types( ", ", true ),
 				false, false,
 				std::bind(
 					static_cast<

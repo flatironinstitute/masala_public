@@ -31,6 +31,7 @@
 #include <core/chemistry/MolecularGeometryConfiguration.hh>
 
 // Base headers:
+#include <base/enums/ChemicalBondTypeEnum.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
@@ -208,7 +209,7 @@ MolecularGeometry::get_api_definition() {
 				"atom1", "The first atom in this molecule that will be connected by the bond.",
 				"atom2", "The second atom in this molecule that will be connected by the bond.",
 				"bond_type", "The type of chemical bond.  Allowed types are: "
-				+ masala::core::chemistry::bonds::list_bond_types( ", ", true ),
+				+ masala::base::enums::list_bond_types( ", ", true ),
 				false, false,
 				std::bind(
 					static_cast<
@@ -356,7 +357,7 @@ MolecularGeometry::add_bond(
 	std::string const & bond_type_string
 ) {
 	using namespace core::chemistry::bonds;
-	ChemicalBondType const bond_type( bond_type_from_string( bond_type_string ) );
+	ChemicalBondType const bond_type( masala::base::enums::bond_type_from_string( bond_type_string ) );
 	CHECK_OR_THROW_FOR_CLASS( bond_type != ChemicalBondType::INVALID_CHEMICAL_BOND_TYPE, "add_bond",
 		"The string \"" + bond_type_string + "\" could not be parsed as a valid bond type."
 	);
