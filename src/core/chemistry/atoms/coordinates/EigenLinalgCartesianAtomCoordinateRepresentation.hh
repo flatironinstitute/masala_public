@@ -80,6 +80,10 @@ public:
     EigenLinalgCartesianAtomCoordinateRepresentationSP
     deep_clone() const;
 
+	/// @brief Make this object instance fully independent.
+	void
+	make_independent();
+
     /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
     std::string
     class_name() const override;
@@ -125,10 +129,7 @@ public:
 // PUBLIC SETTER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-
     /// @brief Replace an atom instance with a new one.
-    /// @details Used for deep cloning, since the AtomCoordinateRepresentation subclasses do not
-    /// implement a deep_clone() function.
     /// @note Must be implemented by derived classes.
     void
     replace_atom_instance(
@@ -166,6 +167,20 @@ public:
 	/// @brief Get an object describing the API for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition() override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Replace an atom instance with a new one.  This version should be called only from
+	/// a mutex-locked context.
+    void
+    replace_atom_instance_mutex_locked(
+        AtomInstanceCSP const & old_instance,
+        AtomInstanceCSP const & new_instance
+    );
 
 private:
 

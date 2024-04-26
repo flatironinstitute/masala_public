@@ -91,6 +91,29 @@ EigenLinalgCartesianAtomCoordinateRepresentation::deep_clone() const {
     return new_object;
 }
 
+/// @brief Make this object instance fully independent.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::make_independent() {
+    std::lock_guard< std::mutex > lock( mutex_ );
+	using masala::core::chemistry::atoms::AtomInstanceCSP;
+	using masala::base::Size;
+
+	std::vector< AtomInstanceCSP > old_atom_instances;
+	std::vector< AtomInstanceCSP > new_atom_instances;
+	Size const n_atoms( atom_instance_to_column_.size() );
+	old_atom_instances.reserve( n_atoms );
+	new_atom_instances.reserve( n_atoms );
+	for( auto const & entry : atom_instance_to_column_ ) {
+		old_atom_instances.push_back( entry.first );
+		new_atom_instances.push_back( entry.first->deep_clone() );
+	}
+
+	for( Size i(0); i<=n_atoms; ++i ) {
+		replace_atom_instance_mutex_locked( old_atom_instances[i], new_atom_instances[i] );
+	}
+
+}
+
 /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
@@ -164,11 +187,8 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
     AtomInstanceCSP const & old_instance,
     AtomInstanceCSP const & new_instance
 ) {
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count( old_instance ) == 1, "replace_atom_instance", "Could not replace atom.  Old atom is not present!" );
-    masala::base::Size const col_index( atom_instance_to_column_.at(old_instance) );
-    atom_instance_to_column_.erase(old_instance);
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
-    atom_instance_to_column_[new_instance] = col_index;
+    std::lock_guard< std::mutex > lock( mutex_ );
+	replace_atom_instance_mutex_locked( old_instance, new_instance );
 }
 
 /// @brief Add an atom.
@@ -178,6 +198,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
     AtomInstanceCSP const & new_atom,
     std::array< masala::base::Real, 3 > const & new_atom_coordinates
 ) {
+    std::lock_guard< std::mutex > lock( mutex_ );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_atom) == 0, "add_atom_instance", "Atom has already been added!" );
     masala::base::Size const natoms_before( atom_coordinates_.cols() );
     atom_instance_to_column_[ new_atom ] = natoms_before;
@@ -199,6 +220,7 @@ std::array< masala::base::Real, 3 >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
     AtomInstanceCSP const & atom
 ) const {
+    std::lock_guard< std::mutex > lock( mutex_ );
     auto const it( atom_instance_to_column_.find( atom ) );
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecular geometry object!" );
     masala::base::Size const column( it->second );
@@ -265,6 +287,24 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_api_definition() {
     }
 
     return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Replace an atom instance with a new one.  This version should be called only from
+/// a mutex-locked context.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance_mutex_locked(
+	AtomInstanceCSP const & old_instance,
+	AtomInstanceCSP const & new_instance
+) {
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count( old_instance ) == 1, "replace_atom_instance", "Could not replace atom.  Old atom is not present!" );
+    masala::base::Size const col_index( atom_instance_to_column_.at(old_instance) );
+    atom_instance_to_column_.erase(old_instance);
+    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
+    atom_instance_to_column_[new_instance] = col_index;
 }
 
 } // namespace coordinates
