@@ -157,6 +157,9 @@ MasalaTracerManager::write_to_tracer(
 std::string
 MasalaTracerManager::get_thread_id_string() const {
     std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+	if( thread_map_.size() == 0 ) {
+		return "0";
+	}
     std::map< std::thread::id, base::Size >::const_iterator it( thread_map_.find( std::this_thread::get_id() ) );
     if( it == thread_map_.end() ) {
         return "?";
