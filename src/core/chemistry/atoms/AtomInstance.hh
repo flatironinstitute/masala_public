@@ -48,27 +48,6 @@ namespace core {
 namespace chemistry {
 namespace atoms {
 
-/// @brief Utility function to get hybridization state string from hybridization state enum.
-std::string
-string_from_atom_hybridization_state_enum(
-	AtomHybridizationState const hybstate
-);
-
-/// @brief Utility function to get hybridization state enum from hybridization state string.
-/// @details Returns INVALID_HYBRIDIZATION_STATE if string can't be parsed.
-AtomHybridizationState
-enum_from_atom_hybridization_state_string(
-	std::string const & hybstate_string
-);
-
-/// @brief Get a list of all hybridization states, separated by a delimiter (e.g. ", ").
-/// @details If include_and is true, the final entry is preceded by "and".
-std::string
-list_all_hybridization_states(
-	std::string const & delimiter,
-	bool const include_and
-);
-
 /// @brief A class contiaining a description of the properties of
 /// a particular atom.
 /// @note This stores element type, formal charge, partial charge,

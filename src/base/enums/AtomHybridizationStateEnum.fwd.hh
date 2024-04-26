@@ -16,13 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/enums/ChemicalBondTypeEnum.fwd.hh
+/// @file src/base/enums/AtomHybridizationStateEnum.fwd.hh
 /// @brief Declarations for the enum for chemical bond type.
 /// @details Needs to be declared in masala::base to be accessible to API definitions.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_enums_ChemicalBondTypeEnum_fwd_hh
-#define Masala_src_base_enums_ChemicalBondTypeEnum_fwd_hh
+#ifndef Masala_src_base_enums_AtomHybridizationStateEnum_fwd_hh
+#define Masala_src_base_enums_AtomHybridizationStateEnum_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -30,27 +30,22 @@ namespace masala {
 namespace base {
 namespace enums {
 
-	/// @brief An enum for the type of bond.
-	/// @details If this list is expanded, then the string_from_bond_type()
-	/// function must be updated.
-    enum class ChemicalBondType {
-        INVALID_CHEMICAL_BOND_TYPE = -1, // Keep first.
-        UNSPECIFIED_CHEMICAL_BOND_TYPE = 0, // Keep second.
-        SINGLE_BOND = 1, // Keep third.
-        DOUBLE_BOND = 2, // Keep fourth.
-        TRIPLE_BOND = 3, // Keep fifth.
-        PARTIAL_DOUBLE_BOND,
-        COORDINATE_COVALENT_BOND, // To metals
-        HYDROGEN_BOND,
-        CATION_PI_BOND,
-        PI_PI_BOND,
-        HALOGEN_BOND,
-        VIRTUAL_BOND, //Keep second-to-last.
-        N_CHEMICAL_BOND_TYPES = VIRTUAL_BOND //Keep last.
+    /// @brief An enum for the hybridization state of an atom.
+	/// @details If this is added to, then string_from_atom_hybridization_state_enum() should be updated.
+    enum class AtomHybridizationState {
+        INVALID_HYBRIDIZATION_STATE = -1, // Keep first.
+        UNKNOWN_HYBRIDIZATION_STATE = 0, // Keep second.
+        sp = 1, // Keep third.
+        FIRST_HYBRIDIZATION_STATE = sp, // Keep fourth.
+        sp2,
+        sp3,
+        s, // No hybridization -- just S-shell for hydrogen or helium.
+        OTHER_HYBRIDIZATION_STATE, //Keep second-to-last.
+        N_HYBRIDIZATION_STATES = OTHER_HYBRIDIZATION_STATE //Keep last.
     };
 
 } // namespace enums
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_enums_ChemicalBondTypeEnum_fwd_hh
+#endif //Masala_src_base_enums_AtomHybridizationStateEnum_fwd_hh

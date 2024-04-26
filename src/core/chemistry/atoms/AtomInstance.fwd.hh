@@ -30,6 +30,7 @@
 #define Masala_src_core_chemistry_atoms_AtomInstance_fwd_hh
 
 #include <base/managers/memory/util.hh>
+#include <base/enums/AtomHybridizationStateEnum.fwd.hh>
 
 namespace masala {
 namespace core {
@@ -43,19 +44,7 @@ namespace atoms {
     using AtomInstanceWP = MASALA_WEAK_POINTER< AtomInstance >;
     using AtomInstanceCWP = MASALA_WEAK_POINTER< AtomInstance const >;
 
-    /// @brief An enum for the hybridization state of an atom.
-	/// @details If this is added to, then string_from_atom_hybridization_state_enum() should be updated.
-    enum class AtomHybridizationState {
-        INVALID_HYBRIDIZATION_STATE = -1, // Keep first.
-        UNKNOWN_HYBRIDIZATION_STATE = 0, // Keep second.
-        sp = 1, // Keep third.
-        FIRST_HYBRIDIZATION_STATE = sp, // Keep fourth.
-        sp2,
-        sp3,
-        s, // No hybridization -- just S-shell for hydrogen or helium.
-        OTHER_HYBRIDIZATION_STATE, //Keep second-to-last.
-        N_HYBRIDIZATION_STATES = OTHER_HYBRIDIZATION_STATE //Keep last.
-    };
+	using masala::base::enums::AtomHybridizationState;
 
 } // namespace atoms
 } // namespace chemistry

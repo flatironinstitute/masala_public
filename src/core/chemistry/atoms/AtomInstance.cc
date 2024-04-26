@@ -41,77 +41,15 @@
 #include <base/managers/database/elements/ElementType.hh>
 #include <base/managers/database/elements/MasalaElementDatabase.hh>
 #include <base/managers/database/MasalaDatabaseManager.hh>
+#include <base/enums/AtomHybridizationStateEnum.hh>
 
 // STL headers:
 #include <string>
-#include <sstream>
 
 namespace masala {
 namespace core {
 namespace chemistry {
 namespace atoms {
-
-/// @brief Utility function to get hybridization state string from hybridization state enum.
-std::string
-string_from_atom_hybridization_state_enum(
-	AtomHybridizationState const hybstate
-) {
-	switch(hybstate) {
-		case AtomHybridizationState::UNKNOWN_HYBRIDIZATION_STATE :
-			return "unknown";
-		case AtomHybridizationState::sp3 :
-			return "sp3";
-		case AtomHybridizationState::sp2 :
-			return "sp2";
-		case AtomHybridizationState::sp :
-			return "sp";
-		case AtomHybridizationState::s :
-			return "s";
-		case AtomHybridizationState::OTHER_HYBRIDIZATION_STATE :
-			return "other";
-		default:
-			MASALA_THROW( "masala::core::chemistry::atoms", "string_from_atom_hybridization_state_enum",
-				"Invalid hybridization state provided to this function!"
-			);
-	}
-	return "";
-}
-
-/// @brief Utility function to get hybridization state enum from hybridization state string.
-/// @details Returns INVALID_HYBRIDIZATION_STATE if string can't be parsed.
-AtomHybridizationState
-enum_from_atom_hybridization_state_string(
-	std::string const & hybstate_string
-) {
-	using masala::base::Size;
-	for( Size i(0); i<=static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES); ++i ) {
-		if( string_from_atom_hybridization_state_enum( static_cast<AtomHybridizationState>(i) ) == hybstate_string ) {
-			return static_cast<AtomHybridizationState>(i);
-		}
-	}
-	return AtomHybridizationState::INVALID_HYBRIDIZATION_STATE;
-}
-
-/// @brief Get a list of all hybridization states, separated by a delimiter (e.g. ", ").
-/// @details If include_and is true, the final entry is preceded by "and".
-std::string
-list_all_hybridization_states(
-	std::string const & delimiter,
-	bool const include_and
-) {
-	std::ostringstream ss;
-	using masala::base::Size;
-	for( Size i(0); i<=static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES); ++i ) {
-		if( i>0 ) {
-			ss << delimiter;
-		}
-		if( include_and && i == static_cast<Size>(AtomHybridizationState::N_HYBRIDIZATION_STATES) ) {
-			ss << "and ";
-		}
-		ss << string_from_atom_hybridization_state_enum( static_cast<AtomHybridizationState>(i) );
-	}
-	return ss.str();
-}
 
 /// @brief Constructor from PDB atom.
 AtomInstance::AtomInstance(
@@ -142,7 +80,7 @@ AtomInstance::AtomInstance(
         masala::base::managers::database::MasalaDatabaseManager::get_instance()->element_database().element_type_from_abbreviation( element_type )
 	),
 	hybridization_state_(
-		enum_from_atom_hybridization_state_string( hybridization_state )
+		masala::base::enums::enum_from_atom_hybridization_state_string( hybridization_state )
 	),
 	formal_charge_(formal_charge),
 	partial_charge_(partial_charge)
@@ -151,7 +89,7 @@ AtomInstance::AtomInstance(
 		class_namespace_static() + "::" + class_name_static(),
 		"AtomInstance",
 		"Error in atom constructor: the string \"" + hybridization_state + "\" could not be interpreted as a valid "
-		"hybridization state.  Valid strings are: " + list_all_hybridization_states( ", ", true ) + "."
+		"hybridization state.  Valid strings are: " + masala::base::enums::list_all_hybridization_states( ", ", true ) + "."
 	)
 }
 
@@ -303,9 +241,27 @@ AtomInstance::get_api_definition() {
 					masala::base::Real const
 				>
 			> (
-				"AtomInstance", "Constructor from element type, hybridization state, formal charge, and partial charge.",
+				"AtomInstance", "Constructor from element type string, hybridization state string, formal charge, and partial charge.",
 				"element_type", "The element type, in standard representation (e.g. 'C', 'N', 'Cu').",
-				"hybridization_state", "The hybridization state.  Allowed states are: " + list_all_hybridization_states( ", ", true ) + ".",
+				"hybridization_state", "The hybridization state.  Allowed states are: " + masala::base::enums::list_all_hybridization_states( ", ", true ) + ".",
+				"formal_charge", "The atom's formal charge.",
+				"partial_charge", "The atom's partial charge."
+			)
+		);
+		api_def->add_constructor(
+			masala::make_shared<
+				MasalaObjectAPIConstructorDefinition_FourInput<
+					AtomInstance,
+					masala::base::managers::database::elements::ElementTypeEnum const,
+					AtomHybridizationState const,
+					signed long int const,
+					masala::base::Real const
+				>
+			> (
+				"AtomInstance", "Constructor from element type enum, hybridization state enum, formal charge, "
+				"and partial charge.  More efficient than string version, since no strings have to be parsed.",
+				"element_type", "The element type enum.",
+				"hybridization_state", "The hybridization state enum.",
 				"formal_charge", "The atom's formal charge.",
 				"partial_charge", "The atom's partial charge."
 			)
