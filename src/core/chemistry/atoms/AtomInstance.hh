@@ -110,6 +110,18 @@ public:
 		masala::base::Real const partial_charge
 	);
 
+	/// @brief Constructor from atom property enums.
+	/// @param[in] element_type The element type, as an enum.
+	/// @param[in] hybridization_state The hybridization state, as an enum.
+	/// @param[in] formal_charge The atom's formal charge.
+	/// @param[in] partial_charge The atom's partial charge.
+	AtomInstance(
+		masala::base::managers::database::elements::ElementTypeEnum const element_type,
+		AtomHybridizationState const hybridization_state,
+		signed long int const formal_charge,
+		masala::base::Real const partial_charge
+	);
+
     /// @brief Copy constructor.
     AtomInstance( AtomInstance const & ) = default;
 

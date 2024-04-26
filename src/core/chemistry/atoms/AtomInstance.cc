@@ -155,6 +155,31 @@ AtomInstance::AtomInstance(
 	)
 }
 
+/// @brief Constructor from atom property enums.
+/// @param[in] element_type The element type, as an enum.
+/// @param[in] hybridization_state The hybridization state, as an enum.
+/// @param[in] formal_charge The atom's formal charge.
+/// @param[in] partial_charge The atom's partial charge.
+AtomInstance::AtomInstance(
+	masala::base::managers::database::elements::ElementTypeEnum const element_type,
+	AtomHybridizationState const hybridization_state,
+	signed long int const formal_charge,
+	masala::base::Real const partial_charge
+) :
+	masala::base::MasalaObject(),
+	element_type_( masala::base::managers::database::MasalaDatabaseManager::get_instance()->element_database().element_type_from_enum( element_type ) ),
+	hybridization_state_( hybridization_state ),
+	formal_charge_(formal_charge),
+	partial_charge_(partial_charge)
+{
+	CHECK_OR_THROW( hybridization_state_ != AtomHybridizationState::INVALID_HYBRIDIZATION_STATE,
+		class_namespace_static() + "::" + class_name_static(),
+		"AtomInstance",
+		"Error in atom constructor: the hybridization state is invalid."
+	)
+}
+
+
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 AtomInstanceSP
