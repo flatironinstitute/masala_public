@@ -176,8 +176,10 @@ def access_needed_object( project_name: str, classname : str, instancename : str
             if is_masala_class( project_name, innerclass ) :
                 return instancename + "->get_inner_object()"
         return instancename #Not an API class
+    if is_known_masala_base_enum( classname ) :
+        return instancename
     classtype = classname.split()[0]
-    assert classtype in jsonfile["Elements"]
+    assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
     return "*( " + instancename + ".get_inner_object() )"
@@ -217,32 +219,32 @@ def directory_and_name_from_namespace_and_name( namespace_and_name : str ) :
             dirname += "/"
     return dirname, namesplit[len(namesplit) -1]
 
-## @brief Given an enum class, find the forward header that defines it.
-def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_name : str ) -> None :
-    enum_directory, enum_name = directory_and_name_from_namespace_and_name( enum_namespace_and_name )
+# ## @brief Given an enum class, find the forward header that defines it.
+# def find_enum_fwd_declarations( additional_includes : list, enum_namespace_and_name : str ) -> None :
+#     enum_directory, enum_name = directory_and_name_from_namespace_and_name( enum_namespace_and_name )
 
-    if VERBOSE_SCRIPT_OUTPUT == True :
-        print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
-    found = False
-    for filename in os.listdir( "src/" + enum_directory ) :
-        if filename.endswith(".fwd.hh") == False :
-            continue
-        with open( "src/" + enum_directory + "/" + filename, 'r' ) as filehandle:
-            filelines = filehandle.readlines()
-        for line in filelines :
-            if line.find( "enum" ) != -1 :
-                linesplit = line.split()
-                if len(linesplit) < 3 :
-                    continue
-                for i in range( len(linesplit)-2 ) :
-                    if linesplit[i] == "enum" :
-                        if linesplit[i+1] == "class" and linesplit[i+2] == enum_name :
-                            found = True
-                            fname_sans_end = enum_directory + "/" + filename[:-7]
-                            if fname_sans_end not in additional_includes :
-                                additional_includes.append(fname_sans_end)
-                            break
-    assert found == True, "Could not find file that defines enum class " + enum_name + "."
+#     if VERBOSE_SCRIPT_OUTPUT == True :
+#         print( "Searching for forward declaration that defines " + enum_name + " enum class in directory " + enum_directory + "." )
+#     found = False
+#     for filename in os.listdir( "src/" + enum_directory ) :
+#         if filename.endswith(".fwd.hh") == False :
+#             continue
+#         with open( "src/" + enum_directory + "/" + filename, 'r' ) as filehandle:
+#             filelines = filehandle.readlines()
+#         for line in filelines :
+#             if line.find( "enum" ) != -1 :
+#                 linesplit = line.split()
+#                 if len(linesplit) < 3 :
+#                     continue
+#                 for i in range( len(linesplit)-2 ) :
+#                     if linesplit[i] == "enum" :
+#                         if linesplit[i+1] == "class" and linesplit[i+2] == enum_name :
+#                             found = True
+#                             fname_sans_end = enum_directory + "/" + filename[:-7]
+#                             if fname_sans_end not in additional_includes :
+#                                 additional_includes.append(fname_sans_end)
+#                             break
+#     assert found == True, "Could not find file that defines enum class " + enum_name + "."
 
 ## @brief Given an API class, figure out the file to include.
 ## @note Return value does not include extension.
@@ -304,73 +306,84 @@ def parse_unordered_map( inputclass : str ) -> tuple :
 ## @note As a side-effect, this populates the additional_includes list with files to include
 ## for the additional API classes.  Each entry added is first checked so that it is not added
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
-def correct_masala_types( project_name: str, inputclass : str, additional_includes: list, is_enum : bool = False ) -> str :
+def correct_masala_types( project_name: str, inputclass : str, additional_includes: list ) -> str :
     #print( inputclass )
     if is_masala_class( project_name, inputclass ) == False :
         if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
-            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+            return "MASALA_SHARED_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "Eigen::Matrix<" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             secondcomma = inputclass.rfind( ",", 0, lastchevron )
             firstcomma = inputclass.rfind( ",", 0, secondcomma )
             additional_includes.append("<external/eigen/Eigen/Dense>")
-            return "Eigen::Matrix< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) + inputclass[firstcomma:]
+            return "Eigen::Matrix< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) + inputclass[firstcomma:]
         elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<vector>")
-            return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+            return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "pair" ) or inputclass.startswith( "std::pair" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            lastcomma = inputclass.rfind( ",", 0, lastchevron )
+            if( "<utility>" not in additional_includes ) :
+                additional_includes.append("<utility>")
+            return "std::pair< " \
+                + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastcomma].strip(), additional_includes ) \
+                + ", " \
+                + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
+                + inputclass[lastchevron:]
         elif inputclass.startswith( "set" ) or inputclass.startswith( "std::set" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<set>")
-            return "std::set< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+            return "std::set< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "list" ) or inputclass.startswith( "std::list" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<list>")
-            return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " " + inputclass[lastchevron:]
+            return "std::list< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "map" ) or inputclass.startswith( "std::map" ) :
             firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<map>")
             if( lastcomma == -1 ) :
                 return "std::map< " \
-                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
                     + " >"
             else :
                 return "std::map< " \
-                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
                     + " >"
         elif inputclass.startswith( "unordered_map" ) or inputclass.startswith( "std::unordered_map" ) :
             firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<unordered_map>")
             if( lastcomma == -1 ) :
                 return "std::unordered_map< " \
-                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
                     + " >"
             else :
                 return "std::unordered_map< " \
-                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
-                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) \
+                    + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
                     + " >"
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
-        #     return "std::MASALA_WEAK_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes, is_enum=is_enum ) + " >"
+        #     return "std::MASALA_WEAK_POINTER< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " >"
         if is_masala_api_class( inputclass ) :
             additional_includes.append( include_file_from_masala_api_class( inputclass ) )
         return inputclass # Do nothing if ths isn't a masala class.
@@ -379,6 +392,12 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
     if inputclass.startswith( "size_pair_hash" ) or inputclass.startswith( "base::size_pair_hash" ) or inputclass.startswith( "masala::base::size_pair_hash" ) :
         additional_includes.append( "<base/hash_types.hh>" )
         return "masala::base::size_pair_hash"
+
+    if is_known_masala_base_enum( inputclass ) :
+        enum_filename = include_file_for_known_masala_base_enum( inputclass )
+        if enum_filename not in additional_includes :
+            additional_includes.append( enum_filename )
+        return inputclass
 
     api_classname = ""
     api_filename = ""
@@ -399,17 +418,15 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             continue # Skip "masala"
         api_filename += curstring
         if i == 1 :
-            if is_enum == False:
-                api_classname += "_api::auto_generated_api"
-                api_filename += "_api/auto_generated_api"
+            api_classname += "_api::auto_generated_api"
+            api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
-            if is_enum == False :
-                api_classname += "_API"
-                api_filename += "_API"
+            api_classname += "_API"
+            api_filename += "_API"
         else :
             api_classname += "::"
             api_filename += "/"
-    if is_enum == False and api_filename not in additional_includes :
+    if api_filename not in additional_includes :
         additional_includes.append( api_filename )
     if len(inputclass_extension) > 0 :
         return api_classname + " " + inputclass_extension
@@ -654,11 +671,6 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
             has_output = True
-            if ("Output_Is_Enum" in fxn["Output"]) and (fxn["Output"]["Output_Is_Enum"] == True) :
-                output_is_enum = True
-                find_enum_fwd_declarations( additional_includes, fxn["Output"]["Output_Type"] )
-            else :
-                output_is_enum = False
         else :
             has_output = False
 
@@ -666,16 +678,12 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             for i in range(ninputs) :
                 outstring += tabchar + "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
-            outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"]
-            if output_is_enum :
-                outstring += "  (The return value is an enum.)\n"
-            else :
-                outstring += "\n"
+            outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
                 outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
-            outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes, is_enum=output_is_enum ) + "\n"
+            outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
                 outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
@@ -721,6 +729,7 @@ def generate_function_call( \
 
             input_is_masala_API_ptr = False
             input_is_masala_class = False
+            input_is_known_enum = is_known_masala_base_enum( curinputname )
             if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
                 firstchevron = curinputname.find("<")
                 lastchevron = curinputname.rfind(">")
@@ -741,12 +750,14 @@ def generate_function_call( \
                 if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
-                    if input_is_masala_class :
+                    if input_is_masala_class and input_is_known_enum == False :
                         outstring += " *( "
                     else :
                         outstring += " "
-                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
-                    if input_is_masala_class :
+                    outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
+                    if input_is_known_enum == False:
+                        outstring += input_point_or_arrow + "get_inner_object()"
+                    if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
             else:
 
@@ -766,6 +777,38 @@ def class_exists_and_has_public_constructors( \
     if namespace_and_name in jsonfile["Elements"] :
         return ( jsonfile["Elements"][namespace_and_name]["Properties"]["Has_Protected_Constructors"] == False )
     return False
+
+## @brief List known enums that can be taken or returned by functions, defined in masala::base.
+def is_known_masala_base_enum( \
+    objtype : str \
+    ) -> bool :
+
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" :
+        return True
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum const" :
+        return True
+    elif objtype == "masala::base::enums::ChemicalBondType" :
+        return True
+    elif objtype == "masala::base::enums::ChemicalBondType const" :
+        return True
+    elif objtype == "masala::base::enums::AtomHybridizationState" :
+        return True
+    elif objtype == "masala::base::enums::AtomHybridizationState const" :
+        return True
+    
+    return False
+
+## @brief Given a known enum that can be taken or returned by functions, defined in masala::base,
+## return the known header file to include that defines the enum.
+def include_file_for_known_masala_base_enum( objtype : str ) -> str :
+    if objtype == "masala::base::managers::database::elements::ElementTypeEnum" or objtype == "masala::base::managers::database::elements::ElementTypeEnum const" :
+        return "<base/managers/database/elements/ElementType.fwd.hh>"
+    elif objtype == "masala::base::enums::ChemicalBondType" or objtype == "masala::base::enums::ChemicalBondType const" :
+        return "<base/enums/ChemicalBondTypeEnum.fwd.hh>"
+    elif objtype == "masala::base::enums::AtomHybridizationState" or objtype == "masala::base::enums::AtomHybridizationState const" :
+        return "<base/enums/AtomHybridizationStateEnum.fwd.hh>"
+
+    assert False, "Error!  Do not know filename for enum type " + objtype + "!"
 
 ## @brief Generate the implementations for setters, getters, or work functions based on the JSON
 ## description of the API.
@@ -931,12 +974,9 @@ def generate_function_implementations( \
 
         outtype_base = outtype.split()[0]
         output_is_lightweight = False
-        output_is_enum = False
         if is_masala_class( project_name, outtype_base )  :
-            if fxn_type == "GETTER" and fxn["Output"]["Output_Is_Enum"] == True :
-                output_is_enum = True
-            else:
-                assert outtype_base in jsonfile["Elements"], "ERROR: " + outtype_base + " not found in JSON Elements."
+            if is_known_masala_base_enum( outtype_base ) == False :
+                assert (outtype_base in jsonfile["Elements"]), "ERROR: " + outtype_base + " not found in JSON Elements."
                 if jsonfile["Elements"][outtype_base]["Properties"]["Is_Lightweight"] == True :
                     output_is_lightweight = True
 
@@ -953,14 +993,10 @@ def generate_function_implementations( \
             for i in range(ninputs) :
                 outstring += "/// @param[in] " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Description"] + "\n"
         if has_output :
-            outstring += "/// @returns " + fxn["Output"]["Output_Description"]
-            if output_is_enum :
-                outstring += "/// (The return value is an enum.)\n"
-            else :
-                outstring += "\n"
+            outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
                 outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
-            outstring += correct_masala_types( project_name, outtype, additional_includes, is_enum=output_is_enum ) + "\n"
+            outstring += correct_masala_types( project_name, outtype, additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
                 outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
@@ -997,7 +1033,7 @@ def generate_function_implementations( \
                     print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
                 if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
                     is_masala_plugin_ptr = True
-        elif is_masala_class( project_name, outtype )  and returns_this_ref == False and output_is_enum == False :
+        elif is_masala_class( project_name, outtype ) and returns_this_ref == False and is_known_masala_base_enum( outtype ) == False :
             is_masala_API_obj = True
             # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
             #     is_masala_plugin_obj = True
@@ -1539,7 +1575,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             parent_hhfile = "headers/" + parentsplit[0] + "/headers"
             parent_api_hhfile = "headers/" + parentsplit[0] + "/headers"
         parent_api_namespace_and_name = parentsplit[0]
-        assert len(parentsplit) > 2
+        assert len(parentsplit) > 2, "Could not properly parse parent namespace (" + parent_namespace_and_name + ") for class " + classname + "."
         for i in range( 1, len(parentsplit) ) :
             parent_hhfile += "/" + parentsplit[i]
             if i == 2 :
@@ -1914,7 +1950,7 @@ plugin_registration_ccfile_template = read_file( "code_templates/api_templates/r
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
 project_name_capitalized = capitalize_project_name( project_name ).replace( "_", " " )
-licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2022) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
+licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2024) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
 generate_registration_function = False

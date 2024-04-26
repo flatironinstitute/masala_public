@@ -137,6 +137,22 @@ public:
         atoms::AtomInstanceConstIterator const atom_iterator
     ) const;
 
+    /// @brief Add a bond to this molecule, with the bond type specified by string.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        std::string const & bond_type_string
+    );
+
+    /// @brief Add a bond to this molecule.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        masala::core::chemistry::bonds::ChemicalBondType const bond_type
+    );
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +179,33 @@ private:
 	load_configuration(
 		base::managers::configuration::MasalaConfigurationManagerAuthorization const & passkey
 	) const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Check whether an atom exists in this object.
+    /// @returns True if the atom exists, false otherwise.
+    bool
+    has_atom(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & atom
+    ) const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Does a bond exist between two atoms?
+	/// @details Intended to be called from a mutex-locked context.
+	bool
+	has_bond_mutex_locked(
+		masala::core::chemistry::atoms::AtomInstanceCSP const & atom1,
+		masala::core::chemistry::atoms::AtomInstanceCSP const & atom2
+	) const;
 
 private:
 

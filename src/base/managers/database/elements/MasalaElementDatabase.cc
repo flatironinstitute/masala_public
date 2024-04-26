@@ -106,6 +106,17 @@ MasalaElementDatabase::element_type_from_ucase_abbreviation(
     return it->second;
 }
 
+/// @brief Given the enum of an element, get an ElementType object.
+ElementTypeCSP
+MasalaElementDatabase::element_type_from_enum(
+	ElementTypeEnum const element_type_enum
+) const {
+	CHECK_OR_THROW_FOR_CLASS( element_type_enum != ElementTypeEnum::INVALID_ELEMENT_TYPE,
+		"element_type_from_enum", "Invalid element type passed to this function!"
+	);
+	return canonical_elements_[ static_cast< masala::base::Size >( element_type_enum ) ];
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
