@@ -86,6 +86,14 @@ namespace string {
         std::string const & chars_to_trim=" \t\n\r"
     );
 
+    /// @brief Replace text pattern in string.
+    void
+    replace_all_instances_of_text(
+        std::string & string_to_modify,
+        std::string const & text_to_find,
+        std::string const & replacement_text
+    );
+
 } // namespace string
 } // namespace utility
 } // namespace base

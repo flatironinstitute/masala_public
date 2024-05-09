@@ -34,6 +34,8 @@
 #include <string>
 #include <filesystem> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
+#include <regex>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -132,6 +134,42 @@ MasalaDiskManager::read_ascii_file_to_string(
     return outstring;
 }
 
+/// @brief Read the contents of an pickled Python dictionary to a string.
+/// @details Threadsafe (locks mutex).
+std::string
+MasalaDiskManager::read_pickled_python_dictionary_to_string(
+    std::string const & file_name
+) const {
+    std::lock_guard< std::mutex > lock( disk_io_mutex_);
+    std::ifstream filehandle( file_name, std::ios::binary | std::ios::ate );
+    CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_pickled_python_dictionary_to_string", "Could not open \"" + file_name + "\" for read." );
+
+    // Get the size of the file.
+    std::streamsize size = filehandle.tellg();
+    filehandle.seekg(0, std::ios::beg);
+
+    // Read the content into a vector of bytes.
+    std::vector< char > buffer( size );
+    filehandle.read( buffer.data(), size );
+
+    // Close the file.
+    filehandle.close();
+
+    // Convert the bytes to a string that resembles a Python dictionary (excluding non-printable characters).
+    std::stringstream dict;
+    dict << "{";
+    for (const char& c : buffer) {
+        if (c >= 32 && c < 127) { 
+            dict << c;
+        } else {
+            dict << "\\x" << std::hex << (int)c;
+        }
+    }
+    dict << "}";
+    write_to_tracer( "Read \"" + file_name + "\"." );
+    return dict.str();
+}
+
 /// @brief Read the contents of a JSON file and produce an nlohmann json object.
 /// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
 /// locks mutex.  (So this is threadsafe.)
@@ -185,6 +223,27 @@ MasalaDiskManager::get_files(
     for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
         if( it.is_regular_file() ) {
             filelist.push_back( std::string( it.path().c_str() ) );
+        }
+    }
+    return filelist;
+}
+
+/// @brief Given a path to a directory, get the path and filename of each
+/// file in that directory.
+std::vector< std::string >
+MasalaDiskManager::get_files_regex(
+    std::string const & directory_path,
+    std::regex const & filename_pattern
+) const {
+    std::vector< std::string > filelist;
+    std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
+    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+        if( it.is_regular_file() ) {
+            std::string filename = it.path().filename().string();
+            if( std::regex_match( filename, filename_pattern ) ) {
+                filelist.push_back( filename );
+            }
         }
     }
     return filelist;
