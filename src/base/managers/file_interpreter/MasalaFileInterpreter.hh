@@ -99,6 +99,22 @@ public:
 		std::string const & filename
 	) const;
 
+	/// @brief MasalaFileInterpreter subclasses can implement a function to generate a text file
+	/// from the contents of a Masala Object (expressed as a vector of strings).
+	/// @details The base class version of this function throws.
+	virtual
+	std::string
+	ascii_file_contents_from_object(
+		MasalaObjectAPICSP const & object
+	) const;
+
+	/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).
+	void
+	object_to_file(
+        MasalaObjectAPICSP const & object,
+		std::string const & filename
+	) const;
+
 };
 
 } // namespace file_interpreter
