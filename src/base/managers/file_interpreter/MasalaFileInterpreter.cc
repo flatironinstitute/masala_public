@@ -70,6 +70,11 @@ MasalaFileInterpreter::object_from_file(
 	);
 }
 
+/// @brief The MasalaFileInterpreter base class can read a file (using the MasalaDiskAccessManager)
+/// and produce an object.  This function calls object_from_ascii_file_contents() or
+/// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
+/// returns true or false.
+
 } // namespace file_interpreter
 } // namespace managers
 } // namespace base
