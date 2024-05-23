@@ -50,7 +50,6 @@ MasalaFileInterpreter::object_from_ascii_file_contents(
 	return nullptr;
 }
 
-
 /// @brief The MasalaFileInterpreter base class can read a file (using the MasalaDiskAccessManager)
 /// and produce an object.  This function calls object_from_ascii_file_contents() or
 /// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
@@ -83,7 +82,8 @@ MasalaFileInterpreter::ascii_file_contents_from_object(
 	return nullptr;
 }
 
-/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).
+/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).  
+/// This function calls ascii_file_contents_from_object(), implemented by a subclass.
 void
 MasalaFileInterpreter::object_to_file(
 	MasalaObjectAPICSP const & object,
