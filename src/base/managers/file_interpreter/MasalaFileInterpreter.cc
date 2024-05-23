@@ -74,7 +74,7 @@ MasalaFileInterpreter::object_from_file(
 /// @details The base class version of this function throws.
 std::string
 MasalaFileInterpreter::ascii_file_contents_from_object(
-	MasalaObjectAPICSP const & object
+	MasalaObjectAPICSP const & /*object*/
 ) const {
 	MASALA_THROW( class_namespace_and_name(), "ascii_file_contents_from_object", "This function must be "
 		"implemented for the " + class_name() + " class to allow interpretation of ASCII files."
