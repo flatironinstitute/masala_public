@@ -105,13 +105,13 @@ public:
 	virtual
 	std::string
 	ascii_file_contents_from_object(
-		MasalaObjectAPICSP const & object
+		MasalaObjectAPICSP & object
 	) const;
 
 	/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).
 	void
 	object_to_file(
-        MasalaObjectAPICSP const & object,
+        MasalaObjectAPICSP & object,
 		std::string const & filename
 	) const;
 
