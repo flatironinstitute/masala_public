@@ -117,9 +117,6 @@ public:
 	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
 	static std::string class_namespace_static();
 
-	/// @brief Every class can provide its own namespace.  This returns "masala::base::api::MasalaObjectAPIDefinition".  Static version.
-	static std::string class_namespace_and_name_static();
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
