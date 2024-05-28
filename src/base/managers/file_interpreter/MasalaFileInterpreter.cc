@@ -50,7 +50,6 @@ MasalaFileInterpreter::object_from_ascii_file_contents(
 	return nullptr;
 }
 
-
 /// @brief The MasalaFileInterpreter base class can read a file (using the MasalaDiskAccessManager)
 /// and produce an object.  This function calls object_from_ascii_file_contents() or
 /// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
@@ -68,6 +67,34 @@ MasalaFileInterpreter::object_from_file(
 	return object_from_ascii_file_contents(
 		MasalaDiskManager::get_instance()->read_ascii_file_to_string_vector( filename )
 	);
+}
+
+/// @brief MasalaFileInterpreter subclasses can implement a function to generate a text file
+/// from the contents of a Masala Object (expressed as a vector of strings).
+/// @details The base class version of this function throws.
+std::string
+MasalaFileInterpreter::ascii_file_contents_from_object(
+	MasalaObjectAPICSP & /*object*/
+) const {
+	MASALA_THROW( class_namespace_and_name(), "ascii_file_contents_from_object", "This function must be "
+		"implemented for the " + class_name() + " class to allow writing of ASCII files."
+	);
+	return nullptr;
+}
+
+/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).  
+/// This function calls ascii_file_contents_from_object(), implemented by a subclass.
+void
+MasalaFileInterpreter::object_to_file(
+	MasalaObjectAPICSP & object,
+	std::string const & filename
+) const {
+	using namespace masala::base::managers::disk;
+
+	CHECK_OR_THROW_FOR_CLASS( filetype_is_ascii(), "object_to_file", "Support for binary files has not yet been "
+		"implemented in Masala!"
+	);
+	MasalaDiskManager::get_instance()->write_ascii_file( filename, ascii_file_contents_from_object( object ) );
 }
 
 } // namespace file_interpreter
