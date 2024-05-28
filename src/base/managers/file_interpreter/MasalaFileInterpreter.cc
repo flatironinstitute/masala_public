@@ -77,7 +77,7 @@ MasalaFileInterpreter::ascii_file_contents_from_object(
 	MasalaObjectAPICSP & /*object*/
 ) const {
 	MASALA_THROW( class_namespace_and_name(), "ascii_file_contents_from_object", "This function must be "
-		"implemented for the " + class_name() + " class to allow interpretation of ASCII files."
+		"implemented for the " + class_name() + " class to allow writing of ASCII files."
 	);
 	return nullptr;
 }
