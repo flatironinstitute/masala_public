@@ -67,6 +67,10 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition_for_inner_class() = 0;
 
+    static std::string class_namespace_and_name_static() {
+        return "masala::base::MasalaObjectAPI";
+    }
+
 }; // class MasalaObjectAPI
 
 } // namespace base

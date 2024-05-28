@@ -154,6 +154,13 @@ MasalaObjectAPIDefinition::class_namespace_static() {
     return "masala::base::api";
 }
 
+/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
+/*static*/
+std::string
+MasalaObjectAPIDefinition::class_namespace_and_name_static() {
+    return "masala::base::api::MasalaObjectAPIDefinition";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
