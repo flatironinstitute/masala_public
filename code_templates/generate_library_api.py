@@ -179,6 +179,8 @@ def access_needed_object( project_name: str, classname : str, instancename : str
     if is_known_masala_base_enum( classname ) :
         return instancename
     classtype = classname.split()[0]
+    if classtype == "masala::base::MasalaAPI" :
+        return instancename
     assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
@@ -762,7 +764,8 @@ def generate_function_call( \
                         outstring += " "
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                     if input_is_known_enum == False:
-                        outstring += input_point_or_arrow + "get_inner_object()"
+                        if inputtype != "masala::base::MasalaObjectAPI" :
+                            outstring += input_point_or_arrow + "get_inner_object()"
                     if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
             else:
