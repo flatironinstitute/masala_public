@@ -46,6 +46,14 @@ MasalaObject::class_namespace_and_name() const {
     return class_namespace() + "::" + class_name();
 }
 
+/// @brief Get the namespace and name for this pure virtual base class.
+/// @returns "masala::base::MasalaObject"
+/*static*/
+std::string
+MasalaObject::class_namespace_and_name_static() {
+	return "masala::base::MasalaObject";
+}
+
 /// @brief Get a string for the error message header, of the form:
 /// "Error in <namespace>::<class name>::<function name>(): ".
 /// @param[in] function_name The function from which we're calling this function,
