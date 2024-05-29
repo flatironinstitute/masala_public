@@ -307,7 +307,13 @@ def parse_unordered_map( inputclass : str ) -> tuple :
 ## for the additional API classes.  Each entry added is first checked so that it is not added
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
 def correct_masala_types( project_name: str, inputclass : str, additional_includes: list ) -> str :
-    #print( inputclass )
+    print( inputclass )
+
+    # Special case for MasalaObjectAPI
+    if inputclass.startswith( "masala::base::MasalaObject" ):
+        additional_includes.append( "<base/MasalaObject.hh>" )
+        return inputclass
+
     if is_masala_class( project_name, inputclass ) == False :
         if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
