@@ -29,6 +29,7 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/MasalaObjectAPI.fwd.hh>
 
 // STL headers:
 #include <vector>
@@ -104,13 +105,13 @@ public:
 	virtual
 	std::string
 	ascii_file_contents_from_object(
-		MasalaObjectCSP const & object
+		MasalaObjectAPICSP const & object
 	) const;
 
 	/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).
 	void
 	object_to_file(
-        MasalaObjectCSP const & object,
+        MasalaObjectAPICSP const & object,
 		std::string const & filename
 	) const;
 
