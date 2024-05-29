@@ -40,7 +40,7 @@ namespace file_interpreter {
 /// @brief MasalaFileInterpreter subclasses can implement a function to generate a Masala class
 /// from the contents of a text file (expressed as a vector of strings).
 /// @details The base class version of this function throws.
-masala::base::MasalaObjectAPISP
+masala::base::MasalaObjectSP
 MasalaFileInterpreter::object_from_ascii_file_contents(
 	std::vector< std::string > const & /*file_contents*/
 ) const {
@@ -54,7 +54,7 @@ MasalaFileInterpreter::object_from_ascii_file_contents(
 /// and produce an object.  This function calls object_from_ascii_file_contents() or
 /// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
 /// returns true or false.
-masala::base::MasalaObjectAPISP
+masala::base::MasalaObjectSP
 MasalaFileInterpreter::object_from_file(
 	std::string const & filename
 ) const {
@@ -74,7 +74,7 @@ MasalaFileInterpreter::object_from_file(
 /// @details The base class version of this function throws.
 std::string
 MasalaFileInterpreter::ascii_file_contents_from_object(
-	MasalaObjectAPICSP & /*object*/
+	MasalaObjectCSP & /*object*/
 ) const {
 	MASALA_THROW( class_namespace_and_name(), "ascii_file_contents_from_object", "This function must be "
 		"implemented for the " + class_name() + " class to allow writing of ASCII files."
@@ -86,7 +86,7 @@ MasalaFileInterpreter::ascii_file_contents_from_object(
 /// This function calls ascii_file_contents_from_object(), implemented by a subclass.
 void
 MasalaFileInterpreter::object_to_file(
-	MasalaObjectAPICSP & object,
+	MasalaObjectCSP & object,
 	std::string const & filename
 ) const {
 	using namespace masala::base::managers::disk;

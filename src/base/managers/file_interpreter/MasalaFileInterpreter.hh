@@ -29,7 +29,6 @@
 
 // Base headers:
 #include <base/managers/plugin_module/MasalaPlugin.hh>
-#include <base/MasalaObjectAPI.fwd.hh>
 
 // STL headers:
 #include <vector>
@@ -85,7 +84,7 @@ public:
 	/// from the contents of a text file (expressed as a vector of strings).
 	/// @details The base class version of this function throws.
 	virtual
-	masala::base::MasalaObjectAPISP
+	masala::base::MasalaObjectSP
 	object_from_ascii_file_contents(
 		std::vector< std::string > const & file_contents
 	) const;
@@ -94,7 +93,7 @@ public:
 	/// and produce an object.  This function calls object_from_ascii_file_contents() or
 	/// object_from_binary_file_contents(), implemented by a subclass, depending on whether filetype_is_ascii()
 	/// returns true or false.
-	masala::base::MasalaObjectAPISP
+	masala::base::MasalaObjectSP
 	object_from_file(
 		std::string const & filename
 	) const;
@@ -105,13 +104,13 @@ public:
 	virtual
 	std::string
 	ascii_file_contents_from_object(
-		MasalaObjectAPICSP & object
+		MasalaObjectCSP & object
 	) const;
 
 	/// @brief The MasalaFileInterpreter base class can write a file (using the MasalaDiskAccessManager).
 	void
 	object_to_file(
-        MasalaObjectAPICSP & object,
+        MasalaObjectCSP & object,
 		std::string const & filename
 	) const;
 
