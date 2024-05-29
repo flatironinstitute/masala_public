@@ -310,8 +310,8 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
     #print( inputclass )
 
     # Special case for MasalaObjectAPI
-    if inputclass.startswith( "masala::base::MasalaObject" ):
-        additional_includes.append( "<base/MasalaObject.hh>" )
+    if inputclass.startswith( "masala::base::MasalaObjectAPI" ):
+        additional_includes.append( "<base/MasalaObjectAPI.hh>" )
         return inputclass
 
     if is_masala_class( project_name, inputclass ) == False :
