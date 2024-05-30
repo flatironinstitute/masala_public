@@ -179,6 +179,8 @@ def access_needed_object( project_name: str, classname : str, instancename : str
     if is_known_masala_base_enum( classname ) :
         return instancename
     classtype = classname.split()[0]
+    if classtype == "masala::base::MasalaAPI" :
+        return instancename
     assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
@@ -308,6 +310,12 @@ def parse_unordered_map( inputclass : str ) -> tuple :
 ## multiple times.  The extension (.hh or .fwd.hh) is omitted.
 def correct_masala_types( project_name: str, inputclass : str, additional_includes: list ) -> str :
     #print( inputclass )
+
+    # Special case for MasalaObjectAPI
+    if inputclass.startswith( "masala::base::MasalaObjectAPI" ):
+        additional_includes.append( "<base/MasalaObjectAPI.hh>" )
+        return inputclass
+
     if is_masala_class( project_name, inputclass ) == False :
         if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
@@ -756,7 +764,8 @@ def generate_function_call( \
                         outstring += " "
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                     if input_is_known_enum == False:
-                        outstring += input_point_or_arrow + "get_inner_object()"
+                        if inputtype != "masala::base::MasalaObjectAPI" :
+                            outstring += input_point_or_arrow + "get_inner_object()"
                     if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
             else:
@@ -1027,7 +1036,7 @@ def generate_function_implementations( \
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
-            if( is_masala_class( project_name, outtype_inner )  ) :
+            if( is_masala_class( project_name, outtype_inner ) and outtype_inner != "masala::base::MasalaObjectAPI"  ) :
                 is_masala_API_ptr = True
                 if VERBOSE_SCRIPT_OUTPUT == True:
                     print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
