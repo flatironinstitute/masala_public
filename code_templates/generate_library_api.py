@@ -1036,7 +1036,7 @@ def generate_function_implementations( \
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
-            if( is_masala_class( project_name, outtype_inner )  ) :
+            if( is_masala_class( project_name, outtype_inner ) and outtype_inner != "masala::base::MasalaObjectAPI"  ) :
                 is_masala_API_ptr = True
                 if VERBOSE_SCRIPT_OUTPUT == True:
                     print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
