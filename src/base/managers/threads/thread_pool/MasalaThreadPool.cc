@@ -194,7 +194,6 @@ MasalaThreadPool::execute_function_in_threads(
     std::vector< MasalaThreadSP > assigned_threads;
     assigned_threads.reserve( threads_.size() );
     std::mutex job_completion_mutex;
-    std::unique_lock< std::mutex > job_completion_condition_lock( job_completion_mutex );
     std::condition_variable job_completion_condition_var;
     std::atomic_ulong num_jobs_completed(0);
 
@@ -262,10 +261,13 @@ MasalaThreadPool::execute_function_in_threads(
     // Also execute the function in this thread.
     fxn();
 
-    if( assigned_threads.size() > 0 && num_jobs_completed < assigned_threads.size() ) {
+    if( assigned_threads.size() > 0 ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+		std::unique_lock< std::mutex > job_completion_condition_lock( job_completion_mutex );
+		if( num_jobs_completed.load() < nthread ) {
+        	job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed.load() == nthread; } );
+		}
     }
 
     // Clean up threads (i.e. terminate) that have spindown signals (under lock guard):
