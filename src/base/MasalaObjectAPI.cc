@@ -23,6 +23,9 @@
 // Unit headers:
 #include <base/MasalaObjectAPI.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace base {
 
