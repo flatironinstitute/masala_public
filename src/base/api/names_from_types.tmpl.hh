@@ -28,6 +28,14 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/hash_types.hh>
 
+// Known base enums
+#include <base/managers/database/elements/ElementType.fwd.hh> // ElementTypeEnum
+#include <base/enums/ChemicalBondTypeEnum.fwd.hh> // ChemicalBondType enum
+#include <base/enums/AtomHybridizationStateEnum.fwd.hh> // AtomHybridizationState enum
+
+// Eigen headers
+#include <external/eigen/Eigen/Dense>
+
 // STL headers
 #include <string>
 #include <base/managers/memory/util.hh>
@@ -53,16 +61,97 @@ namespace api {
 
     };
 
+////////////////////////////////////////////////////////////////////////////////
+// KNOWN ENUM TYPES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Returns false by default.
+	template< class T >
+	bool
+	is_known_base_enum_type(
+		type<T>,
+		std::string & enum_name
+	) {
+		enum_name.clear();
+		return false;
+	}
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::managers::database::elements::ElementTypeEnum
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::managers::database::elements::ElementTypeEnum>(
+		type<masala::base::managers::database::elements::ElementTypeEnum>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::managers::database::elements::ElementTypeEnum const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::managers::database::elements::ElementTypeEnum const>(
+		type<masala::base::managers::database::elements::ElementTypeEnum const>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::ChemicalBondType
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::ChemicalBondType>(
+		type<masala::base::enums::ChemicalBondType>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::ChemicalBondType const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::ChemicalBondType const>(
+		type<masala::base::enums::ChemicalBondType const>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState>(
+		type<masala::base::enums::AtomHybridizationState>,
+		std::string & enum_name
+	);
+
+	/// @brief Is a particular enum type a known type defined in masala::base?
+	/// @details Override for masala::base::enums::AtomHybridizationState const
+	template<>
+	bool
+	is_known_base_enum_type<masala::base::enums::AtomHybridizationState const>(
+		type<masala::base::enums::AtomHybridizationState const>,
+		std::string & enum_name
+	);
+
+////////////////////////////////////////////////////////////////////////////////
+// NAMES FROM TYPES
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Default behaviour is compiler-specific, and not ideal.
     template <class T>
     std::string
-    name_from_type(type<T>) {
-        CHECK_OR_THROW(
-            !std::is_enum<T>::value, "base::api", "name_from_type",
-            "Error in use of name_from_type() function: this function cannot be used for enums!  "
-            "For enums as output from getters, use the MasalaObjectAPIGetterDefinition::set_custom_output_type_name() "
-            "and MasalaObjectAPIGetterDefinition::set_custom_output_type_namespace() functions."
-        );
+    name_from_type(type<T> t) {
+
+        {
+            std::string enum_name;
+
+            CHECK_OR_THROW(
+                (!std::is_enum<T>::value) || is_known_base_enum_type(t, enum_name ), "base::api", "name_from_type",
+                "Error in use of name_from_type() function: this function cannot be used for enums other than those defined in masala::base!"
+            );
+
+            if( std::is_enum<T>::value ) {
+                return enum_name;
+            }
+        }
 
         if constexpr( std::is_class<T>::value ) {
             if constexpr( std::is_abstract<T>::value ) {
@@ -93,6 +182,20 @@ namespace api {
             }
         }
         return typeid(T).name();
+    }
+
+    /// @brief Manually override for pointers.
+    template< class T >
+    std::string
+    name_from_type(type<T*>) {
+        return name_from_type(type<T>()) + " *";
+    }
+
+    /// @brief Manually override for const pointers.
+    template< class T >
+    std::string
+    name_from_type(type<T* const>) {
+        return name_from_type(type<T>()) + " * const";
     }
 
     /// @brief Manually override for references.
@@ -217,6 +320,52 @@ namespace api {
             + name_from_type( type<T3>() ) + " > const";
     }
 
+    /// @brief Manually override for 4-tuples.
+    template<class T1, class T2, class T3, class T4>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4 >> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + " >";
+    }
+
+    /// @brief Manually override for const 4-tuples.
+    template<class T1, class T2, class T3, class T4>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4 > const> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + " > const";
+    }
+
+    /// @brief Manually override for 5-tuples.
+    template<class T1, class T2, class T3, class T4, class T5>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4, T5 >> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + ", "
+            + name_from_type( type<T5>() ) + " >";
+    }
+
+    /// @brief Manually override for const 5-tuples.
+    template<class T1, class T2, class T3, class T4, class T5>
+    std::string
+    name_from_type( type<std::tuple< T1, T2, T3, T4, T5 > const> ) {
+        return "std::tuple< "
+            + name_from_type( type<T1>() ) + ", "
+            + name_from_type( type<T2>() ) + ", "
+            + name_from_type( type<T3>() ) + ", "
+            + name_from_type( type<T4>() ) + ", "
+            + name_from_type( type<T5>() ) + " > const";
+    }
+
     /// @brief Manually override for maps.
     template< class T1, class T2 >
     std::string
@@ -332,40 +481,80 @@ namespace api {
     std::string
     name_from_type< bool >(type<bool>);
 
+    /// @brief Manually override for const booleans.
+    template<>
+    std::string
+    name_from_type< bool const >(type<bool const>);
+
     /// @brief Manually override for unsigned short ints.
     template<>
     std::string
     name_from_type< unsigned short >(type<unsigned short>);
+
+    /// @brief Manually override for const unsigned short ints.
+    template<>
+    std::string
+    name_from_type< unsigned short const >(type<unsigned short const>);
 
     /// @brief Manually override for unsigned ints.
     template<>
     std::string
     name_from_type< unsigned int >(type<unsigned int>);
 
+    /// @brief Manually override for const unsigned ints.
+    template<>
+    std::string
+    name_from_type< unsigned int const >(type<unsigned int const>);
+
     /// @brief Manually override for unsigned long ints.
     template<>
     std::string
     name_from_type< unsigned long >(type<unsigned long>);
+
+    /// @brief Manually override for const unsigned long ints.
+    template<>
+    std::string
+    name_from_type< unsigned long const >(type<unsigned long const>);
 
     /// @brief Manually override for signed short ints.
     template<>
     std::string
     name_from_type< signed short >(type<signed short>);
 
+    /// @brief Manually override for const signed short ints.
+    template<>
+    std::string
+    name_from_type< signed short const >(type<signed short const>);
+
     /// @brief Manually override for signed ints.
     template<>
     std::string
     name_from_type< signed int >(type<signed int>);
+
+    /// @brief Manually override for const signed ints.
+    template<>
+    std::string
+    name_from_type< signed int const >(type<signed int const>);
 
     /// @brief Manually override for signed long ints.
     template<>
     std::string
     name_from_type< signed long >(type<signed long>);
 
+    /// @brief Manually override for const signed long ints.
+    template<>
+    std::string
+    name_from_type< signed long const >(type<signed long const>);
+
     /// @brief Manually override for floats.
     template<>
     std::string
     name_from_type< float >(type<float>);
+
+    /// @brief Manually override for const floats.
+    template<>
+    std::string
+    name_from_type< float const >(type<float const>);
 
     /// @brief Manually override for float instances.
     template<>
@@ -381,6 +570,11 @@ namespace api {
     template<>
     std::string
     name_from_type< double >(type<double>);
+
+    /// @brief Manually override for const doubles.
+    template<>
+    std::string
+    name_from_type< double const >(type<double const>);
 
     /// @brief Manually override for double instances.
     template<>
@@ -426,6 +620,13 @@ namespace api {
     template<>
     std::string
     name_from_type< masala::base::size_pair_hash const & >( type< masala::base::size_pair_hash const & > );
+
+    /// @brief Manually override for Eigen matrices.
+    template<class T>
+    std::string
+    name_from_type(type<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>) {
+        return "Eigen::Matrix< " + name_from_type(type<T>()) + ", Eigen::Dynamic, Eigen::Dynamic >";
+    }
 
 } // namespace api
 } // namespace base

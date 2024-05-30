@@ -157,6 +157,14 @@ MasalaRandomNumberGenerator::apply_metropolis_criterion(
 // RANDOM NUMBER GENERATING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get a random, uniformly-distributed Boolean.
+bool 
+MasalaRandomNumberGenerator::uniform_boolean_distribution( ) {
+    std::uniform_int_distribution< base::Size > int_gen( 0, 1 );
+    bool boolean = int_gen( random_engine_ );
+    return boolean;
+}
+
 /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
 base::Size
 MasalaRandomNumberGenerator::uniform_size_distribution(
@@ -238,6 +246,17 @@ MasalaRandomNumberGenerator::poisson_size_distribution(
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a random, uniformly-distributed Boolean.
+/// @details This is a convenience function that calls
+/// MasalaRandomNumberGenerator::get_instance()->uniform_boolean_distribution( )
+/// under the hood, to save developer typing.  For repeated calls, it is more efficient to get a handle to the
+/// random generator and call the class member function.
+bool 
+uniform_boolean_distribution( ) 
+{
+    return MasalaRandomNumberGenerator::get_instance()->uniform_boolean_distribution( );
+}
 
 /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
 /// @details This is a convenience function that calls

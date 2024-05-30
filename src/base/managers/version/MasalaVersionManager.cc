@@ -138,6 +138,14 @@ MasalaVersionManager::n_modules_registered() const {
     return module_version_infos_.size();
 }
 
+/// @brief Remove all version information (except for the core libraries).
+void
+MasalaVersionManager::reset() {
+    std::lock_guard< std::mutex > lock( masala_version_manager_mutex_ );
+    module_version_infos_.clear();
+    module_version_infos_[ "Masala" ] = masala::make_shared< MasalaModuleVersionInfo >( "Masala", masala_version() );
+}
+
 } // namespace version
 } // namespace managers
 } // namespace base

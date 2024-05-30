@@ -29,17 +29,19 @@
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 #include <core/chemistry/MolecularGeometryConfiguration.hh>
-#include <core/initialization/registrators/CoreAtomCoordinateRepresentationRegistrator.hh>
 
 // Base headers:
+#include <base/enums/ChemicalBondTypeEnum.hh>
 #include <base/managers/configuration/MasalaConfigurationManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 
 // STL headers:
 #include <string>
@@ -179,6 +181,7 @@ MolecularGeometry::get_api_definition() {
     using namespace base::api;
     using namespace base::api::constructor;
     using namespace base::api::getter;
+    using namespace base::api::setter;
 
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
@@ -194,6 +197,62 @@ MolecularGeometry::get_api_definition() {
         );
 
         ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( MolecularGeometry, api_def );
+
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					std::string const &
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond.  Allowed types are: "
+				+ masala::base::enums::list_bond_types( ", ", true ),
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularGeometry::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							std::string const &
+						)
+					> (&MolecularGeometry::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ThreeInput<
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::atoms::AtomInstanceCSP const &,
+					masala::core::chemistry::bonds::ChemicalBondType const
+				>
+			>(
+				"add_bond", "Add a bond to this molecule between two atoms already present in the molecule.",
+				"atom1", "The first atom in this molecule that will be connected by the bond.",
+				"atom2", "The second atom in this molecule that will be connected by the bond.",
+				"bond_type", "The type of chemical bond, specified by enum.",
+				false, false,
+				std::bind(
+					static_cast<
+						void(MolecularGeometry::*)(
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::atoms::AtomInstanceCSP const &,
+							masala::core::chemistry::bonds::ChemicalBondType const
+						)
+					> (&MolecularGeometry::add_bond),
+					this,
+					std::placeholders::_1,
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+			)
+		);
 
         api_def->add_getter(
             masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput < base::Size > >(
@@ -226,6 +285,14 @@ MolecularGeometry::get_api_definition() {
                 "coordinates", "A 3-vector containing the x, y, and z coordinates of the atom.",
                 false, false,
                 std::bind( &MolecularGeometry::get_atom_coordinates, this, std::placeholders::_1 )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< MasalaObjectAPIGetterDefinition_OneInput< bool, masala::core::chemistry::atoms::AtomInstanceCSP const & > >(
+                "has_atom", "Check whether an atom exists in this object.  Returns true if it does, false otherwise.",
+                "atom", "The atom which may or may not be in this object.",
+                "present", "True if atom is present in the object; false otherwise.",
+                false, false, std::bind( &MolecularGeometry::has_atom, this, std::placeholders::_1 )
             )
         );
 
@@ -282,6 +349,48 @@ MolecularGeometry::get_atom_coordinates(
     return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
 }
 
+/// @brief Add a bond to this molecule, with the bond type specified by string.
+void
+MolecularGeometry::add_bond(
+	masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+	masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+	std::string const & bond_type_string
+) {
+	using namespace core::chemistry::bonds;
+	ChemicalBondType const bond_type( masala::base::enums::bond_type_from_string( bond_type_string ) );
+	CHECK_OR_THROW_FOR_CLASS( bond_type != ChemicalBondType::INVALID_CHEMICAL_BOND_TYPE, "add_bond",
+		"The string \"" + bond_type_string + "\" could not be parsed as a valid bond type."
+	);
+	add_bond( first_atom, second_atom, bond_type );
+}
+
+/// @brief Add a bond to this molecule.
+void
+MolecularGeometry::add_bond(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+    masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+    masala::core::chemistry::bonds::ChemicalBondType const bond_type
+) {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    CHECK_OR_THROW_FOR_CLASS(
+        atoms_const_.count( first_atom ) != 0, "add_bond",
+        "The first atom for this chemical bond was not found in the molecular geometry object."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        atoms_const_.count( second_atom ) != 0, "add_bond",
+        "The second atom for this chemical bond was not found in the molecular geometry object."
+    );
+    CHECK_OR_THROW_FOR_CLASS(
+        !has_bond_mutex_locked( first_atom, second_atom ), "add_bond",
+        "The molecular geometry object already has a bond between the specified atoms."
+    )
+    bonds_.insert(
+        masala::make_shared< masala::core::chemistry::bonds::ChemicalBondInstance >(
+			first_atom, second_atom, bond_type
+        )
+    );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,11 +404,10 @@ MolecularGeometry::get_atom_coordinates(
 core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP
 MolecularGeometry::master_atom_coordinate_representation_mutex_locked() {
     if( master_atom_coordinate_representation_ == nullptr ) {
-        masala::core::initialization::registrators::CoreAtomCoordinateRepresentationRegistrator::register_atom_coordinate_representations(); //Make sure that these are registered.
         master_atom_coordinate_representation_ = std::dynamic_pointer_cast< masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation >(
             masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation(
                 configuration_->default_atom_coordinate_representation()
-            )
+            )->get_inner_data_representation_object()
         );
         CHECK_OR_THROW_FOR_CLASS( master_atom_coordinate_representation_ != nullptr, "master_atom_coordinate_representation", configuration_->default_atom_coordinate_representation() + " was not an AtomCoordinateRepresentation!" );
     }
@@ -321,6 +429,37 @@ MolecularGeometry::load_configuration(
     write_to_tracer( "Loading default MolecularGeometry configuration." );
 
     return masala::make_shared< MolecularGeometryConfiguration >( passkey );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check whether an atom exists in this object.
+/// @returns True if the atom exists, false otherwise.
+bool
+MolecularGeometry::has_atom(
+    masala::core::chemistry::atoms::AtomInstanceCSP const & atom
+) const {
+    std::lock_guard< std::mutex > lock( whole_object_mutex_ );
+    return (atoms_const_.count( atom ) != 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Does a bond exist between two atoms?
+/// @details Intended to be called from a mutex-locked context.
+bool
+MolecularGeometry::has_bond_mutex_locked(
+	masala::core::chemistry::atoms::AtomInstanceCSP const & atom1,
+	masala::core::chemistry::atoms::AtomInstanceCSP const & atom2
+) const {
+	for( auto const & bond : bonds_ ) {
+		if( (*bond) == std::make_pair( atom1, atom2 ) ) { return true; }
+	}
+	return false;
 }
 
 } // namespace chemistry

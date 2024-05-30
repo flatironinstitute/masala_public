@@ -99,6 +99,22 @@ public:
         std::string const & tracer_name
     ) const;
 
+    /// @brief Set whether a particular tracer is explicitly enabled or disabled.  True means
+    /// enabled, false means disabled.
+    /// @details Can be undone with reset_tracer_state().
+    void
+    set_tracer_state(
+        std::string const & tracer_name,
+        bool const setting
+    );
+
+    /// @brief Remove the explicit specification for whether a particular tracer is enabled or
+    /// disabled.  This reverts the tracer behaviour back to the global setting.
+    void
+    reset_tracer_state(
+        std::string const & tracer_name
+    );
+
     /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
     bool global_tracer_default() const;
 

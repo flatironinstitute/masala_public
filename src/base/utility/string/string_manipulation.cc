@@ -223,6 +223,21 @@ trim(
     return rtrim(ltrim(input, chars_to_trim), chars_to_trim);
 }
 
+/// @brief Replace text pattern in string.
+void
+replace_all_instances_of_text(
+    std::string & string_to_modify,
+    std::string const & text_to_find,
+    std::string const & replacement_text
+) {
+    CHECK_OR_THROW( replacement_text != text_to_find, "masala::base::utility::string", "replace_all_instances_of_text", "Text to find is identical to the replacement text! Please replace the text to find with something new." );
+    size_t startloc( string_to_modify.find( text_to_find ) );
+    while( startloc != std::string::npos ){
+        string_to_modify.replace( startloc, text_to_find.size(), replacement_text );
+        startloc = string_to_modify.find( text_to_find );
+    }
+}
+
 } // namespace string
 } // namespace utility
 } // namespace base

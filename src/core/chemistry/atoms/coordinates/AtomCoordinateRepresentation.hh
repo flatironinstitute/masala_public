@@ -32,7 +32,7 @@
 #include <core/chemistry/atoms/AtomInstance.fwd.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaDataRepresentationBase.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // STL headers:
 #include <set>
@@ -48,7 +48,7 @@ namespace coordinates {
 /// @brief A pure virtual base class class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentationBase {
+class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
@@ -101,7 +101,7 @@ public:
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
     virtual
-    std::array< masala::base::Real, 3 > const
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const = 0;

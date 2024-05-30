@@ -31,8 +31,11 @@
 #include <base/managers/engine/MasalaEngineManager.fwd.hh>
 
 // Base headers:
-#include <base/managers/engine/MasalaEngineBase.fwd.hh>
-#include <base/managers/engine/MasalaEngineCreatorBase.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
+#include <base/managers/engine/MasalaEngineCreator.fwd.hh>
+#include <base/managers/engine/MasalaEngineAPI.hh>
+#include <base/managers/engine/MasalaEngineRequest.fwd.hh>
 
 // STL headers:
 #include <map>
@@ -97,30 +100,71 @@ public:
     /// @brief Create an engine, by name.
     /// @details If throw_if_missing is true, this function will throw an exception if it can't
     /// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
-    MasalaEngineBaseSP
+    MasalaEngineAPISP
     create_engine(
         std::string const & engine_type,
         bool const throw_if_missing = true
     ) const;
 
-    /// @brief Register an engine, by name.
-    /// @details If throw_if_present is true, an exception is thrown if the engine_name is
-    /// already registered.  Otherwise, this silently replaces the registered engine.
+    /// @brief Register an engine.
+    /// @details An exception is thrown if the engine name is already registered.
     void
     register_engine(
-        std::string const & engine_name,
-        MasalaEngineCreatorBaseCSP engine_creator,
-        bool const throw_if_present = true
+        MasalaEngineCreatorCSP const & engine_creator
     );
 
-    /// @brief Unregister an engine, by name.
-    /// @brief If the engine_name engine has not been registered, then (a) if throw_if_missing
-    /// is true, an exception is thrown, or (b) if it is false, nothing happens.
+    /// @brief Register a set of engines.
+    /// @details An exception is thrown if any of the engine names are already registered.
     void
-    unregister_engine(
-        std::string const & engine_name,
-        bool const throw_if_missing = true
+    register_engines(
+        std::vector< MasalaEngineCreatorCSP > const & engine_creators
     );
+
+	/// @brief Unregister an engine.
+	/// @brief If the engine has not been registered, an exception is thrown.
+	void
+	unregister_engine(
+		MasalaEngineCreatorCSP const & engine_creator
+	);
+
+	/// @brief Unregister a set of engines.
+	/// @brief If an engine has not been registered, an exception is thrown.
+	void
+	unregister_engines(
+		std::vector< MasalaEngineCreatorCSP > const & engine_creators
+	);
+
+    /// @brief Completely remove all engines.
+    void
+    reset();
+
+    /// @brief Get the engines compatible with a set of criteria encoded in a request object.
+    std::vector< MasalaEngineCreatorCSP >
+    get_compatible_engine_creators(
+        MasalaEngineRequest const & request
+    ) const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Register an engine.
+    /// @note The masala_engine_manager_mutex_ must be locked before this function is called.
+    /// @details An exception is thrown if the engine name is already registered.
+    void
+    register_engine_mutex_locked(
+        MasalaEngineCreatorCSP const & engine_creator
+    );
+
+	/// @brief Unregister an engine.
+	/// @note The masala_engine_manager_mutex_ must be locked before this function is called.
+	/// @details An exception is thrown if the engine name is not already registered.
+	void
+	unregister_engine_mutex_locked(
+		MasalaEngineCreatorCSP const & engine_creator
+	);
 
 private:
 
@@ -132,7 +176,7 @@ private:
     mutable std::mutex masala_engine_manager_mutex_;
 
     /// @brief A map of string to engine creator.
-    std::map< std::string, MasalaEngineCreatorBaseCSP > engine_creators_;
+    std::map< std::string, MasalaEngineCreatorCSP > engine_creators_;
 
 };
 

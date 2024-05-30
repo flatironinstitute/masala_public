@@ -76,6 +76,31 @@ MasalaTracerManager::tracer_is_enabled(
     return global_tracer_default_;
 }
 
+/// @brief Set whether a particular tracer is explicitly enabled or disabled.  True means
+/// enabled, false means disabled.
+/// @details Can be undone with reset_tracer_state().
+void
+MasalaTracerManager::set_tracer_state(
+    std::string const & tracer_name,
+    bool const setting
+) {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+    explicitly_enabled_or_disabled_tracers_[tracer_name] = setting;
+}
+
+/// @brief Remove the explicit specification for whether a particular tracer is enabled or
+/// disabled.  This reverts the tracer behaviour back to the global setting.
+void
+MasalaTracerManager::reset_tracer_state(
+    std::string const & tracer_name
+) {
+    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+    std::map< std::string, bool >::iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+    if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+        explicitly_enabled_or_disabled_tracers_.erase(it);
+    }
+}
+
 /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
 bool
 MasalaTracerManager::global_tracer_default() const {
@@ -132,6 +157,9 @@ MasalaTracerManager::write_to_tracer(
 std::string
 MasalaTracerManager::get_thread_id_string() const {
     std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+	if( thread_map_.empty() ) {
+		return "0";
+	}
     std::map< std::thread::id, base::Size >::const_iterator it( thread_map_.find( std::this_thread::get_id() ) );
     if( it == thread_map_.end() ) {
         return "?";

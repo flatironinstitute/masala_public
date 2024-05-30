@@ -33,7 +33,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_FiveInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
@@ -59,13 +59,17 @@ namespace cost_function_network {
 CostFunctionNetworkOptimizationSolution::CostFunctionNetworkOptimizationSolution(
     CostFunctionNetworkOptimizationProblemCSP const & problem_in,
     std::vector< masala::base::Size > const & solution_vector_in,
-    masala::base::Real const solution_score
+    masala::base::Real const solution_score,
+    masala::base::Real const solution_score_data_representation_approximation,
+    masala::base::Real const solution_score_solver_approximation
 ) :
     masala::numeric::optimization::OptimizationSolution()
 {
-    set_problem( problem_in );
-    set_solution_vector( solution_vector_in );
-    set_solution_score( solution_score );
+    protected_problem() = problem_in;
+    protected_set_solution_vector( solution_vector_in );
+    protected_solution_score() = solution_score;
+    protected_solution_score_data_representation_approximation() = solution_score_data_representation_approximation;
+    protected_solution_score_solver_approximation() = solution_score_solver_approximation;
 }
 
 /// @brief Make a copy of this object.
@@ -169,11 +173,11 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         );
         api_def->add_constructor(
             masala::make_shared<
-                constructor::MasalaObjectAPIConstructorDefinition_ThreeInput <
+                constructor::MasalaObjectAPIConstructorDefinition_FiveInput <
                     CostFunctionNetworkOptimizationSolution,
                     CostFunctionNetworkOptimizationProblemCSP,
                     std::vector< masala::base::Size > const &,
-                    Real
+                    Real, Real, Real
                 >
             > (
                 class_name(),
@@ -181,7 +185,9 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 "stored directly -- i.e. not deep-cloned -- for future reference).",
                 "problem_in", "The problem definition.  Unaltered by this operation.",
                 "solution_vector_in", "The solution, expressed as a vector of node choice indices, with one entry for each node that has at least two choices.",
-                "solution_score_in", "The solution score."
+                "solution_score_in", "The solution score.  This is the actual, non-approximate solution score.",
+                "solution_score_data_representation_approximation_in", "The solution score given the data representation.  Data representations may use exact solution scores, or may make approximations for speed.",
+                "solution_score_solver_approximation_in", "The solution score returned by the solver.  This may be exact, or may be approximate both due to the data representation used and due to reduced precision of the solver."
             )
         );
         api_def->add_constructor(
@@ -193,15 +199,6 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         );
 
         // Work functions:
-        api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput <void> > (
-				"recompute_score", "Recompute the score for this solution.  This is useful, for instance, after "
-				"an optimizer that uses approximate methods or low floating-point precision completes "
-				"its work, to allow scores to be stored with full floating-point precision and accuracy.",
-				false, false, false, true,
-				"void", "Returns nothing", std::bind( &CostFunctionNetworkOptimizationSolution::recompute_score, this )
-            )
-        );
         api_def->add_work_function(
             masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput <bool, std::vector< base::Size > const & > > (
                 "operator==", "Compare this solution to the solution vector of another solution.  Return true if they match, false otherwise.",
@@ -215,14 +212,39 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         // Getters:
         api_def->add_getter(
             masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score", "Get the score associated with this solution.",
-                "solution_score", "The score associated with this solution.",
+                "solution_score", "Get the score associated with this CFN solution.  This is the exact "
+				"score, recomputed once the solution has been produced.",
+                "solution_score", "The exact score associated with this CFN solution.",
                 false, false,
-                std::bind( &OptimizationSolution::solution_score, this )
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score, this )
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > const & > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"with this CFN solution, given the CFN data representation.  Certain data representations may use "
+				"reduced floating point precision or other approximations for greater efficiency.",
+                "solution_score_data_representation_approximation", "The approximate score with this CFN solution, "
+				"given the CFN data representation",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score_data_representation_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_solver_approximation", "Get the approximate score returned by the CFN solver that produced "
+				"this CFN solution.  In addition to approximation from the data representation, a solver may accumulate "
+				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solution_score_solver_approximation", "The approximate score associated with this CFN solution, returned "
+				"by the solver.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::solution_score_solver_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< Size > > >(
                 "solution_at_variable_positions", "Get the solution "
                 "vector for this problem for variable nodes only.  "
                 "This returns the solution vector as one value per "
@@ -236,7 +258,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
             )
         );
         api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< masala::base::Size > > >(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< Size > > >(
                 "solution_at_all_positions", "Get the solution vector "
                 "for this problem, for all nodes.  "
                 "This returns the solution vector as one value per "
@@ -253,10 +275,33 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
         // Setters:
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score", "Set the score associated with this solution.",
+                "set_solution_score", "Set the score associated with this solution.  This is the "
+                "exact score, recomputed once the solution has been produced.",
                 "score_in", "The score to set.",
                 false, false,
-                std::bind( &OptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_data_representation_approximation", "Set an approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use reduced "
+				"floating point precision or other approximations for greater efficiency.",
+                "dr_approx_score_in", "The approximate score (from the data representation) to set.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
+				"produced this solution. In addition to approximation from the data representation, a solver may "
+				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solver_approx_score_in", "The approximate score (from the solver) to set.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
             ) 
         );
         api_def->add_setter(
@@ -295,7 +340,7 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
 /// in the vector do NOT necessarily correspond to node indices,
 /// since nodes with zero or one choice are omitted.
 /// @note Problem and solution vector must have been set.
-std::vector< masala::base::Size > const &
+std::vector< masala::base::Size >
 CostFunctionNetworkOptimizationSolution::solution_at_variable_positions() const {
     std::lock_guard< std::mutex > lock( solution_mutex() );
     CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "solution_at_variable_positions",
@@ -365,54 +410,12 @@ CostFunctionNetworkOptimizationSolution::set_solution_vector(
     std::vector< masala::base::Size > const & solution_vector_in
 ) {
     std::lock_guard< std::mutex > lock( solution_mutex() );
-    if( protected_problem() != nullptr ) {
-        CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == problem_cast->total_variable_nodes(),
-            "set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
-            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
-            + std::to_string( solution_vector_in.size() ) + " entries."
-        );
-    }
-    solution_vector_ = solution_vector_in;
+    protected_set_solution_vector( solution_vector_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Recompute the score of this solution.  This is useful, for instance, after
-/// an optimizer that uses approximate methods or low floating-point precision completes
-/// its work, to allow scores to be stored with full floating-point precision and accuracy.
-/// @details The problem_ pointer must be set.
-/// @note The base class recompute_score() function throws.  This override calls the
-/// CostFunctionNetworkOptimizationProblem's calculators.
-void
-CostFunctionNetworkOptimizationSolution::recompute_score() {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
-    CHECK_OR_THROW_FOR_CLASS( protected_problem() != nullptr, "recompute_score", "Cannot compute score until a "
-        "problem has been associated with this solution.  Please finish configuring this problem by calling "
-        "set_problem() before calling recompute_score()."
-    );
-    CHECK_OR_THROW_FOR_CLASS( !solution_vector_.empty(), "recompute_score", "No solution vector has been set yet.  "
-        "Please call set_solution_vector() before calling this function."
-    );
-#ifndef NDEBUG
-    // In debug mode, use dynamic_pointer_cast with a check.
-    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( problem_cast != nullptr, "recompute_score", "Somehow the problem associated with this "
-        "solution was not a CostFunctionNetworkOptimizationProblem.  This should not be possible, and indicates a programming bug."
-    );
-#else
-    // In release mode, use static_pointer_cast.  It shouldn't be possible for the pointer to be nonconst.
-    CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
-#endif
-    CHECK_OR_THROW_FOR_CLASS( solution_vector_.size() == problem_cast->total_variable_nodes(),
-        "set_problem", "The solution vector must have one choice for each variable node.  The problem "
-        "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
-        + std::to_string( solution_vector_.size() ) + " entries."
-    );
-    protected_solution_score() = problem_cast->compute_absolute_score( solution_vector_ );
-}
 
 /// @brief Determine whether this solution is the same as another.
 /// @details Compares the stored solution vector to a provided solution vector.
@@ -422,6 +425,31 @@ CostFunctionNetworkOptimizationSolution::operator==(
 ) const {
     std::lock_guard< std::mutex > lock( solution_mutex() );
     return solution_vector_ == other_solution_vector;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the solution vector for this problem.  This function assumes that the mutex has been locked.
+/// @details If the problem has been set, this solution vector must be of compatible size.
+void
+CostFunctionNetworkOptimizationSolution::protected_set_solution_vector(
+    std::vector< masala::base::Size > const & solution_vector_in
+) {
+    if( protected_problem() != nullptr ) {
+        CostFunctionNetworkOptimizationProblemCSP problem_cast( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem const >( protected_problem() ) );
+        CHECK_OR_THROW_FOR_CLASS( solution_vector_in.size() == 0 || solution_vector_in.size() == problem_cast->total_variable_nodes(),
+            "protected_set_solution_vector", "The solution vector must have one choice for each variable node.  The problem "
+            "defines " + std::to_string( problem_cast->total_variable_nodes() ) + " nodes, but the solution vector has "
+            + std::to_string( solution_vector_in.size() ) + " entries."
+        );
+
+        if( solution_vector_in.size() == 0 && problem_cast->total_variable_nodes() > 0 ) {
+            protected_solution_is_valid() = false;
+        }
+    }
+    solution_vector_ = solution_vector_in;
 }
 
 } // namespace cost_function_network

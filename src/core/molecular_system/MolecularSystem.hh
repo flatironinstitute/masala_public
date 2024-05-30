@@ -32,9 +32,15 @@
 
 // Core headers:
 #include <core/chemistry/MolecularGeometry.fwd.hh>
+#include <core/chemistry/atoms/AtomInstance.fwd.hh>
+#include <core/chemistry/bonds/ChemicalBondInstance.fwd.hh>
 
 // Base headers:
+#include <base/types.hh>
 #include <base/MasalaObject.hh>
+
+// STL headers:
+#include <mutex>
 
 namespace masala {
 namespace core {
@@ -60,11 +66,15 @@ public:
     /// @details Ensures that the molecular_geometry_ object always exists.
     MolecularSystem();
 
-    /// @brief Copy constructor.
-    MolecularSystem( MolecularSystem const & ) = default;
+    /// @brief Copy constructor (explicit due to mutex).
+    /// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
+    MolecularSystem( MolecularSystem const & src );
 
     /// @brief Default destructor.
     ~MolecularSystem() override = default;
+
+    /// @brief Assignment operator (explicit due to mutex).
+    MolecularSystem & operator=( MolecularSystem const & src );
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
@@ -132,35 +142,34 @@ public:
     masala::core::chemistry::MolecularGeometry const &
     molecular_geometry() const;
 
-    /// @brief Access the MolecularGeometry object in this molecular system, by nonconst shared pointer.
-    /// @details The MolecularGeometry object contains the coordinates and properties of atoms
-    /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-    /// access is safe.
-    /// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-    /// not all form one contiguously-bonded set).
-    masala::core::chemistry::MolecularGeometrySP
-    molecular_geometry_shared_ptr_nonconst();
+public:
 
-    /// @brief Access the MolecularGeometry object in this molecular system, by nonconst weak pointer.
-    /// @details The MolecularGeometry object contains the coordinates and properties of atoms
-    /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-    /// access is safe.
-    /// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-    /// not all form one contiguously-bonded set).
-    masala::core::chemistry::MolecularGeometryWP
-    molecular_geometry_weak_ptr_nonconst();
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Access the MolecularGeometry object in this molecular system, by nonconst reference.
-    /// @details The MolecularGeometry object contains the coordinates and properties of atoms
-    /// and chemical bonds.  We will use an observer system to ensure that direct updates
-    /// to the MolecularGeometry object also appropriately update any MolecularSystem containing it, so direct
-    /// access is safe.
-    /// @note A MolecularGeometry object may contain more than one molecule (i.e. its atoms may
-    /// not all form one contiguously-bonded set).
-    masala::core::chemistry::MolecularGeometry &
-    molecular_geometry_nonconst();
+    /// @brief Add an atom to this molecular system.
+    void
+    add_atom(
+        masala::core::chemistry::atoms::AtomInstanceSP const & new_atom,
+        std::array< masala::base::Real, 3 > const & coords
+    );
+
+    /// @brief Add a bond to this molecule, with the bond type specified by string.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        std::string const & bond_type_string
+    );
+
+    /// @brief Add a bond to this molecule.
+    void
+    add_bond(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & first_atom,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
+        masala::core::chemistry::bonds::ChemicalBondType const bond_type
+    );
 
 public:
 
@@ -177,6 +186,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief A mutex for this object.
+    mutable std::mutex mutex_;
 
     /// @brief The MolecularGeometry object in this MolecularSystem.
     /// @details The MolecularGeometry object contains the coordinates and properties of atoms

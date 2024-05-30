@@ -25,6 +25,7 @@
 
 // Base headers
 #include <base/types.hh>
+#include <base/utility/string/string_manipulation.hh>
 
 // STL headers
 
@@ -59,6 +60,27 @@ string_ends_with(
 	Size const expected_len( expected_ending.size() );
 	if( expected_len > input_len ) return false;
 	return( input_string.substr( input_len - expected_len, expected_len ) == expected_ending );
+}
+
+/// @brief Determinew whether two Masala class names match.
+/// @details Names match if:
+/// - They both contain namespace and name, and match fully.
+/// - They both only name, and the name matches.
+/// - One contains namespace and name, and the other contains only name, and the name matches.
+bool
+masala_class_names_match(
+	std::string const & name1,
+	std::string const & name2
+) {
+	if( name1 == name2 ) {
+		return true;
+	}
+	std::vector< std::string > const namesplit1( split_by_characters( name1, ":" ) );
+	std::vector< std::string > const namesplit2( split_by_characters( name2, ":" ) );
+	if( (namesplit1.size() > 1 && namesplit2.size() == 1) || (namesplit1.size() == 1 && namesplit2.size() > 1) ) {
+		return namesplit1[ namesplit1.size() - 1 ] == namesplit2[ namesplit2.size() - 1 ];
+	}
+	return false;
 }
 
 } // namespace string

@@ -157,7 +157,7 @@ def api_definition_has_protected_constructors( ccfile : str, project_name : str 
                     if in_block == 4 :
                         assert file_contents[i] == "true" or file_contents[i] == "false", "Could not parse file " + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  Expected either \"true\" or \"false\" for protected constructor option, but got \"" + file_contents[i] + "\"."
                         if file_contents[i] == "true" :
-                            print( "\t\tFound protected-constructor API definition in class " + classname + ".  Will NOT auto-generate Creator class." )
+                            print( "\t\tFound protected-constructor API definition in class " + classname + ".  Will NOT auto-generate registration code for Creator class." )
                             return True
                         else :
                             print( "\t\tFound public-constructor API definition in class " + classname + "." )
@@ -166,7 +166,7 @@ def api_definition_has_protected_constructors( ccfile : str, project_name : str 
     if found == False :
         explanation = "No \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be found in the " + classname + " ::get_api_definition() function."
     else :
-        explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could be parsed in the " + classname + " ::get_api_definition() function."
+        explanation = "The \"masala::make_shared< MasalaObjectAPIDefinition >( ... )\" line could not be parsed in the " + classname + " ::get_api_definition() function."
     raise Exception( "Could not parse file "  + ccfile + " to determine whether the API class for " + classname + " has protected constructors.  " + explanation )
 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
@@ -252,10 +252,9 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
                     outlist_apis.append( apiname + ".cc" )
                     outlist_apis.append( apiname + ".hh" )
                     outlist_apis.append( apiname + ".fwd.hh" )
-                    if api_definition_has_protected_constructors( concatname[:-3] + ".cc", project_name ) == False and \
-                        is_plugin_class( concatname[:-3] + ".hh", project_name ) == True :
-
-                        compile_registration_functions = True
+                    if is_plugin_class( concatname[:-3] + ".hh", project_name ) == True :
+                        if api_definition_has_protected_constructors( concatname[:-3] + ".cc", project_name ) == False :
+                            compile_registration_functions = True
                         creatorname = apiname_or_creatorname_from_filename( concatname, True )
                         outlist_apis.append( creatorname + ".cc" )
                         outlist_apis.append( creatorname + ".hh" )
@@ -318,8 +317,8 @@ else :
 testsdir = "../tests/unit/" + lib_name
 testlibname = lib_name + "_tests"
 if output_file_tests != None :
-    assert path.isdir( testsdir )
     print( "\tChecking " + testsdir + " for tests." )
+    assert path.isdir( testsdir ), errmsg + "Could not find test directory.  Directory " + testsdir + " does not exist!"
     testslist = get_all_cc_and_hh_files_in_dir_and_subdirs( testlibname, project_name, testsdir, False )
     test_depend_list = get_library_dependencies( testsdir )
 else :

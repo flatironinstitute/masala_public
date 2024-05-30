@@ -13,8 +13,7 @@
 <__CREATOR_INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>
 
 // Base headers:
-#include <base/managers/plugin_module/MasalaPluginCreator.hh>
-#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>
 
 // STL headers:
 #include <vector>
@@ -26,7 +25,7 @@
 /// @details Creators are needed to allow the Masala plugin system to use objects
 /// defined in plugin libraries.
 <__DOXYGEN_AUTHOR_AND_EMAIL__>
-class <__CREATOR_CLASS_API_NAME__> : public masala::base::managers::plugin_module::MasalaPluginCreator {
+class <__CREATOR_CLASS_API_NAME__> : public <__PLUGIN_CREATOR_BASE_CLASS__> {
 
 public:
 

@@ -235,7 +235,7 @@ BasicPDBReader::add_atoms_from_file_lines(
                 curline_atomname, atomno, curline_element
             )
         );
-        molecular_system.molecular_geometry_nonconst().add_atom( newatom, coords );
+        molecular_system.add_atom( newatom, coords );
     }
 }
 

@@ -30,7 +30,7 @@
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
 
 // Parent header:
-#include <base/managers/plugin_module/MasalaPlugin.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // Numeric headers:
 
@@ -52,7 +52,7 @@ namespace cost_function {
 /// function network optimization problem.  (That is, given a selection of one choice
 /// per node, produce a numerical value.)
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunction : public masala::base::managers::plugin_module::MasalaPlugin {
+class CostFunction : public masala::base::managers::engine::MasalaDataRepresentation {
 
 public:
 
@@ -108,6 +108,22 @@ public:
 	/// @returns { "optimization_problem", "cost_function", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
+
+	/// @brief Get the category for this MasalaDataRepresentation.
+	/// @returns { { "CostFunction" } }.
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
+	/// is compatible.
+	/// @returns An empty list.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the properties of this MasalaDataRepresentation.
+	/// @returns { "cost_function" }.
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 	/// @brief Get the class name ("CostFunction").
 	static

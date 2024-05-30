@@ -33,13 +33,10 @@
 // Base headers:
 #include <base/MasalaObject.hh>
 
-// STL headers:
-
 namespace masala {
 namespace core {
 namespace chemistry {
 namespace bonds {
-
 
 /// @brief A class containing a particular chemical bond between a pair of atoms.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -54,11 +51,28 @@ public:
     /// @brief Default constructor.
     ChemicalBondInstance() = default;
 
+    /// @brief Atoms constructor.
+    ChemicalBondInstance(
+        masala::core::chemistry::atoms::AtomInstanceCSP const & atom1,
+        masala::core::chemistry::atoms::AtomInstanceCSP const & atom2,
+        ChemicalBondType const bond_type
+    );
+
     /// @brief Copy constructor.
     ChemicalBondInstance( ChemicalBondInstance const & ) = default;
 
     /// @brief Default destructor.
     ~ChemicalBondInstance() override = default;
+
+    /// @brief Assignment operator.
+    ChemicalBondInstance & operator=( ChemicalBondInstance const & ) = default;
+
+    /// @brief Comparison operator.
+    bool operator==( ChemicalBondInstance const & src ) const;
+
+    /// @brief Comparison operator to a pair of atoms: is this a bond between these atoms?
+    /// @details Returns true if either order matches.
+    bool operator==( std::pair< masala::core::chemistry::atoms::AtomInstanceCSP, masala::core::chemistry::atoms::AtomInstanceCSP > const & src ) const;
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
@@ -102,6 +116,12 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief The first atom (ordered by memory index).
+    masala::core::chemistry::atoms::AtomInstanceCSP atom1_;
+
+    /// @brief The second atom (ordered by memory index).
+    masala::core::chemistry::atoms::AtomInstanceCSP atom2_;
 
     /// @brief The type of bond this is.
     ChemicalBondType bond_type_ = ChemicalBondType::SINGLE_BOND;

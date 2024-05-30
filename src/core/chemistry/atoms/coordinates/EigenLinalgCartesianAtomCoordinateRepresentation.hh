@@ -37,6 +37,7 @@
 #include <external/eigen/Eigen/Core>
 
 // STL headers:
+#include <mutex>
 #include <map>
 
 namespace masala {
@@ -48,7 +49,7 @@ namespace coordinates {
 
 /// @brief A container of atom coordinates, using the Eigen linear algebra library's data structures.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class EigenLinalgCartesianAtomCoordinateRepresentation : public AtomCoordinateRepresentation {
+class EigenLinalgCartesianAtomCoordinateRepresentation : public masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation {
 
 public:
 
@@ -60,15 +61,28 @@ public:
     EigenLinalgCartesianAtomCoordinateRepresentation() = default;
 
     /// @brief Copy constructor.
-    EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & ) = default;
+    EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
     // Destructor ommitted to keep class pure virtual.
     ~EigenLinalgCartesianAtomCoordinateRepresentation() override = default;
+
+    /// @brief Assignment operator.
+    EigenLinalgCartesianAtomCoordinateRepresentation &
+    operator=( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
     AtomCoordinateRepresentationSP
     clone() const override;
+
+    /// @brief Deep clone operation: make a deep copy of this object and return a shared
+    /// pointer to the deep copy.
+    EigenLinalgCartesianAtomCoordinateRepresentationSP
+    deep_clone() const;
+
+	/// @brief Make this object instance fully independent.
+	void
+	make_independent();
 
     /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
     std::string
@@ -81,13 +95,41 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC FUNCTIONS
+// PLUGIN CLASS FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Get the categories for this plugin.
+    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+    std::vector< std::vector< std::string > >
+    get_categories() const override;
+
+    /// @brief Get the keywords for this plugin.
+    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+    std::vector< std::string >
+    get_keywords() const override;
+
+    /// @brief Get the categories for this DataRepresentation.
+    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+    std::vector< std::vector< std::string > >
+    get_data_representation_categories() const override;
+
+    /// @brief Get the compatible engines for this data representation.
+    /// @returns Currently an empty list.  This may change in the future.
+    std::vector< std::string >
+    get_compatible_masala_engines() const override;
+
+    /// @brief Get the properties of this data representation.
+    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+    std::vector< std::string >
+    get_present_data_representation_properties() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Replace an atom instance with a new one.
-    /// @details Used for deep cloning, since the AtomCoordinateRepresentation subclasses do not
-    /// implement a deep_clone() function.
     /// @note Must be implemented by derived classes.
     void
     replace_atom_instance(
@@ -103,18 +145,54 @@ public:
         std::array< masala::base::Real, 3 > const & new_atom_coordinates
     ) override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
-    std::array< masala::base::Real, 3 > const
+    std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         AtomInstanceCSP const & atom
     ) const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION GETTER
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get an object describing the API for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Replace an atom instance with a new one.  This version should be called only from
+	/// a mutex-locked context.
+    void
+    replace_atom_instance_mutex_locked(
+        AtomInstanceCSP const & old_instance,
+        AtomInstanceCSP const & new_instance
+    );
 
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief A mutex for locking this object.
+    mutable std::mutex mutex_;
+
+    /// @brief The API definition for this object.
+    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
     /// @brief Data storage for atom coordinates.
     /// @details Rows are x, y, and z coordinates.  Columns are for atoms.

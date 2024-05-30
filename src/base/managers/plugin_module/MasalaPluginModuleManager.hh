@@ -131,6 +131,10 @@ public:
 
     /// @brief Add a vector of plugins to the list of plugins that the manager knows about.
     /// @details Throws if any plugin has already been added.
+    /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also registers it with the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also registers it with the MasalaFileInterpreterManager.
     void
     add_plugins(
         std::vector< MasalaPluginCreatorCSP > const & creators
@@ -138,6 +142,10 @@ public:
 
     /// @brief Add a set of plugins to the list of plugins that the manager knows about.
     /// @details Throws if any plugin has already been added.
+    /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also registers it with the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also registers it with the MasalaFileInterpreterManager.
     void
     add_plugins(
         std::set< MasalaPluginCreatorCSP > const & creators
@@ -146,20 +154,32 @@ public:
     /// @brief Add a plugin to the list of plugins that the manager knows about.
     /// @details Throws if the plugin has already been added.  Call has_plugin()
     /// first to query wiether the plugin has already been added.
+    /// @note If a plugin is a MasalaEngine, this also registers it with the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also registers it with the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also registers it with the MasalaFileInterpreterManager.
     void
     add_plugin(
         MasalaPluginCreatorCSP const & creator
     );
 
     /// @brief Remove a vector of plugins from the list of plugins that the manager knows about.
-    /// @details Throws if the plugin is not registered
+    /// @details Throws if the plugin is not registered.
+    /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugins(
         std::vector< MasalaPluginCreatorCSP > const & creators
     );
 
     /// @brief Re,pve a set of plugins from the list of plugins that the manager knows about.
-    /// @details Throws if the plugin is not registered
+    /// @details Throws if the plugin is not registered.
+    /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugins(
         std::set< MasalaPluginCreatorCSP > const & creators
@@ -168,6 +188,10 @@ public:
     /// @brief Remove a plugin from the list of plugins that the manager knows about.
     /// @details Throws if the plugin is not registered.  Call has_plugin()
     /// first to query wiether the plugin has already been added.
+    /// @note If a plugin is a MasalaEngine, this also unregisters it from the MasalaEngineManager.
+    /// If a plugin is a MasalaDataRepresentation, this also unregisters it from the
+    /// MasalaDataRepresentationManager.  If a plugin is a MasalaFileInterpreter, this
+	/// also unregisters it from the MasalaFileInterpreterManager.
     void
     remove_plugin(
         MasalaPluginCreatorCSP const & creator
@@ -359,7 +383,7 @@ private:
     /// {"Selector","AtomSelector"}
     /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
     /// A plugin in a nested category is also put into the higher categories.
-    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_;
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_all_levels_;
 
     /// @brief Find plugins by subcategory.
     /// @details Categories are vectors of strings.  For instance:
@@ -367,7 +391,7 @@ private:
     /// {"Selector","AtomSelector"}
     /// {"Selector","AtomSelector","AnnotatedRegionSelector"}
     /// A plugin in a nested category is also NOT put into the higher categories in this list.
-    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_subcategory_;
+    std::map< std::vector< std::string >, std::set< MasalaPluginCreatorCSP > > plugins_by_hierarchical_category_lowest_level_only_;
 
 };
 

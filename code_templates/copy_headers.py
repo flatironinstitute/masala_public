@@ -128,7 +128,7 @@ def purge_comments( file_contents : str ) -> str :
 ## derived class with a parent in the parent library (e.g. "numeric" if this is "numeric_api").
 ## If it is, return the path and filename of the parent header (.hh file).  If it is not,
 ## simply return None.
-def parent_library_base_filename( file : str, source_dir : str, lib_name : str, project_name : str ) -> str :
+def parent_library_base_filename( file : str, source_dir : str, lib_name : str, project_name : str, recursive=True ) -> list :
     if lib_name.endswith("_api") == False :
         return None
     with open( file, 'r' ) as filehandle:
@@ -166,11 +166,15 @@ def parent_library_base_filename( file : str, source_dir : str, lib_name : str, 
     if has_parent_class_to_copy == False :
         return None
 
-    parent_header = source_dir
+    parent_header = [ source_dir ]
     for j in range( 1, len(parentsplit) ) :
-        parent_header += "/" + parentsplit[j]
-    parent_header += ".hh"
-    print( "\t\tFound parent class " + parent_class + " in header file " + file + ".  Will copy " + parent_header + "." )
+        parent_header[0] += "/" + parentsplit[j]
+    parent_header[0] += ".hh"
+    print( "\t\tFound parent class " + parent_class + " in header file " + file + ".  Will copy " + parent_header[0] + "." )
+    if recursive == True :
+        additional = parent_library_base_filename( parent_header[0], source_dir, lib_name, project_name, recursive=recursive )
+        if additional is not None :
+            parent_header.extend( additional )
     return parent_header
 
 ## @brief Copy all the files in a list.
@@ -214,7 +218,10 @@ for file in files :
             original_lib_name = lib_name[:-4] # If the library is "core_api", the original library is "core".
             path_and_file = file[ len( source_dir + "/" + lib_name + "/auto_generated_api/" ) : ]
             original_path = path.dirname( path_and_file )
-            original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
+            if file.endswith( "Creator.fwd.hh" ) :
+                original_file = path.basename( path_and_file )[ : -14 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
+            elif file.endswith( "_API.fwd.hh" ) :
+                original_file = path.basename( path_and_file )[ : -11 ] + ".fwd.hh" # If the file is "MolecularSystem_API.fwd.hh", the original file is "MolecularSystem.fwd.hh".
             original_fwd_declaration = source_dir + "/" + original_lib_name + "/" + original_path + "/" + original_file
             iscreator = is_creator( file )
             if iscreator == False and is_lightweight( file ) == True :
@@ -239,9 +246,9 @@ for file in files :
             files_to_copy = []
         else :
             files_to_copy = get_fwd_files( file, source_dir )
-            parent_hh_file = parent_library_base_filename( file, source_dir, lib_name, project_name )
-            if lib_name.endswith( "_api" ) and parent_hh_file != None :
-                files_to_copy.append( parent_hh_file )
+            parent_hh_files = parent_library_base_filename( file, source_dir, lib_name, project_name, recursive=True )
+            if lib_name.endswith( "_api" ) and parent_hh_files != None :
+                files_to_copy.extend( parent_hh_files )
 
         copy_files_in_list( files_to_copy, source_dir )
     

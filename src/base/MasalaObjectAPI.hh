@@ -67,6 +67,12 @@ public:
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition_for_inner_class() = 0;
 
+	/// @brief Get the namespace and name for this pure virtual base class.
+	/// @returns "masala::base::MasalaObjectAPI"
+    static
+	std::string
+	class_namespace_and_name_static();
+
 }; // class MasalaObjectAPI
 
 } // namespace base
