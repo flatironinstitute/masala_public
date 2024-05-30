@@ -264,10 +264,13 @@ MasalaThreadPool::execute_function_in_threads(
     // Also execute the function in this thread.
     fxn();
 
-    if( assigned_threads.size() > 0 && num_jobs_completed < assigned_threads.size() ) {
+    if( assigned_threads.size() > 0 ) {
         // If other threads are working, wait for them.
         base::Size const nthread( assigned_threads.size() );
-        job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+		job_completion_condition_lock.lock();
+		if( num_jobs_completed < nthread ) {
+        	job_completion_condition_var.wait( job_completion_condition_lock, [&num_jobs_completed, nthread]{ return num_jobs_completed == nthread; } );
+		}
     }
 
     // Clean up threads (i.e. terminate) that have spindown signals (under lock guard):
