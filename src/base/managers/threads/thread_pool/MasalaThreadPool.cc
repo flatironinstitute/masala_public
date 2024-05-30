@@ -249,8 +249,6 @@ MasalaThreadPool::execute_function_in_threads(
 
         summary.set_assigned_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
 
-        //MAY NEED FENCE HERE.
-
         // At this point, it is safe to begin exection of the work in threads.
         if( !assigned_threads.empty() ) {
             for( auto & thread : assigned_threads ) {
