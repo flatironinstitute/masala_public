@@ -271,6 +271,14 @@ CostFunctionNetworkOptimizationSolution::get_api_definition() {
                 std::bind( &CostFunctionNetworkOptimizationSolution::solution_at_all_positions, this )
             )
         );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< OptimizationProblemCSP > >(
+                "problem", "Get the problem associated with this solution.",
+                "problem", "The problem associated with this solution.",
+                false, false,
+                std::bind( &CostFunctionNetworkOptimizationSolution::problem, this )
+            )
+        );
 
         // Setters:
         api_def->add_setter(
