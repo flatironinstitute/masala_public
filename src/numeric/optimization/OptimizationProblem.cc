@@ -85,7 +85,7 @@ OptimizationProblem::deep_clone() const {
 void
 OptimizationProblem::make_independent() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    api_definition_ = nullptr;
+    protected_make_independent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -296,6 +296,14 @@ OptimizationProblem::protected_finalize() {
 void
 OptimizationProblem::protected_reset() {
     finalized_ = false;
+}
+
+/// @brief Make this object independent.
+/// @details Assumes mutex was already locked.
+/// @note Derived versions of this function should call the parent class version too.
+void
+OptimizationProblem::protected_make_independent() {
+	api_definition_ = nullptr;
 }
 
 } // namespace optimization

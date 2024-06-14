@@ -64,13 +64,6 @@ CostFunctionNetworkOptimizationProblem::deep_clone() const {
 	return new_problem;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-CostFunctionNetworkOptimizationProblem::make_independent() {
-	masala::numeric::optimization::OptimizationProblem::make_independent();
-	//GNDN
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -626,6 +619,14 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 	total_variable_nodes_ = 0;
 	n_choices_at_variable_nodes_.clear();
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
+}
+
+/// @brief Make this object independent.
+/// @details Assumes mutex was already locked.
+/// @note Derived versions of this function should call the parent class version too.
+void
+CostFunctionNetworkOptimizationProblem::protected_make_independent() {
+	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	

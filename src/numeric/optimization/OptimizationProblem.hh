@@ -187,6 +187,11 @@ protected:
 	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
 	virtual void protected_reset();
 
+	/// @brief Make this object independent.
+	/// @details Assumes mutex was already locked.
+	/// @note Derived versions of this function should call the parent class version too.
+	virtual void protected_make_independent();
+
 
 private:
 

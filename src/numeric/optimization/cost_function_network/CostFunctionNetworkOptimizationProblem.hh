@@ -84,9 +84,6 @@ public:
 	CostFunctionNetworkOptimizationProblemSP
 	deep_clone() const;
 
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	void make_independent();
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +310,11 @@ protected:
 
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
+
+	/// @brief Make this object independent.
+	/// @details Assumes mutex was already locked.
+	/// @note Derived versions of this function should call the parent class version too.
+	virtual void protected_make_independent();
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
