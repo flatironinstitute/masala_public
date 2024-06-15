@@ -487,7 +487,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
 				"reset", "Completely reset the problem description, deleting all choices for each node.  "
 				"Also resets finalization state.",
-				false, true,
+				false, false,
 				std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
 			)
 		);
@@ -495,7 +495,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
 				"finalize", "Finalize this object completely -- i.e. indicate that all problem setup is complete, and "
 				"the object should now be read-only.  May be overridden by derived classes.",
-				false, true, std::bind( &CostFunctionNetworkOptimizationProblem::finalize, this )
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::finalize, this )
 			)
 		);
 		api_def->add_setter(
