@@ -152,7 +152,6 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
-	std::lock_guard< std::mutex >( problem_mutex() );
 	if( protected_finalized() ) {
 		return total_variable_nodes_;
 	}
@@ -190,11 +189,11 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 	using masala::base::Size;
-	std::lock_guard< std::mutex >( problem_mutex() );
 
 	if( protected_finalized() ) {
 		return n_choices_at_variable_nodes_;
 	}
+	std::lock_guard< std::mutex > lock( problem_mutex() );
 	std::vector< std::pair< Size, Size > > outvec;
 	outvec.reserve( n_choices_by_node_index_.size() );
 	{   // Scope for mutex lock.
