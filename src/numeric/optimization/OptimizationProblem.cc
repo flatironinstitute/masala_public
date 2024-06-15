@@ -157,7 +157,7 @@ OptimizationProblem::class_namespace() const {
 void
 OptimizationProblem::reset() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    OptimizationProblem::protected_reset();
+    protected_reset();
 }
 
 /// @brief Finalize this problem: indicate that all problem setup is complete, and
@@ -166,7 +166,7 @@ OptimizationProblem::reset() {
 void
 OptimizationProblem::finalize() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    OptimizationProblem::protected_finalize();
+    protected_finalize();
 }
 
 /// @brief Has this problem been finalized?
@@ -174,7 +174,7 @@ OptimizationProblem::finalize() {
 bool
 OptimizationProblem::finalized() const {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    return OptimizationProblem::protected_finalized();
+    return protected_finalized();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

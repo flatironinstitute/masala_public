@@ -178,15 +178,6 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Reset all data in this object.
-	void
-	reset() override;
-
-	/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-	/// the object should now be locked for read only.
-	void
-	finalize() override;
-
 	/// @brief Set the (minimum) number of choices at a node.
     /// @details If the number of choices has already been set to greater than the
     /// specified number, this does nothing.
@@ -280,7 +271,6 @@ protected:
 	/// @details If the number of choices has already been set to greater than the
 	/// specified number, this does nothing.
 	/// @note This version assumes that the problem mutex has already been set.
-	virtual
 	void
 	set_minimum_number_of_choices_at_node_mutex_locked(
 		masala::base::Size const node_index,

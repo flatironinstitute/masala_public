@@ -239,21 +239,6 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Reset all data in this object.
-void
-CostFunctionNetworkOptimizationProblem::reset() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	CostFunctionNetworkOptimizationProblem::protected_reset();
-}
-
-/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-/// the object should now be locked for read only.
-void
-CostFunctionNetworkOptimizationProblem::finalize() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	CostFunctionNetworkOptimizationProblem::protected_finalize();
-}
-
 /// @brief Set the (minimum) number of choices at a node.
 /// @details If the number of choices has already been set to greater than the
 /// specified number, this does nothing.

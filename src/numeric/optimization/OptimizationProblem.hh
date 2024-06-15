@@ -125,18 +125,19 @@ public:
 	std::string class_namespace() const override;
 
 	/// @brief Reset all data in this object.
-	virtual
 	void
 	reset();
 
 	/// @brief Finalize this problem: indicate that all problem setup is complete, and
 	/// carry out any precomputation necessary for efficient solution.
 	/// @details Derived classes should probably override this.
-	virtual void finalize();
+	void
+	finalize();
 
 	/// @brief Has this problem been finalized?
 	/// @details Locks mutex for check.
-	bool finalized() const;
+	bool
+	finalized() const;
 
 public:
 
