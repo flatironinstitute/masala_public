@@ -205,6 +205,13 @@ public:
 		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
 	);
 
+	/// @brief Add a candidate solution.
+	/// @details Locks problem mutex; throws if the problem has already been finalized.
+	void
+	add_candidate_solution(
+		std::vector< masala::base::Size > const & candidate_solution_in
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +300,13 @@ protected:
 	void
 	add_cost_function_mutex_locked(
 		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & cost_function
+	);
+
+	/// @brief Add a candidate solution.
+	/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+	void
+	add_candidate_solution_mutex_locked(
+		std::vector< masala::base::Size > const & candidate_solution_in
 	);
 
 	/// @brief Access the number of choices by node index.

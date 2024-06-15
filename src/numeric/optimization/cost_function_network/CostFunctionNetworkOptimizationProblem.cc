@@ -283,6 +283,16 @@ CostFunctionNetworkOptimizationProblem::add_cost_function(
 	add_cost_function_mutex_locked( cost_function );
 }
 
+/// @brief Add a candidate solution.
+/// @details Locks problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_candidate_solution(
+	std::vector< masala::base::Size > const & candidate_solution_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	add_candidate_solution_mutex_locked( candidate_solution_in );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -508,6 +518,15 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				std::bind( &CostFunctionNetworkOptimizationProblem::add_cost_function, this, std::placeholders::_1 )
 			)
 		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::vector< masala::base::Size > const & > >(
+				"add_candidate_solution", "Add a candidate solution.  this may or may not be used as a starting point by a given solver.  This function "
+				"locks the problem mutex.  It throws if the problem has already been finalized.",
+				"candidate_solution_in", "The input candidate solution.  This should be a vector of zero-based choice indices, with one "
+				"index for each variable node in the problem.", false, false,
+				std::bind( &CostFunctionNetworkOptimizationProblem::add_candidate_solution, this, std::placeholders::_1 )
+			)
+		);
 
 		// Work functions:
 		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn_nonapprox(
@@ -626,6 +645,18 @@ CostFunctionNetworkOptimizationProblem::add_cost_function_mutex_locked(
 	cost_functions_.push_back( cost_function );
 }
 
+/// @brief Add a candidate solution.
+/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_candidate_solution_mutex_locked(
+	std::vector< masala::base::Size > const & candidate_solution_in
+) {
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_candidate_solution_mutex_locked",
+		"This object has already been finalized.  Cannot add a candidate solution at this point!"
+	);
+	candidate_starting_solutions_.push_back( candidate_solution_in );
+}
+
 /// @brief Access the number of choices by node index.
 /// @note This assumes that the problem mutex has already been set.
 std::map< masala::base::Size, masala::base::Size > &
@@ -696,6 +727,7 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	masala::numeric::optimization::OptimizationProblem::protected_finalize();
 
 	// Check the candidate solutions:
+	candidate_starting_solutions_.shrink_to_fit();
 	std::vector<std::pair<masala::base::Size, masala::base::Size>> const choices_at_var_nodes( protected_n_choices_at_variable_nodes() );
 	for( auto const & solution : candidate_starting_solutions_ ) {
 		CHECK_OR_THROW_FOR_CLASS( solution.size() == choices_at_var_nodes.size(), "protected_finalize", "Expected candidate solution "
