@@ -172,6 +172,16 @@ public:
 	masala::base::Real
 	total_combinatorial_solutions() const;
 
+	/// @brief Does this object have candidate starting solutions?  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	bool
+	has_candidate_starting_solutions() const;
+
+	/// @brief Get the optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	std::vector< std::vector< masala::base::Size > > const &
+	candidate_starting_solutions() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -361,6 +371,10 @@ private:
 
 	/// @brief A set of CostFunctions to impose.  The overall cost function is the sum of all of these.
 	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > cost_functions_;
+
+	/// @brief An optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	std::vector< std::vector< masala::base::Size > > candidate_starting_solutions_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 

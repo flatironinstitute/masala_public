@@ -235,6 +235,24 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 	return product;
 }
 
+/// @brief Does this object have candidate starting solutions?  These can be used as starting points for
+/// some optimizers, or can be ignored.
+bool
+CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "has_candidate_starting_solutions", "This object must be finalized before this function is called." );
+	return !candidate_starting_solutions_.empty();
+}
+
+/// @brief Get the optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+/// some optimizers, or can be ignored.
+std::vector< std::vector< masala::base::Size > > const &
+CostFunctionNetworkOptimizationProblem::candidate_starting_solutions() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "candidate_starting_solutions", "This object must be finalized before this function is called." );
+	return candidate_starting_solutions_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -422,6 +440,24 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				false, false,
 
 				std::bind( &CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"has_candidate_starting_solutions", "Does this cost function network optimization problem have "
+				"one or more candidate solutions defined?  These can be used as starting points for some optimizers, "
+				"or can be ignored.",
+				"has_candidate_starting_solutions", "True if there is at least one candidate starting solution, false otherwise.",
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< std::vector< masala::base::Size > > const & > >(
+				"candidate_starting_solutions", "Returns candidate starting solutions for this cost functoin network optimization problem.  "
+				"These can be used as starting points for some optimizers, or can be ignored.",
+				"candidate_starting_solutions", "A vector of vectors of candidate starting solutions for this problem, where the length of "
+				"each vector matches the number of variable positions and the entries are choice indices.",
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::candidate_starting_solutions, this )
 			)
 		);
 		api_def->add_getter(
