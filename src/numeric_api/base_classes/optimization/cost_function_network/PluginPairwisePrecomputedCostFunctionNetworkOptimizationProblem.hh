@@ -147,15 +147,6 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Reset all data in this object.
-	void
-	reset() override;
-
-	/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-	/// the object should now be locked for read only.
-	void
-	finalize() override;
-
 	/// @brief Add onebody penalty for a choice at a node.
 	/// @details Must be implemented by derived classes.
 	virtual

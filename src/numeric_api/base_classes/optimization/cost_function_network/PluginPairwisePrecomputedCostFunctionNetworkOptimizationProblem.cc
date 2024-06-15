@@ -147,21 +147,6 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_possibly_pr
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Reset all data in this object.
-void
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::reset() {
-    std::lock_guard< std::mutex > lock( problem_mutex() );
-    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset();
-}
-
-/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-/// the object should now be locked for read only.
-void
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::finalize() {
-    std::lock_guard< std::mutex > lock( problem_mutex() );
-    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
