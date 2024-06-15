@@ -152,6 +152,7 @@ CostFunctionNetworkOptimizationProblem::total_nodes() const {
 /// two choices associated with them.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
+	std::lock_guard< std::mutex >( problem_mutex() );
 	if( protected_finalized() ) {
 		return total_variable_nodes_;
 	}
@@ -189,6 +190,8 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 	using masala::base::Size;
+	std::lock_guard< std::mutex >( problem_mutex() );
+
 	if( protected_finalized() ) {
 		return n_choices_at_variable_nodes_;
 	}
@@ -494,7 +497,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
 				"been set for this node to a value greater than this, then this does nothing.",
 				false, false,
-				std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
+				std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 ) )
 		);
 		api_def->add_setter(
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > >(
@@ -561,17 +564,17 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		comp_score_change_fxn->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_score_change_fxn );
 
-        api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
-                "create_solutions_container", "Create a solutions container for this type of optimization problem.  "
+		api_def->add_work_function(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
+				"create_solutions_container", "Create a solutions container for this type of optimization problem.  "
 				"Base class implementation creates a generic OptimizationSolutions container.  This override creates a "
 				"CostFunctionNetworkOptimizationSolutions container.",
 				true, false, false, true,
 				"solutions_container", "An OptimizationSolutions object (or instance of a derived class thereof) for holding "
 				"solutions to this optimization problem.",
 				std::bind( &CostFunctionNetworkOptimizationProblem::create_solutions_container, this )
-            )
-        );
+			)
+		);
 
 		api_definition() = api_def; //Make const.
 	}
@@ -639,6 +642,7 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 	n_choices_by_node_index_.clear();
 	total_variable_nodes_ = 0;
 	n_choices_at_variable_nodes_.clear();
+	candidate_starting_solutions_.clear();
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
@@ -690,6 +694,22 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	}
 
 	masala::numeric::optimization::OptimizationProblem::protected_finalize();
+
+	// Check the candidate solutions:
+	std::vector<std::pair<masala::base::Size, masala::base::Size>> const choices_at_var_nodes( protected_n_choices_at_variable_nodes() );
+	for( auto const & solution : candidate_starting_solutions_ ) {
+		CHECK_OR_THROW_FOR_CLASS( solution.size() == choices_at_var_nodes.size(), "protected_finalize", "Expected candidate solution "
+			"vectors to have " + std::to_string( choices_at_var_nodes.size() ) + " entries (one per variable node), but got "
+			"a solution with " + std::to_string( solution.size() ) + " entries."
+		);
+		for( masala::base::Size i(0); i<solution.size(); ++i ) {
+			CHECK_OR_THROW_FOR_CLASS( solution[i] < choices_at_var_nodes[i].second, "protected_finalize", "Node "
+				+ std::to_string( choices_at_var_nodes[i].first ) + " has " + std::to_string( choices_at_var_nodes[i].second )
+				+ " choices associated with it, but got starting candidate choice " + std::to_string( solution[i] ) + " at this position."
+			);
+		}
+	}
+
 }
 
 /// @brief Access the total number of variable nodes, precomputed by finalize() and cached.
