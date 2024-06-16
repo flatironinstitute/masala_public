@@ -193,7 +193,6 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 	if( protected_finalized() ) {
 		return n_choices_at_variable_nodes_;
 	}
-	std::lock_guard< std::mutex > lock( problem_mutex() );
 	std::vector< std::pair< Size, Size > > outvec;
 	outvec.reserve( n_choices_by_node_index_.size() );
 	{   // Scope for mutex lock.
