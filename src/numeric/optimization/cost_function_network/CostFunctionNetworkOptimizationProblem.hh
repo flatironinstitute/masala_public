@@ -212,6 +212,10 @@ public:
 		std::vector< masala::base::Size > const & candidate_solution_in
 	);
 
+	/// @brief Remove all candidate solutions.
+	/// @details Locks problem mutex; throws if the problem has already been finalized.
+	void clear_candidate_solutions();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -308,6 +312,10 @@ protected:
 	add_candidate_solution_mutex_locked(
 		std::vector< masala::base::Size > const & candidate_solution_in
 	);
+
+	/// @brief Remove all candidate solutions.
+	/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+	void clear_candidate_solutions_mutex_locked();
 
 	/// @brief Access the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.

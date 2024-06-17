@@ -291,6 +291,13 @@ CostFunctionNetworkOptimizationProblem::add_candidate_solution(
 	add_candidate_solution_mutex_locked( candidate_solution_in );
 }
 
+/// @brief Remove all candidate solutions.
+void
+CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	clear_candidate_solutions_mutex_locked();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -525,6 +532,14 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				std::bind( &CostFunctionNetworkOptimizationProblem::add_candidate_solution, this, std::placeholders::_1 )
 			)
 		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+				"clear_candidate_solutions", "Remove all candidate solutions.  This function "
+				"locks the problem mutex.  It throws if the problem has already been finalized.",
+				false, false,
+				std::bind( &CostFunctionNetworkOptimizationProblem::clear_candidate_solutions, this )
+			)
+		);
 
 		// Work functions:
 		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn_nonapprox(
@@ -653,6 +668,16 @@ CostFunctionNetworkOptimizationProblem::add_candidate_solution_mutex_locked(
 		"This object has already been finalized.  Cannot add a candidate solution at this point!"
 	);
 	candidate_starting_solutions_.push_back( candidate_solution_in );
+}
+
+/// @brief Remove all candidate solutions.
+/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::clear_candidate_solutions_mutex_locked() {
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_candidate_solutions_mutex_locked",
+		"This object has already been finalized.  Cannot clear candidate solutions at this point!"
+	);
+	candidate_starting_solutions_.clear();
 }
 
 /// @brief Access the number of choices by node index.
