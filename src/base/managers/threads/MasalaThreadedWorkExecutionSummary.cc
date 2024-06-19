@@ -120,16 +120,17 @@ MasalaThreadedWorkExecutionSummary::set_njobs(
 /// given positive internal indices.
 void
 MasalaThreadedWorkExecutionSummary::set_assigned_threads(
-    std::vector< thread_pool::MasalaThreadSP > const & threads
+	masala::base::Size const current_thread,
+    std::vector< thread_pool::MasalaThreadSP > const & other_threads
 ) {
     CHECK_OR_THROW_FOR_CLASS( work_status_ == MasalaThreadedWorkStatus::WORK_IN_PROGRESS, "set_assigned_threads", "Cannot alter work status after work has completed." );
-    nthreads_actual_ = threads.size() + 1; // The parent thread is also an assigned thread.
-    assigned_thread_indices_.resize( threads.size() + 1 );
+    nthreads_actual_ = other_threads.size() + 1; // The parent thread is also an assigned thread.
+    assigned_thread_indices_.resize( other_threads.size() + 1 );
     execution_time_microseconds_individual_threads_.clear();
-    execution_time_microseconds_individual_threads_.resize( threads.size() + 1, 0.0 ); //Initialize times to zero.
-    assigned_thread_indices_[0] = MasalaThreadManager::get_instance()->get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
-    for( base::Size i(0), imax(threads.size()); i<imax; ++i ) {
-        assigned_thread_indices_[i+1] = threads[i]->thread_index();
+    execution_time_microseconds_individual_threads_.resize( other_threads.size() + 1, 0.0 ); //Initialize times to zero.
+    assigned_thread_indices_[0] = current_thread;
+    for( base::Size i(0), imax(other_threads.size()); i<imax; ++i ) {
+        assigned_thread_indices_[i+1] = other_threads[i]->thread_index();
     }
 } // MasalaThreadedWorkExecutionSummary::set_assigned_threads()
 

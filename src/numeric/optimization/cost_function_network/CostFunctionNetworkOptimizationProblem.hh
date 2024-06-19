@@ -80,12 +80,14 @@ public:
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationProblem() override = default;
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	masala::numeric::optimization::OptimizationProblemSP
+	clone() const override;
+
 	/// @brief Make a fully independent copy of this object.
 	CostFunctionNetworkOptimizationProblemSP
 	deep_clone() const;
-
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	void make_independent();
 
 public:
 
@@ -175,20 +177,21 @@ public:
 	masala::base::Real
 	total_combinatorial_solutions() const;
 
+	/// @brief Does this object have candidate starting solutions?  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	bool
+	has_candidate_starting_solutions() const;
+
+	/// @brief Get the optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	std::vector< std::vector< masala::base::Size > > const &
+	candidate_starting_solutions() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Reset all data in this object.
-	void
-	reset() override;
-
-	/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-	/// the object should now be locked for read only.
-	void
-	finalize() override;
 
 	/// @brief Set the (minimum) number of choices at a node.
     /// @details If the number of choices has already been set to greater than the
@@ -206,6 +209,17 @@ public:
 	add_cost_function(
 		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
 	);
+
+	/// @brief Add a candidate solution.
+	/// @details Locks problem mutex; throws if the problem has already been finalized.
+	void
+	add_candidate_solution(
+		std::vector< masala::base::Size > const & candidate_solution_in
+	);
+
+	/// @brief Remove all candidate solutions.
+	/// @details Locks problem mutex; throws if the problem has already been finalized.
+	void clear_candidate_solutions();
 
 public:
 
@@ -283,7 +297,6 @@ protected:
 	/// @details If the number of choices has already been set to greater than the
 	/// specified number, this does nothing.
 	/// @note This version assumes that the problem mutex has already been set.
-	virtual
 	void
 	set_minimum_number_of_choices_at_node_mutex_locked(
 		masala::base::Size const node_index,
@@ -297,6 +310,17 @@ protected:
 	add_cost_function_mutex_locked(
 		masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & cost_function
 	);
+
+	/// @brief Add a candidate solution.
+	/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+	void
+	add_candidate_solution_mutex_locked(
+		std::vector< masala::base::Size > const & candidate_solution_in
+	);
+
+	/// @brief Remove all candidate solutions.
+	/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+	void clear_candidate_solutions_mutex_locked();
 
 	/// @brief Access the number of choices by node index.
 	/// @note This assumes that the problem mutex has already been set.
@@ -313,6 +337,11 @@ protected:
 
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
+
+	/// @brief Make this object independent.
+	/// @details Assumes mutex was already locked.
+	/// @note Derived versions of this function should call the parent class version too.
+	virtual void protected_make_independent();
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
@@ -369,6 +398,10 @@ private:
 
 	/// @brief A set of CostFunctions to impose.  The overall cost function is the sum of all of these.
 	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > cost_functions_;
+
+	/// @brief An optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+	/// some optimizers, or can be ignored.
+	std::vector< std::vector< masala::base::Size > > candidate_starting_solutions_;
 
 }; // class CostFunctionNetworkOptimizationProblem
 

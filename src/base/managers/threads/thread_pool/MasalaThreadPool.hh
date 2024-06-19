@@ -189,6 +189,14 @@ private:
 // PRIVATE MEMBER FUNCTIONS:
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Given a system thread ID, return the index of the stored thread with that
+	/// system ID.  Throws if no such thread exists in the thread pool.
+	/// @details This version performs no mutex locking.
+	base::Size
+	get_thread_manager_thread_id_from_system_thread_id_mutexlocked(
+		std::thread::id const system_thread_id
+	) const;
+
 	/// @brief Increase the number of threads in the threadpool by N.
 	/// @details The thread_pool_mutex_ must be locked before calling this function!
 	void launch_threads_mutexlocked( base::Size const n_threads_to_launch );
