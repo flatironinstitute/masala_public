@@ -712,6 +712,10 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 /// @note Derived versions of this function should call the parent class version too.
 void
 CostFunctionNetworkOptimizationProblem::protected_make_independent() {
+	for( auto & cost_function : cost_functions_ ) {
+		cost_function::CostFunctionSP cf_copy( cost_function->deep_clone() );
+		cost_function = cf_copy;
+	}
 	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
