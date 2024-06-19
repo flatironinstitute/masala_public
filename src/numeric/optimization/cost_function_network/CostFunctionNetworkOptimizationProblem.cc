@@ -721,8 +721,6 @@ void
 CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	using masala::base::Size;
 
-	CHECK_OR_THROW_FOR_CLASS( total_variable_nodes_ == 0, "protected_finalize", "Program error: the total number of variable nodes was nonzero!" );
-	CHECK_OR_THROW_FOR_CLASS( n_choices_at_variable_nodes_.empty(), "protected_finalize", "Program error: expected the n_choices_at_variable_nodes_ vector to be empty, but it wasn't!" );
 	n_choices_at_variable_nodes_.reserve( n_choices_by_node_index_.size() );
 	for( auto const choices : n_choices_by_node_index_ ) {
 		if( choices.second > 1 ) {
