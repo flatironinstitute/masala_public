@@ -68,7 +68,7 @@ OptimizationProblem::operator=(
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
         std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
-        finalized_ = src.finalized_.load();
+        //finalized_ = src.finalized_.load(); // Don't copy finalization state.
     }
     return *this;
 }
