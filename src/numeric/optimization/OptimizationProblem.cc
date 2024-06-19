@@ -77,7 +77,6 @@ OptimizationProblem::operator=(
 /// @details Does NOT copy all the internal data, but retains pointers to existing data.
 OptimizationProblemSP
 OptimizationProblem::clone() const {
-    std::lock_guard< std::mutex > lock( problem_mutex_ );
 	return masala::make_shared< OptimizationProblem >( *this );
 }
 

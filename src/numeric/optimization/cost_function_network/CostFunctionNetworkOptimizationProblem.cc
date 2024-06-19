@@ -60,7 +60,6 @@ namespace cost_function_network {
 /// @details Does NOT copy all the internal data, but retains pointers to existing data.
 masala::numeric::optimization::OptimizationProblemSP
 CostFunctionNetworkOptimizationProblem::clone() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
 	return masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this );
 }
 
