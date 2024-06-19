@@ -334,7 +334,7 @@ CostFunction::assign_mutex_locked(
     CostFunction const & src
 ) {
     masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
-    finalized_ = src.finalized_.load();
+    //finalized_ = src.finalized_.load(); // Do not copy finalization state.
     api_definition_ = nullptr; // Deliberately not assigned.
     weight_ = src.weight_;
 }
