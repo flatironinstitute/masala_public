@@ -73,10 +73,18 @@ OptimizationProblem::operator=(
     return *this;
 }
 
+/// @brief Make a copy of this object, and return a shared pointer to the copy.
+/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+OptimizationProblemSP
+OptimizationProblem::clone() const {
+    std::lock_guard< std::mutex > lock( problem_mutex_ );
+	return masala::make_shared< OptimizationProblem >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 OptimizationProblemSP
 OptimizationProblem::deep_clone() const {
-    OptimizationProblemSP new_object( masala::make_shared< OptimizationProblem >( *this ) );
+    OptimizationProblemSP new_object( clone() );
     new_object->make_independent();
     return new_object;
 }

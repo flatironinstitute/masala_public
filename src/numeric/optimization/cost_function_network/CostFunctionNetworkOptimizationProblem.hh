@@ -80,6 +80,11 @@ public:
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationProblem() override = default;
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	masala::numeric::optimization::OptimizationProblemSP
+	clone() const override;
+
 	/// @brief Make a fully independent copy of this object.
 	CostFunctionNetworkOptimizationProblemSP
 	deep_clone() const;

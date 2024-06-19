@@ -56,6 +56,14 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Make a copy of this object, and return a shared pointer to the copy.
+/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+masala::numeric::optimization::OptimizationProblemSP
+CostFunctionNetworkOptimizationProblem::clone() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	return masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationProblemSP
 CostFunctionNetworkOptimizationProblem::deep_clone() const {

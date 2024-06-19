@@ -68,6 +68,12 @@ public:
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	virtual
+	OptimizationProblemSP
+	clone() const;
+
 	/// @brief Make a fully independent copy of this object.
 	OptimizationProblemSP
 	deep_clone() const;
