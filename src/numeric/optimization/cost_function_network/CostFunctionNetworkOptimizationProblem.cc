@@ -725,6 +725,7 @@ void
 CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	using masala::base::Size;
 
+	n_choices_at_variable_nodes_.clear();
 	n_choices_at_variable_nodes_.reserve( n_choices_by_node_index_.size() );
 	for( auto const choices : n_choices_by_node_index_ ) {
 		if( choices.second > 1 ) {
