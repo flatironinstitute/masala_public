@@ -67,7 +67,7 @@ CostFunctionNetworkOptimizationProblem::clone() const {
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationProblemSP
 CostFunctionNetworkOptimizationProblem::deep_clone() const {
-	CostFunctionNetworkOptimizationProblemSP new_problem( masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this ) );
+	CostFunctionNetworkOptimizationProblemSP new_problem( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem >( clone() ) );
 	new_problem->make_independent();
 	return new_problem;
 }
