@@ -68,6 +68,12 @@ public:
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	virtual
+	OptimizationProblemSP
+	clone() const;
+
 	/// @brief Make a fully independent copy of this object.
 	OptimizationProblemSP
 	deep_clone() const;
@@ -125,18 +131,19 @@ public:
 	std::string class_namespace() const override;
 
 	/// @brief Reset all data in this object.
-	virtual
 	void
 	reset();
 
 	/// @brief Finalize this problem: indicate that all problem setup is complete, and
 	/// carry out any precomputation necessary for efficient solution.
 	/// @details Derived classes should probably override this.
-	virtual void finalize();
+	void
+	finalize();
 
 	/// @brief Has this problem been finalized?
 	/// @details Locks mutex for check.
-	bool finalized() const;
+	bool
+	finalized() const;
 
 public:
 
@@ -186,6 +193,11 @@ protected:
 	/// @brief Reset all data in this object.
 	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
 	virtual void protected_reset();
+
+	/// @brief Make this object independent.
+	/// @details Assumes mutex was already locked.
+	/// @note Derived versions of this function should call the parent class version too.
+	virtual void protected_make_independent();
 
 
 private:

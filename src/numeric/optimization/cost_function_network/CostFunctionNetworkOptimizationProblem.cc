@@ -56,19 +56,19 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Make a copy of this object, and return a shared pointer to the copy.
+/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+masala::numeric::optimization::OptimizationProblemSP
+CostFunctionNetworkOptimizationProblem::clone() const {
+	return masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this );
+}
+
 /// @brief Make a fully independent copy of this object.
 CostFunctionNetworkOptimizationProblemSP
 CostFunctionNetworkOptimizationProblem::deep_clone() const {
-	CostFunctionNetworkOptimizationProblemSP new_problem( masala::make_shared< CostFunctionNetworkOptimizationProblem >( *this ) );
+	CostFunctionNetworkOptimizationProblemSP new_problem( std::static_pointer_cast< CostFunctionNetworkOptimizationProblem >( clone() ) );
 	new_problem->make_independent();
 	return new_problem;
-}
-
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-CostFunctionNetworkOptimizationProblem::make_independent() {
-	masala::numeric::optimization::OptimizationProblem::make_independent();
-	//GNDN
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +196,7 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes() const {
 std::vector< std::pair< masala::base::Size, masala::base::Size > >
 CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 	using masala::base::Size;
+
 	if( protected_finalized() ) {
 		return n_choices_at_variable_nodes_;
 	}
@@ -242,24 +243,27 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 	return product;
 }
 
+/// @brief Does this object have candidate starting solutions?  These can be used as starting points for
+/// some optimizers, or can be ignored.
+bool
+CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "has_candidate_starting_solutions", "This object must be finalized before this function is called." );
+	return !candidate_starting_solutions_.empty();
+}
+
+/// @brief Get the optional vector of vectors of solutions to this CFN problem.  These can be used as starting points for
+/// some optimizers, or can be ignored.
+std::vector< std::vector< masala::base::Size > > const &
+CostFunctionNetworkOptimizationProblem::candidate_starting_solutions() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "candidate_starting_solutions", "This object must be finalized before this function is called." );
+	return candidate_starting_solutions_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Reset all data in this object.
-void
-CostFunctionNetworkOptimizationProblem::reset() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	CostFunctionNetworkOptimizationProblem::protected_reset();
-}
-
-/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-/// the object should now be locked for read only.
-void
-CostFunctionNetworkOptimizationProblem::finalize() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	CostFunctionNetworkOptimizationProblem::protected_finalize();
-}
 
 /// @brief Set the (minimum) number of choices at a node.
 /// @details If the number of choices has already been set to greater than the
@@ -282,6 +286,23 @@ CostFunctionNetworkOptimizationProblem::add_cost_function(
 ) {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	add_cost_function_mutex_locked( cost_function );
+}
+
+/// @brief Add a candidate solution.
+/// @details Locks problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_candidate_solution(
+	std::vector< masala::base::Size > const & candidate_solution_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	add_candidate_solution_mutex_locked( candidate_solution_in );
+}
+
+/// @brief Remove all candidate solutions.
+void
+CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	clear_candidate_solutions_mutex_locked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -448,6 +469,24 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 		api_def->add_getter(
 			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"has_candidate_starting_solutions", "Does this cost function network optimization problem have "
+				"one or more candidate solutions defined?  These can be used as starting points for some optimizers, "
+				"or can be ignored.",
+				"has_candidate_starting_solutions", "True if there is at least one candidate starting solution, false otherwise.",
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< std::vector< masala::base::Size > > const & > >(
+				"candidate_starting_solutions", "Returns candidate starting solutions for this cost functoin network optimization problem.  "
+				"These can be used as starting points for some optimizers, or can be ignored.",
+				"candidate_starting_solutions", "A vector of vectors of candidate starting solutions for this problem, where the length of "
+				"each vector matches the number of variable positions and the entries are choice indices.",
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::candidate_starting_solutions, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
 				"finalized", "Has this problem description been finalized?  That is, is the problem setup "
 				"complete and the object locked to now be read-only?",
 				"finalized", "True if the object has been finalized, false otherwise.",
@@ -461,7 +500,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
 				"reset", "Completely reset the problem description, deleting all choices for each node.  "
 				"Also resets finalization state.",
-				false, true,
+				false, false,
 				std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
 			)
 		);
@@ -469,7 +508,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
 				"finalize", "Finalize this object completely -- i.e. indicate that all problem setup is complete, and "
 				"the object should now be read-only.  May be overridden by derived classes.",
-				false, true, std::bind( &CostFunctionNetworkOptimizationProblem::finalize, this )
+				false, false, std::bind( &CostFunctionNetworkOptimizationProblem::finalize, this )
 			)
 		);
 		api_def->add_setter(
@@ -480,7 +519,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"min_choice_count", "The minimum number of choices at this node.  If the number of choices has already "
 				"been set for this node to a value greater than this, then this does nothing.",
 				false, false,
-				std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 )            )
+				std::bind( &CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node, this, std::placeholders::_1, std::placeholders::_2 ) )
 		);
 		api_def->add_setter(
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP > >(
@@ -489,6 +528,23 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"The CostFunctionNetworkOptimizationProblem takes ownership and manages the state of the cost function, "
 				"including its finalization.", false, false,
 				std::bind( &CostFunctionNetworkOptimizationProblem::add_cost_function, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< std::vector< masala::base::Size > const & > >(
+				"add_candidate_solution", "Add a candidate solution.  This may or may not be used as a starting point by a given solver.  This function "
+				"locks the problem mutex.  It throws if the problem has already been finalized.",
+				"candidate_solution_in", "The input candidate solution.  This should be a vector of zero-based choice indices, with one "
+				"index for each variable node in the problem.", false, false,
+				std::bind( &CostFunctionNetworkOptimizationProblem::add_candidate_solution, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+				"clear_candidate_solutions", "Remove all candidate solutions.  This function "
+				"locks the problem mutex.  It throws if the problem has already been finalized.",
+				false, false,
+				std::bind( &CostFunctionNetworkOptimizationProblem::clear_candidate_solutions, this )
 			)
 		);
 
@@ -547,17 +603,17 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		comp_score_change_fxn->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_score_change_fxn );
 
-        api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
-                "create_solutions_container", "Create a solutions container for this type of optimization problem.  "
+		api_def->add_work_function(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
+				"create_solutions_container", "Create a solutions container for this type of optimization problem.  "
 				"Base class implementation creates a generic OptimizationSolutions container.  This override creates a "
 				"CostFunctionNetworkOptimizationSolutions container.",
 				true, false, false, true,
 				"solutions_container", "An OptimizationSolutions object (or instance of a derived class thereof) for holding "
 				"solutions to this optimization problem.",
 				std::bind( &CostFunctionNetworkOptimizationProblem::create_solutions_container, this )
-            )
-        );
+			)
+		);
 
 		api_definition() = api_def; //Make const.
 	}
@@ -609,6 +665,28 @@ CostFunctionNetworkOptimizationProblem::add_cost_function_mutex_locked(
 	cost_functions_.push_back( cost_function );
 }
 
+/// @brief Add a candidate solution.
+/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::add_candidate_solution_mutex_locked(
+	std::vector< masala::base::Size > const & candidate_solution_in
+) {
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_candidate_solution_mutex_locked",
+		"This object has already been finalized.  Cannot add a candidate solution at this point!"
+	);
+	candidate_starting_solutions_.push_back( candidate_solution_in );
+}
+
+/// @brief Remove all candidate solutions.
+/// @details Does not lock problem mutex; throws if the problem has already been finalized.
+void
+CostFunctionNetworkOptimizationProblem::clear_candidate_solutions_mutex_locked() {
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_candidate_solutions_mutex_locked",
+		"This object has already been finalized.  Cannot clear candidate solutions at this point!"
+	);
+	candidate_starting_solutions_.clear();
+}
+
 /// @brief Access the number of choices by node index.
 /// @note This assumes that the problem mutex has already been set.
 std::map< masala::base::Size, masala::base::Size > &
@@ -625,7 +703,20 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 	n_choices_by_node_index_.clear();
 	total_variable_nodes_ = 0;
 	n_choices_at_variable_nodes_.clear();
+	candidate_starting_solutions_.clear();
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
+}
+
+/// @brief Make this object independent.
+/// @details Assumes mutex was already locked.
+/// @note Derived versions of this function should call the parent class version too.
+void
+CostFunctionNetworkOptimizationProblem::protected_make_independent() {
+	for( auto & cost_function : cost_functions_ ) {
+		cost_function::CostFunctionSP cf_copy( cost_function->deep_clone() );
+		cost_function = cf_copy;
+	}
+	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
@@ -634,8 +725,8 @@ void
 CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	using masala::base::Size;
 
-	CHECK_OR_THROW_FOR_CLASS( total_variable_nodes_ == 0, "protected_finalize", "Program error: the total number of variable nodes was nonzero!" );
-	CHECK_OR_THROW_FOR_CLASS( n_choices_at_variable_nodes_.empty(), "protected_finalize", "Program error: expected the n_choices_at_variable_nodes_ vector to be empty, but it wasn't!" );
+	n_choices_at_variable_nodes_.clear();
+	total_variable_nodes_ = 0;
 	n_choices_at_variable_nodes_.reserve( n_choices_by_node_index_.size() );
 	for( auto const choices : n_choices_by_node_index_ ) {
 		if( choices.second > 1 ) {
@@ -668,6 +759,23 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 	}
 
 	masala::numeric::optimization::OptimizationProblem::protected_finalize();
+
+	// Check the candidate solutions:
+	candidate_starting_solutions_.shrink_to_fit();
+	std::vector<std::pair<masala::base::Size, masala::base::Size>> const choices_at_var_nodes( protected_n_choices_at_variable_nodes() );
+	for( auto const & solution : candidate_starting_solutions_ ) {
+		CHECK_OR_THROW_FOR_CLASS( solution.size() == choices_at_var_nodes.size(), "protected_finalize", "Expected candidate solution "
+			"vectors to have " + std::to_string( choices_at_var_nodes.size() ) + " entries (one per variable node), but got "
+			"a solution with " + std::to_string( solution.size() ) + " entries."
+		);
+		for( masala::base::Size i(0); i<solution.size(); ++i ) {
+			CHECK_OR_THROW_FOR_CLASS( solution[i] < choices_at_var_nodes[i].second, "protected_finalize", "Node "
+				+ std::to_string( choices_at_var_nodes[i].first ) + " has " + std::to_string( choices_at_var_nodes[i].second )
+				+ " choices associated with it, but got starting candidate choice " + std::to_string( solution[i] ) + " at this position."
+			);
+		}
+	}
+
 }
 
 /// @brief Access the total number of variable nodes, precomputed by finalize() and cached.

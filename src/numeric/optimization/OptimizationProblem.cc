@@ -54,8 +54,8 @@ OptimizationProblem::OptimizationProblem(
 ) :
     masala::base::managers::engine::MasalaDataRepresentation(src)
 {
-    std::lock_guard< std::mutex > lock( src.problem_mutex_ );
-    finalized_ = src.finalized_.load();
+    // std::lock_guard< std::mutex > lock( src.problem_mutex_ );
+    finalized_.store(false);
 }
 
 /// @brief Assignment operator.
@@ -68,15 +68,22 @@ OptimizationProblem::operator=(
         std::lock( problem_mutex_, src.problem_mutex_ );
         std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
         std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
-        finalized_ = src.finalized_.load();
+        //finalized_ = src.finalized_.load(); // Don't copy finalization state.
     }
     return *this;
+}
+
+/// @brief Make a copy of this object, and return a shared pointer to the copy.
+/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+OptimizationProblemSP
+OptimizationProblem::clone() const {
+	return masala::make_shared< OptimizationProblem >( *this );
 }
 
 /// @brief Make a fully independent copy of this object.
 OptimizationProblemSP
 OptimizationProblem::deep_clone() const {
-    OptimizationProblemSP new_object( masala::make_shared< OptimizationProblem >( *this ) );
+    OptimizationProblemSP new_object( clone() );
     new_object->make_independent();
     return new_object;
 }
@@ -85,7 +92,7 @@ OptimizationProblem::deep_clone() const {
 void
 OptimizationProblem::make_independent() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    api_definition_ = nullptr;
+    protected_make_independent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +164,7 @@ OptimizationProblem::class_namespace() const {
 void
 OptimizationProblem::reset() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    OptimizationProblem::protected_reset();
+    protected_reset();
 }
 
 /// @brief Finalize this problem: indicate that all problem setup is complete, and
@@ -166,7 +173,7 @@ OptimizationProblem::reset() {
 void
 OptimizationProblem::finalize() {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    OptimizationProblem::protected_finalize();
+    protected_finalize();
 }
 
 /// @brief Has this problem been finalized?
@@ -174,7 +181,7 @@ OptimizationProblem::finalize() {
 bool
 OptimizationProblem::finalized() const {
     std::lock_guard< std::mutex > lock( problem_mutex_ );
-    return OptimizationProblem::protected_finalized();
+    return protected_finalized();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -296,6 +303,14 @@ OptimizationProblem::protected_finalize() {
 void
 OptimizationProblem::protected_reset() {
     finalized_ = false;
+}
+
+/// @brief Make this object independent.
+/// @details Assumes mutex was already locked.
+/// @note Derived versions of this function should call the parent class version too.
+void
+OptimizationProblem::protected_make_independent() {
+	api_definition_ = nullptr;
 }
 
 } // namespace optimization

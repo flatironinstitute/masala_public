@@ -80,6 +80,12 @@ public:
 	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	void make_independent();
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	/// @note Must be implemented by all derived classes.
+	masala::numeric::optimization::OptimizationProblemSP
+	clone() const override = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,15 +152,6 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Reset all data in this object.
-	void
-	reset() override;
-
-	/// @brief Finalize problem setup: indicate that all problem setup is complete, and that
-	/// the object should now be locked for read only.
-	void
-	finalize() override;
 
 	/// @brief Add onebody penalty for a choice at a node.
 	/// @details Must be implemented by derived classes.

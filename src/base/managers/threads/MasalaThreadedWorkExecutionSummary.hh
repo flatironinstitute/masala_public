@@ -118,7 +118,11 @@ public:
 	/// @note It is assumed that the thread which calls this function is the parent thread that
 	/// has been assigned to the job.  It is set as thread zero, and the rest of the threads are
 	/// given positive internal indices.
-	void set_assigned_threads( std::vector< thread_pool::MasalaThreadSP > const & threads );
+	void
+	set_assigned_threads(
+		masala::base::Size const current_thread,
+		std::vector< thread_pool::MasalaThreadSP > const & other_threads
+	);
 
 	/// @brief Given the index of a thread manager thread, get the index in the set of threads
 	/// assigned to this task.

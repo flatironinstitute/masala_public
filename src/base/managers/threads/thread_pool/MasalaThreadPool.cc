@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/threads/MasalaThreadedWorkExecutionSummary.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
 #include <base/managers/threads/thread_pool/MasalaThread.hh>
 
 // STL headers
@@ -247,7 +248,8 @@ MasalaThreadPool::execute_function_in_threads(
             );
         }
 
-        summary.set_assigned_threads( assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
+		Size const current_thread( get_thread_manager_thread_id_from_system_thread_id_mutexlocked( std::this_thread::get_id() ) );
+		summary.set_assigned_threads( current_thread, assigned_threads ); // Needed even if assigned threads is empty, since information about this thread is stored.
 
         // At this point, it is safe to begin exection of the work in threads.
         if( !assigned_threads.empty() ) {
@@ -336,6 +338,24 @@ MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id(
     std::thread::id const system_thread_id
 ) const {
     std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+    return get_thread_manager_thread_id_from_system_thread_id_mutexlocked( system_thread_id );
+} // MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id()
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS:
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given a system thread ID, return the index of the stored thread with that
+/// system ID.  Throws if no such thread exists in the thread pool.
+/// @details This version performs no mutex locking.
+base::Size
+MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id_mutexlocked(
+    std::thread::id const system_thread_id
+) const {
+	if( system_thread_id == masala::base::managers::threads::MasalaThreadManager::get_instance()->get_system_thread_id_of_master_thread() ) {
+		return 0;
+	}
+
     for( auto const & thread : threads_ ) {
         if( thread->system_thread_id() == system_thread_id ) {
             return thread->thread_index();
@@ -345,15 +365,11 @@ MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id(
     std::ostringstream ss;
     ss << system_thread_id;
     MASALA_THROW(
-        class_namespace_and_name(), "get_thread_manager_thread_id_from_system_thread_id",
+        class_namespace_and_name(), "get_thread_manager_thread_id_from_system_thread_id_mutexlocked",
         "The system thread with ID " + ss.str() + " is not contained in the thread pool."
     );
     return 0; // Keep older compilers happy.
-} // MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id()
-
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE MEMBER FUNCTIONS:
-////////////////////////////////////////////////////////////////////////////////
+} // MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id_mutexlocked()
 
 /// @brief Increase the number of threads in the threadpool by N.
 /// @details The thread_pool_mutex_ must be locked before calling this function!
