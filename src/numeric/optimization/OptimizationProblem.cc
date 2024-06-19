@@ -54,8 +54,8 @@ OptimizationProblem::OptimizationProblem(
 ) :
     masala::base::managers::engine::MasalaDataRepresentation(src)
 {
-    std::lock_guard< std::mutex > lock( src.problem_mutex_ );
-    finalized_ = src.finalized_.load();
+    // std::lock_guard< std::mutex > lock( src.problem_mutex_ );
+    finalized_.store(false);
 }
 
 /// @brief Assignment operator.
