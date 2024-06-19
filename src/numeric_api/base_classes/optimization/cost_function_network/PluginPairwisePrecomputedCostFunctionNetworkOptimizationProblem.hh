@@ -80,6 +80,12 @@ public:
 	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
 	void make_independent();
 
+	/// @brief Make a copy of this object, and return a shared pointer to the copy.
+	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
+	/// @note Must be implemented by all derived classes.
+	masala::numeric::optimization::OptimizationProblemSP
+	clone() const override = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
