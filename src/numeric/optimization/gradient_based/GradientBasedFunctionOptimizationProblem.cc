@@ -168,9 +168,9 @@ GradientBasedFunctionOptimizationProblem::get_api_definition() {
 		MasalaObjectAPIDefinitionSP api_def(
 			masala::make_shared< MasalaObjectAPIDefinition >(
 				*this,
-				"The GradientBasedFunctionOptimizationProblem class defines a numerical minimization problem "
-				"for an arbitrary loss function, where the solution will be found by some sort of gradient descent "
-				"algorithm.",
+				"The GradientBasedFunctionOptimizationProblem class defines a numerical minimization "
+				"problem for an arbitrary loss function, where the solution will be found by some sort "
+				"of gradient descent algorithm.",
 				false, false
 			)
 		);
