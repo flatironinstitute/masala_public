@@ -177,7 +177,7 @@ GradientBasedFunctionOptimizer::api_definition() {
 /// @details Performs no mutex locking.
 void
 GradientBasedFunctionOptimizer::protected_assign(
-	GradientBasedFunctionOptimizer const & src
+	GradientBasedFunctionOptimizer const & /*src*/
 ) {
 	// GNDN.
 }
