@@ -46,6 +46,40 @@ namespace base_classes {
 namespace optimization {
 namespace gradient_based {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.  Explicit due to mutex.
+GradientBasedFunctionOptimizer::GradientBasedFunctionOptimizer(
+	GradientBasedFunctionOptimizer const & src
+) :
+	masala::numeric_api::base_classes::optimization::Optimizer( src )
+{
+	std::lock( mutex_, src.mutex_ );
+	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+	protected_assign( src );
+}
+
+/// @brief Assignment operator.  Explicit due to mutex.
+GradientBasedFunctionOptimizer &
+GradientBasedFunctionOptimizer::operator=(
+	GradientBasedFunctionOptimizer const & src
+) {
+	std::lock( mutex_, src.mutex_ );
+	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+	protected_assign( src );
+	return *this;
+}
+
+/// @brief Make this object independent by calling deep_clone on all contained objects.
+void
+GradientBasedFunctionOptimizer::make_independent() {
+	std::lock_guard< std::mutex > lock( mutex_ );
+	protected_make_independent();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -119,6 +153,33 @@ GradientBasedFunctionOptimizer::run_optimizer(
     }
 
     return outvec2;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Access the mutex from derived classes.
+std::mutex &
+GradientBasedFunctionOptimizer::mutex() const {
+	return mutex_;
+}
+
+/// @brief Assignment: must be implemented by derived classes, which must call the base
+/// class protected_assign().
+void
+GradientBasedFunctionOptimizer::protected_assign(
+	GradientBasedFunctionOptimizer const & src
+) {
+	// GNDN.
+}
+
+
+/// @brief Make independent: must be implemented by derived classes, which must call the base
+/// class protected_make_independent().
+void
+GradientBasedFunctionOptimizer::protected_make_independent() {
+	// GNDN.
 }
 
 } // namespace gradient_based

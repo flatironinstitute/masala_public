@@ -34,9 +34,11 @@
 #include <numeric_api/auto_generated_api/optimization/gradient_based/GradientBasedFunctionOptimizationProblems_API.fwd.hh>
 #include <numeric_api/auto_generated_api/optimization/gradient_based/GradientBasedFunctionOptimizationSolutions_API.fwd.hh>
 
-
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
+
+// STL headers:
+#include <mutex>
 
 namespace masala {
 namespace numeric_api {
@@ -54,14 +56,36 @@ class GradientBasedFunctionOptimizer : public masala::numeric_api::base_classes:
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	GradientBasedFunctionOptimizer() = default;
 
-	/// @brief Copy constructor.
-	GradientBasedFunctionOptimizer( GradientBasedFunctionOptimizer const & ) = default;
+	/// @brief Copy constructor.  Explicit due to mutex.
+	GradientBasedFunctionOptimizer( GradientBasedFunctionOptimizer const & src);
+
+	/// @brief Assignment operator.  Explicit due to mutex.
+	GradientBasedFunctionOptimizer & operator=( GradientBasedFunctionOptimizer const & src );
 
 	/// @brief Destructor.
 	~GradientBasedFunctionOptimizer() override = default;
+
+	/// @brief Clone operation: copy this object and return a shared pointer to the
+	/// copy.  Contained objects may still be shared.
+	virtual
+	GradientBasedFunctionOptimizerSP
+	clone() const = 0;
+
+	/// @brief Deep clone operation: copy this object and return a shared pointer to the
+	/// copy, making sure that all contained objects are also copied.
+	virtual
+	GradientBasedFunctionOptimizerSP
+	deep_clone() const = 0;
+
+	/// @brief Make this object independent by calling deep_clone on all contained objects.
+	void make_independent();
 
 public:
 
@@ -115,6 +139,38 @@ public:
 	run_gradient_based_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::gradient_based::GradientBasedFunctionOptimizationProblems_API const & problems
 	) const = 0;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Access the mutex from derived classes.
+	std::mutex & mutex() const;
+
+	/// @brief Assignment: must be implemented by derived classes, which must call the base
+	/// class protected_assign().
+	virtual
+	void
+	protected_assign(
+		GradientBasedFunctionOptimizer const & src
+	);
+
+	/// @brief Make independent: must be implemented by derived classes, which must call the base
+	/// class protected_make_independent().
+	virtual
+	void
+	protected_make_independent();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex to lock this object.
+	mutable std::mutex mutex_;
 
 }; // class GradientBasedFunctionOptimizer
 
