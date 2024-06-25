@@ -149,8 +149,13 @@ protected:
 	/// @brief Access the mutex from derived classes.
 	std::mutex & mutex() const;
 
+	/// @brief Allow derived classes to access the API definition.
+	/// @note Could be nullptr.  Performs no mutex locking.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
 	/// @brief Assignment: must be implemented by derived classes, which must call the base
 	/// class protected_assign().
+	/// @details Performs no mutex locking.
 	virtual
 	void
 	protected_assign(
@@ -159,6 +164,7 @@ protected:
 
 	/// @brief Make independent: must be implemented by derived classes, which must call the base
 	/// class protected_make_independent().
+	/// @details Performs no mutex locking.
 	virtual
 	void
 	protected_make_independent();
@@ -171,6 +177,9 @@ public:
 
 	/// @brief A mutex to lock this object.
 	mutable std::mutex mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class GradientBasedFunctionOptimizer
 

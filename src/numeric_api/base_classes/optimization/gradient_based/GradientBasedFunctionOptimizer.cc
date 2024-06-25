@@ -165,8 +165,16 @@ GradientBasedFunctionOptimizer::mutex() const {
 	return mutex_;
 }
 
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.  Performs no mutex locking.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+GradientBasedFunctionOptimizer::api_definition() {
+	return api_definition_;
+}
+
 /// @brief Assignment: must be implemented by derived classes, which must call the base
 /// class protected_assign().
+/// @details Performs no mutex locking.
 void
 GradientBasedFunctionOptimizer::protected_assign(
 	GradientBasedFunctionOptimizer const & src
@@ -177,6 +185,7 @@ GradientBasedFunctionOptimizer::protected_assign(
 
 /// @brief Make independent: must be implemented by derived classes, which must call the base
 /// class protected_make_independent().
+/// @details Performs no mutex locking.
 void
 GradientBasedFunctionOptimizer::protected_make_independent() {
 	// GNDN.
