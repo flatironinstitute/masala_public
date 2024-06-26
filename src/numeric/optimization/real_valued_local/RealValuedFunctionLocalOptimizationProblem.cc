@@ -201,6 +201,17 @@ RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
 	objective_function_gradient_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) >( objective_fxn_gradient_in );
 }
 
+/// @brief Clear the objective function.
+void
+RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_objective_function_gradient", "Cannot unset objective function gradient after the " + class_name() + " object has been finalized." );
+	if( objective_function_gradient_ != nullptr ) {
+		delete objective_function_gradient_;
+	}
+	objective_function_gradient_ = nullptr;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////

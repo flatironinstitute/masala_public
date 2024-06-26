@@ -159,6 +159,10 @@ public:
 		std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & objective_fxn_gradient_in
 	);
 
+	/// @brief Clear the objective function gradient.
+	void
+	clear_objective_function_gradient();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
