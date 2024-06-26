@@ -97,11 +97,12 @@ RealValuedFunctionLocalOptimizationSolutions::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization solutions; may be overridden by derived classes.
-/// @returns { "real_valued_local_optimization_solutions", "optimization_solutions", "numeric" }
+/// @returns { "local", "real_valued", "optimization_solutions", "numeric" }
 std::vector< std::string >
 RealValuedFunctionLocalOptimizationSolutions::get_keywords() const {
 	std::vector< std::string > outvec( masala::numeric::optimization::OptimizationSolutions::get_keywords() );
-    outvec.push_back( "real_valued_local_optimization_solutions" );
+    outvec.push_back( "local" );
+    outvec.push_back( "real_valued" );
     return outvec;
 }
 

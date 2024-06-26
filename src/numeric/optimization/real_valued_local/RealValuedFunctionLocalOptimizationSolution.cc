@@ -93,12 +93,13 @@ RealValuedFunctionLocalOptimizationSolution::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization solutions; may be overridden by derived classes.
-/// @returns { "optimization_solution", "real_valued_local_optimization_solution", "numeric" }
+/// @returns { "optimization_solution", "local", "real_valued", "numeric" }
 std::vector< std::string >
 RealValuedFunctionLocalOptimizationSolution::get_keywords() const {
 	return std::vector< std::string > {
 		"optimization_solution",
-        "real_valued_local_optimization_solution",
+        "local",
+		"real_valued",
 		"numeric"
 	};
 }
