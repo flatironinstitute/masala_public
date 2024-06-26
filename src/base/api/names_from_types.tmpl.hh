@@ -42,6 +42,7 @@
 #include <set>
 #include <tuple>
 #include <map>
+#include <functional>
 #include <unordered_map>
 
 namespace masala {
@@ -406,6 +407,20 @@ namespace api {
     std::string
     name_from_type( type< std::unordered_map< T1, T2, T3 > const > ) {
         return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " > const";
+    }
+
+	/// @brief Manually override for functions.
+    template<class T>
+    std::string
+    name_from_type( type<std::function< T >> ) {
+        return "std::function< " + name_from_type( type<T>() ) + " >";
+    }
+
+    /// @brief Manually override for const functions.
+    template<class T>
+    std::string
+    name_from_type( type<std::function< T > const> ) {
+        return "std::function< " + name_from_type( type<T>() ) + " > const";
     }
 
     /// @brief Manually override for vectors.
