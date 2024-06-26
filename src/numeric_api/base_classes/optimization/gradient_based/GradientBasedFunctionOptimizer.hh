@@ -78,12 +78,6 @@ public:
 	GradientBasedFunctionOptimizerSP
 	clone() const = 0;
 
-	/// @brief Deep clone operation: copy this object and return a shared pointer to the
-	/// copy, making sure that all contained objects are also copied.
-	virtual
-	GradientBasedFunctionOptimizerSP
-	deep_clone() const = 0;
-
 	/// @brief Make this object independent by calling deep_clone on all contained objects.
 	void make_independent();
 
