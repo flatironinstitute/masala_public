@@ -350,6 +350,13 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"has_at_least_one_starting_point", "Has at least one starting point been provided for the local optimum search?",
+				"has_at_least_one_starting_point", "True if at least one starting point has been provided, false otherwise.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point, this )
+			)
+		);
+		api_def->add_getter(
 			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & > >(
 				"objective_function", "Get the objective function.  Throws if objective function isn't set.",
 				"objective_function", "The objective function for which we're trying to find a local minimum.",
@@ -361,6 +368,13 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 				"objective_function_gradient", "Get the objective function gradient.  Throws if objective function gradient isn't set.",
 				"objective_function_gradient", "The objective function gradient.",
 				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::objective_function_gradient, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< std::vector< masala::base::Real > > const & > >(
+				"starting_points", "Access the vector of starting points.  (Could be empty.)",
+				"starting_points", "The vector of starting points for the local optimum search.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::starting_points, this )
 			)
 		);
 
