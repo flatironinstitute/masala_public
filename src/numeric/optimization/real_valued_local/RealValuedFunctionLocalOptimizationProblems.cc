@@ -16,15 +16,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblems.cc
-/// @brief Implementations for a container for GradientBasedFunctionOptimizationProblems.
-/// @details Each GradientBasedFunctionOptimizationProblem defines a numerical gradient-descent
+/// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblems.cc
+/// @brief Implementations for a container for RealValuedFunctionLocalOptimizationProblems.
+/// @details Each RealValuedFunctionLocalOptimizationProblem defines a numerical gradient-descent
 /// minimization problem for an arbitrary loss function.  They do not contain any chemistry-specific
 /// concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblems.hh>
+#include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblems.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -36,7 +36,7 @@
 
 // Numeric headers:
 #include <base/types.hh>
-#include <numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblem.hh>
+#include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.hh>
 
 // STL headers:
 #include <vector>
@@ -45,23 +45,23 @@
 namespace masala {
 namespace numeric {
 namespace optimization {
-namespace gradient_based {
+namespace real_valued_local {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Make a fully independent copy of this object.
-GradientBasedFunctionOptimizationProblemsSP
-GradientBasedFunctionOptimizationProblems::deep_clone() const {
-    GradientBasedFunctionOptimizationProblemsSP new_object( masala::make_shared< GradientBasedFunctionOptimizationProblems >( *this ) );
+RealValuedFunctionLocalOptimizationProblemsSP
+RealValuedFunctionLocalOptimizationProblems::deep_clone() const {
+    RealValuedFunctionLocalOptimizationProblemsSP new_object( masala::make_shared< RealValuedFunctionLocalOptimizationProblems >( *this ) );
     new_object->make_independent();
     return new_object;
 }
 
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
-GradientBasedFunctionOptimizationProblems::make_independent() {
+RealValuedFunctionLocalOptimizationProblems::make_independent() {
     masala::numeric::optimization::OptimizationProblems::make_independent();
 }
 
@@ -71,50 +71,50 @@ GradientBasedFunctionOptimizationProblems::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "OptimizationProblems", "GradientBasedFunctionOptimizationProblems" } }
+/// @returns { { "OptimizationProblems", "RealValuedFunctionLocalOptimizationProblems" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-GradientBasedFunctionOptimizationProblems::get_categories() const {
+RealValuedFunctionLocalOptimizationProblems::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "OptimizationProblems", "GradientBasedFunctionOptimizationProblems" }
+		{ "OptimizationProblems", "RealValuedFunctionLocalOptimizationProblems" }
 	};
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { "gradient_based_optimization_problems", "optimization_problems", "numeric" }
+/// @returns { "real_valued_local_optimization_problems", "optimization_problems", "numeric" }
 std::vector< std::string >
-GradientBasedFunctionOptimizationProblems::get_keywords() const {
+RealValuedFunctionLocalOptimizationProblems::get_keywords() const {
 	std::vector< std::string > outvec( masala::numeric::optimization::OptimizationProblems::get_keywords() );
-    outvec.push_back( "gradient_based_optimization_problems" );
+    outvec.push_back( "real_valued_local_optimization_problems" );
     return outvec;
 }
 
 /// @brief Get the class name.
-/// @returns "GradientBasedFunctionOptimizationProblems".
+/// @returns "RealValuedFunctionLocalOptimizationProblems".
 std::string
-GradientBasedFunctionOptimizationProblems::class_name() const {
-    return "GradientBasedFunctionOptimizationProblems";
+RealValuedFunctionLocalOptimizationProblems::class_name() const {
+    return "RealValuedFunctionLocalOptimizationProblems";
 }
 
 /// @brief Get the class namespace.
-/// @returns "masala::numeric::optimization::gradient_based".
+/// @returns "masala::numeric::optimization::real_valued_local".
 std::string
-GradientBasedFunctionOptimizationProblems::class_namespace() const {
-    return "masala::numeric::optimization::gradient_based";
+RealValuedFunctionLocalOptimizationProblems::class_namespace() const {
+    return "masala::numeric::optimization::real_valued_local";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the GradientBasedFunctionOptimizationProblems class.
+/// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationProblems class.
 masala::base::api::MasalaObjectAPIDefinitionCWP
-GradientBasedFunctionOptimizationProblems::get_api_definition() {
+RealValuedFunctionLocalOptimizationProblems::get_api_definition() {
     using namespace masala::base::api;
 
     std::lock_guard< std::mutex > lock( problems_mutex() );
@@ -124,8 +124,8 @@ GradientBasedFunctionOptimizationProblems::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this,
-                "The GradientBasedFunctionOptimizationProblems class defines a container for "
-				"GradientBasedFunctionOptimizationProblem instances.  Each GradientBasedFunctionOptimizationProblem "
+                "The RealValuedFunctionLocalOptimizationProblems class defines a container for "
+				"RealValuedFunctionLocalOptimizationProblem instances.  Each RealValuedFunctionLocalOptimizationProblem "
 				"defines a numerical gradient-descent minimization problem for an arbitrary loss function.  They "
 				"do not contain any chemistry-specific concepts.",
                 false, false
@@ -134,16 +134,16 @@ GradientBasedFunctionOptimizationProblems::get_api_definition() {
 
         // Constructors:
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < GradientBasedFunctionOptimizationProblems > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < RealValuedFunctionLocalOptimizationProblems > > (
                 class_name(),
-                "Creates an empty GradientBasedFunctionOptimizationProblems container."
+                "Creates an empty RealValuedFunctionLocalOptimizationProblems container."
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < GradientBasedFunctionOptimizationProblems, GradientBasedFunctionOptimizationProblems const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < RealValuedFunctionLocalOptimizationProblems, RealValuedFunctionLocalOptimizationProblems const & > > (
                 class_name(),
-                "Copy constructor: copies an input GradientBasedFunctionOptimizationProblems container.",
-                "src", "The input GradientBasedFunctionOptimizationProblems container object to copy.  Unaltered by this operation."
+                "Copy constructor: copies an input RealValuedFunctionLocalOptimizationProblems container.",
+                "src", "The input RealValuedFunctionLocalOptimizationProblems container object to copy.  Unaltered by this operation."
             )
         );
 
@@ -157,7 +157,7 @@ GradientBasedFunctionOptimizationProblems::get_api_definition() {
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
                 "reset", "Resets the container, deleting all contained problems.",
-                false, true, std::bind( &GradientBasedFunctionOptimizationProblems::reset, this )
+                false, true, std::bind( &RealValuedFunctionLocalOptimizationProblems::reset, this )
             )
         );
         api_def->add_setter(
@@ -166,7 +166,7 @@ GradientBasedFunctionOptimizationProblems::get_api_definition() {
                 "Add a cost function network optimization problem to the list of optimization problems that this container contains.",
                 "problem_in", "The gradient-descent loss function minimization optimization problem that we are adding to the container.  Throws if this is "
                 "not a gradient descent based optimization problem.",
-                false, true, std::bind( &GradientBasedFunctionOptimizationProblems::add_optimization_problem, this, std::placeholders::_1 )
+                false, true, std::bind( &RealValuedFunctionLocalOptimizationProblems::add_optimization_problem, this, std::placeholders::_1 )
             )
         );
 
@@ -182,7 +182,7 @@ GradientBasedFunctionOptimizationProblems::get_api_definition() {
 
 /// @brief Reset this object, clearing its problem list.
 void
-GradientBasedFunctionOptimizationProblems::reset() {
+RealValuedFunctionLocalOptimizationProblems::reset() {
     masala::numeric::optimization::OptimizationProblems::reset();
 }
 
@@ -191,18 +191,18 @@ GradientBasedFunctionOptimizationProblems::reset() {
 /// @details Derived classes should override this to check the type of the
 /// optimization problem stored.
 void
-GradientBasedFunctionOptimizationProblems::add_optimization_problem(
+RealValuedFunctionLocalOptimizationProblems::add_optimization_problem(
     OptimizationProblemSP problem_in
 ) {
     CHECK_OR_THROW_FOR_CLASS(
-        std::dynamic_pointer_cast< GradientBasedFunctionOptimizationProblem >( problem_in ) != nullptr,
-        "add_optimization_problem", "Only a GradientBasedFunctionOptimizationProblem can be added "
-        "to a GradientBasedFunctionOptimizationProblems container."
+        std::dynamic_pointer_cast< RealValuedFunctionLocalOptimizationProblem >( problem_in ) != nullptr,
+        "add_optimization_problem", "Only a RealValuedFunctionLocalOptimizationProblem can be added "
+        "to a RealValuedFunctionLocalOptimizationProblems container."
     );
     masala::numeric::optimization::OptimizationProblems::add_optimization_problem( problem_in );
 }
 
-} // namespace gradient_based
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace numeric
 } // namespace masala

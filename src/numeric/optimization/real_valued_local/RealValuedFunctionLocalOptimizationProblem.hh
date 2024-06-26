@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblem.hh
-/// @brief Headers for a class for a GradientBasedFunctionOptimizationProblem.
-/// @details A GradientBasedFunctionOptimizationProblem defines a numerical minimization function to be solved by
+/// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.hh
+/// @brief Headers for a class for a RealValuedFunctionLocalOptimizationProblem.
+/// @details A RealValuedFunctionLocalOptimizationProblem defines a numerical minimization function to be solved by
 /// gradient-based methods for an arbitrary loss function.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationProblem_hh
-#define Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationProblem_hh
+#ifndef Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationProblem_hh
+#define Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationProblem_hh
 
 // Forward declarations:
-#include <numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblem.fwd.hh>
+#include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.fwd.hh>
 
 // Parent header:
 #include <numeric/optimization/OptimizationProblem.hh>
@@ -44,13 +44,13 @@
 namespace masala {
 namespace numeric {
 namespace optimization {
-namespace gradient_based {
+namespace real_valued_local {
 
-/// @brief A class for a GradientBasedFunctionOptimizationProblem.
-/// @details A GradientBasedFunctionOptimizationProblem defines a numerical minimization function to be solved by
+/// @brief A class for a RealValuedFunctionLocalOptimizationProblem.
+/// @details A RealValuedFunctionLocalOptimizationProblem defines a numerical minimization function to be solved by
 /// gradient-based methods for an arbitrary loss function.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class GradientBasedFunctionOptimizationProblem : public masala::numeric::optimization::OptimizationProblem {
+class RealValuedFunctionLocalOptimizationProblem : public masala::numeric::optimization::OptimizationProblem {
 
 public:
 
@@ -59,17 +59,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	GradientBasedFunctionOptimizationProblem() = default;
+	RealValuedFunctionLocalOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	GradientBasedFunctionOptimizationProblem( GradientBasedFunctionOptimizationProblem const & ) = default;
+	RealValuedFunctionLocalOptimizationProblem( RealValuedFunctionLocalOptimizationProblem const & ) = default;
 
 	// @brief Assignment operator.
-	GradientBasedFunctionOptimizationProblem &
-	operator=( GradientBasedFunctionOptimizationProblem const & ) = default;
+	RealValuedFunctionLocalOptimizationProblem &
+	operator=( RealValuedFunctionLocalOptimizationProblem const & ) = default;
 
 	/// @brief Destructor.
-	~GradientBasedFunctionOptimizationProblem() override = default;
+	~RealValuedFunctionLocalOptimizationProblem() override = default;
 
 	/// @brief Make a copy of this object, and return a shared pointer to the copy.
 	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
@@ -77,7 +77,7 @@ public:
 	clone() const override;
 
 	/// @brief Make a fully independent copy of this object.
-	GradientBasedFunctionOptimizationProblemSP
+	RealValuedFunctionLocalOptimizationProblemSP
 	deep_clone() const;
 
 public:
@@ -88,7 +88,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { { "OptimizationProblem", "GradientBasedFunctionOptimizationProblem" } }
+	/// @returns { { "OptimizationProblem", "RealValuedFunctionLocalOptimizationProblem" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -99,12 +99,12 @@ public:
 
 	/// @brief Get the keywords for this plugin class.  Default for all
 	/// optimization problems; may be overridden by derived classes.
-	/// @returns { "optimization_problem", "gradient_based_optimization_problem", "numeric" }
+	/// @returns { "optimization_problem", "real_valued_local_optimization_problem", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
 	
 	/// @brief Get the category for this MasalaDataRepresentation.
-	/// @returns { { "OptimizationProblem", "GradientBasedFunctionOptimizationProblem" } }.
+	/// @returns { { "OptimizationProblem", "RealValuedFunctionLocalOptimizationProblem" } }.
 	std::vector< std::vector< std::string > >
 	get_data_representation_categories() const override;
 
@@ -115,17 +115,17 @@ public:
 	get_compatible_masala_engines() const override;
 
 	/// @brief Get the properties of this MasalaDataRepresentation.
-	/// @returns { "optimization_problem", "gradient_based_optimization_problem" }.
+	/// @returns { "optimization_problem", "real_valued_local_optimization_problem" }.
 	std::vector< std::string >
 	get_present_data_representation_properties() const override;
 
 	/// @brief Get the name of this class.
-	/// @returns "GradientBasedFunctionOptimizationProblem".
+	/// @returns "RealValuedFunctionLocalOptimizationProblem".
 	std::string
 	class_name() const override;
 
 	/// @brief Get the namespace for this class.
-	/// @returns "masala::numeric::optimization::gradient_based".
+	/// @returns "masala::numeric::optimization::real_valued_local".
 	std::string
 	class_namespace() const override;
 
@@ -154,7 +154,7 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the GradientBasedFunctionOptimizationProblem class.
+    /// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationProblem class.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition() override;
 
@@ -182,11 +182,11 @@ private:
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-}; // class GradientBasedFunctionOptimizationProblem
+}; // class RealValuedFunctionLocalOptimizationProblem
 
-} // namespace gradient_based
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace numeric
 } // namespace masala
 
-#endif // Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationProblem_hh
+#endif // Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationProblem_hh

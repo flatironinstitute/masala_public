@@ -16,23 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/gradient_based/GradientBasedFunctionOptimizer.hh
-/// @brief Header for a pure virtual base class for GradientBasedFunctionOptimizers.
-/// @details GradientBasedFunctionOptimizers solve a numerical loss function minimization problem using
+/// @file src/numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.hh
+/// @brief Header for a pure virtual base class for RealValuedFunctionLocalOptimizers.
+/// @details RealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
 /// gradients of the loss function with respect to free parameters.  They have no chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_gradient_based_GradientBasedFunctionOptimizer_hh
-#define Masala_src_numeric_api_base_classes_optimization_gradient_based_GradientBasedFunctionOptimizer_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh
+#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/gradient_based/GradientBasedFunctionOptimizer.fwd.hh>
+#include <numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.fwd.hh>
 
 // Numeric API headers:
-#include <numeric_api/auto_generated_api/optimization/gradient_based/GradientBasedFunctionOptimizationProblems_API.fwd.hh>
-#include <numeric_api/auto_generated_api/optimization/gradient_based/GradientBasedFunctionOptimizationSolutions_API.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblems_API.fwd.hh>
+#include <numeric_api/auto_generated_api/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolutions_API.fwd.hh>
 
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
@@ -44,15 +44,15 @@ namespace masala {
 namespace numeric_api {
 namespace base_classes {
 namespace optimization {
-namespace gradient_based {
+namespace real_valued_local {
 
-/// @brief A pure virtual base class for GradientBasedFunctionOptimizers.
-/// @details GradientBasedFunctionOptimizers solve a numerical loss function minimization problem using
+/// @brief A pure virtual base class for RealValuedFunctionLocalOptimizers.
+/// @details RealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
 /// gradients of the loss function with respect to free parameters.  They have no chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class GradientBasedFunctionOptimizer : public masala::numeric_api::base_classes::optimization::Optimizer {
+class RealValuedFunctionLocalOptimizer : public masala::numeric_api::base_classes::optimization::Optimizer {
 
 public:
 
@@ -61,21 +61,21 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	GradientBasedFunctionOptimizer() = default;
+	RealValuedFunctionLocalOptimizer() = default;
 
 	/// @brief Copy constructor.  Explicit due to mutex.
-	GradientBasedFunctionOptimizer( GradientBasedFunctionOptimizer const & src);
+	RealValuedFunctionLocalOptimizer( RealValuedFunctionLocalOptimizer const & src);
 
 	/// @brief Assignment operator.  Explicit due to mutex.
-	GradientBasedFunctionOptimizer & operator=( GradientBasedFunctionOptimizer const & src );
+	RealValuedFunctionLocalOptimizer & operator=( RealValuedFunctionLocalOptimizer const & src );
 
 	/// @brief Destructor.
-	~GradientBasedFunctionOptimizer() override = default;
+	~RealValuedFunctionLocalOptimizer() override = default;
 
 	/// @brief Clone operation: copy this object and return a shared pointer to the
 	/// copy.  Contained objects may still be shared.
 	virtual
-	GradientBasedFunctionOptimizerSP
+	RealValuedFunctionLocalOptimizerSP
 	clone() const = 0;
 
 	/// @brief Make this object independent by calling deep_clone on all contained objects.
@@ -89,7 +89,7 @@ public:
 
 	/// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 	/// may be overridden by derived classes.
-	/// @returns { { "Optimizer", "GradientBasedFunctionOptimizer" } }
+	/// @returns { { "Optimizer", "RealValuedFunctionLocalOptimizer" } }
 	/// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 	/// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 	/// in more than one hierarchical category (in which case there would be more than one
@@ -100,7 +100,7 @@ public:
 
 	/// @brief Get the keywords for this plugin class.  Default for all optimizers; may be overridden
 	/// by derived classes.
-	/// @returns { "optimizer", "gradient_based", "numeric" }
+	/// @returns { "optimizer", "real_valued_local", "numeric" }
 	std::vector< std::string >
 	get_keywords() const override;
 
@@ -113,7 +113,7 @@ public:
     /// a list of hierarchical categories, and the inner vector is the particular hierarchical
     /// category, from most general to most specific.  Also note that this function is pure
     /// virtual, and must be defined for instantiable MasalaEngine subclasses.
-	/// @returns { {"Optimizer", "GradientBasedFunctionOptimizer"} }
+	/// @returns { {"Optimizer", "RealValuedFunctionLocalOptimizer"} }
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
@@ -129,9 +129,9 @@ public:
 	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
 	/// the problem with the same index.
 	virtual
-	std::vector< masala::numeric_api::auto_generated_api::optimization::gradient_based::GradientBasedFunctionOptimizationSolutions_APICSP >
-	run_gradient_based_optimizer(
-		masala::numeric_api::auto_generated_api::optimization::gradient_based::GradientBasedFunctionOptimizationProblems_API const & problems
+	std::vector< masala::numeric_api::auto_generated_api::optimization::real_valued_local::RealValuedFunctionLocalOptimizationSolutions_APICSP >
+	run_real_valued_local_optimizer(
+		masala::numeric_api::auto_generated_api::optimization::real_valued_local::RealValuedFunctionLocalOptimizationProblems_API const & problems
 	) const = 0;
 
 protected:
@@ -153,7 +153,7 @@ protected:
 	virtual
 	void
 	protected_assign(
-		GradientBasedFunctionOptimizer const & src
+		RealValuedFunctionLocalOptimizer const & src
 	);
 
 	/// @brief Make independent: must be implemented by derived classes, which must call the base
@@ -175,12 +175,12 @@ public:
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
-}; // class GradientBasedFunctionOptimizer
+}; // class RealValuedFunctionLocalOptimizer
 
-} // namespace gradient_based
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_gradient_based_GradientBasedFunctionOptimizer_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh

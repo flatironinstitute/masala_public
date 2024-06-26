@@ -16,18 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/gradient_based/GradientBasedFunctionOptimizationSolution.cc
-/// @brief Implementations for a pure virtual base class for a GradientBasedFunctionOptimizationSolution.
-/// @details A GradientBasedFunctionOptimizationSolution contains the solution to a particular
-/// GradientBasedFunctionOptimizationProblem, after it is solved by a suitable
+/// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolution.cc
+/// @brief Implementations for a pure virtual base class for a RealValuedFunctionLocalOptimizationSolution.
+/// @details A RealValuedFunctionLocalOptimizationSolution contains the solution to a particular
+/// RealValuedFunctionLocalOptimizationProblem, after it is solved by a suitable
 /// GradientBasedFunctionOptimizer.  It does not contain any chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric/optimization/gradient_based/GradientBasedFunctionOptimizationSolution.hh>
+#include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolution.hh>
 
 // Numeric headers:
-#include <numeric/optimization/gradient_based/GradientBasedFunctionOptimizationProblem.hh>
+#include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.hh>
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -46,7 +46,7 @@
 namespace masala {
 namespace numeric {
 namespace optimization {
-namespace gradient_based {
+namespace real_valued_local {
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION AND DESTRUCTION
@@ -54,21 +54,21 @@ namespace gradient_based {
 
 /// @brief Make a copy of this object.
 masala::numeric::optimization::OptimizationSolutionSP
-GradientBasedFunctionOptimizationSolution::clone() const {
-    return masala::make_shared< GradientBasedFunctionOptimizationSolution >( *this );
+RealValuedFunctionLocalOptimizationSolution::clone() const {
+    return masala::make_shared< RealValuedFunctionLocalOptimizationSolution >( *this );
 }
 
 /// @brief Make a fully independent copy of this object.
-GradientBasedFunctionOptimizationSolutionSP
-GradientBasedFunctionOptimizationSolution::deep_clone() const {
-    GradientBasedFunctionOptimizationSolutionSP new_solution( std::static_pointer_cast< GradientBasedFunctionOptimizationSolution >( this->clone() ) );
+RealValuedFunctionLocalOptimizationSolutionSP
+RealValuedFunctionLocalOptimizationSolution::deep_clone() const {
+    RealValuedFunctionLocalOptimizationSolutionSP new_solution( std::static_pointer_cast< RealValuedFunctionLocalOptimizationSolution >( this->clone() ) );
     new_solution->make_independent();
     return new_solution;
 }
 
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
-GradientBasedFunctionOptimizationSolution::make_independent() {
+RealValuedFunctionLocalOptimizationSolution::make_independent() {
     masala::numeric::optimization::OptimizationSolution::make_independent();
 }
 
@@ -78,52 +78,52 @@ GradientBasedFunctionOptimizationSolution::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all
 /// optimization problems; may be overridden by derived classes.
-/// @returns { { "OptimizationSolution", "GradientBasedFunctionOptimizationSolution" } }
+/// @returns { { "OptimizationSolution", "RealValuedFunctionLocalOptimizationSolution" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-GradientBasedFunctionOptimizationSolution::get_categories() const {
+RealValuedFunctionLocalOptimizationSolution::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "OptimizationSolution", "GradientBasedFunctionOptimizationSolution" }
+		{ "OptimizationSolution", "RealValuedFunctionLocalOptimizationSolution" }
 	};
 }
 
 /// @brief Get the keywords for this plugin class.  Default for all
 /// optimization solutions; may be overridden by derived classes.
-/// @returns { "optimization_solution", "gradient_based_optimization_solution", "numeric" }
+/// @returns { "optimization_solution", "real_valued_local_optimization_solution", "numeric" }
 std::vector< std::string >
-GradientBasedFunctionOptimizationSolution::get_keywords() const {
+RealValuedFunctionLocalOptimizationSolution::get_keywords() const {
 	return std::vector< std::string > {
 		"optimization_solution",
-        "gradient_based_optimization_solution",
+        "real_valued_local_optimization_solution",
 		"numeric"
 	};
 }
 
 /// @brief Get the name of this class.
-/// @returns "GradientBasedFunctionOptimizationSolution".
+/// @returns "RealValuedFunctionLocalOptimizationSolution".
 std::string
-GradientBasedFunctionOptimizationSolution::class_name() const {
-    return "GradientBasedFunctionOptimizationSolution";
+RealValuedFunctionLocalOptimizationSolution::class_name() const {
+    return "RealValuedFunctionLocalOptimizationSolution";
 }
 
 /// @brief Get the namespace for this class.
-/// @returns "masala::numeric::optimization::gradient_based".
+/// @returns "masala::numeric::optimization::real_valued_local".
 std::string
-GradientBasedFunctionOptimizationSolution::class_namespace() const {
-    return "masala::numeric::optimization::gradient_based";
+RealValuedFunctionLocalOptimizationSolution::class_namespace() const {
+    return "masala::numeric::optimization::real_valued_local";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Get a description of the API for the GradientBasedFunctionOptimizationSolution class.
+/// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationSolution class.
 masala::base::api::MasalaObjectAPIDefinitionCWP
-GradientBasedFunctionOptimizationSolution::get_api_definition() {
+RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
     using namespace masala::base::api;
     using base::Real;
     using base::Size;
@@ -135,8 +135,8 @@ GradientBasedFunctionOptimizationSolution::get_api_definition() {
         MasalaObjectAPIDefinitionSP api_def(
             masala::make_shared< MasalaObjectAPIDefinition >(
                 *this,
-                "A GradientBasedFunctionOptimizationSolution contains the solution to a particular "
-				"GradientBasedFunctionOptimizationProblem, after it is solved by a suitable "
+                "A RealValuedFunctionLocalOptimizationSolution contains the solution to a particular "
+				"RealValuedFunctionLocalOptimizationProblem, after it is solved by a suitable "
 				"GradientBasedFunctionOptimizer.  It does not contain any chemistry-specific concepts.",
                 false, false
             )
@@ -144,16 +144,16 @@ GradientBasedFunctionOptimizationSolution::get_api_definition() {
 
         // Constructors:
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < GradientBasedFunctionOptimizationSolution > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < RealValuedFunctionLocalOptimizationSolution > > (
                 class_name(),
-                "Creates an empty GradientBasedFunctionOptimizationSolution."
+                "Creates an empty RealValuedFunctionLocalOptimizationSolution."
             )
         );
         api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < GradientBasedFunctionOptimizationSolution, GradientBasedFunctionOptimizationSolution const & > > (
+            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < RealValuedFunctionLocalOptimizationSolution, RealValuedFunctionLocalOptimizationSolution const & > > (
                 class_name(),
-                "Copy constructor: copies an input GradientBasedFunctionOptimizationSolution.",
-                "src", "The input GradientBasedFunctionOptimizationSolution to copy.  Unaltered by this operation."
+                "Copy constructor: copies an input RealValuedFunctionLocalOptimizationSolution.",
+                "src", "The input RealValuedFunctionLocalOptimizationSolution to copy.  Unaltered by this operation."
             )
         );
 
@@ -185,7 +185,7 @@ GradientBasedFunctionOptimizationSolution::get_api_definition() {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-} // namespace gradient_based
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace numeric
 } // namespace masala

@@ -16,44 +16,44 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/gradient_based/GradientBasedFunctionOptimizationSolutions.fwd.hh
-/// @brief Forward declarations for a container for GradientBasedFunctionOptimizationSolutions.
-/// @details Each GradientBasedFunctionOptimizationSolution defines a numerical loss function
+/// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolutions.fwd.hh
+/// @brief Forward declarations for a container for RealValuedFunctionLocalOptimizationSolutions.
+/// @details Each RealValuedFunctionLocalOptimizationSolution defines a numerical loss function
 /// gradient minimization solution produced by a suitable Optimizer.  It does not contain any
 /// chemistry-specific concepts.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationSolutions_fwd_hh
-#define Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationSolutions_fwd_hh
+#ifndef Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationSolutions_fwd_hh
+#define Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationSolutions_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace numeric {
 namespace optimization {
-namespace gradient_based {
+namespace real_valued_local {
 	
-	class GradientBasedFunctionOptimizationSolutions;
+	class RealValuedFunctionLocalOptimizationSolutions;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using GradientBasedFunctionOptimizationSolutionsSP = MASALA_SHARED_POINTER< GradientBasedFunctionOptimizationSolutions >;
+	using RealValuedFunctionLocalOptimizationSolutionsSP = MASALA_SHARED_POINTER< RealValuedFunctionLocalOptimizationSolutions >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using GradientBasedFunctionOptimizationSolutionsCSP = MASALA_SHARED_POINTER< GradientBasedFunctionOptimizationSolutions const >;
+	using RealValuedFunctionLocalOptimizationSolutionsCSP = MASALA_SHARED_POINTER< RealValuedFunctionLocalOptimizationSolutions const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using GradientBasedFunctionOptimizationSolutionsWP = MASALA_WEAK_POINTER< GradientBasedFunctionOptimizationSolutions >;
+	using RealValuedFunctionLocalOptimizationSolutionsWP = MASALA_WEAK_POINTER< RealValuedFunctionLocalOptimizationSolutions >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using GradientBasedFunctionOptimizationSolutionsCWP = MASALA_WEAK_POINTER< GradientBasedFunctionOptimizationSolutions const >;
+	using RealValuedFunctionLocalOptimizationSolutionsCWP = MASALA_WEAK_POINTER< RealValuedFunctionLocalOptimizationSolutions const >;
 
-} // namespace gradient_based
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace numeric
 } // namespace masala
 
-#endif //Masala_src_numeric_optimization_gradient_based_GradientBasedFunctionOptimizationSolutions_fwd_hh
+#endif //Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationSolutions_fwd_hh
