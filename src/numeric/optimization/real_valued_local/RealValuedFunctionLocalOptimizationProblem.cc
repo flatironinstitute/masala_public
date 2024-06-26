@@ -258,6 +258,7 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 	using namespace masala::base::api;
 	using namespace masala::base::api::setter;
+	using namespace masala::base::api::getter;
 
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 
@@ -277,6 +278,34 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( RealValuedFunctionLocalOptimizationProblem, api_def );
 
 		// Getters:
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"has_objective_function", "Has an objective function been provided for this problem?",
+				"has_objective_function", "True if an objective function has been provided, false otherwise.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::has_objective_function, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"has_objective_function_gradient", "Has an objective function gradient been provided for this problem?",
+				"has_objective_function_gradient", "True if an objective function gradient has been provided, false otherwise.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::has_objective_function_gradient, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & > >(
+				"objective_function", "Get the objective function.  Throws if objective function isn't set.",
+				"objective_function", "The objective function for which we're trying to find a local minimum.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::objective_function, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & > >(
+				"objective_function_gradient", "Get the objective function gradient.  Throws if objective function gradient isn't set.",
+				"objective_function_gradient", "The objective function gradient.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::objective_function_gradient, this )
+			)
+		);
 
 		// Setters:
 		api_def->add_setter(
