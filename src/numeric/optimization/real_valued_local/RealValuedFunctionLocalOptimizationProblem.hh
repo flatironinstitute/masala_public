@@ -135,6 +135,22 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Has an objective function been provided for this problem?
+	bool has_objective_function() const;
+
+	/// @brief Has a gradient for the objective function been provided for this problem?
+	bool has_objective_function_gradient() const;
+
+	/// @brief Get the objective function.
+	/// @details Throws if objective function isn't set.
+	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
+	objective_function() const;
+
+	/// @brief Get the objective function gradient.
+	/// @details Throws if objective function gradient isn't set.
+	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const &
+	objective_function_gradient() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

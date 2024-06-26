@@ -154,6 +154,39 @@ RealValuedFunctionLocalOptimizationProblem::class_namespace() const {
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Has an objective function been provided for this problem?
+bool
+RealValuedFunctionLocalOptimizationProblem::has_objective_function() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	return objective_function_ != nullptr;
+}
+
+/// @brief Has a gradient for the objective function been provided for this problem?
+bool
+RealValuedFunctionLocalOptimizationProblem::has_objective_function_gradient() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	return objective_function_gradient_ != nullptr;
+}
+
+/// @brief Get the objective function.
+/// @details Throws if objective function isn't set.
+std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
+RealValuedFunctionLocalOptimizationProblem::objective_function() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function", "An objective function for this " + class_name() + "object can only be accessed after this object is finalized." );
+	CHECK_OR_THROW_FOR_CLASS( objective_function_ != nullptr, "objective_function", "An objective function has not yet been set for this " + class_name() + "object!" );
+	return *objective_function_;
+}
+
+	/// @brief Get the objective function gradient.
+	/// @details Throws if objective function gradient isn't set.
+	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const &
+	RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function_gradient", "An objective function gradient for this " + class_name() + "object can only be accessed after this object is finalized." );
+	CHECK_OR_THROW_FOR_CLASS( objective_function_gradient_ != nullptr, "objective_function_gradient", "An objective function gradient has not yet been set for this " + class_name() + "object!" );
+	return *objective_function_gradient_;
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
