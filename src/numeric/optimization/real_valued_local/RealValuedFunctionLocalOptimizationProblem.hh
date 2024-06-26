@@ -241,11 +241,15 @@ protected:
 	/// @brief Make this object independent.
 	/// @details Assumes mutex was already locked.
 	/// @note Derived versions of this function should call the parent class version too.
-	virtual void protected_make_independent();
+	void protected_make_independent() override;
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 	void protected_finalize() override;
+
+	/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
+	/// Should be implemented by derived classes, which shoudl call base class function.
+	void protected_assign( masala::numeric::optimization::OptimizationProblem const & src ) override;
 
 private:
 

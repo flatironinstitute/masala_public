@@ -475,6 +475,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
 RealValuedFunctionLocalOptimizationProblem::protected_reset() {
+	TODO TODO TODO;
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
@@ -483,6 +484,7 @@ RealValuedFunctionLocalOptimizationProblem::protected_reset() {
 /// @note Derived versions of this function should call the parent class version too.
 void
 RealValuedFunctionLocalOptimizationProblem::protected_make_independent() {
+	TODO TODO TODO;
 	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
@@ -490,7 +492,17 @@ RealValuedFunctionLocalOptimizationProblem::protected_make_independent() {
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
 RealValuedFunctionLocalOptimizationProblem::protected_finalize() {
+	TODO TODO TODO;
 	masala::numeric::optimization::OptimizationProblem::protected_finalize();
+}
+
+/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
+/// Should be implemented by derived classes, which shoudl call base class function.
+void
+RealValuedFunctionLocalOptimizationProblem::protected_assign(
+	masala::numeric::optimization::OptimizationProblem const & src
+) {
+	TODO TODO TODO;
 }
 
 
