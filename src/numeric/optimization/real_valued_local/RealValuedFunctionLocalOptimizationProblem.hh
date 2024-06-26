@@ -141,6 +141,9 @@ public:
 	/// @brief Has a gradient for the objective function been provided for this problem?
 	bool has_objective_function_gradient() const;
 
+	/// @brief Has at least one starting point been provided for this problem?
+	bool has_at_least_one_starting_point() const;
+
 	/// @brief Get the objective function.
 	/// @details Throws if objective function isn't set.
 	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
@@ -150,6 +153,10 @@ public:
 	/// @details Throws if objective function gradient isn't set.
 	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const &
 	objective_function_gradient() const;
+
+	/// @brief Access the vector of starting points.
+	std::vector< std::vector< masala::base::Real > > const &
+	starting_points() const;
 
 public:
 

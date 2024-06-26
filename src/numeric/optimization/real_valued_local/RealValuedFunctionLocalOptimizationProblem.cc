@@ -168,6 +168,13 @@ RealValuedFunctionLocalOptimizationProblem::has_objective_function_gradient() co
 	return objective_function_gradient_ != nullptr;
 }
 
+/// @brief Has at least one starting point been provided for this problem?
+bool
+RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	return ( !starting_points_.empty() );
+}
+
 /// @brief Get the objective function.
 /// @details Throws if objective function isn't set.
 std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
@@ -186,6 +193,14 @@ RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const 
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function_gradient", "An objective function gradient for this " + class_name() + "object can only be accessed after this object is finalized." );
 	CHECK_OR_THROW_FOR_CLASS( objective_function_gradient_ != nullptr, "objective_function_gradient", "An objective function gradient has not yet been set for this " + class_name() + "object!" );
 	return *objective_function_gradient_;
+}
+
+/// @brief Access the vector of starting points.
+std::vector< std::vector< masala::base::Real > > const &
+RealValuedFunctionLocalOptimizationProblem::starting_points() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "starting_points", "The starting points for this " + class_name() + "object can only be accessed after this object is finalized." );
+	return starting_points_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
