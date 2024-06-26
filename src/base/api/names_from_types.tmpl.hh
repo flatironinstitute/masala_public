@@ -409,18 +409,46 @@ namespace api {
         return "std::unordered_map< " + name_from_type( type<T1>() ) + ", " + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + " > const";
     }
 
-	/// @brief Manually override for functions.
+	/// @brief Manually override for functions of no variables.
     template<class T>
     std::string
-    name_from_type( type<std::function< T >> ) {
-        return "std::function< " + name_from_type( type<T>() ) + " >";
+    name_from_type( type<std::function< T() > > ) {
+        return "std::function< " + name_from_type( type<T>() ) + "() >";
     }
 
-    /// @brief Manually override for const functions.
+    /// @brief Manually override for const functions of no variables.
     template<class T>
     std::string
-    name_from_type( type<std::function< T > const> ) {
-        return "std::function< " + name_from_type( type<T>() ) + " > const";
+    name_from_type( type<std::function< T() > const> ) {
+        return "std::function< " + name_from_type( type<T>() ) + "() > const";
+    }
+
+	/// @brief Manually override for functions of one variable.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::function< T1(T2) > > ) {
+        return "std::function< " + name_from_type( type<T1>() ) + "(" + name_from_type( type<T2>() ) + ") >";
+    }
+
+    /// @brief Manually override for const functions of one variable.
+    template<class T1, class T2>
+    std::string
+    name_from_type( type<std::function< T1(T2) > const> ) {
+        return "std::function< " + name_from_type( type<T1>() ) + "(" + name_from_type( type<T2>() ) + ") > const";
+    }
+
+	/// @brief Manually override for functions of two variables.
+    template<class T1, class T2, class T3>
+    std::string
+    name_from_type( type<std::function< T1(T2,T3) > > ) {
+        return "std::function< " + name_from_type( type<T1>() ) + "(" + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + ") >";
+    }
+
+    /// @brief Manually override for const functions of two variables.
+    template<class T1, class T2, class T3>
+    std::string
+    name_from_type( type<std::function< T1(T2,T3) > const> ) {
+        return "std::function< " + name_from_type( type<T1>() ) + "(" + name_from_type( type<T2>() ) + ", " + name_from_type( type<T3>() ) + ") > const";
     }
 
     /// @brief Manually override for vectors.
