@@ -19,7 +19,7 @@
 /// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.fwd.hh
 /// @brief Forward declarations for a class for a RealValuedFunctionLocalOptimizationProblem.
 /// @details A RealValuedFunctionLocalOptimizationProblem defines a numerical minimization function to be solved by
-/// gradient-based methods for an arbitrary loss function.
+/// gradient-based methods or other local optimization methods for an arbitrary loss function.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationProblem_fwd_hh

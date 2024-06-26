@@ -19,7 +19,7 @@
 /// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.cc
 /// @brief Implementation for a class for a RealValuedFunctionLocalOptimizationProblem.
 /// @details A RealValuedFunctionLocalOptimizationProblem defines a numerical minimization function to be solved by
-/// gradient-based methods for an arbitrary loss function.
+/// gradient-based methods or other local optimization methods for an arbitrary loss function.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -244,6 +244,48 @@ RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient() 
 	objective_function_gradient_ = nullptr;
 }
 
+/// @brief Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.
+void
+RealValuedFunctionLocalOptimizationProblem::set_seek_local_maximum(
+	bool const setting
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_seek_local_maximum", "We cannot set whether to seek a local maximum or minimum after the " + class_name() + " object has been finalized." );
+	seek_local_maximum_ = setting;
+}
+
+/// @brief Add a bunch of starting points to the set of starting points for local minimum search.
+void
+RealValuedFunctionLocalOptimizationProblem::add_starting_points(
+	std::vector< std::vector< masala::base::Real > > const & starting_points_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_points", "Starting points cannot be added after this " + class_name() + " object has been finalized." );
+	starting_points_.reserve( starting_points_.size() + starting_points_in.size() );
+	for( auto const & entry : starting_points_in ) {
+		starting_points_.push_back( entry );
+	}
+}
+
+
+/// @brief Add a single point to the set of starting points for local minimum search.
+void
+RealValuedFunctionLocalOptimizationProblem::add_starting_point(
+	std::vector< masala::base::Real > const & starting_point_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_point", "A starting point cannot be added after this " + class_name() + " object has been finalized." );
+	starting_points_.push_back( starting_point_in );
+}
+
+/// @brief Clear the starting points.
+void
+RealValuedFunctionLocalOptimizationProblem::clear_starting_points() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_starting_points", "Starting points cannot be cleared after this " + class_name() + " object has been finalized." );
+	starting_points_.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -269,7 +311,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 				*this,
 				"The RealValuedFunctionLocalOptimizationProblem class defines a numerical minimization "
 				"problem for an arbitrary loss function, where the solution will be found by some sort "
-				"of gradient descent algorithm.",
+				"of gradient descent algorithm or other algorithm that finds a local minimum.",
 				false, false
 			)
 		);

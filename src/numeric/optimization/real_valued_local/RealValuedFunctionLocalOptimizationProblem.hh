@@ -19,7 +19,7 @@
 /// @file src/numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblem.hh
 /// @brief Headers for a class for a RealValuedFunctionLocalOptimizationProblem.
 /// @details A RealValuedFunctionLocalOptimizationProblem defines a numerical minimization function to be solved by
-/// gradient-based methods for an arbitrary loss function.
+/// gradient-based methods or other local optimization methods for an arbitrary loss function.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_optimization_real_valued_local_RealValuedFunctionLocalOptimizationProblem_hh
@@ -179,6 +179,28 @@ public:
 	void
 	clear_objective_function_gradient();
 
+	/// @brief Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.
+	void
+	set_seek_local_maximum(
+		bool const setting
+	);
+
+	/// @brief Add a bunch of starting points to the set of starting points for local minimum search.
+	void
+	add_starting_points(
+		std::vector< std::vector< masala::base::Real > > const & starting_points_in
+	);
+
+	/// @brief Add a single point to the set of starting points for local minimum search.
+	void
+	add_starting_point(
+		std::vector< masala::base::Real > const & starting_point_in
+	);
+
+	/// @brief Clear the starting points.
+	void
+	clear_starting_points();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +253,12 @@ std::function< masala::base::Real ( std::vector< masala::base::Real > const & ) 
 /// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
 /// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
 std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const * objective_function_gradient_;
+
+/// @brief Starting points for the local minimum search.
+std::vector< std::vector< masala::base::Real > > starting_points_;
+
+/// @brief Are we trying to find a maximum (true) or minimum (false)?  Defaults to false.
+bool seek_local_maximum_ = false;
 
 }; // class RealValuedFunctionLocalOptimizationProblem
 
