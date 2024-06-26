@@ -55,6 +55,18 @@ namespace real_valued_local {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Destructor.
+RealValuedFunctionLocalOptimizationProblem::~RealValuedFunctionLocalOptimizationProblem() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	if( objective_function_ != nullptr ) {
+		delete objective_function_;
+	}
+	if( objective_function_gradient_ != nullptr ) {
+		delete objective_function_gradient_;
+	}
+	// Base class destructor will be called automatically.
+}
+
 /// @brief Make a copy of this object, and return a shared pointer to the copy.
 /// @details Does NOT copy all the internal data, but retains pointers to existing data.
 masala::numeric::optimization::OptimizationProblemSP
@@ -147,6 +159,47 @@ RealValuedFunctionLocalOptimizationProblem::class_namespace() const {
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the objective function.
+/// @details The function object is copied.
+void
+RealValuedFunctionLocalOptimizationProblem::set_objective_function(
+	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & objective_fxn_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function", "Cannot set objective function after the " + class_name() + " object has been finalized." );
+
+	if( objective_function_ != nullptr ) {
+		delete objective_function_;
+	}
+	objective_function_ = new std::function< masala::base::Real( std::vector< masala::base::Real > const & ) >( objective_fxn_in );
+}
+
+/// @brief Clear the objective function.
+void
+RealValuedFunctionLocalOptimizationProblem::clear_objective_function() {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_objective_function", "Cannot unset objective function after the " + class_name() + " object has been finalized." );
+	if( objective_function_ != nullptr ) {
+		delete objective_function_;
+	}
+	objective_function_ = nullptr;
+}
+
+/// @brief Set the objective function derivative.
+/// @details The derivative function object is copied.
+void
+RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
+	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & objective_fxn_gradient_in
+) {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function_gradient", "Cannot set objective function gradient after the " + class_name() + " object has been finalized." );
+
+	if( objective_function_gradient_ != nullptr ) {
+		delete objective_function_gradient_;
+	}
+	objective_function_gradient_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) >( objective_fxn_gradient_in );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS

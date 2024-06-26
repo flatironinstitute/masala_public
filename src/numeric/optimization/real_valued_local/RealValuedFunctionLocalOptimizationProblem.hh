@@ -37,9 +37,9 @@
 #include <base/types.hh>
 
 // STL headers:
-#include <map>
-#include <utility> //For std::pair.
+#include <functional>
 #include <vector>
+#include <utility>
 
 namespace masala {
 namespace numeric {
@@ -69,7 +69,7 @@ public:
 	operator=( RealValuedFunctionLocalOptimizationProblem const & ) = default;
 
 	/// @brief Destructor.
-	~RealValuedFunctionLocalOptimizationProblem() override = default;
+	~RealValuedFunctionLocalOptimizationProblem() override;
 
 	/// @brief Make a copy of this object, and return a shared pointer to the copy.
 	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
@@ -141,6 +141,24 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the objective function.
+	/// @details The function object is copied.
+	void
+	set_objective_function(
+		std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & objective_fxn_in
+	);
+
+	/// @brief Clear the objective function.
+	void
+	clear_objective_function();
+
+	/// @brief Set the objective function derivative.
+	/// @details The derivative function object is copied.
+	void
+	set_objective_function_gradient(
+		std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & objective_fxn_gradient_in
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +199,18 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief The objective function for which we're trying to find a local minimum, evaluated
+/// at some point in R^N.
+/// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
+/// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
+std::function< masala::base::Real ( std::vector< masala::base::Real > const & ) > const * objective_function_;
+
+/// @brief A function that returns the objective function value, and also computes and sets
+/// the objective function gradient at a particular point in R^N.
+/// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
+/// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
+std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const * objective_function_gradient_;
 
 }; // class RealValuedFunctionLocalOptimizationProblem
 
