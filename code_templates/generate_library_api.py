@@ -333,6 +333,11 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<vector>")
             return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "function" ) or inputclass.startswith( "std::function" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<functional>")
+            return "std::function< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "pair" ) or inputclass.startswith( "std::pair" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
