@@ -412,6 +412,37 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 				std::bind( &RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient, this )
 			)
 		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< bool const > >(
+				"set_seek_local_maximum", "Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.",
+				"seek_local_maximum_setting", "True if we're searching for a local maximum, false if we're searching for a local minimum.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::set_seek_local_maximum, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< std::vector< masala::base::Real > > const & > >(
+				"add_starting_points", "Add multiple starting points to the set of starting points for local optimum search.",
+				"starting_poinst_in", "A vector of coordinates in R^N, each specifying a starting point for the local optimimum search.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::add_starting_points, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< masala::base::Real > const & > >(
+				"add_starting_point", "Add a single point to the set of starting points for local optimum search.",
+				"starting_point_in", "A coordinate in R^N, specifying a starting point for the local optimimum search.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::add_starting_point, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ZeroInput >(
+				"clear_starting_points", "Clear the starting points for the local optimum search.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::clear_starting_points, this )
+			)
+		);
 
 		// Work functions:
 
