@@ -144,6 +144,10 @@ public:
 	/// @brief Has at least one starting point been provided for this problem?
 	bool has_at_least_one_starting_point() const;
 
+	/// @brief Get whether we are seeking a local maximum.  Returns true if we are and false if we are
+	/// seeking a local minimum.  Defaults to false.
+	bool seek_local_maximum() const;
+
 	/// @brief Get the objective function.
 	/// @details Throws if objective function isn't set.
 	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &

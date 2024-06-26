@@ -175,6 +175,14 @@ RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point() co
 	return ( !starting_points_.empty() );
 }
 
+/// @brief Get whether we are seeking a local maximum.  Returns true if we are and false if we are
+/// seeking a local minimum.  Defaults to false.
+bool
+RealValuedFunctionLocalOptimizationProblem::seek_local_maximum() const {
+	std::lock_guard< std::mutex > lock( problem_mutex() );
+	return seek_local_maximum_;
+}
+
 /// @brief Get the objective function.
 /// @details Throws if objective function isn't set.
 std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
@@ -354,6 +362,14 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 				"has_at_least_one_starting_point", "Has at least one starting point been provided for the local optimum search?",
 				"has_at_least_one_starting_point", "True if at least one starting point has been provided, false otherwise.",
 				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
+				"seek_local_maximum", "Get whether we are seeking a local maximum.  Returns true if we are and false if we are "
+				"seeking a local minimum.  Defaults to false.",
+				"seek_local_maximum", "True if we are seeking a local maximum, false if we are seeking a local minimum.",
+				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::seek_local_maximum, this )
 			)
 		);
 		api_def->add_getter(
