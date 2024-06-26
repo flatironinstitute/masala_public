@@ -41,8 +41,6 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 
@@ -225,6 +223,7 @@ RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient() 
 masala::base::api::MasalaObjectAPIDefinitionCWP
 RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 	using namespace masala::base::api;
+	using namespace masala::base::api::setter;
 
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 
@@ -246,6 +245,39 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 		// Getters:
 
 		// Setters:
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & > >(
+				"set_objective_function", "Set the objective function for which we want to find a local minimum.",
+				"objective_function_in", "The objective function for which we want to find a local minimum.  This is a std::function that takes as input a vector of "
+				"real numbers (a coordinate in R^N) and returns a real number.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::set_objective_function, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ZeroInput >(
+				"clear_objective_function", "Unset the objective function.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::clear_objective_function, this )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput<std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & > >(
+				"set_objective_function_gradient", "Set the gradient of the objective function for which we want to find a local minimum.",
+				"objective_function_gradient_in", "The gradient of the objective function for which we want to find a local minimum.  This is a std::function that takes as input a vector of "
+				"real numbers (a coordinate in R^N) and a nonconst vector of real numbers; the latter is populated with the gradient with respect to the input "
+				"coordinates.  The function also returns a real number for the value of the function at the coordinate.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient, this, std::placeholders::_1 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< MasalaObjectAPISetterDefinition_ZeroInput >(
+				"clear_objective_function_gradient", "Unset the objective function gradient.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient, this )
+			)
+		);
 
 		// Work functions:
 
