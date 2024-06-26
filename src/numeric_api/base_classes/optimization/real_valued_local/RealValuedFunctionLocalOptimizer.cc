@@ -102,12 +102,13 @@ RealValuedFunctionLocalOptimizer::get_categories() const {
 
 /// @brief Get the keywords for this plugin class.  Default for all optimizers; may be overridden
 /// by derived classes.
-/// @returns { "optimizer", "real_valued_local", "numeric" }
+/// @returns { "optimizer", "real_valued", "local_optimizer", "numeric" }
 std::vector< std::string >
 RealValuedFunctionLocalOptimizer::get_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
-        "real_valued_local",
+		"real_valued",
+		"local_optimizer",
 		"numeric"
 	};
 }
