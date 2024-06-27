@@ -479,10 +479,12 @@ RealValuedFunctionLocalOptimizationProblem::protected_reset() {
 		delete objective_function_;
 	}
 	objective_function_ = nullptr;
+
 	if( objective_function_gradient_ != nullptr ) {
 		delete objective_function_gradient_;
 	}
 	objective_function_gradient_ = nullptr;
+
 	starting_points_.clear();
 	seek_local_maximum_ = false;
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
@@ -521,7 +523,29 @@ void
 RealValuedFunctionLocalOptimizationProblem::protected_assign(
 	masala::numeric::optimization::OptimizationProblem const & src
 ) {
-	TODO TODO TODO;
+	RealValuedFunctionLocalOptimizationProblem const * src_ptr_cast(
+		dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( &src )
+	);
+	CHECK_OR_THROW_FOR_CLASS( src_ptr_cast != nullptr, "protected_assign", "Could not assign an "
+		"object of type " + src.class_name() + " to an object of type " + class_name() + "."
+	);
+
+	if( objective_function_ != nullptr ) { delete objective_function_; }
+	if( objective_function_gradient_ != nullptr ) { delete objective_function_gradient_; }
+	if( src_ptr_cast->objective_function_ != nullptr ) {
+		objective_function_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const & ) >( *src_ptr_cast->objective_function_ );
+	} else {
+		objective_function_ = nullptr;
+	}
+	if( src_ptr_cast->objective_function_gradient_ != nullptr ) {
+		objective_function_gradient_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) >( *src_ptr_cast->objective_function_gradient_ );
+	} else {
+		objective_function_gradient_ = nullptr;
+	}
+
+	starting_points_ = src_ptr_cast->starting_points_;
+	seek_local_maximum_ = src_ptr_cast->seek_local_maximum_;
+	masala::numeric::optimization::OptimizationProblem::protected_assign(src);
 }
 
 
