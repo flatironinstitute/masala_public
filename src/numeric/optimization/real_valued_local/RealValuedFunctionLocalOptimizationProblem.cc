@@ -475,7 +475,16 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
 RealValuedFunctionLocalOptimizationProblem::protected_reset() {
-	TODO TODO TODO;
+	if( objective_function_ != nullptr ) {
+		delete objective_function_;
+	}
+	objective_function_ = nullptr;
+	if( objective_function_gradient_ != nullptr ) {
+		delete objective_function_gradient_;
+	}
+	objective_function_gradient_ = nullptr;
+	starting_points_.clear();
+	seek_local_maximum_ = false;
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
@@ -484,7 +493,17 @@ RealValuedFunctionLocalOptimizationProblem::protected_reset() {
 /// @note Derived versions of this function should call the parent class version too.
 void
 RealValuedFunctionLocalOptimizationProblem::protected_make_independent() {
-	TODO TODO TODO;
+	using masala::base::Real;
+	if( objective_function_ != nullptr ) {
+		std::function<Real (std::vector<Real> const &)> const * oldfunc( objective_function_ );
+		objective_function_ = new std::function<Real (std::vector<Real> const &)>( *oldfunc );
+		delete oldfunc;
+	}
+	if( objective_function_gradient_ != nullptr ) {
+		std::function<Real (std::vector<Real> const &, std::vector<Real> &)> const * oldfunc( objective_function_gradient_ );
+		objective_function_gradient_ = new std::function<Real (std::vector<Real> const &, std::vector<Real> &) >( *oldfunc );
+		delete oldfunc;
+	}
 	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
