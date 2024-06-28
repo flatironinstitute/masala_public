@@ -64,6 +64,7 @@ CostFunction::CostFunction(
     std::lock( src.mutex_, mutex_ );
     std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
     std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+    finalized_.store(false);
     assign_mutex_locked( src );
 }
 
