@@ -104,12 +104,17 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
-	/// @brief Run the line optimizer on a set of line optimization problems, and produce a set of solutions.
-	/// @details Must be implemented by derived classes.  Each solution is a pair of (x, f(x)) where x minimizes f.
+	/// @brief Run the line optimizer on a single line optimization problem, and produce a single solution.
+	/// @details Must be implemented by derived classes.  The solution is a pair of (x, f(x)) where x minimizes f.
+	/// @param[in] fxn The function to minimize.
+	/// @param[out] x The value of x that (locally) minimizes f(x).
+	/// @param[out] fxn_at_x The value of f(x) where x (locally) minimizes f(x).
 	virtual
-	std::vector< std::pair< masala::base::Real, masala::base::Real > >
+	void
 	run_line_optimizer(
-		std::vector< std::function< masala::base::Real( masala::base::Real ) > > const & problems
+		std::function< masala::base::Real( masala::base::Real ) > const & fxn,
+		masala::base::Real & x,
+		masala::base::Real & fxn_at_x
 	) const = 0;
 
 }; // class LineOptimizer
