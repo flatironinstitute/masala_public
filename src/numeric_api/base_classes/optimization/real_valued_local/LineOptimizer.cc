@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/LineOptimizer.cc
+/// @file src/numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.cc
 /// @brief Implementation for a pure virtual base class for LineOptimizers.
 /// @details LineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
@@ -27,7 +27,7 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/LineOptimizer.hh>
+#include <numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.hh>
 
 // STL headers:
 #include <vector>
@@ -37,6 +37,7 @@ namespace masala {
 namespace numeric_api {
 namespace base_classes {
 namespace optimization {
+namespace real_valued_local {
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +86,7 @@ LineOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "LineOptimizer" } };
 }
 
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api

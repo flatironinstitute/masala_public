@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/LineOptimizer.fwd.hh
+/// @file src/numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.fwd.hh
 /// @brief Forward declarations for a pure virtual base class for LineOptimizers.
 /// @details LineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
@@ -26,8 +26,8 @@
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_LineOptimizer_fwd_hh
-#define Masala_src_numeric_api_base_classes_optimization_LineOptimizer_fwd_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_fwd_hh
+#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,6 +35,7 @@ namespace masala {
 namespace numeric_api {
 namespace base_classes {
 namespace optimization {
+namespace real_valued_local {
 
 	class LineOptimizer;
 
@@ -54,9 +55,10 @@ namespace optimization {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using LineOptimizerCWP = MASALA_WEAK_POINTER< LineOptimizer const >;
 
+} // namespace real_valued_local
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
 } // namespace masala
 
-#endif //Masala_src_numeric_api_base_classes_optimization_LineOptimizer_fwd_hh
+#endif //Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_fwd_hh
