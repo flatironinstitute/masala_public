@@ -27,6 +27,8 @@
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.fwd.hh>
 
 #define MASALA_PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
-#define MASALA_GOLDEN_RATIO 1.61803398874989484820458683436563811772030917980576286213544862270526046281890244970720720418939113748475
+#define MASALA_GOLDEN_RATIO_LONG_DOUBLE constexpr( ( 1.0L + std::sqrtl( 5.0L ) ) / 2.0L )
+#define MASALA_GOLDEN_RATIO_DOUBLE constexpr( ( 1.0D + std::sqrt( 5.0D ) ) / 2.0D )
+#define MASALA_GOLDEN_RATIO_FLOAT constexpr( ( 1.0f + std::sqrtf( 5.0f ) ) / 2.0f )
 
 #endif // Masala_src_numeric_api_utility_constants_constants_hh
