@@ -69,6 +69,13 @@ public:
 	/// @brief Destructor.
 	~LineOptimizer() override = default;
 
+	/// @brief Clone operator: make a copy of this object and return a shared
+	/// pointer to the copy.
+	/// @details Must be implemented by derived classes.
+	virtual
+	LineOptimizerSP
+	clone() const = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
