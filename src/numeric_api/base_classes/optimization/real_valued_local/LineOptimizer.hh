@@ -60,11 +60,25 @@ class LineOptimizer : public masala::base::managers::engine::MasalaEngine {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	LineOptimizer() = default;
 
-	/// @brief Copy constructor.
-	LineOptimizer( LineOptimizer const & ) = default;
+	/// @brief Copy constructor.  Explicit due to mutex.
+	LineOptimizer( LineOptimizer const & src );
+
+	/// @brief Assignment operator.  Explicit due to mutex.
+	LineOptimizer &
+	operator=(
+		LineOptimizer const & src
+	);
+
+	/// @brief Make this object independent by calling deep_clone on all contained objects.
+	void
+	make_independent();
 
 	/// @brief Destructor.
 	~LineOptimizer() override = default;
@@ -124,6 +138,47 @@ public:
 		masala::base::Real & x,
 		masala::base::Real & fxn_at_x
 	) const = 0;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Access the mutex from derived classes.
+	std::mutex & mutex() const;
+
+	/// @brief Allow derived classes to access the API definition.
+	/// @note Could be nullptr.  Performs no mutex locking.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+	/// @brief Assignment: must be implemented by derived classes, which must call the base
+	/// class protected_assign().
+	/// @details Performs no mutex locking.
+	virtual
+	void
+	protected_assign(
+		LineOptimizer const & src
+	);
+
+	/// @brief Make independent: must be implemented by derived classes, which must call the base
+	/// class protected_make_independent().
+	/// @details Performs no mutex locking.
+	virtual
+	void
+	protected_make_independent();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex to lock this object.
+	mutable std::mutex mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class LineOptimizer
 

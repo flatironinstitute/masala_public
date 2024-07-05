@@ -39,6 +39,40 @@ namespace base_classes {
 namespace optimization {
 namespace real_valued_local {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.  Explicit due to mutex.
+LineOptimizer::LineOptimizer(
+	LineOptimizer const & src
+) :
+	masala::base::managers::engine::MasalaEngine( src )
+{
+	std::lock( mutex_, src.mutex_ );
+	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+	protected_assign( src );
+}
+
+/// @brief Assignment operator.  Explicit due to mutex.
+LineOptimizer &
+LineOptimizer::operator=(
+	LineOptimizer const & src
+) {
+	std::lock( mutex_, src.mutex_ );
+	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+	protected_assign( src );
+	return *this;
+}
+
+/// @brief Make this object independent by calling deep_clone on all contained objects.
+void
+LineOptimizer::make_independent() {
+	std::lock_guard< std::mutex > lock( mutex_ );
+	protected_make_independent();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -84,6 +118,42 @@ LineOptimizer::get_keywords() const {
 std::vector< std::vector < std::string > >
 LineOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "LineOptimizer" } };
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Access the mutex from derived classes.
+std::mutex &
+LineOptimizer::mutex() const {
+	return mutex_;
+}
+
+/// @brief Allow derived classes to access the API definition.
+/// @note Could be nullptr.  Performs no mutex locking.
+masala::base::api::MasalaObjectAPIDefinitionCSP &
+LineOptimizer::api_definition() {
+	return api_definition_;
+}
+
+/// @brief Assignment: must be implemented by derived classes, which must call the base
+/// class protected_assign().
+/// @details Performs no mutex locking.
+void
+LineOptimizer::protected_assign(
+	LineOptimizer const & /*src*/
+) {
+	// GNDN.
+}
+
+
+/// @brief Make independent: must be implemented by derived classes, which must call the base
+/// class protected_make_independent().
+/// @details Performs no mutex locking.
+void
+LineOptimizer::protected_make_independent() {
+	// GNDN.
 }
 
 } // namespace real_valued_local
