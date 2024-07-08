@@ -129,7 +129,8 @@ public:
 	/// @brief Run the line optimizer on a single line optimization problem, and produce a single solution.
 	/// @details Must be implemented by derived classes.  The solution is a pair of (x, f(x)) where x minimizes f.
 	/// @param[in] fxn The function to minimize.
-	/// @param[out] x The value of x that (locally) minimizes f(x).
+	/// @param[inout] x The value of x that (locally) minimizes f(x).  This may also be used as the starting
+	/// point of the search.
 	/// @param[out] fxn_at_x The value of f(x) where x (locally) minimizes f(x).
 	virtual
 	void
