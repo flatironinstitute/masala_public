@@ -32,10 +32,6 @@
 // Forward declarations:
 #include <numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.fwd.hh>
 
-// Numeric API headers:
-#include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.fwd.hh>
-#include <numeric_api/auto_generated_api/optimization/OptimizationSolutions_API.fwd.hh>
-
 // Parent header:
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/types.hh>
