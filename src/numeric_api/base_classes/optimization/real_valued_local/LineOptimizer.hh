@@ -38,6 +38,9 @@
 // Base headers:
 #include <base/types.hh>
 
+// External headers:
+#include <external/eigen/Eigen/Core>
+
 // STL headers:
 #include <functional>
 #include <utility>
@@ -130,14 +133,21 @@ public:
 	/// @brief Run the line optimizer on a single line optimization problem, and produce a single solution.
 	/// @details Must be implemented by derived classes.  The solution is a pair of (x, f(x)) where x minimizes f.
 	/// @param[in] fxn The function to minimize.
-	/// @param[inout] x The value of x that (locally) minimizes f(x).  This may also be used as the starting
-	/// point of the search.
-	/// @param[out] fxn_at_x The value of f(x) where x (locally) minimizes f(x).
+	/// @param[in] x0 The starting point for the search.
+	/// @param[in] fxn_at_x0 The value of the function at the starting point for the search.
+	/// @param[in] grad_of_fxn_at_x0 The gradient of the function at the starting point for the search.
+	/// @param[in] search_dir The search direction, which may or may not match the negative gradient of the starting point.
+	/// @param[out] x The output value of x that (locally) minimizes f(x).
+	/// @param[out] fxn_at_x The output value of f(x) where x (locally) minimizes f(x).
 	virtual
 	void
 	run_line_optimizer(
-		std::function< masala::base::Real( masala::base::Real ) > const & fxn,
-		masala::base::Real & x,
+		std::function< masala::base::Real( Eigen::VectorXd const & ) > const & fxn,
+		Eigen::VectorXd const & x0,
+		masala::base::Real const & fxn_at_x0,
+		Eigen::VectorXd const & grad_of_fxn_at_x0,
+		Eigen::VectorXd const & search_dir,
+		Eigen::VectorXd & x,
 		masala::base::Real & fxn_at_x
 	) const = 0;
 
