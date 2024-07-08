@@ -41,6 +41,7 @@
 #include <base/types.hh>
 #include <functional>
 #include <utility>
+#include <mutex>
 
 namespace masala {
 namespace numeric_api {
