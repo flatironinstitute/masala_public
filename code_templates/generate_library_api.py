@@ -328,6 +328,13 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             firstcomma = inputclass.rfind( ",", 0, secondcomma )
             additional_includes.append("<external/eigen/Eigen/Dense>")
             return "Eigen::Matrix< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) + inputclass[firstcomma:]
+        elif inputclass.startswith( "Eigen::Vector<" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            secondcomma = inputclass.rfind( ",", 0, lastchevron )
+            firstcomma = inputclass.rfind( ",", 0, secondcomma )
+            additional_includes.append("<external/eigen/Eigen/Core>")
+            return "Eigen::Vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) + inputclass[firstcomma:]
         elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
