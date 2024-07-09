@@ -287,7 +287,7 @@ public:
 		json_input5["Input_Name"] = input_parameter5_name_;
 
 		nlohmann::json json_input6;
-		json_input6["Input_Index"] = 3;
+		json_input6["Input_Index"] = 6;
 		json_input6["Input_Type"] = masala::base::api::name_from_type( base::api::type<T7>() );
 		json_input6["Input_Description"] = input_parameter6_description_;
 		json_input6["Input_Name"] = input_parameter6_name_;
