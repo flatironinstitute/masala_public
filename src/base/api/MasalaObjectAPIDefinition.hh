@@ -55,6 +55,9 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ThreeInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FourInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FiveInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SixInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SevenInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -363,6 +366,69 @@ public:
 			}
 		}
 		return MasalaObjectAPIWorkFunctionDefinition_FourInputCWP< P0, P1, P2, P3, P4 >();
+	}
+
+	/// @brief Get a five-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_FiveInputCWP< P0, P1, P2, P3, P4, P5 >
+	get_fiveinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 5 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_FiveInputCSP<P0,P1,P2,P3,P4,P5> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_FiveInput< P0, P1, P2, P3, P4, P5 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_FiveInputCWP< P0, P1, P2, P3, P4, P5 >();
+	}
+
+	/// @brief Get a six-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_SixInputCWP< P0, P1, P2, P3, P4, P5, P6 >
+	get_sixinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 6 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_SixInputCSP<P0,P1,P2,P3,P4,P5,P6> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_SixInput< P0, P1, P2, P3, P4, P5, P6 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_SixInputCWP< P0, P1, P2, P3, P4, P5, P6 >();
+	}
+
+	/// @brief Get a seven-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_SevenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7 >
+	get_seveninput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 7 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_SevenInputCSP<P0,P1,P2,P3,P4,P5,P6,P7> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_SevenInput< P0, P1, P2, P3, P4, P5, P6, P7 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_SevenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7 >();
 	}
 
 public:
