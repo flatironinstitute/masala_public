@@ -197,7 +197,7 @@ public:
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Input 1:\t" << input_parameter1_name_ << "\t" << input_parameter1_description_ << std::endl;
 		ss << "Input 2:\t" << input_parameter2_name_ << "\t" << input_parameter2_description_ << std::endl;
-		ss << "Input 2:\t" << input_parameter3_name_ << "\t" << input_parameter3_description_ << std::endl;
+		ss << "Input 3:\t" << input_parameter3_name_ << "\t" << input_parameter3_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}

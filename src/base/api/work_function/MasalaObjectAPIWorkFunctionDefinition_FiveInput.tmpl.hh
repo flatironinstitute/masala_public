@@ -205,8 +205,8 @@ public:
 		ss << "Input 0:\t" << input_parameter0_name_ << "\t" << input_parameter0_description_ << std::endl;
 		ss << "Input 1:\t" << input_parameter1_name_ << "\t" << input_parameter1_description_ << std::endl;
 		ss << "Input 2:\t" << input_parameter2_name_ << "\t" << input_parameter2_description_ << std::endl;
-		ss << "Input 2:\t" << input_parameter3_name_ << "\t" << input_parameter3_description_ << std::endl;
-		ss << "Input 2:\t" << input_parameter4_name_ << "\t" << input_parameter4_description_ << std::endl;
+		ss << "Input 3:\t" << input_parameter3_name_ << "\t" << input_parameter3_description_ << std::endl;
+		ss << "Input 4:\t" << input_parameter4_name_ << "\t" << input_parameter4_description_ << std::endl;
 		ss << "Output: \t" << output_name_ << "\t" << output_description_ << std::endl;
 		return ss.str();
 	}
@@ -257,10 +257,10 @@ public:
 		json_input3["Input_Name"] = input_parameter3_name_;
 
 		nlohmann::json json_input4;
-		json_input3["Input_Index"] = 4;
-		json_input3["Input_Type"] = masala::base::api::name_from_type( base::api::type<T5>() );
-		json_input3["Input_Description"] = input_parameter4_description_;
-		json_input3["Input_Name"] = input_parameter4_name_;
+		json_input4["Input_Index"] = 4;
+		json_input4["Input_Type"] = masala::base::api::name_from_type( base::api::type<T5>() );
+		json_input4["Input_Description"] = input_parameter4_description_;
+		json_input4["Input_Name"] = input_parameter4_name_;
 
 		nlohmann::json json_inputs;
 		json_inputs["Input_0"] = json_input0;
