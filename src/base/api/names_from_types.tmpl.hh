@@ -671,6 +671,13 @@ namespace api {
         return "Eigen::Matrix< " + name_from_type(type<T>()) + ", Eigen::Dynamic, Eigen::Dynamic >";
     }
 
+    /// @brief Manually override for Eigen vectors.
+    template<class T>
+    std::string
+    name_from_type(type<Eigen::Vector<T, Eigen::Dynamic >>) {
+        return "Eigen::Vector< " + name_from_type(type<T>()) + ", Eigen::Dynamic >";
+    }
+
 } // namespace api
 } // namespace base
 } // namespace masala
