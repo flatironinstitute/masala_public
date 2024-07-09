@@ -230,7 +230,7 @@ public:
 		}
 
 		//Inputs:
-		json_api["Work_Function_N_Inputs"] = 4;
+		json_api["Work_Function_N_Inputs"] = 5;
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;
