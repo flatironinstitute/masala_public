@@ -51,7 +51,7 @@ namespace work_function {
 /// @brief A class that stores the definition for a work function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for two-input work functions.  The types T1 and T2
+/// @details This is a derived class for four-input work functions.  The types T1 through T4
 /// define the input types and the type T0 defines the output type.
 /// @note A work function can take zero or more inputs, and can return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -150,7 +150,7 @@ public:
 		T1 input1,
 		T2 input2,
 		T3 input3,
-		T3 input4
+		T4 input4
 	) const {
 		return work_function_( input1, input2, input3, input4 );
 	}
