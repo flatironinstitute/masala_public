@@ -35,6 +35,9 @@
 // Parent header:
 #include <numeric/optimization/OptimizationSolution.hh>
 
+// External headers:
+#include <external/eigen/Eigen/Core>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -133,6 +136,35 @@ public:
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Set the problem that gave rise to this solution.
+	/// @details Stored directly (not cloned) on input.  This override checks that the problem
+	/// is a RealValuedFunctionLocalOptimizationProblem.  If the solution vector has been
+	/// set, the problem must match it.  If a starting point has already been set, the problem
+	/// must correspond.
+	void set_problem( OptimizationProblemCSP const & problem ) override;
+
+	/// @brief Set the starting point that gave rise to this local minimum, and the corresponding
+	/// starting point index in the problem.
+	/// @details If the problem has already been set, this must match it.  If a solution vector has
+	/// been set, the starting point's length must match it.
+	void
+	set_starting_point_and_index(
+		Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point_in,
+		masala::base::Size const starting_point_index
+	);
+
+	/// @brief Set the point found that is a local minimum.
+	/// @details If the problem has already been set, this must match it.  If a starting point has
+	/// been set, the solution vector's length must match it.
+	void set_solution_point(  Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & solution_point_in );
+
+	/// @brief Set whether the optimizer reported convergence.
+	void set_converged( bool const converged_in );
+
+	/// @brief Set the number of iterations that the optimizer reported taking.
+	/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
+	void set_iterations( masala::base::Size const iterations_in );
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +182,22 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The starting point that gave rise to this local minimum.
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > starting_point_;
+
+	/// @brief The starting point index in the problem.
+	masala::base::Size starting_point_index_ = 0;
+
+	/// @brief The point found that is a local minimum.
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > solution_point_;
+
+	/// @brief Did the optimizer report convergence?
+	bool is_converged_ = false;
+
+	/// @brief How many iterations did the optimizer report taking?
+	/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
+	masala::base::Size iterations_ = 0;
 
 }; // class RealValuedFunctionLocalOptimizationSolution
 

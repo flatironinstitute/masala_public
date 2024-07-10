@@ -178,6 +178,131 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Set the problem that gave rise to this solution.
+/// @details Stored directly (not cloned) on input.  This override checks that the problem
+/// is a CostFunctionNetworkOptimizationProblem.  If the solution vector has been
+/// set, the problem must match it.
+void
+RealValuedFunctionLocalOptimizationSolution::set_problem(
+    OptimizationProblemCSP const & problem
+) {
+	using masala::base::Size;
+
+    RealValuedFunctionLocalOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< RealValuedFunctionLocalOptimizationProblem const >( problem ) );
+    CHECK_OR_THROW_FOR_CLASS(
+        problem_cast != nullptr,
+        "set_problem", "A problem was passed to this function that was not a real-valued function local optimization problem.  Problem type was "
+		+ problem->class_name() + "."
+    );
+
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+
+    if( solution_point_.size() > 0 ) {
+		Size const n_starting_pts( problem_cast->starting_points().size() );
+		for( Size i(0); i<n_starting_pts; ++i ) {
+			CHECK_OR_THROW_FOR_CLASS( solution_point_.size() == problem_cast->starting_points()[i].size(),
+				"set_problem", "The solution vector be of the same length as the starting points in the problem.  The problem "
+				"specifies " + std::to_string( problem_cast->starting_points()[i].size() ) + "-dimensional starting coordinates, "
+				"but the solution is " + std::to_string( solution_point_.size() ) + "-dimensional."
+			);
+		}
+    }
+
+	if( starting_point_.size() > 0 ) {
+		CHECK_OR_THROW_FOR_CLASS(
+			starting_point_index_ < problem_cast->starting_points().size(), "set_problem",
+			"The starting point index was set to " + std::to_string( starting_point_index_ ) + ", but there are only "
+			+ std::to_string( problem_cast->starting_points().size() ) + " starting points in the problem."
+		)
+		CHECK_OR_THROW_FOR_CLASS(
+			starting_point_ == problem_cast->starting_points()[starting_point_index_], "set_problem",
+			"The starting point does not match the corresponding starting point in the problem."
+		)
+	}
+
+    protected_problem() = problem;
+}
+
+/// @brief Set the starting point that gave rise to this local minimum, and the corresponding
+/// starting point index in the problem.
+/// @details If the problem has already been set, this must match it.  If a solution vector has
+/// been set, the starting point's length must match it.
+void
+RealValuedFunctionLocalOptimizationSolution::set_starting_point_and_index(
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point_in,
+	masala::base::Size const starting_point_index
+) {
+	using masala::base::Size;
+	std::lock_guard< std::mutex > lock( solution_mutex() );
+
+	if( solution_point_.size() > 0 ) {
+		CHECK_OR_THROW_FOR_CLASS( starting_point_in.size() == solution_point_.size(), "set_starting_point_and_index",
+			"Starting point and solution vector dimensionality do not match."
+		);
+	}
+	if( protected_problem() != nullptr ) {
+		RealValuedFunctionLocalOptimizationProblem const * prob( dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( protected_problem().get() ) );
+		CHECK_OR_THROW_FOR_CLASS( prob != nullptr, "set_starting_point_and_index", "Problem is not a RealValuedFunctionLocalOptimizationProblem!" );
+		Size const nstarts( prob->starting_points().size() );
+		CHECK_OR_THROW_FOR_CLASS( starting_point_index < prob->starting_points().size(), "set_starting_point_and_index", "The starting point index is out of range." );
+		CHECK_OR_THROW_FOR_CLASS( starting_point_in == prob->starting_points()[starting_point_index], "set_starting_point_and_index",
+			"The starting point does not match the corresponding starting point in the problem."
+		);
+	}
+		
+	starting_point_ = starting_point_in;
+	starting_point_index_ = starting_point_index;
+}
+
+/// @brief Set the point found that is a local minimum.
+/// @details If the problem has already been set, this must match it.  If a starting point has
+/// been set, the solution vector's length must match it.
+void
+RealValuedFunctionLocalOptimizationSolution::set_solution_point(
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & solution_point_in
+) {
+	using masala::base::Size;
+	std::lock_guard< std::mutex > lock( solution_mutex() );
+
+	CHECK_OR_THROW_FOR_CLASS( solution_point_in.size() > 0, "set_solution_point", "Solutions must have nonzero length." );
+	if( starting_point_.size() > 0 ) {
+		CHECK_OR_THROW_FOR_CLASS( solution_point_in.size() == starting_point_.size(), "set_solution_point",
+			"Solutions must have the same dimensionality as the starting point."
+		);
+	}
+	if( protected_problem() != nullptr ) {
+		RealValuedFunctionLocalOptimizationProblem const * prob( dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( protected_problem().get() ) );
+		CHECK_OR_THROW_FOR_CLASS( prob != nullptr, "set_solution_point", "Problem is not a RealValuedFunctionLocalOptimizationProblem!" );
+		Size const nstarts( prob->starting_points().size() );
+		for( Size i(0); i<nstarts; ++i ) {
+			CHECK_OR_THROW_FOR_CLASS( solution_point_in.size() == prob->starting_points()[i].size(), "set_solution_point",
+				"The solution vector dimensionality does not match a problem starting point vector's dimensionality."
+			);
+		}
+	}
+
+	solution_point_ = solution_point_in;
+}
+
+/// @brief Set whether the optimizer reported convergence.
+void
+RealValuedFunctionLocalOptimizationSolution::set_converged(
+	bool const converged_in
+) {
+	std::lock_guard< std::mutex > lock( solution_mutex() );
+	is_converged_ = converged_in;
+}
+
+/// @brief Set the number of iterations that the optimizer reported taking.
+/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
+void
+RealValuedFunctionLocalOptimizationSolution::set_iterations(
+	masala::base::Size const iterations_in
+) {
+	std::lock_guard< std::mutex > lock( solution_mutex() );
+	iterations_ = iterations_in;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
