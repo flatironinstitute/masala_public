@@ -72,6 +72,29 @@ public:
 	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 	std::string class_namespace() const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the information for the object types that this setter takes.
+	/// @param[in] plugin_manager_input_object_category The category that can be passed
+	/// to the plugin manager to get objects of the type that this setter function accepts.
+	/// Can be left as an empty vector.
+	/// @param[in] plugin_manager_input_object_keywords Keywords that can be passed to the
+	/// MasalaPluginManager to try to get objects of the type needed for this setter function.
+	/// Can be left as an empty vector.
+	/// @param[in] plugin_manager_include_subcategory If true (the default), then
+	/// subcategories of the given category are accepted.  If false, then the exact category
+	/// must be used.
+	void
+	set_plugin_manager_info(
+		std::vector< std::string > const & plugin_manager_input_object_category,
+		std::vector< std::string > const & plugin_manager_input_object_keywords,
+		bool const plugin_manager_include_subcategory = true
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
