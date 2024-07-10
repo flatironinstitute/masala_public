@@ -174,6 +174,42 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief The starting point that gave rise to this local minimum.
+Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &
+RealValuedFunctionLocalOptimizationSolution::starting_point() const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+	return starting_point_;
+}
+
+/// @brief The starting point index in the problem.
+masala::base::Size
+RealValuedFunctionLocalOptimizationSolution::starting_point_index() const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+	return starting_point_index_;
+}
+
+/// @brief The point found that is a local minimum.
+Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &
+RealValuedFunctionLocalOptimizationSolution::solution_point() const {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+	return solution_point_;
+}
+
+/// @brief Did the optimizer report convergence?
+bool
+RealValuedFunctionLocalOptimizationSolution::is_converged() {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+	return is_converged_;
+}
+
+/// @brief How many iterations did the optimizer report taking?
+/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
+masala::base::Size
+RealValuedFunctionLocalOptimizationSolution::iterations() {
+    std::lock_guard< std::mutex > lock( solution_mutex() );
+	return iterations_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////

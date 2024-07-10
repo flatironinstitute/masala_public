@@ -130,6 +130,22 @@ public:
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief The starting point that gave rise to this local minimum.
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point() const;
+
+	/// @brief The starting point index in the problem.
+	masala::base::Size starting_point_index() const;
+
+	/// @brief The point found that is a local minimum.
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & solution_point() const;
+
+	/// @brief Did the optimizer report convergence?
+	bool is_converged();
+
+	/// @brief How many iterations did the optimizer report taking?
+	/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
+	masala::base::Size iterations();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
