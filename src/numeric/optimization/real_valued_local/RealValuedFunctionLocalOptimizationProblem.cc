@@ -519,13 +519,13 @@ RealValuedFunctionLocalOptimizationProblem::protected_finalize() {
 		CHECK_OR_THROW_FOR_CLASS( starting_points_[0].size() > 0, "protected_finalize",
 			"A zero-size starting point vector was encountered for starting point 1."
 		);
-		Size const nentries( static_cast< Size const >( starting_points_[0].size() ) );
+		Size const nentries( static_cast< Size >( starting_points_[0].size() ) );
 		for( Size i(1); i<starting_points_.size(); ++i ) {
 			CHECK_OR_THROW_FOR_CLASS( starting_points_[i].size() > 0, "protected_finalize",
 				"A zero-size starting point vector was encountered for starting point "
 				+ std::to_string(i+1) + "."
 			);
-			CHECK_OR_THROW_FOR_CLASS( static_cast< Size const >( starting_points_[i].size() ) == nentries, "protected_finalize",
+			CHECK_OR_THROW_FOR_CLASS( static_cast< Size >( starting_points_[i].size() ) == nentries, "protected_finalize",
 				"The number of entries in starting point vector " + std::to_string(i) + " is " +
 				std::to_string( starting_points_[i].size() ) + ", but entry 0 had " +
 				std::to_string(nentries) + " entries."
