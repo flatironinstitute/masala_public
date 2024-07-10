@@ -31,7 +31,7 @@
 #include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
 // STL headers:
-#include <vector>
+#include <mutex>
 
 namespace masala {
 namespace base {
@@ -70,6 +70,30 @@ public:
 	/// nothing.
 	masala::base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition() override = 0;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Allow derived classes to access the mutex.
+	std::mutex & mutex() const;
+
+	/// @brief Allow derived classes to access the API defintion.
+	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE VARIABLES
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A mutex for locking this object.
+	mutable std::mutex mutex_;
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class MasalaFunctionAnnotation
 
