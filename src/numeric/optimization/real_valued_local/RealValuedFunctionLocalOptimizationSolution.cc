@@ -161,7 +161,47 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 		// Work functions:
 
 		// Getters:
-		
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Eigen::Vector< Real, Eigen::Dynamic > const & > >(
+				"starting_point", "Get the starting point that gave rise to this local minimum.",
+				"starting_point", "The starting point that gave rise to this local minimum.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::starting_point, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Size > >(
+				"starting_point_index", "Get the index (in the problem) of the starting point that gave rise to this local minimum.",
+				"starting_point_index", "The starting point index.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::starting_point_index, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & > >(
+				"solution_point", "Get the local minimum point found by the optimizer.",
+				"solution_point", "The point found that is a local minimum.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_point, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput<bool> >(
+				"is_converged", "Did the optimizer report convergence?",
+				"converged", "True if the optimizer reported convergence; false otherwise.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::is_converged, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Size > >(
+				"iterations", "How many iterations did the optimizer report taking?",
+				"iterations", "The number of iterations that the optimizer took to find the minimum.  Note "
+				"that some optimizers may use non-iterative approaches, in which case this value will be zero.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::iterations, this )
+			)
+		);
 		api_def->add_getter(
 			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
 				"solution_score", "Get the score associated with this local optimization solution.  This is the exact "
