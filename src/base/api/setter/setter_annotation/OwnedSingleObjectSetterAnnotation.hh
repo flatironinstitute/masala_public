@@ -34,6 +34,7 @@
 
 // STL headers:
 #include <string>
+#include <vector>
 
 namespace masala {
 namespace base {
@@ -70,6 +71,54 @@ public:
 
 	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 	std::string class_namespace() const override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The category that can be passed to the MasalaPluginManager to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > plugin_manager_input_object_category_;
+
+	/// @brief When the MasalaPluginManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	bool plugin_manager_include_subcategory_ = true;
+
+	/// @brief The keywords that can be passed to the MasalaPluginManager to try to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > plugin_manager_input_object_keywords_;
+
+	/// @brief Is the input object an engine?  False by default.
+	bool is_engine_ = false;
+
+	/// @brief The category that can be passed to the MasalaEngineManager to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > engine_manager_input_object_category_;
+
+	/// @brief When the MasalaEngineManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	bool engine_manager_include_subcategory_ = true;
+
+	/// @brief The keywords that can be passed to the MasalaEngineManager to try to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > engine_manager_input_object_keywords_;
+
+	/// @brief Is the input object a data representation?  False by default.
+	bool is_data_representation_ = false;
+
+	/// @brief The category that can be passed to the MasalaDataRepresentationManager to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > data_representation_manager_input_object_category_;
+
+	/// @brief When the MasalaDataRepresentationManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	bool data_representation_manager_include_subcategory_ = true;
+
+	/// @brief The keywords that can be passed to the MasalaDataRepresentationManager to try to get objects
+	/// of the type needed for this function.
+	std::vector< std::string > data_representation_manager_input_object_keywords_;
 
 }; // class OwnedSingleObjectSetterAnnotation
 
