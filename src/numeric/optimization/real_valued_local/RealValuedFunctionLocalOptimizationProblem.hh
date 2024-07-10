@@ -145,10 +145,6 @@ public:
 	/// @brief Has at least one starting point been provided for this problem?
 	bool has_at_least_one_starting_point() const;
 
-	/// @brief Get whether we are seeking a local maximum.  Returns true if we are and false if we are
-	/// seeking a local minimum.  Defaults to false.
-	bool seek_local_maximum() const;
-
 	/// @brief Get the objective function.
 	/// @details Throws if objective function isn't set.
 	std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const &
@@ -190,12 +186,6 @@ public:
 	/// @brief Clear the objective function gradient.
 	void
 	clear_objective_function_gradient();
-
-	/// @brief Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.
-	void
-	set_seek_local_maximum(
-		bool const setting
-	);
 
 	/// @brief Add a bunch of starting points to the set of starting points for local minimum search.
 	void
@@ -277,9 +267,6 @@ std::function<
 
 /// @brief Starting points for the local minimum search.
 std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > starting_points_;
-
-/// @brief Are we trying to find a maximum (true) or minimum (false)?  Defaults to false.
-bool seek_local_maximum_ = false;
 
 }; // class RealValuedFunctionLocalOptimizationProblem
 

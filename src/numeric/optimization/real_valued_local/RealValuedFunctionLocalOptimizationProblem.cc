@@ -175,14 +175,6 @@ RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point() co
 	return ( !starting_points_.empty() );
 }
 
-/// @brief Get whether we are seeking a local maximum.  Returns true if we are and false if we are
-/// seeking a local minimum.  Defaults to false.
-bool
-RealValuedFunctionLocalOptimizationProblem::seek_local_maximum() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	return seek_local_maximum_;
-}
-
 /// @brief Get the objective function.
 /// @details Throws if objective function isn't set.
 std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const &
@@ -265,16 +257,6 @@ RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient() 
 		delete objective_function_gradient_;
 	}
 	objective_function_gradient_ = nullptr;
-}
-
-/// @brief Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.
-void
-RealValuedFunctionLocalOptimizationProblem::set_seek_local_maximum(
-	bool const setting
-) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
-	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_seek_local_maximum", "We cannot set whether to seek a local maximum or minimum after the " + class_name() + " object has been finalized." );
-	seek_local_maximum_ = setting;
 }
 
 /// @brief Add a bunch of starting points to the set of starting points for local minimum search.
@@ -365,14 +347,6 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_getter(
-			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< bool > >(
-				"seek_local_maximum", "Get whether we are seeking a local maximum.  Returns true if we are and false if we are "
-				"seeking a local minimum.  Defaults to false.",
-				"seek_local_maximum", "True if we are seeking a local maximum, false if we are seeking a local minimum.",
-				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::seek_local_maximum, this )
-			)
-		);
-		api_def->add_getter(
 			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & > >(
 				"objective_function", "Get the objective function.  Throws if objective function isn't set.",
 				"objective_function", "The objective function for which we're trying to find a local minimum.",
@@ -429,14 +403,6 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_setter(
-			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< bool const > >(
-				"set_seek_local_maximum", "Set whether we're seeking a local maximum (true) or local minimum (false).  Defaults to minimum.",
-				"seek_local_maximum_setting", "True if we're searching for a local maximum, false if we're searching for a local minimum.",
-				false, false,
-				std::bind( &RealValuedFunctionLocalOptimizationProblem::set_seek_local_maximum, this, std::placeholders::_1 )
-			)
-		);
-		api_def->add_setter(
 			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & > >(
 				"add_starting_points", "Add multiple starting points to the set of starting points for local optimum search.",
 				"starting_poinst_in", "A vector of coordinates in R^N, each specifying a starting point for the local optimimum search.",
@@ -486,7 +452,6 @@ RealValuedFunctionLocalOptimizationProblem::protected_reset() {
 	objective_function_gradient_ = nullptr;
 
 	starting_points_.clear();
-	seek_local_maximum_ = false;
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
@@ -562,7 +527,6 @@ RealValuedFunctionLocalOptimizationProblem::protected_assign(
 	}
 
 	starting_points_ = src_ptr_cast->starting_points_;
-	seek_local_maximum_ = src_ptr_cast->seek_local_maximum_;
 	masala::numeric::optimization::OptimizationProblem::protected_assign(src);
 }
 
