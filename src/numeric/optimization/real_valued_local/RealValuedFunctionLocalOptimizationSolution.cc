@@ -55,21 +55,21 @@ namespace real_valued_local {
 /// @brief Make a copy of this object.
 masala::numeric::optimization::OptimizationSolutionSP
 RealValuedFunctionLocalOptimizationSolution::clone() const {
-    return masala::make_shared< RealValuedFunctionLocalOptimizationSolution >( *this );
+	return masala::make_shared< RealValuedFunctionLocalOptimizationSolution >( *this );
 }
 
 /// @brief Make a fully independent copy of this object.
 RealValuedFunctionLocalOptimizationSolutionSP
 RealValuedFunctionLocalOptimizationSolution::deep_clone() const {
-    RealValuedFunctionLocalOptimizationSolutionSP new_solution( std::static_pointer_cast< RealValuedFunctionLocalOptimizationSolution >( this->clone() ) );
-    new_solution->make_independent();
-    return new_solution;
+	RealValuedFunctionLocalOptimizationSolutionSP new_solution( std::static_pointer_cast< RealValuedFunctionLocalOptimizationSolution >( this->clone() ) );
+	new_solution->make_independent();
+	return new_solution;
 }
 
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 RealValuedFunctionLocalOptimizationSolution::make_independent() {
-    masala::numeric::optimization::OptimizationSolution::make_independent();
+	masala::numeric::optimization::OptimizationSolution::make_independent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ std::vector< std::string >
 RealValuedFunctionLocalOptimizationSolution::get_keywords() const {
 	return std::vector< std::string > {
 		"optimization_solution",
-        "local",
+		"local",
 		"real_valued",
 		"numeric"
 	};
@@ -108,14 +108,14 @@ RealValuedFunctionLocalOptimizationSolution::get_keywords() const {
 /// @returns "RealValuedFunctionLocalOptimizationSolution".
 std::string
 RealValuedFunctionLocalOptimizationSolution::class_name() const {
-    return "RealValuedFunctionLocalOptimizationSolution";
+	return "RealValuedFunctionLocalOptimizationSolution";
 }
 
 /// @brief Get the namespace for this class.
 /// @returns "masala::numeric::optimization::real_valued_local".
 std::string
 RealValuedFunctionLocalOptimizationSolution::class_namespace() const {
-    return "masala::numeric::optimization::real_valued_local";
+	return "masala::numeric::optimization::real_valued_local";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,131 +125,132 @@ RealValuedFunctionLocalOptimizationSolution::class_namespace() const {
 /// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationSolution class.
 masala::base::api::MasalaObjectAPIDefinitionCWP
 RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
-    using namespace masala::base::api;
-    using base::Real;
-    using base::Size;
+	using namespace masala::base::api;
+	using base::Real;
+	using base::Size;
 
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 
-    if( api_definition() == nullptr ) {
+	if( api_definition() == nullptr ) {
 
-        MasalaObjectAPIDefinitionSP api_def(
-            masala::make_shared< MasalaObjectAPIDefinition >(
-                *this,
-                "A RealValuedFunctionLocalOptimizationSolution contains the solution to a particular "
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"A RealValuedFunctionLocalOptimizationSolution contains the solution to a particular "
 				"RealValuedFunctionLocalOptimizationProblem, after it is solved by a suitable "
 				"GradientBasedFunctionOptimizer.  It does not contain any chemistry-specific concepts.",
-                false, false
-            )
-        );
+				false, false
+			)
+		);
 
-        // Constructors:
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < RealValuedFunctionLocalOptimizationSolution > > (
-                class_name(),
-                "Creates an empty RealValuedFunctionLocalOptimizationSolution."
-            )
-        );
-        api_def->add_constructor(
-            masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < RealValuedFunctionLocalOptimizationSolution, RealValuedFunctionLocalOptimizationSolution const & > > (
-                class_name(),
-                "Copy constructor: copies an input RealValuedFunctionLocalOptimizationSolution.",
-                "src", "The input RealValuedFunctionLocalOptimizationSolution to copy.  Unaltered by this operation."
-            )
-        );
+		// Constructors:
+		api_def->add_constructor(
+			masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_ZeroInput < RealValuedFunctionLocalOptimizationSolution > > (
+				class_name(),
+				"Creates an empty RealValuedFunctionLocalOptimizationSolution."
+			)
+		);
+		api_def->add_constructor(
+			masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_OneInput < RealValuedFunctionLocalOptimizationSolution, RealValuedFunctionLocalOptimizationSolution const & > > (
+				class_name(),
+				"Copy constructor: copies an input RealValuedFunctionLocalOptimizationSolution.",
+				"src", "The input RealValuedFunctionLocalOptimizationSolution to copy.  Unaltered by this operation."
+			)
+		);
 
-        // Work functions:
+		// Work functions:
 
-        // Getters:
+		// Getters:
+		
 		api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score", "Get the score associated with this local optimization solution.  This is the exact "
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+				"solution_score", "Get the score associated with this local optimization solution.  This is the exact "
 				"score, recomputed once the solution has been produced.",
-                "solution_score", "The exact score associated with this local optimization solution.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score, this )
-            )
-        );
-        api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"solution_score", "The exact score associated with this local optimization solution.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+				"solution_score_data_representation_approximation", "Get the approximate score associated "
 				"with this local optimization solution, given the local optimization data representation.  Certain data representations may use "
 				"reduced floating point precision or other approximations for greater efficiency.",
-                "solution_score_data_representation_approximation", "The approximate score with this local optimization solution, "
+				"solution_score_data_representation_approximation", "The approximate score with this local optimization solution, "
 				"given the local optimization data representation",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_data_representation_approximation, this )
-            )
-        );
-        api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
-                "solution_score_solver_approximation", "Get the approximate score returned by the local optimization solver that produced "
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_data_representation_approximation, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+				"solution_score_solver_approximation", "Get the approximate score returned by the local optimization solver that produced "
 				"this local optimization solution.  In addition to approximation from the data representation, a solver may accumulate "
 				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
 				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
 				"their own error.",
-                "solution_score_solver_approximation", "The approximate score associated with this local optimization solution, returned "
+				"solution_score_solver_approximation", "The approximate score associated with this local optimization solution, returned "
 				"by the solver.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_solver_approximation, this )
-            )
-        );
-        api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< OptimizationProblemCSP > >(
-                "problem", "Get the local optimization problem associated with this local optimization solution.",
-                "problem", "The problem associated with this solution.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::problem, this )
-            )
-        );
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_solver_approximation, this )
+			)
+		);
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< OptimizationProblemCSP > >(
+				"problem", "Get the local optimization problem associated with this local optimization solution.",
+				"problem", "The problem associated with this solution.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::problem, this )
+			)
+		);
 
-        // Setters:
+		// Setters:
 		api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score", "Set the score associated with this solution.  This is the "
-                "exact score, recomputed once the solution has been produced.",
-                "score_in", "The score to set.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score, this, std::placeholders::_1 )
-            ) 
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score_data_representation_approximation", "Set an approximate score associated "
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+				"set_solution_score", "Set the score associated with this solution.  This is the "
+				"exact score, recomputed once the solution has been produced.",
+				"score_in", "The score to set.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+				"set_solution_score_data_representation_approximation", "Set an approximate score associated "
 				"with this solution, given the data representation.  Certain data representations may use reduced "
 				"floating point precision or other approximations for greater efficiency.",
-                "dr_approx_score_in", "The approximate score (from the data representation) to set.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
-            ) 
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
-                "set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
+				"dr_approx_score_in", "The approximate score (from the data representation) to set.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+				"set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
 				"produced this solution. In addition to approximation from the data representation, a solver may "
 				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
 				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
 				"their own error.",
-                "solver_approx_score_in", "The approximate score (from the solver) to set.",
-                false, false,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
-            ) 
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
-                "set_problem", "Set the problem that gave rise to this solution.",
-                "problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
-                "must be a cost function network optimizatoin problem, and this function will throw if it is "
-                "not.  Stored directly (not cloned) on input.",
-                false, true,
-                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_problem, this, std::placeholders::_1 )
-            ) 
-        );
+				"solver_approx_score_in", "The approximate score (from the solver) to set.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
+				"set_problem", "Set the problem that gave rise to this solution.",
+				"problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
+				"must be a cost function network optimizatoin problem, and this function will throw if it is "
+				"not.  Stored directly (not cloned) on input.",
+				false, true,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_problem, this, std::placeholders::_1 )
+			) 
+		);
 
-        api_definition() = api_def; //Make const.
-    }
+		api_definition() = api_def; //Make const.
+	}
 
-    return api_definition();
+	return api_definition();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -259,28 +260,28 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 /// @brief The starting point that gave rise to this local minimum.
 Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &
 RealValuedFunctionLocalOptimizationSolution::starting_point() const {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return starting_point_;
 }
 
 /// @brief The starting point index in the problem.
 masala::base::Size
 RealValuedFunctionLocalOptimizationSolution::starting_point_index() const {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return starting_point_index_;
 }
 
 /// @brief The point found that is a local minimum.
 Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &
 RealValuedFunctionLocalOptimizationSolution::solution_point() const {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return solution_point_;
 }
 
 /// @brief Did the optimizer report convergence?
 bool
 RealValuedFunctionLocalOptimizationSolution::is_converged() {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return is_converged_;
 }
 
@@ -288,7 +289,7 @@ RealValuedFunctionLocalOptimizationSolution::is_converged() {
 /// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
 masala::base::Size
 RealValuedFunctionLocalOptimizationSolution::iterations() {
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return iterations_;
 }
 
@@ -302,20 +303,20 @@ RealValuedFunctionLocalOptimizationSolution::iterations() {
 /// set, the problem must match it.
 void
 RealValuedFunctionLocalOptimizationSolution::set_problem(
-    OptimizationProblemCSP const & problem
+	OptimizationProblemCSP const & problem
 ) {
 	using masala::base::Size;
 
-    RealValuedFunctionLocalOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< RealValuedFunctionLocalOptimizationProblem const >( problem ) );
-    CHECK_OR_THROW_FOR_CLASS(
-        problem_cast != nullptr,
-        "set_problem", "A problem was passed to this function that was not a real-valued function local optimization problem.  Problem type was "
+	RealValuedFunctionLocalOptimizationProblemCSP problem_cast( std::dynamic_pointer_cast< RealValuedFunctionLocalOptimizationProblem const >( problem ) );
+	CHECK_OR_THROW_FOR_CLASS(
+		problem_cast != nullptr,
+		"set_problem", "A problem was passed to this function that was not a real-valued function local optimization problem.  Problem type was "
 		+ problem->class_name() + "."
-    );
+	);
 
-    std::lock_guard< std::mutex > lock( solution_mutex() );
+	std::lock_guard< std::mutex > lock( solution_mutex() );
 
-    if( solution_point_.size() > 0 ) {
+	if( solution_point_.size() > 0 ) {
 		Size const n_starting_pts( problem_cast->starting_points().size() );
 		for( Size i(0); i<n_starting_pts; ++i ) {
 			CHECK_OR_THROW_FOR_CLASS( solution_point_.size() == problem_cast->starting_points()[i].size(),
@@ -324,7 +325,7 @@ RealValuedFunctionLocalOptimizationSolution::set_problem(
 				"but the solution is " + std::to_string( solution_point_.size() ) + "-dimensional."
 			);
 		}
-    }
+	}
 
 	if( starting_point_.size() > 0 ) {
 		CHECK_OR_THROW_FOR_CLASS(
@@ -338,7 +339,7 @@ RealValuedFunctionLocalOptimizationSolution::set_problem(
 		)
 	}
 
-    protected_problem() = problem;
+	protected_problem() = problem;
 }
 
 /// @brief Set the starting point that gave rise to this local minimum, and the corresponding
