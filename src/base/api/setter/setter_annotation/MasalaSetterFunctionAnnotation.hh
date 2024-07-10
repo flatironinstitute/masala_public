@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh
-/// @brief Headers for a pure virtual base class for function annotations.
+/// @brief Headers for a pure virtual base class for setter function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_setter_setter_annotation_MasalaSetterFunctionAnnotation_hh
@@ -35,7 +35,7 @@ namespace api {
 namespace setter {
 namespace setter_annotation {
 
-/// @brief A pure virtual base class for function annotations.
+/// @brief A pure virtual base class for function setter annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaSetterFunctionAnnotation : masala::base::api::function_annotation::MasalaFunctionAnnotation {
 

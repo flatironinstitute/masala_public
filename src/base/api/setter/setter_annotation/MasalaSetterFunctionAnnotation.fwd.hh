@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.fwd.hh
-/// @brief Forward declarations for a pure virtual base class for function annotations.
+/// @brief Forward declarations for a pure virtual base class for setter function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_api_setter_setter_annotation_MasalaSetterFunctionAnnotation_fwd_hh
