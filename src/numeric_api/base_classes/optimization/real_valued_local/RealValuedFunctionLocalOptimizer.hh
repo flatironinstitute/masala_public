@@ -117,6 +117,32 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Set the number of threads to request.
+	/// @param setting The number of threads to request.  A value of 0 means "request all available"
+	void set_threads_to_request( masala::base::Size const setting );
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief get the number of threads to request.
+	/// @returns The number of threads to request.  A value of 0 means "request all available"
+	masala::base::Size threads_to_request() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
 	/// the problem with the same index.
@@ -147,6 +173,13 @@ protected:
 	/// @note Could be nullptr.  Performs no mutex locking.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
 
+	/// @brief Access the number of threads to request.  Assumes that the mutex has been locked.
+	inline
+	masala::base::Size
+	protected_threads_to_request() const {
+		return threads_to_request_;
+	}
+
 	/// @brief Assignment: must be implemented by derived classes, which must call the base
 	/// class protected_assign().
 	/// @details Performs no mutex locking.
@@ -174,6 +207,9 @@ private:
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+
+	/// @brief The number of threads to request.  Defaults to 0, meaning "request all available".
+	masala::base::Size threads_to_request_ = 0;
 
 }; // class RealValuedFunctionLocalOptimizer
 

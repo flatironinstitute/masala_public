@@ -128,6 +128,36 @@ RealValuedFunctionLocalOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer", "RealValuedFunctionLocalOptimizer" } };
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Set the number of threads to request.
+/// @param setting The number of threads to request.  A value of 0 means "request all available"
+void
+RealValuedFunctionLocalOptimizer::set_threads_to_request(
+    masala::base::Size const setting
+) {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    threads_to_request_ = setting;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief get the number of threads to request.
+/// @returns The number of threads to request.  A value of 0 means "request all available"
+masala::base::Size
+RealValuedFunctionLocalOptimizer::threads_to_request() const {
+    std::lock_guard< std::mutex > lock( mutex_ );
+    return threads_to_request_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 /// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 /// @details Must be implemented by derived classes.   Each solutions set in the vector of solutions corresponds to
 /// the problem with the same index.
@@ -178,9 +208,9 @@ RealValuedFunctionLocalOptimizer::api_definition() {
 /// @details Performs no mutex locking.
 void
 RealValuedFunctionLocalOptimizer::protected_assign(
-	RealValuedFunctionLocalOptimizer const & /*src*/
+	RealValuedFunctionLocalOptimizer const & src
 ) {
-	// GNDN.
+	threads_to_request_ = src.threads_to_request_;
 }
 
 
