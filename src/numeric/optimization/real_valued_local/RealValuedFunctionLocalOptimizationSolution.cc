@@ -161,8 +161,90 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
         // Work functions:
 
         // Getters:
+		api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score", "Get the score associated with this local optimization solution.  This is the exact "
+				"score, recomputed once the solution has been produced.",
+                "solution_score", "The exact score associated with this local optimization solution.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_data_representation_approximation", "Get the approximate score associated "
+				"with this local optimization solution, given the local optimization data representation.  Certain data representations may use "
+				"reduced floating point precision or other approximations for greater efficiency.",
+                "solution_score_data_representation_approximation", "The approximate score with this local optimization solution, "
+				"given the local optimization data representation",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_data_representation_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< Real > >(
+                "solution_score_solver_approximation", "Get the approximate score returned by the local optimization solver that produced "
+				"this local optimization solution.  In addition to approximation from the data representation, a solver may accumulate "
+				"numerical error, over a trajectory use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solution_score_solver_approximation", "The approximate score associated with this local optimization solution, returned "
+				"by the solver.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::solution_score_solver_approximation, this )
+            )
+        );
+        api_def->add_getter(
+            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< OptimizationProblemCSP > >(
+                "problem", "Get the local optimization problem associated with this local optimization solution.",
+                "problem", "The problem associated with this solution.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::problem, this )
+            )
+        );
 
         // Setters:
+		api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score", "Set the score associated with this solution.  This is the "
+                "exact score, recomputed once the solution has been produced.",
+                "score_in", "The score to set.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_data_representation_approximation", "Set an approximate score associated "
+				"with this solution, given the data representation.  Certain data representations may use reduced "
+				"floating point precision or other approximations for greater efficiency.",
+                "dr_approx_score_in", "The approximate score (from the data representation) to set.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_data_representation_approximation, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
+                "set_solution_score_solver_approximation", "Set an approximate score returned by the solver that "
+				"produced this solution. In addition to approximation from the data representation, a solver may "
+				"accumulate numerical error over a trajectory, use lower-precision math, perform arithmetic that accumulates "
+				"floating-point error, or use external analogue methods (e.g. quantum computation) that introduce "
+				"their own error.",
+                "solver_approx_score_in", "The approximate score (from the solver) to set.",
+                false, false,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
+            ) 
+        );
+        api_def->add_setter(
+            masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
+                "set_problem", "Set the problem that gave rise to this solution.",
+                "problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
+                "must be a cost function network optimizatoin problem, and this function will throw if it is "
+                "not.  Stored directly (not cloned) on input.",
+                false, true,
+                std::bind( &RealValuedFunctionLocalOptimizationSolution::set_problem, this, std::placeholders::_1 )
+            ) 
+        );
 
         api_definition() = api_def; //Make const.
     }
