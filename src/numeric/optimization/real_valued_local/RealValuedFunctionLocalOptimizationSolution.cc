@@ -320,7 +320,7 @@ RealValuedFunctionLocalOptimizationSolution::solution_point() const {
 
 /// @brief Did the optimizer report convergence?
 bool
-RealValuedFunctionLocalOptimizationSolution::is_converged() {
+RealValuedFunctionLocalOptimizationSolution::is_converged() const {
 	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return is_converged_;
 }
@@ -328,7 +328,7 @@ RealValuedFunctionLocalOptimizationSolution::is_converged() {
 /// @brief How many iterations did the optimizer report taking?
 /// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
 masala::base::Size
-RealValuedFunctionLocalOptimizationSolution::iterations() {
+RealValuedFunctionLocalOptimizationSolution::iterations() const {
 	std::lock_guard< std::mutex > lock( solution_mutex() );
 	return iterations_;
 }

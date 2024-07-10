@@ -140,11 +140,11 @@ public:
 	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & solution_point() const;
 
 	/// @brief Did the optimizer report convergence?
-	bool is_converged();
+	bool is_converged() const;
 
 	/// @brief How many iterations did the optimizer report taking?
 	/// @details Some optimizers may use non-iterative approaches, in which case this value will be zero.
-	masala::base::Size iterations();
+	masala::base::Size iterations() const;
 
 public:
 
