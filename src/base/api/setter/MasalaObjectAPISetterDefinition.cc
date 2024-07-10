@@ -98,6 +98,33 @@ MasalaObjectAPISetterDefinition::is_override_of_api_virtual_fxn() const {
     return is_override_of_api_virtual_fxn_;
 }
 
+/// @brief Get the number of setter annotations.
+masala::base::Size
+MasalaObjectAPISetterDefinition::n_setter_annotations() const {
+	return setter_annotations_.size();
+}
+
+/// @brief Access the Nth setter annotation.
+setter_annotation::MasalaSetterFunctionAnnotationCSP
+MasalaObjectAPISetterDefinition::setter_annotation(
+	masala::base::Size const setter_annotation_index
+) const {
+	CHECK_OR_THROW_FOR_CLASS( setter_annotation_index < setter_annotations_.size(),
+		"setter_annotation", "This " + class_name() + " has " + std::to_string(setter_annotations_.size())
+		+ " setter function annotations.  Index " + std::to_string(setter_annotation_index) + " is out of range."
+	);
+	return setter_annotations_[setter_annotation_index];
+}
+
+/// @brief Add a setter annotation.
+/// @details Annotation is used directly, not cloned.
+void
+MasalaObjectAPISetterDefinition::add_setter_annotation(
+	setter_annotation::MasalaSetterFunctionAnnotationCSP const & annotation_in
+) {
+	setter_annotations_.push_back( annotation_in );
+}
+
 } // namespace setter
 } // namespace api
 } // namespace base
