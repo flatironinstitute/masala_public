@@ -75,6 +75,76 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The category that can be passed to the MasalaPluginManager to get objects
+	/// of the type needed for this function.  Could be an empty vector
+	std::vector< std::string > const &
+	plugin_manager_input_object_category() const;
+
+	/// @brief When the MasalaPluginManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	bool
+	plugin_manager_include_subcategory() const;
+
+	/// @brief The keywords that can be passed to the MasalaPluginManager to try to get objects
+	/// of the type needed for this function.  Could be an empty vector.
+	std::vector< std::string > const &
+	plugin_manager_input_object_keywords() const;
+
+	/// @brief Is the input object an engine?  False by default.
+	bool
+	is_engine() const;
+
+	/// @brief The category that can be passed to the MasalaEngineManager to get objects
+	/// of the type needed for this function.  Could be an empty vector.
+	/// @note Throws if is_engine_ is false.  Check by calling is_engine() first!
+	std::vector< std::string > const &
+	engine_manager_input_object_category() const;
+
+	/// @brief When the MasalaEngineManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	/// @note Throws if is_engine_ is false.  Check by calling is_engine() first!
+	bool
+	engine_manager_include_subcategory() const;
+
+	/// @brief The keywords that can be passed to the MasalaEngineManager to try to get objects
+	/// of the type needed for this function.  Could be an empty vector.
+	/// @note Throws if is_engine_ is false.  Check by calling is_engine() first!
+	std::vector< std::string > const &
+	engine_manager_input_object_keywords() const;
+
+	/// @brief Is the input object a data representation?  False by default.
+	/// @note Throws if is_data_representation_ is false.  Check by calling
+	/// is_data_representation() first!
+	bool
+	is_data_representation() const;
+
+	/// @brief The category that can be passed to the MasalaDataRepresentationManager to get objects
+	/// of the type needed for this function.  Could be an empty vector.
+	/// @note Throws if is_data_representation_ is false.  Check by calling
+	/// is_data_representation() first!
+	std::vector< std::string > const &
+	data_representation_manager_input_object_category() const;
+
+	/// @brief When the MasalaDataRepresentationManager is interogated for objects of the appropriate
+	/// type by category, should we include subcategories?  Default true.
+	/// @note Throws if is_data_representation_ is false.  Check by calling
+	/// is_data_representation() first!
+	bool
+	data_representation_manager_include_subcategory() const;
+
+	/// @brief The keywords that can be passed to the MasalaDataRepresentationManager to try to get objects
+	/// of the type needed for this function.  Could be an empty vector.
+	/// @note Throws if is_data_representation_ is false.  Check by calling
+	/// is_data_representation() first!
+	std::vector< std::string > const &
+	data_representation_manager_input_object_keywords() const;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
