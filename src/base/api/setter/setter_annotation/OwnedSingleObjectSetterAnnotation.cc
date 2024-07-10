@@ -71,7 +71,11 @@ OwnedSingleObjectSetterAnnotation::get_api_definition() {
 		);
 
 		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OwnedSingleObjectSetterAnnotation, api_def );
+
+		api_definition() = api_def;
 	}
+
+	return api_definition();
 }
 
 } // namespace setter_annotation
