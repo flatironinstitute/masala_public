@@ -77,6 +77,50 @@ OwnedSingleObjectSetterAnnotation::set_plugin_manager_info(
 	plugin_manager_include_subcategory_ = plugin_manager_include_subcategory;
 }
 
+/// @brief Set the information for the engine object types that this setter takes.  Note
+/// that this implicitly sets is_engine_ to true.
+/// @param[in] engine_manager_input_object_category The category that can be passed
+/// to the engine manager to get objects of the type that this setter function accepts.
+/// Can be left as an empty vector.
+/// @param[in] engine_manager_input_object_keywords Keywords that can be passed to the
+/// MasalaEngineManager to try to get objects of the type needed for this setter function.
+/// Can be left as an empty vector.
+/// @param[in] engine_manager_include_subcategory If true (the default), then
+/// subcategories of the given category are accepted.  If false, then the exact category
+/// must be used.
+void
+OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
+	std::vector< std::string > const & engine_manager_input_object_category,
+	std::vector< std::string > const & engine_manager_input_object_keywords,
+	bool const engine_manager_include_subcategory = true
+) {
+	engine_manager_input_object_category_ = engine_manager_input_object_category;
+	engine_manager_input_object_keywords_ = engine_manager_input_object_keywords;
+	engine_manager_include_subcategory_ = engine_manager_include_subcategory;
+}
+
+/// @brief Set the information for the data representation object types that this setter takes.  Note
+/// that this implicitly sets is_data_representation_ to true.
+/// @param[in] data_representation_manager_input_object_category The category that can be passed
+/// to the data representation manager to get objects of the type that this setter function accepts.
+/// Can be left as an empty vector.
+/// @param[in] data_representation_manager_input_object_keywords Keywords that can be passed to the
+/// MasalaDataRepresentationManager to try to get objects of the type needed for this setter function.
+/// Can be left as an empty vector.
+/// @param[in] data_representation_manager_include_subcategory If true (the default), then
+/// subcategories of the given category are accepted.  If false, then the exact category
+/// must be used.
+void
+OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
+	std::vector< std::string > const & data_representation_manager_input_object_category,
+	std::vector< std::string > const & data_representation_manager_input_object_keywords,
+	bool const data_representation_manager_include_subcategory = true
+) {
+	data_representation_manager_input_object_category_ = data_representation_manager_input_object_category;
+	data_representation_manager_input_object_keywords_ = data_representation_manager_input_object_keywords;
+	data_representation_manager_include_subcategory_ = data_representation_manager_include_subcategory;
+}
+
 } // namespace setter_annotation
 } // namespace setter
 } // namespace api
