@@ -185,7 +185,7 @@ RealValuedFunctionLocalOptimizationProblem::seek_local_maximum() const {
 
 /// @brief Get the objective function.
 /// @details Throws if objective function isn't set.
-std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
+std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const &
 RealValuedFunctionLocalOptimizationProblem::objective_function() const {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function", "An objective function for this " + class_name() + "object can only be accessed after this object is finalized." );
@@ -195,7 +195,7 @@ RealValuedFunctionLocalOptimizationProblem::objective_function() const {
 
 /// @brief Get the objective function gradient.
 /// @details Throws if objective function gradient isn't set.
-std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const &
+std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const &
 RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function_gradient", "An objective function gradient for this " + class_name() + "object can only be accessed after this object is finalized." );
@@ -204,7 +204,7 @@ RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const 
 }
 
 /// @brief Access the vector of starting points.
-std::vector< std::vector< masala::base::Real > > const &
+std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const &
 RealValuedFunctionLocalOptimizationProblem::starting_points() const {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "starting_points", "The starting points for this " + class_name() + "object can only be accessed after this object is finalized." );
@@ -219,7 +219,7 @@ RealValuedFunctionLocalOptimizationProblem::starting_points() const {
 /// @details The function object is copied.
 void
 RealValuedFunctionLocalOptimizationProblem::set_objective_function(
-	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & objective_fxn_in
+	std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & objective_fxn_in
 ) {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function", "Cannot set objective function after the " + class_name() + " object has been finalized." );
@@ -227,7 +227,7 @@ RealValuedFunctionLocalOptimizationProblem::set_objective_function(
 	if( objective_function_ != nullptr ) {
 		delete objective_function_;
 	}
-	objective_function_ = new std::function< masala::base::Real( std::vector< masala::base::Real > const & ) >( objective_fxn_in );
+	objective_function_ = new std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) >( objective_fxn_in );
 }
 
 /// @brief Clear the objective function.
@@ -245,7 +245,7 @@ RealValuedFunctionLocalOptimizationProblem::clear_objective_function() {
 /// @details The derivative function object is copied.
 void
 RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
-	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & objective_fxn_gradient_in
+	std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const & objective_fxn_gradient_in
 ) {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function_gradient", "Cannot set objective function gradient after the " + class_name() + " object has been finalized." );
@@ -253,7 +253,7 @@ RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
 	if( objective_function_gradient_ != nullptr ) {
 		delete objective_function_gradient_;
 	}
-	objective_function_gradient_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) >( objective_fxn_gradient_in );
+	objective_function_gradient_ = new std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) >( objective_fxn_gradient_in );
 }
 
 /// @brief Clear the objective function.
@@ -280,7 +280,7 @@ RealValuedFunctionLocalOptimizationProblem::set_seek_local_maximum(
 /// @brief Add a bunch of starting points to the set of starting points for local minimum search.
 void
 RealValuedFunctionLocalOptimizationProblem::add_starting_points(
-	std::vector< std::vector< masala::base::Real > > const & starting_points_in
+	std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & starting_points_in
 ) {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_points", "Starting points cannot be added after this " + class_name() + " object has been finalized." );
@@ -294,7 +294,7 @@ RealValuedFunctionLocalOptimizationProblem::add_starting_points(
 /// @brief Add a single point to the set of starting points for local minimum search.
 void
 RealValuedFunctionLocalOptimizationProblem::add_starting_point(
-	std::vector< masala::base::Real > const & starting_point_in
+	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point_in
 ) {
 	std::lock_guard< std::mutex > lock( problem_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_point", "A starting point cannot be added after this " + class_name() + " object has been finalized." );
@@ -373,21 +373,21 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_getter(
-			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & > >(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & > >(
 				"objective_function", "Get the objective function.  Throws if objective function isn't set.",
 				"objective_function", "The objective function for which we're trying to find a local minimum.",
 				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::objective_function, this )
 			)
 		);
 		api_def->add_getter(
-			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & > >(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const & > >(
 				"objective_function_gradient", "Get the objective function gradient.  Throws if objective function gradient isn't set.",
 				"objective_function_gradient", "The objective function gradient.",
 				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::objective_function_gradient, this )
 			)
 		);
 		api_def->add_getter(
-			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< std::vector< masala::base::Real > > const & > >(
+			masala::make_shared< MasalaObjectAPIGetterDefinition_ZeroInput< std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & > >(
 				"starting_points", "Access the vector of starting points.  (Could be empty.)",
 				"starting_points", "The vector of starting points for the local optimum search.",
 				false, false, std::bind( &RealValuedFunctionLocalOptimizationProblem::starting_points, this )
@@ -396,7 +396,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 
 		// Setters:
 		api_def->add_setter(
-			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & > >(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & > >(
 				"set_objective_function", "Set the objective function for which we want to find a local minimum.",
 				"objective_function_in", "The objective function for which we want to find a local minimum.  This is a std::function that takes as input a vector of "
 				"real numbers (a coordinate in R^N) and returns a real number.",
@@ -412,7 +412,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_setter(
-			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput<std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & > >(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput<std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const & > >(
 				"set_objective_function_gradient", "Set the gradient of the objective function for which we want to find a local minimum.",
 				"objective_function_gradient_in", "The gradient of the objective function for which we want to find a local minimum.  This is a std::function that takes as input a vector of "
 				"real numbers (a coordinate in R^N) and a nonconst vector of real numbers; the latter is populated with the gradient with respect to the input "
@@ -437,7 +437,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_setter(
-			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< std::vector< masala::base::Real > > const & > >(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & > >(
 				"add_starting_points", "Add multiple starting points to the set of starting points for local optimum search.",
 				"starting_poinst_in", "A vector of coordinates in R^N, each specifying a starting point for the local optimimum search.",
 				false, false,
@@ -445,7 +445,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 			)
 		);
 		api_def->add_setter(
-			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< std::vector< masala::base::Real > const & > >(
+			masala::make_shared< MasalaObjectAPISetterDefinition_OneInput< Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & > >(
 				"add_starting_point", "Add a single point to the set of starting points for local optimum search.",
 				"starting_point_in", "A coordinate in R^N, specifying a starting point for the local optimimum search.",
 				false, false,
@@ -497,13 +497,13 @@ void
 RealValuedFunctionLocalOptimizationProblem::protected_make_independent() {
 	using masala::base::Real;
 	if( objective_function_ != nullptr ) {
-		std::function<Real (std::vector<Real> const &)> const * oldfunc( objective_function_ );
-		objective_function_ = new std::function<Real (std::vector<Real> const &)>( *oldfunc );
+		std::function<Real (Eigen::Vector< Real, Eigen::Dynamic > const &)> const * oldfunc( objective_function_ );
+		objective_function_ = new std::function<Real (Eigen::Vector< Real, Eigen::Dynamic > const &)>( *oldfunc );
 		delete oldfunc;
 	}
 	if( objective_function_gradient_ != nullptr ) {
-		std::function<Real (std::vector<Real> const &, std::vector<Real> &)> const * oldfunc( objective_function_gradient_ );
-		objective_function_gradient_ = new std::function<Real (std::vector<Real> const &, std::vector<Real> &) >( *oldfunc );
+		std::function<Real (Eigen::Vector< Real, Eigen::Dynamic > const &, Eigen::Vector< Real, Eigen::Dynamic > &)> const * oldfunc( objective_function_gradient_ );
+		objective_function_gradient_ = new std::function<Real (Eigen::Vector< Real, Eigen::Dynamic > const &, Eigen::Vector< Real, Eigen::Dynamic > &) >( *oldfunc );
 		delete oldfunc;
 	}
 	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
@@ -516,9 +516,16 @@ RealValuedFunctionLocalOptimizationProblem::protected_finalize() {
 	using masala::base::Size;
 	// Do a series of checks:
 	if( starting_points_.size() > 1 ) {
-		Size const nentries( starting_points_[0].size() );
+		CHECK_OR_THROW_FOR_CLASS( starting_points_[0].size() > 0, "protected_finalize",
+			"A zero-size starting point vector was encountered for starting point 1."
+		);
+		Size const nentries( static_cast< Size const >( starting_points_[0].size() ) );
 		for( Size i(1); i<starting_points_.size(); ++i ) {
-			CHECK_OR_THROW_FOR_CLASS( starting_points_[i].size() == nentries, "protected_finalize",
+			CHECK_OR_THROW_FOR_CLASS( starting_points_[i].size() > 0, "protected_finalize",
+				"A zero-size starting point vector was encountered for starting point "
+				+ std::to_string(i+1) + "."
+			);
+			CHECK_OR_THROW_FOR_CLASS( static_cast< Size const >( starting_points_[i].size() ) == nentries, "protected_finalize",
 				"The number of entries in starting point vector " + std::to_string(i) + " is " +
 				std::to_string( starting_points_[i].size() ) + ", but entry 0 had " +
 				std::to_string(nentries) + " entries."
@@ -544,12 +551,12 @@ RealValuedFunctionLocalOptimizationProblem::protected_assign(
 	if( objective_function_ != nullptr ) { delete objective_function_; }
 	if( objective_function_gradient_ != nullptr ) { delete objective_function_gradient_; }
 	if( src_ptr_cast->objective_function_ != nullptr ) {
-		objective_function_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const & ) >( *src_ptr_cast->objective_function_ );
+		objective_function_ = new std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) >( *src_ptr_cast->objective_function_ );
 	} else {
 		objective_function_ = nullptr;
 	}
 	if( src_ptr_cast->objective_function_gradient_ != nullptr ) {
-		objective_function_gradient_ = new std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) >( *src_ptr_cast->objective_function_gradient_ );
+		objective_function_gradient_ = new std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) >( *src_ptr_cast->objective_function_gradient_ );
 	} else {
 		objective_function_gradient_ = nullptr;
 	}

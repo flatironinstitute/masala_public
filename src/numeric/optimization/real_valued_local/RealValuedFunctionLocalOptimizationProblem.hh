@@ -31,10 +31,11 @@
 // Parent header:
 #include <numeric/optimization/OptimizationProblem.hh>
 
-// Numeric headers:
-
 // Base headers:
 #include <base/types.hh>
+
+// External headers:
+#include <external/eigen/Eigen/Core>
 
 // STL headers:
 #include <functional>
@@ -150,16 +151,16 @@ public:
 
 	/// @brief Get the objective function.
 	/// @details Throws if objective function isn't set.
-	std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const &
+	std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const &
 	objective_function() const;
 
 	/// @brief Get the objective function gradient.
 	/// @details Throws if objective function gradient isn't set.
-	std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const &
+	std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const &
 	objective_function_gradient() const;
 
 	/// @brief Access the vector of starting points.
-	std::vector< std::vector< masala::base::Real > > const &
+	std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const &
 	starting_points() const;
 
 public:
@@ -172,7 +173,7 @@ public:
 	/// @details The function object is copied.
 	void
 	set_objective_function(
-		std::function< masala::base::Real( std::vector< masala::base::Real > const & ) > const & objective_fxn_in
+		std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & objective_fxn_in
 	);
 
 	/// @brief Clear the objective function.
@@ -183,7 +184,7 @@ public:
 	/// @details The derivative function object is copied.
 	void
 	set_objective_function_gradient(
-		std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const & objective_fxn_gradient_in
+		std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const & objective_fxn_gradient_in
 	);
 
 	/// @brief Clear the objective function gradient.
@@ -199,13 +200,13 @@ public:
 	/// @brief Add a bunch of starting points to the set of starting points for local minimum search.
 	void
 	add_starting_points(
-		std::vector< std::vector< masala::base::Real > > const & starting_points_in
+		std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & starting_points_in
 	);
 
 	/// @brief Add a single point to the set of starting points for local minimum search.
 	void
 	add_starting_point(
-		std::vector< masala::base::Real > const & starting_point_in
+		Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point_in
 	);
 
 	/// @brief Clear the starting points.
@@ -261,16 +262,21 @@ private:
 /// at some point in R^N.
 /// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
 /// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
-std::function< masala::base::Real ( std::vector< masala::base::Real > const & ) > const * objective_function_;
+std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const * objective_function_;
 
 /// @brief A function that returns the objective function value, and also computes and sets
 /// the objective function gradient at a particular point in R^N.
 /// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
 /// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
-std::function< masala::base::Real ( std::vector< masala::base::Real > const &, std::vector< masala::base::Real > & ) > const * objective_function_gradient_;
+std::function<
+	masala::base::Real (
+		Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &,
+		Eigen::Vector< masala::base::Real, Eigen::Dynamic > &
+	)
+> const * objective_function_gradient_;
 
 /// @brief Starting points for the local minimum search.
-std::vector< std::vector< masala::base::Real > > starting_points_;
+std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > starting_points_;
 
 /// @brief Are we trying to find a maximum (true) or minimum (false)?  Defaults to false.
 bool seek_local_maximum_ = false;
