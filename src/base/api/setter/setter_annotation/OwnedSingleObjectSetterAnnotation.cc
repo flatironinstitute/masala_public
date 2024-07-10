@@ -179,7 +179,7 @@ void
 OwnedSingleObjectSetterAnnotation::set_plugin_manager_info(
 	std::vector< std::string > const & plugin_manager_input_object_category,
 	std::vector< std::string > const & plugin_manager_input_object_keywords,
-	bool const plugin_manager_include_subcategory = true
+	bool const plugin_manager_include_subcategory //= true
 ) {
 	plugin_manager_input_object_category_ = plugin_manager_input_object_category;
 	plugin_manager_input_object_keywords_ = plugin_manager_input_object_keywords;
@@ -201,7 +201,7 @@ void
 OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 	std::vector< std::string > const & engine_manager_input_object_category,
 	std::vector< std::string > const & engine_manager_input_object_keywords,
-	bool const engine_manager_include_subcategory = true
+	bool const engine_manager_include_subcategory //= true
 ) {
 	is_engine_ = true;
 	engine_manager_input_object_category_ = engine_manager_input_object_category;
@@ -224,7 +224,7 @@ void
 OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	std::vector< std::string > const & data_representation_manager_input_object_category,
 	std::vector< std::string > const & data_representation_manager_input_object_keywords,
-	bool const data_representation_manager_include_subcategory = true
+	bool const data_representation_manager_include_subcategory//= true
 ) {
 	is_data_representation_ = true;
 	data_representation_manager_input_object_category_ = data_representation_manager_input_object_category;
