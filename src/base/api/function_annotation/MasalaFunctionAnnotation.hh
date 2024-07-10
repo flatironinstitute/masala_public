@@ -53,48 +53,6 @@ public:
 	/// @brief Virtual destructor.
 	virtual ~MasalaFunctionAnnotation() = default; 
 
-public:
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Get an object describing the API for this object.
-	/// @details Default implementation returns nullptr.  May be overridden by
-	/// derived objects.
-	/// @note This is a weak pointer rather than a shared pointer since the
-	/// original object is expected to hold on to its API definition (which includes
-	/// function pointers to the functions of the instance).  Querying whether the
-	/// weak pointer can be converted to a shared pointer serves on a check as to
-	/// whether it is safe to use the function pointers.  Not ideal, but better than
-	/// nothing.
-	masala::base::api::MasalaObjectAPIDefinitionCWP
-	get_api_definition() override = 0;
-
-protected:
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief Allow derived classes to access the mutex.
-	std::mutex & mutex() const;
-
-	/// @brief Allow derived classes to access the API defintion.
-	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
-
-private:
-
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE VARIABLES
-////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief A mutex for locking this object.
-	mutable std::mutex mutex_;
-
-	/// @brief The API definition for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
-
 }; // class MasalaFunctionAnnotation
 
 } // namespace function_annotation

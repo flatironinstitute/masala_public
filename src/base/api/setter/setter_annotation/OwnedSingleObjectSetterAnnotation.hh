@@ -71,10 +71,6 @@ public:
 	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 	std::string class_namespace() const override;
 
-	/// @brief Get an object describing the API for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCWP
-	get_api_definition() override;
-
 }; // class OwnedSingleObjectSetterAnnotation
 
 } // namespace setter_annotation
