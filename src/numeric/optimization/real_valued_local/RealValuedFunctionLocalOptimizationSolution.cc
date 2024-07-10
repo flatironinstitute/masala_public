@@ -243,7 +243,6 @@ RealValuedFunctionLocalOptimizationSolution::set_starting_point_and_index(
 	if( protected_problem() != nullptr ) {
 		RealValuedFunctionLocalOptimizationProblem const * prob( dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( protected_problem().get() ) );
 		CHECK_OR_THROW_FOR_CLASS( prob != nullptr, "set_starting_point_and_index", "Problem is not a RealValuedFunctionLocalOptimizationProblem!" );
-		Size const nstarts( prob->starting_points().size() );
 		CHECK_OR_THROW_FOR_CLASS( starting_point_index < prob->starting_points().size(), "set_starting_point_and_index", "The starting point index is out of range." );
 		CHECK_OR_THROW_FOR_CLASS( starting_point_in == prob->starting_points()[starting_point_index], "set_starting_point_and_index",
 			"The starting point does not match the corresponding starting point in the problem."
@@ -273,7 +272,7 @@ RealValuedFunctionLocalOptimizationSolution::set_solution_point(
 	if( protected_problem() != nullptr ) {
 		RealValuedFunctionLocalOptimizationProblem const * prob( dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( protected_problem().get() ) );
 		CHECK_OR_THROW_FOR_CLASS( prob != nullptr, "set_solution_point", "Problem is not a RealValuedFunctionLocalOptimizationProblem!" );
-		Size const nstarts( prob->starting_points().size() );
+		Size const nstarts( static_cast< Size >( prob->starting_points().size() ) );
 		for( Size i(0); i<nstarts; ++i ) {
 			CHECK_OR_THROW_FOR_CLASS( solution_point_in.size() == prob->starting_points()[i].size(), "set_solution_point",
 				"The solution vector dimensionality does not match a problem starting point vector's dimensionality."
