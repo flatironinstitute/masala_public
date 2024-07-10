@@ -46,7 +46,7 @@ namespace setter_annotation {
 /// (b) unique (i.e. an instance of the encapsulating object encapsulates only one instance
 /// of the inner object).
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class OwnedSingleObjectSetterAnnotation : masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotation {
+class OwnedSingleObjectSetterAnnotation : public masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotation {
 
 public:
 
@@ -70,6 +70,10 @@ public:
 
 	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 	std::string class_namespace() const override;
+
+	/// @brief Get an object describing the API for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 }; // class OwnedSingleObjectSetterAnnotation
 

@@ -37,7 +37,7 @@ namespace setter_annotation {
 
 /// @brief A pure virtual base class for function setter annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaSetterFunctionAnnotation : masala::base::api::function_annotation::MasalaFunctionAnnotation {
+class MasalaSetterFunctionAnnotation : public masala::base::api::function_annotation::MasalaFunctionAnnotation {
 
 public:
 

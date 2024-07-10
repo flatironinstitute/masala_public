@@ -40,7 +40,7 @@ namespace function_annotation {
 
 /// @brief A pure virtual base class for function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class MasalaFunctionAnnotation : masala::base::MasalaObject {
+class MasalaFunctionAnnotation : public masala::base::MasalaObject {
 
 public:
 

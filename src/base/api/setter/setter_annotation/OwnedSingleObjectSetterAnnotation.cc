@@ -26,6 +26,10 @@
 // Headers:
 #include <base/api/setter/setter_annotation/OwnedSingleObjectSetterAnnotation.hh>
 
+// Base headers:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -46,6 +50,28 @@ OwnedSingleObjectSetterAnnotation::class_name() const {
 std::string
 OwnedSingleObjectSetterAnnotation::class_namespace() const {
 	return "masala::base::api::setter::setter_annotation";
+}
+
+/// @brief Get an object describing the API for this object.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+OwnedSingleObjectSetterAnnotation::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+
+	if( api_definition() == nullptr ) {
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this, "An annotation that can be attached to a setter function that indicates "
+				"that the setter function sets and object that is wholly owned by this class "
+				"instance, and which moreover is a unique instance owned by this instance.  This "
+				"is intended for UIs and GUIs that may wish to make it easy for a user to configure "
+				"the contained object inline with the outer container.", false, false
+			)
+		);
+
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OwnedSingleObjectSetterAnnotation, api_def );
+	}
 }
 
 } // namespace setter_annotation
