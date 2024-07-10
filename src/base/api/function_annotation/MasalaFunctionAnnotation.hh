@@ -24,7 +24,7 @@
 #define Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_hh
 
 // Forward declarations:
-#include <base/api/MasalaFunctionAnnotation.fwd.hh>
+#include <base/api/function_annotation/MasalaFunctionAnnotation.fwd.hh>
 
 // Base headers:
 #include <base/MasalaObject.hh>
