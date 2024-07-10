@@ -16,13 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/MasalaFunctionAnnotation.hh
-/// @brief A base class for all Masala derived classes.  This allows the possibility of having a
-/// generic MasalaFunctionAnnotation pointer or shared pointer.
+/// @file src/base/api/function_annotation/MasalaFunctionAnnotation.hh
+/// @brief Headers for a pure virtual base class for function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaFunctionAnnotation_hh
-#define Masala_src_base_api_MasalaFunctionAnnotation_hh
+#ifndef Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_hh
+#define Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_hh
 
 // Forward declarations:
 #include <base/api/MasalaFunctionAnnotation.fwd.hh>
@@ -37,6 +36,7 @@
 namespace masala {
 namespace base {
 namespace api {
+namespace function_annotation {
 
 /// @brief A pure virtual base class for function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -73,8 +73,9 @@ public:
 
 }; // class MasalaFunctionAnnotation
 
+} // namespace function_annotation
 } // namespace api
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_MasalaFunctionAnnotation_hh
+#endif //Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_hh

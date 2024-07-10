@@ -16,19 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/MasalaFunctionAnnotation.fwd.hh
-/// @brief Forward declarations for a base class for all Masala derived classes.  This
-/// allows the possibility of having a generic MasalaFunctionAnnotation pointer or shared pointer.
+/// @file src/base/api/function_annotation/MasalaFunctionAnnotation.fwd.hh
+/// @brief Forward declarations for a pure virtual base class for function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_MasalaFunctionAnnotation_fwd_hh
-#define Masala_src_base_api_MasalaFunctionAnnotation_fwd_hh
+#ifndef Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_fwd_hh
+#define Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
 namespace masala {
 namespace base {
 namespace api {
+namespace function_annotation {
 
 	class MasalaFunctionAnnotation;
 
@@ -48,8 +48,9 @@ namespace api {
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
 	using MasalaFunctionAnnotationCWP = MASALA_WEAK_POINTER< MasalaFunctionAnnotation const >;
 
+} // namespace function_annotation
 } // namespace api
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_MasalaFunctionAnnotation_fwd_hh
+#endif //Masala_src_base_api_function_annotation_MasalaFunctionAnnotation_fwd_hh
