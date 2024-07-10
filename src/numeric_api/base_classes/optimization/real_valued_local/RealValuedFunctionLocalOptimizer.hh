@@ -34,6 +34,9 @@
 #include <numeric_api/auto_generated_api/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblems_API.fwd.hh>
 #include <numeric_api/auto_generated_api/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolutions_API.fwd.hh>
 
+// Base headers:
+#include <base/types.hh>
+
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
 
