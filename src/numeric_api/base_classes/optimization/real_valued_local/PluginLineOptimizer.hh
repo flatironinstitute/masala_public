@@ -16,24 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/optimization/real_valued_local/LineOptimizer.hh
-/// @brief Header for a pure virtual base class for LineOptimizers.
-/// @details LineOptimizers solve a numerical optimization function for a real-valued
+/// @file src/numeric/optimization/real_valued_local/PluginLineOptimizer.hh
+/// @brief Header for a pure virtual base class for PluginLineOptimizers.
+/// @details PluginLineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
-/// other optimization problems, LineOptimizers are implemented as their own special
+/// other optimization problems, PluginLineOptimizers are implemented as their own special
 /// case class.  Note that this class does NOT derive from the general Optimizer class.
-/// @note This class can be instantiated, but its API definition has protected constructors
-/// effectively making it pure virtual.
+/// @note This class is pure virtual since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
-#define Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginLineOptimizer_hh
+#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginLineOptimizer_hh
 
 // Forward declarations:
-#include <numeric/optimization/real_valued_local/LineOptimizer.fwd.hh>
+#include <numeric_api/base_classes/optimization/real_valued_local/PluginLineOptimizer.fwd.hh>
 
 // Parent header:
-#include <base/managers/engine/MasalaEngine.hh>
+#include <numeric/optimization/real_valued_local/LineOptimizer.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -47,19 +46,21 @@
 #include <mutex>
 
 namespace masala {
-namespace numeric {
+namespace numeric_api {
+namespace base_classes {
 namespace optimization {
 namespace real_valued_local {
 
-/// @brief A pure virtual base class for LineOptimizers.
-/// @details LineOptimizers solve a numerical optimization function for a real-valued
+/// @brief A pure virtual base class for PluginLineOptimizers.
+/// @details PluginLineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
-/// other optimization problems, LineOptimizers are implemented as their own special
+/// other optimization problems, PluginLineOptimizers are implemented as their own special
 /// case class.  Note that this class does NOT derive from the general Optimizer class.
-/// @note This class can be instantiated, but its API definition has protected constructors
-/// effectively making it pure virtual.
+/// @note This class is pure virtual since get_api_definition() is not implemented.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class LineOptimizer : public masala::base::managers::engine::MasalaEngine {
+class PluginLineOptimizer : public masala::numeric::optimization::real_valued_local::LineOptimizer {
+
+	typedef masala::numeric::optimization::real_valued_local::LineOptimizer LineOptimizer;
 
 public:
 
@@ -68,23 +69,20 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	LineOptimizer() = default;
+	PluginLineOptimizer() = default;
 
 	/// @brief Copy constructor.  Explicit due to mutex.
-	LineOptimizer( LineOptimizer const & src );
-
-	/// @brief Assignment operator.  Explicit due to mutex.
-	LineOptimizer &
-	operator=(
-		LineOptimizer const & src
-	);
-
-	/// @brief Make this object independent by calling deep_clone on all contained objects.
-	void
-	make_independent();
+	PluginLineOptimizer( PluginLineOptimizer const & src ) = default;
 
 	/// @brief Destructor.
-	~LineOptimizer() override = default;
+	~PluginLineOptimizer() override = default;
+
+	/// @brief Clone operator: make a copy of this object and return a shared
+	/// pointer to the copy.
+	/// @details Must be implemented by derived classes.
+	virtual
+	PluginLineOptimizerSP
+	clone() const = 0;
 
 public:
 
@@ -92,7 +90,7 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Get the name of this class ("LineOptimizer").
+	/// @brief Get the name of this class ("PluginLineOptimizer").
 	std::string class_name() const override;
 
 	/// @brief Get the namespace of this class ("masala::numeric::optimization::real_valued_local").
@@ -128,34 +126,51 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
+	/// @brief Get an object describing the API for this object.
+	/// @details This override makes this class pure virtual.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override = 0;
+
+	/// @brief Run the line optimizer on a single line optimization problem, and produce a single solution.
+	/// @details Must be implemented by derived classes.  The solution is a pair of (x, f(x)) where x minimizes f.
+	/// @param[in] fxn The function to minimize.
+	/// @param[in] x0 The starting point for the search.
+	/// @param[in] fxn_at_x0 The value of the function at the starting point for the search.
+	/// @param[in] grad_of_fxn_at_x0 The gradient of the function at the starting point for the search.
+	/// @param[in] search_dir The search direction, which may or may not match the negative gradient of the starting point.
+	/// @param[out] x The output value of x that (locally) minimizes f(x).
+	/// @param[out] fxn_at_x The output value of f(x) where x (locally) minimizes f(x).
+	virtual
+	void
+	run_line_optimizer(
+		std::function< masala::base::Real( Eigen::VectorXd const & ) > const & fxn,
+		Eigen::VectorXd const & x0,
+		masala::base::Real const fxn_at_x0,
+		Eigen::VectorXd const & grad_of_fxn_at_x0,
+		Eigen::VectorXd const & search_dir,
+		Eigen::VectorXd & x,
+		masala::base::Real & fxn_at_x
+	) const = 0;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Access the mutex from derived classes.
-	std::mutex & mutex() const;
-
-	/// @brief Allow derived classes to access the API definition.
-	/// @note Could be nullptr.  Performs no mutex locking.
-	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
-
 	/// @brief Assignment: must be implemented by derived classes, which must call the base
 	/// class protected_assign().
 	/// @details Performs no mutex locking.
-	virtual
 	void
 	protected_assign(
 		LineOptimizer const & src
-	);
+	) override;
 
 	/// @brief Make independent: must be implemented by derived classes, which must call the base
 	/// class protected_make_independent().
 	/// @details Performs no mutex locking.
-	virtual
 	void
-	protected_make_independent();
+	protected_make_independent() override;
 
 private:
 
@@ -163,17 +178,12 @@ private:
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief A mutex to lock this object.
-	mutable std::mutex mutex_;
-
-	/// @brief The API definition for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
-
-}; // class LineOptimizer
+}; // class PluginLineOptimizer
 
 } // namespace real_valued_local
 } // namespace optimization
-} // namespace numeric
+} // namespace base_classes
+} // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginLineOptimizer_hh
