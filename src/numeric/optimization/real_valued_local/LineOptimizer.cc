@@ -16,26 +16,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.cc
+/// @file src/numeric/optimization/real_valued_local/LineOptimizer.cc
 /// @brief Implementation for a pure virtual base class for LineOptimizers.
 /// @details LineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
 /// other optimization problems, LineOptimizers are implemented as their own special
 /// case class.  Note that this class does NOT derive from the general Optimizer class.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @note This class can be instantiated, but its API definition has protected constructors
+/// effectively making it pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.hh>
+#include <numeric/optimization/real_valued_local/LineOptimizer.hh>
 
 // STL headers:
 #include <vector>
 #include <string>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 namespace real_valued_local {
 
@@ -77,6 +76,18 @@ LineOptimizer::make_independent() {
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of this class ("LineOptimizer").
+std::string
+LineOptimizer::class_name() const {
+	return "LineOptimizer";
+}
+
+/// @brief Get the namespace of this class ("masala::numeric::optimization::real_valued_local").
+std::string
+LineOptimizer::class_namespace() const {
+	return "masala::numeric::optimization::real_valued_local";
+}
 
 /// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 /// may be overridden by derived classes.
@@ -158,6 +169,5 @@ LineOptimizer::protected_make_independent() {
 
 } // namespace real_valued_local
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namespace masala

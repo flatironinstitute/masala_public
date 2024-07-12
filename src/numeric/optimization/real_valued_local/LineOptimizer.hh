@@ -16,21 +16,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.hh
+/// @file src/numeric/optimization/real_valued_local/LineOptimizer.hh
 /// @brief Header for a pure virtual base class for LineOptimizers.
 /// @details LineOptimizers solve a numerical optimization function for a real-valued
 /// function of one variable.  Since line optimization is a sub-problem for many
 /// other optimization problems, LineOptimizers are implemented as their own special
 /// case class.  Note that this class does NOT derive from the general Optimizer class.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @note This class can be instantiated, but its API definition has protected constructors
+/// effectively making it pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_hh
-#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_hh
+#ifndef Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
+#define Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/real_valued_local/LineOptimizer.fwd.hh>
+#include <numeric/optimization/real_valued_local/LineOptimizer.fwd.hh>
 
 // Parent header:
 #include <base/managers/engine/MasalaEngine.hh>
@@ -47,8 +47,7 @@
 #include <mutex>
 
 namespace masala {
-namespace numeric_api {
-namespace base_classes {
+namespace numeric {
 namespace optimization {
 namespace real_valued_local {
 
@@ -57,8 +56,8 @@ namespace real_valued_local {
 /// function of one variable.  Since line optimization is a sub-problem for many
 /// other optimization problems, LineOptimizers are implemented as their own special
 /// case class.  Note that this class does NOT derive from the general Optimizer class.
-/// @note Since this class does not implement class_name() or class_namespace()
-/// functions required by the MasalaObject base class, it remains pure virtual.
+/// @note This class can be instantiated, but its API definition has protected constructors
+/// effectively making it pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class LineOptimizer : public masala::base::managers::engine::MasalaEngine {
 
@@ -99,6 +98,12 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the name of this class ("LineOptimizer").
+	std::string class_name() const override;
+
+	/// @brief Get the namespace of this class ("masala::numeric::optimization::real_valued_local").
+	std::string class_namespace() const override;
 
 	/// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 	/// may be overridden by derived classes.
@@ -196,8 +201,7 @@ private:
 
 } // namespace real_valued_local
 } // namespace optimization
-} // namespace base_classes
-} // namespace numeric_api
+} // namespace numeric
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_real_valued_local_LineOptimizer_hh
+#endif // Masala_src_numeric_optimization_real_valued_local_LineOptimizer_hh
