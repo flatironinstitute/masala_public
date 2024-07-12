@@ -327,7 +327,7 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 			) 
 		);
 		api_def->add_setter(
-			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP > >(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP const & > >(
 				"set_problem", "Set the problem that gave rise to this solution.",
 				"problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
 				"must be a cost function network optimizatoin problem, and this function will throw if it is "
