@@ -246,6 +246,56 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 
 		// Setters:
 		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP const & > >(
+				"set_problem", "Set the problem that gave rise to this solution.  "
+				"Stored directly (not cloned) on input.  This override checks that the problem "
+				"is a RealValuedFunctionLocalOptimizationProblem.  If the solution vector has been "
+				"set, the problem must match it.  If a starting point has already been set, the problem "
+				"must correspond.",
+				"problem_in", "The problem to set.",
+				false, true,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_problem, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Size const > >(
+				"set_starting_point_and_index", "Set the starting point that gave rise to this local minimum, and the corresponding "
+				"starting point index in the problem.  If the problem has already been set, this must match it.  If a solution vector has "
+				"been set, the starting point's length must match it.",
+				"starting_point_in", "The starting point to set.",
+				"starting_point_index", "The index of this starting point in the solution.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_starting_point_and_index, this, std::placeholders::_1, std::placeholders::_2 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & > >(
+				"set_solution_point", "Set the point found that is a local minimum.  If the problem has already been set, this must match it.  "
+				"If a starting point has been set, the solution vector's length must match it.",
+				"solution_point_in", "The solution vector to set.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_point, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< bool > >(
+				"set_converged", "Set whether the optimizer reported convergence.",
+				"convergence_status_in", "True if the optimizer reported convergence, false otherwise.",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_converged, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size const > >(
+				"set_iterations", "Set the number of iterations that the optimizer reported taking.",
+				"iterations_in", "The number of iteratoins that the optimizer reported taking.  Note that some "
+				"optimizers may use non-iterative approaches, in which case this value should be set to zero "
+				"(the default).",
+				false, false,
+				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_iterations, this, std::placeholders::_1 )
+			) 
+		);
+		api_def->add_setter(
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Real > >(
 				"set_solution_score", "Set the score associated with this solution.  This is the "
 				"exact score, recomputed once the solution has been produced.",
