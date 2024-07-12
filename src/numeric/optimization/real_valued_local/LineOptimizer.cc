@@ -29,6 +29,10 @@
 // Unit header:
 #include <numeric/optimization/real_valued_local/LineOptimizer.hh>
 
+// Base headers:
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+
 // STL headers:
 #include <vector>
 #include <string>
@@ -64,6 +68,14 @@ LineOptimizer::operator=(
 	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
 	protected_assign( src );
 	return *this;
+}
+
+/// @brief Copy this object and all contained objects.
+LineOptimizerSP
+LineOptimizer::deep_clone() const {
+	LineOptimizerSP line_opt_copy( masala::make_shared< LineOptimizer >(*this) );
+	line_opt_copy->make_independent();
+	return line_opt_copy;
 }
 
 /// @brief Make this object independent by calling deep_clone on all contained objects.
@@ -129,6 +141,35 @@ LineOptimizer::get_keywords() const {
 std::vector< std::vector < std::string > >
 LineOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "LineOptimizer" } };
+}
+
+/// @brief Get an object describing the API for this object.
+/// @details This override makes the API class non-instantiable since it
+/// has a protected constructor.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+LineOptimizer::get_api_definition() {
+	using namespace masala::base::api;
+
+    std::lock_guard< std::mutex > lock( mutex_ );
+
+    if( api_definition_ == nullptr ) {
+
+        MasalaObjectAPIDefinitionSP api_def(
+            masala::make_shared< MasalaObjectAPIDefinition >(
+                *this,
+                "The LineOptimizer base class is the class from which all 1-dimensional line optimizers are derived.  "
+				"Note that this base class is not intended to be instantiated.",
+                false, true
+            )
+        );
+
+        // Constructors:
+        ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( LineOptimizer, api_def );
+
+		api_definition_ = api_def;
+	}
+	
+	return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

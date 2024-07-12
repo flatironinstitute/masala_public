@@ -79,6 +79,10 @@ public:
 		LineOptimizer const & src
 	);
 
+	/// @brief Copy this object and all contained objects.
+	LineOptimizerSP
+	deep_clone() const;
+
 	/// @brief Make this object independent by calling deep_clone on all contained objects.
 	void
 	make_independent();
@@ -127,6 +131,12 @@ public:
 	/// @returns { {"LineOptimizer"} }
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
+
+	/// @brief Get an object describing the API for this object.
+	/// @details This override makes the API class non-instantiable since it
+	/// has a protected constructor.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 protected:
 
