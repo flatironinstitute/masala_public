@@ -326,16 +326,6 @@ RealValuedFunctionLocalOptimizationSolution::get_api_definition() {
 				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_solution_score_solver_approximation, this, std::placeholders::_1 )
 			) 
 		);
-		api_def->add_setter(
-			masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemCSP const & > >(
-				"set_problem", "Set the problem that gave rise to this solution.",
-				"problem_in", "Const shared pointer to the problem that gave rise to the solution.  This "
-				"must be a cost function network optimizatoin problem, and this function will throw if it is "
-				"not.  Stored directly (not cloned) on input.",
-				false, true,
-				std::bind( &RealValuedFunctionLocalOptimizationSolution::set_problem, this, std::placeholders::_1 )
-			) 
-		);
 
 		api_definition() = api_def; //Make const.
 	}
