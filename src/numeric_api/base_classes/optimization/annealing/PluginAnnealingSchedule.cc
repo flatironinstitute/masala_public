@@ -87,6 +87,29 @@ PluginAnnealingSchedule::get_keywords() const {
     return masala::numeric::optimization::annealing::AnnealingScheduleBase::get_keywords();
 }
 
+/// @brief Get the name of this class (static version that returns "PluginAnnealingSchedule").
+/*static*/
+std::string
+PluginAnnealingSchedule::class_name_static() {
+	return "PluginAnnealingSchedule";
+}
+
+/// @brief Get the namespace of this class (static version that returns
+/// "masala::numeric_api::base_classes::optimization::annealing")
+/*static*/
+std::string
+PluginAnnealingSchedule::class_namespace_static() {
+	return "masala::numeric_api::base_classes::optimization::annealing";
+}
+
+/// @brief Get the namespace and name of this class (static version that returns
+/// "masala::numeric_api::base_classes::optimization::annealing::PluginAnnealingSchedule")
+/*static*/
+std::string
+PluginAnnealingSchedule::class_namespace_and_name_static() {
+	return "masala::numeric_api::base_classes::optimization::annealing::PluginAnnealingSchedule";
+}
+
 } // namespace annealing
 } // namespace optimization
 } // namespace base_classes
