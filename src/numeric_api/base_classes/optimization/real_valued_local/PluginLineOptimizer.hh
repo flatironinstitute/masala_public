@@ -102,6 +102,11 @@ public:
 	/// @brief Get the namespace of this class ("masala::numeric::optimization::real_valued_local").  Static version.
 	static std::string class_namespace_static();
 
+	/// @brief Get the namespace and name of this class
+	/// ("masala::numeric::optimization::real_valued_local::PluginLineOptimizer").
+	/// Static function.
+	static std::string class_namespace_and_name_static();
+
 	/// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 	/// may be overridden by derived classes.
 	/// @returns { { "LineOptimizer" } }

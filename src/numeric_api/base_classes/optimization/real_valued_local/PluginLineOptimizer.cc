@@ -72,6 +72,15 @@ PluginLineOptimizer::class_namespace_static() {
 	return "masala::numeric_api::base_classes::optimization::real_valued_local";
 }
 
+/// @brief Get the namespace and name of this class
+/// ("masala::numeric::optimization::real_valued_local::PluginLineOptimizer").
+/// Static function.
+/*static*/
+std::string
+PluginLineOptimizer::class_namespace_and_name_static() {
+	return "masala::numeric_api::base_classes::optimization::real_valued_local::PluginLineOptimizer";
+}
+
 /// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 /// may be overridden by derived classes.
 /// @returns { { "LineOptimizer" } }
