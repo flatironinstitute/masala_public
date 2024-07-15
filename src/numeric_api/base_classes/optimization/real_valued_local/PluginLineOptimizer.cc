@@ -49,12 +49,26 @@ namespace real_valued_local {
 /// @brief Get the name of this class ("PluginLineOptimizer").
 std::string
 PluginLineOptimizer::class_name() const {
-	return "PluginLineOptimizer";
+	return class_name_static();
 }
 
 /// @brief Get the namespace of this class ("masala::numeric_api::base_classes::optimization::real_valued_local").
 std::string
 PluginLineOptimizer::class_namespace() const {
+	return class_namespace_static();
+}
+
+/// @brief Get the name of this class ("PluginLineOptimizer").  Static version.
+/*static*/
+std::string
+PluginLineOptimizer::class_name_static() {
+	return "PluginLineOptimizer";
+}
+
+/// @brief Get the namespace of this class ("masala::numeric::optimization::real_valued_local").  Static version.
+/*static*/
+std::string
+PluginLineOptimizer::class_namespace_static() {
 	return "masala::numeric_api::base_classes::optimization::real_valued_local";
 }
 
