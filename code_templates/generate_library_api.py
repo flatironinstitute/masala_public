@@ -723,6 +723,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             overridestr = ""
 
         if ninputs > 0 :
+            #if( fxn_type == "SETTER" ) :
+            #    print( "FXN: " + fxn["Setter_Name"] )
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
