@@ -190,6 +190,10 @@ protected:
 	/// Base class protected_finalize() sets finalized_ to true.
 	virtual void protected_finalize();
 
+	/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
+	/// Should be implemented by derived classes, which shoudl call base class function.
+	virtual void protected_assign( OptimizationProblem const & src );
+
 	/// @brief Reset all data in this object.
 	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
 	virtual void protected_reset();

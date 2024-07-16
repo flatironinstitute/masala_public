@@ -35,8 +35,12 @@
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
+// Base headers.
+#include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.fwd.hh>
+
 // STL headers.
 #include <string>
+#include <vector>
 
 namespace masala {
 namespace base {
@@ -124,6 +128,16 @@ public:
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn() const;
 
+	/// @brief Get the number of setter annotations.
+	masala::base::Size n_setter_annotations() const;
+
+	/// @brief Access the Nth setter annotation.
+	setter_annotation::MasalaSetterFunctionAnnotationCSP setter_annotation( masala::base::Size const setter_annotation_index ) const;
+
+	/// @brief Add a setter annotation.
+	/// @details Annotation is used directly, not cloned.
+	void add_setter_annotation( setter_annotation::MasalaSetterFunctionAnnotationCSP const & annotation_in );
+
 	/// @brief Get the number of input parameters for this setter.
 	/// @details Pure virtual; must be overridden by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
@@ -149,6 +163,9 @@ private:
 	/// @brief Is this function an override of a virtual function in a base
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn_ = false;
+
+	/// @brief Additional annotations that this function has attached to it.
+	std::vector< setter_annotation::MasalaSetterFunctionAnnotationCSP > setter_annotations_;
 
 }; // class MasalaObjectAPISetterDefinition
 

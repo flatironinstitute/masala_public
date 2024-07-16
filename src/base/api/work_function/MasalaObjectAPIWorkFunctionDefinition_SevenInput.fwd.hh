@@ -16,17 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FourInput.hh
+/// @file src/base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SevenInput.hh
 /// @brief Forward definitions for a class that stores the definition for a
 /// work function, as part of the API for an object.  Used to auto-generate
 /// the public C++ headers, plus the bindings for Python or XML (or other
 //// scripting languages).
-/// @details This is a derived class for four-input work functions.  The types T1, T2, T3, and T4
+/// @details This is a derived class for seven-input work functions.  The types T1 through T7
 /// define the input types and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_fwd_hh
-#define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_fwd_hh
+#ifndef Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_SevenInput_fwd_hh
+#define Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_SevenInput_fwd_hh
 
 #include <base/managers/memory/util.hh> // For MASALA_SHARED_POINTER
 
@@ -35,32 +35,32 @@ namespace base {
 namespace api {
 namespace work_function {
 
-	template< typename T0, typename T1, typename T2, typename T3, typename T4 >
-	class MasalaObjectAPIWorkFunctionDefinition_FourInput;
+	template< typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7 >
+	class MasalaObjectAPIWorkFunctionDefinition_SevenInput;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	template< typename T0, typename T1, typename T2, typename T3, typename T4 >
-	using MasalaObjectAPIWorkFunctionDefinition_FourInputSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_FourInput< T0, T1, T2, T3, T4 > >;
+	template< typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7 >
+	using MasalaObjectAPIWorkFunctionDefinition_SevenInputSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_SevenInput< T0, T1, T2, T3, T4, T5, T6, T7 > >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	template< typename T0, typename T1, typename T2, typename T3, typename T4 >
-	using MasalaObjectAPIWorkFunctionDefinition_FourInputCSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_FourInput< T0, T1, T2, T3, T4 > const >;
+	template< typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7 >
+	using MasalaObjectAPIWorkFunctionDefinition_SevenInputCSP = MASALA_SHARED_POINTER< MasalaObjectAPIWorkFunctionDefinition_SevenInput< T0, T1, T2, T3, T4, T5, T6, T7 > const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	template< typename T0, typename T1, typename T2, typename T3, typename T4 >
-	using MasalaObjectAPIWorkFunctionDefinition_FourInputWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_FourInput< T0, T1, T2, T3, T4 > >;
+	template< typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7 >
+	using MasalaObjectAPIWorkFunctionDefinition_SevenInputWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_SevenInput< T0, T1, T2, T3, T4, T5, T6, T7 > >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	template< typename T0, typename T1, typename T2, typename T3, typename T4 >
-	using MasalaObjectAPIWorkFunctionDefinition_FourInputCWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_FourInput< T0, T1, T2, T3, T4 > const >;
+	template< typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7 >
+	using MasalaObjectAPIWorkFunctionDefinition_SevenInputCWP = MASALA_WEAK_POINTER< MasalaObjectAPIWorkFunctionDefinition_SevenInput< T0, T1, T2, T3, T4, T5, T6, T7 > const >;
 
 } // namespace work_function
 } // namespace api
 } // namespace base
 } // namespace masala
 
-#endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_FourInput_fwd_hh
+#endif //Masala_src_base_api_work_function_MasalaObjectAPIWorkFunctionDefinition_SevenInput_fwd_hh

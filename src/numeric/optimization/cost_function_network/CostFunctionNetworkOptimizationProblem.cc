@@ -719,6 +719,23 @@ CostFunctionNetworkOptimizationProblem::protected_make_independent() {
 	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
 }
 
+/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
+/// Should be implemented by derived classes, which shoudl call base class function.
+void
+CostFunctionNetworkOptimizationProblem::protected_assign(
+	masala::numeric::optimization::OptimizationProblem const & src
+) {
+	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "protected_assign", "Could not assign to this " + class_name() + " object, since it has already been finalized." );
+	CostFunctionNetworkOptimizationProblem const * src_ptr_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &src ) );
+	CHECK_OR_THROW_FOR_CLASS( src_ptr_cast != nullptr, "protected_assign", "Could not assign an object of type " + src.class_name() + " to an object of type CostFunctionNetworkOptimizationProblem." );
+	n_choices_by_node_index_ = src_ptr_cast->n_choices_by_node_index_;
+	cost_functions_ = src_ptr_cast->cost_functions_;
+	candidate_starting_solutions_ = src_ptr_cast->candidate_starting_solutions_;
+	// The rest is populated by finalize().
+	masala::numeric::optimization::OptimizationProblem::protected_assign( src );
+}
+
+
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void

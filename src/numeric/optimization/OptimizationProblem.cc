@@ -54,8 +54,9 @@ OptimizationProblem::OptimizationProblem(
 ) :
     masala::base::managers::engine::MasalaDataRepresentation(src)
 {
-    // std::lock_guard< std::mutex > lock( src.problem_mutex_ );
+    std::lock_guard< std::mutex > lock( src.problem_mutex_ );
     finalized_.store(false);
+	protected_assign(src);
 }
 
 /// @brief Assignment operator.
@@ -64,12 +65,10 @@ OptimizationProblem::operator=(
     OptimizationProblem const & src
 ) {
     masala::base::managers::engine::MasalaDataRepresentation::operator=(src);
-    {
-        std::lock( problem_mutex_, src.problem_mutex_ );
-        std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
-        std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
-        //finalized_ = src.finalized_.load(); // Don't copy finalization state.
-    }
+	std::lock( problem_mutex_, src.problem_mutex_ );
+	std::lock_guard< std::mutex > lock( problem_mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lock2( src.problem_mutex_, std::adopt_lock );
+	protected_assign(src);
     return *this;
 }
 
@@ -293,16 +292,29 @@ OptimizationProblem::api_definition() {
 void
 OptimizationProblem::protected_finalize() {
     CHECK_OR_THROW_FOR_CLASS( !finalized_, "protected_finalize",
-        "This function was called on a problem definition that was already finalized!"
+        "This function was called on a " + class_name() + "problem definition that was already finalized!"
     );
     finalized_ = true;
+}
+
+
+/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
+/// Should be implemented by derived classes, which shoudl call base class function.
+void
+OptimizationProblem::protected_assign(
+	OptimizationProblem const & /*src*/
+) {
+	CHECK_OR_THROW_FOR_CLASS( !finalized_, "protected_assign",
+        "This function was called on a " + class_name() + " problem definition that was already finalized!"
+    );
+	// GNDN.
 }
 
 /// @brief Reset all data in this object.
 /// @details Sets state to not finalized.  Mutex must be locked before calling this.
 void
 OptimizationProblem::protected_reset() {
-    finalized_ = false;
+    finalized_.store(false);
 }
 
 /// @brief Make this object independent.

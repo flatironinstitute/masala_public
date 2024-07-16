@@ -102,6 +102,17 @@ public:
 	/// @details Overridden to make this class pure virtual.
 	std::string class_namespace() const override = 0;
 
+	/// @brief Get the name of this class (static version that returns "PluginAnnealingSchedule").
+	static std::string class_name_static();
+
+	/// @brief Get the namespace of this class (static version that returns
+	/// "masala::numeric_api::base_classes::optimization::annealing")
+	static std::string class_namespace_static();
+
+	/// @brief Get the namespace and name of this class (static version that returns
+	/// "masala::numeric_api::base_classes::optimization::annealing::PluginAnnealingSchedule")
+	static std::string class_namespace_and_name_static();
+
 	/// @brief Derived plugin annealing schedules must implement their own API definitions.
 	masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition() override = 0;
 

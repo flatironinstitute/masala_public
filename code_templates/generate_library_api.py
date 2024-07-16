@@ -328,11 +328,23 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             firstcomma = inputclass.rfind( ",", 0, secondcomma )
             additional_includes.append("<external/eigen/Eigen/Dense>")
             return "Eigen::Matrix< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) + inputclass[firstcomma:]
+        elif inputclass.startswith( "Eigen::Vector<" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            secondcomma = inputclass.rfind( ",", 0, lastchevron )
+            firstcomma = inputclass.rfind( ",", 0, secondcomma )
+            additional_includes.append("<external/eigen/Eigen/Core>")
+            return "Eigen::Vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) + inputclass[firstcomma:]
         elif inputclass.startswith( "vector" ) or inputclass.startswith( "std::vector" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
             additional_includes.append("<vector>")
             return "std::vector< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
+        elif inputclass.startswith( "function" ) or inputclass.startswith( "std::function" ) :
+            firstchevron = inputclass.find( "<" )
+            lastchevron = inputclass.rfind( ">" )
+            additional_includes.append("<functional>")
+            return "std::function< " + correct_masala_types( project_name, inputclass[firstchevron + 1 : lastchevron].strip(), additional_includes ) + " " + inputclass[lastchevron:]
         elif inputclass.startswith( "pair" ) or inputclass.startswith( "std::pair" ) :
             firstchevron = inputclass.find( "<" )
             lastchevron = inputclass.rfind( ">" )
@@ -711,6 +723,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             overridestr = ""
 
         if ninputs > 0 :
+            #if( fxn_type == "SETTER" ) :
+            #    print( "FXN: " + fxn["Setter_Name"] )
             for i in range(ninputs) :
                 outstring += "\n" + tabchar + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
