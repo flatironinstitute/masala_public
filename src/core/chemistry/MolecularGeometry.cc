@@ -112,7 +112,6 @@ MolecularGeometry::operator=(
 MolecularGeometrySP
 MolecularGeometry::clone() const {
     std::cout << "***CLONE LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
-    std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
     return masala::make_shared< MolecularGeometry >( *this );
 }
 
