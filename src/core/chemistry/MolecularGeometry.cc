@@ -45,7 +45,7 @@
 
 // STL headers:
 #include <string>
-#include <iostream> // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+//#include <iostream> // COMMENT ME OUT -- FOR DEBUGGING ONLY.
 
 namespace masala {
 namespace core {
@@ -59,7 +59,7 @@ MolecularGeometry::MolecularGeometry() :
         OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MolecularGeometry, MolecularGeometryConfiguration )
     )
 {
-	std::cout << "**CONSTRUCTING MOLECULAR GEOMETRY**" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+	// std::cout << "**CONSTRUCTING MOLECULAR GEOMETRY**" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
 }
 
 /// @brief Copy constructor.
@@ -69,7 +69,7 @@ MolecularGeometry::MolecularGeometry(
 ) :
     masala::base::MasalaObject(src)
 {
-    std::cout << "***COPY CONSTRUCTOR LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***COPY CONSTRUCTOR LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > mutexlock( src.whole_object_mutex_ );
     configuration_ = src.configuration_;
     master_atom_coordinate_representation_ = src.master_atom_coordinate_representation_;
@@ -87,7 +87,7 @@ MolecularGeometry::operator=(
     MolecularGeometry const & src
 ) {
     { //Scope for lock guards:
-        std::cout << "***ASSIGNMENT OPERATOR LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+        // std::cout << "***ASSIGNMENT OPERATOR LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
         std::lock( whole_object_mutex_, src.whole_object_mutex_ );
         std::lock_guard< std::mutex > lock1( whole_object_mutex_, std::adopt_lock );
         std::lock_guard< std::mutex > lock2( src.whole_object_mutex_, std::adopt_lock );
@@ -111,7 +111,7 @@ MolecularGeometry::operator=(
 /// to the copy.
 MolecularGeometrySP
 MolecularGeometry::clone() const {
-    std::cout << "***CLONE LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***CLONE LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     return masala::make_shared< MolecularGeometry >( *this );
 }
 
@@ -121,7 +121,7 @@ MolecularGeometrySP
 MolecularGeometry::deep_clone() const {
     MolecularGeometrySP molecular_geometry_copy;
     {   // Scope for lock guard.
-        std::cout << "***DEEP CLONE LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+        // std::cout << "***DEEP CLONE LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
         std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
         molecular_geometry_copy = masala::make_shared< MolecularGeometry >( *this );
     }
@@ -133,7 +133,7 @@ MolecularGeometry::deep_clone() const {
 /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
 void
 MolecularGeometry::make_independent() {
-    std::cout << "***MAKE INDEPENDENT LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***MAKE INDEPENDENT LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > whole_object_lock( whole_object_mutex_ );
 
     configuration_ = configuration_->deep_clone();
@@ -190,7 +190,7 @@ MolecularGeometry::get_api_definition() {
     using namespace base::api::getter;
     using namespace base::api::setter;
 
-    std::cout << "***API DEFINITION LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***API DEFINITION LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
     if( api_definition_ == nullptr ) {
@@ -319,7 +319,7 @@ MolecularGeometry::add_atom(
     masala::core::chemistry::atoms::AtomInstanceSP const & atom_in,
     std::array< masala::base::Real, 3 > const & coords
 ) {
-    std::cout << "***ADD ATOM LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***ADD ATOM LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
 
     // Add the atom:
@@ -354,7 +354,7 @@ std::array< masala::base::Real, 3 >
 MolecularGeometry::get_atom_coordinates(
     atoms::AtomInstanceConstIterator const atom_iterator
 ) const {
-    std::cout << "**GET ATOM COORDINATE LOCK*** this=" << this << " master_atom_coordinate_representation_.get()=" << master_atom_coordinate_representation_.get() << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "**GET ATOM COORDINATE LOCK*** this=" << this << " master_atom_coordinate_representation_.get()=" << master_atom_coordinate_representation_.get() << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
     return master_atom_coordinate_representation_->get_atom_coordinates( atom_iterator.ptr() );
 }
@@ -381,7 +381,7 @@ MolecularGeometry::add_bond(
     masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
     masala::core::chemistry::bonds::ChemicalBondType const bond_type
 ) {
-    std::cout << "***ADD BOND LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***ADD BOND LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
     CHECK_OR_THROW_FOR_CLASS(
         atoms_const_.count( first_atom ) != 0, "add_bond",
@@ -452,7 +452,7 @@ bool
 MolecularGeometry::has_atom(
     masala::core::chemistry::atoms::AtomInstanceCSP const & atom
 ) const {
-    std::cout << "***HAS ATOM LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+    // std::cout << "***HAS ATOM LOCK***" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
     std::lock_guard< std::mutex > lock( whole_object_mutex_ );
     return (atoms_const_.count( atom ) != 0);
 }
