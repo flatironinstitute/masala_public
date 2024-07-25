@@ -1130,7 +1130,7 @@ def generate_function_implementations( \
 
             if is_masala_API_ptr and returns_this_ref == False :
                 dummy = []
-                outstring += "masala::make_shared< " + correct_masala_types( project_name, outtype_inner, dummy ) + " >(\n"
+                outstring += "masala::make_shared< " + correct_masala_types( project_name, drop_const( outtype_inner ), dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif is_masala_API_obj :
@@ -1139,7 +1139,7 @@ def generate_function_implementations( \
                 if output_is_lightweight :
                     outstring += tabchar + tabchar + outtype + "( "
                 else :
-                    outstring += tabchar + tabchar + "masala::make_shared< " + outtype + " >( "
+                    outstring += tabchar + tabchar + "masala::make_shared< " + drop_const( outtype ) + " >( "
                 add_base_class_include( project_name, outtype, additional_includes )
         else :
             outstring += tabchar
