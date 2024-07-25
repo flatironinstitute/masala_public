@@ -58,7 +58,9 @@ MolecularGeometry::MolecularGeometry() :
     configuration_(
         OBTAIN_CONFIGURATION_FROM_CONFIGURATION_MANAGER( MolecularGeometry, MolecularGeometryConfiguration )
     )
-{}
+{
+	std::cout << "**CONSTRUCTING MOLECULAR GEOMETRY**" << std::endl; // COMMENT ME OUT -- FOR DEBUGGING ONLY.
+}
 
 /// @brief Copy constructor.
 /// @details Must be explicitly declared due to mutex.
