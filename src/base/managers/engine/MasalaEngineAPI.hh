@@ -41,6 +41,10 @@ class MasalaEngineAPI : public masala::base::managers::plugin_module::MasalaPlug
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTORS, DESTRUCTORS, AND NAMING FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	MasalaEngineAPI() = default;
 
@@ -49,6 +53,21 @@ public:
 
 	/// @brief Destructor.
 	virtual ~MasalaEngineAPI() = default;
+
+	/// @brief Get the name of this class ("MasalaEngineAPI").
+	inline std::string class_name() const override { return class_name_static(); }
+
+	/// @brief Get the name of this class ("MasalaEngineAPI").
+	inline static std::string class_name_static() { return "MasalaEngineAPI"; }
+
+	/// @brief Get the namespace of this class ("masala::base::managers::engine").
+	inline std::string class_namespace() const override { return class_namespace_static(); }
+
+	/// @brief Get the name of this class ("masala::base::managers::engine").
+	inline static std::string class_namespace_static() { return "masala::base::managers::engine"; }
+
+	/// @brief Get the namespace and name of this class ("masala::base::managers::engine::MasalaEngineAPI").
+	inline static std::string class_namespace_and_name_static() { return class_namespace_static() + "::" + class_name_static(); }
 
 public:
 
