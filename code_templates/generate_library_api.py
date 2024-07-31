@@ -784,15 +784,8 @@ def generate_function_call( \
                         outstring += " "
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                     if input_is_known_enum == False:
-                        if inputtype != "masala::base::MasalaObjectAPI" :
-                            if inputtype == "masala::base::managers::engine::MasalaEngineAPI" :
-                                outstring += input_point_or_arrow + "get_inner_engine_object"
-                                if( len(curinput_inner_split) > 1 and curinput_inner_split[1] == "const" ) :
-                                    outstring += "_const()"
-                                else:
-                                    outstring += "()"
-                            else :
-                                outstring += input_point_or_arrow + "get_inner_object()"
+                        if inputtype.endswith( "API" ) == False :
+                            outstring += input_point_or_arrow + "get_inner_object()"
                     if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
             else:
