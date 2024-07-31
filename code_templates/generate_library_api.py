@@ -316,6 +316,11 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         additional_includes.append( "<base/MasalaObjectAPI.hh>" )
         return inputclass
 
+    # Special case for MasalaEngineAPI
+    if inputclass.startswith( "masala::base::managers::engine::MasalaEngineAPI" ):
+        additional_includes.append( "<base/managers/engine/MasalaEngineAPI.hh>" )
+        return inputclass
+
     if is_masala_class( project_name, inputclass ) == False :
         if inputclass.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = inputclass.find( "<" )
@@ -768,7 +773,8 @@ def generate_function_call( \
                 else :
                     input_point_or_arrow = "."
 
-                inputtype = curinput_inner.split()[0]
+                curinput_inner_split = curinput_inner.split()
+                inputtype = curinput_inner_split[0]
                 if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
@@ -778,7 +784,7 @@ def generate_function_call( \
                         outstring += " "
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                     if input_is_known_enum == False:
-                        if inputtype != "masala::base::MasalaObjectAPI" :
+                        if inputtype.endswith( "API" ) == False :
                             outstring += input_point_or_arrow + "get_inner_object()"
                     if input_is_masala_class and input_is_known_enum == False :
                         outstring += " )"
@@ -1587,7 +1593,11 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
                 print("\t\tFound parent class of " + classname + ":\t" + parent_namespace_and_name + ".")
             break
 
-    if( parent_namespace_and_name.endswith("base::MasalaObject") == False and parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False ) :
+    if( parent_namespace_and_name.endswith("base::MasalaObject") == False and \
+        parent_namespace_and_name.endswith( "base::managers::plugin_module::MasalaPlugin" ) == False and \
+        parent_namespace_and_name.endswith( "base::managers::engine::MasalaEngine" ) == False and \
+        parent_namespace_and_name.endswith( "base::managers::engine::MasalaDataRepresentation" ) == False \
+        ) :
         # Second, prepare the parent class .hh file.
         parentsplit = parent_namespace_and_name.split("::")
         assert len(parentsplit) > 0
