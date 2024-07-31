@@ -178,10 +178,14 @@ public:
 
 	/// @brief Given a system thread ID, return the index of the stored thread with that
 	/// system ID.  Throws if no such thread exists in the thread pool.
-	base::Size
+	masala::base::Size
 	get_thread_manager_thread_id_from_system_thread_id(
 		std::thread::id const system_thread_id
 	) const;
+
+	/// @brief Get the IDs of all threads currently running.
+	std::vector< masala::base::Size >
+	get_thread_manager_thread_ids() const;
 
 private:
 

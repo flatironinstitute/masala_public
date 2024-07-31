@@ -140,10 +140,22 @@ MasalaThreadManager::this_thread_is_a_masala_thread() const {
 /// @details Throws if the thread is not known to or managed by the thread
 /// manager.  Use this_thread_is_a_masala_thread() to check whether the current
 /// thread is known to or managed by the thread manager.
-base::Size
+masala::base::Size
 MasalaThreadManager::get_thread_manager_thread_id() const {
     return get_thread_manager_thread_id_from_system_thread_id( std::this_thread::get_id() );
 } // MasalaThreadManager::get_thread_manager_thread_id()
+
+/// @brief Get the IDs of all threads currently running.
+std::vector< masala::base::Size >
+MasalaThreadManager::get_thread_manager_thread_ids() const {
+	std::lock_guard< std::mutex > lock( thread_manager_mutex_ );
+
+	if( thread_pool_ != nullptr ) {
+		return thread_pool_->get_thread_manager_thread_ids();
+	}
+
+	return { 0 }; // If there's no thread pool, only the master thread is running.
+}
 
 /// @brief Given the system ID of a thread, return the whether this thread is
 /// known to the thread manager.

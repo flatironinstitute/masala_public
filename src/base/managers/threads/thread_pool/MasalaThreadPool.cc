@@ -341,6 +341,19 @@ MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id(
     return get_thread_manager_thread_id_from_system_thread_id_mutexlocked( system_thread_id );
 } // MasalaThreadPool::get_thread_manager_thread_id_from_system_thread_id()
 
+/// @brief Get the IDs of all threads currently running.
+std::vector< masala::base::Size >
+MasalaThreadPool::get_thread_manager_thread_ids() const {
+    std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
+	std::vector< masala::base::Size > thread_ids( threads_.size() + 1 );
+	thread_ids[0] = 0;
+    for( masala::base::Size i(0), imax(threads_.size()); i<imax; ++i ) {
+        thread_ids[i+1] = threads_[i]->thread_index();
+    }
+	thread_ids.shrink_to_fit();
+	return thread_ids;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS:
 ////////////////////////////////////////////////////////////////////////////////

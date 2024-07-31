@@ -157,7 +157,10 @@ public:
     /// @details Throws if the thread is not known to or managed by the thread
     /// manager.  Use this_thread_is_a_masala_thread() to check whether the current
     /// thread is known to or managed by the thread manager.
-    base::Size get_thread_manager_thread_id() const;
+	masala::base::Size get_thread_manager_thread_id() const;
+
+	/// @brief Get the IDs of all threads currently running.
+	std::vector< masala::base::Size > get_thread_manager_thread_ids() const;
 
 	/// @brief Get the master thread's system ID.
 	inline std::thread::id get_system_thread_id_of_master_thread() const { return master_thread_id_; }
