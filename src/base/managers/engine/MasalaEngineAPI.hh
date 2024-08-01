@@ -30,6 +30,9 @@
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
 #include <base/managers/engine/MasalaEngine.fwd.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
