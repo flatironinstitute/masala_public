@@ -14,9 +14,16 @@ To build the core Masala libraries:
 
 1.  Clone the git repository (`git clone git@github.com:flatironinstitute/masala_dev.git`).
 2.  Clone all of the needed submodules (`cd masala_dev && git submodule update --init`).
-3.  Run the `buildme.sh` script.
+3.  Masala is written in C++20. Make sure that your GCC version is 8 or higher. You can check this via `gcc --version`.
+4.  Run the `buildme.sh` script.
 
 After building, you will likely want to pull and build the standard Masala plugins repository, and possibly the Garam Masala GUI.
+
+## Updating the build
+
+1.  If you are on the `main` branch, pull the latest changes via `git pull`. If you are on another branch (you can check via `git branch`), update your remote branch (`git remote update origin --prune`)
+2.  Delete the previous build (`./delete_build.sh`)
+3.  Run the `buildme.sh` script.
 
 ## Using
 
