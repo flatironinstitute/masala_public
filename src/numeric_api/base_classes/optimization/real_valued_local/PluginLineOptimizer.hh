@@ -151,8 +151,6 @@ public:
 	/// @param[in] search_dir The search direction, which may or may not match the negative gradient of the starting point.
 	/// @param[out] x The output value of x that (locally) minimizes f(x).
 	/// @param[out] fxn_at_x The output value of f(x) where x (locally) minimizes f(x).
-	/// @param[inout] stepsize The size of the initial step for the search.  This is both an input (the step size that we should
-	/// try initially) and an output (the step size that yielded the optimum).
 	virtual
 	void
 	run_line_optimizer(
@@ -162,8 +160,7 @@ public:
 		Eigen::VectorXd const & grad_of_fxn_at_x0,
 		Eigen::VectorXd const & search_dir,
 		Eigen::VectorXd & x,
-		masala::base::Real & fxn_at_x,
-		masala::base::Real & stepsize
+		masala::base::Real & fxn_at_x
 	) const = 0;
 
 protected:
