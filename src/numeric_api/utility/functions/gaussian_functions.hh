@@ -54,7 +54,8 @@ compute_1d_gaussian_deriv(
     masala::base::Real const sigma
 ) {
     masala::base::Real const xdiff( x-x0 );
-    return - xdiff /(sigma*sigma*sigma * MASALA_SQRT_2PI ) * std::exp( - xdiff*xdiff / (2*sigma*sigma) );
+    masala::base::Real const sigma_squared( sigma*sigma );
+    return - xdiff /(sigma_squared*sigma * MASALA_SQRT_2PI ) * std::exp( - xdiff*xdiff / (2*sigma_squared) );
 }
 
 #endif // Masala_src_numeric_api_utility_functions_gaussian_functions_hh
