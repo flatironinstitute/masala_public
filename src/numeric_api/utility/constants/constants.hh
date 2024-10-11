@@ -16,15 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/utility/optimization/cost_function_network/util.hh
-/// @brief Prototypes for utility functions for cost function network optimization problems.
+/// @file src/numeric_api/utility/constants/constants.hh
+/// @brief Definitions of constants used in many calculations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_utility_constants_constants_hh
 #define Masala_src_numeric_api_utility_constants_constants_hh
-
-// Forward declarations:
-#include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.fwd.hh>
 
 #define MASALA_PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679L
 #define MASALA_2PI 6.2831853071795864769252867665590057L
