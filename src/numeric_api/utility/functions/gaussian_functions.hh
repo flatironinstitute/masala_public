@@ -42,4 +42,19 @@ compute_1d_gaussian(
     return 1.0/(sigma * MASALA_SQRT_2PI ) * std::exp( - xdiff*xdiff / (2*sigma*sigma) );
 }
 
+/// @brief Compute the first derivative of a 1D Gaussian (dG(x)/dx), normalized.
+/// @param x The position in 1 dimension.
+/// @param x0 The centre of the Gaussian in 1 dimension.
+/// @param sigma The standard deviation of the Gaussian.
+inline
+masala::base::Real
+compute_1d_gaussian_deriv(
+    masala::base::Real const x,
+    masala::base::Real const x0,
+    masala::base::Real const sigma
+) {
+    masala::base::Real const xdiff( x-x0 );
+    return - xdiff /(sigma*sigma*sigma * MASALA_SQRT_2PI ) * std::exp( - xdiff*xdiff / (2*sigma*sigma) );
+}
+
 #endif // Masala_src_numeric_api_utility_functions_gaussian_functions_hh
