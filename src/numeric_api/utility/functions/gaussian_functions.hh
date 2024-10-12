@@ -27,6 +27,11 @@
 #include <numeric_api/utility/constants/constants.hh>
 #include <cmath>
 
+namespace masala {
+namespace numeric_api {
+namespace utility {
+namespace functions {
+
 /// @brief Compute a 1D Gaussian, normalized.
 /// @param x The position in 1 dimension.
 /// @param x0 The centre of the Gaussian in 1 dimension.
@@ -57,5 +62,10 @@ compute_1d_gaussian_deriv(
     masala::base::Real const sigma_squared( sigma*sigma );
     return - xdiff /(sigma_squared*sigma * MASALA_SQRT_2PI ) * std::exp( - xdiff*xdiff / (2*sigma_squared) );
 }
+
+} // namespace functions
+} // namespace utility
+} // namespace numeric_api
+} // namespace masala
 
 #endif // Masala_src_numeric_api_utility_functions_gaussian_functions_hh
