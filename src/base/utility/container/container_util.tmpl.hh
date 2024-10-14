@@ -64,7 +64,7 @@ namespace container {
         using masala::base::Size;
         if( container1.size() != container2.size() ) { return false; }
         for( Size i(0); i<container1.size(); ++i ) {
-            if( std::abs( countainer1[i] - countainer2[i] ) > delta ) {
+            if( std::abs( container1[i] - container2[i] ) > delta ) {
                 return false;
             }
         }
