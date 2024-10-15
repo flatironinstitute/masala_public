@@ -133,11 +133,14 @@ public:
 
 	/// @brief Return temperature.
 	/// @details Pure virtual; derived classes should override this.
+	/// @note This function's overrides should increment the call count.  If the call count is at N, then
+	/// this function has been called N times.  The zero-based index of the last call is N-1.
 	masala::base::Real
 	temperature() const override = 0;
 
 	/// @brief Return temperature for the Nth timepoint.
 	/// @details Pure virtual; derived classes should override this.
+	/// @note The time index is zero-based.
 	masala::base::Real
 	temperature(
 		masala::base::Size const time_index

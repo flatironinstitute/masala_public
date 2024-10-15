@@ -139,12 +139,15 @@ public:
 
 	/// @brief Return temperature.
 	/// @details The base class throws; derived classes should override this.
+	/// @note This function should increment the call count.  If the call count is at N, then
+	/// this function has been called N times.  The zero-based index of the last call is N-1.
 	virtual
 	masala::base::Real
 	temperature() const;
 
 	/// @brief Return temperature for the Nth timepoint.
 	/// @details The base class throws; derived classes should override this.
+	/// @note The time index is zero-based.
 	virtual
 	masala::base::Real
 	temperature(
@@ -187,7 +190,9 @@ private:
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 	/// @brief Number of times the temperature() function has been called.
-	mutable masala::base::Size call_count_;
+	/// @note This is one more than the last timestep.  That is, a value of zero
+	/// means that we have not yet performed the very first timestep.
+	mutable masala::base::Size call_count_ = 0;
 
 }; // class AnnealingScheduleBase
 
