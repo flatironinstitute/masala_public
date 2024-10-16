@@ -27,6 +27,9 @@
 #include <algorithm>
 #include <sstream>
 
+// Masala base headers
+#include <base/types.hh>
+
 namespace masala {
 namespace base {
 namespace utility {
@@ -51,6 +54,21 @@ namespace container {
             ss << entry;
         }
         return ss.str();
+    }
+
+    /// @brief Compare two containers, and determine whether their contents are equal within some threshold.
+    /// @returns True if equal (within threshold), false if not, or if container size does not match.
+    template< class C, class T >
+    bool
+    equal_within_threshold( C const & container1, C const & container2, T const delta ) {
+        using masala::base::Size;
+        if( container1.size() != container2.size() ) { return false; }
+        for( Size i(0); i<container1.size(); ++i ) {
+            if( std::abs( container1[i] - container2[i] ) > delta ) {
+                return false;
+            }
+        }
+        return true;
     }
 
 } // namespace container
