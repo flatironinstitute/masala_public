@@ -198,6 +198,8 @@ OwnedSingleObjectSetterAnnotation::set_plugin_manager_info(
 /// @param[in] engine_manager_input_object_keywords Keywords that can be passed to the
 /// MasalaEngineManager to try to get objects of the type needed for this setter function.
 /// Can be left as an empty vector.
+/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
+/// throw if the setter is not a single-input setter that takes a MasalaEngineSP or MasalaEngineCSP.
 /// @param[in] engine_manager_include_subcategory If true (the default), then
 /// subcategories of the given category are accepted.  If false, then the exact category
 /// must be used.
@@ -205,8 +207,23 @@ void
 OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 	std::vector< std::string > const & engine_manager_input_object_category,
 	std::vector< std::string > const & engine_manager_input_object_keywords,
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter,
 	bool const engine_manager_include_subcategory //= true
 ) {
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::api::setter;
+
+	CHECK_OR_THROW_FOR_CLASS( !is_data_representation_, "set_engine_manager_info", "Engine manager information cannot be set "
+		"if a setter function accepts a data representation."
+	);
+	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
+		(
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineSP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineCSP > const * >( &setter ) != nullptr
+		),
+		"set_engine_manager_info",
+		"Engine manager info can only be set for a setter function that accepts a single input: a MasalaEngineSP or MasalaEngineCSP."
+	);
 	is_engine_ = true;
 	engine_manager_input_object_category_ = engine_manager_input_object_category;
 	engine_manager_input_object_keywords_ = engine_manager_input_object_keywords;
@@ -221,6 +238,9 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 /// @param[in] data_representation_manager_input_object_keywords Keywords that can be passed to the
 /// MasalaDataRepresentationManager to try to get objects of the type needed for this setter function.
 /// Can be left as an empty vector.
+/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
+/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationSP or
+/// MasalaDataRepresentationCSP.
 /// @param[in] data_representation_manager_include_subcategory If true (the default), then
 /// subcategories of the given category are accepted.  If false, then the exact category
 /// must be used.
@@ -228,8 +248,24 @@ void
 OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	std::vector< std::string > const & data_representation_manager_input_object_category,
 	std::vector< std::string > const & data_representation_manager_input_object_keywords,
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter,
 	bool const data_representation_manager_include_subcategory//= true
 ) {
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::api::setter;
+
+	CHECK_OR_THROW_FOR_CLASS( !is_engine_, "set_data_representation_manager_info", "Data representation manager information cannot be set "
+		"if a setter function accepts an engine."
+	);
+	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
+		(
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationSP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationCSP > const * >( &setter ) != nullptr
+		),
+		"set_data_representation_manager_info",
+		"Data representation manager info can only be set for a setter function that accepts a single input: "
+		"a MasalaDataRepresentationSP or MasalaDataRepresentationCSP."
+	);
 	is_data_representation_ = true;
 	data_representation_manager_input_object_category_ = data_representation_manager_input_object_category;
 	data_representation_manager_input_object_keywords_ = data_representation_manager_input_object_keywords;

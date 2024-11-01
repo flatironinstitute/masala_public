@@ -173,6 +173,8 @@ public:
 	/// @param[in] engine_manager_input_object_keywords Keywords that can be passed to the
 	/// MasalaEngineManager to try to get objects of the type needed for this setter function.
 	/// Can be left as an empty vector.
+	/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
+	/// throw if the setter is not a single-input setter that takes a MasalaEngineSP or MasalaEngineCSP.
 	/// @param[in] engine_manager_include_subcategory If true (the default), then
 	/// subcategories of the given category are accepted.  If false, then the exact category
 	/// must be used.
@@ -180,6 +182,7 @@ public:
 	set_engine_manager_info(
 		std::vector< std::string > const & engine_manager_input_object_category,
 		std::vector< std::string > const & engine_manager_input_object_keywords,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter,
 		bool const engine_manager_include_subcategory = true
 	);
 
@@ -191,6 +194,9 @@ public:
 	/// @param[in] data_representation_manager_input_object_keywords Keywords that can be passed to the
 	/// MasalaDataRepresentationManager to try to get objects of the type needed for this setter function.
 	/// Can be left as an empty vector.
+	/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
+	/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationSP or
+	/// MasalaDataRepresentationCSP.
 	/// @param[in] data_representation_manager_include_subcategory If true (the default), then
 	/// subcategories of the given category are accepted.  If false, then the exact category
 	/// must be used.
@@ -198,6 +204,7 @@ public:
 	set_data_representation_manager_info(
 		std::vector< std::string > const & data_representation_manager_input_object_category,
 		std::vector< std::string > const & data_representation_manager_input_object_keywords,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter,
 		bool const data_representation_manager_include_subcategory = true
 	);
 
