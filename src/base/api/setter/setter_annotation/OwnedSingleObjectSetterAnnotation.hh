@@ -31,6 +31,7 @@
 
 // Base headers:
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
+#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
 
 // STL headers:
 #include <string>
@@ -223,6 +224,16 @@ public:
     is_compatible_with_setter(
         masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
     ) const override;
+
+	/// @brief Create an instance of the owned object type.
+	/// @param object_name The name of the type to create.  Throws if this type is not known to the plugin manager, the engine manager if this
+	/// is an engine setter, or the data representation manager if this is a data representation setter.
+	/// @returns A shared pointer to a nonconst instance of the new object type.
+	masala::base::managers::plugin_module::MasalaPluginAPISP
+	create_owned_object(
+		std::string const & object_name
+	) const;
+
 
 protected:
 

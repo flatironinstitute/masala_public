@@ -30,8 +30,12 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
+#include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/engine/MasalaEngine.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.hh>
+#include <base/managers/engine/MasalaDataRepresentationManager.hh>
+#include <base/managers/engine/MasalaEngineManager.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
@@ -299,6 +303,33 @@ OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationCSP > const * >( &setter ) != nullptr ) { return true; }
 
 	return false;
+}
+
+/// @brief Create an instance of the owned object type.
+/// @param object_name The name of the type to create.  Throws if this type is not known to the plugin manager, the engine manager if this
+/// is an engine setter, or the data representation manager if this is a data representation setter.
+/// @returns A shared pointer to a nonconst instance of the new object type.
+masala::base::managers::plugin_module::MasalaPluginAPISP
+OwnedSingleObjectSetterAnnotation::create_owned_object(
+	std::string const & object_name
+) const {
+	using namespace masala::base::managers::plugin_module;
+	CHECK_OR_THROW_FOR_CLASS( !( is_engine_ && is_data_representation_ ), "create_owned_object", "Program error: the object is listed as both an "
+		"engine and a data representation.  This should be impossible.  Please consult a developer."
+	);
+	MasalaPluginAPISP returnobj;
+	if( is_data_representation_ ) {
+		returnobj = masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation( object_name, false );
+	} else if( is_engine ) {
+		returnobj = masala::base::managers::engine::MasalaEngineManager::get_instance()->create_engine( object_name, false );
+	} else {
+		returnobj = masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name( plugin_manager_input_object_category_, object_name, plugin_manager_include_subcategory_ );
+	}
+	CHECK_OR_THROW_FOR_CLASS( returnobj != nullptr, "create_owned_object",
+		"Could not find a suitable " + ( is_engine_ ? std::string("MasalaEngine") : ( is_data_representation_ ? std::string("MasalaDataRepresentation") : std::string("MasalaPlugin") ) )
+		+ " named \"" + object_name + "\"."
+	);
+	return returnobj;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
