@@ -31,9 +31,8 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
-#include <base/managers/engine/MasalaEngine.fwd.hh>
-#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
+#include <base/managers/engine/MasalaEngineAPI.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
 #include <base/managers/engine/MasalaEngineManager.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
@@ -203,7 +202,7 @@ OwnedSingleObjectSetterAnnotation::set_plugin_manager_info(
 /// MasalaEngineManager to try to get objects of the type needed for this setter function.
 /// Can be left as an empty vector.
 /// @param[in] setter The setter to which we will be attaching this annotation.  This function will
-/// throw if the setter is not a single-input setter that takes a MasalaEngineSP or MasalaEngineCSP.
+/// throw if the setter is not a single-input setter that takes a MasalaEngineAPISP or MasalaEngineAPICSP.
 /// @param[in] engine_manager_include_subcategory If true (the default), then
 /// subcategories of the given category are accepted.  If false, then the exact category
 /// must be used.
@@ -222,8 +221,8 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 	);
 	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
 		(
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineSP > const * >( &setter ) != nullptr ||
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineCSP > const * >( &setter ) != nullptr
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr
 		),
 		"set_engine_manager_info",
 		"Engine manager info can only be set for a setter function that accepts a single input: a MasalaEngineSP or MasalaEngineCSP."
@@ -243,8 +242,8 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 /// MasalaDataRepresentationManager to try to get objects of the type needed for this setter function.
 /// Can be left as an empty vector.
 /// @param[in] setter The setter to which we will be attaching this annotation.  This function will
-/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationSP or
-/// MasalaDataRepresentationCSP.
+/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationAPISP or
+/// MasalaDataRepresentationAPICSP.
 /// @param[in] data_representation_manager_include_subcategory If true (the default), then
 /// subcategories of the given category are accepted.  If false, then the exact category
 /// must be used.
@@ -263,8 +262,8 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	);
 	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
 		(
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationSP > const * >( &setter ) != nullptr ||
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationCSP > const * >( &setter ) != nullptr
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr
 		),
 		"set_data_representation_manager_info",
 		"Data representation manager info can only be set for a setter function that accepts a single input: "
@@ -282,8 +281,8 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 
 /// @brief Is this annotation one that can be applied to this setter?
 /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
-/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginSP, a MasalaEngineSP,
-/// a MasalaDataRepresentationSP, or the equivalent const shared pointers.
+/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
+/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers.
 /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
 bool
 OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
@@ -295,12 +294,12 @@ OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
 
 	if( setter.num_input_parameters() != 1 ) { return false; }
 
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginCSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineCSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationCSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr ) { return true; }
 
 	return false;
 }

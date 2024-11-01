@@ -175,7 +175,7 @@ public:
 	/// MasalaEngineManager to try to get objects of the type needed for this setter function.
 	/// Can be left as an empty vector.
 	/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
-	/// throw if the setter is not a single-input setter that takes a MasalaEngineSP or MasalaEngineCSP.
+	/// throw if the setter is not a single-input setter that takes a MasalaEngineAPISP or MasalaEngineAPICSP.
 	/// @param[in] engine_manager_include_subcategory If true (the default), then
 	/// subcategories of the given category are accepted.  If false, then the exact category
 	/// must be used.
@@ -196,8 +196,8 @@ public:
 	/// MasalaDataRepresentationManager to try to get objects of the type needed for this setter function.
 	/// Can be left as an empty vector.
 	/// @param[in] setter The setter to which we will be attaching this annotation.  This function will
-	/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationSP or
-	/// MasalaDataRepresentationCSP.
+	/// throw if the setter is not a single-input setter that takes a MasalaDataRepresentationAPISP or
+	/// MasalaDataRepresentationAPICSP.
 	/// @param[in] data_representation_manager_include_subcategory If true (the default), then
 	/// subcategories of the given category are accepted.  If false, then the exact category
 	/// must be used.
@@ -217,8 +217,8 @@ public:
 
     /// @brief Is this annotation one that can be applied to this setter?
     /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
-	/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginSP, a MasalaEngineSP,
-	/// a MasalaDataRepresentationSP, or the equivalent const shared pointers.
+	/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
+	/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers.
     /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
     bool
     is_compatible_with_setter(
