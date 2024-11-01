@@ -28,6 +28,7 @@
 
 // Base headers:
 #include <base/api/function_annotation/MasalaFunctionAnnotation.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -65,6 +66,15 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Is this annotation one that can be applied to this setter?
+    /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.
+    /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+    virtual
+    bool
+    is_compatible_with_setter(
+        masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+    ) const = 0;
 
 }; // class MasalaSetterFunctionAnnotation
 

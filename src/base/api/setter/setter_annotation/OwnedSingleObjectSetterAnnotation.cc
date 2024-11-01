@@ -28,6 +28,10 @@
 
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
+#include <base/managers/engine/MasalaEngine.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentation.fwd.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
@@ -230,6 +234,35 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	data_representation_manager_input_object_category_ = data_representation_manager_input_object_category;
 	data_representation_manager_input_object_keywords_ = data_representation_manager_input_object_keywords;
 	data_representation_manager_include_subcategory_ = data_representation_manager_include_subcategory;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Is this annotation one that can be applied to this setter?
+/// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
+/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginSP, a MasalaEngineSP,
+/// a MasalaDataRepresentationSP, or the equivalent const shared pointers.
+/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+bool
+OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+) const /*override*/ {
+	using namespace masala::base::api::setter;
+	using namespace masala::base::managers::plugin_module;
+	using namespace masala::base::managers::engine;
+
+	if( setter.num_input_parameters() != 1 ) { return false; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginCSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineCSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationCSP > const * >( &setter ) != nullptr ) { return true; }
+
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

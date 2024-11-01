@@ -24,6 +24,9 @@
 // Unit headers:
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
 
+// Base headers:
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+
 // Error handling:
 #include <base/error/ErrorHandling.hh>
 
@@ -45,9 +48,14 @@ MasalaSetterFunctionAnnotation::protected_assign(
 ) /*override*/ {
     MasalaSetterFunctionAnnotation const * src_cast_ptr( dynamic_cast< MasalaSetterFunctionAnnotation const * >( &src ) );
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a MasalaSetterFunctionAnnotation object." );
-    
+
     masala::base::api::function_annotation::MasalaFunctionAnnotation::protected_assign( src );
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 
 } // namespace setter_annotation
 } // namespace setter
