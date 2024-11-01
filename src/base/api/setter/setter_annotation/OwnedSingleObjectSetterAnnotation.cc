@@ -232,6 +232,36 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	data_representation_manager_include_subcategory_ = data_representation_manager_include_subcategory;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Assign src to this.  Performs no mutex-locking.
+/// @details Derived classes should override this, and the overrides should call this function.
+void
+OwnedSingleObjectSetterAnnotation::protected_assign(
+    MasalaFunctionAnnotation const & src
+) /*override*/ {
+    OwnedSingleObjectSetterAnnotation const * src_cast_ptr( dynamic_cast< OwnedSingleObjectSetterAnnotation const * >( &src ) );
+    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a OwnedSingleObjectSetterAnnotation object." );
+    OwnedSingleObjectSetterAnnotation const & src_cast( *src_cast_ptr );
+	
+	plugin_manager_input_object_category_ = src_cast.plugin_manager_input_object_category_;
+	plugin_manager_include_subcategory_ = src_cast.plugin_manager_include_subcategory_;
+	plugin_manager_input_object_keywords_ = src_cast.plugin_manager_input_object_keywords_;
+	is_engine_ = src_cast.is_engine_;
+	engine_manager_input_object_category_ = src_cast.engine_manager_input_object_category_;
+	engine_manager_include_subcategory_ = src_cast.engine_manager_include_subcategory_;
+	engine_manager_input_object_keywords_ = src_cast.engine_manager_input_object_keywords_;
+	is_data_representation_ = src_cast.is_data_representation_;
+	data_representation_manager_input_object_category_ = src_cast.data_representation_manager_input_object_category_;
+	data_representation_manager_include_subcategory_ = src_cast.data_representation_manager_include_subcategory_;
+	data_representation_manager_input_object_keywords_ = src_cast.data_representation_manager_input_object_keywords_;
+
+    MasalaSetterFunctionAnnotation::protected_assign( src );
+}
+
+
 } // namespace setter_annotation
 } // namespace setter
 } // namespace api

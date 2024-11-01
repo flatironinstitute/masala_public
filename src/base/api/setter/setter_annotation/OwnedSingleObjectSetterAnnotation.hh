@@ -201,6 +201,16 @@ public:
 		bool const data_representation_manager_include_subcategory = true
 	);
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Assign src to this.  Performs no mutex-locking.
+    /// @details Derived classes should override this, and the overrides should call this function.
+    void protected_assign( MasalaFunctionAnnotation const & src ) override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
