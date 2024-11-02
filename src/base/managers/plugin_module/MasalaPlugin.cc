@@ -38,6 +38,14 @@ namespace base {
 namespace managers {
 namespace plugin_module {
 
+/// @brief Get the namespace and name for this pure virtual base class.
+/// @returns "masala::base::managers::plugin_module::MasalaPlugin"
+/*static*/
+std::string
+MasalaPlugin::class_namespace_and_name_static() {
+	return "masala::base::managers::plugin_module::MasalaPlugin";
+}
+
 /// @brief Get the map key for the class of object, as used for indexing in the MasalaPluginManager.
 /// @details The map key is the concatenated vector of base class names (separated by commas)
 /// followed by a colon and then the object name.
