@@ -319,7 +319,7 @@ OwnedSingleObjectSetterAnnotation::create_owned_object(
 	MasalaPluginAPISP returnobj;
 	if( is_data_representation_ ) {
 		returnobj = masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation( object_name, false );
-	} else if( is_engine ) {
+	} else if( is_engine_ ) {
 		returnobj = masala::base::managers::engine::MasalaEngineManager::get_instance()->create_engine( object_name, false );
 	} else {
 		returnobj = masala::base::managers::plugin_module::MasalaPluginModuleManager::get_instance()->create_plugin_object_instance_by_short_name( plugin_manager_input_object_category_, object_name, plugin_manager_include_subcategory_ );
