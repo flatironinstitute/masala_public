@@ -54,7 +54,7 @@ public:
     /// @returns "masala::base::managers::engine::MasalaDataRepresentationAPI"
     static
     std::string
-    MasalaDataRepresentationAPI::class_namespace_and_name_static();
+    class_namespace_and_name_static();
 
 public:
 
