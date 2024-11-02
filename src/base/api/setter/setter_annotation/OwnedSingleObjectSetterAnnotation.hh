@@ -218,7 +218,7 @@ public:
     /// @brief Is this annotation one that can be applied to this setter?
     /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
 	/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
-	/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers.
+	/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.
     /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
     bool
     is_compatible_with_setter(

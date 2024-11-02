@@ -282,7 +282,7 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 /// @brief Is this annotation one that can be applied to this setter?
 /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
 /// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
-/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers.
+/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.
 /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
 bool
 OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
@@ -294,12 +294,34 @@ OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
 
 	if( setter.num_input_parameters() != 1 ) { return false; }
 
+
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr ) { return true; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) != nullptr ) { return true; }
 
 	return false;
 }
