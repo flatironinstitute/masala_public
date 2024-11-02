@@ -71,6 +71,11 @@ public:
 	/// @brief Destructor.
 	~MasalaEngine() override = default;
 
+	/// @brief Get the namespace and name of this class ("masala::base::managers::engine::MasalaEngine").
+	static
+    std::string
+    class_namespace_and_name_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

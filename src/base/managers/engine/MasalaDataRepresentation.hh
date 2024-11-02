@@ -58,6 +58,12 @@ public:
     // Destructor.
     ~MasalaDataRepresentation() override = default;
 
+	/// @brief Get the namespace and name for this pure virtual base class.
+	/// @returns "masala::base::managers::engine::MasalaDataRepresentation"
+	static
+	std::string
+	class_namespace_and_name_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

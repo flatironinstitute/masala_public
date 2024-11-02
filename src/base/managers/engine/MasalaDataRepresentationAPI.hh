@@ -50,6 +50,12 @@ public:
 	/// @brief Destructor.
 	virtual ~MasalaDataRepresentationAPI() = default;
 
+    /// @brief Get the namespace and name for this pure virtual base class.
+    /// @returns "masala::base::managers::engine::MasalaDataRepresentationAPI"
+    static
+    std::string
+    MasalaDataRepresentationAPI::class_namespace_and_name_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

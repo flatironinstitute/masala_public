@@ -32,6 +32,13 @@ namespace base {
 namespace managers {
 namespace engine {
 
+/// @brief Get the namespace and name of this class ("masala::base::managers::engine::MasalaEngine").
+/*static*/
+std::string
+MasalaEngine::class_namespace_and_name_static() {
+    return "masala::base::managers::engine::MasalaEngine";
+}
+
 /// @brief Is a particular data representation INcompatible with this engine?  Returns true to signal
 /// incompatibility, false otherwise.
 /// @details Default implementation always returns false.  May be overridden to allow engines to perform
