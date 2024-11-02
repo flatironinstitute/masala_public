@@ -106,7 +106,9 @@
 		"strstream": "cpp",
 		"cfenv": "cpp",
 		"source_location": "cpp",
-		"charconv": "cpp"
+		"charconv": "cpp",
+		"execution": "cpp",
+		"print": "cpp"
 	},
     "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }
