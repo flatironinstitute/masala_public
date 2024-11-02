@@ -778,7 +778,7 @@ def generate_function_call( \
                 if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
-                    if input_is_masala_class and input_is_known_enum == False :
+                    if input_is_masala_class and input_is_known_enum == False and inputtype.endswith( "API" ) == False :
                         outstring += " *( "
                     else :
                         outstring += " "
@@ -786,7 +786,7 @@ def generate_function_call( \
                     if input_is_known_enum == False:
                         if inputtype.endswith( "API" ) == False :
                             outstring += input_point_or_arrow + "get_inner_object()"
-                    if input_is_masala_class and input_is_known_enum == False :
+                    if input_is_masala_class and input_is_known_enum == False and inputtype.endswith( "API" ) == False :
                         outstring += " )"
             else:
 
