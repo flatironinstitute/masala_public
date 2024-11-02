@@ -76,7 +76,7 @@ TEST_CASE( "Convert camelcase to boxcar", "[base::utility::string][utility][stri
 	using namespace masala::base::managers::tracer;
 
 	std::string const input1( "ThisIsTheTest" );
-	std::string const input2( "THISIsTheTEST" );
+	std::string const input2( "THIsIsTheTEST" );
 	std::string const input3( "T" );
 	std::string const input4( "47IsTheTest32" );
 	std::string const input5( "This_IsTheTest" );
@@ -104,7 +104,7 @@ TEST_CASE( "Convert camelcase to boxcar", "[base::utility::string][utility][stri
 	CHECK( output1 == "this_is_the_test" );
 	CHECK( output2 == "this_is_the_test" );
 	CHECK( output3 == "t" );
-	CHECK( output4 == "47_is_the_test_32" );
+	CHECK( output4 == "47_is_the_test32" );
 	CHECK( output5 == "this_is_the_test" );
 	CHECK( output6 == "" );
 }
@@ -122,12 +122,12 @@ TEST_CASE( "Convert boxcar to camelcase", "[base::utility::string][utility][stri
 	std::string output1, output2, output3, output4, output5, output6;
 	
 	REQUIRE_NOTHROW([&](){
-		output1 = camelcase_to_boxcar( input1 );
-		output2 = camelcase_to_boxcar( input2 );
-		output3 = camelcase_to_boxcar( input3 );
-		output4 = camelcase_to_boxcar( input4 );
-		output5 = camelcase_to_boxcar( input5 );
-		output6 = camelcase_to_boxcar( input6 );
+		output1 = boxcar_to_camelcase( input1 );
+		output2 = boxcar_to_camelcase( input2 );
+		output3 = boxcar_to_camelcase( input3 );
+		output4 = boxcar_to_camelcase( input4 );
+		output5 = boxcar_to_camelcase( input5 );
+		output6 = boxcar_to_camelcase( input6 );
 	}() );
 
 	MasalaTracerManagerHandle tm( MasalaTracerManager::get_instance() );
