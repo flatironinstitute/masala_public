@@ -94,6 +94,18 @@ namespace string {
         std::string const & replacement_text
     );
 
+	/// @brief Take a string in camelcase (e.g. "SomethingLikeThis" ) and convert it to boxcar (e.g. "something_like_this").
+	std::string
+	camelcase_to_boxcar(
+		std::string const & camelcase_string
+	);
+
+	/// @brief Take a string in boxcar (e.g. "something_like_this") and convert it to camelcase (e.g. "SomethingLikeThis" ).
+	std::string
+	boxcar_to_camelcase(
+		std::string const & boxcar_string
+	);
+
 } // namespace string
 } // namespace utility
 } // namespace base

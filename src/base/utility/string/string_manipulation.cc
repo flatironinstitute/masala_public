@@ -29,6 +29,7 @@
 
 // STL headers
 #include <algorithm>
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -236,6 +237,58 @@ replace_all_instances_of_text(
         string_to_modify.replace( startloc, text_to_find.size(), replacement_text );
         startloc = string_to_modify.find( text_to_find );
     }
+}
+
+/// @brief Take a string in camelcase (e.g. "SomethingLikeThis" ) and convert it to boxcar (e.g. "something_like_this").
+std::string
+camelcase_to_boxcar(
+	std::string const & camelcase_string
+) {
+	using masala::base::Size;
+
+	if( camelcase_string.empty() ) { return ""; }
+	std::ostringstream boxcar_ss;
+	boxcar_ss << std::tolower( camelcase_string[0] );
+	if( camelcase_string.size() == 1 ) { return boxcar_ss.str(); }
+
+	for( Size i(1); i<camelcase_string.size(); ++i ) {
+		if(
+			std::isupper( camelcase_string[i] ) &&
+			( !std::isupper( camelcase_string[i-1] ) ) &&
+			( camelcase_string[i-1] != '_' ) ) {
+			boxcar_ss << "_";
+		}
+		boxcar_ss << std::tolower( camelcase_string[i] );
+	}
+	return boxcar_ss.str();
+}
+
+/// @brief Take a string in boxcar (e.g. "something_like_this") and convert it to camelcase (e.g. "SomethingLikeThis" ).
+std::string
+boxcar_to_camelcase(
+	std::string const & boxcar_string
+) {
+	using masala::base::Size;
+
+	if( boxcar_string.empty() ) { return ""; }
+
+	std::ostringstream camelcase_ss;
+	if( boxcar_string[0] != '_' ) {
+		camelcase_ss << std::toupper( boxcar_string[0] );
+	}
+	if( boxcar_string.size() == 1 ) { return camelcase_ss.str(); }
+
+	for( Size i(1); i<boxcar_string.size(); ++i ) {
+		if( boxcar_string[i-1] == '_' ) {
+			camelcase_ss << std::toupper( boxcar_string[i] );
+		} else {
+			if( boxcar_string[i] != '_' ) {
+				camelcase_ss << std::tolower( boxcar_string[i] );
+			}
+		}
+	}
+
+	return camelcase_ss.str();
 }
 
 } // namespace string
