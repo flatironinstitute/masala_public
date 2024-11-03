@@ -68,7 +68,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Access the mutex for this object.
-    inline std::mutex & mutex() { return mutex_; }
+    inline std::mutex & mutex() const { return mutex_; }
 
     /// @brief Assign src to this.  Performs no mutex-locking.
     /// @details Derived classes should override this, and the overrides should call this function.
