@@ -234,6 +234,42 @@ public:
 		std::string const & object_name
 	) const;
 
+	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @details This version takes a const shared pointer to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
+	/// this will throw if the object cannot be cast to the appropriate type.
+	void
+	set_object(
+		masala::base::managers::plugin_module::MasalaPluginAPICSP const & object_in,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	) const;
+
+	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @details This version takes a nonconst shared pointer to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
+	/// this will throw if the object cannot be cast to the appropriate type.
+	void
+	set_object(
+		masala::base::managers::plugin_module::MasalaPluginAPISP const & object_in,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	) const;
+
+	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @details This version takes a const reference to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
+	/// this will throw if the object cannot be cast to the appropriate type.
+	void
+	set_object(
+		masala::base::managers::plugin_module::MasalaPluginAPI const & object_in,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	) const;
+
+	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @details This version takes a nonconst reference to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
+	/// this will throw if the object cannot be cast to the appropriate type.
+	void
+	set_object(
+		masala::base::managers::plugin_module::MasalaPluginAPI & object_in,
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	) const;
+
 
 protected:
 
