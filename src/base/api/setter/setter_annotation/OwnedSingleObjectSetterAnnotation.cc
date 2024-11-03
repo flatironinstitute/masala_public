@@ -67,6 +67,7 @@ OwnedSingleObjectSetterAnnotation::class_namespace() const {
 /// of the type needed for this function.  Could be an empty vector
 std::vector< std::string > const &
 OwnedSingleObjectSetterAnnotation::plugin_manager_input_object_category() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	return plugin_manager_input_object_category_;
 }
 
@@ -74,6 +75,7 @@ OwnedSingleObjectSetterAnnotation::plugin_manager_input_object_category() const 
 /// type by category, should we include subcategories?  Default true.
 bool
 OwnedSingleObjectSetterAnnotation::plugin_manager_include_subcategory() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	return plugin_manager_include_subcategory_;
 }
 
@@ -81,12 +83,14 @@ OwnedSingleObjectSetterAnnotation::plugin_manager_include_subcategory() const {
 /// of the type needed for this function.  Could be an empty vector.
 std::vector< std::string > const &
 OwnedSingleObjectSetterAnnotation::plugin_manager_input_object_keywords() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	return plugin_manager_input_object_keywords_;
 }
 
 /// @brief Is the input object an engine?  False by default.
 bool
 OwnedSingleObjectSetterAnnotation::is_engine() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	return is_engine_;
 }
 
@@ -95,6 +99,7 @@ OwnedSingleObjectSetterAnnotation::is_engine() const {
 /// @note Throws if is_engine_ is false.  Check by calling is_engine() first!
 std::vector< std::string > const &
 OwnedSingleObjectSetterAnnotation::engine_manager_input_object_category() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_engine_, "engine_manager_input_object_category",
 		"The input object is not a Masala engine."
 	);
@@ -107,6 +112,7 @@ OwnedSingleObjectSetterAnnotation::engine_manager_input_object_category() const 
 bool
 OwnedSingleObjectSetterAnnotation::engine_manager_include_subcategory() const
 {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_engine_, "engine_manager_include_subcategory",
 		"The input object is not a Masala engine."
 	);
@@ -118,6 +124,7 @@ OwnedSingleObjectSetterAnnotation::engine_manager_include_subcategory() const
 /// @note Throws if is_engine_ is false.  Check by calling is_engine() first!
 std::vector< std::string > const &
 OwnedSingleObjectSetterAnnotation::engine_manager_input_object_keywords() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_engine_, "engine_manager_input_object_keywords",
 		"The input object is not a Masala engine."
 	);
@@ -129,6 +136,7 @@ OwnedSingleObjectSetterAnnotation::engine_manager_input_object_keywords() const 
 /// is_data_representation() first!
 bool
 OwnedSingleObjectSetterAnnotation::is_data_representation() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	return is_data_representation_;
 }
 
@@ -138,6 +146,7 @@ OwnedSingleObjectSetterAnnotation::is_data_representation() const {
 /// is_data_representation() first!
 std::vector< std::string > const &
 OwnedSingleObjectSetterAnnotation::data_representation_manager_input_object_category() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_data_representation_, "data_representation_manager_input_object_category",
 		"The input object is not a Masala data representation."
 	);
@@ -150,18 +159,20 @@ OwnedSingleObjectSetterAnnotation::data_representation_manager_input_object_cate
 /// is_data_representation() first!
 bool
 OwnedSingleObjectSetterAnnotation::data_representation_manager_include_subcategory() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_data_representation_, "data_representation_manager_include_subcategory",
 		"The input object is not a Masala data representation."
 	);
 	return data_representation_manager_include_subcategory_;
 }
 
-	/// @brief The keywords that can be passed to the MasalaDataRepresentationManager to try to get objects
-	/// of the type needed for this function.  Could be an empty vector.
-	/// @note Throws if is_data_representation_ is false.  Check by calling
-	/// is_data_representation() first!
-	std::vector< std::string > const &
-	OwnedSingleObjectSetterAnnotation::data_representation_manager_input_object_keywords() const {
+/// @brief The keywords that can be passed to the MasalaDataRepresentationManager to try to get objects
+/// of the type needed for this function.  Could be an empty vector.
+/// @note Throws if is_data_representation_ is false.  Check by calling
+/// is_data_representation() first!
+std::vector< std::string > const &
+OwnedSingleObjectSetterAnnotation::data_representation_manager_input_object_keywords() const {
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( is_data_representation_, "data_representation_manager_input_object_keywords",
 		"The input object is not a Masala data representation."
 	);
@@ -188,6 +199,7 @@ OwnedSingleObjectSetterAnnotation::set_plugin_manager_info(
 	std::vector< std::string > const & plugin_manager_input_object_keywords,
 	bool const plugin_manager_include_subcategory //= true
 ) {
+	std::lock_guard< std::mutex > lock( mutex() );
 	plugin_manager_input_object_category_ = plugin_manager_input_object_category;
 	plugin_manager_input_object_keywords_ = plugin_manager_input_object_keywords;
 	plugin_manager_include_subcategory_ = plugin_manager_include_subcategory;
@@ -215,6 +227,8 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 ) {
 	using namespace masala::base::managers::engine;
 	using namespace masala::base::api::setter;
+
+	std::lock_guard< std::mutex > lock( mutex() );
 
 	CHECK_OR_THROW_FOR_CLASS( !is_data_representation_, "set_engine_manager_info", "Engine manager information cannot be set "
 		"if a setter function accepts a data representation."
@@ -257,6 +271,8 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	using namespace masala::base::managers::engine;
 	using namespace masala::base::api::setter;
 
+	std::lock_guard< std::mutex > lock( mutex() );
+
 	CHECK_OR_THROW_FOR_CLASS( !is_engine_, "set_data_representation_manager_info", "Data representation manager information cannot be set "
 		"if a setter function accepts an engine."
 	);
@@ -291,6 +307,10 @@ OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
 	using namespace masala::base::api::setter;
 	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
+
+	// Note: there is currently no reason for this function to lock this mutex.  If ever it accesses any private member data, though, it should.  I'm going
+	// to put a mutex lock here JUST to be on the safe side; the overhead should be minimal, and this function is not called in any performance-cricial context:
+	std::lock_guard< std::mutex > lock( mutex() );
 
 	if( setter.num_input_parameters() != 1 ) { return false; }
 
@@ -336,6 +356,7 @@ OwnedSingleObjectSetterAnnotation::create_owned_object(
 	std::string const & object_name
 ) const {
 	using namespace masala::base::managers::plugin_module;
+	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !( is_engine_ && is_data_representation_ ), "create_owned_object", "Program error: the object is listed as both an "
 		"engine and a data representation.  This should be impossible.  Please consult a developer."
 	);
@@ -352,35 +373,6 @@ OwnedSingleObjectSetterAnnotation::create_owned_object(
 		+ " named \"" + object_name + "\"."
 	);
 	return returnobj;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PROTECTED MEMBER FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Assign src to this.  Performs no mutex-locking.
-/// @details Derived classes should override this, and the overrides should call this function.
-void
-OwnedSingleObjectSetterAnnotation::protected_assign(
-    MasalaFunctionAnnotation const & src
-) /*override*/ {
-    OwnedSingleObjectSetterAnnotation const * src_cast_ptr( dynamic_cast< OwnedSingleObjectSetterAnnotation const * >( &src ) );
-    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a OwnedSingleObjectSetterAnnotation object." );
-    OwnedSingleObjectSetterAnnotation const & src_cast( *src_cast_ptr );
-	
-	plugin_manager_input_object_category_ = src_cast.plugin_manager_input_object_category_;
-	plugin_manager_include_subcategory_ = src_cast.plugin_manager_include_subcategory_;
-	plugin_manager_input_object_keywords_ = src_cast.plugin_manager_input_object_keywords_;
-	is_engine_ = src_cast.is_engine_;
-	engine_manager_input_object_category_ = src_cast.engine_manager_input_object_category_;
-	engine_manager_include_subcategory_ = src_cast.engine_manager_include_subcategory_;
-	engine_manager_input_object_keywords_ = src_cast.engine_manager_input_object_keywords_;
-	is_data_representation_ = src_cast.is_data_representation_;
-	data_representation_manager_input_object_category_ = src_cast.data_representation_manager_input_object_category_;
-	data_representation_manager_include_subcategory_ = src_cast.data_representation_manager_include_subcategory_;
-	data_representation_manager_input_object_keywords_ = src_cast.data_representation_manager_input_object_keywords_;
-
-    MasalaSetterFunctionAnnotation::protected_assign( src );
 }
 
 /// @brief Call the setter function, and pass it a MasalaPluginAPI object.
@@ -532,7 +524,7 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		}
 		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngineSP, a MasalaEngineSP const &, or a MasalaEngine &, but it does not!" );
 	} else if( is_data_representation_ ) {
-		MasalaDataRepresentationAPISP object_in_cast( std::dynamic_pointer_cast< MasalaDataRepresentationAPI const >( object_in ) );
+		MasalaDataRepresentationAPISP object_in_cast( std::dynamic_pointer_cast< MasalaDataRepresentationAPI >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
 			"a MasalaDataRepresentation object, but the " + object_in->inner_class_name() + " class name is not."
 		);
@@ -703,6 +695,34 @@ OwnedSingleObjectSetterAnnotation::set_object(
 	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPlugin &, but it does not!" );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Assign src to this.  Performs no mutex-locking.
+/// @details Derived classes should override this, and the overrides should call this function.
+void
+OwnedSingleObjectSetterAnnotation::protected_assign(
+    MasalaFunctionAnnotation const & src
+) /*override*/ {
+    OwnedSingleObjectSetterAnnotation const * src_cast_ptr( dynamic_cast< OwnedSingleObjectSetterAnnotation const * >( &src ) );
+    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a OwnedSingleObjectSetterAnnotation object." );
+    OwnedSingleObjectSetterAnnotation const & src_cast( *src_cast_ptr );
+	
+	plugin_manager_input_object_category_ = src_cast.plugin_manager_input_object_category_;
+	plugin_manager_include_subcategory_ = src_cast.plugin_manager_include_subcategory_;
+	plugin_manager_input_object_keywords_ = src_cast.plugin_manager_input_object_keywords_;
+	is_engine_ = src_cast.is_engine_;
+	engine_manager_input_object_category_ = src_cast.engine_manager_input_object_category_;
+	engine_manager_include_subcategory_ = src_cast.engine_manager_include_subcategory_;
+	engine_manager_input_object_keywords_ = src_cast.engine_manager_input_object_keywords_;
+	is_data_representation_ = src_cast.is_data_representation_;
+	data_representation_manager_input_object_category_ = src_cast.data_representation_manager_input_object_category_;
+	data_representation_manager_include_subcategory_ = src_cast.data_representation_manager_include_subcategory_;
+	data_representation_manager_input_object_keywords_ = src_cast.data_representation_manager_input_object_keywords_;
+
+    MasalaSetterFunctionAnnotation::protected_assign( src );
+}
 
 } // namespace setter_annotation
 } // namespace setter
