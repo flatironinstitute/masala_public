@@ -593,7 +593,55 @@ OwnedSingleObjectSetterAnnotation::set_object(
 	masala::base::managers::plugin_module::MasalaPluginAPI const & object_in,
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const {
-	TODO TODO TODO;
+	using namespace masala::base::api::setter;
+	using namespace masala::base::managers::plugin_module;
+	using namespace masala::base::managers::engine;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
+		"takes " + std::to_string( setter.n_setter_annotations() ) + " inputs."
+	);
+	CHECK_OR_THROW_FOR_CLASS(!( is_engine_ && is_data_representation_ ), "set_object", "Program error: the \"" + setter.setter_function_name() + "\" setter "
+		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
+		"consult a developer."
+	);
+	if( is_engine_ ) {
+		MasalaEngineAPI const * object_in_ptr_cast( dynamic_cast< MasalaEngineAPI const * >( &object_in ) );
+		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
+			"a MasalaEngine object, but the " + object_in.inner_class_name() + " class name is not."
+		);
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_ptr_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngine const &, but it does not!" );
+	} else if( is_data_representation_ ) {
+		MasalaDataRepresentationAPI const * object_in_ptr_cast( dynamic_cast< MasalaDataRepresentationAPI const * >( &object_in ) );
+		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
+			"a MasalaDataRepresentation object, but the " + object_in.inner_class_name() + " class name is not."
+		);
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_ptr_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentation const &, but it does not!" );
+	}
+
+	// If we reach here, we're just taking a generic MasalaPluginAPI object.
+	{
+		MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) );
+		if( setter_cast != nullptr ) {
+			setter_cast->function( object_in );
+			return;
+		}
+	}
+	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPlugin const &, but it does not!" );
 }
 
 /// @brief Call the setter function, and pass it a MasalaPluginAPI object.
