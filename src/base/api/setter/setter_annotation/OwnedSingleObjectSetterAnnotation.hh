@@ -270,6 +270,10 @@ public:
 		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 	) const;
 
+	/// @brief Get a list of short names of objects that can be passed to this setter. 
+	std::vector< std::string >
+	get_short_names_of_eligible_owned_objects() const;
+
 
 protected:
 

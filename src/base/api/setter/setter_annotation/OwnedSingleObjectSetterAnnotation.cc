@@ -33,8 +33,12 @@
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 #include <base/managers/engine/MasalaEngineAPI.hh>
+#include <base/managers/engine/MasalaEngineCreator.hh>
+#include <base/managers/engine/MasalaDataRepresentationCreator.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
 #include <base/managers/engine/MasalaEngineManager.hh>
+#include <base/managers/engine/MasalaEngineRequest.hh>
+#include <base/managers/engine/MasalaDataRepresentationRequest.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
@@ -693,6 +697,48 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		}
 	}
 	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPlugin &, but it does not!" );
+}
+
+/// @brief Get a list of short names of objects that can be passed to this setter. 
+std::vector< std::string >
+OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() const {
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::plugin_module;
+
+	std::lock_guard< std::mutex > lock( mutex() );
+	CHECK_OR_THROW_FOR_CLASS(!( is_engine_ && is_data_representation_ ), "get_short_names_of_eligible_owned_objects", "Program error: this setter "
+		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
+		"consult a developer."
+	);
+
+	std::vector< std::string > outvec;
+	if( is_engine_ ) {
+		MasalaEngineRequest engine_request;
+		engine_request.add_engine_category_requirement( std::vector< std::vector< std::string > >{ engine_manager_input_object_category_ }, engine_manager_include_subcategory_ );
+		std::vector<MasalaEngineCreatorCSP> const compatible_creators(
+			MasalaEngineManager::get_instance()->get_compatible_engine_creators( engine_request )
+		);
+		outvec.reserve( compatible_creators.size() );
+		for( auto const & creator : compatible_creators ) {
+			outvec.push_back( creator->get_plugin_object_name() );
+		}
+	} else if( is_data_representation_ ) {
+		MasalaDataRepresentationRequest dr_request;
+		dr_request.add_data_representation_category_requirement( std::vector< std::vector< std::string > >{ data_representation_manager_input_object_category_ }, data_representation_manager_include_subcategory_ );
+		std::vector<MasalaDataRepresentationCreatorCSP> const compatible_creators(
+			MasalaDataRepresentationManager::get_instance()->get_compatible_data_representation_creators( dr_request )
+		);
+		outvec.reserve( compatible_creators.size() );
+		for( auto const & creator : compatible_creators ) {
+			outvec.push_back( creator->get_plugin_object_name() );
+		}
+	} else {
+		outvec = MasalaPluginModuleManager::get_instance()->get_short_names_of_plugins_by_category(
+			plugin_manager_input_object_category_, plugin_manager_include_subcategory_
+		);
+	}
+
+	return outvec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
