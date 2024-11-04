@@ -23,6 +23,9 @@
 // Forward declarations:
 #include <base/managers/plugin_module/MasalaPluginAPI.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {

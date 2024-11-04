@@ -27,6 +27,9 @@
 // Forward declarations:
 #include <base/managers/engine/MasalaEngine.hh>
 
+// STL headers
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
