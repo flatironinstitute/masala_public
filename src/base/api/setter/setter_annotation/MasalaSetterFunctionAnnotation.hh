@@ -61,6 +61,16 @@ protected:
     /// @details Derived classes should override this, and the overrides should call this function.
     void protected_assign( MasalaFunctionAnnotation const & src ) override;
 
+    /// @brief Is this annotation one that can be applied to this setter?
+    /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This function should
+    /// perform no mutex locking.
+    /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+    virtual
+    bool
+    protected_is_compatible_with_setter(
+        masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+    ) const = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,13 +78,12 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Is this annotation one that can be applied to this setter?
-    /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.
+    /// @details This function locks the mutex and calls protected_is_compatible_with_setter(), which must be implemented by derived classes.
     /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
-    virtual
     bool
     is_compatible_with_setter(
         masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
-    ) const = 0;
+    ) const;
 
 }; // class MasalaSetterFunctionAnnotation
 

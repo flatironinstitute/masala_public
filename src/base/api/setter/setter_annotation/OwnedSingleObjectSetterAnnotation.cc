@@ -240,7 +240,11 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
 		(
 			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ||
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP const & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP const & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) != nullptr
 		),
 		"set_engine_manager_info",
 		"Engine manager info can only be set for a setter function that accepts a single input: a MasalaEngineSP or MasalaEngineCSP.  Error with setter function "
@@ -284,7 +288,11 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 	CHECK_OR_THROW_FOR_CLASS( setter.num_input_parameters() == 1 &&
 		(
 			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ||
-			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP const & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * >( &setter ) != nullptr ||
+			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) != nullptr
 		),
 		"set_data_representation_manager_info",
 		"Data representation manager info can only be set for a setter function that accepts a single input: "
@@ -299,58 +307,6 @@ OwnedSingleObjectSetterAnnotation::set_data_representation_manager_info(
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Is this annotation one that can be applied to this setter?
-/// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
-/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
-/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.
-/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
-bool
-OwnedSingleObjectSetterAnnotation::is_compatible_with_setter(
-	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
-) const /*override*/ {
-	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
-	using namespace masala::base::managers::engine;
-
-	// Note: there is currently no reason for this function to lock this mutex.  If ever it accesses any private member data, though, it should.  I'm going
-	// to put a mutex lock here JUST to be on the safe side; the overhead should be minimal, and this function is not called in any performance-cricial context:
-	std::lock_guard< std::mutex > lock( mutex() );
-
-	if( setter.num_input_parameters() != 1 ) { return false; }
-
-
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr ) { return true; }
-
-	// Nonconst references to const shared pointers don't really make sense in this context.  These probably shouldn't be supported:
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP & > const * >( &setter ) != nullptr ) { return true; }
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP & > const * >( &setter ) != nullptr ) { return true; }
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP & > const * >( &setter ) != nullptr ) { return true; }
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP & > const * >( &setter ) != nullptr ) { return true; }
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP & > const * >( &setter ) != nullptr ) { return true; }
-	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP & > const * >( &setter ) != nullptr ) { return true; }
-
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
-
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) != nullptr ) { return true; }
-	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) != nullptr ) { return true; }
-
-	return false;
-}
 
 /// @brief Create an instance of the owned object type.
 /// @param object_name The name of the type to create.  Throws if this type is not known to the plugin manager, the engine manager if this
@@ -769,6 +725,54 @@ OwnedSingleObjectSetterAnnotation::protected_assign(
 	data_representation_manager_input_object_keywords_ = src_cast.data_representation_manager_input_object_keywords_;
 
     MasalaSetterFunctionAnnotation::protected_assign( src );
+}
+
+/// @brief Is this annotation one that can be applied to this setter?
+/// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
+/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
+/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.  This
+/// function performs no mutex locking.
+/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+bool
+OwnedSingleObjectSetterAnnotation::protected_is_compatible_with_setter(
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+) const /*override*/ {
+	using namespace masala::base::api::setter;
+	using namespace masala::base::managers::plugin_module;
+	using namespace masala::base::managers::engine;
+
+	if( setter.num_input_parameters() != 1 ) { return false; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) != nullptr ) { return true; }
+
+	// Nonconst references to const shared pointers don't really make sense in this context.  These probably shouldn't be supported:
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP & > const * >( &setter ) != nullptr ) { return true; }
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+	// if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP & > const * >( &setter ) != nullptr ) { return true; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPISP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * >( &setter ) != nullptr ) { return true; }
+
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) != nullptr ) { return true; }
+	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) != nullptr ) { return true; }
+
+	return false;
 }
 
 } // namespace setter_annotation

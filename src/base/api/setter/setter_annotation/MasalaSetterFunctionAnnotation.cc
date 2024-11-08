@@ -56,6 +56,16 @@ MasalaSetterFunctionAnnotation::protected_assign(
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Is this annotation one that can be applied to this setter?
+/// @details This function locks the mutex and calls protected_is_compatible_with_setter(), which must be implemented by derived classes.
+/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+bool
+MasalaSetterFunctionAnnotation::is_compatible_with_setter(
+    masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+) const {
+    std::lock_guard< std::mutex > lock( mutex() );
+    return protected_is_compatible_with_setter( setter );
+}
 
 } // namespace setter_annotation
 } // namespace setter

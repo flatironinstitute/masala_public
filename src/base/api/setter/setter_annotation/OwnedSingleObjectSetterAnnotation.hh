@@ -215,16 +215,6 @@ public:
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Is this annotation one that can be applied to this setter?
-    /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
-	/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
-	/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.
-    /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
-    bool
-    is_compatible_with_setter(
-        masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
-    ) const override;
-
 	/// @brief Create an instance of the owned object type.
 	/// @param object_name The name of the type to create.  Throws if this type is not known to the plugin manager, the engine manager if this
 	/// is an engine setter, or the data representation manager if this is a data representation setter.
@@ -284,6 +274,17 @@ protected:
     /// @brief Assign src to this.  Performs no mutex-locking.
     /// @details Derived classes should override this, and the overrides should call this function.
     void protected_assign( MasalaFunctionAnnotation const & src ) override;
+
+	/// @brief Is this annotation one that can be applied to this setter?
+    /// @details This function is pure virtual.  Derived classes must override this to implement their own checks.  This
+	/// override checks that (a) the setter takes one input, and (b) that the one input is either a MasalaPluginAPISP, a MasalaEngineAPISP,
+	/// a MasalaDataRepresentationAPISP, or the equivalent const shared pointers, or instances or const instances of any of these.  This
+	/// function performs no mutex locking.
+    /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+    bool
+    protected_is_compatible_with_setter(
+        masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+    ) const override;
 
 private:
 
