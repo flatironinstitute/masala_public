@@ -243,7 +243,8 @@ OwnedSingleObjectSetterAnnotation::set_engine_manager_info(
 			dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPICSP > const * >( &setter ) != nullptr
 		),
 		"set_engine_manager_info",
-		"Engine manager info can only be set for a setter function that accepts a single input: a MasalaEngineSP or MasalaEngineCSP."
+		"Engine manager info can only be set for a setter function that accepts a single input: a MasalaEngineSP or MasalaEngineCSP.  Error with setter function "
+		+ setter.setter_function_name() + "()."
 	);
 	is_engine_ = true;
 	engine_manager_input_object_category_ = engine_manager_input_object_category;
