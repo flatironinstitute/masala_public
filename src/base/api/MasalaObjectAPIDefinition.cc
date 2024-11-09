@@ -84,6 +84,7 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
         is_engine_class_ = ( this_object_engine_cast != nullptr );
         if( is_engine_class_ ) {
             engine_categories_ = this_object_engine_cast->get_engine_categories();
+            engine_keywords_ = this_object_engine_cast->get_engine_keywords();
         }
     }
     {
@@ -297,6 +298,19 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
             }
             ss << "\n";
         }
+        {
+            ss << "\nENGINE_KEYWORDS:\n";
+            bool first( true );
+            for( auto const & keyword : engine_keywords_ ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    ss << ", ";
+                }
+                ss << keyword;
+            }
+            ss << "\n";
+        }
     }
 
     ss << "Is_Data_Representation_Class:\t" << ( is_data_representation_class_ ? "TRUE" : "FALSE" ) << "\n";
@@ -363,6 +377,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
     }
     if( is_engine_class_ ) {
         json_api[ "Engine_Categories" ] = engine_categories_;
+        json_api[ "Engine_Keywords" ] = engine_keywords_;
     }
     if( is_data_representation_class_ ) {
         json_api[ "Data_Representation_Categories" ] = data_representation_categories_;
@@ -508,6 +523,12 @@ MasalaObjectAPIDefinition::plugin_keywords() const {
 std::vector< std::vector< std::string > > const &
 MasalaObjectAPIDefinition::engine_categories() const {
     return engine_categories_;
+}
+
+/// @brief Get the keywords for this object, if it is a MasalaEngine object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::engine_keywords() const {
+    return engine_keywords_;
 }
 
 /// @brief Get the categories that this object is in, if it is a MasalaDataRepresentation

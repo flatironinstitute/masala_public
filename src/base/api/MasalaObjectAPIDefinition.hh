@@ -605,6 +605,10 @@ public:
 	std::vector< std::vector< std::string > > const &
 	engine_categories() const;
 
+	/// @brief Get the keywords for this object, if it is a MasalaEngine object.
+	std::vector< std::string > const &
+	engine_keywords() const;
+
 	/// @brief Get the categories that this object is in, if it is a MasalaDataRepresentation
 	/// object.
 	std::vector< std::vector< std::string > > const &
@@ -756,6 +760,9 @@ private:
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > engine_categories_;
+
+	/// @brief The keywords for this object, if it is a MasalaEngine object.
+	std::vector< std::string > engine_keywords_;
 
 	/// @brief The categories that this object is in, if it is a MasalaDataRepresentation object.
 	/// @details A category is hierarchical, listed as a vector of strings.  For instance,
