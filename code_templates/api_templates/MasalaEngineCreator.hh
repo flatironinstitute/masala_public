@@ -111,8 +111,15 @@ public:
     /// @details Categories are hierarchical, with the hierarchy represented as a vector of
     /// strings.  One engine category can be classified into multiple categories.
 	/// @returns { <__ENGINE_CATEGORIES__> }
+    /// @note The vector is generated when this function is called, so it doesn't return a const reference.
     std::vector< std::vector< std::string > >
     get_engine_categories() const override;
+
+    /// @brief Get the keywords that this engine plugin has.
+	/// @returns { <__ENGINE_KEYWORDS__> }
+    /// @note The vector is generated when this function is called, so it doesn't return a const reference.
+    std::vector< std::string >
+    get_engine_keywords() const override;
 
 }; // class <__CREATOR_CLASS_API_NAME__>
 

@@ -1199,7 +1199,35 @@ def generate_additional_includes( additional_includes : list, generate_fwd_inclu
                 outstr += newentry
     return outstr
 
-## @brief Generate the categories for a data representation class, from the JASON description.
+## @brief Generate the keywords for a data representation or engine class, from the JASON description.
+def generate_dr_or_eng_keywords( \
+    name_string : str, \
+    namespace_string : str, \
+    json_api : json, \
+	is_dr_class : bool, \
+	is_engine_class : bool
+    ) -> str :
+    outstr = ""
+    if is_dr_class == True :
+        assert is_engine_class == False, "Cannot be both a data representation and an engine!"
+        keywords = json_api["Elements"][ namespace_string + "::" + name_string ]["Data_Representation_Keywords"]
+    elif is_engine_class == True :
+        keywords = json_api["Elements"][ namespace_string + "::" + name_string ]["Engine_Keywords"]
+    else :
+        assert False, "Expected an engine or data representation!"
+        
+    first = True
+    outstr += "{ "
+    for entry in keywords :
+        if first == True :
+            first = False
+        else :
+            outstr += ", "
+        outstr += "\"" + entry + "\""
+    outstr += " }"
+    return outstr
+
+## @brief Generate the categories for a data representation or engine class, from the JASON description.
 def generate_dr_or_eng_categories( \
     name_string : str, \
     namespace_string : str, \
@@ -1412,7 +1440,8 @@ def prepare_creator_header_file( \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
     elif is_engine_class == True :
         plugin_creator_hhfile = engine_creator_hhfile_template \
-            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, False, True ) )
+            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, False, True ) ) \
+            .replace( "<__ENGINE_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, False, True ) )
     elif is_file_interpreter_class == True :
         plugin_creator_hhfile = file_interpreter_creator_hhfile_template \
 			.replace( "<__FILE_INTERPRETER_FILE_DESCRIPTIONS__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "File_Interpreter_FileType_Descriptions" ) ) \
@@ -1500,7 +1529,8 @@ def prepare_creator_cc_file( \
             .replace( "<__DATA_REPRESENTATION_POSSIBLY_ABSENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Possibly_Absent_Properties" ) )
     elif is_engine_class == True :
         plugin_creator_ccfile = engine_creator_ccfile_template \
-            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, False, True ) )
+            .replace( "<__ENGINE_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, False, True ) ) \
+            .replace( "<__ENGINE_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, False, True ) )
     elif is_file_interpreter_class == True :
         plugin_creator_ccfile = file_interpreter_creator_ccfile_template \
 			.replace( "<__FILE_INTERPRETER_FILE_DESCRIPTIONS__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "File_Interpreter_FileType_Descriptions" ) ) \
