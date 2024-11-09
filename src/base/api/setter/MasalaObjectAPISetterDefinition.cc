@@ -27,6 +27,7 @@
 
 // Base headers
 #include <base/error/ErrorHandling.hh>
+#include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
 
 namespace masala {
 namespace base {
@@ -122,6 +123,11 @@ void
 MasalaObjectAPISetterDefinition::add_setter_annotation(
 	setter_annotation::MasalaSetterFunctionAnnotationCSP const & annotation_in
 ) {
+	CHECK_OR_THROW_FOR_CLASS(
+		annotation_in->is_compatible_with_setter( *this ),
+		"add_setter_annotation",
+		"The " + annotation_in->class_name() + " setter annotation reports that it is incompatible with setter function " + setter_function_name_ + "."
+	);
 	setter_annotations_.push_back( annotation_in );
 }
 

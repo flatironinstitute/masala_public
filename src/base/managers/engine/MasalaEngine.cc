@@ -27,10 +27,20 @@
 // Forward declarations:
 #include <base/managers/engine/MasalaEngine.hh>
 
+// STL headers
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
 namespace engine {
+
+/// @brief Get the namespace and name of this class ("masala::base::managers::engine::MasalaEngine").
+/*static*/
+std::string
+MasalaEngine::class_namespace_and_name_static() {
+    return "masala::base::managers::engine::MasalaEngine";
+}
 
 /// @brief Is a particular data representation INcompatible with this engine?  Returns true to signal
 /// incompatibility, false otherwise.

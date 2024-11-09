@@ -55,6 +55,12 @@ public:
 	/// @brief Virtual destructor.
 	~MasalaPlugin() override = default;
 
+	/// @brief Get the namespace and name for this pure virtual base class.
+	/// @returns "masala::base::managers::plugin_module::MasalaPlugin"
+	static
+	std::string
+	class_namespace_and_name_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -44,14 +44,40 @@ class MasalaFunctionAnnotation : public masala::base::MasalaObject {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	MasalaFunctionAnnotation() = default;
 
-	/// @brief Copy constructor.
-	MasalaFunctionAnnotation( MasalaFunctionAnnotation const & ) = default;
+	/// @brief Copy constructor.  Implemented manually due to mutex.
+	MasalaFunctionAnnotation( MasalaFunctionAnnotation const & src );
+
+    /// @brief Assignment operator.  Implemented manually due to mutex.
+    MasalaFunctionAnnotation &
+    operator=( MasalaFunctionAnnotation const & src );
 
 	/// @brief Virtual destructor.
-	virtual ~MasalaFunctionAnnotation() = default; 
+	virtual ~MasalaFunctionAnnotation() = default;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Access the mutex for this object.
+    inline std::mutex & mutex() const { return mutex_; }
+
+    /// @brief Assign src to this.  Performs no mutex-locking.
+    /// @details Derived classes should override this, and the overrides should call this function.
+    virtual void protected_assign( MasalaFunctionAnnotation const & src );
+
+private:
+
+    /// @brief A mutex for this object.
+    mutable std::mutex mutex_;
 
 }; // class MasalaFunctionAnnotation
 

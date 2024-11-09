@@ -50,6 +50,12 @@ public:
 	/// derived classes can.
 	virtual ~MasalaPluginAPI() = default;
 
+	/// @brief Get the namespace and name for this pure virtual base class.
+	/// @returns "masala::base::managers::plugin_module::MasalaPluginAPI"
+	static
+	std::string
+	class_namespace_and_name_static();
+
 }; // class MasalaPluginAPI
 
 } // namespace plugin_module

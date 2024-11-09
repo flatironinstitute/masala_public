@@ -315,10 +315,20 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
     if inputclass.startswith( "masala::base::MasalaObjectAPI" ):
         additional_includes.append( "<base/MasalaObjectAPI.hh>" )
         return inputclass
+    
+    # Special case for MasalaPluginAPI
+    if inputclass.startswith( "masala::base::managers::plugin_module::MasalaPluginAPI" ):
+        additional_includes.append( "<base/managers/plugin_module/MasalaPluginAPI.hh>" )
+        return inputclass
 
     # Special case for MasalaEngineAPI
     if inputclass.startswith( "masala::base::managers::engine::MasalaEngineAPI" ):
         additional_includes.append( "<base/managers/engine/MasalaEngineAPI.hh>" )
+        return inputclass
+    
+    # Special case for MasalaDataRepresentationAPI
+    if inputclass.startswith( "masala::base::managers::engine::MasalaDataRepresentationAPI" ):
+        additional_includes.append( "<base/managers/engine/MasalaDataRepresentationAPI.hh>" )
         return inputclass
 
     if is_masala_class( project_name, inputclass ) == False :
@@ -778,7 +788,7 @@ def generate_function_call( \
                 if inputtype in jsonfile["Elements"] and jsonfile["Elements"][inputtype]["Properties"]["Is_Lightweight"] == True :
                     outstring += fxn["Inputs"]["Input_" + str(i)]["Input_Name"] + input_point_or_arrow + "get_inner_object()"
                 else :
-                    if input_is_masala_class and input_is_known_enum == False :
+                    if input_is_masala_class and input_is_known_enum == False and inputtype.endswith( "API" ) == False :
                         outstring += " *( "
                     else :
                         outstring += " "
@@ -786,7 +796,7 @@ def generate_function_call( \
                     if input_is_known_enum == False:
                         if inputtype.endswith( "API" ) == False :
                             outstring += input_point_or_arrow + "get_inner_object()"
-                    if input_is_masala_class and input_is_known_enum == False :
+                    if input_is_masala_class and input_is_known_enum == False and inputtype.endswith( "API" ) == False :
                         outstring += " )"
             else:
 
