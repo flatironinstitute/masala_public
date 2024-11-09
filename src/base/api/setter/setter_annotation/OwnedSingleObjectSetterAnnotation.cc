@@ -483,7 +483,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 				return;
 			}
 		}
-		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngineSP, a MasalaEngineSP const &, or a MasalaEngine &, but it does not!" );
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngineSP, a MasalaEngineSP const &, a MasalaEngine &, or a MasalaEngine const &, but it does not!" );
 	} else if( is_data_representation_ ) {
 		MasalaDataRepresentationAPISP object_in_cast( std::dynamic_pointer_cast< MasalaDataRepresentationAPI >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -510,7 +517,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 				return;
 			}
 		}
-		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentationSP, a MasalaDataRepresentationSP const &, or a MasalaDataRepresentation &, but it does not!" );
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentationSP, a MasalaDataRepresentationSP const &, a MasalaDataRepresentation &, or a MasalaDataRepresentation const &, but it does not!" );
 	}
 
 	// If we reach here, we're just taking a generic MasalaPluginAPI object.
@@ -535,7 +549,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 			return;
 		}
 	}
-	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPluginSP, a MasalaPluginSP const &, or a MasalaPlugin &, but it does not!" );
+	{
+		MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) );
+		if( setter_cast != nullptr ) {
+			setter_cast->function( *object_in );
+			return;
+		}
+	}
+	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPluginSP, a MasalaPluginSP const &, a MasalaPlugin &, or a MasalaPlugin const &, but it does not!" );
 }
 
 /// @brief Call the setter function, and pass it a MasalaPluginAPI object.
@@ -629,7 +650,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 				return;
 			}
 		}
-		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngine &, but it does not!" );
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_ptr_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaEngine & (const or nonconst), but it does not!" );
 	} else if( is_data_representation_ ) {
 		MasalaDataRepresentationAPI * object_in_ptr_cast( dynamic_cast< MasalaDataRepresentationAPI * >( &object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -642,7 +670,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 				return;
 			}
 		}
-		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentation &, but it does not!" );
+		{
+			MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) );
+			if( setter_cast != nullptr ) {
+				setter_cast->function( *object_in_ptr_cast );
+				return;
+			}
+		}
+		MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentation & (const or nonconst), but it does not!" );
 	}
 
 	// If we reach here, we're just taking a generic MasalaPluginAPI object.
@@ -653,7 +688,14 @@ OwnedSingleObjectSetterAnnotation::set_object(
 			return;
 		}
 	}
-	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPlugin &, but it does not!" );
+	{
+		MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPI const & > const * >( &setter ) );
+		if( setter_cast != nullptr ) {
+			setter_cast->function( object_in );
+			return;
+		}
+	}
+	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaPlugin & (const or nonconst), but it does not!" );
 }
 
 /// @brief Get a list of short names of objects that can be passed to this setter. 
