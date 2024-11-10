@@ -113,6 +113,13 @@ public:
     std::vector< std::vector< std::string > >
     get_data_representation_categories() const override;
 
+	/// @brief Get the keywords that this data representation plugin has.
+	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+	/// strings.  One data representation category can be classified into multiple categories.
+	/// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+	std::vector< std::string >
+	get_data_representation_keywords() const override;
+
     /// @brief Get the compatible engines for this data representation.
     /// @returns Currently an empty list.  This may change in the future.
     std::vector< std::string >
