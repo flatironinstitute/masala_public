@@ -95,6 +95,12 @@ public:
     std::vector< std::vector< std::string > >
     get_data_representation_categories() const = 0;
 
+	/// @brief Get the keywords that this data representation plugin has.
+	/// @note The vector is generated when this function is called, so it doesn't return a const reference.
+	virtual
+	std::vector< std::string >
+	get_data_representation_keywords() const = 0;
+
     /// @brief Get the MasalaEngines that with which this data representation plugin
     /// is DEFINITELY compatible.  (There may be other engines with which it is also
     /// compatible, so this is not necessarily an exhaustive list.)
