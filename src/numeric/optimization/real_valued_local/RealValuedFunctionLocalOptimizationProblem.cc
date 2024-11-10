@@ -121,6 +121,20 @@ RealValuedFunctionLocalOptimizationProblem::get_data_representation_categories()
 	};
 }
 
+/// @brief Get the keywords that this data representation plugin has.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns { "optimization_problem", "local", "real_valued", "numeric" }
+std::vector< std::string >
+RealValuedFunctionLocalOptimizationProblem::get_data_representation_keywords() const {
+	return std::vector< std::string > {
+		"optimization_problem",
+		"local",
+		"real_valued",
+		"numeric"
+	};
+}
+
 /// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
 /// is compatible.
 /// @returns An empty list.
