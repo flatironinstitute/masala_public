@@ -1432,7 +1432,7 @@ def prepare_creator_header_file( \
     if is_data_representation_class == True :
         plugin_creator_hhfile = data_rep_creator_hhfile_template \
             .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, True, False ) ) \
-            .replace( "<__DATA_REPRESENTATION_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, True, False ) )
+            .replace( "<__DATA_REPRESENTATION_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, True, False ) ) \
             .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
@@ -1522,7 +1522,7 @@ def prepare_creator_cc_file( \
     if is_data_representation_class == True :
         plugin_creator_ccfile = data_rep_creator_ccfile_template \
             .replace( "<__DATA_REPRESENTATION_CATEGORIES__>", generate_dr_or_eng_categories( name_string, original_class_namespace_string, json_api, True, False ) ) \
-            .replace( "<__DATA_REPRESENTATION_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, True, False ) )
+            .replace( "<__DATA_REPRESENTATION_KEYWORDS__>", generate_dr_or_eng_keywords( name_string, original_class_namespace_string, json_api, True, False ) ) \
             .replace( "<__DATA_REPRESENTATION_COMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Compatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_INCOMPATIBLE_ENGINES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Incompatible_Engines" ) ) \
             .replace( "<__DATA_REPRESENTATION_PRESENT_PROPERTIES__>", generate_dr_or_fr_stringlist( name_string, original_class_namespace_string, json_api, "Data_Representation_Present_Properties" ) ) \
