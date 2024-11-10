@@ -92,6 +92,7 @@ MasalaObjectAPIDefinition::MasalaObjectAPIDefinition(
         is_data_representation_class_ = ( this_object_datarep_cast != nullptr );
         if( is_data_representation_class_ ) {
             data_representation_categories_ = this_object_datarep_cast->get_data_representation_categories();
+            data_representation_keywords_ = this_object_datarep_cast->get_data_representation_keywords();
             data_representation_present_properties_ = this_object_datarep_cast->get_present_data_representation_properties();
             data_representation_absent_properties_ = this_object_datarep_cast->get_absent_data_representation_properties();
             data_representation_possibly_present_properties_ = this_object_datarep_cast->get_possibly_present_data_representation_properties();
@@ -298,19 +299,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
             }
             ss << "\n";
         }
-        {
-            ss << "\nENGINE_KEYWORDS:\n";
-            bool first( true );
-            for( auto const & keyword : engine_keywords_ ) {
-                if( first ) {
-                    first = false;
-                } else {
-                    ss << ", ";
-                }
-                ss << keyword;
-            }
-            ss << "\n";
-        }
+        write_list_to_stream( ss, "ENGINE_KEYWORDS", engine_keywords_ );
     }
 
     ss << "Is_Data_Representation_Class:\t" << ( is_data_representation_class_ ? "TRUE" : "FALSE" ) << "\n";
@@ -328,6 +317,7 @@ MasalaObjectAPIDefinition::get_human_readable_description() const {
             }
             ss << "\n";
         }
+        write_list_to_stream( ss, "DATA_REPRESENTATION_KEYWORDS", data_representation_keywords_ );
         write_list_to_stream( ss, "DATA_REPRESENTATION_PRESENT_PROPERTIES", data_representation_present_properties_ );
         write_list_to_stream( ss, "DATA_REPRESENTATION_ABSENT_PROPERTIES", data_representation_absent_properties_ );
         write_list_to_stream( ss, "DATA_REPRESENTATION_POSSIBLY_PRESENT_PROPERTIES", data_representation_possibly_present_properties_ );
@@ -381,6 +371,7 @@ MasalaObjectAPIDefinition::get_json_description() const {
     }
     if( is_data_representation_class_ ) {
         json_api[ "Data_Representation_Categories" ] = data_representation_categories_;
+        json_api[ "Data_Representation_Keywords" ] = data_representation_keywords_;
         json_api[ "Data_Representation_Present_Properties" ] = data_representation_present_properties_;
         json_api[ "Data_Representation_Absent_Properties" ] = data_representation_absent_properties_;
         json_api[ "Data_Representation_Possibly_Present_Properties" ] = data_representation_possibly_present_properties_;
@@ -536,6 +527,13 @@ MasalaObjectAPIDefinition::engine_keywords() const {
 std::vector< std::vector< std::string > > const &
 MasalaObjectAPIDefinition::data_representation_categories() const {
     return data_representation_categories_;
+}
+
+/// @brief Get the keywords that this object has, if it is a MasalaDataRepresentation
+/// object.
+std::vector< std::string > const &
+MasalaObjectAPIDefinition::data_representation_keywords() const {
+    return data_representation_keywords_;
 }
 
 /// @brief Get the properties that this object definitely has, if it is a

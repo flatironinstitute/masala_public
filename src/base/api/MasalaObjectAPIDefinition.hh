@@ -614,6 +614,11 @@ public:
 	std::vector< std::vector< std::string > > const &
 	data_representation_categories() const;
 
+	/// @brief Get the keywords that this object has, if it is a MasalaDataRepresentation
+	/// object.
+	std::vector< std::string > const &
+	data_representation_keywords() const;
+
 	/// @brief Get the properties that this object definitely has, if it is a
 	/// MasalaDataRepresentation object.
 	std::vector< std::string > const &
@@ -769,6 +774,9 @@ private:
 	/// Fruit->CitrusFruit->Oranges would be stored as { {"Fruit", "CitrusFruit", "Oranges"} }.
 	/// An object can be in more than one category.
 	std::vector< std::vector< std::string > > data_representation_categories_;
+
+	/// @brief The keywords that this object has, if it is a MasalaDataRepresentation object.
+	std::vector< std::string > data_representation_keywords_;
 
 	/// @brief The properties that this object definitely has, if it is a MasalaDataRepresentation
 	/// object.
