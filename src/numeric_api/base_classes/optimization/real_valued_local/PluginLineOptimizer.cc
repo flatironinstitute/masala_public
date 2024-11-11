@@ -123,6 +123,17 @@ PluginLineOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "LineOptimizer" } };
 }
 
+/// @brief Keywords for engines.
+/// @returns { "line_optimizer", "lightweight", "numeric" }
+std::vector < std::string >
+PluginLineOptimizer::get_engine_keywords() const {
+	return std::vector< std::string > {
+		"line_optimizer",
+		"lightweight",
+		"numeric"
+	};
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

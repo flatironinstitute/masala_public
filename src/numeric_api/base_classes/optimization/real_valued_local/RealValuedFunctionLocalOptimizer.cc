@@ -128,6 +128,18 @@ RealValuedFunctionLocalOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer", "RealValuedFunctionLocalOptimizer" } };
 }
 
+/// @brief Keywords for engines.
+/// @returns { "optimizer", "real_valued", "local_optimizer", "numeric" }
+std::vector < std::string >
+RealValuedFunctionLocalOptimizer::get_engine_keywords() const {
+	return std::vector< std::string > {
+		"optimizer",
+		"real_valued",
+		"local_optimizer",
+		"numeric"
+	};
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////

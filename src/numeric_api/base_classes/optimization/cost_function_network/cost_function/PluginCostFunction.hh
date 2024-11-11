@@ -106,6 +106,11 @@ public:
 	std::vector< std::vector< std::string > >
 	get_data_representation_categories() const override;
 
+	/// @brief Get the keywords for this MasalaDataRepresentation.
+	/// @returns { "optimization_problem", "cost_function", "numeric" }
+	std::vector< std::string >
+	get_data_representation_keywords() const override;
+
 	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
 	/// is compatible.
 	/// @returns An empty list.

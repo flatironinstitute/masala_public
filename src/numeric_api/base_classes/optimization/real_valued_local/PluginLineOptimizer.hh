@@ -137,6 +137,11 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
+	/// @brief Keywords for engines.
+	/// @returns { "line_optimizer", "lightweight", "numeric" }
+    std::vector < std::string >
+    get_engine_keywords() const override;
+
 	/// @brief Get an object describing the API for this object.
 	/// @details This override makes this class pure virtual.
 	masala::base::api::MasalaObjectAPIDefinitionCWP

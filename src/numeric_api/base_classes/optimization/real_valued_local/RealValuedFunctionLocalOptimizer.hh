@@ -120,6 +120,11 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
+	/// @brief Keywords for engines.
+	/// @returns { "optimizer", "real_valued", "local_optimizer", "numeric" }
+	std::vector < std::string >
+	get_engine_keywords() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

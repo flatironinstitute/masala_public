@@ -100,6 +100,11 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const override;
 
+	/// @brief Keywords for engines.
+	/// @returns { "optimizer", "cost_function_network", "numeric" }
+    std::vector < std::string >
+    get_engine_keywords() const override;
+
 	/// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 	/// @details Must be implemented by derived classes.  Each solutions set in the vector of solutions corresponds to
 	/// the problem with the same index.
