@@ -112,9 +112,9 @@ private:
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Return true if a data representation has a keyword, false otherwise.
-    /// @param keyword The keyword to consider.
-    /// @param creator The creator for the data representation that we are considering.
+	/// @brief Return true if a data representation has a keyword, false otherwise.
+	/// @param keyword The keyword to consider.
+	/// @param creator The creator for the data representation that we are considering.
     static
     bool
     has_keyword(
