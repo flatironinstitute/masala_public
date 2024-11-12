@@ -169,7 +169,7 @@ public:
 	/// @brief Add an arbitrary criterion to the list of criteria that must be true.
 	/// @note Input is used directly, not cloned.
 	void
-	add_criterion(
+	add_data_representation_criterion(
 		data_representation_request::MasalaDataRepresentationRequestCriterionCSP const & criterion_in
 	);
 

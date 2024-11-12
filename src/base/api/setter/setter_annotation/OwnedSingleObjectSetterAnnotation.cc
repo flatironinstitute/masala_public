@@ -39,6 +39,8 @@
 #include <base/managers/engine/MasalaEngineManager.hh>
 #include <base/managers/engine/MasalaEngineRequest.hh>
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
+#include <base/managers/engine/engine_request/MasalaEngineKeywordCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationKeywordCriterion.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
@@ -702,6 +704,8 @@ OwnedSingleObjectSetterAnnotation::set_object(
 std::vector< std::string >
 OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() const {
 	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::engine::engine_request;
+	using namespace masala::base::managers::engine::data_representation_request;
 	using namespace masala::base::managers::plugin_module;
 
 	std::lock_guard< std::mutex > lock( mutex() );
@@ -713,7 +717,15 @@ OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() c
 	std::vector< std::string > outvec;
 	if( is_engine_ ) {
 		MasalaEngineRequest engine_request;
-		engine_request.add_engine_category_requirement( std::vector< std::vector< std::string > >{ engine_manager_input_object_category_ }, engine_manager_include_subcategory_ );
+		if( !engine_manager_input_object_category_.empty() ) {
+			engine_request.add_engine_category_requirement( std::vector< std::vector< std::string > >{ engine_manager_input_object_category_ }, engine_manager_include_subcategory_ );
+		}
+		if( !engine_manager_input_object_keywords_.empty() ) {
+			MasalaEngineKeywordCriterionSP keyword_criterion( masala::make_shared< MasalaEngineKeywordCriterion >() );
+			keyword_criterion->set_criterion_mode( MasalaEngineKeywordCompatibilityCriterionMode::MUST_HAVE_AT_LEAST_ONE_KEYWORD );
+			keyword_criterion->set_keywords( engine_manager_input_object_keywords_ );
+			engine_request.add_engine_criterion( keyword_criterion );
+		}
 		std::vector<MasalaEngineCreatorCSP> const compatible_creators(
 			MasalaEngineManager::get_instance()->get_compatible_engine_creators( engine_request )
 		);
@@ -723,7 +735,15 @@ OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() c
 		}
 	} else if( is_data_representation_ ) {
 		MasalaDataRepresentationRequest dr_request;
-		dr_request.add_data_representation_category_requirement( std::vector< std::vector< std::string > >{ data_representation_manager_input_object_category_ }, data_representation_manager_include_subcategory_ );
+		if( !data_representation_manager_input_object_category_.empty() ) {
+			dr_request.add_data_representation_category_requirement( std::vector< std::vector< std::string > >{ data_representation_manager_input_object_category_ }, data_representation_manager_include_subcategory_ );
+		}
+		if( !data_representation_manager_input_object_keywords_.empty() ) {
+			MasalaDataRepresentationKeywordCriterionSP keyword_criterion( masala::make_shared< MasalaDataRepresentationKeywordCriterion >() );
+			keyword_criterion->set_criterion_mode( MasalaDataRepresentationKeywordCompatibilityCriterionMode::MUST_HAVE_AT_LEAST_ONE_KEYWORD );
+			keyword_criterion->set_keywords( data_representation_manager_input_object_keywords_ );
+			dr_request.add_data_representation_criterion( keyword_criterion );
+		}
 		std::vector<MasalaDataRepresentationCreatorCSP> const compatible_creators(
 			MasalaDataRepresentationManager::get_instance()->get_compatible_data_representation_creators( dr_request )
 		);
