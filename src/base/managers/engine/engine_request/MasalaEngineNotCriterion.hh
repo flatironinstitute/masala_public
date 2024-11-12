@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/engine/engine_request/MasalaEngineNotCriterion.hh
-/// @brief Headers for a class for imposing that at least one of two or more conditions be true when selecting engines.
+/// @brief Headers for a class for imposing a condition be false when selecting engines.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_engine_request_MasalaEngineNotCriterion_hh
@@ -38,7 +38,7 @@ namespace managers {
 namespace engine {
 namespace engine_request {
 
-/// @brief A class for imposing that at least one of two or more conditions be true when selecting engines.
+/// @brief A class for imposing a condition be false when selecting engines.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class MasalaEngineNotCriterion : public masala::base::managers::engine::engine_request::MasalaEngineRequestCriterion {
 

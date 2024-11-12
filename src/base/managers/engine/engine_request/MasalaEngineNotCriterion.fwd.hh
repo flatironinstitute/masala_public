@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/engine/engine_request/MasalaEngineNotCriterion.fwd.hh
-/// @brief Forward declarations for a class for imposing that at least one of two or more conditions be true when selecting engines.
+/// @brief Forward declarations for a class for imposing a condition be false when selecting engines.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_base_managers_engine_engine_request_MasalaEngineNotCriterion_fwd_hh
