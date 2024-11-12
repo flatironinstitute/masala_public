@@ -130,6 +130,13 @@ public:
         bool const allow_subcategories
     );
 
+	/// @brief Add an arbitrary engine criterion to the list of criteria that must be true.
+	/// @details Used directly; not cloned.
+	void
+	add_engine_criterion(
+		engine_request::MasalaEngineRequestCriterionCSP const & criterion_in
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +157,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The criteria that must be satisfied by this request.
-    std::vector< engine_request::MasalaEngineRequestCriterionSP > request_criteria_;
+    std::vector< engine_request::MasalaEngineRequestCriterionCSP > request_criteria_;
 
 }; // class MasalaEngineRequest
 
