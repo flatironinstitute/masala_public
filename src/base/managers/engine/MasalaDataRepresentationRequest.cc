@@ -31,6 +31,7 @@
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationNameRequirementCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationEngineCompatibilityCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationCategoryCriterion.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 #include <string>
@@ -197,6 +198,17 @@ MasalaDataRepresentationRequest::add_data_representation_category_exclusion(
     criterion->set_allow_subcategories( allow_subcategories );
     criterion->set_criterion_mode( MasalaDataRepresentationCategoryCompatibilityCriterionMode::MUST_NOT_BE_IN_ANY_CATEGORIES );
     request_criteria_.push_back( criterion );
+}
+
+
+/// @brief Add an arbitrary criterion to the list of criteria that must be true.
+/// @note Input is used directly, not cloned.
+void
+MasalaDataRepresentationRequest::add_criterion(
+	data_representation_request::MasalaDataRepresentationRequestCriterionCSP const & criterion_in
+) {
+	CHECK_OR_THROW_FOR_CLASS( criterion_in != nullptr, "add_criterion", "A null pointer was passed to this function." );
+	request_criteria_.push_back( criterion_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

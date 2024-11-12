@@ -166,6 +166,13 @@ public:
         bool const allow_subcategories
     );
 
+	/// @brief Add an arbitrary criterion to the list of criteria that must be true.
+	/// @note Input is used directly, not cloned.
+	void
+	add_criterion(
+		data_representation_request::MasalaDataRepresentationRequestCriterionCSP const & criterion_in
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +193,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief The criteria that must be satisfied by this request.
-    std::vector< data_representation_request::MasalaDataRepresentationRequestCriterionSP > request_criteria_;
+    std::vector< data_representation_request::MasalaDataRepresentationRequestCriterionCSP > request_criteria_;
 
 }; // class MasalaDataRepresentationRequest
 
