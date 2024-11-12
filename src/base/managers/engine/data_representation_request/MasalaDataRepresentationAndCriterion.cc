@@ -95,7 +95,7 @@ MasalaDataRepresentationAndCriterion::data_representation_is_compatible_with_cri
 /// @note This appends to the existing list.
 void
 MasalaDataRepresentationAndCriterion::add_criterion(
-    MasalaDataRepresentationAndCriterionCSP const & criterion_in
+    MasalaDataRepresentationRequestCriterionCSP const & criterion_in
 ) {
     CHECK_OR_THROW_FOR_CLASS( criterion_in != nullptr, "add_criterion", "A null pointer was passed to this function." );
     and_criteria_.push_back( criterion_in );

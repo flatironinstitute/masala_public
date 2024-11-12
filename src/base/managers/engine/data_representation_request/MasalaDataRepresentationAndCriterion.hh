@@ -92,7 +92,7 @@ public:
 	/// @note This appends to the existing list.
 	void
 	add_criterion(
-		MasalaDataRepresentationAndCriterionCSP const & criterion_in
+		MasalaDataRepresentationRequestCriterionCSP const & criterion_in
 	);
 
 private:
@@ -108,7 +108,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief The criteria that must all be true in order for this criterion to pass.
-	std::vector< MasalaDataRepresentationAndCriterionCSP > and_criteria_;
+	std::vector< MasalaDataRepresentationRequestCriterionCSP > and_criteria_;
 
 };
 
