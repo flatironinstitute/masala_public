@@ -80,6 +80,7 @@ bool
 MasalaEngineAndCriterion::engine_is_compatible_with_criterion(
     masala::base::managers::engine::MasalaEngineCreator const & creator
 ) const {
+    CHECK_OR_THROW_FOR_CLASS( !and_criteria_.empty(), "data_representation_is_compatible_with_criterion", "At least one criterion must be passed to this class for AND logic to work." );
 	for( auto const & criterion : and_criteria_ ) {
 		if( !(criterion->engine_is_compatible_with_criterion( creator )) ) {
 			return false;
