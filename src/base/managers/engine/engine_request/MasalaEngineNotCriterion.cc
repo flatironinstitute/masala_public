@@ -93,6 +93,7 @@ void
 MasalaEngineNotCriterion::set_criterion(
     MasalaEngineRequestCriterionCSP const & criterion_in
 ) {
+    CHECK_OR_THROW_FOR_CLASS( criterion_in != nullptr, "set_criterion", "A null pointer was passed to this function." );
 	not_criterion_ = criterion_in;
 }
 

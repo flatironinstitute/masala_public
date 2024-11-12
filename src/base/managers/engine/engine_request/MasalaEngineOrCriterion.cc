@@ -95,6 +95,7 @@ void
 MasalaEngineOrCriterion::add_criterion(
 	MasalaEngineRequestCriterionCSP const & criterion_in
 ) {
+    CHECK_OR_THROW_FOR_CLASS( criterion_in != nullptr, "add_criterion", "A null pointer was passed to this function." );
 	or_criteria_.push_back( criterion_in );
 }
 
