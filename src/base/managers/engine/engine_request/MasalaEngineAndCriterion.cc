@@ -17,7 +17,7 @@
 */
 
 /// @file src/base/managers/engine/engine_request/MasalaEngineAndCriterion.cc
-/// @brief A class for imposing the condition that a particular engine be in (or not in) a particular category.
+/// @brief Implementations for a class for imposing that two or more conditions be true when selecting engines.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Headers:
