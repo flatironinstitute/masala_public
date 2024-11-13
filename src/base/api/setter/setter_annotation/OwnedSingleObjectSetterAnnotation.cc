@@ -42,6 +42,7 @@
 #include <base/managers/engine/engine_request/MasalaEngineKeywordCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationKeywordCriterion.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
 namespace base {
@@ -323,6 +324,15 @@ OwnedSingleObjectSetterAnnotation::create_owned_object(
 	CHECK_OR_THROW_FOR_CLASS( !( is_engine_ && is_data_representation_ ), "create_owned_object", "Program error: the object is listed as both an "
 		"engine and a data representation.  This should be impossible.  Please consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( true ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, object_name ),
+			"create_owned_object", "The " + object_name + " class is not compatible with this object."
+		);
+	}
+
 	MasalaPluginAPISP returnobj;
 	if( is_data_representation_ ) {
 		returnobj = masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation( object_name, false );
@@ -358,6 +368,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in->inner_class_namespace() + "::" + object_in->inner_class_name() ) ),
+			"set_object", "The " + object_in->inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPICSP object_in_cast( std::dynamic_pointer_cast< MasalaEngineAPI const >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -459,6 +478,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in->inner_class_namespace() + "::" + object_in->inner_class_name() ) ),
+			"set_object", "The " + object_in->inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPISP object_in_cast( std::dynamic_pointer_cast< MasalaEngineAPI >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -581,6 +609,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in.inner_class_namespace() + "::" + object_in.inner_class_name() ) ),
+			"set_object", "The " + object_in.inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPI const * object_in_ptr_cast( dynamic_cast< MasalaEngineAPI const * >( &object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -633,6 +670,7 @@ OwnedSingleObjectSetterAnnotation::set_object(
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
+
 	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
 		"takes " + std::to_string( setter.n_setter_annotations() ) + " inputs."
 	);
@@ -640,6 +678,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in.inner_class_namespace() + "::" + object_in.inner_class_name() ) ),
+			"set_object", "The " + object_in.inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPI * object_in_ptr_cast( dynamic_cast< MasalaEngineAPI * >( &object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
