@@ -286,6 +286,13 @@ protected:
         masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
     ) const override;
 
+
+	/// @brief Get a list of names of objects that can be passed to this setter.
+	/// @details This function should be called from a mutex-locked context.  If short_names is true, then
+	/// only names are returned; otherwise, names and namespaces are returned.
+	std::vector< std::string >
+	protected_get_names_of_eligible_owned_objects( bool const short_names ) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
