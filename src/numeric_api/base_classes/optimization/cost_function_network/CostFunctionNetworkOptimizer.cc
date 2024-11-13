@@ -94,6 +94,17 @@ CostFunctionNetworkOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer", "CostFunctionNetworkOptimizer" } };
 }
 
+/// @brief Keywords for engines.
+/// @returns { "optimizer", "cost_function_network", "numeric" }
+std::vector < std::string >
+CostFunctionNetworkOptimizer::get_engine_keywords() const {
+    return std::vector< std::string > {
+		"optimizer",
+        "cost_function_network",
+		"numeric"
+	};
+}
+
 /// @brief Run the optimizer on a set of optimization problems, and produce a set of solutions.
 /// @details Must be implemented by derived classes.   Each solutions set in the vector of solutions corresponds to
 /// the problem with the same index.

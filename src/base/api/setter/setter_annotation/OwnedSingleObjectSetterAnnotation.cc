@@ -39,7 +39,10 @@
 #include <base/managers/engine/MasalaEngineManager.hh>
 #include <base/managers/engine/MasalaEngineRequest.hh>
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
+#include <base/managers/engine/engine_request/MasalaEngineKeywordCriterion.hh>
+#include <base/managers/engine/data_representation_request/MasalaDataRepresentationKeywordCriterion.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
 namespace base {
@@ -321,6 +324,15 @@ OwnedSingleObjectSetterAnnotation::create_owned_object(
 	CHECK_OR_THROW_FOR_CLASS( !( is_engine_ && is_data_representation_ ), "create_owned_object", "Program error: the object is listed as both an "
 		"engine and a data representation.  This should be impossible.  Please consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( true ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, object_name ),
+			"create_owned_object", "The " + object_name + " class is not compatible with this object."
+		);
+	}
+
 	MasalaPluginAPISP returnobj;
 	if( is_data_representation_ ) {
 		returnobj = masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation( object_name, false );
@@ -356,6 +368,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in->inner_class_namespace() + "::" + object_in->inner_class_name() ) ),
+			"set_object", "The " + object_in->inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPICSP object_in_cast( std::dynamic_pointer_cast< MasalaEngineAPI const >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -457,6 +478,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in->inner_class_namespace() + "::" + object_in->inner_class_name() ) ),
+			"set_object", "The " + object_in->inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPISP object_in_cast( std::dynamic_pointer_cast< MasalaEngineAPI >( object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -579,6 +609,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in.inner_class_namespace() + "::" + object_in.inner_class_name() ) ),
+			"set_object", "The " + object_in.inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPI const * object_in_ptr_cast( dynamic_cast< MasalaEngineAPI const * >( &object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -631,6 +670,7 @@ OwnedSingleObjectSetterAnnotation::set_object(
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
+
 	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
 		"takes " + std::to_string( setter.n_setter_annotations() ) + " inputs."
 	);
@@ -638,6 +678,15 @@ OwnedSingleObjectSetterAnnotation::set_object(
 		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
 		"consult a developer."
 	);
+
+	{
+		std::vector< std::string > const & eligible_objects( protected_get_names_of_eligible_owned_objects( false ) );
+		CHECK_OR_THROW_FOR_CLASS(
+			base::utility::container::has_value( eligible_objects, std::string( object_in.inner_class_namespace() + "::" + object_in.inner_class_name() ) ),
+			"set_object", "The " + object_in.inner_class_name() + " class is not something that can be passed to the " + setter.setter_function_name() + "() function."
+		);
+	}
+
 	if( is_engine_ ) {
 		MasalaEngineAPI * object_in_ptr_cast( dynamic_cast< MasalaEngineAPI * >( &object_in ) );
 		CHECK_OR_THROW_FOR_CLASS( object_in_ptr_cast != nullptr, "set_object", "Expected the input to the \"" + setter.setter_function_name() + "\" function to be "
@@ -701,43 +750,8 @@ OwnedSingleObjectSetterAnnotation::set_object(
 /// @brief Get a list of short names of objects that can be passed to this setter. 
 std::vector< std::string >
 OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() const {
-	using namespace masala::base::managers::engine;
-	using namespace masala::base::managers::plugin_module;
-
 	std::lock_guard< std::mutex > lock( mutex() );
-	CHECK_OR_THROW_FOR_CLASS(!( is_engine_ && is_data_representation_ ), "get_short_names_of_eligible_owned_objects", "Program error: this setter "
-		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
-		"consult a developer."
-	);
-
-	std::vector< std::string > outvec;
-	if( is_engine_ ) {
-		MasalaEngineRequest engine_request;
-		engine_request.add_engine_category_requirement( std::vector< std::vector< std::string > >{ engine_manager_input_object_category_ }, engine_manager_include_subcategory_ );
-		std::vector<MasalaEngineCreatorCSP> const compatible_creators(
-			MasalaEngineManager::get_instance()->get_compatible_engine_creators( engine_request )
-		);
-		outvec.reserve( compatible_creators.size() );
-		for( auto const & creator : compatible_creators ) {
-			outvec.push_back( creator->get_plugin_object_name() );
-		}
-	} else if( is_data_representation_ ) {
-		MasalaDataRepresentationRequest dr_request;
-		dr_request.add_data_representation_category_requirement( std::vector< std::vector< std::string > >{ data_representation_manager_input_object_category_ }, data_representation_manager_include_subcategory_ );
-		std::vector<MasalaDataRepresentationCreatorCSP> const compatible_creators(
-			MasalaDataRepresentationManager::get_instance()->get_compatible_data_representation_creators( dr_request )
-		);
-		outvec.reserve( compatible_creators.size() );
-		for( auto const & creator : compatible_creators ) {
-			outvec.push_back( creator->get_plugin_object_name() );
-		}
-	} else {
-		outvec = MasalaPluginModuleManager::get_instance()->get_short_names_of_plugins_by_category(
-			plugin_manager_input_object_category_, plugin_manager_include_subcategory_
-		);
-	}
-
-	return outvec;
+	return protected_get_names_of_eligible_owned_objects( true );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -815,6 +829,83 @@ OwnedSingleObjectSetterAnnotation::protected_is_compatible_with_setter(
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI const & > const * >( &setter ) != nullptr ) { return true; }
 
 	return false;
+}
+
+/// @brief Get a list of names of objects that can be passed to this setter.
+/// @details This function should be called from a mutex-locked context.  If short_names is true, then
+/// only names are returned; otherwise, names and namespaces are returned.
+std::vector< std::string >
+OwnedSingleObjectSetterAnnotation::protected_get_names_of_eligible_owned_objects(
+	bool const short_names
+) const {
+	using namespace masala::base::managers::engine;
+	using namespace masala::base::managers::engine::engine_request;
+	using namespace masala::base::managers::engine::data_representation_request;
+	using namespace masala::base::managers::plugin_module;
+
+	CHECK_OR_THROW_FOR_CLASS(!( is_engine_ && is_data_representation_ ), "protected_get_names_of_eligible_owned_objects", "Program error: this setter "
+		"definition was incorrectly configured.  It is annotated as taking both an engine and a data representation.  This is not possible.  Please "
+		"consult a developer."
+	);
+
+	std::vector< std::string > outvec;
+	if( is_engine_ ) {
+		MasalaEngineRequest engine_request;
+		if( !engine_manager_input_object_category_.empty() ) {
+			engine_request.add_engine_category_requirement( std::vector< std::vector< std::string > >{ engine_manager_input_object_category_ }, engine_manager_include_subcategory_ );
+		}
+		if( !engine_manager_input_object_keywords_.empty() ) {
+			MasalaEngineKeywordCriterionSP keyword_criterion( masala::make_shared< MasalaEngineKeywordCriterion >() );
+			keyword_criterion->set_criterion_mode( MasalaEngineKeywordCompatibilityCriterionMode::MUST_HAVE_AT_LEAST_ONE_KEYWORD );
+			keyword_criterion->set_keywords( engine_manager_input_object_keywords_ );
+			engine_request.add_engine_criterion( keyword_criterion );
+		}
+		std::vector<MasalaEngineCreatorCSP> const compatible_creators(
+			MasalaEngineManager::get_instance()->get_compatible_engine_creators( engine_request )
+		);
+		outvec.reserve( compatible_creators.size() );
+		for( auto const & creator : compatible_creators ) {
+			if( short_names ) {
+				outvec.push_back( creator->get_plugin_object_name() );
+			} else {
+				outvec.push_back( creator->get_plugin_object_namespace_and_name() );
+			}
+		}
+	} else if( is_data_representation_ ) {
+		MasalaDataRepresentationRequest dr_request;
+		if( !data_representation_manager_input_object_category_.empty() ) {
+			dr_request.add_data_representation_category_requirement( std::vector< std::vector< std::string > >{ data_representation_manager_input_object_category_ }, data_representation_manager_include_subcategory_ );
+		}
+		if( !data_representation_manager_input_object_keywords_.empty() ) {
+			MasalaDataRepresentationKeywordCriterionSP keyword_criterion( masala::make_shared< MasalaDataRepresentationKeywordCriterion >() );
+			keyword_criterion->set_criterion_mode( MasalaDataRepresentationKeywordCompatibilityCriterionMode::MUST_HAVE_AT_LEAST_ONE_KEYWORD );
+			keyword_criterion->set_keywords( data_representation_manager_input_object_keywords_ );
+			dr_request.add_data_representation_criterion( keyword_criterion );
+		}
+		std::vector<MasalaDataRepresentationCreatorCSP> const compatible_creators(
+			MasalaDataRepresentationManager::get_instance()->get_compatible_data_representation_creators( dr_request )
+		);
+		outvec.reserve( compatible_creators.size() );
+		for( auto const & creator : compatible_creators ) {
+			if( short_names ) {
+				outvec.push_back( creator->get_plugin_object_name() );
+			} else {
+				outvec.push_back( creator->get_plugin_object_namespace_and_name() );
+			}
+		}
+	} else {
+		if( short_names ) {
+			outvec = MasalaPluginModuleManager::get_instance()->get_short_names_of_plugins_by_category(
+				plugin_manager_input_object_category_, plugin_manager_include_subcategory_
+			);
+		} else {
+			outvec = MasalaPluginModuleManager::get_instance()->get_list_of_plugins_by_category(
+				plugin_manager_input_object_category_, plugin_manager_include_subcategory_, true
+			);
+		}
+	}
+
+	return outvec;
 }
 
 } // namespace setter_annotation

@@ -111,6 +111,17 @@ CostFunctionNetworkOptimizationProblem::get_data_representation_categories() con
 	};
 }
 
+/// @brief Get the keywords that this data representation plugin has.
+/// @returns { "optimization_problem", "cost_function_network_optimization_problem", "numeric" }
+std::vector< std::string >
+CostFunctionNetworkOptimizationProblem::get_data_representation_keywords() const {
+	return std::vector< std::string > {
+		"optimization_problem",
+		"cost_function_network_optimization_problem",
+		"numeric"
+	};
+}
+
 /// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
 /// is compatible.
 /// @returns An empty list.

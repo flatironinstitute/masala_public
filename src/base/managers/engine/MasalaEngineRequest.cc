@@ -29,6 +29,7 @@
 // Base headers:
 #include <base/managers/engine/engine_request/MasalaEngineNameRequirementCriterion.hh>
 #include <base/managers/engine/engine_request/MasalaEngineCategoryCriterion.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers:
 #include <string>
@@ -133,6 +134,16 @@ MasalaEngineRequest::add_engine_category_exclusion(
     criterion->set_allow_subcategories( allow_subcategories );
     criterion->set_criterion_mode( MasalaEngineCategoryCompatibilityCriterionMode::MUST_NOT_BE_IN_ANY_CATEGORIES );
     request_criteria_.push_back( criterion );
+}
+
+/// @brief Add an arbitrary engine criterion to the list of criteria that must be true.
+/// @details Used directly; not cloned.
+void
+MasalaEngineRequest::add_engine_criterion(
+	engine_request::MasalaEngineRequestCriterionCSP const & criterion_in
+) {
+	CHECK_OR_THROW_FOR_CLASS( criterion_in != nullptr, "add_engine_criterion", "A null pointer was passed to this function." );
+	request_criteria_.push_back( criterion_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

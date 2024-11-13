@@ -73,9 +73,17 @@ public:
     /// @brief Get the categories that this engine plugin falls into.
     /// @details Categories are hierarchical, with the hierarchy represented as a vector of
     /// strings.  One engine can be classified into multiple categories.
+    /// @note The vector is generated when this function is called, so it doesn't return a const reference.
     virtual
     std::vector< std::vector< std::string > >
     get_engine_categories() const = 0;
+
+    /// @brief Get the keywords that this engine plugin has.
+    /// @note The vector is generated when this function is called, so it doesn't return a const reference.
+    virtual
+    std::vector< std::string >
+    get_engine_keywords() const = 0;
+
 
 }; // class MasalaEngineCreator
 

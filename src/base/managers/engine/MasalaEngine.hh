@@ -95,6 +95,11 @@ public:
     std::vector< std::vector < std::string > >
     get_engine_categories() const = 0;
 
+    /// @brief Get the keywords for engines.
+    virtual
+    std::vector< std::string >
+    get_engine_keywords() const = 0;
+
     /// @brief Is a particular data representation INcompatible with this engine?  Returns true to signal
     /// incompatibility, false otherwise.
     /// @details Default implementation always returns false.  May be overridden to allow engines to perform

@@ -139,6 +139,19 @@ CostFunction::get_data_representation_categories() const {
     return std::vector< std::vector< std::string > >{ { "CostFunction" } };
 }
 
+/// @brief Get the keywords that this data representation plugin has.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns { "optimization_problem", "cost_function", "numeric" }
+std::vector< std::string >
+CostFunction::get_data_representation_keywords() const {
+    return std::vector< std::string > {
+		"optimization_problem",
+		"cost_function",
+		"numeric"
+	};
+}
+
 /// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
 /// is compatible.
 /// @returns An empty list.

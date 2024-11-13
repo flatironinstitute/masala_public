@@ -143,6 +143,17 @@ LineOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "LineOptimizer" } };
 }
 
+/// @brief Get the keywords for this engine.
+/// @returns { "line_optimizer", "lightweight", "numeric" }
+std::vector< std::string >
+LineOptimizer::get_engine_keywords() const {
+	return std::vector< std::string > {
+		"line_optimizer",
+		"lightweight",
+		"numeric"
+	};
+}
+
 /// @brief Get an object describing the API for this object.
 /// @details This override makes the API class non-instantiable since it
 /// has a protected constructor.

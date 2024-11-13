@@ -162,4 +162,14 @@ std::vector< std::vector< std::string > >
 	};
 }
 
+/// @brief Get the keywords that this engine plugin has.
+/// @returns { <__ENGINE_KEYWORDS__> }
+/// @note The vector is generated when this function is called, so it doesn't return a const reference.
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_engine_keywords() const {
+	return std::vector< std::string >{
+		<__ENGINE_KEYWORDS__>
+	};
+}
+
 <__CPP_END_NAMESPACE__>

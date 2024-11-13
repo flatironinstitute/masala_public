@@ -82,6 +82,16 @@ Optimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer" } };
 }
 
+/// @brief Keywords for engines.
+/// @returns { "optimizer", "numeric" }
+std::vector < std::string >
+Optimizer::get_engine_keywords() const {
+    return std::vector< std::string > {
+		"optimizer",
+		"numeric"
+	};
+}
+
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api

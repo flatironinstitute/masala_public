@@ -162,6 +162,16 @@ std::vector< std::vector< std::string > >
 	};
 }
 
+/// @brief Get the keywords that this data representation plugin has.
+/// @returns { <__DATA_REPRESENTATION_KEYWORDS__> }
+/// @note The vector is generated when this function is called, so it doesn't return a const reference.
+std::vector< std::string >
+<__CREATOR_CLASS_API_NAME__>::get_data_representation_keywords() const {
+	return std::vector< std::string >{
+		<__DATA_REPRESENTATION_KEYWORDS__>
+	};
+}
+
 /// @brief Get the MasalaEngines that with which this data representation plugin
 /// is DEFINITELY compatible.  (There may be other engines with which it is also
 /// compatible, so this is not necessarily an exhaustive list.)
