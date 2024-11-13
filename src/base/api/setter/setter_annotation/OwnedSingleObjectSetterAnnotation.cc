@@ -854,7 +854,7 @@ OwnedSingleObjectSetterAnnotation::protected_get_names_of_eligible_owned_objects
 		} else {
 			outvec = MasalaPluginModuleManager::get_instance()->get_list_of_plugins_by_category(
 				plugin_manager_input_object_category_, plugin_manager_include_subcategory_, true
-			)
+			);
 		}
 	}
 
