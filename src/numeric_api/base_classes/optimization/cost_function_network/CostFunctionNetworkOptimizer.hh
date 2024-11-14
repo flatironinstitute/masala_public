@@ -42,6 +42,7 @@
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
 
 // STL headers:
+#include <mutex>
 
 namespace masala {
 namespace numeric_api {
