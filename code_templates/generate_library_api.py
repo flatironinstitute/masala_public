@@ -1145,9 +1145,7 @@ def generate_function_implementations( \
             outstring += tabchar + "return "
 
             if is_masala_API_ptr and returns_this_ref == False :
-                dummy = []
-                outstring += "masala::make_shared< " + correct_masala_types( project_name, drop_const( outtype_inner ), dummy ) + " >(\n"
-                outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
+                outstring += "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
                 outstring += tabchar + tabchar + tabchar
             elif is_masala_API_obj :
                 dummy = []
@@ -1162,7 +1160,7 @@ def generate_function_implementations( \
 
         outstring += generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile )
         if is_masala_API_ptr and returns_this_ref == False :
-            outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
+            outstring += "\n" + tabchar + ")"
         elif is_masala_API_obj and returns_this_ref == False :
             outstring += " )\n" + tabchar + ")"
         outstring += ";\n"
