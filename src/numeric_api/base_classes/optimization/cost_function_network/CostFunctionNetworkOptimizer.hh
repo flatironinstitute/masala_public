@@ -138,8 +138,8 @@ public:
 
 	/// @brief Get a template cost function network optimization problem data representation, configured by the user but with no data entered.
 	/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns nullptr.  Returns a deep clone of the object otherwise.
-	masala::base::managers::engine::MasalaDataRepresentationAPICSP
-	set_template_preferred_cfn_data_representation() const;
+	masala::base::managers::engine::MasalaDataRepresentationAPISP
+	get_template_preferred_cfn_data_representation_copy() const;
 
 protected:
 
