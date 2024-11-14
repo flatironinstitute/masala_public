@@ -61,11 +61,19 @@ class CostFunctionNetworkOptimizer : public masala::numeric_api::base_classes::o
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS, DESTRUCTORS, ETC.
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	CostFunctionNetworkOptimizer() = default;
 
-	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizer( CostFunctionNetworkOptimizer const & ) = default;
+	/// @brief Copy constructor.  Explicit due to mutex.
+	CostFunctionNetworkOptimizer( CostFunctionNetworkOptimizer const & src );
+
+	/// @brief Assignment operator.  Explicit due to mutex.
+	CostFunctionNetworkOptimizer &
+	operator= ( CostFunctionNetworkOptimizer const & src );
 
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizer() override = default;
@@ -148,6 +156,12 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
+	virtual void protected_assign( CostFunctionNetworkOptimizer const & src );
+
+	/// @brief Allow derived classes to lock the mutex.
+	inline std::mutex & cfn_solver_mutex() const { return cfn_solver_mutex_; }
+
 	/// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
 	/// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
 	/// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
@@ -164,7 +178,7 @@ protected:
 	/// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
 	virtual
 	masala::base::managers::engine::MasalaDataRepresentationAPISP
-	protected_get_default_template_preferred_cfn_data_representation() const;
+	protected_get_default_template_preferred_cfn_data_representation() const = 0;
 
 private:
 

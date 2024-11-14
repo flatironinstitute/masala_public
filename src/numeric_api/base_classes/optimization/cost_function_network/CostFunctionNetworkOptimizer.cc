@@ -48,6 +48,33 @@ namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS, DESTRUCTORS, ETC.
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.  Explicit due to mutex.
+CostFunctionNetworkOptimizer::CostFunctionNetworkOptimizer(
+	CostFunctionNetworkOptimizer const & src
+) :
+	masala::numeric_api::base_classes::optimization::Optimizer( src )
+{
+	std::lock( cfn_solver_mutex_, src.cfn_solver_mutex_ );
+	std::lock_guard< std::mutex > lockthis( cfn_solver_mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.cfn_solver_mutex_, std::adopt_lock );
+	protected_assign( src );
+}
+
+/// @brief Assignment operator.  Explicit due to mutex.
+CostFunctionNetworkOptimizer &
+CostFunctionNetworkOptimizer::operator=(
+	CostFunctionNetworkOptimizer const & src
+) {
+	std::lock( cfn_solver_mutex_, src.cfn_solver_mutex_ );
+	std::lock_guard< std::mutex > lockthis( cfn_solver_mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.cfn_solver_mutex_, std::adopt_lock );
+	protected_assign( src );
+	return *this;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -175,6 +202,31 @@ CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_cop
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
+/*virtual*/
+void
+CostFunctionNetworkOptimizer::protected_assign(
+	CostFunctionNetworkOptimizer const & src
+) {
+	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+	if( src.template_preferred_cfn_data_representation_ == nullptr ) {
+		template_preferred_cfn_data_representation_ = nullptr;
+	} else {
+		CostFunctionNetworkOptimizationProblem_APICSP rep_cast(
+			std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API const >(
+				src.template_preferred_cfn_data_representation_
+			)
+		);
+		CHECK_OR_THROW_FOR_CLASS(
+			rep_cast != nullptr,
+			"get_template_preferred_cfn_data_representation_copy",
+			"An object of type \"" + template_preferred_cfn_data_representation_->inner_class_name() + "\" was stored as the template preferred CFN data "
+			"representation in the source object, but it could not be interpreted as a CostFunctionNetworkOptimizationProblem object type."
+		);
+		template_preferred_cfn_data_representation_ = rep_cast->deep_clone();
+	}
+}
+
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
 /// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
 /// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
@@ -201,10 +253,10 @@ CostFunctionNetworkOptimizer::protected_set_template_preferred_cfn_data_represen
 /// @brief If the template preferred CFN data representation has not been set, return a default CFN data representation.
 /// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
 /*virtual*/
-masala::base::managers::engine::MasalaDataRepresentationAPISP
-CostFunctionNetworkOptimizer::protected_get_default_template_preferred_cfn_data_representation() const {
-	return nullptr;
-}
+// masala::base::managers::engine::MasalaDataRepresentationAPISP
+// CostFunctionNetworkOptimizer::protected_get_default_template_preferred_cfn_data_representation() const {
+// 	return nullptr;
+// }
 
 } // namespace cost_function_network
 } // namespace optimization
