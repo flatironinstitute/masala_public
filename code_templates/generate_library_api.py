@@ -1058,7 +1058,7 @@ def generate_function_implementations( \
 
         # Body:
 
-        is_masala_API_ptr = False
+        convert_to_masala_API_ptr = False
         is_masala_API_obj = False
         is_masala_plugin_ptr = False
         #is_masala_plugin_obj = False
@@ -1066,8 +1066,8 @@ def generate_function_implementations( \
             firstchevron = outtype.find("<")
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
-            if( is_masala_class( project_name, outtype_inner ) and outtype_inner != "masala::base::MasalaObjectAPI"  ) :
-                is_masala_API_ptr = True
+            if( is_masala_class( project_name, outtype_inner ) and outtype_inner.split()[0].endswith("API") == False  ) :
+                convert_to_masala_API_ptr = True
                 if VERBOSE_SCRIPT_OUTPUT == True:
                     print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
                 if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
@@ -1103,7 +1103,7 @@ def generate_function_implementations( \
             else :
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
         if (fxn_type == "GETTER" or fxn_type == "WORKFXN") and has_output == True and returns_this_ref == False :
-            if is_masala_API_ptr or is_masala_plugin_ptr :
+            if convert_to_masala_API_ptr or is_masala_plugin_ptr :
                 outstring += tabchar + "// In this function, note that std::const_pointer_cast is safe to use.  We might\n"
                 outstring += tabchar + "// cast away the constness of the object, but if we do, we effectively restore it by\n"
                 outstring += tabchar + "// encapsulating it in a const API object (in that case) that only allows const access.\n"
@@ -1144,7 +1144,7 @@ def generate_function_implementations( \
 
             outstring += tabchar + "return "
 
-            if is_masala_API_ptr and returns_this_ref == False :
+            if convert_to_masala_API_ptr and returns_this_ref == False :
                 dummy = []
                 outstring += "masala::make_shared< " + correct_masala_types( project_name, drop_const( outtype_inner ), dummy ) + " >(\n"
                 outstring += tabchar + tabchar + "std::const_pointer_cast< " + drop_const( outtype_inner ) + " >(\n"
@@ -1161,7 +1161,7 @@ def generate_function_implementations( \
             outstring += tabchar
 
         outstring += generate_function_call( object_string, accessor_string, namepattern, fxn, ninputs, project_name, jsonfile )
-        if is_masala_API_ptr and returns_this_ref == False :
+        if convert_to_masala_API_ptr and returns_this_ref == False :
             outstring += "\n" + tabchar + tabchar + ")\n" + tabchar + ")"
         elif is_masala_API_obj and returns_this_ref == False :
             outstring += " )\n" + tabchar + ")"
