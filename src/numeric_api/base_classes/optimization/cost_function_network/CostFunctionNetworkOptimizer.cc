@@ -75,7 +75,7 @@ std::vector< std::string >
 CostFunctionNetworkOptimizer::get_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
-        "cost_function_network",
+		"cost_function_network",
 		"numeric"
 	};
 }
@@ -92,16 +92,16 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 /// @returns { {"Optimizer", "CostFunctionNetworkOptimizer"} }
 std::vector< std::vector < std::string > >
 CostFunctionNetworkOptimizer::get_engine_categories() const {
-    return std::vector< std::vector < std::string > >{ { "Optimizer", "CostFunctionNetworkOptimizer" } };
+	return std::vector< std::vector < std::string > >{ { "Optimizer", "CostFunctionNetworkOptimizer" } };
 }
 
 /// @brief Keywords for engines.
 /// @returns { "optimizer", "cost_function_network", "numeric" }
 std::vector < std::string >
 CostFunctionNetworkOptimizer::get_engine_keywords() const {
-    return std::vector< std::string > {
+	return std::vector< std::string > {
 		"optimizer",
-        "cost_function_network",
+		"cost_function_network",
 		"numeric"
 	};
 }
@@ -111,27 +111,27 @@ CostFunctionNetworkOptimizer::get_engine_keywords() const {
 /// the problem with the same index.
 std::vector< masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP >
 CostFunctionNetworkOptimizer::run_optimizer(
-    masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
+	masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 ) const {
-    using namespace masala::numeric_api::auto_generated_api::optimization;
-    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
-    CostFunctionNetworkOptimizationProblems_API const * problems_cast( dynamic_cast< CostFunctionNetworkOptimizationProblems_API const * >( &problems ) );
-    CHECK_OR_THROW_FOR_CLASS(
-        problems_cast != nullptr,
-        "run_optimizer",
-        "A set of optimization problems was passed to the run_optimizer function, but it was not "
-        "a set of cost function network optimization problems."
-    );
+	using namespace masala::numeric_api::auto_generated_api::optimization;
+	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+	CostFunctionNetworkOptimizationProblems_API const * problems_cast( dynamic_cast< CostFunctionNetworkOptimizationProblems_API const * >( &problems ) );
+	CHECK_OR_THROW_FOR_CLASS(
+		problems_cast != nullptr,
+		"run_optimizer",
+		"A set of optimization problems was passed to the run_optimizer function, but it was not "
+		"a set of cost function network optimization problems."
+	);
 
-    std::vector< CostFunctionNetworkOptimizationSolutions_APICSP > const outvec1( run_cost_function_network_optimizer( *problems_cast ) );
+	std::vector< CostFunctionNetworkOptimizationSolutions_APICSP > const outvec1( run_cost_function_network_optimizer( *problems_cast ) );
 
-    // Conversion to base class pointers requires another step, irritatingly:
-    std::vector< OptimizationSolutions_APICSP > outvec2( outvec1.size() );
-    for( base::Size i(0), imax(outvec1.size()); i<imax; ++i ) {
-        outvec2[i] = outvec1[i];
-    }
+	// Conversion to base class pointers requires another step, irritatingly:
+	std::vector< OptimizationSolutions_APICSP > outvec2( outvec1.size() );
+	for( base::Size i(0), imax(outvec1.size()); i<imax; ++i ) {
+		outvec2[i] = outvec1[i];
+	}
 
-    return outvec2;
+	return outvec2;
 }
 
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
@@ -141,31 +141,34 @@ void
 CostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
     masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 ) {
-    std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
-    protected_set_template_preferred_cfn_data_representation( representation_in );
+	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
+	protected_set_template_preferred_cfn_data_representation( representation_in );
 }
 
 /// @brief Get a template cost function network optimization problem data representation, configured by the user but with no data entered.
-/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns nullptr.  Returns a deep clone of the object otherwise.
+/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns the output of protected_get_default_template_preferred_cfn_data_representation().
+/// This is nullptr by default, but can be overridden by derived classes.  Returns a deep clone of the object otherwise.
 masala::base::managers::engine::MasalaDataRepresentationAPISP
 CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_copy() const {
-    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
-    std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
-    if( template_preferred_cfn_data_representation_ == nullptr ) { return nullptr; }
+	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
+	if( template_preferred_cfn_data_representation_ == nullptr ) {
+		return protected_get_default_template_preferred_cfn_data_representation();
+	}
 
-    CostFunctionNetworkOptimizationProblem_APICSP rep_cast(
-        std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API const >(
-            template_preferred_cfn_data_representation_
-        )
-    );
-    CHECK_OR_THROW_FOR_CLASS(
-        rep_cast != nullptr,
-        "get_template_preferred_cfn_data_representation_copy",
-        "An object of type \"" + template_preferred_cfn_data_representation_->inner_class_name() + "\" was stored as the template preferred CFN data "
-        "representation, but it could not be interpreted as a CostFunctionNetworkOptimizationProblem object type."
-    );
+	CostFunctionNetworkOptimizationProblem_APICSP rep_cast(
+		std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API const >(
+			template_preferred_cfn_data_representation_
+		)
+	);
+	CHECK_OR_THROW_FOR_CLASS(
+		rep_cast != nullptr,
+		"get_template_preferred_cfn_data_representation_copy",
+		"An object of type \"" + template_preferred_cfn_data_representation_->inner_class_name() + "\" was stored as the template preferred CFN data "
+		"representation, but it could not be interpreted as a CostFunctionNetworkOptimizationProblem object type."
+	);
 
-    return rep_cast->deep_clone();
+	return rep_cast->deep_clone();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,16 +186,24 @@ void
 CostFunctionNetworkOptimizer::protected_set_template_preferred_cfn_data_representation(
     masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 ) {
-    using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
-    if( representation_in != nullptr ) {
-        CHECK_OR_THROW_FOR_CLASS(
-            std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API const >( representation_in ) != nullptr,
-            "protected_set_template_preferred_cfn_data_representation",
-            "An object of type \"" + representation_in->inner_class_name() + "\" was passed to this function, but it could not be interpreted as a "
-            "CostFunctionNetworkOptimizationProblem object type."
-        );
-    }
-    template_preferred_cfn_data_representation_ = representation_in;
+	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+	if( representation_in != nullptr ) {
+		CHECK_OR_THROW_FOR_CLASS(
+			std::dynamic_pointer_cast< CostFunctionNetworkOptimizationProblem_API const >( representation_in ) != nullptr,
+			"protected_set_template_preferred_cfn_data_representation",
+			"An object of type \"" + representation_in->inner_class_name() + "\" was passed to this function, but it could not be interpreted as a "
+			"CostFunctionNetworkOptimizationProblem object type."
+		);
+	}
+	template_preferred_cfn_data_representation_ = representation_in;
+}
+
+/// @brief If the template preferred CFN data representation has not been set, return a default CFN data representation.
+/// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
+/*virtual*/
+masala::base::managers::engine::MasalaDataRepresentationAPISP
+CostFunctionNetworkOptimizer::protected_get_default_template_preferred_cfn_data_representation() const {
+	return nullptr;
 }
 
 } // namespace cost_function_network

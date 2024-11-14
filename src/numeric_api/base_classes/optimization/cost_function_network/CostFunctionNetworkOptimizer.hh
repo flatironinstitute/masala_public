@@ -137,7 +137,8 @@ public:
 	);
 
 	/// @brief Get a template cost function network optimization problem data representation, configured by the user but with no data entered.
-	/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns nullptr.  Returns a deep clone of the object otherwise.
+	/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns the output of protected_get_default_template_preferred_cfn_data_representation().
+	/// This is nullptr by default, but can be overridden by derived classes.  Returns a deep clone of the object otherwise.
 	masala::base::managers::engine::MasalaDataRepresentationAPISP
 	get_template_preferred_cfn_data_representation_copy() const;
 
@@ -158,6 +159,12 @@ protected:
 	protected_set_template_preferred_cfn_data_representation(
 		masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 	);
+
+	/// @brief If the template preferred CFN data representation has not been set, return a default CFN data representation.
+	/// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
+	virtual
+	masala::base::managers::engine::MasalaDataRepresentationAPISP
+	protected_get_default_template_preferred_cfn_data_representation() const;
 
 private:
 
