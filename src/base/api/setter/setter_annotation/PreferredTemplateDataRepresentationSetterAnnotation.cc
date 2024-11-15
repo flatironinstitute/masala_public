@@ -29,17 +29,10 @@
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
-#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
-#include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
-#include <base/managers/engine/MasalaEngineAPI.hh>
-#include <base/managers/engine/MasalaEngineCreator.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.hh>
 #include <base/managers/engine/MasalaDataRepresentationManager.hh>
-#include <base/managers/engine/MasalaEngineManager.hh>
-#include <base/managers/engine/MasalaEngineRequest.hh>
 #include <base/managers/engine/MasalaDataRepresentationRequest.hh>
-#include <base/managers/engine/engine_request/MasalaEngineKeywordCriterion.hh>
 #include <base/managers/engine/data_representation_request/MasalaDataRepresentationKeywordCriterion.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/utility/container/container_util.tmpl.hh>
@@ -181,7 +174,6 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const {
 	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
@@ -233,7 +225,6 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const {
 	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
@@ -292,7 +283,6 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const {
 	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
@@ -330,7 +320,6 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const {
 	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	std::lock_guard< std::mutex > lock( mutex() );
@@ -407,7 +396,6 @@ PreferredTemplateDataRepresentationSetterAnnotation::protected_is_compatible_wit
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const /*override*/ {
 	using namespace masala::base::api::setter;
-	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	if( setter.num_input_parameters() != 1 ) { return false; }
@@ -430,9 +418,7 @@ PreferredTemplateDataRepresentationSetterAnnotation::protected_get_names_of_elig
 	bool const short_names
 ) const {
 	using namespace masala::base::managers::engine;
-	using namespace masala::base::managers::engine::engine_request;
 	using namespace masala::base::managers::engine::data_representation_request;
-	using namespace masala::base::managers::plugin_module;
 
 
 	std::vector< std::string > outvec;
