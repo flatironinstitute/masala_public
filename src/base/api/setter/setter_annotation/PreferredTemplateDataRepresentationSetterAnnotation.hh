@@ -128,16 +128,15 @@ public:
 // PUBLIC WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Create an empty, unconfigured instance of the owned object type.
-	/// @param object_name The name of the type to create.  Throws if this type is not known to the plugin manager, the engine manager if this
-	/// is an engine setter, or the data representation manager if this is a data representation setter.
+	/// @brief Create an empty, unconfigured instance of the data representation object type.
+	/// @param object_name The name of the type to create.  Throws if this type is not known to the data representation manager.
 	/// @returns A shared pointer to a nonconst instance of the new object type.
 	masala::base::managers::engine::MasalaDataRepresentationAPISP
-	create_owned_object(
+	create_empty_data_representation(
 		std::string const & object_name
 	) const;
 
-	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @brief Call the setter function, and pass it a MasalaDataRepresentationAPICSP const instance.
 	/// @details This version takes a const shared pointer to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
 	/// this will throw if the object cannot be cast to the appropriate type.
 	void
@@ -146,7 +145,7 @@ public:
 		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 	) const;
 
-	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @brief Call the setter function, and pass it a MasalaDataRepresentationAPISP const instance.
 	/// @details This version takes a nonconst shared pointer to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
 	/// this will throw if the object cannot be cast to the appropriate type.
 	void
@@ -155,7 +154,7 @@ public:
 		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 	) const;
 
-	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @brief Call the setter function, and pass it a MasalaDataRepresentationAPI const instance.
 	/// @details This version takes a const reference to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
 	/// this will throw if the object cannot be cast to the appropriate type.
 	void
@@ -164,7 +163,7 @@ public:
 		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 	) const;
 
-	/// @brief Call the setter function, and pass it a MasalaPluginAPI object.
+	/// @brief Call the setter function, and pass it a MasalaDataRepresentationAPI nonconst instance.
 	/// @details This version takes a nonconst reference to the object.  If this setter expects a MasalaEngine or a MasalaDataRepresentation,
 	/// this will throw if the object cannot be cast to the appropriate type.
 	void
