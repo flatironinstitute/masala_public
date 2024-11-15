@@ -31,7 +31,7 @@
 
 // Base headers:
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
-#include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/managers/engine/MasalaDataRepresentationAPI.fwd.hh>
 
 // STL headers:
 #include <string>
