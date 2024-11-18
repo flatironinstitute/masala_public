@@ -300,7 +300,7 @@ short_masala_class_name_from_full_name(
 ) {
 	Size const last_colon_pos( full_name.find_last_of(':') );
 	if( last_colon_pos == full_name.npos ) { return full_name; }
-	return full_name.substr( last_colon_pos );
+	return full_name.substr( last_colon_pos + 1 );
 }
 
 } // namespace string
