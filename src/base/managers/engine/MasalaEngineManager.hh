@@ -97,14 +97,23 @@ public:
     std::string
     class_namespace() const override;
 
-    /// @brief Create an engine, by name.
-    /// @details If throw_if_missing is true, this function will throw an exception if it can't
-    /// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
-    MasalaEngineAPISP
-    create_engine(
-        std::string const & engine_type,
-        bool const throw_if_missing = true
-    ) const;
+	/// @brief Create an engine, by full name (including namespace).
+	/// @details If throw_if_missing is true, this function will throw an exception if it can't
+	/// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
+	MasalaEngineAPISP
+	create_engine(
+		std::string const & engine_type,
+		bool const throw_if_missing = true
+	) const;
+
+	/// @brief Create an engine, by short name (excluding namespace).
+	/// @details If throw_if_missing is true, this function will throw an exception if it can't
+	/// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
+	MasalaEngineAPISP
+	create_engine_by_short_name(
+		std::string const & engine_type_by_short_name,
+		bool const throw_if_missing = true
+	) const;
 
     /// @brief Register an engine.
     /// @details An exception is thrown if the engine name is already registered.

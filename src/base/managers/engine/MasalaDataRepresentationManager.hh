@@ -107,14 +107,23 @@ public:
     std::string
     class_namespace() const override;
 
-    /// @brief Create a data representation, by name.
-    /// @details If throw_if_missing is true, this function will throw an exception if it can't
-    /// find a data representation creator for the specified data representation type.  Otherwise, it will return nullptr.
-    MasalaDataRepresentationAPISP
-    create_data_representation(
-        std::string const & data_representation_type,
-        bool const throw_if_missing = true
-    ) const;
+	/// @brief Create a data representation, by full name.
+	/// @details If throw_if_missing is true, this function will throw an exception if it can't
+	/// find a data representation creator for the specified data representation type.  Otherwise, it will return nullptr.
+	MasalaDataRepresentationAPISP
+	create_data_representation(
+		std::string const & data_representation_type,
+		bool const throw_if_missing = true
+	) const;
+
+	/// @brief Create a data representation, by short name.
+	/// @details If throw_if_missing is true, this function will throw an exception if it can't
+	/// find a data representation creator for the specified data representation type.  Otherwise, it will return nullptr.
+	MasalaDataRepresentationAPISP
+	create_data_representation_by_short_name(
+		std::string const & data_representation_type_by_short_name,
+		bool const throw_if_missing = true
+	) const;
 
     /// @brief Register a data representation.
     /// @details An exception is thrown if the data representation name is already registered.

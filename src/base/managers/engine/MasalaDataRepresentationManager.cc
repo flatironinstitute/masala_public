@@ -31,6 +31,7 @@
 #include <base/managers/engine/MasalaEngine.hh>
 #include <base/error/ErrorHandling.hh>
 #include <base/utility/string/string_comparison.hh>
+#include <base/utility/string/string_manipulation.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 namespace masala {
@@ -69,19 +70,43 @@ MasalaDataRepresentationManager::class_namespace() const {
 /// it will return nullptr.
 MasalaDataRepresentationAPISP
 MasalaDataRepresentationManager::create_data_representation(
-    std::string const & data_representation_type,
-    bool const throw_if_missing /*= true*/
+	std::string const & data_representation_type,
+	bool const throw_if_missing /*= true*/
 ) const {
-    std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
-    std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_type) );
-    if( it == data_representation_creators_.end() ) {
-        if( throw_if_missing ) {
-            MASALA_THROW( class_namespace_and_name(), "create_data_representation", "Could not find data representation \"" + data_representation_type + "\".  Has it been registered?" );
-        } else {
-            return nullptr;
-        }
-    }
-    return it->second->create_data_representation();
+	std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+	std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.find(data_representation_type) );
+	if( it == data_representation_creators_.end() ) {
+		if( throw_if_missing ) {
+			MASALA_THROW( class_namespace_and_name(), "create_data_representation", "Could not find data representation \"" + data_representation_type + "\".  Has it been registered?" );
+		} else {
+			return nullptr;
+		}
+	}
+	return it->second->create_data_representation();
+}
+
+/// @brief Create a data representation, by short name.
+/// @details If throw_if_missing is true, this function will throw an exception if it can't
+/// find a data representation creator for the specified data representation type.  Otherwise, it will return nullptr.
+MasalaDataRepresentationAPISP
+MasalaDataRepresentationManager::create_data_representation_by_short_name(
+	std::string const & data_representation_type_by_short_name,
+	bool const throw_if_missing /*= true*/
+) const {
+	std::lock_guard< std::mutex > lock( masala_data_representation_manager_mutex_ );
+	std::map< std::string, MasalaDataRepresentationCreatorCSP >::const_iterator it( data_representation_creators_.begin() );
+	for( ; it != data_representation_creators_.end(); ++it ) {
+		std::string const shortname( masala::base::utility::string::short_masala_class_name_from_full_name( it->first ) );
+		if( shortname == data_representation_type_by_short_name ) { break; }
+	}
+	if( it == data_representation_creators_.end() ) {
+		if( throw_if_missing ) {
+			MASALA_THROW( class_namespace_and_name(), "create_data_representation_by_short_name", "Could not find data representation \"" + data_representation_type_by_short_name + "\".  Has it been registered?" );
+		} else {
+			return nullptr;
+		}
+	}
+	return it->second->create_data_representation();
 }
 
 /// @brief Register a data representation.

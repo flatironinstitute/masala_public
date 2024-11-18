@@ -28,6 +28,7 @@
 #include <base/managers/engine/MasalaEngineCreator.hh>
 #include <base/managers/engine/MasalaEngineRequest.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/utility/string/string_manipulation.hh>
 
 namespace masala {
 namespace base {
@@ -59,7 +60,7 @@ MasalaEngineManager::class_namespace() const {
     return "masala::base::managers::engine";
 }
 
-/// @brief Create an engine, by name.
+/// @brief Create an engine, by full name (including namespace).
 /// @details If throw_if_missing is true, this function will throw an exception if it can't
 /// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
 MasalaEngineAPISP
@@ -77,6 +78,30 @@ MasalaEngineManager::create_engine(
         }
     }
     return it->second->create_engine();
+}
+
+/// @brief Create an engine, by short name (excluding namespace).
+/// @details If throw_if_missing is true, this function will throw an exception if it can't
+/// find an engine creator for the specified engine type.  Otherwise, it will return nullptr.
+MasalaEngineAPISP
+MasalaEngineManager::create_engine_by_short_name(
+	std::string const & engine_type_by_short_name,
+	bool const throw_if_missing /*= true*/
+) const {
+	std::lock_guard< std::mutex > lock( masala_engine_manager_mutex_ );
+	std::map< std::string, MasalaEngineCreatorCSP >::const_iterator it( engine_creators_.begin() );
+	for( ; it != engine_creators_.end(); ++it ) {
+		std::string const shortname( masala::base::utility::string::short_masala_class_name_from_full_name( it->first ) );
+		if( shortname == engine_type_by_short_name ) { break; }
+	}
+	if( it == engine_creators_.end() ) {
+		if( throw_if_missing ) {
+			MASALA_THROW( class_namespace_and_name(), "create_engine_by_short_name", "Could not find engine \"" + engine_type_by_short_name + "\".  Has it been registered?" );
+		} else {
+			return nullptr;
+		}
+	}
+	return it->second->create_engine();
 }
 
 /// @brief Register an engine.

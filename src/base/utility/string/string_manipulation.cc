@@ -293,6 +293,16 @@ boxcar_to_camelcase(
 	return camelcase_ss.str();
 }
 
+/// @brief Given the full name of Masala class, get the short name (i.e. everything after the last colon, or the full string if there are no colons).
+std::string
+short_masala_class_name_from_full_name(
+	std::string const & full_name
+) {
+	Size const last_colon_pos( full_name.find_last_of(':') );
+	if( last_colon_pos == full_name.npos ) { return full_name; }
+	return full_name.substr( last_colon_pos );
+}
+
 } // namespace string
 } // namespace utility
 } // namespace base

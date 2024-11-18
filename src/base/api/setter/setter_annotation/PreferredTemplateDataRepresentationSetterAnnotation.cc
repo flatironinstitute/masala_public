@@ -159,7 +159,7 @@ PreferredTemplateDataRepresentationSetterAnnotation::create_empty_data_represent
 	}
 
 	MasalaDataRepresentationAPISP returnobj(
-		masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation( object_name, false )
+		masala::base::managers::engine::MasalaDataRepresentationManager::get_instance()->create_data_representation_by_short_name( object_name, false )
 	);
 	CHECK_OR_THROW_FOR_CLASS( returnobj != nullptr, "create_owned_object",
 		"Could not find a suitable MasalaDataRepresentation named \"" + object_name + "\"."
