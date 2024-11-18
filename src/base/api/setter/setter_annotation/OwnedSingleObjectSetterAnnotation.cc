@@ -29,6 +29,7 @@
 // Base headers:
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/PreferredTemplateDataRepresentationSetterAnnotation.hh>
 #include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 #include <base/managers/plugin_module/MasalaPluginModuleManager.hh>
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
@@ -794,10 +795,27 @@ OwnedSingleObjectSetterAnnotation::protected_is_compatible_with_setter(
 	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const /*override*/ {
 	using namespace masala::base::api::setter;
+	using namespace masala::base::api::setter::setter_annotation;
 	using namespace masala::base::managers::plugin_module;
 	using namespace masala::base::managers::engine;
 
 	if( setter.num_input_parameters() != 1 ) { return false; }
+
+	// Check that this setter is NOT marked with an incompatible annotation.
+	Size const n_extant_annotations( setter.n_setter_annotations() );
+	for( Size i(0); i<n_extant_annotations; ++i ) {
+		if( std::dynamic_pointer_cast< PreferredTemplateDataRepresentationSetterAnnotation const >( setter.setter_annotation(i) ) != nullptr ) {
+			write_to_tracer( "Error!  The " + setter.setter_function_name() + "() setter is marked with a PreferredTemplateDataRepresentationSetterAnnotation, "
+				"which means it cannot also be marked with a OwnedSingleObjectSetterAnnotation."
+			);
+			return false;
+		} else if( std::dynamic_pointer_cast< OwnedSingleObjectSetterAnnotation const >( setter.setter_annotation(i) ) != nullptr ) {
+			write_to_tracer( "Error!  The " + setter.setter_function_name() + "() setter is already marked with a OwnedSingleObjectSetterAnnotation, "
+				"which means it cannot also be marked with another OwnedSingleObjectSetterAnnotation."
+			);
+			return false;
+		}
+	}
 
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaPluginAPISP > const * >( &setter ) != nullptr ) { return true; }
 	if( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaEngineAPISP > const * >( &setter ) != nullptr ) { return true; }
