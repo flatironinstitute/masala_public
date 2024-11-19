@@ -176,6 +176,13 @@ public:
 	std::vector< std::string >
 	get_short_names_of_eligible_owned_objects() const;
 
+	/// @brief Get any additional description that this annotation provides.
+	/// @details Intended for user-facing interfaces.  This override returns "Note that this setter sets an configured data representation object that
+	/// is empty of any data, which can be used as a template for creating data representations.  The compatible data representation types that can be
+	/// set are: ", followed by a list of compatible data representations, or [NONE] if none are available.
+	std::string
+	get_additional_description() const override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////

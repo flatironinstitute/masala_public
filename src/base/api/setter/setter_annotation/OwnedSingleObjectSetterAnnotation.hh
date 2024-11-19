@@ -264,6 +264,12 @@ public:
 	std::vector< std::string >
 	get_short_names_of_eligible_owned_objects() const;
 
+	/// @brief Get any additional description that this annotation provides.
+	/// @details Intended for user-facing interfaces.  This override returns "Note that this setter sets a stored object that is wholly
+	/// owned by this object (i.e. it has an OwnedSingleObjectSetterAnnotation attached to it).  The compatible object types that can be
+	/// set are: ", followed by a list of compatible objects, or [NONE] if none are available.
+	std::string
+	get_additional_description() const override;
 
 protected:
 

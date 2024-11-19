@@ -45,6 +45,9 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
+// STL headers:
+#include <sstream>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -802,6 +805,25 @@ std::vector< std::string >
 OwnedSingleObjectSetterAnnotation::get_short_names_of_eligible_owned_objects() const {
 	std::lock_guard< std::mutex > lock( mutex() );
 	return protected_get_names_of_eligible_owned_objects( true );
+}
+
+/// @brief Get any additional description that this annotation provides.
+/// @details Intended for user-facing interfaces.  This override returns "Note that this setter sets a stored object that is wholly
+/// owned by this object (i.e. it has an OwnedSingleObjectSetterAnnotation attached to it).  The compatible object types that can be
+/// set are: ", followed by a list of compatible objects, or [NONE] if none are available.
+std::string
+OwnedSingleObjectSetterAnnotation::get_additional_description() const {
+	std::ostringstream ss;
+	ss << "Note that this setter sets a stored object that is wholly owned by this object (i.e. it has an "
+		"OwnedSingleObjectSetterAnnotation attached to it).  The compatible object types that can be "
+		"set are: ";
+	std::vector< std::string > const eligible_objects( get_short_names_of_eligible_owned_objects() ); // Locks mutex, then unlocks it after generating list.
+	if( eligible_objects.empty() ) {
+		ss << "[NONE]";
+	} else {
+		ss << masala::base::utility::container::container_to_string( eligible_objects, ", " );
+	}
+	return ss.str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -382,6 +382,24 @@ PreferredTemplateDataRepresentationSetterAnnotation::get_short_names_of_eligible
 	return protected_get_names_of_eligible_owned_objects( true );
 }
 
+/// @brief Get any additional description that this annotation provides.
+/// @details Intended for user-facing interfaces.  This override returns "Note that this setter sets an configured data representation object that
+/// is empty of any data, which can be used as a template for creating data representations.  The compatible data representation types that can be
+/// set are: ", followed by a list of compatible data representations, or [NONE] if none are available.
+std::string
+PreferredTemplateDataRepresentationSetterAnnotation::get_additional_description() const {
+	std::ostringstream ss;
+	ss << "Note that this setter sets an configured data representation object that is empty of any data, which can be used as a "
+		"template for creating data representations.  The compatible data representation types that can be set are: ";
+	std::vector< std::string > const eligible_objects( get_short_names_of_eligible_owned_objects() ); // Locks mutex, then unlocks it after generating list.
+	if( eligible_objects.empty() ) {
+		ss << "[NONE]";
+	} else {
+		ss << masala::base::utility::container::container_to_string( eligible_objects, ", " );
+	}
+	return ss.str();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
