@@ -260,6 +260,20 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 		}
 	}
 	{
+		MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP > const * >( &setter ) );
+		if( setter_cast != nullptr ) {
+			setter_cast->function( object_in_cast );
+			return;
+		}
+	}
+	{
+		MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPICSP const & > const * >( &setter ) );
+		if( setter_cast != nullptr ) {
+			setter_cast->function( object_in_cast );
+			return;
+		}
+	}
+	{
 		MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * setter_cast( dynamic_cast< MasalaObjectAPISetterDefinition_OneInput< MasalaDataRepresentationAPI & > const * >( &setter ) );
 		if( setter_cast != nullptr ) {
 			setter_cast->function( *object_in_cast );
@@ -273,7 +287,10 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 			return;
 		}
 	}
-	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentationSP, a MasalaDataRepresentationSP const &, a MasalaDataRepresentation &, or a MasalaDataRepresentation const &, but it does not!" );
+	MASALA_THROW( class_namespace() + "::" + class_name(), "set_object", "Expected the setter function to accept a MasalaDataRepresentationSP, "
+		"a MasalaDataRepresentationSP const &, a MasalaDataRepresentatioCSP, a MasalaDataRepresentationCSP const &, a MasalaDataRepresentation &, "
+		"or a MasalaDataRepresentation const &, but it does not!"
+	);
 }
 
 /// @brief Call the setter function, and pass it a MasalaDataRepresentationAPI const instance.
