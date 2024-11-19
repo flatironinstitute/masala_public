@@ -823,6 +823,7 @@ OwnedSingleObjectSetterAnnotation::get_additional_description() const {
 	} else {
 		ss << masala::base::utility::container::container_to_string( eligible_objects, ", " );
 	}
+	ss << ".";
 	return ss.str();
 }
 

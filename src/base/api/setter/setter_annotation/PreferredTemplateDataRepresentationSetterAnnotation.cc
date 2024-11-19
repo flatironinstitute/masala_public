@@ -397,6 +397,7 @@ PreferredTemplateDataRepresentationSetterAnnotation::get_additional_description(
 	} else {
 		ss << masala::base::utility::container::container_to_string( eligible_objects, ", " );
 	}
+	ss << ".";
 	return ss.str();
 }
 
