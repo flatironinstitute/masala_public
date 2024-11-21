@@ -110,6 +110,16 @@ public:
         return inner_object_->word();
     }
 
+	masala::base::managers::plugin_module::MasalaPluginSP
+	get_inner_plugin_object_nonconst() override {
+		return inner_object_;
+	}
+
+	masala::base::managers::plugin_module::MasalaPluginCSP
+	get_inner_plugin_object() const override {
+		return inner_object_;
+	}
+
 private:
 
     MASALA_SHARED_POINTER< DummyPlugin1 > inner_object_;
@@ -220,6 +230,16 @@ public:
     std::string inner_class_namespace() const override { return DummyPlugin2::class_namespace_static(); }
 
     masala::base::api::MasalaObjectAPIDefinitionCWP get_api_definition_for_inner_class() override { return inner_object_->get_api_definition(); }
+
+	masala::base::managers::plugin_module::MasalaPluginSP
+	get_inner_plugin_object_nonconst() override {
+		return inner_object_;
+	}
+
+	masala::base::managers::plugin_module::MasalaPluginCSP
+	get_inner_plugin_object() const override {
+		return inner_object_;
+	}
 
 private:
 

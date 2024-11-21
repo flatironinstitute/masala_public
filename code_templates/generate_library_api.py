@@ -620,7 +620,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool ) -> str :
+def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool ) -> str :
     outstring = ""
     first = True
 
@@ -631,6 +631,13 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
     elif fxn_type == "GETTER" :
         groupname = "Getters"
         namepattern = "Getter"
+        if is_plugin_class :
+            outstring += tabchar + "/// @brief Nonconst access to the inner plugin object.\n"
+            outstring += tabchar + "masala::base::managers::plugin_module::MasalaPluginSP\n"
+            outstring += tabchar + "get_inner_plugin_object_nonconst() override;\n\n"
+            outstring += tabchar + "/// @brief Const access to the inner plugin object.\n"
+            outstring += tabchar + "masala::base::managers::plugin_module::MasalaPluginCSP\n"
+            outstring += tabchar + "get_inner_plugin_object() const override;\n\n"
     elif fxn_type == "WORKFXN" :
         groupname = "WorkFunctions"
         namepattern = "Work_Function"
@@ -863,12 +870,15 @@ def generate_function_implementations( \
     additional_includes: list, \
     is_lightweight: bool, \
     is_derived : bool, \
+    is_plugin_class : bool, \
     is_engine_class : bool, \
     is_data_representation_class : bool \
     ) -> str :
 
     outstring = ""
     first = True
+
+    apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
 
     assert fxn_type == "SETTER" or fxn_type == "GETTER" or fxn_type == "WORKFXN"
     if fxn_type == "SETTER" :
@@ -877,11 +887,20 @@ def generate_function_implementations( \
     elif fxn_type == "GETTER" :
         groupname = "Getters"
         namepattern = "Getter"
+        if is_plugin_class :
+            outstring += "/// @brief Nonconst access to the inner plugin object.\n"
+            outstring += "masala::base::managers::plugin_module::MasalaPluginSP\n"
+            outstring += apiclassname + "::get_inner_plugin_object_nonconst() {\n"
+            outstring += tabchar + "return get_inner_object();\n"
+            outstring += "}\n\n"
+            outstring += "/// @brief Const access to the inner plugin object.\n"
+            outstring += "masala::base::managers::plugin_module::MasalaPluginCSP\n"
+            outstring += apiclassname + "::get_inner_plugin_object() const {\n"
+            outstring += tabchar + "return get_inner_object();\n"
+            outstring += "}\n\n"
     elif fxn_type == "WORKFXN" :
         groupname = "WorkFunctions"
         namepattern = "Work_Function"
-
-    apiclassname = jsonfile["Elements"][classname]["Module"] + "_API"
 
     if fxn_type == "GETTER" :
         if is_data_representation_class == True :
@@ -1784,9 +1803,9 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
@@ -1847,9 +1866,9 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
         .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
