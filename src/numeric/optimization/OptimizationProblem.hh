@@ -63,7 +63,7 @@ public:
 
 	// @brief Assignment operator.
 	OptimizationProblem &
-	operator=( OptimizationProblem const & ) = default;
+	operator=( OptimizationProblem const & );
 
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
