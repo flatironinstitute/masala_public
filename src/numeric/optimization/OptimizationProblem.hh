@@ -54,12 +54,12 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.
-	OptimizationProblem() = default;
+	/// @brief Default constructor.  Explicitly defined due to atomic bool.
+	OptimizationProblem();
 
 	/// @brief Copy constructor.
 	/// @details Must be explicitly defined due to mutex.
-	OptimizationProblem( OptimizationProblem const & );
+	OptimizationProblem( OptimizationProblem const & src );
 
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;

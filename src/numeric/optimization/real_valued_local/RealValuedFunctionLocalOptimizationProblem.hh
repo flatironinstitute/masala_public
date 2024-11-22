@@ -63,11 +63,7 @@ public:
 	RealValuedFunctionLocalOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	RealValuedFunctionLocalOptimizationProblem( RealValuedFunctionLocalOptimizationProblem const & ) = default;
-
-	// @brief Assignment operator.
-	RealValuedFunctionLocalOptimizationProblem &
-	operator=( RealValuedFunctionLocalOptimizationProblem const & ) = default;
+	RealValuedFunctionLocalOptimizationProblem( RealValuedFunctionLocalOptimizationProblem const & src );
 
 	/// @brief Destructor.
 	~RealValuedFunctionLocalOptimizationProblem() override;
@@ -110,11 +106,11 @@ public:
 	get_data_representation_categories() const override;
 
 	/// @brief Get the keywords that this data representation plugin has.
-    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
-    /// strings.  One data representation category can be classified into multiple categories.
+	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+	/// strings.  One data representation category can be classified into multiple categories.
 	/// @returns { "optimization_problem", "local", "real_valued", "numeric" }
 	std::vector< std::string >
-    get_data_representation_keywords() const override;
+	get_data_representation_keywords() const override;
 
 	/// @brief Get the non-exhaustive list of engines with which this MasalaDataRepresentation
 	/// is compatible.
@@ -223,15 +219,27 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationProblem class.
-    masala::base::api::MasalaObjectAPIDefinitionCWP
-    get_api_definition() override;
+	/// @brief Get a description of the API for the RealValuedFunctionLocalOptimizationProblem class.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
 
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
@@ -247,7 +255,7 @@ protected:
 
 	/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
 	/// Should be implemented by derived classes, which shoudl call base class function.
-	void protected_assign( masala::numeric::optimization::OptimizationProblem const & src ) override;
+	void protected_assign( masala::base::managers::engine::MasalaDataRepresentation const & src ) override;
 
 private:
 
@@ -259,7 +267,7 @@ private:
 /// at some point in R^N.
 /// @details Stored by raw pointer; could be nullptr.  The owner of the function object is
 /// the RealValuedFunctionLocalOptimizationProblem, which cleans it up on destruction.
-std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const * objective_function_;
+std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const * objective_function_ = nullptr;
 
 /// @brief A function that returns the objective function value, and also computes and sets
 /// the objective function gradient at a particular point in R^N.
@@ -270,7 +278,7 @@ std::function<
 		Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &,
 		Eigen::Vector< masala::base::Real, Eigen::Dynamic > &
 	)
-> const * objective_function_gradient_;
+> const * objective_function_gradient_ = nullptr;
 
 /// @brief Starting points for the local minimum search.
 std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > starting_points_;
