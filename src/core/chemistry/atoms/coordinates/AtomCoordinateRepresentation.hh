@@ -106,7 +106,7 @@ public:
         AtomInstanceCSP const & atom
     ) const = 0;
 
-private:
+protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
