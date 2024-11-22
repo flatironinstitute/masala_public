@@ -93,6 +93,36 @@ MasalaDataRepresentation::get_possibly_absent_data_representation_properties() c
     return std::vector< std::string >{};
 }
 
+/// @brief Is this data representation empty?
+/// @details Calls protected_empty(), which must be implemented by derived classes.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+MasalaDataRepresentation::empty() const {
+    std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+    protected_empty();
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Calls protected_clear(), which must be implemented by derived classes.
+void
+MasalaDataRepresentation::clear() {
+    std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+    protected_clear();
+}
+
+/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+/// @details Calls protected_reset(), which must be implemented by derived classes.
+void
+MasalaDataRepresentation::reset() {
+    std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+    protected_reset();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
 } // namespace engine
 } // namespace managers
 } // namespace base
