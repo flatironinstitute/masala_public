@@ -68,6 +68,9 @@ public:
 	std::string
 	class_namespace_and_name_static();
 
+	/// @brief Make this object fully independent by calling protected_make_independent().  Locks mutex.
+	void make_independent();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +191,11 @@ protected:
 	void
 	protected_reset() = 0;
 
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	virtual
+	void
+	protected_make_independent() = 0;
 
 	/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
 	/// derived classes.  Performs no mutex locking.

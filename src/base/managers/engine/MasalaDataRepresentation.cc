@@ -72,6 +72,13 @@ MasalaDataRepresentation::class_namespace_and_name_static() {
 	return "masala::base::managers::engine::MasalaDataRepresentation";
 }
 
+/// @brief Make this object fully independent by calling protected_make_independent().  Locks mutex.
+void
+MasalaDataRepresentation::make_independent() {
+	std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+	protected_make_independent();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
