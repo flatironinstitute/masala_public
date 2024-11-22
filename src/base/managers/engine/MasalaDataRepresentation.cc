@@ -100,7 +100,7 @@ MasalaDataRepresentation::get_possibly_absent_data_representation_properties() c
 bool
 MasalaDataRepresentation::empty() const {
     std::lock_guard< std::mutex > lock( data_representation_mutex_ );
-    protected_empty();
+    return protected_empty();
 }
 
 /// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
