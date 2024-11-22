@@ -108,7 +108,8 @@
 		"source_location": "cpp",
 		"charconv": "cpp",
 		"execution": "cpp",
-		"print": "cpp"
+		"print": "cpp",
+		"*.ipp": "cpp"
 	},
     "cmake.sourceDirectory": "${workspaceFolder}/cmake"
 }
