@@ -42,7 +42,7 @@ namespace core {
 namespace chemistry {
 namespace atoms {
 namespace coordinates {
-    
+	
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
@@ -50,51 +50,48 @@ namespace coordinates {
 
 /// @brief Copy constructor.
 EigenLinalgCartesianAtomCoordinateRepresentation::EigenLinalgCartesianAtomCoordinateRepresentation(
-    EigenLinalgCartesianAtomCoordinateRepresentation const & src
+	EigenLinalgCartesianAtomCoordinateRepresentation const & src
 ) :
-    AtomCoordinateRepresentation(src)
+	AtomCoordinateRepresentation()
 {
-    std::lock( mutex_, src.mutex_ );
-    std::lock_guard< std::mutex > lock1( mutex_, std::adopt_lock );
-    std::lock_guard< std::mutex > lock2( src.mutex_, std::adopt_lock );
-    atom_coordinates_ = src.atom_coordinates_;
-    atom_instance_to_column_ = src.atom_instance_to_column_;
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lock1( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lock2( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
 }
 
 /// @brief Assignment operator.
 EigenLinalgCartesianAtomCoordinateRepresentation &
 EigenLinalgCartesianAtomCoordinateRepresentation::operator=(
-    EigenLinalgCartesianAtomCoordinateRepresentation const & src
+	EigenLinalgCartesianAtomCoordinateRepresentation const & src
 ) {
-    std::lock( mutex_, src.mutex_ );
-    std::lock_guard< std::mutex > lock1( mutex_, std::adopt_lock );
-    std::lock_guard< std::mutex > lock2( src.mutex_, std::adopt_lock );
-    AtomCoordinateRepresentation::operator=( src );
-    atom_coordinates_ = src.atom_coordinates_;
-    atom_instance_to_column_ = src.atom_instance_to_column_;
-    return *this;
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lock1( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lock2( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+	return *this;
 }
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
 AtomCoordinateRepresentationSP
 EigenLinalgCartesianAtomCoordinateRepresentation::clone() const {
-    return masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
+	return masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >(*this);
 }
 
 /// @brief Deep clone operation: make a deep copy of this object and return a shared
 /// pointer to the deep copy.
 EigenLinalgCartesianAtomCoordinateRepresentationSP
 EigenLinalgCartesianAtomCoordinateRepresentation::deep_clone() const {
-    EigenLinalgCartesianAtomCoordinateRepresentationSP new_object( masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >( *this ) );
-    new_object->make_independent();
-    return new_object;
+	EigenLinalgCartesianAtomCoordinateRepresentationSP new_object( masala::make_shared< EigenLinalgCartesianAtomCoordinateRepresentation >( *this ) );
+	new_object->make_independent();
+	return new_object;
 }
 
 /// @brief Make this object instance fully independent.
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::make_independent() {
-    std::lock_guard< std::mutex > lock( mutex_ );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	using masala::core::chemistry::atoms::AtomInstanceCSP;
 	using masala::base::Size;
 
@@ -117,13 +114,13 @@ EigenLinalgCartesianAtomCoordinateRepresentation::make_independent() {
 /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
-    return "EigenLinalgCartesianAtomCoordinateRepresentation";
+	return "EigenLinalgCartesianAtomCoordinateRepresentation";
 }
 
 /// @brief Returns "masala::core::chemistry::atoms::coordinates".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
-    return "masala::core::chemistry::atoms::coordinates";
+	return "masala::core::chemistry::atoms::coordinates";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,26 +131,26 @@ EigenLinalgCartesianAtomCoordinateRepresentation::class_namespace() const {
 /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
 std::vector< std::vector< std::string > >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_categories() const {
-    return std::vector< std::vector< std::string > > {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
+	return std::vector< std::vector< std::string > > {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
 }
 
 /// @brief Get the keywords for this plugin.
 /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
 std::vector< std::string >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_keywords() const {
-    return std::vector< std::string >{
-        "atom_coordinate_representation",
-        "cartesian",
-        "linear_algebra",
-        "Eigen"
-    };
+	return std::vector< std::string >{
+		"atom_coordinate_representation",
+		"cartesian",
+		"linear_algebra",
+		"Eigen"
+	};
 }
 
 /// @brief Get the categories for this DataRepresentation.
 /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
 std::vector< std::vector< std::string > >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_data_representation_categories() const {
-    return std::vector< std::vector< std::string > >{{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
+	return std::vector< std::vector< std::string > >{{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }};
 }
 
 /// @brief Get the keywords that this data representation plugin has.
@@ -162,31 +159,31 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_data_representation_catego
 /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
 std::vector< std::string >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_data_representation_keywords() const {
-    return std::vector< std::string >{
-        "atom_coordinate_representation",
-        "cartesian",
-        "linear_algebra",
-        "Eigen"
-    };
+	return std::vector< std::string >{
+		"atom_coordinate_representation",
+		"cartesian",
+		"linear_algebra",
+		"Eigen"
+	};
 }
 
 /// @brief Get the compatible engines for this data representation.
 /// @returns Currently an empty list.  This may change in the future.
 std::vector< std::string >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_compatible_masala_engines() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
 }
 
 /// @brief Get the properties of this data representation.
 /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
 std::vector< std::string >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_present_data_representation_properties() const {
-    return std::vector< std::string >{
-        "atom_coordinate_representation",
-        "cartesian",
-        "linear_algebra",
-        "Eigen" 
-    };
+	return std::vector< std::string >{
+		"atom_coordinate_representation",
+		"cartesian",
+		"linear_algebra",
+		"Eigen" 
+	};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -198,10 +195,10 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_present_data_representatio
 /// @note Must be implemented by derived classes.
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
-    AtomInstanceCSP const & old_instance,
-    AtomInstanceCSP const & new_instance
+	AtomInstanceCSP const & old_instance,
+	AtomInstanceCSP const & new_instance
 ) {
-    std::lock_guard< std::mutex > lock( mutex_ );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	replace_atom_instance_mutex_locked( old_instance, new_instance );
 }
 
@@ -209,19 +206,19 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance(
 /// @note Must be implemented by derived classes.
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
-    AtomInstanceCSP const & new_atom,
-    std::array< masala::base::Real, 3 > const & new_atom_coordinates
+	AtomInstanceCSP const & new_atom,
+	std::array< masala::base::Real, 3 > const & new_atom_coordinates
 ) {
-    std::lock_guard< std::mutex > lock( mutex_ );
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_atom) == 0, "add_atom_instance", "Atom has already been added!" );
-    masala::base::Size const natoms_before( atom_coordinates_.cols() );
-    atom_instance_to_column_[ new_atom ] = natoms_before;
-    atom_coordinates_.conservativeResize( Eigen::NoChange, natoms_before + 1 );
-    atom_coordinates_(0, natoms_before ) = new_atom_coordinates[0]; 
-    atom_coordinates_(1, natoms_before ) = new_atom_coordinates[1];
-    atom_coordinates_(2, natoms_before ) = new_atom_coordinates[2];
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_coordinates_.cols() >= 0, "add_atom_instance", "Somehow, the number of columns in the atom_coordinates_ matrix is negative.  This is a program error.  Please contact a developer." )
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( static_cast< masala::base::Size >( atom_coordinates_.cols() ) == atom_instance_to_column_.size(), "add_atom_instance", "Mismatch in map and matrix sizes!" );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_atom) == 0, "add_atom_instance", "Atom has already been added!" );
+	masala::base::Size const natoms_before( atom_coordinates_.cols() );
+	atom_instance_to_column_[ new_atom ] = natoms_before;
+	atom_coordinates_.conservativeResize( Eigen::NoChange, natoms_before + 1 );
+	atom_coordinates_(0, natoms_before ) = new_atom_coordinates[0]; 
+	atom_coordinates_(1, natoms_before ) = new_atom_coordinates[1];
+	atom_coordinates_(2, natoms_before ) = new_atom_coordinates[2];
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_coordinates_.cols() >= 0, "add_atom_instance", "Somehow, the number of columns in the atom_coordinates_ matrix is negative.  This is a program error.  Please contact a developer." )
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( static_cast< masala::base::Size >( atom_coordinates_.cols() ) == atom_instance_to_column_.size(), "add_atom_instance", "Mismatch in map and matrix sizes!" );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,13 +229,13 @@ EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance(
 /// @note Must be implemented by derived classes.
 std::array< masala::base::Real, 3 >
 EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
-    AtomInstanceCSP const & atom
+	AtomInstanceCSP const & atom
 ) const {
-    std::lock_guard< std::mutex > lock( mutex_ );
-    auto const it( atom_instance_to_column_.find( atom ) );
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecular geometry object!" );
-    masala::base::Size const column( it->second );
-    return std::array< masala::base::Real, 3 >{ atom_coordinates_(0, column), atom_coordinates_(1, column), atom_coordinates_(2, column) };
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+	auto const it( atom_instance_to_column_.find( atom ) );
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( it != atom_instance_to_column_.end(), "get_atom_coordinates", "Atom not found in molecular geometry object!" );
+	masala::base::Size const column( it->second );
+	return std::array< masala::base::Real, 3 >{ atom_coordinates_(0, column), atom_coordinates_(1, column), atom_coordinates_(2, column) };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,59 +245,113 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates(
 /// @brief Get an object describing the API for this object.
 masala::base::api::MasalaObjectAPIDefinitionCWP
 EigenLinalgCartesianAtomCoordinateRepresentation::get_api_definition() {
-    using namespace masala::base::api;
+	using namespace masala::base::api;
 
-    std::lock_guard< std::mutex > lock( mutex_ );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 
-    if( api_definition_ == nullptr ) {
+	if( api_definition_ == nullptr ) {
 
-        MasalaObjectAPIDefinitionSP api_def(
-            masala::make_shared< MasalaObjectAPIDefinition >(
-                *this,
-                "The EigenLinalgCartesianAtomCoordinateRepresentation class is a data representation for "
-                "efficiently representing the Cartesian coordinates of atoms.",
-                false, false
-            )
-        );
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The EigenLinalgCartesianAtomCoordinateRepresentation class is a data representation for "
+				"efficiently representing the Cartesian coordinates of atoms.",
+				false, false
+			)
+		);
 
-        // Constructors:
-        ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( EigenLinalgCartesianAtomCoordinateRepresentation, api_def );
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( EigenLinalgCartesianAtomCoordinateRepresentation, api_def );
 
-        // Setters:
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, AtomInstanceCSP > >(
-                "replace_atom_instance", "Replace an atom instance with a new one.",
-                "old_instance", "The atom that we are replacing.",
-                "new_instance", "The new atom that replaces the old.",
-                false, false,
-                std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
-            )
-        );
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, std::array< masala::base::Real, 3 > const & > >(
-                "add_atom_instance", "Add an atom.",
-                "new_atom", "The atom that we are adding.",
-                "new_coords", "The Cartesian coordinates of the atom that we're adding.",
-                false, false,
-                std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
-            )
-        );
+		// Setters:
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, AtomInstanceCSP > >(
+				"replace_atom_instance", "Replace an atom instance with a new one.",
+				"old_instance", "The atom that we are replacing.",
+				"new_instance", "The new atom that replaces the old.",
+				false, false,
+				std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, std::array< masala::base::Real, 3 > const & > >(
+				"add_atom_instance", "Add an atom.",
+				"new_atom", "The atom that we are adding.",
+				"new_coords", "The Cartesian coordinates of the atom that we're adding.",
+				false, false,
+				std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::add_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
 
-        // Getters:
-        api_def->add_getter(
-            masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< std::array< masala::base::Real, 3 >, AtomInstanceCSP const & > >(
-                "get_atom_coordinates", "Get the coordinates of an atom.",
-                "atom", "The atom whose coordinates we're fetching.",
-                "coords", "The coordinates of the atom.",
-                false, false,
-                std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates, this, std::placeholders::_1 )
-            )
-        );
+		// Getters:
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< std::array< masala::base::Real, 3 >, AtomInstanceCSP const & > >(
+				"get_atom_coordinates", "Get the coordinates of an atom.",
+				"atom", "The atom whose coordinates we're fetching.",
+				"coords", "The coordinates of the atom.",
+				false, false,
+				std::bind( &EigenLinalgCartesianAtomCoordinateRepresentation::get_atom_coordinates, this, std::placeholders::_1 )
+			)
+		);
 
-        api_definition_ = api_def; //Make const.
-    }
+		api_definition_ = api_def; //Make const.
+	}
 
-    return api_definition_;
+	return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Is this data representation empty?
+/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+EigenLinalgCartesianAtomCoordinateRepresentation::protected_empty() const {
+	return atom_coordinates_.cols() == 0 &&
+		atom_instance_to_column_.empty() &&
+		Parent::empty();
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::protected_clear() {
+	atom_coordinates_.resize( Eigen::NoChange, 0 );
+	atom_instance_to_column_.clear();
+	Parent::protected_clear();
+}
+
+/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::protected_reset() {
+	protected_clear();
+	Parent::reset();
+}
+
+/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+/// by derived classses.  Performs no mutex-locking.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::protected_make_independent() {
+	//GNDN.
+	Parent::protected_make_independent();
+}
+
+/// @brief Assign src to this.  Performs no mutex-locking.
+void
+EigenLinalgCartesianAtomCoordinateRepresentation::protected_assign(
+	masala::base::managers::engine::MasalaDataRepresentation const & src
+) {
+	EigenLinalgCartesianAtomCoordinateRepresentation const * src_ptr_cast( dynamic_cast< EigenLinalgCartesianAtomCoordinateRepresentation const * >( &src ) );
+	CHECK_OR_THROW_FOR_CLASS( src_ptr_cast != nullptr, "protected_assign",
+		"Could not assign an object of type " + src.class_name() + " to an EigenLinalgCartesianAtomCoordinateRepresentation."
+	);
+	atom_coordinates_ = src_ptr_cast->atom_coordinates_;
+	atom_instance_to_column_ = src_ptr_cast->atom_instance_to_column_;
+	Parent::protected_assign(src);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -315,10 +366,10 @@ EigenLinalgCartesianAtomCoordinateRepresentation::replace_atom_instance_mutex_lo
 	AtomInstanceCSP const & new_instance
 ) {
 	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count( old_instance ) == 1, "replace_atom_instance", "Could not replace atom.  Old atom is not present!" );
-    masala::base::Size const col_index( atom_instance_to_column_.at(old_instance) );
-    atom_instance_to_column_.erase(old_instance);
-    DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
-    atom_instance_to_column_[new_instance] = col_index;
+	masala::base::Size const col_index( atom_instance_to_column_.at(old_instance) );
+	atom_instance_to_column_.erase(old_instance);
+	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( atom_instance_to_column_.count(new_instance) == 0, "replace_atom_instance", "Could not replace atom.  New atom is already present!" );
+	atom_instance_to_column_[new_instance] = col_index;
 }
 
 } // namespace coordinates
