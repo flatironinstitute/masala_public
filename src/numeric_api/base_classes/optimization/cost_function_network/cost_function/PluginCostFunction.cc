@@ -89,13 +89,6 @@ PluginCostFunction::deep_clone() const {
     return new_object;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-PluginCostFunction::make_independent() {
-    std::lock_guard< std::mutex > lock( data_representation_mutex() );
-    make_independent_mutex_locked();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

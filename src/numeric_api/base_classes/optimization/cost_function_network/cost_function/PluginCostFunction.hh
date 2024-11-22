@@ -79,9 +79,6 @@ public:
 	PluginCostFunctionSP
 	deep_clone() const;
 
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	void make_independent() override;
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -86,10 +86,6 @@ public:
 	CostFunctionSP
 	deep_clone() const;
 
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	virtual
-	void make_independent();
-
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,12 +258,6 @@ protected:
 	/// @brief Has this object been finalized?
 	/// @details Performs no locking of write mutex for check.
 	bool protected_finalized() const;
-
-	/// @brief Make this object fully independent.  Assumes mutex was already locked.
-	/// Should be called by overrides.
-	virtual
-	void
-	make_independent_mutex_locked();
 
 	/// @brief Access the API definition.  Mutex must be locked by calling function.
 	inline

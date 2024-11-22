@@ -94,13 +94,6 @@ CostFunction::deep_clone() const {
     return new_object;
 }
 
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-CostFunction::make_independent() {
-    std::lock_guard< std::mutex > lock( data_representation_mutex() );
-    make_independent_mutex_locked();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -388,13 +381,6 @@ CostFunction::protected_assign(
 bool
 CostFunction::protected_finalized() const {
     return finalized_.load();
-}
-
-/// @brief Make this object fully independent.  Assumes mutex was already locked.
-/// Should be called by overrides.
-void
-CostFunction::make_independent_mutex_locked() {
-    //GNDN.
 }
 
 } // namespace cost_function
