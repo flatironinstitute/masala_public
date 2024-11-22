@@ -118,7 +118,9 @@ public:
 	std::string const & setter_function_name() const;
 
 	/// @brief Get the setter function's description.
-	std::string const & setter_function_description() const;
+	/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+	/// (e.g. by setter annotations).
+	std::string setter_function_description() const;
 
 	/// @brief Is this function a virtual function that does NOT override
 	/// a function in a base class that has a defined API?

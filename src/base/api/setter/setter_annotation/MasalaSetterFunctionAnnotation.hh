@@ -77,13 +77,19 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Is this annotation one that can be applied to this setter?
-    /// @details This function locks the mutex and calls protected_is_compatible_with_setter(), which must be implemented by derived classes.
-    /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
-    bool
-    is_compatible_with_setter(
-        masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
-    ) const;
+	/// @brief Is this annotation one that can be applied to this setter?
+	/// @details This function locks the mutex and calls protected_is_compatible_with_setter(), which must be implemented by derived classes.
+	/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+	bool
+	is_compatible_with_setter(
+		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	) const;
+
+	/// @brief Get any additional description that this annotation provides.
+	/// @details Intended for user-facing interfaces.  Base class returns an empty string.  May be overridden by derived classes.
+	virtual
+	std::string
+	get_additional_description() const;
 
 }; // class MasalaSetterFunctionAnnotation
 

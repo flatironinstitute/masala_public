@@ -106,6 +106,12 @@ namespace string {
 		std::string const & boxcar_string
 	);
 
+	/// @brief Given the full name of Masala class, get the short name (i.e. everything after the last colon, or the full string if there are no colons).
+	std::string
+	short_masala_class_name_from_full_name(
+		std::string const & full_name
+	);
+
 } // namespace string
 } // namespace utility
 } // namespace base

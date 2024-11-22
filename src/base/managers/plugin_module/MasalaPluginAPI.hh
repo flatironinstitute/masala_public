@@ -28,6 +28,7 @@
 
 // Base headers:
 #include <base/MasalaObjectAPI.hh>
+#include <base/managers/plugin_module/MasalaPlugin.fwd.hh>
 
 namespace masala {
 namespace base {
@@ -55,6 +56,18 @@ public:
 	static
 	std::string
 	class_namespace_and_name_static();
+
+	/// @brief Access the inner plugin object.
+	/// @details Must be implemented by derived classes.
+	virtual
+	MasalaPluginSP
+	get_inner_plugin_object_nonconst() = 0;
+
+	/// @brief Access the inner plugin object.
+	/// @details Must be implemented by derived classes.
+	virtual
+	MasalaPluginCSP
+	get_inner_plugin_object() const = 0;
 
 }; // class MasalaPluginAPI
 

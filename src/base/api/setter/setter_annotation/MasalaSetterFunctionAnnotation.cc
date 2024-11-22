@@ -67,6 +67,14 @@ MasalaSetterFunctionAnnotation::is_compatible_with_setter(
     return protected_is_compatible_with_setter( setter );
 }
 
+/// @brief Get any additional description that this annotation provides.
+/// @details Intended for user-facing interfaces.  Base class returns an empty string.  May be overridden by derived classes.
+/*virtual*/
+std::string
+MasalaSetterFunctionAnnotation::get_additional_description() const {
+	return "";
+}
+
 } // namespace setter_annotation
 } // namespace setter
 } // namespace api

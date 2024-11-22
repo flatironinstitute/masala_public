@@ -29,6 +29,9 @@
 #include <base/error/ErrorHandling.hh>
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
 
+// STL headers
+#include <sstream>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -80,9 +83,22 @@ MasalaObjectAPISetterDefinition::setter_function_name() const {
 }
 
 /// @brief Get the setter function's description.
-std::string const &
+/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+/// (e.g. by setter annotations).
+std::string
 MasalaObjectAPISetterDefinition::setter_function_description() const {
-    return setter_function_description_;
+    if( setter_annotations_.empty() ) {
+        return setter_function_description_;
+    }
+    std::ostringstream ss;
+    ss << setter_function_description_;
+    for( auto const & setter_annotation : setter_annotations_ ) {
+        std::string const extra_description( setter_annotation->get_additional_description() );
+        if( !extra_description.empty() ) {
+            ss << "  " << extra_description;
+        }
+    }
+    return ss.str();
 }
 
 /// @brief Is this function a virtual function that does NOT override

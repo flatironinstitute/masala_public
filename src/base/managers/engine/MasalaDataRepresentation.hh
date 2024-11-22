@@ -138,6 +138,26 @@ public:
 	std::vector< std::string >
 	get_possibly_absent_data_representation_properties() const;
 
+	// /// @brief Is this data representation empty?
+	// /// @details Must be implemented by derived classes.
+	// /// @returns True if no data have been loaded into this data representation, false otherwise.
+	// /// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	// virtual
+	// bool
+	// empty() const = 0;
+
+	// /// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	// /// @details Must be implemented by derived classes.
+	// virtual
+	// void
+	// clear() = 0;
+
+	// /// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+	// /// @details Must be implemented by derived classes.
+	// virtual
+	// void
+	// reset() = 0;
+
 };
 
 } // namespace engine

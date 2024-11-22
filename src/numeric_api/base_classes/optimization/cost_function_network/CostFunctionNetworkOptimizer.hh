@@ -35,8 +35,14 @@
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems_API.fwd.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions_API.fwd.hh>
 
+// Base headers:
+#include <base/managers/engine/MasalaDataRepresentationAPI.hh>
+
 // Parent header:
 #include <numeric_api/base_classes/optimization/Optimizer.hh>
+
+// STL headers:
+#include <mutex>
 
 namespace masala {
 namespace numeric_api {
@@ -55,11 +61,19 @@ class CostFunctionNetworkOptimizer : public masala::numeric_api::base_classes::o
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS, DESTRUCTORS, ETC.
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	CostFunctionNetworkOptimizer() = default;
 
-	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizer( CostFunctionNetworkOptimizer const & ) = default;
+	/// @brief Copy constructor.  Explicit due to mutex.
+	CostFunctionNetworkOptimizer( CostFunctionNetworkOptimizer const & src );
+
+	/// @brief Assignment operator.  Explicit due to mutex.
+	CostFunctionNetworkOptimizer &
+	operator= ( CostFunctionNetworkOptimizer const & src );
 
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizer() override = default;
@@ -121,6 +135,64 @@ public:
 	run_cost_function_network_optimizer(
 		masala::numeric_api::auto_generated_api::optimization::cost_function_network::CostFunctionNetworkOptimizationProblems_API const & problem
 	) const = 0;
+
+	/// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
+	/// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
+	/// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
+	void
+	set_template_preferred_cfn_data_representation(
+		masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
+	);
+
+	/// @brief Get a template cost function network optimization problem data representation, configured by the user but with no data entered.
+	/// @details If set_template_preferred_cfn_data_representation() has not been called, this returns the output of protected_get_default_template_preferred_cfn_data_representation().
+	/// This is nullptr by default, but can be overridden by derived classes.  Returns a deep clone of the object otherwise.
+	masala::base::managers::engine::MasalaDataRepresentationAPISP
+	get_template_preferred_cfn_data_representation_copy() const;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
+	virtual void protected_assign( CostFunctionNetworkOptimizer const & src );
+
+	/// @brief Allow derived classes to lock the mutex.
+	inline std::mutex & cfn_solver_mutex() const { return cfn_solver_mutex_; }
+
+	/// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
+	/// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
+	/// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
+	/// @note This version performs no mutex-locking, and is called by set_template_preferred_cfn_data_representation(), which does lock the mutex.
+	/// This version is virtual to allow derived classes to override it, to add checks of their own.  If overridden, the override should call the
+	/// base class to set the variable internally.
+	virtual
+	void
+	protected_set_template_preferred_cfn_data_representation(
+		masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
+	);
+
+	/// @brief If the template preferred CFN data representation has not been set, return a default CFN data representation.
+	/// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
+	virtual
+	masala::base::managers::engine::MasalaDataRepresentationAPISP
+	protected_get_default_template_preferred_cfn_data_representation() const = 0;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief A cost function network optimization problem data representation, configured by the user but with no data entered.
+	/// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
+	/// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
+	masala::base::managers::engine::MasalaDataRepresentationAPICSP template_preferred_cfn_data_representation_;
+
+	/// @brief A mutex for locking this object.
+	mutable std::mutex cfn_solver_mutex_;
 
 }; // class CostFunctionNetworkOptimizer
 
