@@ -54,6 +54,10 @@ namespace cost_function {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunction : public masala::base::managers::engine::MasalaDataRepresentation {
 
+	typedef masala::base::managers::engine::MasalaDataRepresentation Parent;
+	typedef masala::base::managers::engine::MasalaDataRepresentationSP ParentSP;
+	typedef masala::base::managers::engine::MasalaDataRepresentationCSP ParentCSP;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -230,11 +234,30 @@ protected:
 		std::vector< masala::base::Size > const & variable_node_indices
 	);
 
-	/// @brief Assignment operator, assuming that we've already locked the write mutex.
-	virtual void assign_mutex_locked( CostFunction const & src );
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
 
-	/// @brief Allow derived classes to access the mutex.
-	inline std::mutex & mutex() const { return mutex_; }
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
+
+	/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+	/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+	void
+	protected_reset() override;
+
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	void
+	protected_make_independent() override;
+
+	/// @brief Assignment operator, assuming that we've already locked the write mutex.
+	void protected_assign( masala::base::managers::engine::MasalaDataRepresentation const & src ) override;
 
 	/// @brief Has this object been finalized?
 	/// @details Performs no locking of write mutex for check.
@@ -266,9 +289,6 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief A mutex for data-loading.  Not used during access phase.
-	mutable std::mutex mutex_;
 
 	/// @brief An atomic bool for whether this object is finalized.
 	std::atomic_bool finalized_;
