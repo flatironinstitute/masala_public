@@ -52,8 +52,12 @@ public:
 	/// @brief Default constructor.
 	MasalaDataRepresentation() = default;
 
-	/// @brief Copy constructor.
-	MasalaDataRepresentation( MasalaDataRepresentation const & ) = default;
+	/// @brief Copy constructor.  Explicit due to mutex.
+	MasalaDataRepresentation( MasalaDataRepresentation const & src );
+
+	/// @brief Assignment operator.  Explicit due to mutex.
+	MasalaDataRepresentation &
+	operator=( MasalaDataRepresentation const & src );
 
 	// Destructor.
 	~MasalaDataRepresentation() override = default;
@@ -183,6 +187,16 @@ protected:
 	virtual
 	void
 	protected_reset() = 0;
+
+
+	/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+	/// derived classes.  Performs no mutex locking.
+	/// @param src The object that we are copying from.
+	virtual
+	void
+	protected_assign(
+		MasalaDataRepresentation const & src
+	) = 0;
 
 private:
 
