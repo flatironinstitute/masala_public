@@ -32,6 +32,9 @@
 #include <base/managers/plugin_module/MasalaPlugin.hh>
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
+// STL headers:
+#include <mutex>
+
 namespace masala {
 namespace base {
 namespace managers {
