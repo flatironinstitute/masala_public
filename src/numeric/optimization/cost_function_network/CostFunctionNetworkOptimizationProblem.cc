@@ -56,6 +56,30 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Copy constructor.
+CostFunctionNetworkOptimizationProblem::CostFunctionNetworkOptimizationProblem(
+	CostFunctionNetworkOptimizationProblem const & src
+) :
+	Parent() // Copying will be done in call to protected_assign(), below, which will call parent class protected_assign().
+{
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+}
+
+// @brief Assignment operator.
+CostFunctionNetworkOptimizationProblem &
+CostFunctionNetworkOptimizationProblem::operator=(
+	CostFunctionNetworkOptimizationProblem const & src
+) {
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+	return *this;	
+}
+
 /// @brief Make a copy of this object, and return a shared pointer to the copy.
 /// @details Does NOT copy all the internal data, but retains pointers to existing data.
 masala::numeric::optimization::OptimizationProblemSP
@@ -161,7 +185,7 @@ CostFunctionNetworkOptimizationProblem::class_namespace() const {
 /// nodes with multiple choices.
 masala::base::Size
 CostFunctionNetworkOptimizationProblem::total_nodes() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	if( n_choices_by_node_index_.empty() ) { return 0; }
 	return n_choices_by_node_index_.rbegin()->first + 1; //Maps are sorted; last element is the biggest.
 }
@@ -173,7 +197,7 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 	if( protected_finalized() ) {
 		return total_variable_nodes_;
 	}
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	if( n_choices_by_node_index_.empty() ) { return 0; }
 	base::Size accumulator(0);
 	for(
@@ -194,7 +218,7 @@ CostFunctionNetworkOptimizationProblem::total_variable_nodes() const {
 /// The length of the vector is total_nodes().
 std::map< masala::base::Size, masala::base::Size > const &
 CostFunctionNetworkOptimizationProblem::n_choices_at_all_nodes() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "n_choices_at_all_nodes", "This object must be finalized before this function may be called." );
 	return n_choices_by_node_index_;
 }
@@ -214,7 +238,7 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 	std::vector< std::pair< Size, Size > > outvec;
 	outvec.reserve( n_choices_by_node_index_.size() );
 	{   // Scope for mutex lock.
-		std::lock_guard< std::mutex > lock( problem_mutex() );
+		std::lock_guard< std::mutex > lock( data_representation_mutex() );
 		for( std::map< Size, Size >::const_iterator it( n_choices_by_node_index_.begin() ); it != n_choices_by_node_index_.end(); ++it ) {
 			if( it->second > 1 ) {
 				outvec.push_back( std::make_pair( it->first, it->second ) );
@@ -239,7 +263,7 @@ CostFunctionNetworkOptimizationProblem::n_choices_at_variable_nodes() const {
 /// @note Due to integer overruns, this is a floating-point number, not an integer.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	if( n_choices_by_node_index_.empty() ) { return 1.0; }
 	base::Real product(1.0);
 	for(
@@ -258,7 +282,7 @@ CostFunctionNetworkOptimizationProblem::total_combinatorial_solutions() const {
 /// some optimizers, or can be ignored.
 bool
 CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "has_candidate_starting_solutions", "This object must be finalized before this function is called." );
 	return !candidate_starting_solutions_.empty();
 }
@@ -267,7 +291,7 @@ CostFunctionNetworkOptimizationProblem::has_candidate_starting_solutions() const
 /// some optimizers, or can be ignored.
 std::vector< std::vector< masala::base::Size > > const &
 CostFunctionNetworkOptimizationProblem::candidate_starting_solutions() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "candidate_starting_solutions", "This object must be finalized before this function is called." );
 	return candidate_starting_solutions_;
 }
@@ -284,7 +308,7 @@ CostFunctionNetworkOptimizationProblem::set_minimum_number_of_choices_at_node(
 	masala::base::Size const node_index,
 	masala::base::Size const min_choice_count
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	set_minimum_number_of_choices_at_node_mutex_locked( node_index, min_choice_count ); // Checks that state is not finalized.
 }
 
@@ -295,7 +319,7 @@ void
 CostFunctionNetworkOptimizationProblem::add_cost_function(
 	masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP cost_function
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	add_cost_function_mutex_locked( cost_function );
 }
 
@@ -305,14 +329,14 @@ void
 CostFunctionNetworkOptimizationProblem::add_candidate_solution(
 	std::vector< masala::base::Size > const & candidate_solution_in
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	add_candidate_solution_mutex_locked( candidate_solution_in );
 }
 
 /// @brief Remove all candidate solutions.
 void
 CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	clear_candidate_solutions_mutex_locked();
 }
 
@@ -394,7 +418,7 @@ masala::base::api::MasalaObjectAPIDefinitionCWP
 CostFunctionNetworkOptimizationProblem::get_api_definition() {
 	using namespace masala::base::api;
 
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 
 	if( api_definition() == nullptr ) {
 
@@ -708,14 +732,39 @@ CostFunctionNetworkOptimizationProblem::n_choices_by_node_index() {
 	return n_choices_by_node_index_;
 }
 
-/// @brief Reset this object completely.  Mutex must be locked before calling.
-void 
-CostFunctionNetworkOptimizationProblem::protected_reset() {
+/// @brief Is this data representation empty?
+/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+CostFunctionNetworkOptimizationProblem::protected_empty() const {
+	return (
+		n_choices_by_node_index_.empty() &&
+		total_variable_nodes_ == 0 &&
+		n_choices_at_variable_nodes_.empty() &&
+		cost_functions_.empty() &&
+		candidate_starting_solutions_.empty() &&
+		Parent::protected_empty()
+	);
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+void
+CostFunctionNetworkOptimizationProblem::protected_clear() {
 	n_choices_by_node_index_.clear();
 	total_variable_nodes_ = 0;
 	n_choices_at_variable_nodes_.clear();
+	cost_functions_.clear();
 	candidate_starting_solutions_.clear();
-	masala::numeric::optimization::OptimizationProblem::protected_reset();
+	Parent::protected_clear();
+}
+
+/// @brief Reset this object completely.  Mutex must be locked before calling.
+void 
+CostFunctionNetworkOptimizationProblem::protected_reset() {
+	protected_clear();
+	Parent::protected_reset();
 }
 
 /// @brief Make this object independent.
@@ -727,14 +776,14 @@ CostFunctionNetworkOptimizationProblem::protected_make_independent() {
 		cost_function::CostFunctionSP cf_copy( cost_function->deep_clone() );
 		cost_function = cf_copy;
 	}
-	masala::numeric::optimization::OptimizationProblem::protected_make_independent();
+	Parent::protected_make_independent();
 }
 
 /// @brief Inner workings of assignment operator.  Should be called with locked mutex.
 /// Should be implemented by derived classes, which shoudl call base class function.
 void
 CostFunctionNetworkOptimizationProblem::protected_assign(
-	masala::numeric::optimization::OptimizationProblem const & src
+	masala::base::managers::engine::MasalaDataRepresentation const & src
 ) {
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "protected_assign", "Could not assign to this " + class_name() + " object, since it has already been finalized." );
 	CostFunctionNetworkOptimizationProblem const * src_ptr_cast( dynamic_cast< CostFunctionNetworkOptimizationProblem const * >( &src ) );
@@ -743,7 +792,7 @@ CostFunctionNetworkOptimizationProblem::protected_assign(
 	cost_functions_ = src_ptr_cast->cost_functions_;
 	candidate_starting_solutions_ = src_ptr_cast->candidate_starting_solutions_;
 	// The rest is populated by finalize().
-	masala::numeric::optimization::OptimizationProblem::protected_assign( src );
+	Parent::protected_assign( src );
 }
 
 
@@ -786,7 +835,7 @@ CostFunctionNetworkOptimizationProblem::protected_finalize() {
 		}
 	}
 
-	masala::numeric::optimization::OptimizationProblem::protected_finalize();
+	Parent::protected_finalize();
 
 	// Check the candidate solutions:
 	candidate_starting_solutions_.shrink_to_fit();
