@@ -65,6 +65,10 @@ public:
 	/// @brief Copy constructor.
 	RealValuedFunctionLocalOptimizationProblem( RealValuedFunctionLocalOptimizationProblem const & src );
 
+	// @brief Assignment operator.
+	RealValuedFunctionLocalOptimizationProblem &
+	operator=( RealValuedFunctionLocalOptimizationProblem const & src );
+
 	/// @brief Destructor.
 	~RealValuedFunctionLocalOptimizationProblem() override;
 

@@ -61,6 +61,10 @@ public:
 	/// @details Must be explicitly defined due to mutex.
 	OptimizationProblem( OptimizationProblem const & src );
 
+	// @brief Assignment operator.
+	OptimizationProblem &
+	operator=( OptimizationProblem const & ) = default;
+
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
 

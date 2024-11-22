@@ -65,6 +65,18 @@ RealValuedFunctionLocalOptimizationProblem::RealValuedFunctionLocalOptimizationP
 	protected_assign(src);
 }
 
+// @brief Assignment operator.
+RealValuedFunctionLocalOptimizationProblem &
+RealValuedFunctionLocalOptimizationProblem::operator=(
+	RealValuedFunctionLocalOptimizationProblem const & src
+) {
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+	return *this;
+}
+
 /// @brief Destructor.
 RealValuedFunctionLocalOptimizationProblem::~RealValuedFunctionLocalOptimizationProblem() {
 	std::lock_guard< std::mutex > lock( data_representation_mutex() );
