@@ -47,6 +47,13 @@ namespace optimization {
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Default constructor.  Explicitly defined due to atomic bool.
+OptimizationProblem::OptimizationProblem() :
+	masala::base::managers::engine::MasalaDataRepresentation()
+{
+	finalized_.store(false);
+}
+
 /// @brief Copy constructor.
 /// @details Must be explicitly defined due to mutex.
 OptimizationProblem::OptimizationProblem(
