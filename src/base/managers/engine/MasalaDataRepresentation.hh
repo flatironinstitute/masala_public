@@ -196,7 +196,7 @@ protected:
 	void
 	protected_assign(
 		MasalaDataRepresentation const & src
-	) = 0;
+	);
 
 private:
 

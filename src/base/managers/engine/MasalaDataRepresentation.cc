@@ -44,10 +44,12 @@ MasalaDataRepresentation::MasalaDataRepresentation(
 ) :
 	masala::base::managers::plugin_module::MasalaPlugin(src)
 {
-	std::lock( data_representation_mutex_, src.data_representation_mutex_ );
-	std::lock_guard< std::mutex > lockthis( data_representation_mutex_, std::adopt_lock );
-	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex_, std::adopt_lock );
-	protected_assign(src);
+	// GNDN.  But derived classes should implement this.
+
+	// std::lock( data_representation_mutex_, src.data_representation_mutex_ );
+	// std::lock_guard< std::mutex > lockthis( data_representation_mutex_, std::adopt_lock );
+	// std::lock_guard< std::mutex > lockthat( src.data_representation_mutex_, std::adopt_lock );
+	// protected_assign(src);
 }
 
 /// @brief Assignment operator.  Explicit due to mutex.
@@ -150,6 +152,17 @@ MasalaDataRepresentation::reset() {
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+/// derived classes.  Performs no mutex locking.
+/// @param src The object that we are copying from.
+/*virtual*/
+void
+MasalaDataRepresentation::protected_assign(
+	MasalaDataRepresentation const & /*src*/
+) {
+	//GNDN.
+}
 
 } // namespace engine
 } // namespace managers
