@@ -711,13 +711,13 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         if is_data_representation_class == True :
 
             outstring += "\n"
-            outstring += tabchar + "/// @brief Delete all of the data from this data representation."
+            outstring += tabchar + "/// @brief Delete all of the data from this data representation.\n"
             outstring += tabchar + "/// @note This only clears data, not configuration settings.\n"
             outstring += tabchar +  "void\n"
             outstring += tabchar +  "inner_object_clear() override;\n"
 
             outstring += "\n"
-            outstring += tabchar + "/// @brief Delete all of the data and all of the configuration settings from this data representation."
+            outstring += tabchar + "/// @brief Delete all of the data and all of the configuration settings from this data representation.\n"
             outstring += tabchar + "/// @note This completely resets the object, clearing both data and configuration settings.\n"
             outstring += tabchar +  "void\n"
             outstring += tabchar +  "inner_object_reset() override;"
@@ -1060,7 +1060,7 @@ def generate_function_implementations( \
         if is_data_representation_class == True :
 
             outstring += "\n"
-            outstring += "/// @brief Delete all of the data from this data representation."
+            outstring += "/// @brief Delete all of the data from this data representation.\n"
             outstring += "/// @note This only clears data, not configuration settings.\n"
             outstring += "void\n"
             outstring += apiclassname + "::inner_object_clear() {\n"
@@ -1073,7 +1073,7 @@ def generate_function_implementations( \
             outstring += "}\n"
 
             outstring += "\n"
-            outstring += "/// @brief Delete all of the data and all of the configuration settings from this data representation."
+            outstring += "/// @brief Delete all of the data and all of the configuration settings from this data representation.\n"
             outstring += "/// @note This completely resets the object, clearing both data and configuration settings.\n"
             outstring += "void\n"
             outstring += apiclassname + "::inner_object_reset() {\n"
