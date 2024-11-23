@@ -177,6 +177,10 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	using namespace masala::base::api::setter;
 	using namespace masala::base::managers::engine;
 
+	CHECK_OR_THROW_FOR_CLASS( object_in->inner_object_empty(), "set_object", "The " + object_in->inner_class_name() + " object provided to this "
+		"function was not empty, but had been loaded with data."
+	);
+
 	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
 		"takes " + std::to_string( setter.n_setter_annotations() ) + " inputs."
@@ -227,6 +231,10 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 ) const {
 	using namespace masala::base::api::setter;
 	using namespace masala::base::managers::engine;
+
+	CHECK_OR_THROW_FOR_CLASS( object_in->inner_object_empty(), "set_object", "The " + object_in->inner_class_name() + " object provided to this "
+		"function was not empty, but had been loaded with data."
+	);
 
 	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
@@ -303,6 +311,10 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 	using namespace masala::base::api::setter;
 	using namespace masala::base::managers::engine;
 
+	CHECK_OR_THROW_FOR_CLASS( object_in.inner_object_empty(), "set_object", "The " + object_in.inner_class_name() + " object provided to this "
+		"function was not empty, but had been loaded with data."
+	);
+
 	std::lock_guard< std::mutex > lock( mutex() );
 	CHECK_OR_THROW_FOR_CLASS( setter.n_setter_annotations() == 1, "set_object", "Expected the \"" + setter.setter_function_name() + "\" to take one input, but it"
 		"takes " + std::to_string( setter.n_setter_annotations() ) + " inputs."
@@ -339,6 +351,10 @@ PreferredTemplateDataRepresentationSetterAnnotation::set_object(
 ) const {
 	using namespace masala::base::api::setter;
 	using namespace masala::base::managers::engine;
+
+	CHECK_OR_THROW_FOR_CLASS( object_in.inner_object_empty(), "set_object", "The " + object_in.inner_class_name() + " object provided to this "
+		"function was not empty, but had been loaded with data."
+	);
 
 	std::lock_guard< std::mutex > lock( mutex() );
 
