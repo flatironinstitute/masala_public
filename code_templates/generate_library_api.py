@@ -1079,10 +1079,10 @@ def generate_function_implementations( \
             outstring += apiclassname + "::inner_object_reset() {\n"
             if is_derived == True :
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
-                outstring += tabchar + "inner_object()->clear();\n"
+                outstring += tabchar + "inner_object()->reset();\n"
             else :
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
-                outstring += tabchar + "inner_object_->clear();\n"
+                outstring += tabchar + "inner_object_->reset();\n"
             outstring += "}\n"
 
             first = False
