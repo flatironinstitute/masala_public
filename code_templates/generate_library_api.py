@@ -644,17 +644,28 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
 
     if fxn_type == "GETTER" :
         if is_data_representation_class == True :
+
             outstring += tabchar + "/// @brief Get the inner data representation object.\n"
             outstring += tabchar + "/// @note Use this function with care!  Holding a shared pointer to the inner\n"
             outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
             outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationSP\n"
             outstring += tabchar + "get_inner_data_representation_object() override;\n"
+
             outstring += "\n"
             outstring += tabchar + "/// @brief Get the inner data representation object (const access).\n"
             outstring += tabchar + "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
             outstring += tabchar + "/// object can nullify the thread safety that the API object provides.\n"
             outstring += tabchar + "masala::base::managers::engine::MasalaDataRepresentationCSP\n"
-            outstring += tabchar + "get_inner_data_representation_object_const() const override;"
+            outstring += tabchar + "get_inner_data_representation_object_const() const override;\n"
+
+            outstring += "\n"
+            outstring += tabchar + "/// @brief Is the inner data representation object empty?\n"
+            outstring += tabchar + "/// @returns True if the inner data representation object contains no data, false otherwise.\n"
+            outstring += tabchar + "/// @note This does not report on whether the inner object has had configuration settings\n"
+            outstring += tabchar + "/// set; only on whether it is devoid of data.\n"
+            outstring += tabchar +  "bool\n"
+            outstring += tabchar +  "inner_object_empty() const override;"
+
             first = False
         elif is_engine_class == True :
             outstring += tabchar + "/// @brief Get the inner engine object.\n"
@@ -696,6 +707,23 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             outstring += tabchar + "std::vector< std::string >\n"
             outstring += tabchar + "get_file_interpreter_file_extensions() const override;"
             first = False
+    elif fxn_type == "SETTER" :
+        if is_data_representation_class == True :
+
+            outstring += "\n"
+            outstring += tabchar + "/// @brief Delete all of the data from this data representation."
+            outstring += tabchar + "/// @note This only clears data, not configuration settings.\n"
+            outstring += tabchar +  "void\n"
+            outstring += tabchar +  "inner_object_clear() override;\n"
+
+            outstring += "\n"
+            outstring += tabchar + "/// @brief Delete all of the data and all of the configuration settings from this data representation."
+            outstring += tabchar + "/// @note This completely resets the object, clearing both data and configuration settings.\n"
+            outstring += tabchar +  "void\n"
+            outstring += tabchar +  "inner_object_reset() override;"
+
+            first = False
+
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
         #print(fxn)
@@ -916,6 +944,7 @@ def generate_function_implementations( \
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
                 outstring += tabchar + "return inner_object_;\n"
             outstring += "}\n"
+
             outstring += "\n"
             outstring += "/// @brief Get the inner data representation object (const access).\n"
             outstring += "/// @note Use this function with care!  Holding a const shared pointer to the inner\n"
@@ -928,7 +957,23 @@ def generate_function_implementations( \
             else :
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
                 outstring += tabchar + "return inner_object_;\n"
+            outstring += "}\n"
+
+            outstring += "\n"
+            outstring += "/// @brief Is the inner data representation object empty?\n"
+            outstring += "/// @returns True if the inner data representation object contains no data, false otherwise.\n"
+            outstring += "/// @note This does not report on whether the inner object has had configuration settings\n"
+            outstring += "/// set; only on whether it is devoid of data.\n"
+            outstring += "bool\n"
+            outstring += apiclassname + "::inner_object_empty() const {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "return inner_object()->empty();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "return inner_object_->empty();\n"
             outstring += "}"
+
             first = False
         elif is_engine_class == True :
             outstring += "/// @brief Get the inner engine object.\n"
@@ -1010,6 +1055,36 @@ def generate_function_implementations( \
                 outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
                 outstring += tabchar + "return inner_object_->get_file_extensions();\n"
             outstring += "}\n"
+            first = False
+    elif fxn_type == "SETTER" :
+        if is_data_representation_class == True :
+
+            outstring += "\n"
+            outstring += "/// @brief Delete all of the data from this data representation."
+            outstring += "/// @note This only clears data, not configuration settings.\n"
+            outstring += "void\n"
+            outstring += apiclassname + "::inner_object_clear() {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "inner_object()->clear();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "inner_object_->clear();\n"
+            outstring += "}\n"
+
+            outstring += "\n"
+            outstring += "/// @brief Delete all of the data and all of the configuration settings from this data representation."
+            outstring += "/// @note This completely resets the object, clearing both data and configuration settings.\n"
+            outstring += "void\n"
+            outstring += apiclassname + "::inner_object_reset() {\n"
+            if is_derived == True :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex() );\n"
+                outstring += tabchar + "inner_object()->clear();\n"
+            else :
+                outstring += tabchar + "std::lock_guard< std::mutex > lock( api_mutex_ );\n"
+                outstring += tabchar + "inner_object_->clear();\n"
+            outstring += "}\n"
+
             first = False
 
     for fxn in jsonfile["Elements"][classname][groupname][namepattern+"_APIs"] :
