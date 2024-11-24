@@ -53,9 +53,33 @@ namespace real_valued_local {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Copy constructor.
+RealValuedFunctionLocalOptimizationProblem::RealValuedFunctionLocalOptimizationProblem(
+	RealValuedFunctionLocalOptimizationProblem const & src
+) :
+	masala::numeric::optimization::OptimizationProblem()
+{
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+}
+
+// @brief Assignment operator.
+RealValuedFunctionLocalOptimizationProblem &
+RealValuedFunctionLocalOptimizationProblem::operator=(
+	RealValuedFunctionLocalOptimizationProblem const & src
+) {
+	std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+	return *this;
+}
+
 /// @brief Destructor.
 RealValuedFunctionLocalOptimizationProblem::~RealValuedFunctionLocalOptimizationProblem() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	if( objective_function_ != nullptr ) {
 		delete objective_function_;
 	}
@@ -171,21 +195,21 @@ RealValuedFunctionLocalOptimizationProblem::class_namespace() const {
 /// @brief Has an objective function been provided for this problem?
 bool
 RealValuedFunctionLocalOptimizationProblem::has_objective_function() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	return objective_function_ != nullptr;
 }
 
 /// @brief Has a gradient for the objective function been provided for this problem?
 bool
 RealValuedFunctionLocalOptimizationProblem::has_objective_function_gradient() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	return objective_function_gradient_ != nullptr;
 }
 
 /// @brief Has at least one starting point been provided for this problem?
 bool
 RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	return ( !starting_points_.empty() );
 }
 
@@ -193,7 +217,7 @@ RealValuedFunctionLocalOptimizationProblem::has_at_least_one_starting_point() co
 /// @details Throws if objective function isn't set.
 std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const &
 RealValuedFunctionLocalOptimizationProblem::objective_function() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function", "An objective function for this " + class_name() + "object can only be accessed after this object is finalized." );
 	CHECK_OR_THROW_FOR_CLASS( objective_function_ != nullptr, "objective_function", "An objective function has not yet been set for this " + class_name() + "object!" );
 	return *objective_function_;
@@ -203,7 +227,7 @@ RealValuedFunctionLocalOptimizationProblem::objective_function() const {
 /// @details Throws if objective function gradient isn't set.
 std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const &
 RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "objective_function_gradient", "An objective function gradient for this " + class_name() + "object can only be accessed after this object is finalized." );
 	CHECK_OR_THROW_FOR_CLASS( objective_function_gradient_ != nullptr, "objective_function_gradient", "An objective function gradient has not yet been set for this " + class_name() + "object!" );
 	return *objective_function_gradient_;
@@ -212,7 +236,7 @@ RealValuedFunctionLocalOptimizationProblem::objective_function_gradient() const 
 /// @brief Access the vector of starting points.
 std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const &
 RealValuedFunctionLocalOptimizationProblem::starting_points() const {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "starting_points", "The starting points for this " + class_name() + "object can only be accessed after this object is finalized." );
 	return starting_points_;
 }
@@ -227,7 +251,7 @@ void
 RealValuedFunctionLocalOptimizationProblem::set_objective_function(
 	std::function< masala::base::Real( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & ) > const & objective_fxn_in
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function", "Cannot set objective function after the " + class_name() + " object has been finalized." );
 
 	if( objective_function_ != nullptr ) {
@@ -239,7 +263,7 @@ RealValuedFunctionLocalOptimizationProblem::set_objective_function(
 /// @brief Clear the objective function.
 void
 RealValuedFunctionLocalOptimizationProblem::clear_objective_function() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_objective_function", "Cannot unset objective function after the " + class_name() + " object has been finalized." );
 	if( objective_function_ != nullptr ) {
 		delete objective_function_;
@@ -253,7 +277,7 @@ void
 RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
 	std::function< masala::base::Real ( Eigen::Vector< masala::base::Real, Eigen::Dynamic > const &, Eigen::Vector< masala::base::Real, Eigen::Dynamic > & ) > const & objective_fxn_gradient_in
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "set_objective_function_gradient", "Cannot set objective function gradient after the " + class_name() + " object has been finalized." );
 
 	if( objective_function_gradient_ != nullptr ) {
@@ -265,7 +289,7 @@ RealValuedFunctionLocalOptimizationProblem::set_objective_function_gradient(
 /// @brief Clear the objective function.
 void
 RealValuedFunctionLocalOptimizationProblem::clear_objective_function_gradient() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_objective_function_gradient", "Cannot unset objective function gradient after the " + class_name() + " object has been finalized." );
 	if( objective_function_gradient_ != nullptr ) {
 		delete objective_function_gradient_;
@@ -278,7 +302,7 @@ void
 RealValuedFunctionLocalOptimizationProblem::add_starting_points(
 	std::vector< Eigen::Vector< masala::base::Real, Eigen::Dynamic > > const & starting_points_in
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_points", "Starting points cannot be added after this " + class_name() + " object has been finalized." );
 	starting_points_.reserve( starting_points_.size() + starting_points_in.size() );
 	for( auto const & entry : starting_points_in ) {
@@ -292,7 +316,7 @@ void
 RealValuedFunctionLocalOptimizationProblem::add_starting_point(
 	Eigen::Vector< masala::base::Real, Eigen::Dynamic > const & starting_point_in
 ) {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "add_starting_point", "A starting point cannot be added after this " + class_name() + " object has been finalized." );
 	starting_points_.push_back( starting_point_in );
 }
@@ -300,7 +324,7 @@ RealValuedFunctionLocalOptimizationProblem::add_starting_point(
 /// @brief Clear the starting points.
 void
 RealValuedFunctionLocalOptimizationProblem::clear_starting_points() {
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 	CHECK_OR_THROW_FOR_CLASS( !protected_finalized(), "clear_starting_points", "Starting points cannot be cleared after this " + class_name() + " object has been finalized." );
 	starting_points_.clear();
 }
@@ -321,7 +345,7 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 	using namespace masala::base::api::setter;
 	using namespace masala::base::api::getter;
 
-	std::lock_guard< std::mutex > lock( problem_mutex() );
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 
 	if( api_definition() == nullptr ) {
 
@@ -452,9 +476,24 @@ RealValuedFunctionLocalOptimizationProblem::get_api_definition() {
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Reset this object completely.  Mutex must be locked before calling.
-void 
-RealValuedFunctionLocalOptimizationProblem::protected_reset() {
+/// @brief Is this data representation empty?
+/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+RealValuedFunctionLocalOptimizationProblem::protected_empty() const {
+	return (
+		( objective_function_ == nullptr ) &&
+		( objective_function_gradient_ == nullptr ) &&
+		( starting_points_.empty() ) &&
+		masala::numeric::optimization::OptimizationProblem::protected_empty()
+	);
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+void
+RealValuedFunctionLocalOptimizationProblem::protected_clear() {
 	if( objective_function_ != nullptr ) {
 		delete objective_function_;
 	}
@@ -466,6 +505,13 @@ RealValuedFunctionLocalOptimizationProblem::protected_reset() {
 	objective_function_gradient_ = nullptr;
 
 	starting_points_.clear();
+	masala::numeric::optimization::OptimizationProblem::protected_clear();
+}
+
+/// @brief Reset this object completely.  Mutex must be locked before calling.
+void 
+RealValuedFunctionLocalOptimizationProblem::protected_reset() {
+	protected_clear();
 	masala::numeric::optimization::OptimizationProblem::protected_reset();
 }
 
@@ -518,7 +564,7 @@ RealValuedFunctionLocalOptimizationProblem::protected_finalize() {
 /// Should be implemented by derived classes, which shoudl call base class function.
 void
 RealValuedFunctionLocalOptimizationProblem::protected_assign(
-	masala::numeric::optimization::OptimizationProblem const & src
+	masala::base::managers::engine::MasalaDataRepresentation const & src
 ) {
 	RealValuedFunctionLocalOptimizationProblem const * src_ptr_cast(
 		dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( &src )

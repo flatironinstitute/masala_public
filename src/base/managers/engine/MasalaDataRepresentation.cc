@@ -34,12 +34,49 @@ namespace base {
 namespace managers {
 namespace engine {
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION, DESTRUCTION, AND CLONING
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Copy constructor.  Explicit due to mutex.
+MasalaDataRepresentation::MasalaDataRepresentation(
+	MasalaDataRepresentation const & src
+) :
+	masala::base::managers::plugin_module::MasalaPlugin(src)
+{
+	// GNDN.  But derived classes should implement this.
+
+	// std::lock( data_representation_mutex_, src.data_representation_mutex_ );
+	// std::lock_guard< std::mutex > lockthis( data_representation_mutex_, std::adopt_lock );
+	// std::lock_guard< std::mutex > lockthat( src.data_representation_mutex_, std::adopt_lock );
+	// protected_assign(src);
+}
+
+/// @brief Assignment operator.  Explicit due to mutex.
+MasalaDataRepresentation &
+MasalaDataRepresentation::operator=(
+	MasalaDataRepresentation const & src
+) {
+	std::lock( data_representation_mutex_, src.data_representation_mutex_ );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex_, std::adopt_lock );
+	protected_assign(src);
+	return *this;
+}
+
 /// @brief Get the namespace and name for this pure virtual base class.
 /// @returns "masala::base::managers::engine::MasalaDataRepresentation"
 /*static*/
 std::string
 MasalaDataRepresentation::class_namespace_and_name_static() {
-    return "masala::base::managers::engine::MasalaDataRepresentation";
+	return "masala::base::managers::engine::MasalaDataRepresentation";
+}
+
+/// @brief Make this object fully independent by calling protected_make_independent().  Locks mutex.
+void
+MasalaDataRepresentation::make_independent() {
+	std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+	protected_make_independent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +92,7 @@ MasalaDataRepresentation::class_namespace_and_name_static() {
 /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
 std::vector< std::string >
 MasalaDataRepresentation::get_incompatible_masala_engines() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
 }
 
 /// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
@@ -65,7 +102,7 @@ MasalaDataRepresentation::get_incompatible_masala_engines() const {
 /// no properties.
 std::vector< std::string >
 MasalaDataRepresentation::get_present_data_representation_properties() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
 }
 
 /// @brief Get the properties of this MasalaDataRepresentation that might possibly be present.
@@ -73,7 +110,7 @@ MasalaDataRepresentation::get_present_data_representation_properties() const {
 /// @returns The base class returns an empty list.  Overrides could return other lists.
 std::vector< std::string >
 MasalaDataRepresentation::get_possibly_present_data_representation_properties() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
 }
 
 /// @brief Get the properties that this MasalaDataRepresentation DEFINITELY lacks.
@@ -82,7 +119,7 @@ MasalaDataRepresentation::get_possibly_present_data_representation_properties() 
 /// no properties.
 std::vector< std::string >
 MasalaDataRepresentation::get_absent_data_representation_properties() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
 }
 
 /// @brief Get the properties of this MasalaDataRepresentation that might possibly be absent.
@@ -90,7 +127,48 @@ MasalaDataRepresentation::get_absent_data_representation_properties() const {
 /// @returns The base class returns an empty list.  Overrides could return other lists.
 std::vector< std::string >
 MasalaDataRepresentation::get_possibly_absent_data_representation_properties() const {
-    return std::vector< std::string >{};
+	return std::vector< std::string >{};
+}
+
+/// @brief Is this data representation empty?
+/// @details Calls protected_empty(), which must be implemented by derived classes.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+MasalaDataRepresentation::empty() const {
+	std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+	return protected_empty();
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Calls protected_clear(), which must be implemented by derived classes.
+void
+MasalaDataRepresentation::clear() {
+	std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+	protected_clear();
+}
+
+/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+/// @details Calls protected_reset(), which must be implemented by derived classes.
+void
+MasalaDataRepresentation::reset() {
+	std::lock_guard< std::mutex > lock( data_representation_mutex_ );
+	protected_reset();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+/// derived classes.  Performs no mutex locking.
+/// @param src The object that we are copying from.
+/*virtual*/
+void
+MasalaDataRepresentation::protected_assign(
+	MasalaDataRepresentation const & /*src*/
+) {
+	//GNDN.
 }
 
 } // namespace engine

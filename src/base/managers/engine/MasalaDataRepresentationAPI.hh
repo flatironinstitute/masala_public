@@ -50,11 +50,11 @@ public:
 	/// @brief Destructor.
 	virtual ~MasalaDataRepresentationAPI() = default;
 
-    /// @brief Get the namespace and name for this pure virtual base class.
-    /// @returns "masala::base::managers::engine::MasalaDataRepresentationAPI"
-    static
-    std::string
-    class_namespace_and_name_static();
+	/// @brief Get the namespace and name for this pure virtual base class.
+	/// @returns "masala::base::managers::engine::MasalaDataRepresentationAPI"
+	static
+	std::string
+	class_namespace_and_name_static();
 
 public:
 
@@ -62,21 +62,30 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Access the inner data representation object.
-    /// @details Implemented by derived classes.
-    /// @note Use this function with care!  Holding a shared pointer to the inner
-    /// object can nullify the thread safety that the API object provides.
-    virtual
-    MasalaDataRepresentationSP
-    get_inner_data_representation_object() = 0;
+	/// @brief Access the inner data representation object.
+	/// @details Implemented by derived classes.
+	/// @note Use this function with care!  Holding a shared pointer to the inner
+	/// object can nullify the thread safety that the API object provides.
+	virtual
+	MasalaDataRepresentationSP
+	get_inner_data_representation_object() = 0;
 
-    /// @brief Access the inner data representation object (const access).
-    /// @details Implemented by derived classes.
-    /// @note Use this function with care!  Holding a const shared pointer to the inner
-    /// object can nullify the thread safety that the API object provides.
-    virtual
-    MasalaDataRepresentationCSP
-    get_inner_data_representation_object_const() const = 0;
+	/// @brief Access the inner data representation object (const access).
+	/// @details Implemented by derived classes.
+	/// @note Use this function with care!  Holding a const shared pointer to the inner
+	/// object can nullify the thread safety that the API object provides.
+	virtual
+	MasalaDataRepresentationCSP
+	get_inner_data_representation_object_const() const = 0;
+
+	/// @brief Is the inner object empty?
+	virtual bool inner_object_empty() const = 0;
+
+	/// @brief Clear the data from the inner data representation object, but do not alter its configuration.
+	virtual void inner_object_clear() = 0;
+
+	/// @brief Reset the inner object completely (deleting data and clearing configuration).
+	virtual void inner_object_reset() = 0;
 
 }; // class MasalaDataRepresentationAPI
 

@@ -61,6 +61,10 @@ namespace cost_function_network {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class CostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::OptimizationProblem {
 
+	typedef masala::numeric::optimization::OptimizationProblem Parent;
+	typedef masala::numeric::optimization::OptimizationProblemSP ParentSP;
+	typedef masala::numeric::optimization::OptimizationProblemCSP ParentCSP;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,18 +75,18 @@ public:
 	CostFunctionNetworkOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & ) = default;
+	CostFunctionNetworkOptimizationProblem( CostFunctionNetworkOptimizationProblem const & src );
 
 	// @brief Assignment operator.
 	CostFunctionNetworkOptimizationProblem &
-	operator=( CostFunctionNetworkOptimizationProblem const & ) = default;
+	operator=( CostFunctionNetworkOptimizationProblem const & src );
 
 	/// @brief Destructor.
 	~CostFunctionNetworkOptimizationProblem() override = default;
 
 	/// @brief Make a copy of this object, and return a shared pointer to the copy.
 	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
-	masala::numeric::optimization::OptimizationProblemSP
+	ParentSP
 	clone() const override;
 
 	/// @brief Make a fully independent copy of this object.
@@ -340,6 +344,16 @@ protected:
 		return n_choices_by_node_index_;
 	}
 
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void protected_clear() override;
+
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
 
@@ -350,7 +364,7 @@ protected:
 
 	/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
 	/// Should be implemented by derived classes, which shoudl call base class function.
-	void protected_assign( masala::numeric::optimization::OptimizationProblem const & src ) override;
+	void protected_assign( masala::base::managers::engine::MasalaDataRepresentation const & src ) override;
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.

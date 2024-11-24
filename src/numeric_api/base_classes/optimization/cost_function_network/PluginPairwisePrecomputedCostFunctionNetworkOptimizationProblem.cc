@@ -56,11 +56,28 @@ namespace cost_function_network {
 // CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::make_independent() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::make_independent();
-    //GNDN
+/// @brief Copy constructor.
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem(
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src
+):
+    Parent()
+{
+    std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+}
+
+// @brief Assignment operator.
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem &
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::operator=(
+    PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src
+) {
+    std::lock( data_representation_mutex(), src.data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+    return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,17 +186,50 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_possibly_pr
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Is this data representation empty?
+/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_empty() const {
+    return Parent::protected_empty();
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+void
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_clear() {
+    Parent::protected_clear();
+}
+
 /// @brief Reset this object completely.  Mutex must be locked before calling.
 void 
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_reset() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_reset();
+    Parent::protected_reset();
+}
+
+/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+/// by derived classses.  Performs no mutex-locking.
+void
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_make_independent() {
+    Parent::protected_make_independent();
+}
+
+/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+/// derived classes.  Performs no mutex locking.
+/// @param src The object that we are copying from.
+void
+PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_assign(
+    MasalaDataRepresentation const & src
+) {
+    Parent::protected_assign(src);
 }
 
 /// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 /// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 void
 PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::protected_finalize() {
-    masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem::protected_finalize();
+    Parent::protected_finalize();
 }
 
 } // namespace cost_function_network

@@ -34,6 +34,9 @@
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem_API.hh>
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions_API.hh>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/types.hh>
@@ -168,6 +171,15 @@ void
 CostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
     masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 ) {
+	CHECK_OR_THROW_FOR_CLASS( representation_in->inner_object_empty(), "set_template_preferred_cfn_data_representation",
+		"The " + representation_in->inner_class_name() + " object passed to this function was not empty!  The template preferred "
+		"cost function network optimization problem data representation must not be loaded with data."
+	);
+	CHECK_OR_THROW_FOR_CLASS(
+		std::dynamic_pointer_cast< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem const >( representation_in->get_inner_data_representation_object_const() ) != nullptr,
+		"set_template_preferred_cfn_data_representation",
+		"The " + representation_in->inner_class_name() + " object passed to this functionw was not a sub-class of CostFunctionNetworkOptimizationProblem."
+	);
 	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
 	protected_set_template_preferred_cfn_data_representation( representation_in );
 }
@@ -178,9 +190,21 @@ CostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
 masala::base::managers::engine::MasalaDataRepresentationAPISP
 CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_copy() const {
 	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
+	using namespace masala::base::managers::engine;
+
 	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
 	if( template_preferred_cfn_data_representation_ == nullptr ) {
-		return protected_get_default_template_preferred_cfn_data_representation();
+		MasalaDataRepresentationAPISP data_rep_out( protected_get_default_template_preferred_cfn_data_representation() );
+		if( data_rep_out != nullptr ) {
+			CHECK_OR_THROW_FOR_CLASS( data_rep_out->inner_object_empty(), "get_template_preferred_cfn_data_representation_copy",
+				"The " + data_rep_out->inner_class_name() + " object returned by this function was not empty!  It is expected that "
+				"this function should return a Masala data representation that has not yet been loaded with any data.  If it "
+				"does not, that implies that the protected_make_indpendent() function of the " + data_rep_out->inner_class_name()
+				+ " class is not properly deep-cloning all contained objects, or that a contained object has not properly "
+				"implemented its own deep-clone functionality.  Please consult a developer and provide them with this information."
+			);
+		}
+		return data_rep_out;
 	}
 
 	CostFunctionNetworkOptimizationProblem_APICSP rep_cast(
@@ -195,7 +219,19 @@ CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_cop
 		"representation, but it could not be interpreted as a CostFunctionNetworkOptimizationProblem object type."
 	);
 
-	return rep_cast->deep_clone();
+	MasalaDataRepresentationAPISP data_rep_copy_out( rep_cast->deep_clone() );
+	CHECK_OR_THROW_FOR_CLASS( data_rep_copy_out != nullptr, "get_template_preferred_cfn_data_representation_copy",
+		"Deep-cloning of the " + template_preferred_cfn_data_representation_->inner_class_name() + " class failed, returning nullptr.  "
+		"This is a program error.  Please consult a developer."
+	);
+	CHECK_OR_THROW_FOR_CLASS( data_rep_copy_out->inner_object_empty(), "get_template_preferred_cfn_data_representation_copy",
+		"The " + data_rep_copy_out->inner_class_name() + " object returned by this function was not empty!  It is expected that "
+		"this function should return a Masala data representation that has not yet been loaded with any data.  If it "
+		"does not, that implies that the protected_make_indpendent() function of the " + data_rep_copy_out->inner_class_name()
+		+ " class is not properly deep-cloning all contained objects, or that a contained object has not properly "
+		"implemented its own deep-clone functionality.  Please consult a developer and provide them with this information."
+	);
+	return data_rep_copy_out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -48,6 +48,10 @@ namespace cost_function {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class PluginCostFunction : public masala::numeric::optimization::cost_function_network::cost_function::CostFunction {
 
+	typedef masala::numeric::optimization::cost_function_network::cost_function::CostFunction Parent;
+	typedef masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP ParentSP;
+	typedef masala::numeric::optimization::cost_function_network::cost_function::CostFunctionCSP ParentCSP;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,15 +72,12 @@ public:
 	~PluginCostFunction() override = default;
 
 	/// @brief Make a copy of this object.
-	masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP
+	ParentSP
 	clone() const override;
 
 	/// @brief Make a fully independent copy of this object.
 	PluginCostFunctionSP
 	deep_clone() const;
-
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	void make_independent() override;
 
 public:
 
@@ -135,6 +136,37 @@ public:
 
 	/// @brief Get the class namespace.  Calls class_namespace_static().
 	std::string class_namespace() const override;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
+
+	/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+	/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+	void
+	protected_reset() override;
+
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	void
+	protected_make_independent() override;
+
+	/// @brief Assignment operator, assuming that we've already locked the write mutex.
+	void protected_assign( masala::base::managers::engine::MasalaDataRepresentation const & src ) override;
 
 public:
 

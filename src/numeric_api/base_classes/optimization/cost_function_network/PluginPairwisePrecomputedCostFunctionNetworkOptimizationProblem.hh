@@ -58,6 +58,13 @@ namespace cost_function_network {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem : public masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem {
 
+	typedef masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem Parent;
+	typedef masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemSP ParentSP;
+	typedef masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblemCSP ParentCSP;
+	typedef masala::base::managers::engine::MasalaDataRepresentation MasalaDataRepresentation;
+	typedef masala::base::managers::engine::MasalaDataRepresentationSP MasalaDataRepresentationSP;
+	typedef masala::base::managers::engine::MasalaDataRepresentationCSP MasalaDataRepresentationCSP;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,17 +75,14 @@ public:
 	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem() = default;
 
 	/// @brief Copy constructor.
-	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src );
 
 	// @brief Assignment operator.
 	PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem &
-	operator=( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & ) = default;
+	operator=( PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem const & src );
 
 	/// @brief Destructor.
 	~PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem() override = default;
-
-	/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-	void make_independent();
 
 	/// @brief Make a copy of this object, and return a shared pointer to the copy.
 	/// @details Does NOT copy all the internal data, but retains pointers to existing data.
@@ -208,8 +212,27 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void protected_clear() override;
+
 	/// @brief Reset this object completely.  Mutex must be locked before calling.
 	void protected_reset() override;
+
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	void protected_make_independent() override;
+
+	/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+	/// derived classes.  Performs no mutex locking.
+	/// @param src The object that we are copying from.
+	void protected_assign( MasalaDataRepresentation const & src );
 
 	/// @brief Inner workings of finalize function.  Should be called with locked mutex.	
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.

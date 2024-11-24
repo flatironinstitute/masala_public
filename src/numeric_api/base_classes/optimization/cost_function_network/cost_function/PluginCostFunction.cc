@@ -55,12 +55,12 @@ namespace cost_function {
 PluginCostFunction::PluginCostFunction(
     PluginCostFunction const & src
 ) :
-    masala::numeric::optimization::cost_function_network::cost_function::CostFunction( src )
+    Parent()
 {
-    std::lock( src.mutex(), mutex() );
-    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
-    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
-    assign_mutex_locked( src );
+    std::lock( src.data_representation_mutex(), data_representation_mutex() );
+    std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+    protected_assign( src );
 }
 
 // @brief Assignment operator.
@@ -68,10 +68,10 @@ PluginCostFunction &
 PluginCostFunction::operator=(
     PluginCostFunction const & src
 ) {
-    std::lock( src.mutex(), mutex() );
-    std::lock_guard< std::mutex > lockthat( src.mutex(), std::adopt_lock );
-    std::lock_guard< std::mutex > lockthis( mutex(), std::adopt_lock );
-    assign_mutex_locked( src );
+    std::lock( src.data_representation_mutex(), data_representation_mutex() );
+    std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+    std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock );
+    protected_assign( src );
     return *this;
 }
 
@@ -87,13 +87,6 @@ PluginCostFunction::deep_clone() const {
     PluginCostFunctionSP new_object( std::static_pointer_cast< PluginCostFunction >( clone() ) );
     new_object->make_independent();
     return new_object;
-}
-
-/// @brief Ensure that all data are unique and not shared (i.e. everything is deep-cloned.)
-void
-PluginCostFunction::make_independent() {
-    std::lock_guard< std::mutex > lock( mutex() );
-    make_independent_mutex_locked();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +177,51 @@ PluginCostFunction::class_name() const {
 std::string
 PluginCostFunction::class_namespace() const {
     return class_namespace_static();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Is this data representation empty?
+/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+/// @returns True if no data have been loaded into this data representation, false otherwise.
+/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+bool
+PluginCostFunction::protected_empty() const {
+    return Parent::protected_empty();
+}
+
+/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+void
+PluginCostFunction::protected_clear() {
+    Parent::protected_clear();
+}
+
+/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+void
+PluginCostFunction::protected_reset() {
+    Parent::protected_reset();
+}
+
+/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+/// by derived classses.  Performs no mutex-locking.
+void
+PluginCostFunction::protected_make_independent() {
+    Parent::protected_make_independent();
+}
+
+/// @brief Assignment operator, assuming that we've already locked the write mutex.
+void
+PluginCostFunction::protected_assign(
+    masala::base::managers::engine::MasalaDataRepresentation const & src
+) {
+    CHECK_OR_THROW_FOR_CLASS( dynamic_cast< PluginCostFunction const * >( &src ) != nullptr, "protected_assign",
+        "Unable to assign an object of type " + src.class_name() + " to a PluginCostFunction."
+    );
+    Parent::protected_assign(src);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -51,46 +51,50 @@ namespace coordinates {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class EigenLinalgCartesianAtomCoordinateRepresentation : public masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation {
 
+	typedef masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentation Parent;
+	typedef masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationSP ParentSP;
+	typedef masala::core::chemistry::atoms::coordinates::AtomCoordinateRepresentationCSP ParentCSP;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor.
-    EigenLinalgCartesianAtomCoordinateRepresentation() = default;
+	/// @brief Default constructor.
+	EigenLinalgCartesianAtomCoordinateRepresentation() = default;
 
-    /// @brief Copy constructor.
-    EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
+	/// @brief Copy constructor.
+	EigenLinalgCartesianAtomCoordinateRepresentation( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
-    // Destructor ommitted to keep class pure virtual.
-    ~EigenLinalgCartesianAtomCoordinateRepresentation() override = default;
+	// Destructor ommitted to keep class pure virtual.
+	~EigenLinalgCartesianAtomCoordinateRepresentation() override = default;
 
-    /// @brief Assignment operator.
-    EigenLinalgCartesianAtomCoordinateRepresentation &
-    operator=( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
+	/// @brief Assignment operator.
+	EigenLinalgCartesianAtomCoordinateRepresentation &
+	operator=( EigenLinalgCartesianAtomCoordinateRepresentation const & src );
 
-    /// @brief Clone operation: make a copy of this object and return a shared pointer
-    /// to the copy.
-    AtomCoordinateRepresentationSP
-    clone() const override;
+	/// @brief Clone operation: make a copy of this object and return a shared pointer
+	/// to the copy.
+	AtomCoordinateRepresentationSP
+	clone() const override;
 
-    /// @brief Deep clone operation: make a deep copy of this object and return a shared
-    /// pointer to the deep copy.
-    EigenLinalgCartesianAtomCoordinateRepresentationSP
-    deep_clone() const;
+	/// @brief Deep clone operation: make a deep copy of this object and return a shared
+	/// pointer to the deep copy.
+	EigenLinalgCartesianAtomCoordinateRepresentationSP
+	deep_clone() const;
 
 	/// @brief Make this object instance fully independent.
 	void
 	make_independent();
 
-    /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
-    std::string
-    class_name() const override;
+	/// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
+	std::string
+	class_name() const override;
 
-    /// @brief Returns "masala::core::chemistry::atoms::coordinates".
-    std::string
-    class_namespace() const override;
+	/// @brief Returns "masala::core::chemistry::atoms::coordinates".
+	std::string
+	class_namespace() const override;
 
 public:
 
@@ -98,20 +102,20 @@ public:
 // PLUGIN CLASS FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get the categories for this plugin.
-    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
-    std::vector< std::vector< std::string > >
-    get_categories() const override;
+	/// @brief Get the categories for this plugin.
+	/// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
 
-    /// @brief Get the keywords for this plugin.
-    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
-    std::vector< std::string >
-    get_keywords() const override;
+	/// @brief Get the keywords for this plugin.
+	/// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+	std::vector< std::string >
+	get_keywords() const override;
 
-    /// @brief Get the categories for this DataRepresentation.
-    /// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
-    std::vector< std::vector< std::string > >
-    get_data_representation_categories() const override;
+	/// @brief Get the categories for this DataRepresentation.
+	/// @returns {{ "AtomCoordinateRepresentation", "CartesianAtomCoordinateRepresentation" }}
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
 
 	/// @brief Get the keywords that this data representation plugin has.
 	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
@@ -120,15 +124,15 @@ public:
 	std::vector< std::string >
 	get_data_representation_keywords() const override;
 
-    /// @brief Get the compatible engines for this data representation.
-    /// @returns Currently an empty list.  This may change in the future.
-    std::vector< std::string >
-    get_compatible_masala_engines() const override;
+	/// @brief Get the compatible engines for this data representation.
+	/// @returns Currently an empty list.  This may change in the future.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
 
-    /// @brief Get the properties of this data representation.
-    /// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
-    std::vector< std::string >
-    get_present_data_representation_properties() const override;
+	/// @brief Get the properties of this data representation.
+	/// @returns { "atom_coordinate_representation", "cartesian", "linear_algebra", "Eigen" }
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 public:
 
@@ -136,21 +140,21 @@ public:
 // PUBLIC SETTER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Replace an atom instance with a new one.
-    /// @note Must be implemented by derived classes.
-    void
-    replace_atom_instance(
-        AtomInstanceCSP const & old_instance,
-        AtomInstanceCSP const & new_instance
-    ) override;
+	/// @brief Replace an atom instance with a new one.
+	/// @note Must be implemented by derived classes.
+	void
+	replace_atom_instance(
+		AtomInstanceCSP const & old_instance,
+		AtomInstanceCSP const & new_instance
+	) override;
 
-    /// @brief Add an atom.
-    /// @note Must be implemented by derived classes.
-    void
-    add_atom_instance(
-        AtomInstanceCSP const & new_atom,
-        std::array< masala::base::Real, 3 > const & new_atom_coordinates
-    ) override;
+	/// @brief Add an atom.
+	/// @note Must be implemented by derived classes.
+	void
+	add_atom_instance(
+		AtomInstanceCSP const & new_atom,
+		std::array< masala::base::Real, 3 > const & new_atom_coordinates
+	) override;
 
 public:
 
@@ -158,12 +162,12 @@ public:
 // PUBLIC GETTER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get the coordinates of an atom.
-    /// @note Must be implemented by derived classes.
-    std::array< masala::base::Real, 3 >
-    get_atom_coordinates(
-        AtomInstanceCSP const & atom
-    ) const override;
+	/// @brief Get the coordinates of an atom.
+	/// @note Must be implemented by derived classes.
+	std::array< masala::base::Real, 3 >
+	get_atom_coordinates(
+		AtomInstanceCSP const & atom
+	) const override;
 
 public:
 
@@ -175,19 +179,53 @@ public:
 	masala::base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition() override;
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
+
+	/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+	/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+	void
+	protected_reset() override;
+
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	void
+	protected_make_independent() override;
+
+	/// @brief Assign src to this.  Performs no mutex-locking.
+	void
+	protected_assign(
+		masala::base::managers::engine::MasalaDataRepresentation const & src
+	) override;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Replace an atom instance with a new one.  This version should be called only from
+	/// @brief Replace an atom instance with a new one.  This version should be called only from
 	/// a mutex-locked context.
-    void
-    replace_atom_instance_mutex_locked(
-        AtomInstanceCSP const & old_instance,
-        AtomInstanceCSP const & new_instance
-    );
+	void
+	replace_atom_instance_mutex_locked(
+		AtomInstanceCSP const & old_instance,
+		AtomInstanceCSP const & new_instance
+	);
 
 private:
 
@@ -195,18 +233,15 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief A mutex for locking this object.
-    mutable std::mutex mutex_;
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
-    /// @brief The API definition for this object.
-    masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
+	/// @brief Data storage for atom coordinates.
+	/// @details Rows are x, y, and z coordinates.  Columns are for atoms.
+	Eigen::Matrix< masala::base::Real, 3, Eigen::Dynamic > atom_coordinates_;
 
-    /// @brief Data storage for atom coordinates.
-    /// @details Rows are x, y, and z coordinates.  Columns are for atoms.
-    Eigen::Matrix< masala::base::Real, 3, Eigen::Dynamic > atom_coordinates_;
-
-    /// @brief Map of atom index to column index.
-    std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::base::Size > atom_instance_to_column_;
+	/// @brief Map of atom index to column index.
+	std::map< masala::core::chemistry::atoms::AtomInstanceCSP, masala::base::Size > atom_instance_to_column_;
 
 };
 

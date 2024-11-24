@@ -46,24 +46,24 @@ namespace optimization {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class OptimizationProblem : public masala::base::managers::engine::MasalaDataRepresentation {
 
+	typedef masala::base::managers::engine::MasalaDataRepresentation Parent;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION, DESTRUCTION, AND ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.
-	OptimizationProblem() = default;
+	/// @brief Default constructor.  Explicitly defined due to atomic bool.
+	OptimizationProblem();
 
 	/// @brief Copy constructor.
 	/// @details Must be explicitly defined due to mutex.
-	OptimizationProblem( OptimizationProblem const & );
+	OptimizationProblem( OptimizationProblem const & src );
 
-	/// @brief Assignment operator.
+	// @brief Assignment operator.
 	OptimizationProblem &
-	operator=(
-		OptimizationProblem const &
-	);
+	operator=( OptimizationProblem const & );
 
 	/// @brief Destructor.
 	~OptimizationProblem() override = default;
@@ -77,10 +77,6 @@ public:
 	/// @brief Make a fully independent copy of this object.
 	OptimizationProblemSP
 	deep_clone() const;
-
-	/// @brief Ensure that all data are unique and not shared
-	/// (i.e. everytihng is deep-cloned.)
-	void make_independent();
 
 public:
 
@@ -105,29 +101,29 @@ public:
 	std::vector< std::string >
 	get_keywords() const override;
 
-    /// @brief Get the categories that this data representation plugin falls into.
-    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
-    /// strings.  One data representation category can be classified into multiple categories.
-    /// @returns {{ "OptimizationProblem" }}
-    std::vector< std::vector< std::string > >
-    get_data_representation_categories() const override;
+	/// @brief Get the categories that this data representation plugin falls into.
+	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+	/// strings.  One data representation category can be classified into multiple categories.
+	/// @returns {{ "OptimizationProblem" }}
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
 
-    /// @brief Get the keywords that this data representation plugin has.
-    /// @details Categories are hierarchical, with the hierarchy represented as a vector of
-    /// strings.  One data representation category can be classified into multiple categories.
+	/// @brief Get the keywords that this data representation plugin has.
+	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+	/// strings.  One data representation category can be classified into multiple categories.
 	/// @returns { "optimization_problem", "numeric" }
 	std::vector< std::string >
-    get_data_representation_keywords() const override;
+	get_data_representation_keywords() const override;
 
-    /// @brief Get the MasalaEngines that with which this data representation plugin
-    /// is DEFINITELY compatible.  (There may be other engines with which it is also
-    /// compatible, so this is not necessarily an exhaustive list.)
-    /// @note Must be implemented by derived classes.  The list is by full name (i.e.
-    /// namespace + name), so for instance
-    /// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
+	/// @brief Get the MasalaEngines that with which this data representation plugin
+	/// is DEFINITELY compatible.  (There may be other engines with which it is also
+	/// compatible, so this is not necessarily an exhaustive list.)
+	/// @note Must be implemented by derived classes.  The list is by full name (i.e.
+	/// namespace + name), so for instance
+	/// "specialized_masala_plugins::optimizers::SpecializedChargeOptimizer".
 	/// @returns An empty list.
-    std::vector< std::string >
-    get_compatible_masala_engines() const override;
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
 
 	/// @brief Get the class name.
 	/// @returns "OptimizationProblem".
@@ -136,10 +132,6 @@ public:
 	/// @brief Get the class namespace.
 	/// @returns "masala::numeric::optimization".
 	std::string class_namespace() const override;
-
-	/// @brief Reset all data in this object.
-	void
-	reset();
 
 	/// @brief Finalize this problem: indicate that all problem setup is complete, and
 	/// carry out any precomputation necessary for efficient solution.
@@ -158,9 +150,9 @@ public:
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get a description of the API for the OptimizationProblem class.
-    masala::base::api::MasalaObjectAPIDefinitionCWP
-    get_api_definition() override;
+	/// @brief Get a description of the API for the OptimizationProblem class.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 public:
 
@@ -181,10 +173,6 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Allow derived classes to access the mutex for this object.
-	/// @note The mutex is mutable, and can be locked from a const function.
-	std::mutex & problem_mutex() const;
-
 	/// @brief Allow derived classes to access the API definition.
 	/// @note Could be nullptr.
 	masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition();
@@ -199,16 +187,28 @@ protected:
 
 	/// @brief Inner workings of assignment operator.  Should be called with locked mutex.
 	/// Should be implemented by derived classes, which shoudl call base class function.
-	virtual void protected_assign( OptimizationProblem const & src );
+	void protected_assign( Parent const & src ) override;
 
 	/// @brief Reset all data in this object.
 	/// @details Sets state to not finalized.  Mutex must be locked before calling this.
-	virtual void protected_reset();
+	void protected_reset() override;
 
 	/// @brief Make this object independent.
 	/// @details Assumes mutex was already locked.
 	/// @note Derived versions of this function should call the parent class version too.
-	virtual void protected_make_independent();
+	void protected_make_independent() override;
+
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
 
 
 private:
@@ -216,9 +216,6 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief A mutex for locking this object.
-	mutable std::mutex problem_mutex_;
 
 	/// @brief The API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
