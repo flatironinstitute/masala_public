@@ -322,6 +322,7 @@ MasalaDiskManager::datestamped_filename(
 
 	// Adding time stamp:
 	if( include_time ) {
+		if( add_underscore ) {
 			ss << "_";
 		} else {
 			add_underscore = true;
