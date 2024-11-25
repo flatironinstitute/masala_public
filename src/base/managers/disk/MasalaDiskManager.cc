@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/threads/MasalaThreadManager.hh>
+#include <base/utility/time/date_and_time_util.hh>
 
 // External headers:
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -37,6 +38,8 @@
 #include <fstream> //This is the only place in the Masala codebase where this header is permitted to be included.
 #include <regex>
 #include <sstream>
+#include <chrono>
+#include <format>
 
 namespace masala {
 namespace base {
@@ -275,6 +278,8 @@ MasalaDiskManager::datestamped_filename(
 	bool include_thread /*= true*/
 ) {
 	using namespace masala::base::managers::threads;
+	using namespace masala::base::utility::time;
+
 	if( !( include_date || include_time || include_thread ) ) {
 		return prefix + suffix;
 	}
@@ -302,14 +307,26 @@ MasalaDiskManager::datestamped_filename(
 		}
 	}
 
+	// Get the current time:
+	std::chrono::time_point< std::chrono::system_clock > const current_time( std::chrono::system_clock::now() );
+
 	// Adding date stamp:
 	if( include_date ) {
-		TODO TODO TODO;
+		if( add_underscore ) {
+			ss << "_";
+		} else {
+			add_underscore = true;
+		}
+		ss << "date_" << masala_get_date_YYYYMMDD( current_time );
 	}
 
 	// Adding time stamp:
 	if( include_time ) {
-		TODO TODO TODO;
+			ss << "_";
+		} else {
+			add_underscore = true;
+		}
+		ss << "time_" << masala_get_time_HHMMSS( current_time );
 	}
 
 	// Adding suffix:
