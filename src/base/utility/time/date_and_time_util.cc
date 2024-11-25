@@ -20,15 +20,92 @@
 /// @brief Functions for getting times and dates.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-// STL headers
-#include <vector>
-#include <string>
+// Unit headers:
+#include <base/utility/time/date_and_time_util.hh>
+
+// STL headers:
+#include <stdio.h>
 
 namespace masala {
 namespace base {
 namespace utility {
 namespace time {
 
+/// @brief Get the current date, as a string of year, month, date (YYYYMMDD).
+std::string
+masala_get_date_YYYYMMDD(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	signed int const year( masala_get_year( time_in ) );
+	unsigned short int const month( masala_get_month( time_in ) );
+	unsigned short int const day( masala_get_day( time_in ) );
+
+	char outstring[9];
+	snprintf( outstring, 8, "%04i%02uhi%02uhi", year, month, day );
+	return std::string( outstring );
+}
+
+/// @brief Get the current date, as a string of 24-hour hour, minute, second (HHMMSS).
+std::string
+masala_get_time_HHMMSS(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	unsigned short int const hour( masala_get_hour( time_in ) );
+	unsigned short int const minute( masala_get_minute( time_in ) );
+	unsigned short int const second( masala_get_second( time_in ) );
+
+	char outstring[9];
+	snprintf( outstring, 6, "%02uhi%02uhi%02uhi", hour, minute, second );
+	return std::string( outstring );
+}
+
+/// @brief Get the year, as a signed integer.  Negative values mean BC.
+signed int
+masala_get_year(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
+
+/// @brief Get the month, as an unsigned short integer (1 to 12).
+unsigned short int
+masala_get_month(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
+
+/// @brief Get the day (of the month), as an unsigned short integer (1 to 31).
+unsigned short int
+masala_get_day(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
+
+/// @brief Get the hour (on a 24-hour clock) as an unsigned short integer (0 to 23).
+unsigned short int
+masala_get_hour(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
+
+/// @brief Get the minute as an unsigned short integer (0 to 59).
+unsigned short int
+masala_get_minute(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
+
+/// @brief Get the second as an unsigned short integer (0 to 59).
+unsigned short int
+masala_get_second(
+	std::chrono::time_point< std::chrono::system_clock > const & time_in
+) {
+	TODO;
+}
 
 } // namespace time
 } // namespace utility
