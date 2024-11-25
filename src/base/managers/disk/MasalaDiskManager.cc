@@ -289,7 +289,9 @@ MasalaDiskManager::datestamped_filename(
 
 	if( !prefix.empty() ) {
 		ss << prefix;
-		add_underscore = true;
+		if( prefix[prefix.size()-1] != '.' ) {
+			add_underscore = true;
+		}
 	}
 
 	// Adding thread:
@@ -332,7 +334,7 @@ MasalaDiskManager::datestamped_filename(
 
 	// Adding suffix:
 	if( !suffix.empty()) {
-		if( add_underscore ) {
+		if( add_underscore && suffix[0] != '.' ) {
 			ss << "_";
 		}
 		ss << suffix;
