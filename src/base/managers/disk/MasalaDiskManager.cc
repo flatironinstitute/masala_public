@@ -26,6 +26,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
 
 // External headers:
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -49,8 +50,8 @@ namespace disk {
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaDiskManagerHandle
 MasalaDiskManager::get_instance() {
-    static const MasalaDiskManager disk_manager;
-    return &disk_manager;
+	static const MasalaDiskManager disk_manager;
+	return &disk_manager;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,113 +62,113 @@ MasalaDiskManager::get_instance() {
 /// @details Returns "MasalaDiskManager".
 std::string
 MasalaDiskManager::class_name() const {
-    return "MasalaDiskManager";
+	return "MasalaDiskManager";
 }
 
 /// @brief Get the namespace of this object.
 /// @details Returns "masala::base::managers::disk".
 std::string
 MasalaDiskManager::class_namespace() const {
-    return "masala::base::managers::disk";
+	return "masala::base::managers::disk";
 }
 
 /// @brief Write a string to an ASCII file.
 /// @details TRIGGERS WRITE TO DISK!  Threadsafe (locks mutex).
 void
 MasalaDiskManager::write_ascii_file(
-    std::string const & file_name,
-    std::string const & file_contents
+	std::string const & file_name,
+	std::string const & file_contents
 ) const {
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::ofstream filehandle( file_name );
-    CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "write_ascii_file", "Could not open \"" + file_name + "\" for write." );
-    filehandle << file_contents;
-    filehandle.close();
+	std::lock_guard< std::mutex > lock( disk_io_mutex_);
+	std::ofstream filehandle( file_name );
+	CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "write_ascii_file", "Could not open \"" + file_name + "\" for write." );
+	filehandle << file_contents;
+	filehandle.close();
 }
 
 /// @brief Read the contents of an ASCII file to a vector of strings.
 /// @details Threadsafe (locks mutex).
 std::vector< std::string >
 MasalaDiskManager::read_ascii_file_to_string_vector(
-    std::string const & file_name
+	std::string const & file_name
 ) const {
-    std::vector< std::string > outvec;
-    {
-        std::lock_guard< std::mutex > lock( disk_io_mutex_);
-        std::ifstream filehandle( file_name );
-        CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string_vector", "Could not open \"" + file_name + "\" for read." );
-        while( !filehandle.eof() ) {
-            outvec.push_back( std::string() );
-            std::getline( filehandle, outvec[outvec.size() - 1] );
-        }
-        filehandle.close();
-    }
-    write_to_tracer( "Read \"" + file_name + "\"." );
-    return outvec;
+	std::vector< std::string > outvec;
+	{
+		std::lock_guard< std::mutex > lock( disk_io_mutex_);
+		std::ifstream filehandle( file_name );
+		CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string_vector", "Could not open \"" + file_name + "\" for read." );
+		while( !filehandle.eof() ) {
+			outvec.push_back( std::string() );
+			std::getline( filehandle, outvec[outvec.size() - 1] );
+		}
+		filehandle.close();
+	}
+	write_to_tracer( "Read \"" + file_name + "\"." );
+	return outvec;
 }
 
 /// @brief Read the contents of an ASCII file to a string.
 /// @details Threadsafe (locks mutex).
 std::string
 MasalaDiskManager::read_ascii_file_to_string(
-    std::string const & file_name
+	std::string const & file_name
 ) const {
-    std::string outstring;
-    {
-        std::lock_guard< std::mutex > lock( disk_io_mutex_);
-        std::ifstream filehandle( file_name );
-        CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string", "Could not open \"" + file_name + "\" for read." );
-        std::string stringbuf;
-        bool first(true);
-        while( !filehandle.eof() ) {
-            if( first ){
-                first = false;
-            } else {
-                outstring += "\n";
-            }
-            std::getline( filehandle, stringbuf );
-            outstring += stringbuf;
-        }
-        filehandle.close();
-    }
-    write_to_tracer( "Read \"" + file_name + "\"." );
-    return outstring;
+	std::string outstring;
+	{
+		std::lock_guard< std::mutex > lock( disk_io_mutex_);
+		std::ifstream filehandle( file_name );
+		CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_ascii_file_to_string", "Could not open \"" + file_name + "\" for read." );
+		std::string stringbuf;
+		bool first(true);
+		while( !filehandle.eof() ) {
+			if( first ){
+				first = false;
+			} else {
+				outstring += "\n";
+			}
+			std::getline( filehandle, stringbuf );
+			outstring += stringbuf;
+		}
+		filehandle.close();
+	}
+	write_to_tracer( "Read \"" + file_name + "\"." );
+	return outstring;
 }
 
 /// @brief Read the contents of an pickled Python dictionary to a string.
 /// @details Threadsafe (locks mutex).
 std::string
 MasalaDiskManager::read_pickled_python_dictionary_to_string(
-    std::string const & file_name
+	std::string const & file_name
 ) const {
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::ifstream filehandle( file_name, std::ios::binary | std::ios::ate );
-    CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_pickled_python_dictionary_to_string", "Could not open \"" + file_name + "\" for read." );
+	std::lock_guard< std::mutex > lock( disk_io_mutex_);
+	std::ifstream filehandle( file_name, std::ios::binary | std::ios::ate );
+	CHECK_OR_THROW_FOR_CLASS( filehandle.good(), "read_pickled_python_dictionary_to_string", "Could not open \"" + file_name + "\" for read." );
 
-    // Get the size of the file.
-    std::streamsize size = filehandle.tellg();
-    filehandle.seekg(0, std::ios::beg);
+	// Get the size of the file.
+	std::streamsize size = filehandle.tellg();
+	filehandle.seekg(0, std::ios::beg);
 
-    // Read the content into a vector of bytes.
-    std::vector< char > buffer( size );
-    filehandle.read( buffer.data(), size );
+	// Read the content into a vector of bytes.
+	std::vector< char > buffer( size );
+	filehandle.read( buffer.data(), size );
 
-    // Close the file.
-    filehandle.close();
+	// Close the file.
+	filehandle.close();
 
-    // Convert the bytes to a string that resembles a Python dictionary (excluding non-printable characters).
-    std::stringstream dict;
-    dict << "{";
-    for (const char& c : buffer) {
-        if (c >= 32 && c < 127) { 
-            dict << c;
-        } else {
-            dict << "\\x" << std::hex << (int)c;
-        }
-    }
-    dict << "}";
-    write_to_tracer( "Read \"" + file_name + "\"." );
-    return dict.str();
+	// Convert the bytes to a string that resembles a Python dictionary (excluding non-printable characters).
+	std::stringstream dict;
+	dict << "{";
+	for (const char& c : buffer) {
+		if (c >= 32 && c < 127) { 
+			dict << c;
+		} else {
+			dict << "\\x" << std::hex << (int)c;
+		}
+	}
+	dict << "}";
+	write_to_tracer( "Read \"" + file_name + "\"." );
+	return dict.str();
 }
 
 /// @brief Read the contents of a JSON file and produce an nlohmann json object.
@@ -175,22 +176,22 @@ MasalaDiskManager::read_pickled_python_dictionary_to_string(
 /// locks mutex.  (So this is threadsafe.)
 nlohmann::json
 MasalaDiskManager::read_json_file(
-    std::string const & file_name
+	std::string const & file_name
 ) const {
-    std::string const json_file_contents( read_ascii_file_to_string( file_name ) );
-    write_to_tracer( "Parsing JSON file \"" + file_name + "\"." );
-    return nlohmann::json::parse( json_file_contents );
+	std::string const json_file_contents( read_ascii_file_to_string( file_name ) );
+	write_to_tracer( "Parsing JSON file \"" + file_name + "\"." );
+	return nlohmann::json::parse( json_file_contents );
 }
 
 /// @brief Given a path, get the absolute path.
 /// @details Threadsafe (locks mutex).
 std::string
 MasalaDiskManager::get_absolute_path(
-    std::string const & path_in
+	std::string const & path_in
 ) const {
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::filesystem::path curpath( path_in );
-    return std::filesystem::absolute( curpath ).c_str();
+	std::lock_guard< std::mutex > lock( disk_io_mutex_);
+	std::filesystem::path curpath( path_in );
+	return std::filesystem::absolute( curpath ).c_str();
 }
 
 /// @brief Given a path (absolute or relative to working directory), get
@@ -198,55 +199,55 @@ MasalaDiskManager::get_absolute_path(
 /// @details Threadsafe (locks mutex).
 std::vector< std::string >
 MasalaDiskManager::get_subdirectories(
-    std::string const & root_directory_path
+	std::string const & root_directory_path
 ) const {
-    std::vector< std::string > pathlist;
-    std::lock_guard< std::mutex > lock( disk_io_mutex_);
-    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( root_directory_path ) ) );
-    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
-        if( it.is_directory() ) {
-            pathlist.push_back( std::string( it.path().c_str() ) );
-        }
-    }
-    return pathlist;
+	std::vector< std::string > pathlist;
+	std::lock_guard< std::mutex > lock( disk_io_mutex_);
+	std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( root_directory_path ) ) );
+	for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+		if( it.is_directory() ) {
+			pathlist.push_back( std::string( it.path().c_str() ) );
+		}
+	}
+	return pathlist;
 }
 
 /// @brief Given a path to a directory, get the path and filename of each
 /// file in that directory.
 std::vector< std::string >
 MasalaDiskManager::get_files(
-    std::string const & directory_path
+	std::string const & directory_path
 ) const {
-    std::vector< std::string > filelist;
-    std::lock_guard< std::mutex > lock( disk_io_mutex_ );
-    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
-    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
-        if( it.is_regular_file() ) {
-            filelist.push_back( std::string( it.path().c_str() ) );
-        }
-    }
-    return filelist;
+	std::vector< std::string > filelist;
+	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+	std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
+	for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+		if( it.is_regular_file() ) {
+			filelist.push_back( std::string( it.path().c_str() ) );
+		}
+	}
+	return filelist;
 }
 
 /// @brief Given a path to a directory, get the path and filename of each
 /// file in that directory.
 std::vector< std::string >
 MasalaDiskManager::get_files_regex(
-    std::string const & directory_path,
-    std::regex const & filename_pattern
+	std::string const & directory_path,
+	std::regex const & filename_pattern
 ) const {
-    std::vector< std::string > filelist;
-    std::lock_guard< std::mutex > lock( disk_io_mutex_ );
-    std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
-    for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
-        if( it.is_regular_file() ) {
-            std::string filename = it.path().filename().string();
-            if( std::regex_match( filename, filename_pattern ) ) {
-                filelist.push_back( filename );
-            }
-        }
-    }
-    return filelist;
+	std::vector< std::string > filelist;
+	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+	std::filesystem::path const abs_path( std::filesystem::absolute( std::filesystem::path( directory_path ) ) );
+	for( auto const & it : std::filesystem::directory_iterator( abs_path ) ) {
+		if( it.is_regular_file() ) {
+			std::string filename = it.path().filename().string();
+			if( std::regex_match( filename, filename_pattern ) ) {
+				filelist.push_back( filename );
+			}
+		}
+	}
+	return filelist;
 }
 
 /// @brief A utility function to get a filename given a path and a filename.
@@ -254,10 +255,70 @@ MasalaDiskManager::get_files_regex(
 /*static*/
 std::string
 MasalaDiskManager::filename_from_path_and_filename(
-    std::string const & path_and_filename
+	std::string const & path_and_filename
 ) {
-    using namespace std::filesystem;
-    return std::string( path( path_and_filename ).filename().c_str() );
+	using namespace std::filesystem;
+	return std::string( path( path_and_filename ).filename().c_str() );
+}
+
+/// @brief A utility function to get a unique, date- and thread-stamped version of a filename.
+/// @returns prefix + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
+/// @note This will be updated to include MPI process in the future.
+std::string
+MasalaDiskManager::datestamped_filename(
+	std::string const & prefix,
+	std::string const & suffix,
+	bool include_date /*= true*/,
+	bool include_time /*= true*/,
+	bool include_thread /*= true*/
+) const {
+	using namespace masala::base::managers::threads;
+	if( !( include_date || include_time || include_thread ) ) {
+		return prefix + suffix;
+	}
+
+	std::ostringstream ss;
+	bool add_underscore(false);
+
+	if( !prefix.empty() ) {
+		ss << prefix;
+		add_underscore = true;
+	}
+
+	// Adding thread:
+	if( include_thread ) {
+		MasalaThreadManagerHandle tm( MasalaThreadManager::get_instance() );
+		if( add_underscore ) {
+			ss << "_";
+		} else {
+			add_underscore = true;
+		}
+		if( tm->this_thread_is_a_masala_thread() ) {
+			ss << "thread_" << tm->get_thread_manager_thread_id();
+		} else {
+			ss << "thread_UNKNOWN";
+		}
+	}
+
+	// Adding date stamp:
+	if( include_date ) {
+		TODO TODO TODO;
+	}
+
+	// Adding time stamp:
+	if( include_time ) {
+		TODO TODO TODO;
+	}
+
+	// Adding suffix:
+	if( !suffix.empty()) {
+		if( add_underscore ) {
+			ss << "_";
+		}
+		ss << suffix;
+	}
+
+	return ss.str();
 }
 
 } // namespace disk
