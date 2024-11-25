@@ -174,8 +174,10 @@ public:
 	);
 
 	/// @brief A utility function to get a unique, date- and thread-stamped version of a filename.
+	/// @details Requires no disk access.  Threadsafe, since no locking.
 	/// @returns prefix + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
 	/// @note This will be updated to include MPI process in the future.
+	static
 	std::string
 	datestamped_filename(
 		std::string const & prefix,
@@ -183,7 +185,7 @@ public:
 		bool include_date = true,
 		bool include_time = true,
 		bool include_thread = true
-	) const;
+	);
 
 private: // Data
 

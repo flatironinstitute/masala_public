@@ -262,8 +262,10 @@ MasalaDiskManager::filename_from_path_and_filename(
 }
 
 /// @brief A utility function to get a unique, date- and thread-stamped version of a filename.
+/// @details Requires no disk access.  Threadsafe, since no locking.
 /// @returns prefix + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
 /// @note This will be updated to include MPI process in the future.
+/*static*/
 std::string
 MasalaDiskManager::datestamped_filename(
 	std::string const & prefix,
@@ -271,7 +273,7 @@ MasalaDiskManager::datestamped_filename(
 	bool include_date /*= true*/,
 	bool include_time /*= true*/,
 	bool include_thread /*= true*/
-) const {
+) {
 	using namespace masala::base::managers::threads;
 	if( !( include_date || include_time || include_thread ) ) {
 		return prefix + suffix;
