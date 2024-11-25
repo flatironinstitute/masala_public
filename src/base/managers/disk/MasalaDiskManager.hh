@@ -167,10 +167,11 @@ public:
 
     /// @brief A utility function to get a filename given a path and a filename.
     /// @details Requires no disk access.  Threadsafe, since no locking.
+    static
     std::string
     filename_from_path_and_filename(
         std::string const & path_and_filename
-    ) const;
+    );
 
 private: // Data
 

@@ -251,10 +251,11 @@ MasalaDiskManager::get_files_regex(
 
 /// @brief A utility function to get a filename given a path and a filename.
 /// @details Requires no disk access.  Threadsafe, since no locking.
+/*static*/
 std::string
 MasalaDiskManager::filename_from_path_and_filename(
     std::string const & path_and_filename
-) const {
+) {
     using namespace std::filesystem;
     return std::string( path( path_and_filename ).filename().c_str() );
 }
