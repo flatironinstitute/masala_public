@@ -42,7 +42,7 @@ masala_get_date_YYYYMMDD(
 	unsigned short int const day( masala_get_day( time_in ) );
 
 	char outstring[9];
-	snprintf( outstring, 8, "%04i%02uhi%02uhi", year, month, day );
+	snprintf( outstring, 9, "%04d%02hu%02hu", year, month, day );
 	return std::string( outstring );
 }
 
@@ -55,8 +55,8 @@ masala_get_time_HHMMSS(
 	unsigned short int const minute( masala_get_minute( time_in ) );
 	unsigned short int const second( masala_get_second( time_in ) );
 
-	char outstring[9];
-	snprintf( outstring, 6, "%02uhi%02uhi%02uhi", hour, minute, second );
+	char outstring[7];
+	snprintf( outstring, 7, "%02hu%02hu%02hu", hour, minute, second );
 	return std::string( outstring );
 }
 

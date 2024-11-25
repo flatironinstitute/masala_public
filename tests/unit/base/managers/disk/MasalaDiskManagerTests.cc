@@ -74,7 +74,7 @@ TEST_CASE( "Test datestamps on files", "[base::managers::disk::MasalaDiskManager
 
 	tm->write_to_tracer( testname, "EXPECTED:\t" + expected_output );
 	tm->write_to_tracer( testname, "  ACTUAL:\t" + outstring );
-	tm->write_to_tracer( testname, " ACTUAL':\t" + outstring2 );
+	tm->write_to_tracer( testname, " ACTUAL2:\t" + outstring2 );
 
 	CHECK( outstring2 == expected_output );
 }
