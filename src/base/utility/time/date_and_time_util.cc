@@ -25,6 +25,7 @@
 
 // STL headers:
 #include <stdio.h>
+#include <ctime>
 
 namespace masala {
 namespace base {
@@ -64,7 +65,9 @@ signed int
 masala_get_year(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return 1900 + date_and_time.tm_year;
 }
 
 /// @brief Get the month, as an unsigned short integer (1 to 12).
@@ -72,7 +75,9 @@ unsigned short int
 masala_get_month(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return static_cast< unsigned short >( date_and_time.tm_mon );
 }
 
 /// @brief Get the day (of the month), as an unsigned short integer (1 to 31).
@@ -80,7 +85,9 @@ unsigned short int
 masala_get_day(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return static_cast< unsigned short >( date_and_time.tm_mday );
 }
 
 /// @brief Get the hour (on a 24-hour clock) as an unsigned short integer (0 to 23).
@@ -88,7 +95,9 @@ unsigned short int
 masala_get_hour(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return static_cast< unsigned short >( date_and_time.tm_hour );
 }
 
 /// @brief Get the minute as an unsigned short integer (0 to 59).
@@ -96,7 +105,9 @@ unsigned short int
 masala_get_minute(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return static_cast< unsigned short >( date_and_time.tm_min );
 }
 
 /// @brief Get the second as an unsigned short integer (0 to 59).
@@ -104,7 +115,9 @@ unsigned short int
 masala_get_second(
 	std::chrono::time_point< std::chrono::system_clock > const & time_in
 ) {
-	TODO;
+	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
+	tm date_and_time( *std::localtime( &time_in_converted ) );
+	return static_cast< unsigned short >( date_and_time.tm_sec );
 }
 
 } // namespace time
