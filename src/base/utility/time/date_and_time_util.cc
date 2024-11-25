@@ -77,7 +77,7 @@ masala_get_month(
 ) {
 	time_t const time_in_converted( std::chrono::system_clock::to_time_t( time_in ) );
 	tm date_and_time( *std::localtime( &time_in_converted ) );
-	return static_cast< unsigned short >( date_and_time.tm_mon );
+	return static_cast< unsigned short >( 1 + date_and_time.tm_mon );
 }
 
 /// @brief Get the day (of the month), as an unsigned short integer (1 to 31).
