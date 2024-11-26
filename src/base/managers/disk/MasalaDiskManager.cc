@@ -348,7 +348,7 @@ MasalaDiskManager::datestamped_filename(
 void
 MasalaDiskManager::delete_file(
 	std::string const & file_to_delete,
-	bool const throw_if_missing = true
+	bool const throw_if_missing /*= true*/
 ) const {
 	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
 	bool const success( std::filesystem::remove( file_to_delete ) );
@@ -364,7 +364,7 @@ MasalaDiskManager::delete_file(
 void
 MasalaDiskManager::delete_files(
 	std::vector< std::string > const & files_to_delete,
-	bool const throw_if_missing = true
+	bool const throw_if_missing /*= true*/
 ) const {
 	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
 	for( std::string const & file_to_delete : files_to_delete ) {
