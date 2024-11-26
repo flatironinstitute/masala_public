@@ -280,6 +280,10 @@ MasalaDiskManager::datestamped_filename(
 	using namespace masala::base::managers::threads;
 	using namespace masala::base::utility::time;
 
+#ifdef MASALA_MPI
+	TODO TODO TODO; // Will trigger compilation error if support for stamping files by MPI process is not implemented.
+#endif
+
 	if( !( include_date || include_time || include_thread ) ) {
 		return prefix + suffix;
 	}
