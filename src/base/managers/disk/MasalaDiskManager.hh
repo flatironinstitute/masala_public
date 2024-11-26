@@ -187,6 +187,24 @@ public:
 		bool include_thread = true
 	);
 
+	/// @brief Delete a file.
+	/// @details Threadsafe (locks mutex). Optionally throws if the file is missing (true by default).
+	void
+	delete_file(
+		std::string const & file_to_delete,
+		bool const throw_if_missing = true
+	) const;
+
+	/// @brief Delete a bunch of files in a list.
+	/// @details Threadsafe (locks mutex).  More efficient than one-by-one deletion, since
+	/// the mutex is locked once for all of the deletions.  Optionally throws if any file
+	/// is missing (true by default).
+	void
+	delete_files(
+		std::vector< std::string > const & files_to_delete,
+		bool const throw_if_missing = true
+	) const;
+
 private: // Data
 
 	/// @brief A mutex to ensure that one thread at a time does disk i/o.

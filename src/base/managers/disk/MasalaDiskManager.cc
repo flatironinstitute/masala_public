@@ -343,6 +343,38 @@ MasalaDiskManager::datestamped_filename(
 	return ss.str();
 }
 
+/// @brief Delete a file.
+/// @details Threadsafe (locks mutex). Optionally throws if the file is missing (true by default).
+void
+MasalaDiskManager::delete_file(
+	std::string const & file_to_delete,
+	bool const throw_if_missing = true
+) const {
+	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+	bool const success( std::filesystem::remove( file_to_delete ) );
+	if( throw_if_missing ) {
+		CHECK_OR_THROW_FOR_CLASS( success, "delete_file", "Could not delete file " + file_to_delete + ".  This file was not found." );
+	}
+}
+
+/// @brief Delete a bunch of files in a list.
+/// @details Threadsafe (locks mutex).  More efficient than one-by-one deletion, since
+/// the mutex is locked once for all of the deletions.  Optionally throws if any file
+/// is missing (true by default).
+void
+MasalaDiskManager::delete_files(
+	std::vector< std::string > const & files_to_delete,
+	bool const throw_if_missing = true
+) const {
+	std::lock_guard< std::mutex > lock( disk_io_mutex_ );
+	for( std::string const & file_to_delete : files_to_delete ) {
+		bool const success( std::filesystem::remove( file_to_delete ) );
+		if( throw_if_missing ) {
+			CHECK_OR_THROW_FOR_CLASS( success, "delete_file", "Could not delete file " + file_to_delete + ".  This file was not found." );
+		}
+	}
+}
+
 } // namespace disk
 } // namespace managers
 } // namespace base
