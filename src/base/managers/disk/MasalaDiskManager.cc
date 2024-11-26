@@ -39,7 +39,6 @@
 #include <regex>
 #include <sstream>
 #include <chrono>
-#include <format>
 
 namespace masala {
 namespace base {
