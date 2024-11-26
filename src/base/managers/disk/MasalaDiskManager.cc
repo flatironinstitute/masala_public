@@ -355,6 +355,12 @@ MasalaDiskManager::delete_file(
 	if( throw_if_missing ) {
 		CHECK_OR_THROW_FOR_CLASS( success, "delete_file", "Could not delete file " + file_to_delete + ".  This file was not found." );
 	}
+	if( success ) {
+		write_to_tracer( "Deleted " + file_to_delete + "." );
+	}
+	else {
+		write_to_tracer( "Could not delete " + file_to_delete + ".  File does not exist." );
+	}
 }
 
 /// @brief Delete a bunch of files in a list.
@@ -371,6 +377,12 @@ MasalaDiskManager::delete_files(
 		bool const success( std::filesystem::remove( file_to_delete ) );
 		if( throw_if_missing ) {
 			CHECK_OR_THROW_FOR_CLASS( success, "delete_file", "Could not delete file " + file_to_delete + ".  This file was not found." );
+		}
+		if( success ) {
+			write_to_tracer( "Deleted " + file_to_delete + "." );
+		}
+		else {
+			write_to_tracer( "Could not delete " + file_to_delete + ".  File does not exist." );
 		}
 	}
 }
