@@ -157,6 +157,9 @@ MasalaTracerManager::write_to_tracer(
 std::string
 MasalaTracerManager::get_thread_id_string() const {
     std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+#ifdef MASALA_MPI
+	TODO TODO TODO; // Will trigger compilation error if support for stamping logfile lines by MPI process is not implemented.
+#endif
 	if( thread_map_.empty() ) {
 		return "0";
 	}

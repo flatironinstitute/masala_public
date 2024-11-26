@@ -52,8 +52,8 @@ public:
 // PUBLIC STATIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Instantiate the static singleton and get a handle to it.
-    static MasalaDiskManagerHandle get_instance();
+	/// @brief Instantiate the static singleton and get a handle to it.
+	static MasalaDiskManagerHandle get_instance();
 
 private:
 
@@ -61,8 +61,8 @@ private:
 // PRIVATE CONSTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Private constructor: object can only be instantiated with getInstance().
-    MasalaDiskManager() = default;
+	/// @brief Private constructor: object can only be instantiated with getInstance().
+	MasalaDiskManager() = default;
 
 public:
 
@@ -70,14 +70,14 @@ public:
 // PUBLIC CONSTRUCTION AND DESTRUCTION
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief No copy constructor.
-    MasalaDiskManager( MasalaDiskManager const & ) = delete;
+	/// @brief No copy constructor.
+	MasalaDiskManager( MasalaDiskManager const & ) = delete;
 
-    /// @brief No assignment operator.
-    void operator=( MasalaDiskManager const & ) = delete;
+	/// @brief No assignment operator.
+	void operator=( MasalaDiskManager const & ) = delete;
 
-    /// @brief Default destructor.
-    ~MasalaDiskManager() = default;
+	/// @brief Default destructor.
+	~MasalaDiskManager() = default;
 
 public:
 
@@ -85,97 +85,130 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Get the name of this object.
-    /// @details Returns "MasalaDiskManager".
-    std::string
-    class_name() const override;
+	/// @brief Get the name of this object.
+	/// @details Returns "MasalaDiskManager".
+	std::string
+	class_name() const override;
 
-    /// @brief Get the namespace of this object.
-    /// @details Returns "masala::base::managers::disk".
-    std::string
-    class_namespace() const override;
+	/// @brief Get the namespace of this object.
+	/// @details Returns "masala::base::managers::disk".
+	std::string
+	class_namespace() const override;
 
-    /// @brief Write a string to an ASCII file.
-    /// @details TRIGGERS WRITE TO DISK!  Threadsafe (locks mutex).
-    void
-    write_ascii_file(
-        std::string const & file_name,
-        std::string const & file_contents
-    ) const;
+	/// @brief Write a string to an ASCII file.
+	/// @details TRIGGERS WRITE TO DISK!  Threadsafe (locks mutex).
+	void
+	write_ascii_file(
+		std::string const & file_name,
+		std::string const & file_contents
+	) const;
 
-    /// @brief Read the contents of an ASCII file to a vector of strings.
-    /// @details Threadsafe (locks mutex).
-    std::vector< std::string >
-    read_ascii_file_to_string_vector(
-        std::string const & file_name
-    ) const;
+	/// @brief Read the contents of an ASCII file to a vector of strings.
+	/// @details Threadsafe (locks mutex).
+	std::vector< std::string >
+	read_ascii_file_to_string_vector(
+		std::string const & file_name
+	) const;
 
-    /// @brief Read the contents of an ASCII file to a string.
-    /// @details Threadsafe (locks mutex).
-    std::string
-    read_ascii_file_to_string(
-        std::string const & file_name
-    ) const;
+	/// @brief Read the contents of an ASCII file to a string.
+	/// @details Threadsafe (locks mutex).
+	std::string
+	read_ascii_file_to_string(
+		std::string const & file_name
+	) const;
 
-    /// @brief Read the contents of a JSON file and produce an nlohmann json object.
-    /// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
-    /// locks mutex.  (So this is threadsafe.)
-    nlohmann::json
-    read_json_file(
-        std::string const & file_name
-    ) const;
+	/// @brief Read the contents of a JSON file and produce an nlohmann json object.
+	/// @details Does not lock mutex directly, but calls read_ascii_file_to_string(), which
+	/// locks mutex.  (So this is threadsafe.)
+	nlohmann::json
+	read_json_file(
+		std::string const & file_name
+	) const;
 
-    /// @brief Read the contents of an pickled Python dictionary to a string.
-    /// @details Threadsafe (locks mutex).
-    std::string
-    read_pickled_python_dictionary_to_string(
-        std::string const & file_name
-    ) const;
+	/// @brief Read the contents of an pickled Python dictionary to a string.
+	/// @details Threadsafe (locks mutex).
+	std::string
+	read_pickled_python_dictionary_to_string(
+		std::string const & file_name
+	) const;
 
-    /// @brief Given a path, get the absolute path.
-    /// @details Threadsafe (locks mutex).
-    std::string
-    get_absolute_path(
-        std::string const & path_in
-    ) const;
+	/// @brief Given a path, get the absolute path.
+	/// @details Threadsafe (locks mutex).
+	std::string
+	get_absolute_path(
+		std::string const & path_in
+	) const;
 
-    /// @brief Given a path (absolute or relative to working directory), get
-    /// a vector of absolute paths to subdirectories.
-    /// @details Threadsafe (locks mutex).
-    std::vector< std::string >
-    get_subdirectories(
-        std::string const & root_directory_path
-    ) const;
+	/// @brief Given a path (absolute or relative to working directory), get
+	/// a vector of absolute paths to subdirectories.
+	/// @details Threadsafe (locks mutex).
+	std::vector< std::string >
+	get_subdirectories(
+		std::string const & root_directory_path
+	) const;
 
-    /// @brief Given a path to a directory, get the path and filename of each
-    /// file in that directory.
-    /// @details Threadsafe (locks mutex).
-    std::vector< std::string >
-    get_files(
-        std::string const & directory_path
-    ) const;
+	/// @brief Given a path to a directory, get the path and filename of each
+	/// file in that directory.
+	/// @details Threadsafe (locks mutex).
+	std::vector< std::string >
+	get_files(
+		std::string const & directory_path
+	) const;
 
 
-    /// @brief Given a path to a directory and a regex expression, get the path and filename of each
-    /// file matching the regex expression in that directory.
-    /// @details Threadsafe (locks mutex).
-    std::vector< std::string >
-    get_files_regex(
-        std::string const & directory_path,
-        std::regex const & filename_pattern
-    ) const;
+	/// @brief Given a path to a directory and a regex expression, get the path and filename of each
+	/// file matching the regex expression in that directory.
+	/// @details Threadsafe (locks mutex).
+	std::vector< std::string >
+	get_files_regex(
+		std::string const & directory_path,
+		std::regex const & filename_pattern
+	) const;
 
-    /// @brief A utility function to get a filename given a path and a filename.
-    /// @details Requires no disk access.  Threadsafe, since no locking.
-    std::string
-    filename_from_path_and_filename(
-        std::string const & path_and_filename
-    ) const;
+	/// @brief A utility function to get a filename given a path and a filename.
+	/// @details Requires no disk access.  Threadsafe, since no locking.
+	static
+	std::string
+	filename_from_path_and_filename(
+		std::string const & path_and_filename
+	);
+
+	/// @brief A utility function to get a unique, date- and thread-stamped version of a filename.
+	/// @details Requires no disk access.  Threadsafe, since no locking.
+	/// @returns prefix + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
+	/// @note This will be updated to include MPI process in the future.
+	static
+	std::string
+	datestamped_filename(
+		std::string const & prefix,
+		std::string const & suffix,
+		bool include_date = true,
+		bool include_time = true,
+		bool include_thread = true
+	);
+
+	/// @brief Delete a file.
+	/// @details Threadsafe (locks mutex). Optionally throws if the file is missing (true by default).
+	void
+	delete_file(
+		std::string const & file_to_delete,
+		bool const throw_if_missing = true
+	) const;
+
+	/// @brief Delete a bunch of files in a list.
+	/// @details Threadsafe (locks mutex).  More efficient than one-by-one deletion, since
+	/// the mutex is locked once for all of the deletions.  Optionally throws if any file
+	/// is missing (true by default).
+	void
+	delete_files(
+		std::vector< std::string > const & files_to_delete,
+		bool const throw_if_missing = true
+	) const;
 
 private: // Data
 
-    /// @brief A mutex to ensure that one thread at a time does disk i/o.
-    mutable std::mutex disk_io_mutex_;
+	/// @brief A mutex to ensure that one thread at a time does disk i/o.
+	mutable std::mutex disk_io_mutex_;
 
 };
 
