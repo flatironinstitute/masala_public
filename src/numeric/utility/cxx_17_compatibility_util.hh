@@ -30,6 +30,158 @@ namespace masala {
 namespace numeric {
 namespace utility {
 
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// @tparam InputIt The type of the iterator.
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @returns The sum of the elements of the container.
+template< class InputIt >
+inline
+typename std::iterator_traits<InputIt>::value_type
+reduce(
+	InputIt first,
+	InputIt last
+) {
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::reduce( first, last );
+#else
+	std::iterator_traits<InputIt>::value_type accumulator( 0 );
+	for( InputIt it(first); it != last; ++it ) [
+		accumulator += (*it);
+	]
+	return accumulator;
+#endif
+}
+
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// This versiont takes an execution policy.
+/// @tparam ExecutionPolicy The type of an execution policy.
+/// @tparam ForwardIt The type of the iterator.
+/// @param[in] policy The execution policy (specified in base/utility/execution_policy/util.hh).
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @returns The sum of the elements of the container. 
+template< class ExecutionPolicy, class ForwardIt >
+inline
+typename std::iterator_traits<ForwardIt>::value_type
+reduce(
+	ExecutionPolicy && policy,
+    ForwardIt first,
+	ForwardIt last
+) {
+	return std::reduce( policy, first, last );
+}
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// This version takes an initialization value.
+/// @tparam InputIt The type of the iterator.
+/// @tparam T The type of the initializer.
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @param[in] init The value to which to initialize the accumulator. 
+/// @returns The sum of the elements of the container.
+template< class InputIt, class T >
+inline
+T
+reduce(
+	InputIt first,
+	InputIt last,
+	T init
+) {
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::reduce( first, last, init );
+#else
+	T accumulator( init );
+	for( InputIt it(first); it != last; ++it ) [
+		accumulator += (*it);
+	]
+	return accumulator;
+#endif
+}
+
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// This versiont takes an execution policy and an initial value.
+/// @tparam ExecutionPolicy The type of an execution policy.
+/// @tparam ForwardIt The type of the iterator.
+/// @tparam T The type of the initial value.
+/// @param[in] policy The execution policy (specified in base/utility/execution_policy/util.hh).
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @param[in] init The value to which to initialize the accumulator.
+/// @returns The sum of the elements of the container. 
+template< class ExecutionPolicy, class ForwardIt, class T >
+inline
+T
+reduce(
+	ExecutionPolicy && policy,
+	ForwardIt first,
+	ForwardIt last,
+	T init
+) {
+	return std::reduce( policy, first, last, init );
+}
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// This versiont takes a binary operator for reduction and an initial value.
+/// @tparam InputIt The type of the iterator.
+/// @tparam T The type of the initial value.
+/// @tparam BinaryOp The type of the operation that we are performing.
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @param[in] init The value to which to initialize the accumulator.
+/// @param[in] op A binary operator for the reduction. 
+/// @returns The reduction of all elements of the container.
+template< class InputIt, class T, class BinaryOp >
+inline
+T
+reduce(
+	InputIt first,
+	InputIt last,
+	T init,
+	BinaryOp op
+) {
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::reduce( first, last, init, op );
+#else
+	T accumulator( init );
+	for( InputIt it(first); it != last; ++it ) [
+		accumulator = op( accumulator, (*it) );
+	]
+	return accumulator;
+#endif
+}
+
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+/// @brief Reduce the contents of a container.  Calls std::reduce() if available; otherwise performs simple summation.
+/// This versiont takes an execution policy, a binary operator for reduction, and an initial value.
+/// @tparam ExecutionPolicy The type of an execution policy.
+/// @tparam ForwardIt The type of the iterator.
+/// @tparam T The type of the initial value.
+/// @tparam BinaryOp The type of the operation that we are performing.
+/// @param[in] policy The execution policy (specified in base/utility/execution_policy/util.hh).
+/// @param[in] first An iterator to the start of the container.
+/// @param[in] last An iterator to the end of the container.
+/// @param[in] init The value to which to initialize the accumulator.
+/// @param[in] op A binary operator for the reduction. 
+/// @returns The reduction of the elements of the container. 
+template< class ExecutionPolicy, class ForwardIt, class T, class BinaryOp >
+inline
+T
+reduce(
+	ExecutionPolicy&& policy,
+    ForwardIt first,
+	ForwardIt last,
+	T init,
+	BinaryOp op
+) {
+	return std::reduce( policy, first, last, init, op );
+}
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
+
 /// @brief Masala version of transform_reduce.  Calls std::transform_reduce if available, or carries out ordinary
 /// multiplication and summation otherwise.
 /// @tparam InputIt1 An iterator type for the first container.
@@ -61,7 +213,7 @@ transform_reduce(
 #endif;
 }
 
-#ifdef MASALA_USE_STL_PARALLEL
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 /// @brief Masala version of transform_reduce.  Calls std::transform_reduce if available, or carries out ordinary
 /// multiplication and summation otherwise.  This version takes an execution policy.
 /// @tparam ExecutionPolicy The type of an execution policy.
@@ -86,7 +238,7 @@ transform_reduce(
 ) {
 	return std::transform_reduce( policy, first1, last1, first2, init );
 }
-#endif //MASALA_USE_STL_PARALLEL
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 
 /// @brief Masala version of transform_reduce.  This version allows specification of the reduction and transformation
 /// binary operations.  Calls std::transform_reduce if available, or carries out ordinary reduction and transformation
@@ -126,7 +278,7 @@ transform_reduce(
 #endif
 }
 
-#ifdef MASALA_USE_STL_PARALLEL
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 /// @brief Masala version of transform_reduce.  This version allows specification of the reduction and transformation
 /// binary operations.  Calls std::transform_reduce if available, or carries out ordinary reduction and transformation
 /// otherwise.  This version takes an execution policy.
@@ -158,7 +310,7 @@ transform_reduce(
 ) {
 	return std::transform_reduce( policy, first1, last1, first2, init, reduce_operation, transform_operation );
 }
-#endif //MASALA_USE_STL_PARALLEL
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 
 /// @brief  Masala version of transform_reduce.  This version allows specification of the reduction binary operation and
 /// a transformation unary operation.  Calls std::transform_reduce if available, or carries out ordinary reduction and
@@ -194,7 +346,7 @@ transform_reduce(
 #endif
 }
 
-#ifdef MASALA_USE_STL_PARALLEL
+#if defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 /// @brief  Masala version of transform_reduce.  This version allows specification of the reduction binary operation and
 /// a transformation unary operation.  Calls std::transform_reduce if available, or carries out ordinary reduction and
 /// transformation otherwise.
@@ -222,7 +374,7 @@ transform_reduce(
 ) {
 	return std::transform_reduce( first, last, init, reduce_operation, transform_operation );
 }
-#endif //MASALA_USE_STL_PARALLEL
+#endif //defined MASALA_USE_STL_PARALLEL && defined MASALA_USE_TRANSFORM_REDUCE
 
 } // namespace utility
 } // namespace numeric
