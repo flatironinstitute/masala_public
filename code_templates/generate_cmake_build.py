@@ -336,6 +336,7 @@ with open( output_file, 'w' ) as fhandle:
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            fhandle.write( "\n\tPRIVATE stdc++fs" )
             fhandle.write("\n)\n")
     if len( appslist ) > 0 :
         for app in appslist :
@@ -345,6 +346,7 @@ with open( output_file, 'w' ) as fhandle:
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            fhandle.write( "\n\tPRIVATE stdc++fs" )
             if len(cclist) > 0 :
                 fhandle.write("\n\tPUBLIC " + lib_full_name )
             fhandle.write( "\n)\n" )
@@ -373,6 +375,7 @@ if len(api_cclist) > 0 and output_file_api != None :
             for dentry in depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
         fhandle.write( "\n\tPRIVATE Threads::Threads" )
+        fhandle.write( "\n\tPRIVATE stdc++fs" )
         fhandle.write("\n)\n")
     print( "Wrote " + output_file_api + "." )
 
@@ -392,6 +395,7 @@ if len(testslist) > 0 :
             for dentry in test_depend_list :
                 fhandle.write( "\n\tPUBLIC " + dentry )
             fhandle.write( "\n\tPRIVATE Threads::Threads" )
+            fhandle.write( "\n\tPRIVATE stdc++fs" )
             fhandle.write("\n)\n")
 
 
