@@ -45,7 +45,7 @@ reduce(
 #if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
 	return std::reduce( first, last );
 #else
-	std::iterator_traits<InputIt>::value_type accumulator( 0 );
+	InputIt::value_type accumulator( 0 );
 	for( InputIt it(first); it != last; ++it ) [
 		accumulator += (*it);
 	]
