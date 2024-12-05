@@ -49,7 +49,11 @@ transform_reduce(
 	InputIt2 first2,
 	T init
 ) {
+#if defined __cplusplus && __cplusplus >= 201703L
 	return std::transform_reduce( first1, last1, first2, init );
+#else
+	return T(0);
+#endif;
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
@@ -105,7 +109,11 @@ transform_reduce(
     BinaryOp1 reduce_operation,
 	BinaryOp2 transform_operation
 ) {
+#if defined __cplusplus && __cplusplus >= 201703L
 	return std::transform_reduce( first1, last1, first2, init, reduce_operation, transform_operation );
+#else
+	return T(0);
+#endif
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
@@ -165,7 +173,11 @@ transform_reduce(
     BinaryOp reduce_operation,
 	UnaryOp transform_operation
 ) {
+#if defined __cplusplus && __cplusplus >= 201703L
 	return std::transform_reduce( first, last, init, reduce_operation, transform_operation );
+#else
+	return T(0);
+#endif
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
