@@ -306,6 +306,7 @@ if compile_registration_functions == True :
     api_cclist.append( source_dir + "_api/auto_generated_api/registration/register_" + lib_name + ".hh" )
 depend_list = get_library_dependencies( source_dir )
 depend_list.append( "${CMAKE_DL_LIBS}" ) # Needed for dlopen and dlclose functionality.
+depend_list.append( "${ADDITIONAL_MASALA_LIBS}" )
 
 appsdir = source_dir + "/" + lib_name + "_apps"
 if path.isdir( appsdir ) :
