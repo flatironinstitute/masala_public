@@ -32,7 +32,6 @@
 
 // STL headers:
 #include <vector>
-#include <string>
 
 namespace masala {
 namespace base {

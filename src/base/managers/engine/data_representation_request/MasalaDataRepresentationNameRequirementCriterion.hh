@@ -33,6 +33,9 @@
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentationCreator.fwd.hh>
 
+// STL headers:
+#include <string>
+
 namespace masala {
 namespace base {
 namespace managers {
