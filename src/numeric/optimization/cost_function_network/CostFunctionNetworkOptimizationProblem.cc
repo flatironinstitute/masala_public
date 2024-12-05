@@ -33,6 +33,7 @@
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
+#include <numeric/utility/cxx_17_compatibility_util.hh>
 
 // Base headers:
 #include <base/utility/execution_policy/util.hh>
@@ -392,7 +393,7 @@ CostFunctionNetworkOptimizationProblem::compute_score_change(
 	std::vector< base::Size > const & old_solution,
 	std::vector< base::Size > const & new_solution
 ) const {
-	return std::transform_reduce(
+	return masala::numeric::utility::transform_reduce(
 		MASALA_UNSEQ_EXECUTION_POLICY
 		cost_functions_.cbegin(), cost_functions_.cend(), 0.0, std::plus{},
 		[&old_solution, &new_solution]( masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & costfunction ) {
