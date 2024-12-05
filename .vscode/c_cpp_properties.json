@@ -10,7 +10,11 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "cStandard": "c17",
-            "cppStandard": "c++17"
+            "cppStandard": "c++17",
+            "defines" : [
+                "MASALA_USE_TRANSFORM_REDUCE",
+                "MASALA_USE_STL_PARALLEL"
+            ],
         }
     ],
     "version": 4

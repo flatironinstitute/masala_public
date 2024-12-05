@@ -49,16 +49,16 @@ transform_reduce(
 	InputIt2 first2,
 	T init
 ) {
-// #if defined __cplusplus && __cplusplus >= 201703L
-// 	return std::transform_reduce( first1, last1, first2, init );
-// #else
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::transform_reduce( first1, last1, first2, init );
+#else
 	T accumulator( init );
 	InputIt2 it2( first2 );
 	for( InputIt1 it1( first1 ); it1 != last1; ++it1, ++it2 ) {
 		accumulator += (*it1) * (*it2);
 	}
 	return accumulator;
-// #endif;
+#endif;
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
@@ -114,16 +114,16 @@ transform_reduce(
     BinaryOp1 reduce_operation,
 	BinaryOp2 transform_operation
 ) {
-// #if defined __cplusplus && __cplusplus >= 201703L
-// 	return std::transform_reduce( first1, last1, first2, init, reduce_operation, transform_operation );
-// #else
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::transform_reduce( first1, last1, first2, init, reduce_operation, transform_operation );
+#else
 	T accumulator( init );
 	InputIt2 it2( first2 );
 	for( InputIt1 it1( first1 ); it1 != last1; ++it1, ++it2 ) {
 		accumulator = reduce_operation( accumulator, transform_operation(*it1, *it2) );
 	}
 	return accumulator;
-// #endif
+#endif
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
@@ -183,15 +183,15 @@ transform_reduce(
     BinaryOp reduce_operation,
 	UnaryOp transform_operation
 ) {
-// #if defined __cplusplus && __cplusplus >= 201703L
-// 	return std::transform_reduce( first, last, init, reduce_operation, transform_operation );
-// #else
+#if defined MASALA_USE_TRANSFORM_REDUCE && defined __cplusplus && __cplusplus >= 201703L
+	return std::transform_reduce( first, last, init, reduce_operation, transform_operation );
+#else
 	T accumulator( init );
 	for( InputIt it1( first ); it1 != last; ++it1 ) {
 		accumulator = reduce_operation( accumulator, transform_operation(*it1) );
 	}
 	return accumulator;
-// #endif
+#endif
 }
 
 #ifdef MASALA_USE_STL_PARALLEL
