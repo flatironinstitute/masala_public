@@ -28,7 +28,6 @@
 // STL headers:
 #include <vector>
 #include <string>
-#include <numeric>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>

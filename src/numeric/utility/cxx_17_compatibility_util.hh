@@ -24,6 +24,8 @@
 #ifndef Masala_src_numeric_utility_cxx_17_compatibility_util_hh
 #define Masala_src_numeric_utility_cxx_17_compatibility_util_hh
 
+#include <numeric>
+
 namespace masala {
 namespace numeric {
 namespace utility {
