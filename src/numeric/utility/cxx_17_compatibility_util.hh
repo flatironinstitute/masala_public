@@ -46,9 +46,9 @@ reduce(
 	return std::reduce( first, last );
 #else
 	typename std::iterator_traits< InputIt >::value_type accumulator( 0 );
-	for( InputIt it(first); it != last; ++it ) [
+	for( InputIt it(first); it != last; ++it ) {
 		accumulator += (*it);
-	]
+	}
 	return accumulator;
 #endif
 }
@@ -94,9 +94,9 @@ reduce(
 	return std::reduce( first, last, init );
 #else
 	T accumulator( init );
-	for( InputIt it(first); it != last; ++it ) [
+	for( InputIt it(first); it != last; ++it ) {
 		accumulator += (*it);
-	]
+	}
 	return accumulator;
 #endif
 }
@@ -148,9 +148,9 @@ reduce(
 	return std::reduce( first, last, init, op );
 #else
 	T accumulator( init );
-	for( InputIt it(first); it != last; ++it ) [
+	for( InputIt it(first); it != last; ++it ) {
 		accumulator = op( accumulator, (*it) );
-	]
+	}
 	return accumulator;
 #endif
 }
