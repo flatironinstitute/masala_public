@@ -77,7 +77,7 @@ def wrap_comment_line( line : str ) -> [] :
                 # newlines.append( initial_whitespace + "/// " + line[start:] )
                 startprime = start
                 while( startprime < len(line) ) :
-                    print( line[startprime] )
+                    #print( line[startprime] )
                     if line[startprime] == "\t" or line[startprime] == " " :
                         startprime += 1
                     else :
@@ -132,7 +132,7 @@ def clean_up_generated_code( filecontents : str ) -> str :
         linestripped = line.strip()
         if len(linestripped) > 3 and linestripped[0] == '/' and linestripped[1] == '/' and linestripped[2] == '/' :
             newlines = wrap_comment_line( line )
-            print( newlines )
+            #print( newlines )
             for newline in newlines :
                 fileconents_out += newline + "\n"
         else :
