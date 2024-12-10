@@ -45,7 +45,7 @@ def wrap_comment_line( line : str ) -> [] :
             break
         initial_whitespace += line[i]
 
-    effective_column_width = max( COLUMN_WIDTH - len(initial_whitespace) - 3, 1 )
+    effective_column_width = max( COLUMN_WIDTH - len(initial_whitespace) - 4, 1 )
     
     start = 0
     first = True
@@ -71,36 +71,42 @@ def wrap_comment_line( line : str ) -> [] :
         
         if breaknow == True :
             if first == True :
-                newlines.append( line[start:] + "\n" )
+                newlines.append( line[start:] )
+                first = False
             else :
-                newlines.append( initial_whitespace + "// " + line[start:] + "\n" )
+                newlines.append( initial_whitespace + "/// " + line[start:] )
+            break
         else :
             for i in range( counter, start, -1 ) :
                 if( i == "\t" or i == " " ) :
                     counter = i
                     break
             if first == True :
-                newlines.append( line[start:counter] + "\n" )
+                newlines.append( line[start:counter] )
+                first = False
             else :
-                newlines.append( initial_whitespace + "// " + line[start:counter] + "\n" )
+                newlines.append( initial_whitespace + "/// " + line[start:counter])
             start = counter + 1
+            counter = 0
     
     return newlines
 
 
 ### @brief Clean up the generated code.
 ### @details Currently, only wraps long comment lines.  Could do more in the future.
-def clean_up_generated_code( filecontents : str ) :
+def clean_up_generated_code( filecontents : str ) -> str :
     filelines = filecontents.splitlines()
-    fileconents = ""
+    fileconents_out = ""
     for line in filelines :
         linestripped = line.strip()
-        if len(linestripped) > 2 and linestripped[0] == '/' and linestripped[1] == '/' :
+        if len(linestripped) > 3 and linestripped[0] == '/' and linestripped[1] == '/' and linestripped[2] == '/' :
             newlines = wrap_comment_line( line )
+            print( newlines )
             for newline in newlines :
-                fileconents += newline + "\n"
+                fileconents_out += newline + "\n"
         else :
-            filecontents += line + "\n"
+            fileconents_out += line + "\n"
+    return fileconents_out
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -1538,6 +1544,8 @@ def prepare_creator_forward_declarations( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif //" + header_guard_string )
 
+    plugin_creator_fwdfile = clean_up_generated_code( plugin_creator_fwdfile )
+
     with open( creator_filename + ".fwd.hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_fwdfile )
     print( "\tWrote \"" + creator_filename + ".fwd.hh\"." )
@@ -1633,6 +1641,8 @@ def prepare_creator_header_file( \
         .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", base_include_file ) \
         .replace( "<__PLUGIN_CREATOR_BASE_CLASS__>", plugin_creator_base_class )
 
+    plugin_creator_hhfile = clean_up_generated_code( plugin_creator_hhfile )
+
     with open( creator_filename + ".hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_hhfile )
     print( "\tWrote \"" + creator_filename + ".hh\"." )
@@ -1724,7 +1734,7 @@ def prepare_creator_cc_file( \
         .replace( "<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>", instantiable_string ) \
         .replace( "<__OBJECT_OR_COMMENTED__>", object_string )
     
-    clean_up_generated_code( plugin_creator_ccfile )
+    plugin_creator_ccfile = clean_up_generated_code( plugin_creator_ccfile )
 
     with open( creator_filename + ".cc", 'w' ) as filehandle :
         filehandle.write( plugin_creator_ccfile )
@@ -1760,7 +1770,7 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif // " + header_guard_string )
     
-    clean_up_generated_code( fwdfile )
+    fwdfile = clean_up_generated_code( fwdfile )
 
     fname = dirname + apiclassname + ".fwd.hh"
     with open( fname, 'w' ) as filehandle :
@@ -1963,7 +1973,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
 
-    clean_up_generated_code( hhfile )
+    hhfile = clean_up_generated_code( hhfile )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -2023,6 +2033,8 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+    
+    ccfile = clean_up_generated_code( ccfile )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
@@ -2124,6 +2136,8 @@ def do_generate_registration_function( \
         .replace( "<__LIBNAME__>", library_name ) \
         .replace( "<__CPP_HH_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
+    
+    hhfile = clean_up_generated_code( hhfile )
 
     with open( hh_fname, 'w' ) as filehandle :
         filehandle.write(hhfile)
@@ -2143,6 +2157,8 @@ def do_generate_registration_function( \
         .replace( "<__LIBNAME__>", library_name ) \
         .replace( "<__PLUGIN_CREATORS_FOR_REGISTRATION__>", plugin_creators_for_registration ) \
         .replace( "<__REGISTER_PLUGINS_HH_FILE_INCLUDE_>", "#include <" + hh_fname[4:] + ">" )
+    
+    ccfile = clean_up_generated_code( ccfile )
 
     with open( cc_fname, 'w' ) as filehandle :
         filehandle.write(ccfile)
