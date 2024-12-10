@@ -32,6 +32,112 @@ import shutil
 import re
 
 VERBOSE_SCRIPT_OUTPUT = False
+COLUMN_WIDTH = 120
+
+### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
+def wrap_comment_line( line : str ) -> [] :
+    if len(line) <= COLUMN_WIDTH :
+        return [line]
+    
+    initial_whitespace = ""
+    for i in range(len(line)) :
+        if line[i] == "/" :
+            break
+        initial_whitespace += line[i]
+
+    effective_column_width = max( COLUMN_WIDTH - len(initial_whitespace) - 4, 1 )
+    
+    start = 0
+    first = True
+    breaknow = False
+    newlines = []
+
+    counter = 0
+
+    while start < len(line) :
+        for i in range(effective_column_width) :
+            curpos = start + i
+            if curpos == len(line) :
+                breaknow = True
+                break
+
+            if line[curpos] == "\t" :
+                counter += 4
+            else :
+                counter += 1
+            if counter == effective_column_width :
+                counter = curpos
+                break
+        
+        if breaknow == True :
+            if first == True :
+                newlines.append( line[start:] )
+                first = False
+            else :
+                # newlines.append( initial_whitespace + "/// " + line[start:] )
+                startprime = start
+                while( startprime < len(line) ) :
+                    print( line[startprime] )
+                    if line[startprime] == "\t" or line[startprime] == " " :
+                        startprime += 1
+                    else :
+                        break
+                if startprime < len(line) :
+                    newlines.append( initial_whitespace + "/// " + line[startprime:] )
+            break
+        else :
+            found_space = False
+            for i in range( counter, start + round(COLUMN_WIDTH/5), -1 ) :
+                if( i == "\t" or i == " " ) :
+                    counter = i
+                    found_space = True
+                    break
+            
+            if found_space == False:
+                while( counter < len(line) ) :
+                    if line[counter] == " " or line[counter] == "\t" :
+                        break
+                    counter += 1
+
+            if first == True :
+                newlines.append( line[start:counter] )
+                first = False
+            else :
+                startprime = start
+                while( startprime < len(line) ) :
+                    if line[startprime] == "\t" or line[startprime] == " " :
+                        startprime += 1
+                    else :
+                        break
+                if startprime < len(line) :
+                    if startprime < counter :
+                        newlines.append( initial_whitespace + "/// " + line[startprime:counter])
+                    else :
+                        newlines.append( initial_whitespace + "/// " + line[startprime:])
+                        break
+                else :
+                    break
+            start = counter + 1
+            counter = 0
+    
+    return newlines
+
+
+### @brief Clean up the generated code.
+### @details Currently, only wraps long comment lines.  Could do more in the future.
+def clean_up_generated_code( filecontents : str ) -> str :
+    filelines = filecontents.splitlines()
+    fileconents_out = ""
+    for line in filelines :
+        linestripped = line.strip()
+        if len(linestripped) > 3 and linestripped[0] == '/' and linestripped[1] == '/' and linestripped[2] == '/' :
+            newlines = wrap_comment_line( line )
+            print( newlines )
+            for newline in newlines :
+                fileconents_out += newline + "\n"
+        else :
+            fileconents_out += line + "\n"
+    return fileconents_out
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -1469,6 +1575,8 @@ def prepare_creator_forward_declarations( \
         .replace( "<__CREATOR_CLASS_API_NAME__>", creator_name ) \
         .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif //" + header_guard_string )
 
+    plugin_creator_fwdfile = clean_up_generated_code( plugin_creator_fwdfile )
+
     with open( creator_filename + ".fwd.hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_fwdfile )
     print( "\tWrote \"" + creator_filename + ".fwd.hh\"." )
@@ -1564,6 +1672,8 @@ def prepare_creator_header_file( \
         .replace( "<__PLUGIN_CREATOR_BASE_INCLUDE_FILE__>", base_include_file ) \
         .replace( "<__PLUGIN_CREATOR_BASE_CLASS__>", plugin_creator_base_class )
 
+    plugin_creator_hhfile = clean_up_generated_code( plugin_creator_hhfile )
+
     with open( creator_filename + ".hh", 'w' ) as filehandle :
         filehandle.write( plugin_creator_hhfile )
     print( "\tWrote \"" + creator_filename + ".hh\"." )
@@ -1654,6 +1764,8 @@ def prepare_creator_cc_file( \
         .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" ) \
         .replace( "<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>", instantiable_string ) \
         .replace( "<__OBJECT_OR_COMMENTED__>", object_string )
+    
+    plugin_creator_ccfile = clean_up_generated_code( plugin_creator_ccfile )
 
     with open( creator_filename + ".cc", 'w' ) as filehandle :
         filehandle.write( plugin_creator_ccfile )
@@ -1688,6 +1800,8 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif // " + header_guard_string )
+    
+    fwdfile = clean_up_generated_code( fwdfile )
 
     fname = dirname + apiclassname + ".fwd.hh"
     with open( fname, 'w' ) as filehandle :
@@ -1890,6 +2004,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
 
+    hhfile = clean_up_generated_code( hhfile )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
@@ -1949,6 +2064,8 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
+    
+    ccfile = clean_up_generated_code( ccfile )
 
     fname = dirname + apiclassname + ".cc"
     with open( fname, 'w' ) as filehandle :
@@ -2050,6 +2167,8 @@ def do_generate_registration_function( \
         .replace( "<__LIBNAME__>", library_name ) \
         .replace( "<__CPP_HH_HEADER_GUARD__>", "#ifndef " + header_guard_string + "\n#define " + header_guard_string ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string )
+    
+    hhfile = clean_up_generated_code( hhfile )
 
     with open( hh_fname, 'w' ) as filehandle :
         filehandle.write(hhfile)
@@ -2069,6 +2188,8 @@ def do_generate_registration_function( \
         .replace( "<__LIBNAME__>", library_name ) \
         .replace( "<__PLUGIN_CREATORS_FOR_REGISTRATION__>", plugin_creators_for_registration ) \
         .replace( "<__REGISTER_PLUGINS_HH_FILE_INCLUDE_>", "#include <" + hh_fname[4:] + ">" )
+    
+    ccfile = clean_up_generated_code( ccfile )
 
     with open( cc_fname, 'w' ) as filehandle :
         filehandle.write(ccfile)
