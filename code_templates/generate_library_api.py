@@ -32,7 +32,7 @@ import shutil
 import re
 
 VERBOSE_SCRIPT_OUTPUT = False
-COLUMN_WIDTH = 80
+COLUMN_WIDTH = 120
 
 ### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
 def wrap_comment_line( line : str ) -> [] :
@@ -74,18 +74,49 @@ def wrap_comment_line( line : str ) -> [] :
                 newlines.append( line[start:] )
                 first = False
             else :
-                newlines.append( initial_whitespace + "/// " + line[start:] )
+                # newlines.append( initial_whitespace + "/// " + line[start:] )
+                startprime = start
+                while( startprime < len(line) ) :
+                    print( line[startprime] )
+                    if line[startprime] == "\t" or line[startprime] == " " :
+                        startprime += 1
+                    else :
+                        break
+                if startprime < len(line) :
+                    newlines.append( initial_whitespace + "/// " + line[startprime:] )
             break
         else :
-            for i in range( counter, start, -1 ) :
+            found_space = False
+            for i in range( counter, start + round(COLUMN_WIDTH/5), -1 ) :
                 if( i == "\t" or i == " " ) :
                     counter = i
+                    found_space = True
                     break
+            
+            if found_space == False:
+                while( counter < len(line) ) :
+                    if line[counter] == " " or line[counter] == "\t" :
+                        break
+                    counter += 1
+
             if first == True :
                 newlines.append( line[start:counter] )
                 first = False
             else :
-                newlines.append( initial_whitespace + "/// " + line[start:counter])
+                startprime = start
+                while( startprime < len(line) ) :
+                    if line[startprime] == "\t" or line[startprime] == " " :
+                        startprime += 1
+                    else :
+                        break
+                if startprime < len(line) :
+                    if startprime < counter :
+                        newlines.append( initial_whitespace + "/// " + line[startprime:counter])
+                    else :
+                        newlines.append( initial_whitespace + "/// " + line[startprime:])
+                        break
+                else :
+                    break
             start = counter + 1
             counter = 0
     
