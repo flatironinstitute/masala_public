@@ -32,6 +32,75 @@ import shutil
 import re
 
 VERBOSE_SCRIPT_OUTPUT = False
+COLUMN_WIDTH = 80
+
+### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
+def wrap_comment_line( line : str ) -> [] :
+    if len(line) <= COLUMN_WIDTH :
+        return [line]
+    
+    initial_whitespace = ""
+    for i in range(len(line)) :
+        if line[i] == "/" :
+            break
+        initial_whitespace += line[i]
+
+    effective_column_width = max( COLUMN_WIDTH - len(initial_whitespace) - 3, 1 )
+    
+    start = 0
+    first = True
+    breaknow = False
+    newlines = []
+
+    counter = 0
+
+    while start < len(line) :
+        for i in range(effective_column_width) :
+            curpos = start + i
+            if curpos == len(line) :
+                breaknow = True
+                break
+
+            if line[curpos] == "\t" :
+                counter += 4
+            else :
+                counter += 1
+            if counter == effective_column_width :
+                counter = curpos
+                break
+        
+        if breaknow == True :
+            if first == True :
+                newlines.append( line[start:] + "\n" )
+            else :
+                newlines.append( initial_whitespace + "// " + line[start:] + "\n" )
+        else :
+            for i in range( counter, start, -1 ) :
+                if( i == "\t" or i == " " ) :
+                    counter = i
+                    break
+            if first == True :
+                newlines.append( line[start:counter] + "\n" )
+            else :
+                newlines.append( initial_whitespace + "// " + line[start:counter] + "\n" )
+            start = counter + 1
+    
+    return newlines
+
+
+### @brief Clean up the generated code.
+### @details Currently, only wraps long comment lines.  Could do more in the future.
+def clean_up_generated_code( filecontents : str ) :
+    filelines = filecontents.splitlines()
+    fileconents = ""
+    for line in filelines :
+        linestripped = line.strip()
+        if len(linestripped) > 2 and linestripped[0] == '/' and linestripped[1] == '/' :
+            newlines = wrap_comment_line( line )
+            for newline in newlines :
+                fileconents += newline + "\n"
+        else :
+            filecontents += line + "\n"
 
 ## @brief Parse the commandline options.
 ## @returns Source library name, JSON API definition file.  Throws if
@@ -1654,6 +1723,8 @@ def prepare_creator_cc_file( \
         .replace( "<__SOURCE_CLASS_API_NAME__>", name_string + "_API" ) \
         .replace( "<__IS_SOURCE_CLASS_API_NOT_INSTANTIABLE__>", instantiable_string ) \
         .replace( "<__OBJECT_OR_COMMENTED__>", object_string )
+    
+    clean_up_generated_code( plugin_creator_ccfile )
 
     with open( creator_filename + ".cc", 'w' ) as filehandle :
         filehandle.write( plugin_creator_ccfile )
@@ -1688,6 +1759,8 @@ def prepare_forward_declarations( libraryname : str, classname : str, namespace 
         .replace( "<__CPP_END_NAMESPACE__>", generate_cpp_namespace( namespace, False ) ) \
         .replace( "<__SOURCE_CLASS_API_NAME__>", apiclassname ) \
         .replace( "<__CPP_END_FWD_HEADER_GUARD__>", "#endif // " + header_guard_string )
+    
+    clean_up_generated_code( fwdfile )
 
     fname = dirname + apiclassname + ".fwd.hh"
     with open( fname, 'w' ) as filehandle :
@@ -1890,6 +1963,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__POSSIBLE_COMMENT_START_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_start ) \
         .replace( "<__POSSIBLE_COMMENT_END_FOR_PROTECTED_CONSTRUCTOR_CLASSES__>", protected_constructor_comment_end )
 
+    clean_up_generated_code( hhfile )
 
     fname = dirname + apiclassname + ".hh"
     with open( fname, 'w' ) as filehandle :
