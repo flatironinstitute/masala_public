@@ -39,8 +39,8 @@ namespace tracer {
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaTracerManagerHandle
 MasalaTracerManager::get_instance() {
-    static MasalaTracerManager config_manager;
-    return &config_manager;
+	static MasalaTracerManager config_manager;
+	return &config_manager;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,14 +51,14 @@ MasalaTracerManager::get_instance() {
 /// @details Returns "MasalaTracerManager".
 std::string
 MasalaTracerManager::class_name() const {
-    return "MasalaTracerManager";
+	return "MasalaTracerManager";
 }
 
 /// @brief Get the namespace of this object.
 /// @details Returns "masala::base::managers::tracer".
 std::string
 MasalaTracerManager::class_namespace() const {
-    return "masala::base::managers::tracer";
+	return "masala::base::managers::tracer";
 }
 
 /// @brief Check whether a particular tracer is enabled.
@@ -66,14 +66,14 @@ MasalaTracerManager::class_namespace() const {
 /// tracer's status is returned.  Otherwise, the global default is returned.
 bool
 MasalaTracerManager::tracer_is_enabled(
-    std::string const & tracer_name
+	std::string const & tracer_name
 ) const {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-    std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
-    if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
-        return it->second;
-    }
-    return global_tracer_default_;
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+	if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+		return it->second;
+	}
+	return global_tracer_default_;
 }
 
 /// @brief Set whether a particular tracer is explicitly enabled or disabled.  True means
@@ -81,40 +81,40 @@ MasalaTracerManager::tracer_is_enabled(
 /// @details Can be undone with reset_tracer_state().
 void
 MasalaTracerManager::set_tracer_state(
-    std::string const & tracer_name,
-    bool const setting
+	std::string const & tracer_name,
+	bool const setting
 ) {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-    explicitly_enabled_or_disabled_tracers_[tracer_name] = setting;
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	explicitly_enabled_or_disabled_tracers_[tracer_name] = setting;
 }
 
 /// @brief Remove the explicit specification for whether a particular tracer is enabled or
 /// disabled.  This reverts the tracer behaviour back to the global setting.
 void
 MasalaTracerManager::reset_tracer_state(
-    std::string const & tracer_name
+	std::string const & tracer_name
 ) {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-    std::map< std::string, bool >::iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
-    if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
-        explicitly_enabled_or_disabled_tracers_.erase(it);
-    }
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	std::map< std::string, bool >::iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+	if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+		explicitly_enabled_or_disabled_tracers_.erase(it);
+	}
 }
 
 /// @brief Check whether the global default for unspecified tracers is enabled or disabled.
 bool
 MasalaTracerManager::global_tracer_default() const {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-    return global_tracer_default_;
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	return global_tracer_default_;
 }
 
 /// @brief Set whether the global default for unspecified tracers is enabled or disabled.
 void
 MasalaTracerManager::set_global_tracer_default(
-    bool const setting
+	bool const setting
 ) {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-    global_tracer_default_ = setting;
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	global_tracer_default_ = setting;
 }
 
 /// @brief Write a message to a tracer.
@@ -125,70 +125,92 @@ MasalaTracerManager::set_global_tracer_default(
 /// check and skip writing if the tracer is disabled.  Default false.
 void
 MasalaTracerManager::write_to_tracer(
-    std::string const & tracer_name,
-    std::string const & message,
-    bool const skip_check /*= false*/
+	std::string const & tracer_name,
+	std::string const & message,
+	bool const skip_check /*= false*/
 ) const {
-    std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 
-    // Check whether the tracer is enabled:
-    if( !skip_check ) {
-        std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
-        if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
-            if( !(it->second) ) {
-                return;
-            }
-        } else {
-            if( !global_tracer_default_ ) {
-                return;
-            }
-        }
-    }
+	// Check whether the tracer is enabled:
+	if( !skip_check ) {
+		std::map< std::string, bool >::const_iterator it( explicitly_enabled_or_disabled_tracers_.find( tracer_name ) );
+		if( it != explicitly_enabled_or_disabled_tracers_.end() ) {
+			if( !(it->second) ) {
+				return;
+			}
+		} else {
+			if( !global_tracer_default_ ) {
+				return;
+			}
+		}
+	}
 
-    // Write the message to the tracer.
-    std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
-    for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
-        std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
-    }
-    std::cout.flush();
+	// Write the message to the tracer.
+	std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
+	for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
+		std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+	}
+	std::cout.flush();
 }
 
 /// @brief Get the string for the current thread's ID.
 std::string
 MasalaTracerManager::get_thread_id_string() const {
-    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+	std::lock_guard< std::mutex > lock( thread_map_mutex_ );
 #ifdef MASALA_MPI
 	TODO TODO TODO; // Will trigger compilation error if support for stamping logfile lines by MPI process is not implemented.
 #endif
 	if( thread_map_.empty() ) {
 		return "0";
 	}
-    std::map< std::thread::id, base::Size >::const_iterator it( thread_map_.find( std::this_thread::get_id() ) );
-    if( it == thread_map_.end() ) {
-        return "?";
-    }
-    return std::to_string( it->second );
+	std::map< std::thread::id, base::Size >::const_iterator it( thread_map_.find( std::this_thread::get_id() ) );
+	if( it == thread_map_.end() ) {
+		return "?";
+	}
+	return std::to_string( it->second );
 } // MasalaTracerManager::get_thread_id_string()
 
 /// @brief Register thread ID with the tracer manager.
 void
 MasalaTracerManager::register_thread_id(
-    std::thread::id const system_thread_id,
-    base::Size const masala_thread_id
+	std::thread::id const system_thread_id,
+	base::Size const masala_thread_id
 ) {   
-    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
-    thread_map_[system_thread_id] = masala_thread_id;
+	std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+	thread_map_[system_thread_id] = masala_thread_id;
 } // MasalaTracerManager::register_thread_id()
 
 /// @brief Unregister thread ID with the tracer manager.
 void
 MasalaTracerManager::unregister_thread_id(
-    std::thread::id const system_thread_id
+	std::thread::id const system_thread_id
 ) {
-    std::lock_guard< std::mutex > lock( thread_map_mutex_ );
-    std::map< std::thread::id, base::Size >::iterator it( thread_map_.find( system_thread_id ) );
-    thread_map_.erase(it);
+	std::lock_guard< std::mutex > lock( thread_map_mutex_ );
+	std::map< std::thread::id, base::Size >::iterator it( thread_map_.find( system_thread_id ) );
+	thread_map_.erase(it);
 } // MasalaTracerManager::unregister_thread_id()
+
+////////////////////////////////////////////////////////////////////////////////
+// ADVANCED API PUBLIC MEMBER FUNCTIONS
+// These require an instance of a MasalaTracerManagerAccessKey.  Since only
+// certain managers can instantiate this class, this ensures that only these
+// classes may call these functions.
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Indicate that we are using MPI, and set the current MPI rank.
+/// @details In addition to setting the MPI rank, this sets using_mpi_ to true.
+/// @note This requires an instance of a MasalaTracerManagerAccessKey.  Since only
+// certain managers can instantiate this class, this ensures that only these
+// classes may call these functions.
+void
+MasalaTracerManager::set_mpi_rank(
+	masala::base::Size const rank_in,
+	MasalaTracerManagerAccessKey const & access_key
+) {
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	using_mpi_ = true;
+	mpi_process_rank_ = rank_in;
+}
 
 } // namespace tracer
 } // namespace managers
