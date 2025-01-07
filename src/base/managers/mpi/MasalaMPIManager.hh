@@ -71,7 +71,7 @@ public:
 /// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
 	static
 	MasalaMPIManagerHandle
-	MasalaMPIManager::initialize_for_external_mpi(
+	initialize_for_external_mpi(
 		masala::base::Size const this_mpi_rank,
 		masala::base::Size const n_mpi_ranks
 	);

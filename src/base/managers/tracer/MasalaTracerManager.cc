@@ -209,7 +209,7 @@ MasalaTracerManager::unregister_thread_id(
 void
 MasalaTracerManager::set_mpi_rank(
 	masala::base::Size const rank_in,
-	MasalaTracerManagerAccessKey const & access_key
+	MasalaTracerManagerAccessKey const & /*access_key*/
 ) {
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 	using_mpi_ = true;
