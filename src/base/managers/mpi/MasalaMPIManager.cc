@@ -56,6 +56,7 @@ MasalaMPIManager::initialize_for_external_mpi(
 	std::lock_guard< std::mutex > lock( mpiman->mpi_manager_mutex_, std::adopt_lock ); // The object should be locked.  This ensures that we ultimately unlock it.
 	mpiman->this_mpi_rank_ = this_mpi_rank;
 	mpiman->total_mpi_ranks_ = n_mpi_ranks;
+	mpiman->mpi_mode_ = MasalaMPIMode::EXTERNALLY_MANAGED_MPI;
 	{
 		// Configure the tracer manager to report MPI rank.
 		MasalaTracerManagerAccessKey access_key;
