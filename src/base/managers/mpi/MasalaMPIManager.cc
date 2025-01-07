@@ -40,12 +40,55 @@ namespace base {
 namespace managers {
 namespace mpi {
 
+static std::mutex initialization_mutex_;
+static bool manager_is_initialized_ = false;
 
-/// @brief Instantiate the static singleton and get a handle to it.
+
+/// @brief Instantiate the static singleton, and configure it for externally-managed MPI processes.
+/// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
 MasalaMPIManagerHandle
-MasalaMPIManager::get_instance() {
-	static MasalaMPIManager thread_manager;
-	return &thread_manager;
+MasalaMPIManager::initialize_for_external_mpi(
+	masala::base::Size const this_mpi_rank,
+	masala::base::Size const n_mpi_ranks
+) {
+	using namespace masala::base::managers::tracer;
+	MasalaMPIManagerHandle mpiman( MasalaMPIManager::get_instance( true ) );
+	std::lock_guard< std::mutex > lock( mpiman->mpi_manager_mutex_, std::adopt_lock ); // The object should be locked.  This ensures that we ultimately unlock it.
+	mpiman->this_mpi_rank_ = this_mpi_rank;
+	mpiman->total_mpi_ranks_ = n_mpi_ranks;
+	{
+		// Configure the tracer manager to report MPI rank.
+		MasalaTracerManagerAccessKey access_key;
+		MasalaTracerManagerHandle tracerman( MasalaTracerManager::get_instance() );
+		tracerman->set_mpi_rank( this_mpi_rank, access_key );
+	}
+	return mpiman;
+}
+
+/// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.
+/// @details If an initialization function isn't called first (in all processes), then this sets the MPI
+/// manager up to report that MPI is NOT being used at all.
+/// @note If throw_if_initialized is true, then we throw if we have already initialized the MPI manager,
+/// and the MPI manager is returned with its internal mutex locked.  Calling code must release this mutex.
+/// False by default, resulting in no check and the object returned with no mutex lock.
+MasalaMPIManagerHandle
+MasalaMPIManager::get_instance(
+	bool const throw_if_initialized
+) {
+	std::lock_guard< std::mutex > lock( initialization_mutex_ );
+	if( throw_if_initialized ) {
+		CHECK_OR_THROW( !manager_is_initialized_, class_namespace_static() + "::" + class_name_static(),
+			"get_instance", "The MasalaMPIManager has already been initialized."
+		);
+	}
+	static MasalaMPIManager mpi_manager;
+	manager_is_initialized_ = true;
+	if( throw_if_initialized ) {
+		mpi_manager.mpi_manager_mutex_.lock(); // Return object locked.
+	} else {
+		std::lock_guard< std::mutex > lock( mpi_manager.mpi_manager_mutex_ );  // Wait until it's possible to obtain a mutex lock, then unlock.
+	}
+	return &mpi_manager;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,13 +110,29 @@ MasalaMPIManager::MasalaMPIManager() :
 /// @details Returns "MasalaMPIManager".
 std::string
 MasalaMPIManager::class_name() const {
-	return "MasalaMPIManager";
+	return class_name_static();
 }
 
 /// @brief Get the namespace of this object.
 /// @details Returns "masala::base::managers::mpi".
 std::string
 MasalaMPIManager::class_namespace() const {
+	return class_namespace_static();
+}
+
+/// @brief Get the name of this object.  Static version.
+/// @details Returns "MasalaMPIManager".
+/*static*/
+std::string
+MasalaMPIManager::class_name_static() {
+	return "MasalaMPIManager";
+}
+
+/// @brief Get the namespace of this object.  Static version.
+/// @details Returns "masala::base::managers::mpi".
+/*static*/
+std::string
+MasalaMPIManager::class_namespace_static() {
 	return "masala::base::managers::mpi";
 }
 

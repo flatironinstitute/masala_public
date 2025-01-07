@@ -67,10 +67,22 @@ class MasalaMPIManager : public masala::base::MasalaObject {
 
 public:
 
+/// @brief Instantiate the static singleton, and configure it for externally-managed MPI processes.
+/// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
+	static
+	MasalaMPIManagerHandle
+	MasalaMPIManager::initialize_for_external_mpi(
+		masala::base::Size const this_mpi_rank,
+		masala::base::Size const n_mpi_ranks
+	);
+
 	/// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.
 	/// @details If an initialization function isn't called first (in all processes), then this sets the MPI
 	/// manager up to report that MPI is NOT being used at all.
-	static MasalaMPIManagerHandle get_instance();
+	/// @note If throw_if_initialized is true, then we throw if we have already initialized the MPI manager,
+	/// and the MPI manager is returned with its internal mutex locked.  Calling code must release this mutex.
+	/// False by default, resulting in no check and the object returned with no mutex lock.
+	static MasalaMPIManagerHandle get_instance( bool throw_if_initialized = false );
 
 private:
 
@@ -111,6 +123,18 @@ public:
 	/// @details Returns "masala::base::managers::mpi".
 	std::string
 	class_namespace() const override;
+
+	/// @brief Get the name of this object.  Static version.
+	/// @details Returns "MasalaMPIManager".
+	static
+	std::string
+	class_name_static();
+
+	/// @brief Get the namespace of this object.  Static version.
+	/// @details Returns "masala::base::managers::mpi".
+	static
+	std::string
+	class_namespace_static();
 
 private:
 
