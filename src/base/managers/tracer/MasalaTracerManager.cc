@@ -148,7 +148,11 @@ MasalaTracerManager::write_to_tracer(
 	// Write the message to the tracer.
 	std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
 	for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
-		std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+		if( using_mpi_ ) {
+			std::cout << tracer_name << "{P" << mpi_process_rank_ << "-T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+		} else {
+			std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+		}
 	}
 	std::cout.flush();
 }
