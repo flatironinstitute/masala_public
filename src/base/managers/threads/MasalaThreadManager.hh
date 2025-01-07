@@ -141,7 +141,7 @@ public:
     class_name() const override;
 
     /// @brief Get the namespace of this object.
-    /// @details Returns "masala::base::managers::thread".
+    /// @details Returns "masala::base::managers::threads".
     std::string
     class_namespace() const override;
 
