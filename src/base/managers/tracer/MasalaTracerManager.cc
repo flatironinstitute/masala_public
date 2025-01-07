@@ -151,7 +151,7 @@ MasalaTracerManager::write_to_tracer(
 		if( using_mpi_ ) {
 			std::cout << tracer_name << "{P" << mpi_process_rank_ << "-T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
 		} else {
-			std::cout << tracer_name << "{" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+			std::cout << tracer_name << "{T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
 		}
 	}
 	std::cout.flush();
