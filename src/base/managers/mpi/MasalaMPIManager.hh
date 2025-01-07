@@ -67,8 +67,12 @@ class MasalaMPIManager : public masala::base::MasalaObject {
 
 public:
 
-/// @brief Instantiate the static singleton, and configure it for externally-managed MPI processes.
-/// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC STATIC INITIALIZATION AND ACCESS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Instantiate the static singleton, and configure it for externally-managed MPI processes.
+	/// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
 	static
 	MasalaMPIManagerHandle
 	initialize_for_external_mpi(
@@ -111,7 +115,7 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC MEMBER FUNCTIONS
+// PUBLIC NAMING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get the name of this object.
@@ -135,6 +139,20 @@ public:
 	static
 	std::string
 	class_namespace_static();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Are we using MPI?
+	/// @returns True if the mode is anything but MasalaMPIMode::NO_MPI.
+	bool using_mpi() const;
+
+	/// @brief Get the current MPI process rank.
+	/// @details Throws if not using MPI.
+	masala::base::Size mpi_process_rank() const;
 
 private:
 

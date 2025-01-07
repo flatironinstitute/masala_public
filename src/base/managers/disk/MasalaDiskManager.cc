@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/managers/threads/MasalaThreadManager.hh>
+#include <base/managers/mpi/MasalaMPIManager.hh>
 #include <base/utility/time/date_and_time_util.hh>
 
 // External headers:
@@ -265,8 +266,7 @@ MasalaDiskManager::filename_from_path_and_filename(
 
 /// @brief A utility function to get a unique, date- and thread-stamped version of a filename.
 /// @details Requires no disk access.  Threadsafe, since no locking.
-/// @returns prefix + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
-/// @note This will be updated to include MPI process in the future.
+/// @returns prefix + "_process" + process_ID + "_thread_" + thread ID + "_" + YYYYMMDD + "_" + HHMMSS + suffix.
 /*static*/
 std::string
 MasalaDiskManager::datestamped_filename(
@@ -274,9 +274,11 @@ MasalaDiskManager::datestamped_filename(
 	std::string const & suffix,
 	bool include_date /*= true*/,
 	bool include_time /*= true*/,
-	bool include_thread /*= true*/
+	bool include_thread /*= true*/,
+	bool include_mpi_process /*=true*/
 ) {
 	using namespace masala::base::managers::threads;
+	using namespace masala::base::managers::mpi;
 	using namespace masala::base::utility::time;
 
 #ifdef MASALA_MPI
@@ -294,6 +296,19 @@ MasalaDiskManager::datestamped_filename(
 		ss << prefix;
 		if( prefix[prefix.size()-1] != '.' ) {
 			add_underscore = true;
+		}
+	}
+
+	// Adding process:
+	if( include_mpi_process ) {
+		MasalaMPIManagerHandle mpiman( MasalaMPIManager::get_instance() );
+		if( mpiman->using_mpi() ) {
+			if( add_underscore ) {
+				ss << "_";
+			} else {
+				add_underscore = true;
+			}
+			ss << "proc_" << mpiman->mpi_process_rank();
 		}
 	}
 

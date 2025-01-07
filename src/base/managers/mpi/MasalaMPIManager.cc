@@ -43,6 +43,9 @@ namespace mpi {
 static std::mutex initialization_mutex_;
 static bool manager_is_initialized_ = false;
 
+////////////////////////////////////////////////////////////////////////////////
+// MasalaMPIManager PUBLIC STATIC INITIALIZATION AND ACCESS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Instantiate the static singleton, and configure it for externally-managed MPI processes.
 /// @details Throws if the MPI manager has already been instantiated.  Must be called from ALL MPI ranks!
@@ -104,7 +107,7 @@ MasalaMPIManager::MasalaMPIManager() :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// MasalaMPIManager PUBLIC MEMBER FUNCTIONS
+// MasalaMPIManager PUBLIC NAMING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get the name of this object.
@@ -135,6 +138,27 @@ MasalaMPIManager::class_name_static() {
 std::string
 MasalaMPIManager::class_namespace_static() {
 	return "masala::base::managers::mpi";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// MasalaMPIManager PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Are we using MPI?
+/// @returns True if the mode is anything but MasalaMPIMode::NO_MPI.
+bool
+MasalaMPIManager::using_mpi() const {
+	std::lock_guard< std::mutex > lock( mpi_manager_mutex_ );
+	return mpi_mode_ != MasalaMPIMode::NO_MPI;
+}
+
+/// @brief Get the current MPI process rank.
+/// @details Throws if not using MPI.
+masala::base::Size
+MasalaMPIManager::mpi_process_rank() const {
+	std::lock_guard< std::mutex > lock( mpi_manager_mutex_ );
+	CHECK_OR_THROW_FOR_CLASS( mpi_mode_ != MasalaMPIMode::NO_MPI, "mpi_process_rank", "Program error: no MPI rank can be returned when MPI is not used!" );
+	return this_mpi_rank_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
