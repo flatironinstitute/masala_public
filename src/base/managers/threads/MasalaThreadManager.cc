@@ -116,7 +116,7 @@ MasalaThreadManager::class_name() const {
 }
 
 /// @brief Get the namespace of this object.
-/// @details Returns "masala::base::managers::thread".
+/// @details Returns "masala::base::managers::threads".
 std::string
 MasalaThreadManager::class_namespace() const {
     return "masala::base::managers::threads";
