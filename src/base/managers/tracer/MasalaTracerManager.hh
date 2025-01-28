@@ -136,15 +136,13 @@ public:
 	std::string
 	class_namespace() const override;
 
-	/// @brief If we want to direct output to something other than std::cout, we can provide a pointer
+	/// @brief If we want to direct output to something other than std::cout, we can provide a shared pointer
 	/// to a std::ostream object.
-	/// @details WARNING!  It is the developer's responsibility to manage the lifetime of this object and to
-	/// ensure that it persists throughout program execution!
-	/// @param output_stream_pointer A pointer to a std::ostream object guaranteed to persist through program execution (
-	/// or as long as we use this output stream).
+	/// @param output_stream_pointer A shared pointer to a std::ostream object guaranteed to persist through program execution
+	/// (or as long as we use this output stream).  The shared pointer (but not the stream object) is copied on input.
 	void
 	set_redirect_tracers(
-		std::ostream * const output_stream_pointer
+		std::shared_ptr< std::ostream > const & output_stream_pointer
 	);
 
 	/// @brief Reset the output to flow to std::cout instead of to any custom std::ostream provided previously.
@@ -232,8 +230,8 @@ private:
 	/// @brief A mutex to lock this object.
 	mutable std::mutex masala_tracer_manager_mutex_;
 
-	/// @brief The stream to which we direct output.  Defaults to std::cout.
-	std::ostream * output_stream_ = &std::cout;
+	/// @brief The stream to which we direct output.  If nullptr, we use std::cout.
+	std::shared_ptr< std::ostream > output_stream_;
 
 	/// @brief The default setting for tracers.
 	/// @details Defaults to "on" ("true") for now.  Will be set from configuration file

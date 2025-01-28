@@ -61,15 +61,13 @@ MasalaTracerManager::class_namespace() const {
 	return "masala::base::managers::tracer";
 }
 
-/// @brief If we want to direct output to something other than std::cout, we can provide a pointer
+/// @brief If we want to direct output to something other than std::cout, we can provide a shared pointer
 /// to a std::ostream object.
-/// @details WARNING!  It is the developer's responsibility to manage the lifetime of this object and to
-/// ensure that it persists throughout program execution!
-/// @param output_stream_pointer A pointer to a std::ostream object guaranteed to persist through program execution (
-/// or as long as we use this output stream).
+/// @param output_stream_pointer A shared pointer to a std::ostream object guaranteed to persist through program execution
+/// (or as long as we use this output stream).  The shared pointer (but not the stream object) is copied on input.
 void
 MasalaTracerManager::set_redirect_tracers(
-	std::ostream * const output_stream_pointer
+	std::shared_ptr< std::ostream > const & output_stream_pointer
 ) {
 	CHECK_OR_THROW_FOR_CLASS( output_stream_pointer != nullptr, "set_redirect_tracers", "A null pointer was passed to this function." );
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
@@ -80,7 +78,7 @@ MasalaTracerManager::set_redirect_tracers(
 void
 MasalaTracerManager::reset_redirect_tracers() {
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
-	output_stream_ = &std::cout;
+	output_stream_ = nullptr;
 }
 
 /// @brief Check whether a particular tracer is enabled.
@@ -169,14 +167,25 @@ MasalaTracerManager::write_to_tracer(
 
 	// Write the message to the tracer.
 	std::vector< std::string > const splitlines( masala::base::utility::string::split_by_newlines( message ) );
-	for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
-		if( using_mpi_ ) {
-			(*output_stream_) << tracer_name << "{P" << mpi_process_rank_ << "-T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
-		} else {
-			(*output_stream_) << tracer_name << "{T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+	if( output_stream_ == nullptr  ) {
+		for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
+			if( using_mpi_ ) {
+				std::cout << tracer_name << "{P" << mpi_process_rank_ << "-T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+			} else {
+				std::cout << tracer_name << "{T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+			}
 		}
+		std::cout.flush();
+	} else {
+		for( masala::base::Size i(0), imax(splitlines.size()); i<imax; ++i ) {
+			if( using_mpi_ ) {
+				( *output_stream_ ) << tracer_name << "{P" << mpi_process_rank_ << "-T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+			} else {
+				( *output_stream_ ) << tracer_name << "{T" << get_thread_id_string() << "}: " << splitlines[i] << "\n";
+			}
+		}
+		(*output_stream_).flush();
 	}
-	(*output_stream_).flush();
 }
 
 /// @brief Get the string for the current thread's ID.
