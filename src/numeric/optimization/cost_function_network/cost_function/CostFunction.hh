@@ -195,12 +195,12 @@ public:
 	bool
 	uses_cost_function_scratch_space() const;
 
-	/// @brief Generate a suitable object of type CostFunctionScratchSpace (by owning pointer).
+	/// @brief Generate a suitable object of type CostFunctionScratchSpace (by shared pointer).
 	/// @details Base class generates nullptr.  May be overridden by derived classes, which should
 	/// return a suitable class derived from CostFunctionScratchSpace which can be accepted by compute_cost_function()
 	/// and compute_cost_function_difference() function overrides.
 	virtual
-	CostFunctionScratchSpaceOP
+	CostFunctionScratchSpaceSP
 	generate_cost_function_scratch_space() const;
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
