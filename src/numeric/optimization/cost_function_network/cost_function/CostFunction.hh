@@ -186,6 +186,15 @@ public:
 		std::vector< masala::base::Size > const & variable_node_indices
 	);
 
+	/// @brief Does this class use a cost function scratch space?
+	/// @details Returns false by default.  May be overridden by derived classes to return true.  If this returns true,
+	/// then it is expected that (a) generate_cost_function_scratch_space() returns a non-null pointer to a suitable object
+	/// derived from CostFunctionScratchSpace, and (b) compute_cost_function() and compute_cost_function_difference() accept
+	/// an object of that type and use it.
+	virtual
+	bool
+	uses_cost_function_scratch_space() const;
+
 	/// @brief Generate a suitable object of type CostFunctionScratchSpace (by owning pointer).
 	/// @details Base class generates nullptr.  May be overridden by derived classes, which should
 	/// return a suitable class derived from CostFunctionScratchSpace which can be accepted by compute_cost_function()
