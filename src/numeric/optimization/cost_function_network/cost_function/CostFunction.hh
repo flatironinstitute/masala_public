@@ -33,6 +33,7 @@
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -187,20 +188,31 @@ public:
 
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	/// @details This version returns 0; must be overridden by derived classes.
+	/// @param[in] candidate_solution The current solution, expressed as a vector of variable node indices.
+	/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+	/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+	/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
 	virtual
 	masala::base::Real
 	compute_cost_function(
-		std::vector< masala::base::Size > const & candidate_solution
+		std::vector< masala::base::Size > const & candidate_solution,
+		CostFunctionScratchSpace * scratch_space
 	) const;
 
 	/// @brief Given an old selection of choices at variable nodes and a new selection,
 	/// compute the cost function difference.
 	/// @details This version returns 0; must be overridden by derived classes.
+	/// @param[in] candidate_solution_old The previous solution, expressed as a vector of variable node indices.
+	/// @param[in] candidate_solution_new The new solution, expressed as a vector of variable node indices.
+	/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+	/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+	/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
 	virtual
 	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
-		std::vector< masala::base::Size > const & candidate_solution_new
+		std::vector< masala::base::Size > const & candidate_solution_new,
+		CostFunctionScratchSpace * scratch_space
 	) const;
 
 public:
