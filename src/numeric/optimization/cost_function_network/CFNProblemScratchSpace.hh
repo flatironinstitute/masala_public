@@ -1,19 +1,19 @@
 /*
-    Masala
-    Copyright (C) 2025 Vikram K. Mulligan
+	Masala
+	Copyright (C) 2025 Vikram K. Mulligan
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /// @file src/numeric/optimization/cost_function_network/CFNProblemScratchSpace.hh
@@ -33,8 +33,15 @@
 // Parent header:
 #include <base/MasalaObject.hh>
 
+// Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
+#include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
+
 // Base headers:
 #include <base/types.hh>
+
+// STL headers:
+#include <vector>
 
 namespace masala {
 namespace numeric {
@@ -84,11 +91,32 @@ public:
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the scratch space for the ith cost function.
+	/// @param cost_function_index The index of the cost function.
+	/// @returns A pointer to the scratch space, or nullptr if the cost function doesn't use a scratch space.
+	/// In debug mode, this throws if the index is out of range.
+	masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpace *
+	cost_function_scratch_space_raw_ptr(
+		masala::base::Size const cost_function_index
+	) const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given a finalized cost function, grab its scratch space and add it to the
+	/// vector of scratch spaces.  Adds nullptr if the cost function does not define its
+	/// own scratch space type.
+	void
+	add_cost_function_scratch_space(
+		masala::numeric::optimization::cost_function_network::cost_function::CostFunction const & cost_fxn
+	);
+
+	/// @brief Mark this object as finalized (i.e. no more scratch spaces can be added).
+	void
+	finalize();
 
 
 public:
@@ -109,6 +137,14 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Has this object been finalized?
+	/// @details After finalization, scratch spaces are mutable, but no new cost function scratch spaces can be added.
+	bool finalized_ = false;
+
+	/// @brief A vector of scratch spaces for cost functions in a problem (or nullptr if a cost function doesn't use a scratch space).
+	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpaceSP > cost_function_scratch_spaces_;
+
 
 }; // class CFNProblemScratchSpace
 
