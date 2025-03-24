@@ -237,6 +237,14 @@ public:
 // WORK FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Generate a cost function network optimization problem scratch space for this object.
+	/// @details Should include scratch spaces for those cost functions that take them.  Must be implemented by derived
+	/// classes: base class implementation throws.  Should call protected_add_cost_function_scratch_spaces(), and then
+	/// should call finalize() on the generated object.
+	virtual
+	CFNProblemScratchSpaceSP
+	generate_cfn_problem_scratch_space() const;
+
 	/// @brief Given a candidate solution, compute the score.  This computes the actual,
 	/// non-approximate score (possibly more slowly), not the score that the data approximation
 	/// uses (computed in a manner optimized for speed, which may involve approximations).
@@ -418,6 +426,13 @@ protected:
 	cost_functions() const {
 		return cost_functions_;
 	}
+
+	/// @brief Given a CFN problem scratch space, add scratch spaces for all of this problem's cost functions.
+	/// @param[inout] cfn_problem_scratch_space The object to which we're adding scratch spaces for cost functinos.
+	void
+	protected_add_cost_function_scratch_spaces(
+		CFNProblemScratchSpace & cfn_problem_scratch_space
+	) const;
 
 private:
 

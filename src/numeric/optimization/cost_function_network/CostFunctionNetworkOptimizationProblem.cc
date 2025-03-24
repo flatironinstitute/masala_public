@@ -343,7 +343,18 @@ CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Generate a cost function network optimization problem scratch space for this object.
+/// @details Should include scratch spaces for those cost functions that take them.  Must be implemented by derived
+/// classes: base class implementation throws.  Should call protected_add_cost_function_scratch_spaces(), and then
+/// should call finalize() on the generated object.
+/*virtual*/
+CFNProblemScratchSpaceSP
+CostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space() const {
+	MASALA_THROW( class_namespace() + "::" + class_name(), "generate_cfn_problem_scratch_space", "This function must be implemented for derived classes." );
+	return nullptr;
+}
 
 /// @brief Given a candidate solution, compute the score.  This computes the actual,
 /// non-approximate score (possibly more slowly), not the score that the data approximation
@@ -896,6 +907,21 @@ std::vector< std::pair< masala::base::Size, masala::base::Size > > const &
 CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() const {
 	DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_n_choices_at_variable_nodes", "This object must be finalized before this function is called!" );
 	return n_choices_at_variable_nodes_;
+}
+
+/// @brief Given a CFN problem scratch space, add scratch spaces for all of this problem's cost functions.
+/// @param[inout] cfn_problem_scratch_space The object to which we're adding scratch spaces for cost functinos.
+void
+CostFunctionNetworkOptimizationProblem::protected_add_cost_function_scratch_spaces(
+	CFNProblemScratchSpace & cfn_problem_scratch_space
+) const {
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_add_cost_function_scratch_spaces", "This " + class_name() + " object must be "
+		"finalized before this function is called."
+	);
+	for( auto const & entry : cost_functions_ ) {
+		cfn_problem_scratch_space.add_cost_function_scratch_space( *entry );
+	}
 }
 
 
