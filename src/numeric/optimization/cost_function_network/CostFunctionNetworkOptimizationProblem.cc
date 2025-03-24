@@ -31,6 +31,7 @@
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolutions.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.hh>
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 #include <numeric/utility/cxx_17_compatibility_util.hh>
 
@@ -354,11 +355,17 @@ CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
 /// a read-only context.  The default implementation calls compute_absolute_score(), but this
 /// may be overridden if the data representation uses an approximation or lower level of precision
 /// to compute the score.
+/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
+/*virtual*/
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score(
-	std::vector< base::Size > const & candidate_solution
+	std::vector< base::Size > const & candidate_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
 ) const {
-	return compute_absolute_score( candidate_solution ); /*This behaviour should be override if a derived class uses an approximation.*/
+	return compute_absolute_score( candidate_solution, cfn_problem_scratch_space ); /*This behaviour should be override if a derived class uses an approximation.*/
 }
 
 /// @brief Given a candidate solution, compute the data representation score (which
@@ -368,13 +375,23 @@ CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score(
 /// entries for every position, though, since not all positions have at least two choices.)
 /// @note This function does NOT lock the problem mutex.  This is only threadsafe from
 /// a read-only context.
+/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
+/*virtual*/
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_absolute_score(
-	std::vector< base::Size > const & candidate_solution
+	std::vector< base::Size > const & candidate_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
 ) const {
 	masala::base::Real accumulator(0.0);
-	for( auto const & entry : cost_functions_ ) {
-		accumulator += entry->compute_cost_function( candidate_solution );
+	for( masala::base::Size i(0); i<cost_functions_.size(); ++i ) {
+		if( cfn_problem_scratch_space != nullptr ) {
+			accumulator += cost_functions_[i]->compute_cost_function( candidate_solution, cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) );
+		} else {
+			accumulator += cost_functions_[i]->compute_cost_function( candidate_solution, nullptr );
+		}
 	}
 	return accumulator;
 }
@@ -387,18 +404,27 @@ CostFunctionNetworkOptimizationProblem::compute_absolute_score(
 /// entries for every position, though, since not all positions have at least two choices.)
 /// @note This function does NOT lock the problem mutex.  This is only threadsafe from
 /// a read-only context.
+/// @param[in] old_solution The previous candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] new_solution The current candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
 masala::base::Real
 CostFunctionNetworkOptimizationProblem::compute_score_change(
 	std::vector< base::Size > const & old_solution,
-	std::vector< base::Size > const & new_solution
+	std::vector< base::Size > const & new_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
 ) const {
-	return masala::numeric::utility::transform_reduce(
-		MASALA_UNSEQ_EXECUTION_POLICY
-		cost_functions_.cbegin(), cost_functions_.cend(), 0.0, std::plus{},
-		[&old_solution, &new_solution]( masala::numeric::optimization::cost_function_network::cost_function::CostFunctionSP const & costfunction ) {
-			return costfunction->compute_cost_function_difference( old_solution, new_solution );
+	masala::base::Real accumulator(0.0);
+	for( masala::base::Size i(0); i<cost_functions_.size(); ++i ) {
+		if( cfn_problem_scratch_space != nullptr ) {
+			accumulator += cost_functions_[i]->compute_cost_function_difference( old_solution, new_solution, cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) );
+		} else {
+			accumulator += cost_functions_[i]->compute_cost_function_difference( old_solution, new_solution, nullptr );
 		}
-	);
+	}
+	return accumulator;
 }
 
 /// @brief Create a solutions container for this type of optimization problem.

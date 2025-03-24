@@ -38,6 +38,7 @@
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.fwd.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -246,10 +247,15 @@ public:
 	/// a read-only context.  The default implementation calls compute_absolute_score(), but this
 	/// may be overridden if the data representation uses an approximation or lower level of precision
 	/// to compute the score.
+	/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+	/// indexed by variable node index.
+	/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+	/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
 	virtual
 	masala::base::Real
 	compute_non_approximate_absolute_score(
-		std::vector< base::Size > const & candidate_solution
+		std::vector< base::Size > const & candidate_solution,
+		CFNProblemScratchSpace * cfn_problem_scratch_space
 	) const;
 
 	/// @brief Given a candidate solution, compute the data representation score (which
@@ -259,10 +265,15 @@ public:
 	/// entries for every position, though, since not all positions have at least two choices.)
 	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
 	/// a read-only context.
+	/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+	/// indexed by variable node index.
+	/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+	/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
 	virtual
 	masala::base::Real
 	compute_absolute_score(
-		std::vector< base::Size > const & candidate_solution
+		std::vector< base::Size > const & candidate_solution,
+		CFNProblemScratchSpace * cfn_problem_scratch_space
 	) const;
 
 	/// @brief Given a pair of candidate solutions, compute the difference in their scores.
@@ -273,11 +284,18 @@ public:
 	/// entries for every position, though, since not all positions have at least two choices.)
 	/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
 	/// a read-only context.
+	/// @param[in] old_solution The previous candidate solution, expressed as a vector of choice indices,
+	/// indexed by variable node index.
+	/// @param[in] new_solution The current candidate solution, expressed as a vector of choice indices,
+	/// indexed by variable node index.
+	/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+	/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
 	virtual
 	masala::base::Real
 	compute_score_change(
 		std::vector< base::Size > const & old_solution,
-		std::vector< base::Size > const & new_solution
+		std::vector< base::Size > const & new_solution,
+		CFNProblemScratchSpace * cfn_problem_scratch_space
 	) const;
 
 	/// @brief Create a solutions container for this type of optimization problem.
