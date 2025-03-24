@@ -78,12 +78,7 @@ public:
 
 	/// @brief Destructor.
 	~CostFunctionScratchSpace() override = default;
-
-	/// @brief Make a copy of this object.
-	virtual
-	CostFunctionScratchSpaceSP
-	clone() const = 0;
-
+	
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
