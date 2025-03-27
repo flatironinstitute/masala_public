@@ -35,6 +35,7 @@
 
 // Base headers:
 #include <base/types.hh>
+#include <string>
 
 namespace masala {
 namespace numeric {
@@ -78,6 +79,21 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the name of this class ("CostFunctionScratchSpace").
+	static
+	std::string
+	class_name_static();
+
+	/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network::cost_function").
+	static
+	std::string
+	class_namespace_static();
+
+	/// @brief Get the namespace and name of this class ("masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpace").
+	static
+	std::string
+	class_namespace_and_name_static();
 
 public:
 
