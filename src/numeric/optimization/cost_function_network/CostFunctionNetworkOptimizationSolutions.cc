@@ -40,6 +40,7 @@
 #include <base/types.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.hh>
 
 // STL headers:
 #include <vector>
@@ -208,7 +209,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP const & > > (
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_FourInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP const &, CFNProblemScratchSpace * > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
 	            "and keep up to the lowest-scoring N.  The scores passed in are the solver scores.  This function will "
                 "compute the data representation scores and the actual scores, and then merge-sort by actual score.  "
@@ -225,8 +226,9 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 "from the union of both sets are stored, and any solutions past the lowest N are "
                 "discarded.",
 				"problem", "The problem for all of these solutions.",
+                "problem_scratch", "Scratch space for computing the score given a candidate solution, or nullptr.",
                 "void", "Returns nothing.",
-                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4 )
             )
         );
 

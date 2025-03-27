@@ -621,8 +621,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Work functions:
-		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn_nonapprox(
-			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
+		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn_nonapprox(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
 				"compute_non_approximate_absolute_score", "Given a candidate solution, compute the score.  "
 				"This computes the actual, non-approximate score (possibly more slowly), not the score "
 				"that the data approximation uses (computed in a manner optimized for speed, which may "
@@ -632,15 +632,17 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
 				"one entry per variable position, in order of position indices.  (There may not be "
 				"entries for every position, though, since not all positions have at least two choices.)",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
 				"score", "The score for this candidate solution, computed by this function.",
-				std::bind( &CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score, this, std::placeholders::_1 )
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score, this, std::placeholders::_1, std::placeholders::_2 )
 			)
 		);
 		comp_abs_score_fxn_nonapprox->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_abs_score_fxn_nonapprox );
 
-		work_function::MasalaObjectAPIWorkFunctionDefinition_OneInputSP< base::Real, std::vector< base::Size > const & > comp_abs_score_fxn(
-			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_OneInput< base::Real, std::vector< base::Size > const & > >(
+		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
 				"compute_absolute_score", "Given a candidate solution, compute the score (which "
 				"may be approximate, depending on the data representation).  "
 				"The candidate solution is expressed as a vector of choice indices, with "
@@ -649,15 +651,17 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
 				"one entry per variable position, in order of position indices.  (There may not be "
 				"entries for every position, though, since not all positions have at least two choices.)",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
 				"score", "The score for this candidate solution, computed by this function.",
-				std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1 )
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1, std::placeholders::_2 )
 			)
 		);
 		comp_abs_score_fxn->set_triggers_no_mutex_lock();
 		api_def->add_work_function( comp_abs_score_fxn );
 
-		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > comp_score_change_fxn(
-			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const & > >(
+		work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_score_change_fxn(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
 				"compute_score_change", "Given two candidate solutions, compute the score difference.  This "
 				"is the difference in the data representation scores (which may be an approximation of the "
 				"actual scores).  The candidate solutions are expressed as a vector of choice indices, with "
@@ -668,8 +672,10 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				"one entry per variable position, in order of position indices.",
 				"new_solution", "The second candidate solution, expressed as a vector of choice indices, with "
 				"one entry per variable position, in order of position indices.",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
 				"delta_score", "The score change from old to new candidate solutions, computed by this function.",
-				std::bind( &CostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2 )
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
 			)
 		);
 		comp_score_change_fxn->set_triggers_no_mutex_lock();
