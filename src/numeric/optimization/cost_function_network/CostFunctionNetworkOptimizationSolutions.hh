@@ -34,6 +34,7 @@
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.fwd.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.fwd.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.fwd.hh>
 
 // STL headers:
 #include <mutex>
@@ -192,6 +193,7 @@ public:
 	/// from the union of both sets are stored, and any solutions past the lowest N are
 	/// discarded.
 	/// @param[in] problem The problem for all of these solutions.
+	/// @param[in] problem_scratch A scratch space to use for the problem, or nullptr.
 	/// @note If both sets contain the same solution, the number of times that solution
 	/// was produced will be incremented in this set by the number of times it was produced
 	/// in the other set.  This function calls create_cost_function_network_optimization_solution(),
@@ -201,7 +203,8 @@ public:
 	merge_in_lowest_scoring_solutions(
 		std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
 		masala::base::Size const max_solutions_to_store_total,
-		CostFunctionNetworkOptimizationProblemCSP const & problem
+		CostFunctionNetworkOptimizationProblemCSP const & problem,
+		CFNProblemScratchSpace * problem_scratch
 	);
 
 protected:
