@@ -31,7 +31,7 @@
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
 
 // Parent header:
-#include <base/MasalaObject.hh>
+#include <base/MasalaNoAPIObject.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -49,11 +49,11 @@ namespace cost_function {
 /// one particular problem.
 /// @note These objects are intended to be used by a single thread, and are not threadsafe.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionScratchSpace : public masala::base::MasalaObject {
+class CostFunctionScratchSpace : public masala::base::MasalaNoAPIObject {
 
-	typedef masala::base::MasalaObject Parent;
-	typedef masala::base::MasalaObjectSP ParentSP;
-	typedef masala::base::MasalaObjectCSP ParentCSP;
+	typedef masala::base::MasalaNoAPIObject Parent;
+	typedef masala::base::MasalaNoAPIObjectSP ParentSP;
+	typedef masala::base::MasalaNoAPIObjectCSP ParentCSP;
 
 public:
 

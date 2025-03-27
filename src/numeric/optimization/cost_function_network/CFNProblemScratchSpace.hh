@@ -31,7 +31,7 @@
 #include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.fwd.hh>
 
 // Parent header:
-#include <base/MasalaObject.hh>
+#include <base/MasalaNoAPIObject.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
@@ -54,11 +54,11 @@ namespace cost_function_network {
 /// individual cost functions.
 /// @note These objects are intended to be used by a single thread, and are not threadsafe.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CFNProblemScratchSpace : public masala::base::MasalaObject {
+class CFNProblemScratchSpace : public masala::base::MasalaNoAPIObject {
 
-	typedef masala::base::MasalaObject Parent;
-	typedef masala::base::MasalaObjectSP ParentSP;
-	typedef masala::base::MasalaObjectCSP ParentCSP;
+	typedef masala::base::MasalaNoAPIObject Parent;
+	typedef masala::base::MasalaNoAPIObjectSP ParentSP;
+	typedef masala::base::MasalaNoAPIObjectCSP ParentCSP;
 
 public:
 
@@ -132,7 +132,6 @@ public:
 	/// @brief Mark this object as finalized (i.e. no more scratch spaces can be added).
 	void
 	finalize();
-
 
 public:
 
