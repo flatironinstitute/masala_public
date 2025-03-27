@@ -40,6 +40,31 @@ namespace optimization {
 namespace cost_function_network {
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the name of this class ("CFNProblemScratchSpace").
+/*static*/
+std::string
+CFNProblemScratchSpace::class_name_static() {
+	return "CFNProblemScratchSpace";
+}
+
+/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+/*static*/
+std::string
+CFNProblemScratchSpace::class_namespace_static() {
+	return "masala::numeric::optimization::cost_function_network";
+}
+
+/// @brief Get the namespace and name of this class ("masala::numeric::optimization::cost_function_network::CFNProblemScratchSpace").
+/*static*/
+std::string
+CFNProblemScratchSpace::class_namespace_and_name_static() {
+	return class_namespace_static() + "::" + class_name_static();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 

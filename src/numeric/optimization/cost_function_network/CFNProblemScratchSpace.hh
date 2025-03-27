@@ -85,6 +85,21 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the name of this class ("CFNProblemScratchSpace").
+	static
+	std::string
+	class_name_static();
+
+	/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+	static
+	std::string
+	class_namespace_static();
+
+	/// @brief Get the namespace and name of this class ("masala::numeric::optimization::cost_function_network::CFNProblemScratchSpace").
+	static
+	std::string
+	class_namespace_and_name_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
