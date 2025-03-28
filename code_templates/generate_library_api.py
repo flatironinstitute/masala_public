@@ -542,6 +542,10 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
 
     api_classname = ""
     api_filename = ""
+
+    #non_api_class = is_non_api_class( inputclass )
+    non_api_class = False
+
     firstspace = inputclass.find(" ")
     if firstspace == -1 :
         inputclass_base = inputclass
@@ -558,12 +562,13 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
             api_classname += "::"
             continue # Skip "masala"
         api_filename += curstring
-        if i == 1 :
+        if i == 1 and non_api_class == False :
             api_classname += "_api::auto_generated_api"
             api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
-            api_classname += "_API"
-            api_filename += "_API"
+            if non_api_class == False :
+                api_classname += "_API"
+                api_filename += "_API"
         else :
             api_classname += "::"
             api_filename += "/"
