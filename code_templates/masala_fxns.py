@@ -66,8 +66,9 @@ def parent_class_file_from_class_name( parent_class_name : str, project_name : s
     return outstr
 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
-## a descendant of masala::base::managers::plugin_module::MasalaPlugin.
-def is_plugin_class( headerfile : str, project_name : str ) -> bool :
+## a descendant of masala::base::managers::plugin_module::MasalaPlugin (if seek_plugin is True)
+## or masala::base::MasalaNonAPIObject (if seek_plugin is False).
+def is_plugin_or_nonapi_class( headerfile : str, project_name : str, seek_plugin : bool ) -> bool :
     print( "\tChecking " + headerfile + " for plugin parent class." )
     assert headerfile.startswith( "../src/" ) or headerfile.startswith( "../headers/" )
     with open( headerfile, 'r' ) as fhandle:
@@ -89,9 +90,14 @@ def is_plugin_class( headerfile : str, project_name : str ) -> bool :
         parent_index = 4
     
     parent_class_name = file_contents[class_declaration_position:].split()[parent_index]
-    if parent_class_name == "masala::base::managers::plugin_module::MasalaPlugin" or parent_class_name == "base::managers::plugin_module::MasalaPlugin" :
-        print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
-        return True
+    if seek_plugin == True :
+        if parent_class_name == "masala::base::managers::plugin_module::MasalaPlugin" or parent_class_name == "base::managers::plugin_module::MasalaPlugin" :
+            print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
+            return True
+    else :
+        if parent_class_name == "masala::base::MasalaNonAPIObject" or parent_class_name == "base::MasalaNonAPIObject" :
+            print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
+            return True
 
     parent_class_file = parent_class_file_from_class_name( parent_class_name, project_name )
-    return is_plugin_class( parent_class_file, project_name ) #Recursive call.
+    return is_plugin_or_nonapi_class( parent_class_file, project_name, seek_plugin ) #Recursive call.

@@ -24,7 +24,7 @@
 
 from sys import argv
 from os import path, listdir
-from masala_fxns import is_plugin_class, purge_comments
+from masala_fxns import is_plugin_or_nonapi_class, purge_comments
 
 errmsg = "Error in generate_cmake_build.py: "
 
@@ -174,7 +174,7 @@ def get_all_cc_and_hh_files_in_dir_and_subdirs( libname : str,  project_name : s
                     outlist_apis.append( apiname + ".cc" )
                     outlist_apis.append( apiname + ".hh" )
                     outlist_apis.append( apiname + ".fwd.hh" )
-                    if is_plugin_class( concatname[:-3] + ".hh", project_name ) == True :
+                    if is_plugin_or_nonapi_class( concatname[:-3] + ".hh", project_name, True ) == True :
                         if api_definition_has_protected_constructors( concatname[:-3] + ".cc", project_name ) == False :
                             compile_registration_functions = True
                         creatorname = apiname_or_creatorname_from_filename( concatname, True )
