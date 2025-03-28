@@ -180,6 +180,9 @@ public:
 			<< (is_override_of_api_virtual_fxn() ? " override" : "")
 			<< ":" << std::endl;
 		ss << work_function_description() << std::endl;
+		if( always_returns_nullptr() ) {
+			ss << "This version of this function always returns nullptr." << ( is_virtual_non_override_fxn() || is_override_of_api_virtual_fxn() ? "  This could be overridden by derived classes." : "" ) << std::endl;
+		}
 		if( returns_this_ref() ) {
 			ss << "Note that this function returns a reference to the original object (*this)." << std::endl;
 		}
@@ -209,6 +212,9 @@ public:
 		// Optional properties:
 		if( triggers_no_mutex_lock() ) {
 			json_api["Triggers_No_Mutex_Lock"] = true;
+		}
+		if( always_returns_nullptr() ) {
+			json_api["Always_Returns_Nullptr"] = true;
 		}
 
 		//Inputs:
