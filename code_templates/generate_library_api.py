@@ -32,7 +32,7 @@ import shutil
 import re
 from masala_fxns import is_plugin_or_noapi_class, parent_class_file_from_class_name
 
-VERBOSE_SCRIPT_OUTPUT = False
+VERBOSE_SCRIPT_OUTPUT = True
 COLUMN_WIDTH = 120
 
 ### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
@@ -178,7 +178,7 @@ def is_masala_plugin_class( \
     if namesplit[0] != project_name :
         fname = "headers/" + namesplit[0] + "/headers/" + namesplit[1]
     else :
-        fname = namesplit[1]
+        fname = "src/" + namesplit[1]
     for i in range (2, len(namesplit)) :
         fname += "/" + namesplit[i]
     fname += ".hh"
