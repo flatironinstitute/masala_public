@@ -20,6 +20,8 @@
 
 from os import path
 
+VERBOSE_FUNCTIONS = True
+
 ## @brief Given file contents, purge comments and comment lines.
 def purge_comments( file_contents : str ) -> str :
     # Get rid of //
@@ -76,10 +78,12 @@ def parent_class_file_from_class_name( parent_class_name : str, project_name : s
 ## or masala::base::MasalaNoAPIObject (if seek_plugin is False).
 def is_plugin_or_noapi_class( headerfile : str, project_name : str, seek_plugin : bool ) -> bool :
     if seek_plugin == True :
-        print( "\tChecking " + headerfile + " for plugin parent class." )
+        if VERBOSE_FUNCTIONS == True :
+            print( "\tChecking " + headerfile + " for plugin parent class." )
         assert headerfile.startswith( "../src/" ) or headerfile.startswith( "../headers/" )
     else :
-        print( "\tChecking " + headerfile + " for MasalaNoAPIObject parent class." )
+        if VERBOSE_FUNCTIONS == True :
+            print( "\tChecking " + headerfile + " for MasalaNoAPIObject parent class." )
         assert headerfile.startswith( "./src/" ) or headerfile.startswith( "./headers/" )
     with open( headerfile, 'r' ) as fhandle:
         file_contents = fhandle.read()
@@ -93,9 +97,11 @@ def is_plugin_or_noapi_class( headerfile : str, project_name : str, seek_plugin 
         if class_declaration_position == -1 :
             assert file_contents.find( "class " + classname ) != -1, "Could not find class declaration for class \"" + classname + "\" in file " + headerfile + "!"
             if seek_plugin == True :
-                print( "\t\tFound no plugin parent class.  Will NOT auto-generate Creator class." )
+                if VERBOSE_FUNCTIONS == True :
+                    print( "\t\tFound no plugin parent class.  Will NOT auto-generate Creator class." )
             else :
-                print( "\t\tFound no MasalaNoAPIObject parent class.  Object is NOT a non-API object." )
+                if VERBOSE_FUNCTIONS == True :
+                    print( "\t\tFound no MasalaNoAPIObject parent class.  Object is NOT a non-API object." )
             return False # This class has no parent or is not derived from MasalaNoAPIObject.
         else :
             parent_index = 3
@@ -105,11 +111,13 @@ def is_plugin_or_noapi_class( headerfile : str, project_name : str, seek_plugin 
     parent_class_name = file_contents[class_declaration_position:].split()[parent_index]
     if seek_plugin == True :
         if parent_class_name == "masala::base::managers::plugin_module::MasalaPlugin" or parent_class_name == "base::managers::plugin_module::MasalaPlugin" :
-            print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
+            if VERBOSE_FUNCTIONS == True :
+                print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
             return True
     else :
         if parent_class_name == "masala::base::MasalaNoAPIObject" or parent_class_name == "base::MasalaNoAPIObject" :
-            print( "\t\tClass is derived from MasalaNoAPIObject." )
+            if VERBOSE_FUNCTIONS == True :
+                print( "\t\tClass is derived from MasalaNoAPIObject." )
             return True
 
     parent_class_file = parent_class_file_from_class_name( parent_class_name, project_name, seek_plugin )
