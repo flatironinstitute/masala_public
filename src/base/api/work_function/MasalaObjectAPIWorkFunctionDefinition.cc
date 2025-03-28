@@ -122,6 +122,13 @@ MasalaObjectAPIWorkFunctionDefinition::triggers_no_mutex_lock() const {
     return triggers_no_mutex_lock_;
 }
 
+/// @brief Does this function always return nullptr?  (Soemtimes true for some base classes versions
+/// that are overridden by derived classes.)
+bool
+MasalaObjectAPIWorkFunctionDefinition::always_returns_nullptr() const {
+    return always_returns_nullptr_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // ADDITIONAL SETTERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +137,13 @@ MasalaObjectAPIWorkFunctionDefinition::triggers_no_mutex_lock() const {
 void
 MasalaObjectAPIWorkFunctionDefinition::set_triggers_no_mutex_lock() {
     triggers_no_mutex_lock_ = true;
+}
+
+/// @brief Indicate that this function always returns nullptr.  (Soemtimes true for some base classes versions
+/// that are overridden by derived classes.)
+void
+MasalaObjectAPIWorkFunctionDefinition::set_always_returns_nullptr() {
+    always_returns_nullptr_ = true;
 }
 
 } // namespace work_function

@@ -873,12 +873,19 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             triggers_no_mutex_lock = False
 
-        outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
-        ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
             has_output = True
         else :
             has_output = False
+
+        if ( "Always_Returns_Nullptr" in fxn ) and ( fxn["Always_Returns_Nullptr"] == True ) :
+            assert has_output, "A function was found that was annotated to have no output but also to return nullptr."
+            always_returns_nullptr = True
+        else :
+            always_returns_nullptr = False
+
+        outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
+        ninputs = fxn[namepattern+"_N_Inputs"]
 
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -886,13 +893,23 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         if has_output :
             outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
-                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
-                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
@@ -1261,6 +1278,12 @@ def generate_function_implementations( \
             triggers_no_mutex_lock = True
         else :
             triggers_no_mutex_lock = False
+        
+        if ( "Always_Returns_Nullptr" in fxn ) and ( fxn["Always_Returns_Nullptr"] == True ) :
+            assert has_output, "A function was found that was annotated to have no output but also to return nullptr."
+            always_returns_nullptr = True
+        else :
+            always_returns_nullptr = False
 
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -1268,11 +1291,21 @@ def generate_function_implementations( \
         if has_output :
             outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
-                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += "/// @note This version always returns nullptr.\n"
             outstring += correct_masala_types( project_name, outtype, additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
-                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += "/// @note This version always returns nullptr.\n"
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
 
@@ -1286,11 +1319,17 @@ def generate_function_implementations( \
                 outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
-            outstring += "\n)" + conststr + " {\n"
+            outstring += "\n)" + conststr + " {"
         else :
-            outstring += ")" + conststr + " {\n"
+            outstring += ")" + conststr + " {"
 
         # Body:
+
+        if always_returns_nullptr :
+            outstring += " return nullptr; }\n"
+            return outstring
+        else :
+            outstring += "\n"
 
         convert_to_masala_API_ptr = False
         is_masala_API_obj = False

@@ -621,7 +621,7 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Work functions:
-		api_def->add_work_function(
+		work_function::MasalaObjectAPIWorkFunctionDefinitionSP generate_scratch_space_fxn(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< masala::numeric::optimization::cost_function_network::CFNProblemScratchSpaceSP > >(
 				"generate_cfn_problem_scratch_space", "Generate a scratch space for this CFN problem class.",
 				true, false, true, false,
@@ -631,6 +631,8 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 				std::bind( &CostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space, this )
 			)
 		);
+		generate_scratch_space_fxn->set_always_returns_nullptr();
+		api_def->add_work_function( generate_scratch_space_fxn );
 
 		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn_nonapprox(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
