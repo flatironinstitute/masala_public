@@ -30,7 +30,7 @@ from sys import argv
 import os
 import shutil
 import re
-from masala_fxns import is_plugin_or_noapi_class
+from masala_fxns import is_plugin_or_noapi_class, parent_class_file_from_class_name
 
 VERBOSE_SCRIPT_OUTPUT = False
 COLUMN_WIDTH = 120
@@ -275,7 +275,9 @@ def read_file( filename : str ) -> list :
 ## @brief Determine whether an object is an API type, and if so, access the
 ## class type inside.
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
+    #print( "*** Checking " + classname + " ***" ) # DELETE ME
     if is_masala_class( project_name, classname ) == False :
+        #print( "*** " + classname + " is not a Masala class ***" ) # DELETE ME
         if classname.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = classname.find( "<" )
             lastchevron = classname.rfind( ">" )
@@ -288,6 +290,13 @@ def access_needed_object( project_name: str, classname : str, instancename : str
     classtype = classname.split()[0]
     if classtype == "masala::base::MasalaAPI" :
         return instancename
+    
+    if is_plugin_or_noapi_class( parent_class_file_from_class_name( classtype, project_name, False ), project_name, False ) :
+        #print( classtype + " IS a no-API Masala object." )
+        return instancename
+    #else :
+    #    print( classtype + " is not a no-API Masala object." )
+
     assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
@@ -929,6 +938,7 @@ def generate_function_call( \
             input_is_masala_API_ptr = False
             input_is_masala_class = False
             input_is_known_enum = is_known_masala_base_enum( curinputname )
+            input_is_noapi_class = False
             if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
                 firstchevron = curinputname.find("<")
                 lastchevron = curinputname.rfind(">")
@@ -938,8 +948,11 @@ def generate_function_call( \
             elif is_masala_class( project_name, curinputname ) :
                 curinput_inner = curinputname
                 input_is_masala_class = True
+                if input_is_known_enum == False :
+                    if is_plugin_or_noapi_class( parent_class_file_from_class_name( curinputname.split()[0], project_name, False ), project_name, False ) :
+                        input_is_noapi_class = True
 
-            if input_is_masala_class or input_is_masala_API_ptr :
+            if ( input_is_masala_class == True and input_is_noapi_class == False ) or input_is_masala_API_ptr == True :
                 if input_is_masala_API_ptr :
                     input_point_or_arrow = "->"
                 else :
