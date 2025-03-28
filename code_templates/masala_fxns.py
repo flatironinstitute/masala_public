@@ -55,22 +55,32 @@ def purge_comments( file_contents : str ) -> str :
     return outstr2
 
 ## @brief Given the name of a parent class, return the header file name (with .hh extension).
-def parent_class_file_from_class_name( parent_class_name : str, project_name : str ) -> str :
+def parent_class_file_from_class_name( parent_class_name : str, project_name : str, seek_plugin : bool) -> str :
     #print( project_name + " *********")
     if parent_class_name.startswith( project_name + "::" ) :
-        outstr = "../src/" + parent_class_name[ len(project_name) + 2 : ].replace("::", "/") + ".hh"
+        if seek_plugin == True :
+            outstr = "../src/" + parent_class_name[ len(project_name) + 2 : ].replace("::", "/") + ".hh"
+        else :
+            outstr = "./src/" + parent_class_name[ len(project_name) + 2 : ].replace("::", "/") + ".hh"
     else :
         startpos = parent_class_name.find("::")
         assert startpos != -1
-        outstr = "../headers/" + parent_class_name.split("::")[0] + "/headers/" + parent_class_name[ startpos + 2 : ].replace("::", "/") + ".hh"
+        if seek_plugin == True:
+            outstr = "../headers/" + parent_class_name.split("::")[0] + "/headers/" + parent_class_name[ startpos + 2 : ].replace("::", "/") + ".hh"
+        else :
+            outstr = "./headers/" + parent_class_name.split("::")[0] + "/headers/" + parent_class_name[ startpos + 2 : ].replace("::", "/") + ".hh"
     return outstr
 
 ## @brief Recursively scan a header file that defines a class to determine whether the class is
 ## a descendant of masala::base::managers::plugin_module::MasalaPlugin (if seek_plugin is True)
-## or masala::base::MasalaNonAPIObject (if seek_plugin is False).
-def is_plugin_or_nonapi_class( headerfile : str, project_name : str, seek_plugin : bool ) -> bool :
-    print( "\tChecking " + headerfile + " for plugin parent class." )
-    assert headerfile.startswith( "../src/" ) or headerfile.startswith( "../headers/" )
+## or masala::base::MasalaNoAPIObject (if seek_plugin is False).
+def is_plugin_or_noapi_class( headerfile : str, project_name : str, seek_plugin : bool ) -> bool :
+    if seek_plugin == True :
+        print( "\tChecking " + headerfile + " for plugin parent class." )
+        assert headerfile.startswith( "../src/" ) or headerfile.startswith( "../headers/" )
+    else :
+        print( "\tChecking " + headerfile + " for MasalaNoAPIObject parent class." )
+        assert headerfile.startswith( "./src/" ) or headerfile.startswith( "./headers/" )
     with open( headerfile, 'r' ) as fhandle:
         file_contents = fhandle.read()
     file_contents = ' '.join( purge_comments( file_contents ).split() ) #Put the file on a single line with all whitespace converted to spaces and comments removed.
@@ -82,8 +92,11 @@ def is_plugin_or_nonapi_class( headerfile : str, project_name : str, seek_plugin
         class_declaration_position = file_contents.find( "class " + classname + ":" )
         if class_declaration_position == -1 :
             assert file_contents.find( "class " + classname ) != -1, "Could not find class declaration for class \"" + classname + "\" in file " + headerfile + "!"
-            print( "\t\tFound no plugin parent class.  Will NOT auto-generate Creator class." )
-            return False # This class has no parent.
+            if seek_plugin == True :
+                print( "\t\tFound no plugin parent class.  Will NOT auto-generate Creator class." )
+            else :
+                print( "\t\tFound no MasalaNoAPIObject parent class.  Object is NOT a non-API object." )
+            return False # This class has no parent or is not derived from MasalaNoAPIObject.
         else :
             parent_index = 3
     else :
@@ -95,9 +108,9 @@ def is_plugin_or_nonapi_class( headerfile : str, project_name : str, seek_plugin
             print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
             return True
     else :
-        if parent_class_name == "masala::base::MasalaNonAPIObject" or parent_class_name == "base::MasalaNonAPIObject" :
-            print( "\t\tFound plugin parent class!  Will auto-generate Creator class." )
+        if parent_class_name == "masala::base::MasalaNoAPIObject" or parent_class_name == "base::MasalaNoAPIObject" :
+            print( "\t\tClass is derived from MasalaNoAPIObject." )
             return True
 
-    parent_class_file = parent_class_file_from_class_name( parent_class_name, project_name )
-    return is_plugin_or_nonapi_class( parent_class_file, project_name, seek_plugin ) #Recursive call.
+    parent_class_file = parent_class_file_from_class_name( parent_class_name, project_name, seek_plugin )
+    return is_plugin_or_noapi_class( parent_class_file, project_name, seek_plugin ) #Recursive call.

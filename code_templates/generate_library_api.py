@@ -30,6 +30,7 @@ from sys import argv
 import os
 import shutil
 import re
+from masala_fxns import is_plugin_or_noapi_class
 
 VERBOSE_SCRIPT_OUTPUT = False
 COLUMN_WIDTH = 120
@@ -542,10 +543,6 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
 
     api_classname = ""
     api_filename = ""
-
-    #non_api_class = is_non_api_class( inputclass )
-    non_api_class = False
-
     firstspace = inputclass.find(" ")
     if firstspace == -1 :
         inputclass_base = inputclass
@@ -555,13 +552,31 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         inputclass_extension = inputclass[firstspace + 1:]
     inputclass_split = inputclass_base.split("::")
     assert len(inputclass_split) > 2
+    inputclass_header = ""
+    for i in range( len(inputclass_split) ) :
+        if i == 0 :
+            if inputclass_split[0] == project_name :
+                inputclass_header_start = "./src/"
+            else :
+                assert inputclass_split[0] == "masala", "Expected input class \"masala\", but got \"" + inputclass_split[0] + "\"."
+                inputclass_header_start = "./headers/masala/headers/"
+            continue # Skip "masala" or library name
+        inputclass_header += inputclass_split[i]
+        if i < len(inputclass_split) - 1 :
+            inputclass_header += "/"
+
+    non_api_class = is_plugin_or_noapi_class( inputclass_header_start + inputclass_header + ".hh", project_name, False )
+    if non_api_class == True :
+        api_filename = inputclass_header
+
     for i in range(len(inputclass_split)) :
         curstring = inputclass_split[i]
         api_classname += curstring
         if i == 0 :
             api_classname += "::"
-            continue # Skip "masala"
-        api_filename += curstring
+            continue # Skip "masala" or library name
+        if non_api_class == False :
+            api_filename += curstring
         if i == 1 and non_api_class == False :
             api_classname += "_api::auto_generated_api"
             api_filename += "_api/auto_generated_api"
@@ -571,7 +586,8 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                 api_filename += "_API"
         else :
             api_classname += "::"
-            api_filename += "/"
+            if non_api_class == False :
+                api_filename += "/"
     if api_filename not in additional_includes :
         additional_includes.append( api_filename )
     if len(inputclass_extension) > 0 :
