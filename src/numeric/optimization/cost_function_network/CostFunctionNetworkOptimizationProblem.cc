@@ -621,6 +621,17 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Work functions:
+		api_def->add_work_function(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< masala::numeric::optimization::cost_function_network::CFNProblemScratchSpaceSP > >(
+				"generate_cfn_problem_scratch_space", "Generate a scratch space for this CFN problem class.",
+				true, false, false, true,
+				"cfn_problem_scratch_space", "A shared pointer that points to a scratch space for this problem.  This is used "
+				"internally to make recomputation of the cost function efficient.  The base class returns nullptr, and this function "
+				"should be overridden by derived classes",
+				std::bind( &CostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space, this )
+			)
+		);
+
 		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn_nonapprox(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
 				"compute_non_approximate_absolute_score", "Given a candidate solution, compute the score.  "
