@@ -1327,7 +1327,7 @@ def generate_function_implementations( \
 
         if always_returns_nullptr :
             outstring += " return nullptr; }\n"
-            return outstring
+            continue
         else :
             outstring += "\n"
 
