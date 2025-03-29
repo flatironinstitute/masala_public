@@ -1340,11 +1340,12 @@ def generate_function_implementations( \
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner ) and outtype_inner.split()[0].endswith("API") == False  ) :
-                convert_to_masala_API_ptr = True
-                if VERBOSE_SCRIPT_OUTPUT == True:
-                    print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
-                if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
-                    is_masala_plugin_ptr = True
+                if is_plugin_or_noapi_class( parent_class_file_from_class_name( drop_const( outtype_inner ), project_name, False ), project_name, False ) == False :
+                    convert_to_masala_API_ptr = True
+                    if VERBOSE_SCRIPT_OUTPUT == True:
+                        print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
+                    if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
+                        is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype ) and returns_this_ref == False and is_known_masala_base_enum( outtype ) == False :
             is_masala_API_obj = True
             # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
