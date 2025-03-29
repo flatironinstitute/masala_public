@@ -31,7 +31,7 @@
 
 namespace masala {
 namespace numeric_api {
-namespace base_classews {
+namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 
