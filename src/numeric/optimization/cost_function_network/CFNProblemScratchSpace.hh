@@ -69,6 +69,12 @@ public:
 	/// @brief Default constructor.
 	CFNProblemScratchSpace() = default;
 
+	/// @brief CostFunction vector constructor.
+	/// @details Initializes the cost_function_scratch_spaces_ vector.
+	CFNProblemScratchSpace(
+		std::vector< cost_function::CostFunctionCSP > const & cost_functions
+	);
+
 	/// @brief Copy constructor.
 	CFNProblemScratchSpace( CFNProblemScratchSpace const & /*src*/ ) = default;
 

@@ -40,6 +40,22 @@ namespace optimization {
 namespace cost_function_network {
 
 ////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief CostFunction vector constructor.
+/// @details Initializes the cost_function_scratch_spaces_ vector.
+CFNProblemScratchSpace::CFNProblemScratchSpace(
+	std::vector< cost_function::CostFunctionCSP > const & cost_functions
+) :
+	Parent()
+{
+	for( auto const & cost_function : cost_functions ) {
+		cost_function_scratch_spaces_.push_back( cost_function->generate_cost_function_scratch_space() );
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
