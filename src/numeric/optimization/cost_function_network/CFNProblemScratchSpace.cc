@@ -135,7 +135,9 @@ void
 CFNProblemScratchSpace::accept_last_move() {
 	protected_accept_last_move();
 	for( auto const & cost_function_scratch_space : cost_function_scratch_spaces_ ) {
-		cost_function_scratch_space->accept_last_move();
+		if( cost_function_scratch_space != nullptr ) {
+			cost_function_scratch_space->accept_last_move();
+		}
 	}
 }
 
