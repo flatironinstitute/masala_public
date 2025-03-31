@@ -107,6 +107,12 @@ public:
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Indicate that the last update of the calculation should be "accepted" -- whatever that means.
+	/// @details The scratch space can choose its own strategy for making recomputation efficient.  Acceptance
+	/// of a move implies that many subsequent moves will have the last state as their starting point, so
+	/// any information from the last evaluation that can be more permanently cached should be at this point.
+	/// @note Calls protected_accept_last_move(), which should be implemented by derived classes.
+	void accept_last_move();
 
 public:
 
@@ -120,6 +126,12 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Should be implemented by derived classes.  Base class version does nothing.  Derived classes
+	/// should call parent class function.
+	virtual
+	void
+	protected_accept_last_move();
 
 private:
 

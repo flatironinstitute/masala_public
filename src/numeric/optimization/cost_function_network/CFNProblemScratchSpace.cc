@@ -127,11 +127,34 @@ CFNProblemScratchSpace:: add_cost_function_scratch_space(
 	}
 }
 
+/// @brief Indicate that the last update of the calculation should be "accepted" -- whatever that means.
+/// @details The scratch space can choose its own strategy for making recomputation efficient.  Acceptance
+/// of a move implies that many subsequent moves will have the last state as their starting point, so
+/// any information from the last evaluation that can be more permanently cached should be at this point.
+void
+CFNProblemScratchSpace::accept_last_move() {
+	protected_accept_last_move();
+	for( auto const & cost_function_scratch_space : cost_function_scratch_spaces_ ) {
+		cost_function_scratch_space->accept_last_move();
+	}
+}
+
 /// @brief Mark this object as finalized (i.e. no more scratch spaces can be added).
 void
 CFNProblemScratchSpace::finalize() {
 	CHECK_OR_THROW_FOR_CLASS( !finalized_, "finalize", "This object has already been finalized." );
 	finalized_ = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Should be implemented by derived classes.  Base class does nothing.  Derived classes
+/// should call parent class function.
+void
+CFNProblemScratchSpace::protected_accept_last_move() {
+	//GNDN
 }
 
 
