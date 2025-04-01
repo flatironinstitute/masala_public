@@ -32,7 +32,7 @@ import shutil
 import re
 from masala_fxns import is_plugin_or_noapi_class, parent_class_file_from_class_name
 
-VERBOSE_SCRIPT_OUTPUT = True
+VERBOSE_SCRIPT_OUTPUT = False
 COLUMN_WIDTH = 120
 
 ### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.

@@ -20,7 +20,7 @@
 
 from os import path
 
-VERBOSE_FUNCTIONS = True
+VERBOSE_FUNCTIONS = False
 
 ## @brief Given file contents, purge comments and comment lines.
 def purge_comments( file_contents : str ) -> str :
