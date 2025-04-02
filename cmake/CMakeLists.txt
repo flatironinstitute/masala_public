@@ -19,7 +19,7 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
-PROJECT( Masala VERSION 0.6 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+PROJECT( Masala VERSION 0.7 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 SET( MODE debug )
 SET( CMAKE_BUILD_TYPE Debug )
 # SET( MODE release )

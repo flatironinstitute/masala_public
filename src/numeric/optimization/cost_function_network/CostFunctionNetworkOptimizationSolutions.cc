@@ -40,6 +40,7 @@
 #include <base/types.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.hh>
 
 // STL headers:
 #include <vector>
@@ -208,7 +209,7 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
             )
         );
         api_def->add_work_function(
-            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP const & > > (
+            masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_FourInput< void, std::vector< std::tuple< std::vector< Size >, Real, Size > > const &, Size, CostFunctionNetworkOptimizationProblemCSP const &, CFNProblemScratchSpace * > > (
                 "merge_in_lowest_scoring_solutions", "Given another collection of solutions, merge-sort the solutions "
 	            "and keep up to the lowest-scoring N.  The scores passed in are the solver scores.  This function will "
                 "compute the data representation scores and the actual scores, and then merge-sort by actual score.  "
@@ -225,8 +226,9 @@ CostFunctionNetworkOptimizationSolutions::get_api_definition() {
                 "from the union of both sets are stored, and any solutions past the lowest N are "
                 "discarded.",
 				"problem", "The problem for all of these solutions.",
+                "problem_scratch", "Scratch space for computing the score given a candidate solution, or nullptr.",
                 "void", "Returns nothing.",
-                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+                std::bind( &CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4 )
             )
         );
 
@@ -320,6 +322,7 @@ CostFunctionNetworkOptimizationSolutions::solution_matches(
 /// from the union of both sets are stored, and any solutions past the lowest N are
 /// discarded.
 /// @param[in] problem The problem for all of these solutions.
+/// @param[in] problem_scratch A scratch space to use for the problem, or nullptr.
 /// @note If both sets contain the same solution, the number of times that solution
 /// was produced will be incremented in this set by the number of times it was produced
 /// in the other set.  This function calls create_cost_function_network_optimization_solution(),
@@ -329,7 +332,8 @@ void
 CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     std::vector< std::tuple< std::vector< masala::base::Size >, masala::base::Real, masala::base::Size > > const & other_solutions,
     masala::base::Size const max_solutions_to_store_total,
-    CostFunctionNetworkOptimizationProblemCSP const & problem
+    CostFunctionNetworkOptimizationProblemCSP const & problem,
+    CFNProblemScratchSpace * problem_scratch
 ) {
     using masala::base::Size;
     using masala::base::Real;
@@ -338,7 +342,19 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
     // Store solution index, whether it is in this
     // (true) or other (false), and the actual score,
     // data representation score, and solver score:
-    std::vector< std::tuple< Size, bool, Real, Real, Real > > solution_summaries; 
+    std::vector< std::tuple< Size, bool, Real, Real, Real > > solution_summaries;
+
+    // Generate scratch space, if needed:
+    CFNProblemScratchSpace * scratch( problem_scratch );
+    CFNProblemScratchSpaceSP scratch_sp;
+    if( scratch == nullptr ) {
+        scratch_sp = problem->generate_cfn_problem_scratch_space();
+        scratch = scratch_sp.get();
+    }
+    CHECK_OR_THROW_FOR_CLASS( scratch != nullptr, "merge_in_lowest_scoring_solutions",
+        "Unable to find or generate scratch space for problem.  This is a program error that "
+        "ought not to happen.  Please consult a developer."
+    );
 
     solution_summaries.reserve( optimization_solutions().size() + other_solutions.size() );
     for( Size i(0), imax(optimization_solutions().size()); i<imax; ++i ) {
@@ -376,8 +392,8 @@ CostFunctionNetworkOptimizationSolutions::merge_in_lowest_scoring_solutions(
                 std::make_tuple(
                     i,
                     false,
-                    problem->compute_non_approximate_absolute_score( other_solution_vec ), /*The computed actual score.*/
-                    problem->compute_absolute_score( other_solution_vec ), /*The computed data representation approximate score.*/
+                    problem->compute_non_approximate_absolute_score( other_solution_vec, scratch ), /*The computed actual score.*/
+                    problem->compute_absolute_score( other_solution_vec, scratch ), /*The computed data representation approximate score.*/
                     std::get<1>( other_solution ) /*The input solver approximate score.*/
                 )
             );

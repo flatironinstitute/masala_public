@@ -139,6 +139,10 @@ public:
 	/// @brief Is this function one that triggers no mutex-locking?
 	bool triggers_no_mutex_lock() const;
 
+	/// @brief Does this function always return nullptr?  (Soemtimes true for some base classes versions
+	/// that are overridden by derived classes.)
+	bool always_returns_nullptr() const;
+
 	/// @brief Get the number of input parameters.
 	/// @details Must be implemented by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
@@ -151,6 +155,10 @@ public:
 
 	/// @brief Indicate that this function does not trigger mutex-locking.
 	void set_triggers_no_mutex_lock();
+
+	/// @brief Indicate that this function always returns nullptr.  (Soemtimes true for some base classes versions
+	/// that are overridden by derived classes.)
+	void set_always_returns_nullptr();
 
 private:
 
@@ -183,6 +191,10 @@ private:
 
 	/// @brief Is this function one that does NOT trigger mutex-locking?
 	bool triggers_no_mutex_lock_ = false;
+
+	/// @brief Does this function always return nullptr?  (Soemtimes true for some base classes versions
+	/// that are overridden by derived classes.)
+	bool always_returns_nullptr_ = false;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 

@@ -33,6 +33,7 @@
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 
 // Numeric headers:
+#include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
 
 // Base headers:
 #include <base/types.hh>
@@ -185,22 +186,50 @@ public:
 		std::vector< masala::base::Size > const & variable_node_indices
 	);
 
+	/// @brief Does this class use a cost function scratch space?
+	/// @details Returns false by default.  May be overridden by derived classes to return true.  If this returns true,
+	/// then it is expected that (a) generate_cost_function_scratch_space() returns a non-null pointer to a suitable object
+	/// derived from CostFunctionScratchSpace, and (b) compute_cost_function() and compute_cost_function_difference() accept
+	/// an object of that type and use it.
+	virtual
+	bool
+	uses_cost_function_scratch_space() const;
+
+	/// @brief Generate a suitable object of type CostFunctionScratchSpace (by shared pointer).
+	/// @details Base class generates nullptr.  May be overridden by derived classes, which should
+	/// return a suitable class derived from CostFunctionScratchSpace which can be accepted by compute_cost_function()
+	/// and compute_cost_function_difference() function overrides.
+	virtual
+	CostFunctionScratchSpaceSP
+	generate_cost_function_scratch_space() const;
+
 	/// @brief Given a selection of choices at variable nodes, compute the cost function.
 	/// @details This version returns 0; must be overridden by derived classes.
+	/// @param[in] candidate_solution The current solution, expressed as a vector of variable node indices.
+	/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+	/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+	/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
 	virtual
 	masala::base::Real
 	compute_cost_function(
-		std::vector< masala::base::Size > const & candidate_solution
+		std::vector< masala::base::Size > const & candidate_solution,
+		CostFunctionScratchSpace * scratch_space
 	) const;
 
 	/// @brief Given an old selection of choices at variable nodes and a new selection,
 	/// compute the cost function difference.
 	/// @details This version returns 0; must be overridden by derived classes.
+	/// @param[in] candidate_solution_old The previous solution, expressed as a vector of variable node indices.
+	/// @param[in] candidate_solution_new The new solution, expressed as a vector of variable node indices.
+	/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+	/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+	/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
 	virtual
 	masala::base::Real
 	compute_cost_function_difference(
 		std::vector< masala::base::Size > const & candidate_solution_old,
-		std::vector< masala::base::Size > const & candidate_solution_new
+		std::vector< masala::base::Size > const & candidate_solution_new,
+		CostFunctionScratchSpace * scratch_space
 	) const;
 
 public:

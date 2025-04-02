@@ -30,6 +30,7 @@ from sys import argv
 import os
 import shutil
 import re
+from masala_fxns import is_plugin_or_noapi_class, parent_class_file_from_class_name
 
 VERBOSE_SCRIPT_OUTPUT = False
 COLUMN_WIDTH = 120
@@ -177,7 +178,7 @@ def is_masala_plugin_class( \
     if namesplit[0] != project_name :
         fname = "headers/" + namesplit[0] + "/headers/" + namesplit[1]
     else :
-        fname = namesplit[1]
+        fname = "src/" + namesplit[1]
     for i in range (2, len(namesplit)) :
         fname += "/" + namesplit[i]
     fname += ".hh"
@@ -274,7 +275,9 @@ def read_file( filename : str ) -> list :
 ## @brief Determine whether an object is an API type, and if so, access the
 ## class type inside.
 def access_needed_object( project_name: str, classname : str, instancename : str, jsonfile : json ) -> str :
+    #print( "*** Checking " + classname + " ***" ) # DELETE ME
     if is_masala_class( project_name, classname ) == False :
+        #print( "*** " + classname + " is not a Masala class ***" ) # DELETE ME
         if classname.startswith( "MASALA_SHARED_POINTER" ) :
             firstchevron = classname.find( "<" )
             lastchevron = classname.rfind( ">" )
@@ -287,6 +290,13 @@ def access_needed_object( project_name: str, classname : str, instancename : str
     classtype = classname.split()[0]
     if classtype == "masala::base::MasalaAPI" :
         return instancename
+    
+    if is_plugin_or_noapi_class( parent_class_file_from_class_name( classtype, project_name, False ), project_name, False ) :
+        #print( classtype + " IS a no-API Masala object." )
+        return instancename
+    #else :
+    #    print( classtype + " is not a no-API Masala object." )
+
     assert classtype in jsonfile["Elements"], "Error!  Class " + classtype + " is not defined in the JSON file!"
     if jsonfile["Elements"][classtype]["Properties"]["Is_Lightweight"]:
         return instancename + ".get_inner_object()"
@@ -551,22 +561,42 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
         inputclass_extension = inputclass[firstspace + 1:]
     inputclass_split = inputclass_base.split("::")
     assert len(inputclass_split) > 2
+    inputclass_header = ""
+    for i in range( len(inputclass_split) ) :
+        if i == 0 :
+            if inputclass_split[0] == project_name :
+                inputclass_header_start = "./src/"
+            else :
+                assert inputclass_split[0] == "masala", "Expected input class \"masala\", but got \"" + inputclass_split[0] + "\"."
+                inputclass_header_start = "./headers/masala/headers/"
+            continue # Skip "masala" or library name
+        inputclass_header += inputclass_split[i]
+        if i < len(inputclass_split) - 1 :
+            inputclass_header += "/"
+
+    non_api_class = is_plugin_or_noapi_class( inputclass_header_start + inputclass_header + ".hh", project_name, False )
+    if non_api_class == True :
+        api_filename = inputclass_header
+
     for i in range(len(inputclass_split)) :
         curstring = inputclass_split[i]
         api_classname += curstring
         if i == 0 :
             api_classname += "::"
-            continue # Skip "masala"
-        api_filename += curstring
-        if i == 1 :
+            continue # Skip "masala" or library name
+        if non_api_class == False :
+            api_filename += curstring
+        if i == 1 and non_api_class == False :
             api_classname += "_api::auto_generated_api"
             api_filename += "_api/auto_generated_api"
         if i == len(inputclass_split) - 1 :
-            api_classname += "_API"
-            api_filename += "_API"
+            if non_api_class == False :
+                api_classname += "_API"
+                api_filename += "_API"
         else :
             api_classname += "::"
-            api_filename += "/"
+            if non_api_class == False :
+                api_filename += "/"
     if api_filename not in additional_includes :
         additional_includes.append( api_filename )
     if len(inputclass_extension) > 0 :
@@ -843,12 +873,19 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             triggers_no_mutex_lock = False
 
-        outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
-        ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) and (fxn["Output"]["Output_Type"] != "void") :
             has_output = True
         else :
             has_output = False
+
+        if ( "Always_Returns_Nullptr" in fxn ) and ( fxn["Always_Returns_Nullptr"] == True ) :
+            assert has_output, "A function was found that was annotated to have no output but also to return nullptr."
+            always_returns_nullptr = True
+        else :
+            always_returns_nullptr = False
+
+        outstring += tabchar + "/// @brief " + fxn[namepattern+"_Description"] + "\n"
+        ninputs = fxn[namepattern+"_N_Inputs"]
 
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -856,13 +893,23 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         if has_output :
             outstring += tabchar + "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
-                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
-                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += tabchar + "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
@@ -908,6 +955,7 @@ def generate_function_call( \
             input_is_masala_API_ptr = False
             input_is_masala_class = False
             input_is_known_enum = is_known_masala_base_enum( curinputname )
+            input_is_noapi_class = False
             if curinputname.startswith( "MASALA_SHARED_POINTER" ) :
                 firstchevron = curinputname.find("<")
                 lastchevron = curinputname.rfind(">")
@@ -917,8 +965,11 @@ def generate_function_call( \
             elif is_masala_class( project_name, curinputname ) :
                 curinput_inner = curinputname
                 input_is_masala_class = True
+                if input_is_known_enum == False :
+                    if is_plugin_or_noapi_class( parent_class_file_from_class_name( curinputname.split()[0], project_name, False ), project_name, False ) :
+                        input_is_noapi_class = True
 
-            if input_is_masala_class or input_is_masala_API_ptr :
+            if ( input_is_masala_class == True and input_is_noapi_class == False ) or input_is_masala_API_ptr == True :
                 if input_is_masala_API_ptr :
                     input_point_or_arrow = "->"
                 else :
@@ -1227,6 +1278,12 @@ def generate_function_implementations( \
             triggers_no_mutex_lock = True
         else :
             triggers_no_mutex_lock = False
+        
+        if ( "Always_Returns_Nullptr" in fxn ) and ( fxn["Always_Returns_Nullptr"] == True ) :
+            assert has_output, "A function was found that was annotated to have no output but also to return nullptr."
+            always_returns_nullptr = True
+        else :
+            always_returns_nullptr = False
 
         if ninputs > 0 :
             for i in range(ninputs) :
@@ -1234,11 +1291,21 @@ def generate_function_implementations( \
         if has_output :
             outstring += "/// @returns " + fxn["Output"]["Output_Description"] + "\n"
             if triggers_no_mutex_lock :
-                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += "/// @note This version always returns nullptr.\n"
             outstring += correct_masala_types( project_name, outtype, additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
-                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context.\n"
+                outstring += "/// @note This function triggers no mutex lock.  Calling it from multiple threads is only threadsafe in a read-only context."
+                if always_returns_nullptr :
+                    outstring += "  Also note that this version always returns nullptr."
+                outstring += "\n"
+            else :
+                outstring += "/// @note This version always returns nullptr.\n"
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
 
@@ -1252,11 +1319,17 @@ def generate_function_implementations( \
                 outstring += "\n" + tabchar + correct_masala_types( project_name, fxn["Inputs"]["Input_" + str(i)]["Input_Type"], additional_includes ) + " " + fxn["Inputs"]["Input_" + str(i)]["Input_Name"]
                 if i+1 < ninputs :
                     outstring += ","
-            outstring += "\n)" + conststr + " {\n"
+            outstring += "\n)" + conststr + " {"
         else :
-            outstring += ")" + conststr + " {\n"
+            outstring += ")" + conststr + " {"
 
         # Body:
+
+        if always_returns_nullptr :
+            outstring += " return nullptr; }\n"
+            continue
+        else :
+            outstring += "\n"
 
         convert_to_masala_API_ptr = False
         is_masala_API_obj = False
@@ -1267,11 +1340,12 @@ def generate_function_implementations( \
             lastchevron = outtype.rfind(">")
             outtype_inner = outtype[firstchevron+1:lastchevron].strip()
             if( is_masala_class( project_name, outtype_inner ) and outtype_inner.split()[0].endswith("API") == False  ) :
-                convert_to_masala_API_ptr = True
-                if VERBOSE_SCRIPT_OUTPUT == True:
-                    print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
-                if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
-                    is_masala_plugin_ptr = True
+                if is_plugin_or_noapi_class( parent_class_file_from_class_name( drop_const( outtype_inner ), project_name, False ), project_name, False ) == False :
+                    convert_to_masala_API_ptr = True
+                    if VERBOSE_SCRIPT_OUTPUT == True:
+                        print( "\tChecking whether " + drop_const( outtype_inner ) + " is a Masala plugin class..." )
+                    if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :
+                        is_masala_plugin_ptr = True
         elif is_masala_class( project_name, outtype ) and returns_this_ref == False and is_known_masala_base_enum( outtype ) == False :
             is_masala_API_obj = True
             # if( is_masala_plugin_class( project_name, library_name, drop_const( outtype_inner ), jsonfile ) ) :

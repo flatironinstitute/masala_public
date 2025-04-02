@@ -2,3 +2,4 @@ build/
 bin/
 headers/
 src/*/auto_generated_api/*
+code_templates/__pycache__/*
