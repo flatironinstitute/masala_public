@@ -27,11 +27,33 @@
 // Headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.hh>
 
+// Base includes:
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+
 namespace masala {
 namespace numeric {
 namespace optimization {
 namespace cost_function_network {
 namespace cost_function {
+
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Clone operator.
+CostFunctionScratchSpaceSP
+CostFunctionScratchSpace::clone() const {
+	return masala::make_shared< CostFunctionScratchSpace >( *this );
+}
+
+/// @brief Deep clone operator.
+CostFunctionScratchSpaceSP
+CostFunctionScratchSpace::deep_clone() const {
+	CostFunctionScratchSpaceSP new_obj( masala::make_shared< CostFunctionScratchSpace >( *this ) );
+	new_obj->protected_make_independent();
+	return new_obj;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
@@ -87,6 +109,47 @@ CostFunctionScratchSpace::accept_last_move() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+CostFunctionScratchSpace::get_api_definition() {
+	using namespace masala::base::api;
+
+	if( api_definition_ == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The CostFunctionScratchSpace base class allows data to be cached and reused from one evaluation of a "
+				"CostFunction to another.  They are intended to be used with one particular cost function instance for "
+				"one particular problem.  Note that this base class is not expected to be instantiated by anything except "
+				"the build system.",
+				false, false
+			)
+		);
+
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( CostFunctionScratchSpace, api_def );
+
+		// Getters:
+
+		// Setters:
+
+		// Work functions:
+
+		CHECK_OR_THROW_FOR_CLASS( api_definition_ == nullptr, "get_api_definition", "The api_definition_ private member variable "
+			"was null at the start of this function, but is now non-null.  This implies that this class, which is intended "
+			"to be a non-threadsafe class used only by a single thread, is being used by multiple threads simultaneously."
+		);
+		api_definition_ = api_def; //Make const.
+	}
+
+	return api_definition_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -95,6 +158,13 @@ CostFunctionScratchSpace::accept_last_move() {
 void
 CostFunctionScratchSpace::protected_accept_last_move() {
     // GNDN
+}
+
+/// @brief Make this object fully indepenent, deep-cloning all its contents.
+/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+void
+CostFunctionScratchSpace::protected_make_independent() {
+	// GNDN
 }
 
 

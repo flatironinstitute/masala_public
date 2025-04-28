@@ -57,6 +57,20 @@ CFNProblemScratchSpace::CFNProblemScratchSpace(
 	}
 }
 
+/// @brief Clone operator.
+CFNProblemScratchSpaceSP
+CFNProblemScratchSpace::clone() const {
+	return masala::make_shared< CFNProblemScratchSpace >( *this );
+}
+
+/// @brief Deep clone operator.
+CFNProblemScratchSpaceSP
+CFNProblemScratchSpace::deep_clone() const {
+	CFNProblemScratchSpaceSP new_obj( masala::make_shared< CFNProblemScratchSpace >( *this ) );
+	new_obj->protected_make_independent();
+	return new_obj;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -214,6 +228,12 @@ CFNProblemScratchSpace::protected_accept_last_move() {
 	//GNDN
 }
 
+/// @brief Make this object fully indepenent, deep-cloning all its contents.
+/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+void
+CFNProblemScratchSpace::protected_make_independent() {
+	// GNDN
+}
 
 } // namespace cost_function_network
 } // namespace optimization

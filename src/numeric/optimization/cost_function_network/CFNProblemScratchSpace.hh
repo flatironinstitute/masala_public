@@ -85,6 +85,12 @@ public:
 
 	/// @brief Destructor.
 	~CFNProblemScratchSpace() override = default;
+
+	/// @brief Clone operator.
+	virtual CFNProblemScratchSpaceSP clone() const;
+
+	/// @brief Deep clone operator.
+	CFNProblemScratchSpaceSP deep_clone() const;
 	
 public:
 
@@ -183,6 +189,12 @@ protected:
 	virtual
 	void
 	protected_accept_last_move();
+
+	/// @brief Make this object fully indepenent, deep-cloning all its contents.
+	/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+	virtual
+	void
+	protected_make_independent();
 
 private:
 

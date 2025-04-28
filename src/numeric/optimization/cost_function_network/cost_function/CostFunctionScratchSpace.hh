@@ -74,6 +74,12 @@ public:
 	/// @brief Destructor.
 	~CostFunctionScratchSpace() override = default;
 
+	/// @brief Clone operator.
+	virtual CostFunctionScratchSpaceSP clone() const;
+
+	/// @brief Deep clone operator.
+	CostFunctionScratchSpaceSP deep_clone() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +134,15 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
 protected:
 
@@ -141,11 +156,20 @@ protected:
 	void
 	protected_accept_last_move();
 
+	/// @brief Make this object fully indepenent, deep-cloning all its contents.
+	/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+	virtual
+	void
+	protected_make_independent();
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The API definition for this class.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class CostFunctionScratchSpace
 
