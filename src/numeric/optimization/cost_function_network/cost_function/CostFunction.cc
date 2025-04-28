@@ -320,7 +320,7 @@ CostFunction::get_api_definition() {
                     "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
                     true, false, true, false,
                     "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
-                    "cost_funtion_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
+                    "cost_function_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
                     "cost_function", "The square of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
                     std::bind( &CostFunction::compute_cost_function, this, std::placeholders::_1, std::placeholders::_2 )               
                 )
@@ -336,7 +336,7 @@ CostFunction::get_api_definition() {
                     true, false, true, false,
                     "candidate_solution_old", "The indices of the selected node choices for the OLD selection, indexed by variable node index.",
                     "candidate_solution_new", "The indices of the selected node choices for the NEW selection, indexed by variable node index.",
-                    "cost_funtion_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
+                    "cost_function_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
                     "cost_function", "The difference of the squares of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
                     std::bind( &CostFunction::compute_cost_function_difference,
                         this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
