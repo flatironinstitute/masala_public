@@ -33,6 +33,8 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
 namespace numeric {
@@ -158,6 +160,47 @@ void
 CFNProblemScratchSpace::finalize() {
 	CHECK_OR_THROW_FOR_CLASS( !finalized_, "finalize", "This object has already been finalized." );
 	finalized_ = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+CFNProblemScratchSpace::get_api_definition() {
+	using namespace masala::base::api;
+
+	if( api_definition_ == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The CFNProblemScratchSpace base class allows data to be cached and reused from one evaluation of a "
+				"CostFunctionNetworkOptimizationProblem to another.  They store the scratch spaces for the "
+				"individual cost functions.  Note that this base class is not intended to be instantiated anywhere but "
+				"by the build system.",
+				false, false
+			)
+		);
+
+		// Constructors:
+		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( CFNProblemScratchSpace, api_def );
+
+		// Getters:
+
+		// Setters:
+
+		// Work functions:
+
+		CHECK_OR_THROW_FOR_CLASS( api_definition_ == nullptr, "get_api_definition", "The api_definition_ private member variable "
+			"was null at the start of this function, but is now non-null.  This implies that this class, which is intended "
+			"to be a non-threadsafe class used only by a single thread, is being used by multiple threads simultaneously."
+		);
+		api_definition_ = api_def; //Make const.
+	}
+
+	return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

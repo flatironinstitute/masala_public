@@ -32,6 +32,7 @@
 
 // Parent header:
 #include <base/MasalaObject.hh>
+#include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
@@ -161,6 +162,16 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC INTERFACE DEFINITION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
+    masala::base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +196,9 @@ private:
 
 	/// @brief A vector of scratch spaces for cost functions in a problem (or nullptr if a cost function doesn't use a scratch space).
 	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpaceSP > cost_function_scratch_spaces_;
+
+	/// @brief The API definition for this class.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 
 }; // class CFNProblemScratchSpace
