@@ -31,8 +31,7 @@
 #include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.fwd.hh>
 
 // Parent header:
-#include <base/MasalaObject.hh>
-#include <base/api/MasalaObjectAPIDefinition.fwd.hh>
+#include <base/MasalaNoAPIObject.hh>
 
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.fwd.hh>
@@ -55,11 +54,11 @@ namespace cost_function_network {
 /// individual cost functions.
 /// @note These objects are intended to be used by a single thread, and are not threadsafe.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CFNProblemScratchSpace : public masala::base::MasalaObject {
+class CFNProblemScratchSpace : public masala::base::MasalaNoAPIObject {
 
-	typedef masala::base::MasalaObject Parent;
-	typedef masala::base::MasalaObjectSP ParentSP;
-	typedef masala::base::MasalaObjectCSP ParentCSP;
+	typedef masala::base::MasalaNoAPIObject Parent;
+	typedef masala::base::MasalaNoAPIObjectSP ParentSP;
+	typedef masala::base::MasalaNoAPIObjectCSP ParentCSP;
 
 public:
 
@@ -168,16 +167,6 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-public:
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC INTERFACE DEFINITION
-////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
-    masala::base::api::MasalaObjectAPIDefinitionCWP
-    get_api_definition() override;
-
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -208,9 +197,6 @@ private:
 
 	/// @brief A vector of scratch spaces for cost functions in a problem (or nullptr if a cost function doesn't use a scratch space).
 	std::vector< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpaceSP > cost_function_scratch_spaces_;
-
-	/// @brief The API definition for this class.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 
 }; // class CFNProblemScratchSpace

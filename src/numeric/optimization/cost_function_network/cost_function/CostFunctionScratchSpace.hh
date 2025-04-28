@@ -49,11 +49,11 @@ namespace cost_function {
 /// one particular problem.
 /// @note These objects are intended to be used by a single thread, and are not threadsafe.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionScratchSpace : public masala::base::MasalaObject {
+class CostFunctionScratchSpace : public masala::base::MasalaNoAPIObject {
 
-	typedef masala::base::MasalaObject Parent;
-	typedef masala::base::MasalaObjectSP ParentSP;
-	typedef masala::base::MasalaObjectCSP ParentCSP;
+	typedef masala::base::MasalaNoAPIObject Parent;
+	typedef masala::base::MasalaNoAPIObjectSP ParentSP;
+	typedef masala::base::MasalaNoAPIObjectCSP ParentCSP;
 
 public:
 
@@ -134,16 +134,6 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-public:
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC INTERFACE DEFINITION
-////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
-    masala::base::api::MasalaObjectAPIDefinitionCWP
-    get_api_definition() override;
-
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,9 +157,6 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE VARIABLES
 ////////////////////////////////////////////////////////////////////////////////
-
-	/// @brief The API definition for this class.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class CostFunctionScratchSpace
 

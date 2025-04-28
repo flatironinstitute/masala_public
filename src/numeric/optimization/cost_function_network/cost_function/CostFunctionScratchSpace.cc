@@ -27,10 +27,6 @@
 // Headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.hh>
 
-// Base includes:
-#include <base/api/MasalaObjectAPIDefinition.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
-
 namespace masala {
 namespace numeric {
 namespace optimization {
@@ -106,47 +102,6 @@ CostFunctionScratchSpace::class_namespace() const {
 void
 CostFunctionScratchSpace::accept_last_move() {
     protected_accept_last_move();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC INTERFACE DEFINITION
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Get a description of the API for the CostFunctionNetworkOptimizationProblem class.
-masala::base::api::MasalaObjectAPIDefinitionCWP
-CostFunctionScratchSpace::get_api_definition() {
-	using namespace masala::base::api;
-
-	if( api_definition_ == nullptr ) {
-
-		MasalaObjectAPIDefinitionSP api_def(
-			masala::make_shared< MasalaObjectAPIDefinition >(
-				*this,
-				"The CostFunctionScratchSpace base class allows data to be cached and reused from one evaluation of a "
-				"CostFunction to another.  They are intended to be used with one particular cost function instance for "
-				"one particular problem.  Note that this base class is not expected to be instantiated by anything except "
-				"the build system.",
-				false, false
-			)
-		);
-
-		// Constructors:
-		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( CostFunctionScratchSpace, api_def );
-
-		// Getters:
-
-		// Setters:
-
-		// Work functions:
-
-		CHECK_OR_THROW_FOR_CLASS( api_definition_ == nullptr, "get_api_definition", "The api_definition_ private member variable "
-			"was null at the start of this function, but is now non-null.  This implies that this class, which is intended "
-			"to be a non-threadsafe class used only by a single thread, is being used by multiple threads simultaneously."
-		);
-		api_definition_ = api_def; //Make const.
-	}
-
-	return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
