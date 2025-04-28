@@ -83,6 +83,10 @@ public:
 
 	/// @brief Destructor.
 	~PluginPairwisePrecomputedCFNProblemScratchSpace() override = default;
+
+	/// @brief Derived classes must implement clone().
+	masala::numeric::optimization::cost_function_network::CFNProblemScratchSpaceSP
+	clone() const override = 0;
 	
 public:
 
