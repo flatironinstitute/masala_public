@@ -106,6 +106,14 @@ public:
 	std::string
 	class_namespace_and_name_static();
 
+	/// @brief Get the name of this class ("CFNProblemScratchSpace").
+	std::string
+	class_name() const override;
+
+	/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+	std::string
+	class_namespace() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

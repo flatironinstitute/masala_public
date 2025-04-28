@@ -30,6 +30,7 @@
 #include <numeric/optimization/OptimizationSolution.hh>
 #include <numeric/optimization/OptimizationSolutions.hh>
 #include <numeric/optimization/annealing/AnnealingScheduleBase.hh>
+#include <numeric/optimization/cost_function_network/CFNProblemScratchSpace.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblem.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems.hh>
 #include <numeric/optimization/cost_function_network/CostFunctionNetworkOptimizationSolution.hh>
@@ -40,6 +41,7 @@
 #include <numeric/optimization/real_valued_local/RealValuedFunctionLocalOptimizationSolutions.hh>
 #include <numeric/optimization/real_valued_local/LineOptimizer.hh>
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
+#include <numeric/optimization/cost_function_network/cost_function/CostFunctionScratchSpace.hh>
 
 namespace masala {
 namespace numeric {
@@ -58,6 +60,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationSolution >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::OptimizationSolutions >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::annealing::AnnealingScheduleBase >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CFNProblemScratchSpace >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblem >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationProblems >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::CostFunctionNetworkOptimizationSolution >() );
@@ -68,6 +71,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::real_valued_local::RealValuedFunctionLocalOptimizationSolutions >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::real_valued_local::LineOptimizer >() );
         outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::CostFunction >() );
+        outvec.emplace_back( masala::make_shared< masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpace >() );
         // ADD MORE ENTRIES HERE
 
         return outvec;

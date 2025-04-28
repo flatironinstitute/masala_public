@@ -58,6 +58,20 @@ CostFunctionScratchSpace::class_namespace_and_name_static() {
 	return class_namespace_static() + "::" + class_name_static();
 }
 
+/// @brief Naming function.
+/// @returns "CostFunctionScratchSpace".
+std::string
+CostFunctionScratchSpace::class_name() const {
+	return "CostFunctionScratchSpace";
+}
+
+/// @brief Namespace function.
+/// @returns "masala::numeric::optimization::cost_function_network".
+std::string
+CostFunctionScratchSpace::class_namespace() const {
+	return "masala::numeric::optimization::cost_function_network::cost_function";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SETTERS
 ////////////////////////////////////////////////////////////////////////////////

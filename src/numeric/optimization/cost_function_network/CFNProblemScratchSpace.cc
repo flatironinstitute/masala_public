@@ -80,6 +80,18 @@ CFNProblemScratchSpace::class_namespace_and_name_static() {
 	return class_namespace_static() + "::" + class_name_static();
 }
 
+/// @brief Get the name of this class ("CFNProblemScratchSpace").
+std::string
+CFNProblemScratchSpace::class_name() const {
+	return "CFNProblemScratchSpace";
+}
+
+/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+std::string
+CFNProblemScratchSpace::class_namespace() const {
+	return "masala::numeric::optimization::cost_function_network";
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////

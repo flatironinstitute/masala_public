@@ -49,11 +49,11 @@ namespace cost_function {
 /// one particular problem.
 /// @note These objects are intended to be used by a single thread, and are not threadsafe.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionScratchSpace : public masala::base::MasalaNoAPIObject {
+class CostFunctionScratchSpace : public masala::base::MasalaObject {
 
-	typedef masala::base::MasalaNoAPIObject Parent;
-	typedef masala::base::MasalaNoAPIObjectSP ParentSP;
-	typedef masala::base::MasalaNoAPIObjectCSP ParentCSP;
+	typedef masala::base::MasalaObject Parent;
+	typedef masala::base::MasalaObjectSP ParentSP;
+	typedef masala::base::MasalaObjectCSP ParentCSP;
 
 public:
 
@@ -73,7 +73,7 @@ public:
 
 	/// @brief Destructor.
 	~CostFunctionScratchSpace() override = default;
-	
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +94,14 @@ public:
 	static
 	std::string
 	class_namespace_and_name_static();
+
+	/// @brief Naming function.
+	/// @returns "CostFunctionScratchSpace".
+	std::string class_name() const override;
+
+	/// @brief Namespace function.
+	/// @returns "masala::numeric::optimization::cost_function_network".
+	std::string class_namespace() const override;
 
 public:
 
