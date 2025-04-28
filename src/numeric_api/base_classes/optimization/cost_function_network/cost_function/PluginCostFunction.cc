@@ -180,6 +180,31 @@ PluginCostFunction::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Does this class use a cost function scratch space?
+/// @details Returns false by default.  May be overridden by derived classes to return true.  If this returns true,
+/// then it is expected that (a) generate_cost_function_scratch_space() returns a non-null pointer to a suitable object
+/// derived from CostFunctionScratchSpace, and (b) compute_cost_function() and compute_cost_function_difference() accept
+/// an object of that type and use it.
+/*virtual*/
+bool
+PluginCostFunction::uses_cost_function_scratch_space() const {
+    return false;
+}
+
+/// @brief Generate a suitable object of type CostFunctionScratchSpace (by shared pointer).
+/// @details Base class generates nullptr.  May be overridden by derived classes, which should
+/// return a suitable class derived from CostFunctionScratchSpace which can be accepted by compute_cost_function()
+/// and compute_cost_function_difference() function overrides.
+/*virtual*/
+PluginCostFunctionScratchSpaceSP
+PluginCostFunction::generate_cost_function_scratch_space() const {
+    return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
