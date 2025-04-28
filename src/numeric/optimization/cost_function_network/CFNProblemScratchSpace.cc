@@ -137,7 +137,7 @@ CFNProblemScratchSpace::cost_function_scratch_space_raw_ptr(
 /// vector of scratch spaces.  Adds nullptr if the cost function does not define its
 /// own scratch space type.
 void
-CFNProblemScratchSpace:: add_cost_function_scratch_space(
+CFNProblemScratchSpace::add_cost_function_scratch_space(
 	masala::numeric::optimization::cost_function_network::cost_function::CostFunction const & cost_fxn
 ) {
 	CHECK_OR_THROW_FOR_CLASS( !finalized_, "add_cost_function_scratch_space", "This object has already been finalized.  Cost function scratch spaces "
