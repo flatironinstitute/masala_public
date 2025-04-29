@@ -358,6 +358,13 @@ protected:
 		return cost_functions_;
 	}
 
+	/// @brief Given a CFN problem scratch space, add scratch spaces for all of this problem's cost functions.
+	/// @param[inout] cfn_problem_scratch_space The object to which we're adding scratch spaces for cost functinos.
+	void
+	protected_add_cost_function_scratch_spaces(
+		CFNProblemScratchSpace & cfn_problem_scratch_space
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
