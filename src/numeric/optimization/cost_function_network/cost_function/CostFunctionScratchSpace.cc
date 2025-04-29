@@ -34,6 +34,24 @@ namespace cost_function_network {
 namespace cost_function {
 
 ////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Clone operator.
+CostFunctionScratchSpaceSP
+CostFunctionScratchSpace::clone() const {
+	return masala::make_shared< CostFunctionScratchSpace >( *this );
+}
+
+/// @brief Deep clone operator.
+CostFunctionScratchSpaceSP
+CostFunctionScratchSpace::deep_clone() const {
+	CostFunctionScratchSpaceSP new_obj( masala::make_shared< CostFunctionScratchSpace >( *this ) );
+	new_obj->protected_make_independent();
+	return new_obj;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +74,20 @@ CostFunctionScratchSpace::class_namespace_static() {
 std::string
 CostFunctionScratchSpace::class_namespace_and_name_static() {
 	return class_namespace_static() + "::" + class_name_static();
+}
+
+/// @brief Naming function.
+/// @returns "CostFunctionScratchSpace".
+std::string
+CostFunctionScratchSpace::class_name() const {
+	return "CostFunctionScratchSpace";
+}
+
+/// @brief Namespace function.
+/// @returns "masala::numeric::optimization::cost_function_network".
+std::string
+CostFunctionScratchSpace::class_namespace() const {
+	return "masala::numeric::optimization::cost_function_network::cost_function";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +113,13 @@ CostFunctionScratchSpace::accept_last_move() {
 void
 CostFunctionScratchSpace::protected_accept_last_move() {
     // GNDN
+}
+
+/// @brief Make this object fully indepenent, deep-cloning all its contents.
+/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+void
+CostFunctionScratchSpace::protected_make_independent() {
+	// GNDN
 }
 
 

@@ -81,16 +81,21 @@ public:
 	/// @brief Destructor.
 	~PluginCostFunctionScratchSpace() override = default;
 
-	/// @brief Make a copy of this object.
-	virtual
-	PluginCostFunctionScratchSpaceSP
-	clone() const = 0;
+	/// @brief Make a copy of this object.  Must be implemented by derived classes.
+	masala::numeric::optimization::cost_function_network::cost_function::CostFunctionScratchSpaceSP
+	clone() const override = 0;
 
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Ensure that this class is a pure virtual class.
+	std::string class_name() const override = 0;
+
+	/// @brief Ensure that this class is a pure virtual class.
+	std::string class_namespace() const override = 0;
 
 public:
 

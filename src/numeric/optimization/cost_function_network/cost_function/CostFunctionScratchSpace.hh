@@ -73,7 +73,13 @@ public:
 
 	/// @brief Destructor.
 	~CostFunctionScratchSpace() override = default;
-	
+
+	/// @brief Clone operator.
+	virtual CostFunctionScratchSpaceSP clone() const;
+
+	/// @brief Deep clone operator.
+	CostFunctionScratchSpaceSP deep_clone() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +100,14 @@ public:
 	static
 	std::string
 	class_namespace_and_name_static();
+
+	/// @brief Naming function.
+	/// @returns "CostFunctionScratchSpace".
+	std::string class_name() const override;
+
+	/// @brief Namespace function.
+	/// @returns "masala::numeric::optimization::cost_function_network".
+	std::string class_namespace() const override;
 
 public:
 
@@ -120,7 +134,6 @@ public:
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +145,12 @@ protected:
 	virtual
 	void
 	protected_accept_last_move();
+
+	/// @brief Make this object fully indepenent, deep-cloning all its contents.
+	/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+	virtual
+	void
+	protected_make_independent();
 
 private:
 

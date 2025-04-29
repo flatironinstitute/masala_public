@@ -83,12 +83,22 @@ public:
 
 	/// @brief Destructor.
 	~PluginPairwisePrecomputedCFNProblemScratchSpace() override = default;
+
+	/// @brief Derived classes must implement clone().
+	masala::numeric::optimization::cost_function_network::CFNProblemScratchSpaceSP
+	clone() const override = 0;
 	
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Ensure that this class is a pure virtual class.
+	std::string class_name() const override = 0;
+
+	/// @brief Ensure that this class is a pure virtual class.
+	std::string class_namespace() const override = 0;
 
 public:
 

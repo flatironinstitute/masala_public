@@ -55,6 +55,20 @@ CFNProblemScratchSpace::CFNProblemScratchSpace(
 	}
 }
 
+/// @brief Clone operator.
+CFNProblemScratchSpaceSP
+CFNProblemScratchSpace::clone() const {
+	return masala::make_shared< CFNProblemScratchSpace >( *this );
+}
+
+/// @brief Deep clone operator.
+CFNProblemScratchSpaceSP
+CFNProblemScratchSpace::deep_clone() const {
+	CFNProblemScratchSpaceSP new_obj( masala::make_shared< CFNProblemScratchSpace >( *this ) );
+	new_obj->protected_make_independent();
+	return new_obj;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +92,18 @@ CFNProblemScratchSpace::class_namespace_static() {
 std::string
 CFNProblemScratchSpace::class_namespace_and_name_static() {
 	return class_namespace_static() + "::" + class_name_static();
+}
+
+/// @brief Get the name of this class ("CFNProblemScratchSpace").
+std::string
+CFNProblemScratchSpace::class_name() const {
+	return "CFNProblemScratchSpace";
+}
+
+/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+std::string
+CFNProblemScratchSpace::class_namespace() const {
+	return "masala::numeric::optimization::cost_function_network";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +137,7 @@ CFNProblemScratchSpace::cost_function_scratch_space_raw_ptr(
 /// vector of scratch spaces.  Adds nullptr if the cost function does not define its
 /// own scratch space type.
 void
-CFNProblemScratchSpace:: add_cost_function_scratch_space(
+CFNProblemScratchSpace::add_cost_function_scratch_space(
 	masala::numeric::optimization::cost_function_network::cost_function::CostFunction const & cost_fxn
 ) {
 	CHECK_OR_THROW_FOR_CLASS( !finalized_, "add_cost_function_scratch_space", "This object has already been finalized.  Cost function scratch spaces "
@@ -159,6 +185,12 @@ CFNProblemScratchSpace::protected_accept_last_move() {
 	//GNDN
 }
 
+/// @brief Make this object fully indepenent, deep-cloning all its contents.
+/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+void
+CFNProblemScratchSpace::protected_make_independent() {
+	// GNDN
+}
 
 } // namespace cost_function_network
 } // namespace optimization

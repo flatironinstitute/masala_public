@@ -84,6 +84,12 @@ public:
 
 	/// @brief Destructor.
 	~CFNProblemScratchSpace() override = default;
+
+	/// @brief Clone operator.
+	virtual CFNProblemScratchSpaceSP clone() const;
+
+	/// @brief Deep clone operator.
+	CFNProblemScratchSpaceSP deep_clone() const;
 	
 public:
 
@@ -105,6 +111,14 @@ public:
 	static
 	std::string
 	class_namespace_and_name_static();
+
+	/// @brief Get the name of this class ("CFNProblemScratchSpace").
+	std::string
+	class_name() const override;
+
+	/// @brief Get the name of this class ("masala::numeric::optimization::cost_function_network").
+	std::string
+	class_namespace() const override;
 
 public:
 
@@ -164,6 +178,12 @@ protected:
 	virtual
 	void
 	protected_accept_last_move();
+
+	/// @brief Make this object fully indepenent, deep-cloning all its contents.
+	/// @details Must be overridden by derived classes.  Derived versions should call base class version.
+	virtual
+	void
+	protected_make_independent();
 
 private:
 
