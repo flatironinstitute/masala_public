@@ -345,6 +345,99 @@ CostFunctionNetworkOptimizationProblem::clear_candidate_solutions() {
 // WORK FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Generate a cost function network optimization problem scratch space for this object.
+/// @details Should include scratch spaces for those cost functions that take them.  Must be implemented by derived
+/// classes: base class implementation throws.  Should call protected_add_cost_function_scratch_spaces(), and then
+/// should call finalize() on the generated object.
+/*virtual*/
+CFNProblemScratchSpaceSP
+CostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space() const {
+	MASALA_THROW( class_namespace() + "::" + class_name(), "generate_cfn_problem_scratch_space", "This function must be implemented for derived classes." );
+	return nullptr;
+}
+
+/// @brief Given a candidate solution, compute the score.  This computes the actual,
+/// non-approximate score (possibly more slowly), not the score that the data approximation
+/// uses (computed in a manner optimized for speed, which may involve approximations).
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.  The default implementation calls compute_absolute_score(), but this
+/// may be overridden if the data representation uses an approximation or lower level of precision
+/// to compute the score.
+/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
+/*virtual*/
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score(
+	std::vector< base::Size > const & candidate_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
+) const {
+	return compute_absolute_score( candidate_solution, cfn_problem_scratch_space ); /*This behaviour should be override if a derived class uses an approximation.*/
+}
+
+/// @brief Given a candidate solution, compute the data representation score (which
+/// may be approximate).
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.
+/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
+/*virtual*/
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_absolute_score(
+	std::vector< base::Size > const & candidate_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
+) const {
+	masala::base::Real accumulator(0.0);
+	for( masala::base::Size i(0); i<cost_functions_.size(); ++i ) {
+		if( cfn_problem_scratch_space != nullptr ) {
+			accumulator += cost_functions_[i]->compute_cost_function( candidate_solution, cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) );
+		} else {
+			accumulator += cost_functions_[i]->compute_cost_function( candidate_solution, nullptr );
+		}
+	}
+	return accumulator;
+}
+
+/// @brief Given a pair of candidate solutions, compute the difference in their scores.
+/// This is the difference in the data representation scores (which may be an approximation
+/// of the actual scores).
+/// @details The candidate solution is expressed as a vector of choice indices, with
+/// one entry per variable position, in order of position indices.  (There may not be
+/// entries for every position, though, since not all positions have at least two choices.)
+/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
+/// a read-only context.
+/// @param[in] old_solution The previous candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] new_solution The current candidate solution, expressed as a vector of choice indices,
+/// indexed by variable node index.
+/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
+/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
+masala::base::Real
+CostFunctionNetworkOptimizationProblem::compute_score_change(
+	std::vector< base::Size > const & old_solution,
+	std::vector< base::Size > const & new_solution,
+	CFNProblemScratchSpace * cfn_problem_scratch_space
+) const {
+	masala::base::Real accumulator(0.0);
+	for( masala::base::Size i(0); i<cost_functions_.size(); ++i ) {
+		if( cfn_problem_scratch_space != nullptr ) {
+			accumulator += cost_functions_[i]->compute_cost_function_difference( old_solution, new_solution, cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) );
+		} else {
+			accumulator += cost_functions_[i]->compute_cost_function_difference( old_solution, new_solution, nullptr );
+		}
+	}
+	return accumulator;
+}
+
 /// @brief Create a solutions container for this type of optimization problem.
 /// @details Base class implementation creates a generic OptimizationSolutions container.
 /// This override creates a CostFunctionNetworkOptimizationSolutions container.",
@@ -528,6 +621,79 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Work functions:
+		work_function::MasalaObjectAPIWorkFunctionDefinitionSP generate_scratch_space_fxn(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< masala::numeric::optimization::cost_function_network::CFNProblemScratchSpaceSP > >(
+				"generate_cfn_problem_scratch_space", "Generate a scratch space for this CFN problem class.",
+				true, false, true, false,
+				"cfn_problem_scratch_space", "A shared pointer that points to a scratch space for this problem.  This is used "
+				"internally to make recomputation of the cost function efficient.  The base class returns nullptr, and this function "
+				"should be overridden by derived classes",
+				std::bind( &CostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space, this )
+			)
+		);
+		generate_scratch_space_fxn->set_always_returns_nullptr();
+		api_def->add_work_function( generate_scratch_space_fxn );
+
+		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn_nonapprox(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
+				"compute_non_approximate_absolute_score", "Given a candidate solution, compute the score.  "
+				"This computes the actual, non-approximate score (possibly more slowly), not the score "
+				"that the data approximation uses (computed in a manner optimized for speed, which may "
+				"involve approximations).  The candidate solution is expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.",
+				true, false, true, false,
+				"candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.  (There may not be "
+				"entries for every position, though, since not all positions have at least two choices.)",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
+				"score", "The score for this candidate solution, computed by this function.",
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
+		comp_abs_score_fxn_nonapprox->set_triggers_no_mutex_lock();
+		api_def->add_work_function( comp_abs_score_fxn_nonapprox );
+
+		work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_abs_score_fxn(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< base::Real, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
+				"compute_absolute_score", "Given a candidate solution, compute the score (which "
+				"may be approximate, depending on the data representation).  "
+				"The candidate solution is expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.",
+				true, false, true, false,
+				"candidate_solution", "The candidate solution, expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.  (There may not be "
+				"entries for every position, though, since not all positions have at least two choices.)",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
+				"score", "The score for this candidate solution, computed by this function.",
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_absolute_score, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
+		comp_abs_score_fxn->set_triggers_no_mutex_lock();
+		api_def->add_work_function( comp_abs_score_fxn );
+
+		work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInputSP< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const &, CFNProblemScratchSpace * > comp_score_change_fxn(
+			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< base::Real, std::vector< base::Size > const &, std::vector< base::Size > const &, CFNProblemScratchSpace * > >(
+				"compute_score_change", "Given two candidate solutions, compute the score difference.  This "
+				"is the difference in the data representation scores (which may be an approximation of the "
+				"actual scores).  The candidate solutions are expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices. (There may not be "
+				"entries for every position, though, since not all positions have at least two choices.)",
+				true, false, true, false,
+				"old_solution", "The first candidate solution, expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.",
+				"new_solution", "The second candidate solution, expressed as a vector of choice indices, with "
+				"one entry per variable position, in order of position indices.",
+				"cfn_problem_scratch_space", "A scratch space for computing this CFN problem's score given a "
+				"candidate score.",
+				"delta_score", "The score change from old to new candidate solutions, computed by this function.",
+				std::bind( &CostFunctionNetworkOptimizationProblem::compute_score_change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 )
+			)
+		);
+		comp_score_change_fxn->set_triggers_no_mutex_lock();
+		api_def->add_work_function( comp_score_change_fxn );
+
 		api_def->add_work_function(
 			masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ZeroInput< OptimizationSolutionsSP > >(
 				"create_solutions_container", "Create a solutions container for this type of optimization problem.  "

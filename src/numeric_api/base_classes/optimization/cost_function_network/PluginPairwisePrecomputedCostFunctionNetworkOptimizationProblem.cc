@@ -34,11 +34,6 @@
 // Numeric headers:
 #include <numeric/optimization/cost_function_network/cost_function/CostFunction.hh>
 
-// Numeric API headers:
-#include <numeric_api/base_classes/optimization/cost_function_network/PluginPairwisePrecomputedCFNProblemScratchSpace.hh>
-#include <numeric_api/base_classes/optimization/cost_function_network/cost_function/PluginCostFunction.hh>
-#include <numeric_api/base_classes/optimization/cost_function_network/cost_function/PluginCostFunctionScratchSpace.hh>
-
 // Base headers:
 #include <base/error/ErrorHandling.hh>
 #include <base/api/MasalaObjectAPIDefinition.hh>
@@ -185,133 +180,7 @@ PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::get_possibly_pr
 
 ////////////////////////////////////////////////////////////////////////////////
 // WORK FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Generate a cost function network optimization problem scratch space for this object.
-/// @details Should include scratch spaces for those cost functions that take them.  Must be implemented by derived
-/// classes: base class implementation throws.  Should call protected_add_cost_function_scratch_spaces(), and then
-/// should call finalize() on the generated object.
-/*virtual*/
-PluginPairwisePrecomputedCFNProblemScratchSpaceSP
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::generate_cfn_problem_scratch_space() const {
-	MASALA_THROW( class_namespace() + "::" + class_name(), "generate_cfn_problem_scratch_space", "This function must be implemented for derived classes." );
-	return nullptr;
-}
-
-/// @brief Given a candidate solution, compute the score.  This computes the actual,
-/// non-approximate score (possibly more slowly), not the score that the data approximation
-/// uses (computed in a manner optimized for speed, which may involve approximations).
-/// @details The candidate solution is expressed as a vector of choice indices, with
-/// one entry per variable position, in order of position indices.  (There may not be
-/// entries for every position, though, since not all positions have at least two choices.)
-/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
-/// a read-only context.  The default implementation calls compute_absolute_score(), but this
-/// may be overridden if the data representation uses an approximation or lower level of precision
-/// to compute the score.
-/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
-/// indexed by variable node index.
-/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
-/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
-/*virtual*/
-masala::base::Real
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_non_approximate_absolute_score(
-	std::vector< base::Size > const & candidate_solution,
-	PluginPairwisePrecomputedCFNProblemScratchSpace * cfn_problem_scratch_space
-) const {
-	return compute_absolute_score( candidate_solution, cfn_problem_scratch_space ); /*This behaviour should be override if a derived class uses an approximation.*/
-}
-
-/// @brief Given a candidate solution, compute the data representation score (which
-/// may be approximate).
-/// @details The candidate solution is expressed as a vector of choice indices, with
-/// one entry per variable position, in order of position indices.  (There may not be
-/// entries for every position, though, since not all positions have at least two choices.)
-/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
-/// a read-only context.
-/// @param[in] candidate_solution The candidate solution, expressed as a vector of choice indices,
-/// indexed by variable node index.
-/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
-/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
-/*virtual*/
-masala::base::Real
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_absolute_score(
-	std::vector< base::Size > const & candidate_solution,
-	PluginPairwisePrecomputedCFNProblemScratchSpace * cfn_problem_scratch_space
-) const {
-	masala::base::Real accumulator(0.0);
-	for( masala::base::Size i(0); i<cost_functions().size(); ++i ) {
-
-#ifndef NDEBUG
-		cost_function::PluginCostFunction const * cost_function_cast( dynamic_cast< cost_function::PluginCostFunction const * >( cost_functions()[i].get() ) );
-		DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( cost_function_cast != nullptr, "compute_score_change", "Cost function \"" + cost_functions()[i]->class_name() + "\" could not be interpreted as a PluginCostFunction." );
-#else
-		cost_function::PluginCostFunction const * cost_function_cast( static_cast< cost_function::PluginCostFunction const * >( cost_functions()[i].get() ) );
-#endif
-
-		if( cfn_problem_scratch_space != nullptr ) {
-
-#ifndef NDEBUG
-			cost_function::PluginCostFunctionScratchSpace * cost_fxn_scratch_space_cast( dynamic_cast< cost_function::PluginCostFunctionScratchSpace * >( cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) ) );
-			DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( cost_fxn_scratch_space_cast != nullptr, "compute_score_change", "Cost function scratch space  \"" + cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i)->class_name() + "\" could not be interpreted as a PluginCostFunctioScratchSpace." );
-#else
-			cost_function::PluginCostFunctionScratchSpace * cost_fxn_scratch_space_cast( static_cast< cost_function::PluginCostFunctionScratchSpace * >( cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) ) );
-#endif
-
-			accumulator += cost_function_cast->compute_cost_function( candidate_solution, cost_fxn_scratch_space_cast );
-		} else {
-			accumulator += cost_function_cast->compute_cost_function( candidate_solution, nullptr );
-		}
-	}
-	return accumulator;
-}
-
-/// @brief Given a pair of candidate solutions, compute the difference in their scores.
-/// This is the difference in the data representation scores (which may be an approximation
-/// of the actual scores).
-/// @details The candidate solution is expressed as a vector of choice indices, with
-/// one entry per variable position, in order of position indices.  (There may not be
-/// entries for every position, though, since not all positions have at least two choices.)
-/// @note This function does NOT lock the problem mutex.  This is only threadsafe from
-/// a read-only context.
-/// @param[in] old_solution The previous candidate solution, expressed as a vector of choice indices,
-/// indexed by variable node index.
-/// @param[in] new_solution The current candidate solution, expressed as a vector of choice indices,
-/// indexed by variable node index.
-/// @param[in] cfn_problem_scratch_space Nullptr or a pointer to a mutable object that can be used
-/// to cache parts of the calcuation for faster recalcualtion on repeeated evaluation.
-masala::base::Real
-PluginPairwisePrecomputedCostFunctionNetworkOptimizationProblem::compute_score_change(
-	std::vector< base::Size > const & old_solution,
-	std::vector< base::Size > const & new_solution,
-	PluginPairwisePrecomputedCFNProblemScratchSpace * cfn_problem_scratch_space
-) const {
-	masala::base::Real accumulator(0.0);
-	for( masala::base::Size i(0); i<cost_functions().size(); ++i ) {
-
-#ifndef NDEBUG
-		cost_function::PluginCostFunction const * cost_function_cast( dynamic_cast< cost_function::PluginCostFunction const * >( cost_functions()[i].get() ) );
-		DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( cost_function_cast != nullptr, "compute_score_change", "Cost function \"" + cost_functions()[i]->class_name() + "\" could not be interpreted as a PluginCostFunction." );
-#else
-		cost_function::PluginCostFunction const * cost_function_cast( static_cast< cost_function::PluginCostFunction const * >( cost_functions()[i].get() ) );
-#endif
-
-		if( cfn_problem_scratch_space != nullptr ) {
-
-#ifndef NDEBUG
-			cost_function::PluginCostFunctionScratchSpace * cost_fxn_scratch_space_cast( dynamic_cast< cost_function::PluginCostFunctionScratchSpace * >( cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) ) );
-			DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( cost_fxn_scratch_space_cast != nullptr, "compute_score_change", "Cost function scratch space  \"" + cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i)->class_name() + "\" could not be interpreted as a PluginCostFunctioScratchSpace." );
-#else
-			cost_function::PluginCostFunctionScratchSpace * cost_fxn_scratch_space_cast( static_cast< cost_function::PluginCostFunctionScratchSpace * >( cfn_problem_scratch_space->cost_function_scratch_space_raw_ptr(i) ) );
-#endif
-
-			accumulator += cost_function_cast->compute_cost_function_difference( old_solution, new_solution, cost_fxn_scratch_space_cast );
-		} else {
-			accumulator += cost_function_cast->compute_cost_function_difference( old_solution, new_solution, nullptr );
-		}
-
-	}
-	return accumulator;
-}
+//////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
