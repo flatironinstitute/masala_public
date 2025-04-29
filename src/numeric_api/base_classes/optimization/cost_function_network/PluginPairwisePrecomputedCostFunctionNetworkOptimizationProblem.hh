@@ -310,6 +310,13 @@ protected:
 	/// @details Base class protected_finalize() sets finalized_ to true, so this calls that.
 	void protected_finalize() override;
 
+	/// @brief Given a CFN problem scratch space, add scratch spaces for all of this problem's cost functions.
+	/// @param[inout] cfn_problem_scratch_space The object to which we're adding scratch spaces for cost functinos.
+	void
+	protected_add_cost_function_scratch_spaces(
+		PluginPairwisePrecomputedCFNProblemScratchSpace & cfn_problem_scratch_space
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

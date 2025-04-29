@@ -762,22 +762,6 @@ CostFunctionNetworkOptimizationProblem::protected_n_choices_at_variable_nodes() 
 	return n_choices_at_variable_nodes_;
 }
 
-/// @brief Given a CFN problem scratch space, add scratch spaces for all of this problem's cost functions.
-/// @param[inout] cfn_problem_scratch_space The object to which we're adding scratch spaces for cost functinos.
-void
-CostFunctionNetworkOptimizationProblem::protected_add_cost_function_scratch_spaces(
-	CFNProblemScratchSpace & cfn_problem_scratch_space
-) const {
-	std::lock_guard< std::mutex > lock( data_representation_mutex() );
-	CHECK_OR_THROW_FOR_CLASS( protected_finalized(), "protected_add_cost_function_scratch_spaces", "This " + class_name() + " object must be "
-		"finalized before this function is called."
-	);
-	for( auto const & entry : cost_functions_ ) {
-		cfn_problem_scratch_space.add_cost_function_scratch_space( *entry );
-	}
-}
-
-
 } // namespace cost_function_network
 } // namespace optimization
 } // namespace numeric
