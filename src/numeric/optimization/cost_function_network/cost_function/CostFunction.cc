@@ -240,6 +240,58 @@ CostFunction::finalize(
     protected_finalize( variable_node_indices );
 }
 
+/// @brief Does this class use a cost function scratch space?
+/// @details Returns false by default.  May be overridden by derived classes to return true.  If this returns true,
+/// then it is expected that (a) generate_cost_function_scratch_space() returns a non-null pointer to a suitable object
+/// derived from CostFunctionScratchSpace, and (b) compute_cost_function() and compute_cost_function_difference() accept
+/// an object of that type and use it.
+/*virtual*/
+bool
+CostFunction::uses_cost_function_scratch_space() const {
+    return false;
+}
+
+/// @brief Generate a suitable object of type CostFunctionScratchSpace (by shared pointer).
+/// @details Base class generates nullptr.  May be overridden by derived classes, which should
+/// return a suitable class derived from CostFunctionScratchSpace which can be accepted by compute_cost_function()
+/// and compute_cost_function_difference() function overrides.
+/*virtual*/
+CostFunctionScratchSpaceSP
+CostFunction::generate_cost_function_scratch_space() const {
+    return nullptr;
+}
+
+/// @brief Given a selection of choices at variable nodes, compute the cost function.
+/// @details This version returns 0; must be overridden by derived classes.
+/// @param[in] candidate_solution The current solution, expressed as a vector of variable node indices.
+/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
+masala::base::Real
+CostFunction::compute_cost_function(
+    std::vector< masala::base::Size > const & /*candidate_solution*/,
+    CostFunctionScratchSpace * /*scratch_space*/
+) const {
+    return 0.0;
+}
+
+/// @brief Given an old selection of choices at variable nodes and a new selection,
+/// compute the cost function difference.
+/// @details This version returns 0; must be overridden by derived classes.
+/// @param[in] candidate_solution_old The previous solution, expressed as a vector of variable node indices.
+/// @param[in] candidate_solution_new The new solution, expressed as a vector of variable node indices.
+/// @param[in] scratch_space A pointer to a CostFunctionScratchSpace object.  Thie could be nullptr.  If non-null,
+/// then the derived class must check that this is an appropriate CostFunctionScratchSpace type and use it appropriately.
+/// This is to help to make calculations more efficient on re-evaluation by caching relevant information from past evaluations.
+masala::base::Real
+CostFunction::compute_cost_function_difference(
+    std::vector< masala::base::Size > const & /*candidate_solution_old*/,
+    std::vector< masala::base::Size > const & /*candidate_solution_new*/,
+    CostFunctionScratchSpace * /*scratch_space*/
+) const {
+    return 0.0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +313,40 @@ CostFunction::get_api_definition() {
         );
 
         ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( CostFunction, api_def );
+
+        {
+            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_def(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Real, std::vector< Size > const &, CostFunctionScratchSpace * > >(
+                    "compute_cost_function", "Given a selection of choices at variable nodes, compute the cost function.  Note that no mutex-locking is performed.",
+                    true, false, true, false,
+                    "candidate_solution", "The indices of the selected node choices, indexed by variable node index.",
+                    "cost_function_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
+                    "cost_function", "The square of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
+                    std::bind( &CostFunction::compute_cost_function, this, std::placeholders::_1, std::placeholders::_2 )               
+                )
+            );
+            compute_cost_function_def->set_triggers_no_mutex_lock();
+            api_def->add_work_function( compute_cost_function_def );
+        }
+        {
+            work_function::MasalaObjectAPIWorkFunctionDefinitionSP compute_cost_function_difference_def(
+                masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_ThreeInput< Real, std::vector< Size > const &, std::vector< Size > const &, CostFunctionScratchSpace * > >(
+                    "compute_cost_function_difference", "Given an old selection of choices at variable nodes and a new selection, "
+                    "compute the cost function difference.  Note that no mutex-locking is performed.",
+                    true, false, true, false,
+                    "candidate_solution_old", "The indices of the selected node choices for the OLD selection, indexed by variable node index.",
+                    "candidate_solution_new", "The indices of the selected node choices for the NEW selection, indexed by variable node index.",
+                    "cost_function_scratch_space", "A pointer to a scratch space for this cost function, or nullptr if this cost function doesn't use one.",
+                    "cost_function", "The difference of the squares of the total number of features that are unsatisfied, multiplied by the weight of this cost function.",
+                    std::bind( &CostFunction::compute_cost_function_difference,
+                        this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
+                    )               
+                )
+            );
+            compute_cost_function_difference_def->set_triggers_no_mutex_lock();
+            api_def->add_work_function( compute_cost_function_difference_def );
+        }
+
 
         api_definition_ = api_def;
     }
