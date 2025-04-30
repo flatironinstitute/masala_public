@@ -97,7 +97,7 @@ NoUISetterAnnotation::protected_assign(
 /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
 bool
 NoUISetterAnnotation::protected_is_compatible_with_setter(
-	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & /*setter*/
 ) const /*override*/ {
 	 return true;
 }

@@ -27,6 +27,10 @@
 
 // Base headers
 #include <base/error/ErrorHandling.hh>
+#include <base/api/work_function/work_function_annotation/MasalaWorkFunctionAnnotation.hh>
+
+// STL headers:
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -85,9 +89,22 @@ MasalaObjectAPIWorkFunctionDefinition::work_function_name() const {
 }
 
 /// @brief Get the work function's description.
-std::string const &
+std::string
 MasalaObjectAPIWorkFunctionDefinition::work_function_description() const {
     return work_function_description_;
+
+	if( work_function_annotations_.empty() ) {
+        return work_function_description_;
+    }
+    std::ostringstream ss;
+    ss << work_function_description_;
+    for( auto const & wf_annotation : work_function_annotations_ ) {
+        std::string const extra_description( wf_annotation->get_additional_description() );
+        if( !extra_description.empty() ) {
+            ss << "  " << extra_description;
+        }
+    }
+    return ss.str();
 }
 
 /// @brief Get whether this work function is a const function.
@@ -127,6 +144,33 @@ MasalaObjectAPIWorkFunctionDefinition::triggers_no_mutex_lock() const {
 bool
 MasalaObjectAPIWorkFunctionDefinition::always_returns_nullptr() const {
     return always_returns_nullptr_;
+}
+
+/// @brief Access the Nth work function annotation.
+work_function_annotation::MasalaWorkFunctionAnnotationCSP
+MasalaObjectAPIWorkFunctionDefinition::work_function_annotation(
+    masala::base::Size const work_function_annotation_index
+) const {
+    CHECK_OR_THROW_FOR_CLASS( work_function_annotation_index < work_function_annotations_.size(),
+        "work_function_annotation", "This " + class_name() + " has " + std::to_string(work_function_annotations_.size())
+        + " work function annotations.  Index " + std::to_string(work_function_annotation_index) + " is out of range."
+    );
+    return work_function_annotations_[work_function_annotation_index];
+}
+
+/// @brief Add a work function annotation.
+/// @details Annotation is used directly, not cloned.
+void
+MasalaObjectAPIWorkFunctionDefinition::add_work_function_annotation(
+    work_function_annotation::MasalaWorkFunctionAnnotationCSP const & annotation_in
+) {
+    CHECK_OR_THROW_FOR_CLASS(
+		annotation_in->is_compatible_with_work_function( *this ),
+		"add_work_function_annotation",
+		"The " + annotation_in->class_name() + " work function annotation reports that it is incompatible with "
+        "work function " + work_function_name_ + "."
+	);
+	work_function_annotations_.push_back( annotation_in );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
