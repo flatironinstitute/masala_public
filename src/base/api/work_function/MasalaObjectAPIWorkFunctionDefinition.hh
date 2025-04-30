@@ -144,6 +144,9 @@ public:
 	/// that are overridden by derived classes.)
 	bool always_returns_nullptr() const;
 
+	/// @brief Get the number of work function annotations.
+	masala::base::Size n_work_function_annotations() const;
+
 	/// @brief Access the Nth work function annotation.
 	work_function_annotation::MasalaWorkFunctionAnnotationCSP work_function_annotation( masala::base::Size const work_function_annotation_index ) const;
 

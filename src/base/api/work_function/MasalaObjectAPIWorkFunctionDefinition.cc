@@ -146,6 +146,12 @@ MasalaObjectAPIWorkFunctionDefinition::always_returns_nullptr() const {
     return always_returns_nullptr_;
 }
 
+/// @brief Get the number of work function annotations.
+masala::base::Size
+MasalaObjectAPIWorkFunctionDefinition::n_work_function_annotations() const {
+    return work_function_annotations_.size();
+}
+
 /// @brief Access the Nth work function annotation.
 work_function_annotation::MasalaWorkFunctionAnnotationCSP
 MasalaObjectAPIWorkFunctionDefinition::work_function_annotation(
