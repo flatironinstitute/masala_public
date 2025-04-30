@@ -832,7 +832,7 @@ void
 OwnedSingleObjectSetterAnnotation::modify_json_description(
 	nlohmann::json & json_description
 ) const {
-	using masala::base::Size;
+	CHECK_OR_THROW_FOR_CLASS( json_description.count("Owned_single_object_setter") == 0, "modify_json_description", "Multiple OwnedSingleObjectSetterAnnotation annotations were found for setter." );
 
 	json_description["Owned_single_object_setter"] = true;
 

@@ -417,6 +417,20 @@ PreferredTemplateDataRepresentationSetterAnnotation::get_additional_description(
 	return ss.str();
 }
 
+/// @brief Modify the JSON description.
+void
+PreferredTemplateDataRepresentationSetterAnnotation::modify_json_description(
+	nlohmann::json & json_description
+) const {
+	CHECK_OR_THROW_FOR_CLASS( json_description.count("Sets_preferred_template_data_representation") == 0, "modify_json_description", "Multiple PreferredTemplateDataRepresentationSetterAnnotation annotations were found for setter." );
+	json_description["Sets_preferred_template_data_representation"] = true;
+	nlohmann::json newjson;
+	newjson["Data_representation_manager_input_object_category"] = data_representation_manager_input_object_category_;
+	newjson["Data_representation_manager_include_subcategory"] = data_representation_manager_include_subcategory_;
+	newjson["Data_representation_manager_input_object_keywords"] = data_representation_manager_input_object_keywords_;
+	json_description["Preferred_template_data_representation_details"] = newjson;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
