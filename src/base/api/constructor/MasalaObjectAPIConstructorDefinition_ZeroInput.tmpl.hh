@@ -126,7 +126,9 @@ public:
 
 		//Inputs:
 		json_api["Constructor_N_Inputs"] = 0;
-		
+
+		modify_json_description_with_annotators( json_api );
+
 		return json_api;
 	}
 
