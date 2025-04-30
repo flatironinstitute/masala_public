@@ -30,6 +30,9 @@
 #include <base/MasalaObject.hh>
 #include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
+// External headers:
+#include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
+
 // STL headers:
 #include <mutex>
 
@@ -72,6 +75,14 @@ public:
 	virtual
 	std::string
 	get_additional_description() const;
+
+	/// @brief Modify the JSON description for this function.
+	/// @details Should be implemented by derived classes.  Base class version does nothing.
+	virtual
+	void
+	modify_json_description(
+		nlohmann::json & json_description
+	) const;
 
 protected:
 

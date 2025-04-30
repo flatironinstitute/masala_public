@@ -68,6 +68,16 @@ MasalaFunctionAnnotation::get_additional_description() const {
 	return "";
 }
 
+/// @brief Modify the JSON description for this function.
+/// @details Should be implemented by derived classes.  Base class version does nothing.
+/*virtual*/
+void
+MasalaFunctionAnnotation::modify_json_description(
+	nlohmann::json & //json_description
+) const {
+	//GNDN
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
