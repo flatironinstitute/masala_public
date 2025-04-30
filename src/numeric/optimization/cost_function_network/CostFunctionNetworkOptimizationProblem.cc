@@ -45,6 +45,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/NoUISetterAnnotation.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 
@@ -568,14 +569,18 @@ CostFunctionNetworkOptimizationProblem::get_api_definition() {
 		);
 
 		// Setters:
-		api_def->add_setter(
-			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
-				"reset", "Completely reset the problem description, deleting all choices for each node.  "
-				"Also resets finalization state.",
-				false, false,
-				std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
-			)
-		);
+		{
+			setter::MasalaObjectAPISetterDefinition_ZeroInputSP reset_fxn(
+				masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+					"reset", "Completely reset the problem description, deleting all choices for each node.  "
+					"Also resets finalization state.",
+					false, false,
+					std::bind( &CostFunctionNetworkOptimizationProblem::reset, this )
+				)
+			);
+			reset_fxn->add_setter_annotation( masala::make_shared< setter::setter_annotation::NoUISetterAnnotation >() );
+			api_def->add_setter( reset_fxn );
+		}
 		api_def->add_setter(
 			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
 				"finalize", "Finalize this object completely -- i.e. indicate that all problem setup is complete, and "

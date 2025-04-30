@@ -147,7 +147,16 @@ public:
 
 		json_api["Inputs"] = json_inputs;
 
+		modify_json_description_with_annotators( json_api );
+
 		return json_api;
+	}
+
+	/// @brief Get the number of input parameters for this constructor.
+	/// @details Pure virtual; must be overridden by derived classes.
+	masala::base::Size
+	num_input_parameters() const override {
+		return 1;
 	}
 
 public:

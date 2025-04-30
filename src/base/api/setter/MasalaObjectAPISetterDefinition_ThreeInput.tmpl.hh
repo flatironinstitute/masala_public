@@ -206,6 +206,8 @@ public:
 		json_inputs["Input_2"] = json_input2;
 		json_api["Inputs"] = json_inputs;
 
+		modify_json_description_with_annotators( json_api );
+
 		return json_api;
 	}
 

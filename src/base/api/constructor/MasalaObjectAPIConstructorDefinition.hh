@@ -34,6 +34,10 @@
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
 
+// Base headers.
+#include <base/types.hh>
+#include <base/api/constructor/constructor_annotation/MasalaConstructorAnnotation.fwd.hh>
+
 // STL headers.
 #include <string>
 
@@ -97,6 +101,10 @@ public:
 	nlohmann::json
 	get_constructor_json_description() const = 0;
 
+	/// @brief Get the number of input parameters for this constructor.
+	/// @details Pure virtual; must be overridden by derived classes.
+	virtual masala::base::Size num_input_parameters() const = 0;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +115,31 @@ public:
 	std::string const & constructor_name() const;
 
 	/// @brief Get the constructor's description.
-	std::string const & constructor_description() const;
+	/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+	/// (e.g. by constructor annotations).
+	std::string constructor_description() const;
+
+	/// @brief Get the number of constructor annotations.
+	masala::base::Size n_constructor_annotations() const;
+
+	/// @brief Access the Nth constructor annotation.
+	constructor_annotation::MasalaConstructorAnnotationCSP constructor_annotation( masala::base::Size const constructor_annotation_index ) const;
+
+	/// @brief Add a constructor annotation.
+	/// @details Annotation is used directly, not cloned.
+	void add_constructor_annotation( constructor_annotation::MasalaConstructorAnnotationCSP const & annotation_in );
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given the annotators, modify the JSON description of this function.
+	void
+	modify_json_description_with_annotators(
+		nlohmann::json & json_description
+	) const;
 
 private:
 
@@ -122,6 +154,9 @@ private:
 	/// @brief The description of the constructor.
 	/// @details Must be set on construction.
 	std::string const constructor_description_;
+
+	/// @brief Additional annotations that this function has attached to it.
+	std::vector< constructor_annotation::MasalaConstructorAnnotationCSP > constructor_annotations_;
 
 }; // class MasalaObjectAPIConstructorDefinition
 

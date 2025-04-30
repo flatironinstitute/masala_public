@@ -32,6 +32,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/NoUISetterAnnotation.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 
@@ -237,12 +238,16 @@ OptimizationProblem::get_api_definition() {
 				true, false, std::bind( &OptimizationProblem::finalize, this )
 			)
 		);
-		api_def->add_setter(
-			masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
-				"reset", "Reset this object completely.  (Resets finalization state.)",
-				true, false, std::bind( &OptimizationProblem::reset, this )
-			)
-		);
+		{
+			setter::MasalaObjectAPISetterDefinition_ZeroInputSP reset_fxn(
+				masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+					"reset", "Reset this object completely.  (Resets finalization state.)",
+					true, false, std::bind( &OptimizationProblem::reset, this )
+				)
+			);
+			reset_fxn->add_setter_annotation( masala::make_shared< setter::setter_annotation::NoUISetterAnnotation >() );
+			api_def->add_setter( reset_fxn );
+		}
 
 		// Work functions:
 		api_def->add_work_function(

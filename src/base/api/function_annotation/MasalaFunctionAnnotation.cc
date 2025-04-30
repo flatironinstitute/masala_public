@@ -57,6 +57,28 @@ MasalaFunctionAnnotation::operator=(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get any additional description that this annotation provides.
+/// @details Intended for user-facing interfaces.  Base class returns an empty string.  May be overridden by derived classes.
+/*virtual*/
+std::string
+MasalaFunctionAnnotation::get_additional_description() const {
+	return "";
+}
+
+/// @brief Modify the JSON description for this function.
+/// @details Should be implemented by derived classes.  Base class version does nothing.
+/*virtual*/
+void
+MasalaFunctionAnnotation::modify_json_description(
+	nlohmann::json & //json_description
+) const {
+	//GNDN
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

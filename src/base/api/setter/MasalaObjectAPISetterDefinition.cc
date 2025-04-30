@@ -147,6 +147,20 @@ MasalaObjectAPISetterDefinition::add_setter_annotation(
 	setter_annotations_.push_back( annotation_in );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given the annotators, modify the JSON description of this function.
+void
+MasalaObjectAPISetterDefinition::modify_json_description_with_annotators(
+	nlohmann::json & json_description
+) const {
+	for( auto const & annotation : setter_annotations_ ) {
+		annotation->modify_json_description( json_description );
+	}
+}
+
 } // namespace setter
 } // namespace api
 } // namespace base

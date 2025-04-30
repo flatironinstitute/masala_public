@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.cc
-/// @brief Implementations for a pure virtual base class for setter function annotations.
+/// @file src/base/api/constructor/constructor_annotation/MasalaConstructorAnnotation.cc
+/// @brief Implementations for a pure virtual base class for constructor function annotations.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 
 // Unit headers:
-#include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
+#include <base/api/constructor/constructor_annotation/MasalaConstructorAnnotation.hh>
 
 // Base headers:
-#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
 
 // Error handling:
 #include <base/error/ErrorHandling.hh>
@@ -33,8 +33,8 @@
 namespace masala {
 namespace base {
 namespace api {
-namespace setter {
-namespace setter_annotation {
+namespace constructor {
+namespace constructor_annotation {
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
@@ -43,11 +43,11 @@ namespace setter_annotation {
 /// @brief Assign src to this.  Performs no mutex-locking.
 /// @details Derived classes should override this, and the overrides should call this function.
 void
-MasalaSetterFunctionAnnotation::protected_assign(
+MasalaConstructorAnnotation::protected_assign(
     MasalaFunctionAnnotation const & src
 ) /*override*/ {
-    MasalaSetterFunctionAnnotation const * src_cast_ptr( dynamic_cast< MasalaSetterFunctionAnnotation const * >( &src ) );
-    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a MasalaSetterFunctionAnnotation object." );
+    MasalaConstructorAnnotation const * src_cast_ptr( dynamic_cast< MasalaConstructorAnnotation const * >( &src ) );
+    CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a MasalaConstructorAnnotation object." );
 
     masala::base::api::function_annotation::MasalaFunctionAnnotation::protected_assign( src );
 }
@@ -56,19 +56,27 @@ MasalaSetterFunctionAnnotation::protected_assign(
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Is this annotation one that can be applied to this setter?
-/// @details This function locks the mutex and calls protected_is_compatible_with_setter(), which must be implemented by derived classes.
-/// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
+/// @brief Is this annotation one that can be applied to this constructor?
+/// @details This function locks the mutex and calls protected_is_compatible_with_constructor(), which must be implemented by derived classes.
+/// @returns True if it is compatible, false otherwise.  Called by the constructor API definition's add_constructor_annotation() function.
 bool
-MasalaSetterFunctionAnnotation::is_compatible_with_setter(
-    masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
+MasalaConstructorAnnotation::is_compatible_with_constructor(
+    masala::base::api::constructor::MasalaObjectAPIConstructorDefinition const & constructor
 ) const {
     std::lock_guard< std::mutex > lock( mutex() );
-    return protected_is_compatible_with_setter( setter );
+    return protected_is_compatible_with_constructor( constructor );
 }
 
-} // namespace setter_annotation
-} // namespace setter
+/// @brief Get any additional description that this annotation provides.
+/// @details Intended for user-facing interfaces.  Base class returns an empty string.  May be overridden by derived classes.
+/*virtual*/
+std::string
+MasalaConstructorAnnotation::get_additional_description() const {
+	return "";
+}
+
+} // namespace constructor_annotation
+} // namespace constructor
 } // namespace api
 } // namespace base
 } // namespace masala

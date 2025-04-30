@@ -204,8 +204,14 @@ public:
 		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;
 
+		modify_json_description_with_annotators( json_api );
+
 		return json_api;
 	}
+
+	/// @brief Get the number of input parameters for this getter.
+	/// @details Returns 2.
+	masala::base::Size num_input_parameters() const override { return 2; }
 
 private:
 

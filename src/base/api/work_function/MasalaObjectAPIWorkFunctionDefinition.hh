@@ -30,6 +30,7 @@
 
 // Forward declarations.
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
+#include <base/api/work_function/work_function_annotation/MasalaWorkFunctionAnnotation.fwd.hh>
 
 // Base headers.
 #include <base/types.hh>
@@ -103,7 +104,7 @@ public:
 	std::string
 	get_work_function_human_readable_description() const = 0;
 
-	/// @brief Get a JSON description of this setter.
+	/// @brief Get a JSON description of this work function.
 	/// @details Used for auto-generated help.  Must be implemented by
 	/// derived classes.
 	virtual
@@ -119,8 +120,8 @@ public:
 	/// @brief Get the name of the work function.
 	std::string const & work_function_name() const;
 
-	/// @brief Get the work function's description.
-	std::string const & work_function_description() const;
+	/// @brief Get the work function's description (including any added text from function annotations).
+	std::string work_function_description() const;
 
 	/// @brief Get whether this work function is a const function.
 	bool is_const() const;
@@ -143,6 +144,16 @@ public:
 	/// that are overridden by derived classes.)
 	bool always_returns_nullptr() const;
 
+	/// @brief Get the number of work function annotations.
+	masala::base::Size n_work_function_annotations() const;
+
+	/// @brief Access the Nth work function annotation.
+	work_function_annotation::MasalaWorkFunctionAnnotationCSP work_function_annotation( masala::base::Size const work_function_annotation_index ) const;
+
+	/// @brief Add a work function annotation.
+	/// @details Annotation is used directly, not cloned.
+	void add_work_function_annotation( work_function_annotation::MasalaWorkFunctionAnnotationCSP const & annotation_in );
+
 	/// @brief Get the number of input parameters.
 	/// @details Must be implemented by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
@@ -159,6 +170,18 @@ public:
 	/// @brief Indicate that this function always returns nullptr.  (Soemtimes true for some base classes versions
 	/// that are overridden by derived classes.)
 	void set_always_returns_nullptr();
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given the annotators, modify the JSON description of this function.
+	void
+	modify_json_description_with_annotators(
+		nlohmann::json & json_description
+	) const;
 
 private:
 
@@ -195,6 +218,9 @@ private:
 	/// @brief Does this function always return nullptr?  (Soemtimes true for some base classes versions
 	/// that are overridden by derived classes.)
 	bool always_returns_nullptr_ = false;
+
+	/// @brief Additional annotations that this function has attached to it.
+	std::vector< work_function_annotation::MasalaWorkFunctionAnnotationCSP > work_function_annotations_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition
 

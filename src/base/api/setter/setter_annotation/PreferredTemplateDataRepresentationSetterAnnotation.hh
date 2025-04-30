@@ -183,6 +183,12 @@ public:
 	std::string
 	get_additional_description() const override;
 
+	/// @brief Modify the JSON description.
+	void
+	modify_json_description(
+		nlohmann::json & json_description
+	) const override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
