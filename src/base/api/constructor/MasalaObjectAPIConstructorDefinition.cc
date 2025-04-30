@@ -25,6 +25,13 @@
 // Class headers
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
 
+// Base headers.
+#include <base/error/ErrorHandling.hh>
+#include <base/api/constructor/constructor_annotation/MasalaConstructorAnnotation.hh>
+
+// STL headers.
+#include <sstream>
+
 namespace masala {
 namespace base {
 namespace api {
@@ -59,9 +66,68 @@ MasalaObjectAPIConstructorDefinition::constructor_name() const {
 }
 
 /// @brief Get the constructor's description.
-std::string const &
+/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+/// (e.g. by constructor annotations).
+std::string
 MasalaObjectAPIConstructorDefinition::constructor_description() const {
-    return constructor_description_;
+    if( constructor_annotations_.empty() ) {
+        return constructor_description_;
+    }
+    std::ostringstream ss;
+    ss << constructor_description_;
+    for( auto const & constructor_annotation : constructor_annotations_ ) {
+        std::string const extra_description( constructor_annotation->get_additional_description() );
+        if( !extra_description.empty() ) {
+            ss << "  " << extra_description;
+        }
+    }
+    return ss.str();
+}
+
+/// @brief Get the number of constructor annotations.
+masala::base::Size
+MasalaObjectAPIConstructorDefinition::n_constructor_annotations() const {
+	return constructor_annotations_.size();
+}
+
+/// @brief Access the Nth constructor annotation.
+constructor_annotation::MasalaConstructorAnnotationCSP
+MasalaObjectAPIConstructorDefinition::constructor_annotation(
+	masala::base::Size const constructor_annotation_index
+) const {
+	CHECK_OR_THROW_FOR_CLASS( constructor_annotation_index < constructor_annotations_.size(),
+		"constructor_annotation", "This " + class_name() + " has " + std::to_string(constructor_annotations_.size())
+		+ " constructor function annotations.  Index " + std::to_string(constructor_annotation_index) + " is out of range."
+	);
+	return constructor_annotations_[constructor_annotation_index];
+}
+
+/// @brief Add a constructor annotation.
+/// @details Annotation is used directly, not cloned.
+void
+MasalaObjectAPIConstructorDefinition::add_constructor_annotation(
+	constructor_annotation::MasalaConstructorAnnotationCSP const & annotation_in
+) {
+	CHECK_OR_THROW_FOR_CLASS(
+		annotation_in->is_compatible_with_constructor( *this ),
+		"add_constructor_annotation",
+		"The " + annotation_in->class_name() + " constructor annotation reports that it is incompatible with constructor function " + constructor_name_ + "."
+	);
+	constructor_annotations_.push_back( annotation_in );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given the annotators, modify the JSON description of this function.
+void
+MasalaObjectAPIConstructorDefinition::modify_json_description_with_annotators(
+	nlohmann::json & json_description
+) const {
+	for( auto const & annotation : constructor_annotations_ ) {
+		annotation->modify_json_description( json_description );
+	}
 }
 
 } // namespace constructor
