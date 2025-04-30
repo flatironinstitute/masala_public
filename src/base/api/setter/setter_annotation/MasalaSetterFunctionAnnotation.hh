@@ -85,12 +85,6 @@ public:
 		masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 	) const;
 
-	/// @brief Get any additional description that this annotation provides.
-	/// @details Intended for user-facing interfaces.  Base class returns an empty string.  May be overridden by derived classes.
-	virtual
-	std::string
-	get_additional_description() const;
-
 }; // class MasalaSetterFunctionAnnotation
 
 } // namespace setter_annotation
