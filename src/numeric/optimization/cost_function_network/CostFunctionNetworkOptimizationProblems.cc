@@ -31,6 +31,7 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/NoUISetterAnnotation.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 
 // Numeric headers:
@@ -152,12 +153,16 @@ CostFunctionNetworkOptimizationProblems::get_api_definition() {
 
 
         // Setters:
-        api_def->add_setter(
-            masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
-                "reset", "Resets the container, deleting all contained problems.",
-                false, true, std::bind( &CostFunctionNetworkOptimizationProblems::reset, this )
-            )
-        );
+		{
+			setter::MasalaObjectAPISetterDefinition_ZeroInputSP reset_fxn(
+				masala::make_shared< setter::MasalaObjectAPISetterDefinition_ZeroInput >(
+					"reset", "Resets the container, deleting all contained problems.",
+					false, true, std::bind( &CostFunctionNetworkOptimizationProblems::reset, this )
+				)
+			);
+			reset_fxn->add_setter_annotation( masala::make_shared< setter::setter_annotation::NoUISetterAnnotation >() );
+			api_def->add_setter( reset_fxn );
+		}
         api_def->add_setter(
             masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< OptimizationProblemSP > >(
                 "add_optimization_problem",
