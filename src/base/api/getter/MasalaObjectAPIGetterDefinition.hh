@@ -29,7 +29,9 @@
 #include <base/MasalaObject.hh>
 
 // Forward declarations.
+#include <base/types.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
+#include <base/api/getter/getter_annotation/MasalaGetterFunctionAnnotation.fwd.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -113,7 +115,9 @@ public:
 	std::string const & getter_function_name() const;
 
 	/// @brief Get the getter function's description.
-	std::string const & getter_function_description() const;
+	/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+	/// (e.g. by getter annotations).
+	std::string getter_function_description() const;
 
 	/// @brief Is this function a virtual function that does NOT override
 	/// a function in a base class that has a defined API?
@@ -122,6 +126,20 @@ public:
 	/// @brief Is this function an override of a virtual function in a base
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn() const;
+
+	/// @brief Get the number of getter annotations.
+	masala::base::Size n_getter_annotations() const;
+
+	/// @brief Access the Nth getter annotation.
+	getter_annotation::MasalaGetterFunctionAnnotationCSP getter_annotation( masala::base::Size const getter_annotation_index ) const;
+
+	/// @brief Add a getter annotation.
+	/// @details Annotation is used directly, not cloned.
+	void add_getter_annotation( getter_annotation::MasalaGetterFunctionAnnotationCSP const & annotation_in );
+
+	/// @brief Get the number of input parameters for this getter.
+	/// @details Pure virtual; must be overridden by derived classes.
+	virtual masala::base::Size num_input_parameters() const = 0;
 
 private:
 
@@ -144,6 +162,9 @@ private:
 	/// @brief Is this function an override of a virtual function in a base
 	/// class that has a defined API?
 	bool is_override_of_api_virtual_fxn_ = false;
+
+	/// @brief Additional annotations that this function has attached to it.
+	std::vector< getter_annotation::MasalaGetterFunctionAnnotationCSP > getter_annotations_;
 
 }; // class MasalaObjectAPIGetterDefinition
 

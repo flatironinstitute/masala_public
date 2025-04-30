@@ -27,6 +27,10 @@
 
 // Base headers
 #include <base/error/ErrorHandling.hh>
+#include <base/api/getter/getter_annotation/MasalaGetterFunctionAnnotation.hh>
+
+// STL headers
+#include <sstream>
 
 namespace masala {
 namespace base {
@@ -79,9 +83,22 @@ MasalaObjectAPIGetterDefinition::getter_function_name() const {
 }
 
 /// @brief Get the getter function's description.
-std::string const &
+/// @note Returns a copy rather than an instance of a string because there may be additional description generated on the fly
+/// (e.g. by getter annotations).
+std::string
 MasalaObjectAPIGetterDefinition::getter_function_description() const {
-    return getter_function_description_;
+	if( getter_annotations_.empty() ) {
+		return getter_function_description_;
+	}
+	std::ostringstream ss;
+	ss << getter_function_description_;
+	for( auto const & getter_annotation : getter_annotations_ ) {
+		std::string const extra_description( getter_annotation->get_additional_description() );
+		if( !extra_description.empty() ) {
+			ss << "  " << extra_description;
+		}
+	}
+	return ss.str();
 }
 
 /// @brief Is this function a virtual function that does NOT override
@@ -96,6 +113,38 @@ MasalaObjectAPIGetterDefinition::is_virtual_non_override_fxn() const {
 bool
 MasalaObjectAPIGetterDefinition::is_override_of_api_virtual_fxn() const {
     return is_override_of_api_virtual_fxn_;
+}
+
+/// @brief Get the number of getter annotations.
+masala::base::Size
+MasalaObjectAPIGetterDefinition::n_getter_annotations() const {
+	return getter_annotations_.size();
+}
+
+/// @brief Access the Nth getter annotation.
+getter_annotation::MasalaGetterFunctionAnnotationCSP
+MasalaObjectAPIGetterDefinition::getter_annotation(
+	masala::base::Size const getter_annotation_index
+) const {
+	CHECK_OR_THROW_FOR_CLASS( getter_annotation_index < getter_annotations_.size(),
+		"getter_annotation", "This " + class_name() + " has " + std::to_string(getter_annotations_.size())
+		+ " getter function annotations.  Index " + std::to_string(getter_annotation_index) + " is out of range."
+	);
+	return getter_annotations_[getter_annotation_index];
+}
+
+/// @brief Add a getter annotation.
+/// @details Annotation is used directly, not cloned.
+void
+MasalaObjectAPIGetterDefinition::add_getter_annotation(
+	getter_annotation::MasalaGetterFunctionAnnotationCSP const & annotation_in
+) {
+	CHECK_OR_THROW_FOR_CLASS(
+		annotation_in->is_compatible_with_getter( *this ),
+		"add_getter_annotation",
+		"The " + annotation_in->class_name() + " getter annotation reports that it is incompatible with getter function " + getter_function_name_ + "."
+	);
+	getter_annotations_.push_back( annotation_in );
 }
 
 } // namespace getter
