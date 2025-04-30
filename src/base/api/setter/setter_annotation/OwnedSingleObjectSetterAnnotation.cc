@@ -827,6 +827,31 @@ OwnedSingleObjectSetterAnnotation::get_additional_description() const {
 	return ss.str();
 }
 
+/// @brief Modify the JSON description.
+void
+OwnedSingleObjectSetterAnnotation::modify_json_description(
+	nlohmann::json & json_description
+) const {
+	using masala::base::Size;
+
+	json_description["Owned_single_object_setter"] = true;
+
+	nlohmann::json newjson;
+	newjson["Plugin_manager_input_object_category"] = plugin_manager_input_object_category_;
+	newjson["Plugin_manager_include_subcategory"] = plugin_manager_include_subcategory_;
+	newjson["Plugin_manager_input_object_keywords"] = plugin_manager_input_object_keywords_;
+	newjson["Is_engine"] = is_engine_;
+	newjson["Engine_manager_input_object_category"] = engine_manager_input_object_category_;
+	newjson["Engine_manager_include_subcategory"] = engine_manager_include_subcategory_;
+	newjson["Engine_manager_input_object_keywords"] = engine_manager_input_object_keywords_;
+	newjson["Is_data_representation"] = is_data_representation_;
+	newjson["Data_representation_manager_input_object_category"] = data_representation_manager_input_object_category_;
+	newjson["Data_representation_manager_include_subcategory"] = data_representation_manager_include_subcategory_;
+	newjson["Data_representation_manager_input_object_keywords"] = data_representation_manager_input_object_keywords_;
+
+	json_description["Owned_single_object_setter_properties"] = newjson;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
