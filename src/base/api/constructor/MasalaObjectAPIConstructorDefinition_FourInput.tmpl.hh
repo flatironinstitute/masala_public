@@ -199,6 +199,13 @@ public:
 		return json_api;
 	}
 
+	/// @brief Get the number of input parameters for this constructor.
+	/// @details Pure virtual; must be overridden by derived classes.
+	masala::base::Size
+	num_input_parameters() const override {
+		return 4;
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
