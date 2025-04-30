@@ -141,6 +141,18 @@ public:
 	/// @details Pure virtual; must be overridden by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Given the annotators, modify the JSON description of this function.
+	void
+	modify_json_description_with_annotators(
+		nlohmann::json & json_description
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

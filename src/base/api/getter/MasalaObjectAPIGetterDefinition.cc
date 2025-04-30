@@ -147,6 +147,20 @@ MasalaObjectAPIGetterDefinition::add_getter_annotation(
 	getter_annotations_.push_back( annotation_in );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given the annotators, modify the JSON description of this function.
+void
+MasalaObjectAPIGetterDefinition::modify_json_description_with_annotators(
+	nlohmann::json & json_description
+) const {
+	for( auto const & annotation : getter_annotations_ ) {
+		annotation->modify_json_description( json_description );
+	}
+}
+
 } // namespace getter
 } // namespace api
 } // namespace base
