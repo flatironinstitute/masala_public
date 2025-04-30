@@ -190,6 +190,20 @@ MasalaObjectAPIWorkFunctionDefinition::set_always_returns_nullptr() {
     always_returns_nullptr_ = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Given the annotators, modify the JSON description of this function.
+void
+MasalaObjectAPIWorkFunctionDefinition::modify_json_description_with_annotators(
+	nlohmann::json & json_description
+) const {
+	for( auto const & annotation : work_function_annotations_ ) {
+		annotation->modify_json_description( json_description );
+	}
+}
+
 } // namespace work_function
 } // namespace api
 } // namespace base

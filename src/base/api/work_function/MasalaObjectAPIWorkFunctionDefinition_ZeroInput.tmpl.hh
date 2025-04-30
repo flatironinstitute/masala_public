@@ -198,6 +198,8 @@ public:
 		json_output[ "Output_Name" ] = output_name_;
 		json_api["Output"] = json_output;
 
+		modify_json_description_with_annotators( json_api );
+
 		return json_api;
 	}
 
