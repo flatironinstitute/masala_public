@@ -92,6 +92,12 @@ public:
 	std::string
 	get_additional_description() const override;
 
+	/// @brief Modify the JSON description to indicate that this setter should not be included in UIs or GUIs.
+	void
+	modify_json_description(
+		nlohmann::json & json_description
+	) const override;
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////

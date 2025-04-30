@@ -71,6 +71,14 @@ NoUISetterAnnotation::get_additional_description() const {
 	return "This setter is not intended for inclusion in user interfaces or graphical user interfaces.";
 }
 
+/// @brief Modify the JSON description to indicate that this setter should not be included in UIs or GUIs.
+void
+NoUISetterAnnotation::modify_json_description(
+	nlohmann::json & json_description
+) const {
+	json_description["Not_For_User_Interface"] = true;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
