@@ -32,10 +32,11 @@
 // Base headers:
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.hh>
 #include <base/managers/plugin_module/MasalaPluginAPI.fwd.hh>
+#include <base/types.hh>
 
 // STL headers:
 #include <string>
-#include <vector>
+#include <utility> // For std::pair.
 
 namespace masala {
 namespace base {
@@ -49,10 +50,29 @@ namespace setter_annotation {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class DeprecatedSetterAnnotation : public masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotation {
 
+	typedef masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotation Parent;
+	typedef masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotationSP ParentSP;
+	typedef masala::base::api::setter::setter_annotation::MasalaSetterFunctionAnnotationCSP ParentCSP;
+
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
-	DeprecatedSetterAnnotation() = default;
+	DeprecatedSetterAnnotation() = delete;
+
+	/// @brief Constructor that only sets the deprecation version.  Warnings are always enabled.
+	DeprecatedSetterAnnotation(
+		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
+	);
+
+	/// @brief Constructor that only sets both the version at which warnings start and the deprecation version.
+	DeprecatedSetterAnnotation(
+		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_warnings_start,
+		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
+	);
 
 	/// @brief Copy constructor.
 	DeprecatedSetterAnnotation( DeprecatedSetterAnnotation const & ) = default;
@@ -127,6 +147,16 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is there a version at which warnings should start?
+	bool version_set_at_which_warnings_start_ = false;
+
+	/// @brief The major and minor version number at which warnings start.
+	std::pair< masala::base::Size, masala::base::Size > version_at_which_warnings_start_ = std::make_pair( 0, 0 );
+
+	/// @brief The major and minor version number at which the function is deprecated.
+	/// @details This is the version in the library in which the function is defined, not the version of Masala's core, necessarily.
+	std::pair< masala::base::Size, masala::base::Size > version_at_which_function_deprecated_ = std::make_pair( 0, 0 );
 
 }; // class DeprecatedSetterAnnotation
 

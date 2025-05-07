@@ -39,6 +39,43 @@ namespace setter {
 namespace setter_annotation {
 
 ////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
+
+/// @brief Constructor that only sets the deprecation version.  Warnings are always enabled.
+DeprecatedSetterAnnotation::DeprecatedSetterAnnotation(
+	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
+) :
+	Parent(),
+	version_set_at_which_warnings_start_( false ),
+	version_at_which_warnings_start_( std::make_pair(0, 0) ),
+	version_at_which_function_deprecated_( version_at_which_function_deprecated )
+{}
+
+/// @brief Constructor that only sets both the version at which warnings start and the deprecation version.
+DeprecatedSetterAnnotation::DeprecatedSetterAnnotation(
+	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_warnings_start,
+	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
+) :
+	Parent(),
+	version_set_at_which_warnings_start_( true ),
+	version_at_which_warnings_start_( version_at_which_warnings_start ),
+	version_at_which_function_deprecated_( version_at_which_function_deprecated )
+{
+	CHECK_OR_THROW(
+		( version_at_which_warnings_start_.first < version_at_which_function_deprecated.first ) ||
+		(
+			version_at_which_warnings_start_.first == version_at_which_function_deprecated.first &&
+			version_at_which_warnings_start_.second < version_at_which_function_deprecated.second
+		),
+		class_namespace_static() + "::" + class_name_static(),
+		"DeprecatedSetterAnnotation",
+		"The version at which the function is deprecated must be after the version at which warnings start."
+	);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +88,21 @@ DeprecatedSetterAnnotation::class_name() const {
 /// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 std::string
 DeprecatedSetterAnnotation::class_namespace() const {
+	return "masala::base::api::setter::setter_annotation";
+}
+
+
+/// @brief Get the class name ("DeprecatedSetterAnnotation").  Static version.
+/*static*/
+std::string
+DeprecatedSetterAnnotation::class_name_static() {
+	return "DeprecatedSetterAnnotation";
+}
+
+/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").  Static version.
+/*static*/
+std::string
+DeprecatedSetterAnnotation::class_namespace_static() {
 	return "masala::base::api::setter::setter_annotation";
 }
 
