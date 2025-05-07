@@ -110,6 +110,29 @@ DeprecatedSetterAnnotation::class_namespace_static() {
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Get whether a version has been set for starting the warnings.
+bool
+DeprecatedSetterAnnotation::version_set_at_which_warnings_start() const {
+	return version_set_at_which_warnings_start_;
+}
+
+/// @brief Get the version at which warnings start.
+/// @details Throws if no version has been set, so check whether a version has been set at which
+/// warnings start using version_set_at_which_warnings_start() first before calling this function.
+std::pair< masala::base::Size, masala::base::Size > const &
+DeprecatedSetterAnnotation::version_at_which_warnings_start() const {
+	CHECK_OR_THROW_FOR_CLASS( version_set_at_which_warnings_start_, "version_at_which_warnings_start",
+		"No version was set at which warnings should start."
+	);
+	return version_at_which_warnings_start_;
+}
+
+/// @brief Get the version at which the function is deprecated.
+std::pair< masala::base::Size, masala::base::Size > const &
+DeprecatedSetterAnnotation::version_at_which_function_deprecated() const {
+	return version_at_which_function_deprecated_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////

@@ -92,11 +92,31 @@ public:
 	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").
 	std::string class_namespace() const override;
 
+	/// @brief Get the class name ("DeprecatedSetterAnnotation").  Static version.
+	static std::string class_name_static();
+
+	/// @brief Get the class namespace ("masala::base::api::setter::setter_annotation").  Static version.
+	static std::string class_namespace_static();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get whether a version has been set for starting the warnings.
+	bool
+	version_set_at_which_warnings_start() const;
+
+	/// @brief Get the version at which warnings start.
+	/// @details Throws if no version has been set, so check whether a version has been set at which
+	/// warnings start using version_set_at_which_warnings_start() first before calling this function.
+	std::pair< masala::base::Size, masala::base::Size > const &
+	version_at_which_warnings_start() const;
+
+	/// @brief Get the version at which the function is deprecated.
+	std::pair< masala::base::Size, masala::base::Size > const &
+	version_at_which_function_deprecated() const;
 
 public:
 
