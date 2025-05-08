@@ -138,6 +138,21 @@ MasalaVersionManager::n_modules_registered() const {
     return module_version_infos_.size();
 }
 
+/// @brief Get the version information for a library.
+/// @details Returns nullptr if the library has not been registered.
+MasalaModuleVersionInfoCSP
+MasalaVersionManager::get_library_version_info(
+	std::string const & library_name
+) const {
+	std::unordered_map< std::string, MasalaModuleVersionInfoCSP >::const_iterator it(
+		module_version_infos_.find( library_name )
+	);
+	if( it == module_version_infos_.end() ) {
+		return nullptr;
+	}
+	return it->second;
+}
+
 /// @brief Remove all version information (except for the core libraries).
 void
 MasalaVersionManager::reset() {
