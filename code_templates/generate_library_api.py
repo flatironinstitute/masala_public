@@ -144,8 +144,8 @@ def clean_up_generated_code( filecontents : str ) -> str :
 ## @returns Source library name, JSON API definition file.  Throws if
 ## these two options aren't provided.
 def get_options() -> tuple :
-    assert len(argv) == 4, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <source library name> <json api definition file>"
-    return (argv[1], argv[2], argv[3])
+    assert len(argv) == 6, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <project major version> <project minor version> <source library name> <json api definition file>"
+    return (argv[1], int(argv[2]), int(argv[3]), argv[4], argv[5] )
 
 ## @brief Returns true if a class starts with "masala::" or with project_name + "::".
 ## Always returns false if this is an API class.
@@ -2275,7 +2275,7 @@ def do_generate_registration_function( \
 ################################################################################
 
 # Get options
-project_name, library_name, api_def_file = get_options()
+project_name, project_maj_version, project_min_version, library_name, api_def_file = get_options()
 print( "\tGenerating API for project " + project_name + ", library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
 
 # Read JSON
