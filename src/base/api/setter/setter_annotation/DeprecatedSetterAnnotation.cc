@@ -170,6 +170,9 @@ DeprecatedSetterAnnotation::protected_assign(
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a DeprecatedSetterAnnotation object." );
     
 	// TODO -- do any assignment here.
+	version_set_at_which_warnings_start_ = src_cast_ptr->version_set_at_which_warnings_start_;
+	version_at_which_warnings_start_ = src_cast_ptr->version_at_which_warnings_start_;
+	version_at_which_function_deprecated_ = src_cast_ptr->version_at_which_function_deprecated_;
 
     MasalaSetterFunctionAnnotation::protected_assign( src );
 }
@@ -182,9 +185,15 @@ DeprecatedSetterAnnotation::protected_assign(
 /// @returns True if it is compatible, false otherwise.  Called by the setter API definition's add_setter_annotation() function.
 bool
 DeprecatedSetterAnnotation::protected_is_compatible_with_setter(
-	masala::base::api::setter::MasalaObjectAPISetterDefinition const & /*setter*/
+	masala::base::api::setter::MasalaObjectAPISetterDefinition const & setter
 ) const /*override*/ {
-	 return true;
+	using masala::base::Size;
+	Size const nannot( setter.n_setter_annotations() );
+	for( Size i(0); i<nannot; ++i ) {
+		DeprecatedSetterAnnotationCSP annot_cast( std::dynamic_pointer_cast< DeprecatedSetterAnnotation const >( setter.setter_annotation(i) ) );
+		if( annot_cast != nullptr ) { return false; } // Cannot have more than one deprecation annotation.
+	}
+	return true;
 }
 
 } // namespace setter_annotation
