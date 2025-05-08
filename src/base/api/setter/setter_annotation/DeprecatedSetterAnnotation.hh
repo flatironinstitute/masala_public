@@ -65,11 +65,13 @@ public:
 
 	/// @brief Constructor that only sets the deprecation version.  Warnings are always enabled.
 	DeprecatedSetterAnnotation(
+		std::string const & library_name,
 		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
 	);
 
 	/// @brief Constructor that only sets both the version at which warnings start and the deprecation version.
 	DeprecatedSetterAnnotation(
+		std::string const & library_name,
 		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_warnings_start,
 		std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
 	);
@@ -167,6 +169,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The Masala library in which this function is defined.
+	std::string library_name_;
 
 	/// @brief Is there a version at which warnings should start?
 	bool version_set_at_which_warnings_start_ = false;

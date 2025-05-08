@@ -45,9 +45,11 @@ namespace setter_annotation {
 
 /// @brief Constructor that only sets the deprecation version.  Warnings are always enabled.
 DeprecatedSetterAnnotation::DeprecatedSetterAnnotation(
+	std::string const & library_name,
 	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
 ) :
 	Parent(),
+	library_name_(library_name),
 	version_set_at_which_warnings_start_( false ),
 	version_at_which_warnings_start_( std::make_pair(0, 0) ),
 	version_at_which_function_deprecated_( version_at_which_function_deprecated )
@@ -55,10 +57,12 @@ DeprecatedSetterAnnotation::DeprecatedSetterAnnotation(
 
 /// @brief Constructor that only sets both the version at which warnings start and the deprecation version.
 DeprecatedSetterAnnotation::DeprecatedSetterAnnotation(
+	std::string const & library_name,
 	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_warnings_start,
 	std::pair< masala::base::Size, masala::base::Size > const & version_at_which_function_deprecated
 ) :
 	Parent(),
+	library_name_(library_name),
 	version_set_at_which_warnings_start_( true ),
 	version_at_which_warnings_start_( version_at_which_warnings_start ),
 	version_at_which_function_deprecated_( version_at_which_function_deprecated )
@@ -145,7 +149,15 @@ DeprecatedSetterAnnotation::version_at_which_function_deprecated() const {
 /// @details This override returns "This setter is not intended for inclusion in user interfaces or graphical user interfaces."
 std::string
 DeprecatedSetterAnnotation::get_additional_description() const {
-	return "This setter is not intended for inclusion in user interfaces or graphical user interfaces.";
+	std::string const outmsg1(
+		"This function will be deprecated in version " + std::to_string( version_at_which_function_deprecated_.first ) +
+		"." + std::to_string( version_at_which_function_deprecated_.second ) + " of the " + library_name_ + " Masala library."
+	);
+	if( version_set_at_which_warnings_start_ ) {
+		return outmsg1 + "  Deprecation warnings will begin in version " + std::to_string( version_at_which_warnings_start_.first ) +
+			"." + std::to_string( version_at_which_warnings_start_.second ) + ".";
+	}
+	return outmsg1;
 }
 
 /// @brief Modify the JSON description to indicate that this setter should not be included in UIs or GUIs.
@@ -153,7 +165,14 @@ void
 DeprecatedSetterAnnotation::modify_json_description(
 	nlohmann::json & json_description
 ) const {
-	json_description["Not_For_User_Interface"] = true;
+	json_description["Will_Be_Deprecated"] = true;
+	json_description["Library_Name_For_Deprecation_Version"] = library_name_;
+	json_description["Deprecation_Major_Version"] = version_at_which_function_deprecated_.first;
+	json_description["Deprecation_Minor_Version"] = version_at_which_function_deprecated_.second;
+	if( version_set_at_which_warnings_start_ ) {
+		json_description["Deprecation_Warning_Major_Version"] = version_at_which_function_deprecated_.first;
+		json_description["Deprecation_Warning_Minor_Version"] = version_at_which_function_deprecated_.second;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
