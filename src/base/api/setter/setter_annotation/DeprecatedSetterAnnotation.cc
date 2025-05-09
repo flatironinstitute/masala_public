@@ -189,6 +189,7 @@ DeprecatedSetterAnnotation::protected_assign(
     CHECK_OR_THROW_FOR_CLASS( src_cast_ptr != nullptr, "protected_assign", "The " + src.class_name() + " class could not be interpreted as a DeprecatedSetterAnnotation object." );
     
 	// TODO -- do any assignment here.
+	library_name_ = src_cast_ptr->library_name_;
 	version_set_at_which_warnings_start_ = src_cast_ptr->version_set_at_which_warnings_start_;
 	version_at_which_warnings_start_ = src_cast_ptr->version_at_which_warnings_start_;
 	version_at_which_function_deprecated_ = src_cast_ptr->version_at_which_function_deprecated_;
