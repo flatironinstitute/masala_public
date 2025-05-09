@@ -133,7 +133,6 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Get any additional description that this annotation provides.
-	/// @details This override returns "This setter is not intended for inclusion in user interfaces or graphical user interfaces."
 	std::string
 	get_additional_description() const override;
 

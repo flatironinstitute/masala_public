@@ -146,7 +146,6 @@ DeprecatedGetterAnnotation::version_at_which_function_deprecated() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Get any additional description that this annotation provides.
-/// @details This override returns "This getter is not intended for inclusion in user interfaces or graphical user interfaces."
 std::string
 DeprecatedGetterAnnotation::get_additional_description() const {
 	std::string const outmsg1(
