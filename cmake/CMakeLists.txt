@@ -28,6 +28,13 @@ SET( CMAKE_BUILD_TYPE Debug )
 # SET( MODE release )
 # SET( CMAKE_BUILD_TYPE Release )
 
+# Uncomment the following to enable deprecated API functions.
+#ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
+
+# Uncomment the following to disable deprecation warnings.
+#ADD_DEFINITIONS( -DMASALA_DISABLE_DEPRECATION_WARNINGS )
+
+# Ensure that version is set in only one place, in the PROJECT line at the top of this file:
 ADD_DEFINITIONS( -DMASALA_MAJOR_VERSION=${CMAKE_PROJECT_VERSION_MAJOR} -DMASALA_MINOR_VERSION=${CMAKE_PROJECT_VERSION_MINOR} )
 
 SET( LINK_TYPE SHARED )
