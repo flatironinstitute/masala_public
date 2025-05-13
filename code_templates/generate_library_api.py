@@ -694,6 +694,11 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
             first = False
         else :
             outstring += "\n\n"
+
+        deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+
         outstring += tabchar + "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -708,6 +713,8 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
@@ -722,6 +729,9 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
             first = False
         else :
             outstring += "\n\n"
+        deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
         outstring += "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -777,6 +787,9 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
 
         # Body:
         outstring += "{}"
+
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Generate the prototypes for setters, getters, or work functions based on the JSON
