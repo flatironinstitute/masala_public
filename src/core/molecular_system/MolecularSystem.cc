@@ -38,9 +38,11 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
+#include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
 #include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
@@ -133,7 +135,7 @@ MolecularSystem::class_namespace_static() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Access the MolecularGeometry object in this molecular system, by shared pointer.
@@ -167,6 +169,15 @@ core::chemistry::MolecularGeometry const &
 MolecularSystem::molecular_geometry() const {
     std::lock_guard< std::mutex > lock( mutex_ );
     return *molecular_geometry_;
+}
+
+/// @brief An example of a deprecated API getter.
+bool
+MolecularSystem::deprecated_api_getter(
+	masala::base::Size const //input1
+) {
+	// GNDN
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,9 +220,9 @@ MolecularSystem::add_bond(
 }
 
 
-/// @brief An example of a deprecated API function.
+/// @brief An example of a deprecated API setter.
 void
-MolecularSystem::deprecated_api_function(
+MolecularSystem::deprecated_api_setter(
     masala::base::Size const //input1
 ) {
     //GNDN
@@ -271,6 +282,23 @@ MolecularSystem::get_api_definition() {
                 std::bind( &MolecularSystem::molecular_geometry_shared_ptr, this )
             )
         );
+		{
+			getter::MasalaObjectAPIGetterDefinition_OneInputSP< bool, Size > deprecated_fxn(
+				masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< bool, Size > >(
+					"deprecated_api_getter", "An example of a deprecated API getter, annotated as such.  Does nothing.",
+					"input1", "An input for this function.",
+					"output1", "An output parameter for this function.",
+					false, false,
+					std::bind( &MolecularSystem::deprecated_api_getter, this, std::placeholders::_1 )
+				)
+			);
+			deprecated_fxn->add_getter_annotation(
+				masala::make_shared< getter::getter_annotation::DeprecatedGetterAnnotation >(
+					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_getter( deprecated_fxn );
+		}
         // api_def->add_getter(
         //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MolecularGeometryCWP > >(
         //         "molecular_geometry_weak_ptr",
@@ -365,10 +393,10 @@ MolecularSystem::get_api_definition() {
 		{
 			setter::MasalaObjectAPISetterDefinition_OneInputSP< Size > deprecated_fxn(
 				masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
-					"deprecated_api_function", "An example of a deprecated API function, annotated as such.  Does nothing.",
+					"deprecated_api_setter", "An example of a deprecated API setter, annotated as such.  Does nothing.",
 					"input1", "An input for this function.",
 					false, false,
-					std::bind( &MolecularSystem::deprecated_api_function, this, std::placeholders::_1 )
+					std::bind( &MolecularSystem::deprecated_api_setter, this, std::placeholders::_1 )
 				)
 			);
 			deprecated_fxn->add_setter_annotation(

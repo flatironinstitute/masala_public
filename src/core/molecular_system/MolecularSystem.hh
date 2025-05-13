@@ -115,7 +115,7 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Access the MolecularGeometry object in this molecular system, by shared pointer.
@@ -141,6 +141,12 @@ public:
     /// not all form one contiguously-bonded set).
     masala::core::chemistry::MolecularGeometry const &
     molecular_geometry() const;
+
+	/// @brief An example of a deprecated API getter.
+	bool
+	deprecated_api_getter(
+		masala::base::Size const input1
+	);
 
 public:
 
@@ -171,9 +177,9 @@ public:
         masala::core::chemistry::bonds::ChemicalBondType const bond_type
     );
 
-	/// @brief An example of a deprecated API function.
+	/// @brief An example of a deprecated API setter.
 	void
-	deprecated_api_function(
+	deprecated_api_setter(
 		masala::base::Size const input1
 	);
 
