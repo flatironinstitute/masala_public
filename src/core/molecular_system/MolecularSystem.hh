@@ -70,6 +70,9 @@ public:
     /// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
     MolecularSystem( MolecularSystem const & src );
 
+	/// @brief An example of a deprecated constructor.  Does nothing.
+	MolecularSystem( std::string const & dummy_setting_in, masala::base::Size const another_setting );
+
     /// @brief Default destructor.
     ~MolecularSystem() override = default;
 

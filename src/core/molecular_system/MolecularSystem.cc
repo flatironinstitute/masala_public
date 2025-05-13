@@ -36,6 +36,7 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
@@ -43,6 +44,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
 #include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/api/constructor/constructor_annotation/DeprecatedConstructorAnnotation.hh>
 #include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
@@ -68,6 +70,16 @@ MolecularSystem::MolecularSystem(
     masala::base::MasalaObject(src)
 {
     (*this) = src;
+}
+
+/// @brief An example of a deprecated constructor.  Does nothing.
+MolecularSystem::MolecularSystem(
+	std::string const & ,//dummy_setting_in,
+	masala::base::Size const //another_setting
+) :
+	masala::base::MasalaObject()
+{
+	// GNDN
 }
 
 /// @brief Assignment operator (explicit due to mutex).
@@ -268,6 +280,22 @@ MolecularSystem::get_api_definition() {
                 "src", "The input MolecularSystem to copy.  Unaltered by this operation."
             )
         );
+		{
+			constructor::MasalaObjectAPIConstructorDefinition_TwoInputSP< MolecularSystem, std::string const &, masala::base::Size const > deprecated_constructor(
+				masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput< MolecularSystem, std::string const &, masala::base::Size const > >(
+					class_name_static(),
+					"Example of a deprecated constructor.",
+					"dummy_parameter", "A dummy input parameter.",
+					"dummy_parameter_2", "Another dummy input parameter"
+				)
+			);
+			deprecated_constructor->add_constructor_annotation(
+				masala::make_shared< constructor::constructor_annotation::DeprecatedConstructorAnnotation >(
+					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_constructor( deprecated_constructor );
+		}
 
         // Work functions:
 
