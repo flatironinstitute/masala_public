@@ -171,6 +171,12 @@ public:
         masala::core::chemistry::bonds::ChemicalBondType const bond_type
     );
 
+	/// @brief An example of a deprecated API function.
+	void
+	deprecated_api_function(
+		masala::base::Size const setting
+	);
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

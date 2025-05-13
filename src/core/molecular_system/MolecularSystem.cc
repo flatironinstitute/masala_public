@@ -40,6 +40,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
 #include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
@@ -207,6 +208,15 @@ MolecularSystem::add_bond(
     molecular_geometry_->add_bond( first_atom, second_atom, bond_type );
 }
 
+
+/// @brief An example of a deprecated API function.
+void
+MolecularSystem::deprecated_api_function(
+    masala::base::Size const //input1
+) {
+    //GNDN
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,6 +225,7 @@ MolecularSystem::add_bond(
 base::api::MasalaObjectAPIDefinitionCWP
 MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
+    using masala::base::Size;
 
     std::lock_guard< std::mutex > lock( mutex_ );
 
@@ -351,6 +362,22 @@ MolecularSystem::get_api_definition() {
 				)
 			)
 		);
+		{
+			setter::MasalaObjectAPISetterDefinition_OneInputSP< Size > deprecated_fxn(
+				masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
+					"deprecated_api_function", "An example of a deprecated API function, annotated as such.  Does nothing.",
+					"input1", "An input for this function.",
+					false, false,
+					std::bind( &MolecularSystem::deprecated_api_function, this, std::placeholders::_1 )
+				)
+			);
+			deprecated_fxn->add_setter_annotation(
+				masala::make_shared< setter::setter_annotation::DeprecatedSetterAnnotation >(
+					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_setter( deprecated_fxn );
+		}
 
         api_definition_ = api_def; //Make const.
     }
