@@ -150,7 +150,7 @@ std::string
 DeprecatedWorkFunctionAnnotation::get_additional_description() const {
 	std::string const outmsg1(
 		"This function will be deprecated in version " + std::to_string( version_at_which_function_deprecated_.first ) +
-		"." + std::to_string( version_at_which_function_deprecated_.second ) + " of the " + library_name_ + " Masala library."
+		"." + std::to_string( version_at_which_function_deprecated_.second ) + " of the " + library_name_ + " library."
 	);
 	if( version_set_at_which_warnings_start_ ) {
 		return outmsg1 + "  Deprecation warnings will begin in version " + std::to_string( version_at_which_warnings_start_.first ) +
