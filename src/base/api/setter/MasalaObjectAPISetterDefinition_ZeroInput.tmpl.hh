@@ -159,6 +159,25 @@ public:
 	/// @details Returns 0.
 	masala::base::Size num_input_parameters() const override { return 0; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		setter_function_ = std::bind(
+			&MasalaObjectAPISetterDefinition::deprecated_function_to_bind<>, this
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< void() > const setter_function_copy( setter_function_ );
+		setter_function_ = std::bind(
+			&MasalaObjectAPISetterDefinition::warning_function_to_bind<>, this, setter_function_copy
+		);
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +185,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief The function that we're binding to.
-	std::function< void() > const setter_function_;
+	std::function< void() > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_ZeroInput
 

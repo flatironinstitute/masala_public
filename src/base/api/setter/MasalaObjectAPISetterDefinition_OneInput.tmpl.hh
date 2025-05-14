@@ -185,6 +185,27 @@ public:
 	/// @details Returns 1.
 	masala::base::Size num_input_parameters() const override { return 1; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		setter_function_ = std::bind(
+			&MasalaObjectAPISetterDefinition::deprecated_function_to_bind<T1>, this,
+			std::placeholders::_1
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< void(T1) > const setter_function_copy( setter_function_ );
+		setter_function_ = std::bind(
+			&MasalaObjectAPISetterDefinition::warning_function_to_bind<T1>, this, setter_function_copy,
+			std::placeholders::_1
+		);
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
