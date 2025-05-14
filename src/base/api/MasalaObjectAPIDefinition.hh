@@ -264,7 +264,7 @@ public:
 	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
 	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinition_SixInputCWP<P1,P2,P3,P4,P5,P6>
-	get_fiveinput_setter_function(
+	get_sixinput_setter_function(
 		std::string const & function_name
 	) const {
 		using namespace setter;
