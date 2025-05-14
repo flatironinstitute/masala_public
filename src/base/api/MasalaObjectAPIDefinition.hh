@@ -51,6 +51,13 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_ThreeInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_FourInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_FiveInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_SixInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
@@ -120,6 +127,100 @@ public:
 
 	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
 	static std::string class_namespace_static();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a zero-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_ZeroInputCWP<P0>
+	get_zeroinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 0 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_ZeroInputCSP<P0> getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_ZeroInput<P0> const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIGetterDefinition_ZeroInputCWP<P0>();
+	}
+
+	/// @brief Get a one-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_OneInputCWP<P0,P1>
+	get_oneinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 1 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_OneInputCSP< P0, P1 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_OneInput< P0, P1 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_OneInputCWP<P0,P1>();
+	}
+
+	/// @brief Get a two-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_TwoInputCWP<P0,P1,P2>
+	get_twoinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 2 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_TwoInputCSP< P0, P1, P2 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_TwoInput< P0, P1, P2 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_TwoInputCWP<P0,P1,P2>();
+	}
+
+	// /// @brief Get a three-parameter getter definition.
+	// /// @returns Nullptr if the function doesn't exist; a const weak pointer
+	// /// to the function otherwise.
+	// template< typename P0, typename P1, typename P2, typename P3 >
+	// inline
+	// masala::base::api::getter::MasalaObjectAPIGetterDefinition_ThreeInputCWP<P0,P1,P2,P3>
+	// get_threeinput_getter_function(
+	// 	std::string const & function_name
+	// ) const {
+	// 	using namespace getter;
+
+	// 	for( auto const & getter: getters_ ) {
+	// 		if( getter->num_input_parameters() == 3 && getter->getter_function_name() == function_name ) {
+	// 			MasalaObjectAPIGetterDefinition_ThreeInputCSP< P0, P1, P2, P3 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_ThreeInput< P0, P1, P2, P3 > const >( getter ) );
+	// 			if( getter_cast != nullptr ) {
+	// 				return getter_cast;
+	// 			}
+	// 		}
+	// 	}
+	// 	return masala::base::api::getter::MasalaObjectAPIGetterDefinition_ThreeInputCWP<P0,P1,P2,P3>();
+	// }
 
 public:
 
