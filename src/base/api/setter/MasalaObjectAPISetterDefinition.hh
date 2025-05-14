@@ -156,6 +156,14 @@ protected:
 		nlohmann::json & json_description
 	) const;
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	virtual void set_function_deprecated () const = 0;
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	virtual void set_function_warning () const = 0;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
