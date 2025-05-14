@@ -291,7 +291,7 @@ MolecularSystem::get_api_definition() {
 			);
 			deprecated_constructor->add_constructor_annotation(
 				masala::make_shared< constructor::constructor_annotation::DeprecatedConstructorAnnotation >(
-					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
 				)
 			);
 			api_def->add_constructor( deprecated_constructor );
@@ -322,7 +322,7 @@ MolecularSystem::get_api_definition() {
 			);
 			deprecated_fxn->add_getter_annotation(
 				masala::make_shared< getter::getter_annotation::DeprecatedGetterAnnotation >(
-					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
 				)
 			);
 			api_def->add_getter( deprecated_fxn );
@@ -429,7 +429,7 @@ MolecularSystem::get_api_definition() {
 			);
 			deprecated_fxn->add_setter_annotation(
 				masala::make_shared< setter::setter_annotation::DeprecatedSetterAnnotation >(
-					"masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
 				)
 			);
 			api_def->add_setter( deprecated_fxn );
