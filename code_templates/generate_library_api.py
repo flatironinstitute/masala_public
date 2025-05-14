@@ -697,7 +697,7 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
 
         deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
-            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
         outstring += tabchar + "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
@@ -731,7 +731,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
             outstring += "\n\n"
         deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
-            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
         outstring += "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -910,7 +910,7 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
 
         deprecation_status = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
-            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
         if ( "Triggers_No_Mutex_Lock" in fxn ) and ( fxn["Triggers_No_Mutex_Lock"] == True ) :
             triggers_no_mutex_lock = True
@@ -1301,7 +1301,7 @@ def generate_function_implementations( \
         
         deprecation_status = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
-            outstring += "#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]

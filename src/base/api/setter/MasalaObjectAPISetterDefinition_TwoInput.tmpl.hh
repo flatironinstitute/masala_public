@@ -237,7 +237,7 @@ private:
 	std::string const input_parameter1_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< void(T1,T2) > const setter_function_;
+	std::function< void(T1,T2) > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_TwoInput
 

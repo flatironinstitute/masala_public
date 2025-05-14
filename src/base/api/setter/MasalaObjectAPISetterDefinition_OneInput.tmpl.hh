@@ -219,7 +219,7 @@ private:
 	std::string const input_parameter0_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< void(T1) > const setter_function_;
+	std::function< void(T1) > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_OneInput
 

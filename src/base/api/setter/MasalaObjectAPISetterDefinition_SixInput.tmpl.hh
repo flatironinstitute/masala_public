@@ -337,7 +337,7 @@ private:
 	std::string const input_parameter5_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< void(T1,T2,T3,T4,T5,T6) > const setter_function_;
+	std::function< void(T1,T2,T3,T4,T5,T6) > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_SixInput
 

@@ -161,6 +161,7 @@ MasalaObjectAPISetterDefinition::add_setter_annotation(
 			std::pair< Size, Size > const deprecated_vers( deprecated_annotation->version_at_which_function_deprecated() );
 			major_deprecation_version_ = deprecated_vers.first;
 			minor_deprecation_version_ = deprecated_vers.second;
+			library_name_for_deprecation_warning_ = deprecated_annotation->library_name();
 			std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
 #ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS
 			if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
@@ -171,7 +172,6 @@ MasalaObjectAPISetterDefinition::add_setter_annotation(
 			if( deprecated_annotation->version_set_at_which_warnings_start() ) {
 				std::pair< Size, Size > const warning_vers( deprecated_annotation->version_at_which_warnings_start() );
 				if( vers.first > warning_vers.first || ( vers.first == warning_vers.first && vers.second >= warning_vers.second ) ) {
-					library_name_for_deprecation_warning_ = deprecated_annotation->library_name();
 					set_function_warning();
 				}
 			}

@@ -32,6 +32,8 @@
 #include <base/enums/ChemicalBondTypeEnum.fwd.hh>
 #include <base/enums/AtomHybridizationStateEnum.fwd.hh>
 #include <base/managers/database/elements/ElementType.fwd.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 
 namespace masala {
 namespace tests {
@@ -44,6 +46,25 @@ TEST_CASE( "Instantiate a molecular system", "[core::molecular_system::Molecular
         masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
         my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
     }() );
+}
+
+TEST_CASE( "Test deprecated functions in molecular system.", "[core::molecular_system::MolecularSystem][core_api::auto_generated_api::molecular_system::MolecularSystem_API][deprecation]" ) {
+    using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP;
+    using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API;
+    using namespace masala::base::api;
+
+    masala::numeric_api::auto_generated_api::registration::register_numeric();
+    masala::core_api::auto_generated_api::registration::register_core();
+
+    MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
+    MasalaObjectAPIDefinitionCSP api_def( my_molecular_system->get_api_definition_for_inner_class().lock() );
+    CHECK( api_def != nullptr );
+    setter::MasalaObjectAPISetterDefinition_OneInputCSP<masala::base::Size> dep_setter( api_def->get_oneinput_setter_function< masala::base::Size >( "deprecated_api_setter" ).lock() );
+    my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a function is deprecated." );
+    REQUIRE_THROWS([&](){
+		dep_setter->function( 5 );
+    }() );
+
 }
 
 TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bonds.", "[core::molecular_system::MolecularSystem][core_api::auto_generated_api::molecular_system::MolecularSystem_API][instantiation]" ) {
