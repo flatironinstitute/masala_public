@@ -34,10 +34,8 @@ SET( CMAKE_BUILD_TYPE Debug )
 # Uncomment the following to disable deprecation warnings.
 #ADD_DEFINITIONS( -DMASALA_DISABLE_DEPRECATION_WARNINGS )
 
-# Ensure that version is set in only one place, in the PROJECT line at the top of this file.  Note that the top is specific for this
-# library, while the bottom (MASALA_LIBRARY_MAJOR_VERSION and MASALA_LIBRARY_MINOR_VERSION) is for any Masala library.
+# Ensure that version is set in only one place, in the PROJECT line at the top of this file:
 ADD_DEFINITIONS( -DMASALA_MAJOR_VERSION=${CMAKE_PROJECT_VERSION_MAJOR} -DMASALA_MINOR_VERSION=${CMAKE_PROJECT_VERSION_MINOR} )
-ADD_DEFINITIONS( -DMASALA_LIBRARY_MAJOR_VERSION=${CMAKE_PROJECT_VERSION_MAJOR} -DMASALA_LIBRARY_MINOR_VERSION=${CMAKE_PROJECT_VERSION_MINOR} )
 
 SET( LINK_TYPE SHARED )
 SET( LINK_EXTERNAL_LIBS stdc++ )
