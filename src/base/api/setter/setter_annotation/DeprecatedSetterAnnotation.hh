@@ -120,6 +120,9 @@ public:
 	std::pair< masala::base::Size, masala::base::Size > const &
 	version_at_which_function_deprecated() const;
 
+	/// @brief Get the library name.
+	std::string const & library_name() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

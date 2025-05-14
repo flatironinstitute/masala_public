@@ -137,6 +137,12 @@ DeprecatedWorkFunctionAnnotation::version_at_which_function_deprecated() const {
 	return version_at_which_function_deprecated_;
 }
 
+/// @brief Get the library name.
+std::string const &
+DeprecatedWorkFunctionAnnotation::library_name() const {
+	return library_name_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SETTERS
 ////////////////////////////////////////////////////////////////////////////////
