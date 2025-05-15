@@ -20,7 +20,7 @@
 /// @brief A template class that stores the definition for a setter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for six-input setters.  The types T1, T2, T3, T4, T5, T6, and T7
+/// @details This is a derived class for seven-input setters.  The types T1, T2, T3, T4, T5, T6, and T7
 /// define the input types.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -51,7 +51,7 @@ namespace setter {
 /// @brief A class that stores the definition for a setter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for six-input setters.  The types T1, T2, T3, T4, T5, T6, and T7
+/// @details This is a derived class for seven-input setters.  The types T1, T2, T3, T4, T5, T6, and T7
 /// define the input types.
 /// @note A setter must take one or more inputs, and must return void.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
