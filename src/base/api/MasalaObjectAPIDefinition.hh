@@ -419,16 +419,16 @@ public:
 	) const {
 		using namespace setter;
 
-	// 	for( auto const & setter: setters_ ) {
-	// 		if( setter->num_input_parameters() == 8 && setter->setter_function_name() == function_name ) {
-	// 			MasalaObjectAPISetterDefinition_EightInputCSP< P1, P2, P3, P4, P5, P6, P7, P8 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_EightInput< P1, P2, P3, P4, P5, P6, P7, P8 > const >( setter ) );
-	// 			if( setter_cast != nullptr ) {
-	// 				return setter_cast;
-	// 			}
-	// 		}
-	// 	}
-	// 	return MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>();
-	// }
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 8 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_EightInputCSP< P1, P2, P3, P4, P5, P6, P7, P8 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_EightInput< P1, P2, P3, P4, P5, P6, P7, P8 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>();
+	}
 
 	// /// @brief Get a nine-parameter setter definition.
 	// /// @returns Nullptr if the function doesn't exist; a const weak pointer
