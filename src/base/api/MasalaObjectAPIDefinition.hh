@@ -51,7 +51,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_SevenInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_EightInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_NineInput.tmpl.hh>
-// #include <base/api/setter/MasalaObjectAPISetterDefinition_TenInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TenInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
@@ -441,38 +441,38 @@ public:
 	) const {
 		using namespace setter;
 
-	// 	for( auto const & setter: setters_ ) {
-	// 		if( setter->num_input_parameters() == 9 && setter->setter_function_name() == function_name ) {
-	// 			MasalaObjectAPISetterDefinition_NineInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_NineInput< P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >( setter ) );
-	// 			if( setter_cast != nullptr ) {
-	// 				return setter_cast;
-	// 			}
-	// 		}
-	// 	}
-	// 	return MasalaObjectAPISetterDefinition_NineInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9>();
-	// }
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 9 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_NineInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_NineInput< P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_NineInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9>();
+	}
 
-	// /// @brief Get a ten-parameter setter definition.
-	// /// @returns Nullptr if the function doesn't exist; a const weak pointer
-	// /// to the function otherwise.
-	// template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
-	// inline
-	// masala::base::api::setter::MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>
-	// get_teninput_setter_function(
-	// 	std::string const & function_name
-	// ) const {
-	// 	using namespace setter;
+	/// @brief Get a ten-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>
+	get_teninput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
 
-	// 	for( auto const & setter: setters_ ) {
-	// 		if( setter->num_input_parameters() == 10 && setter->setter_function_name() == function_name ) {
-	// 			MasalaObjectAPISetterDefinition_TenInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TenInput< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >( setter ) );
-	// 			if( setter_cast != nullptr ) {
-	// 				return setter_cast;
-	// 			}
-	// 		}
-	// 	}
-	// 	return MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>();
-	// }
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 10 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_TenInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TenInput< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>();
+	}
 
 public:
 
