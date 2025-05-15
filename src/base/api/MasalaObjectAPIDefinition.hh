@@ -49,7 +49,7 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_SixInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_SevenInput.tmpl.hh>
-// #include <base/api/setter/MasalaObjectAPISetterDefinition_EightInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_EightInput.tmpl.hh>
 // #include <base/api/setter/MasalaObjectAPISetterDefinition_NineInput.tmpl.hh>
 // #include <base/api/setter/MasalaObjectAPISetterDefinition_TenInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
@@ -408,16 +408,16 @@ public:
 		return MasalaObjectAPISetterDefinition_SevenInputCWP<P1,P2,P3,P4,P5,P6,P7>();
 	}
 
-	// /// @brief Get a eight-parameter setter definition.
-	// /// @returns Nullptr if the function doesn't exist; a const weak pointer
-	// /// to the function otherwise.
-	// template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
-	// inline
-	// masala::base::api::setter::MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>
-	// get_eightinput_setter_function(
-	// 	std::string const & function_name
-	// ) const {
-	// 	using namespace setter;
+	/// @brief Get a eight-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>
+	get_eightinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
 
 	// 	for( auto const & setter: setters_ ) {
 	// 		if( setter->num_input_parameters() == 8 && setter->setter_function_name() == function_name ) {
