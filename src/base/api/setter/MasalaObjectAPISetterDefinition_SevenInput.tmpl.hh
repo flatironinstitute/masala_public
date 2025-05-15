@@ -276,8 +276,8 @@ public:
 	}
 
 	/// @brief Get the number of input parameters for this setter.
-	/// @details Returns 6.
-	masala::base::Size num_input_parameters() const override { return 6; }
+	/// @details Returns 7.
+	masala::base::Size num_input_parameters() const override { return 7; }
 
 	/// @brief Set the function to throw a deprecation error if invoked.
 	/// @details Must be implemented by derived classes.
