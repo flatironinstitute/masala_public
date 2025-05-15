@@ -169,7 +169,7 @@ public:
 		T5 input5,
 		T6 input6,
 		T7 input7,
-		T7 input8
+		T8 input8
 	) const {
 		setter_function_(input1, input2, input3, input4, input5, input6, input7, input8);
 	}
@@ -208,7 +208,7 @@ public:
 		ss << "Input 4:\t" << input_parameter4_name_ << "\t" << input_parameter4_description_ << std::endl;
 		ss << "Input 5:\t" << input_parameter5_name_ << "\t" << input_parameter5_description_ << std::endl;
 		ss << "Input 6:\t" << input_parameter6_name_ << "\t" << input_parameter6_description_ << std::endl;
-		ss << "Input 6:\t" << input_parameter7_name_ << "\t" << input_parameter7_description_ << std::endl;
+		ss << "Input 7:\t" << input_parameter7_name_ << "\t" << input_parameter7_description_ << std::endl;
 		return ss.str();
 	}
 
@@ -264,16 +264,16 @@ public:
 		json_input5["Input_Name"] = input_parameter5_name_;
 
 		nlohmann::json json_input6;
-		json_input5["Input_Index"] = 6;
-		json_input5["Input_Type"] = masala::base::api::name_from_type( base::api::type<T7>() );
-		json_input5["Input_Description"] = input_parameter6_description_;
-		json_input5["Input_Name"] = input_parameter6_name_;
+		json_input6["Input_Index"] = 6;
+		json_input6["Input_Type"] = masala::base::api::name_from_type( base::api::type<T7>() );
+		json_input6["Input_Description"] = input_parameter6_description_;
+		json_input6["Input_Name"] = input_parameter6_name_;
 
 		nlohmann::json json_input7;
-		json_input5["Input_Index"] = 7;
-		json_input5["Input_Type"] = masala::base::api::name_from_type( base::api::type<T8>() );
-		json_input5["Input_Description"] = input_parameter7_description_;
-		json_input5["Input_Name"] = input_parameter7_name_;
+		json_input7["Input_Index"] = 7;
+		json_input7["Input_Type"] = masala::base::api::name_from_type( base::api::type<T8>() );
+		json_input7["Input_Description"] = input_parameter7_description_;
+		json_input7["Input_Name"] = input_parameter7_name_;
 
 		nlohmann::json json_inputs;
 		json_inputs["Input_0"] = json_input0;
