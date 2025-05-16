@@ -38,12 +38,14 @@
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
 #include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/api/work_function/work_function_annotation/DeprecatedWorkFunctionAnnotation.hh>
 #include <base/api/constructor/constructor_annotation/DeprecatedConstructorAnnotation.hh>
 #include <base/enums/ChemicalBondTypeEnum.hh>
 
@@ -241,6 +243,19 @@ MolecularSystem::deprecated_api_setter(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief An example of a deprecated API work function.
+masala::base::Size
+MolecularSystem::deprecated_api_work_function(
+    masala::base::Real const input1,
+    bool const input2
+) {
+    //GNDN
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -249,6 +264,7 @@ base::api::MasalaObjectAPIDefinitionCWP
 MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
     using masala::base::Size;
+    using masala::base::Real;
 
     std::lock_guard< std::mutex > lock( mutex_ );
 
@@ -296,9 +312,6 @@ MolecularSystem::get_api_definition() {
 			);
 			api_def->add_constructor( deprecated_constructor );
 		}
-
-        // Work functions:
-
 
         // Getters:
         api_def->add_getter(
@@ -433,6 +446,26 @@ MolecularSystem::get_api_definition() {
 				)
 			);
 			api_def->add_setter( deprecated_fxn );
+		}
+
+        // Work functions:
+        {
+			work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< Size, Real const, bool const > deprecated_fxn(
+				masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Size, Real const, bool const > >(
+					"deprecated_api_work_function", "An example of a deprecated API work function, annotated as such.  Does nothing.",
+                    false, false, false, false,
+					"input1", "A real-valued input for this function.",
+					"input2", "A boolean-valued input for this function.",
+					"output_val", "An integer-valued output.",
+					std::bind( &MolecularSystem::deprecated_api_work_function, this, std::placeholders::_1, std::placeholders::_2 )
+				)
+			);
+			deprecated_fxn->add_work_function_annotation(
+				masala::make_shared< work_function::work_function_annotation::DeprecatedWorkFunctionAnnotation >(
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_work_function( deprecated_fxn );
 		}
 
         api_definition_ = api_def; //Make const.
