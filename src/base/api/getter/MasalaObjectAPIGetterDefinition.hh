@@ -32,6 +32,7 @@
 #include <base/types.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition.fwd.hh>
 #include <base/api/getter/getter_annotation/MasalaGetterFunctionAnnotation.fwd.hh>
+#include <base/error/ErrorHandling.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
