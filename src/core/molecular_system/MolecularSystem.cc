@@ -249,10 +249,11 @@ MolecularSystem::deprecated_api_setter(
 /// @brief An example of a deprecated API work function.
 masala::base::Size
 MolecularSystem::deprecated_api_work_function(
-    masala::base::Real const input1,
-    bool const input2
+    masala::base::Real const ,//input1,
+    bool const //input2
 ) {
     //GNDN
+    return 2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

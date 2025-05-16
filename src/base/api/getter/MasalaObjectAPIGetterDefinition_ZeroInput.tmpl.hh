@@ -184,8 +184,9 @@ public:
 	/// @details Must be implemented by derived classes.
 	void
 	set_function_deprecated () override {
+		std::function< T0() > const getter_function_copy( getter_function_ );
 		getter_function_ = std::bind(
-			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<T0>, this
+			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<T0>, this, getter_function_copy
 		);
 	}
 

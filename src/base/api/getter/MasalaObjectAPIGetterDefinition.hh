@@ -148,9 +148,10 @@ public:
 
 	/// @brief We replace the function that would have been called with this error message if the function is deprecated.
 	template <typename T0, typename... Ts >
-	void
+	T0
 	deprecated_function_to_bind(
-		Ts... //args
+		std::function< T0(Ts...) > const fxn,
+		Ts... args
 	) {
 		MASALA_THROW( class_namespace() + "::" + class_name(), "deprecated_function_to_bind", "The getter function \""
 			+ getter_function_name_ + "()\" has been deprecated as of version " + std::to_string( major_deprecation_version_ )
@@ -159,6 +160,7 @@ public:
 			"-DMASALA_ENABLE_DEPRECATED_FUNCTIONS compiler flag set.  However, we cannot guarantee that things will "
 			"work as expected.)"
 		);
+		return fxn( args... );
 	}
 
 	/// @brief Set the function to give a deprecation warning if invoked.
@@ -168,7 +170,7 @@ public:
 	/// @brief We replace the function that would have been called with this warning message, followed by the function call,
 	/// if the function is soon to be deprecated.
 	template <typename T0, typename... Ts >
-	void
+	T0
 	warning_function_to_bind(
 		std::function< T0(Ts...) > const fxn,
 		Ts... args
@@ -179,7 +181,7 @@ public:
 			"(Note that you can disable this warning by compiling with the -DMASALA_DISABLE_DEPRECATION_WARNINGS "
 			"compiler flag set.)"
 		);
-		fxn( args... );
+		return fxn( args... );
 	}
 
 protected:
