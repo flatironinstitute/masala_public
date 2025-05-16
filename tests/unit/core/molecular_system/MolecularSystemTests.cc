@@ -42,34 +42,37 @@ namespace core {
 namespace molecular_system {
 
 TEST_CASE( "Instantiate a molecular system", "[core::molecular_system::MolecularSystem][instantiation]" ) {
-    REQUIRE_NOTHROW([&](){
-        masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
-        my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
-    }() );
+	REQUIRE_NOTHROW([&](){
+		masala::core::molecular_system::MolecularSystemSP my_molecular_system( masala::make_shared< masala::core::molecular_system::MolecularSystem >() );
+		my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
+	}() );
 }
 
 TEST_CASE( "Test deprecated functions in molecular system.", "[core::molecular_system::MolecularSystem][core_api::auto_generated_api::molecular_system::MolecularSystem_API][deprecation]" ) {
-    using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP;
-    using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API;
-    using namespace masala::base::api;
+	using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_APISP;
+	using masala::core_api::auto_generated_api::molecular_system::MolecularSystem_API;
+	using namespace masala::base::api;
 
-    masala::numeric_api::auto_generated_api::registration::register_numeric();
-    masala::core_api::auto_generated_api::registration::register_core();
+	masala::numeric_api::auto_generated_api::registration::register_numeric();
+	masala::core_api::auto_generated_api::registration::register_core();
 
-    MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
-    MasalaObjectAPIDefinitionCSP api_def( my_molecular_system->get_api_definition_for_inner_class().lock() );
-    CHECK( api_def != nullptr );
-    setter::MasalaObjectAPISetterDefinition_OneInputCSP<masala::base::Size> dep_setter( api_def->get_oneinput_setter_function< masala::base::Size >( "deprecated_api_setter" ).lock() );
-    getter::MasalaObjectAPIGetterDefinition_OneInputCSP<bool, masala::base::Size> dep_getter( api_def->get_oneinput_getter_function< bool, masala::base::Size >( "deprecated_api_getter" ).lock() );
-    CHECK( dep_setter != nullptr );
-    CHECK( dep_getter != nullptr );
-    my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a function is deprecated." );
-    REQUIRE_THROWS([&](){
+	MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
+	MasalaObjectAPIDefinitionCSP api_def( my_molecular_system->get_api_definition_for_inner_class().lock() );
+	CHECK( api_def != nullptr );
+	setter::MasalaObjectAPISetterDefinition_OneInputCSP<masala::base::Size> dep_setter( api_def->get_oneinput_setter_function< masala::base::Size >( "deprecated_api_setter" ).lock() );
+	getter::MasalaObjectAPIGetterDefinition_OneInputCSP<bool, masala::base::Size> dep_getter( api_def->get_oneinput_getter_function< bool, masala::base::Size >( "deprecated_api_getter" ).lock() );
+	CHECK( dep_setter != nullptr );
+	CHECK( dep_getter != nullptr );
+	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a function is deprecated." );
+	REQUIRE_THROWS([&](){
 		dep_setter->function( 5 );
-    }() );
-    REQUIRE_THROWS([&](){
+	}() );
+	REQUIRE_THROWS([&](){
 		dep_getter->function( 5 );
-    }() );
+	}() );
+
+	masala::core_api::auto_generated_api::registration::unregister_core();
+	masala::numeric_api::auto_generated_api::registration::unregister_numeric();
 }
 
 TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bonds.", "[core::molecular_system::MolecularSystem][core_api::auto_generated_api::molecular_system::MolecularSystem_API][instantiation]" ) {
@@ -82,10 +85,10 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 	using masala::base::enums::AtomHybridizationState;
 	using masala::base::enums::ChemicalBondType;
 
-    masala::numeric_api::auto_generated_api::registration::register_numeric();
-    masala::core_api::auto_generated_api::registration::register_core();
+	masala::numeric_api::auto_generated_api::registration::register_numeric();
+	masala::core_api::auto_generated_api::registration::register_core();
 
-    REQUIRE_NOTHROW([&](){
+	REQUIRE_NOTHROW([&](){
 		MolecularSystem_APISP my_molecular_system( masala::make_shared< MolecularSystem_API >() );
 		my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
 		// Build carbon dioxide:
@@ -98,10 +101,10 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 		my_molecular_system->add_bond( atom1, atom2, ChemicalBondType::DOUBLE_BOND ); // Enum is more efficient than parsing strings.
 		my_molecular_system->add_bond( atom1, atom3, "double_bond" ); // Strings are less efficient.
 		my_molecular_system->write_to_tracer( "Built carbon dioxide (O=C=O)." );
-    }() );
+	}() );
 
-    masala::core_api::auto_generated_api::registration::unregister_core();
-    masala::numeric_api::auto_generated_api::registration::unregister_numeric();
+	masala::core_api::auto_generated_api::registration::unregister_core();
+	masala::numeric_api::auto_generated_api::registration::unregister_numeric();
 }
 
 } // namespace molecular_system
