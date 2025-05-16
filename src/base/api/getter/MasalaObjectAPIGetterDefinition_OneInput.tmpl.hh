@@ -198,6 +198,27 @@ public:
 	/// @details Returns 1.
 	masala::base::Size num_input_parameters() const override { return 1; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		getter_function_ = std::bind(
+			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<T0,T1>, this,
+			std::placeholders::_1
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< T0(T1) > const getter_function_copy( getter_function_ );
+		getter_function_ = std::bind(
+			&MasalaObjectAPIGetterDefinition::warning_function_to_bind<T0,T1>, this, getter_function_copy,
+			std::placeholders::_1
+		);
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +239,7 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0(T1) > const getter_function_;
+	std::function< T0(T1) > getter_function_;
 
 }; // class MasalaObjectAPIGetterDefinition_OneInput
 

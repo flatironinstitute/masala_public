@@ -185,7 +185,7 @@ public:
 	void
 	set_function_deprecated () override {
 		getter_function_ = std::bind(
-			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<>, this
+			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<T0>, this
 		);
 	}
 
@@ -193,9 +193,9 @@ public:
 	/// @details Must be implemented by derived classes.
 	void
 	set_function_warning () override {
-		std::function< void() > const getter_function_copy( getter_function_ );
+		std::function< T0() > const getter_function_copy( getter_function_ );
 		getter_function_ = std::bind(
-			&MasalaObjectAPIGetterDefinition::warning_function_to_bind<>, this, getter_function_copy
+			&MasalaObjectAPIGetterDefinition::warning_function_to_bind<T0>, this, getter_function_copy
 		);
 	}
 
@@ -212,7 +212,7 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0() > const getter_function_;
+	std::function< T0() > getter_function_;
 
 }; // class MasalaObjectAPIGetterDefinition_ZeroInput
 

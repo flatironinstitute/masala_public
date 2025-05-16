@@ -142,12 +142,12 @@ public:
 	/// @details Pure virtual; must be overridden by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
 
-/// @brief Set the function to throw a deprecation error if invoked.
+	/// @brief Set the function to throw a deprecation error if invoked.
 	/// @details Must be implemented by derived classes.
 	virtual void set_function_deprecated () = 0;
 
 	/// @brief We replace the function that would have been called with this error message if the function is deprecated.
-	template <typename... Ts >
+	template <typename T0, typename... Ts >
 	void
 	deprecated_function_to_bind(
 		Ts... //args
@@ -167,10 +167,10 @@ public:
 
 	/// @brief We replace the function that would have been called with this warning message, followed by the function call,
 	/// if the function is soon to be deprecated.
-	template <typename... Ts >
+	template <typename T0, typename... Ts >
 	void
 	warning_function_to_bind(
-		std::function< void(Ts...) > const fxn,
+		std::function< T0(Ts...) > const fxn,
 		Ts... args
 	) {
 		write_to_tracer( "Warning! The getter function \"" + getter_function_name_ + "()\" will be deprecated as of version "
