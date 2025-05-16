@@ -155,7 +155,7 @@ public:
 	deprecated_function_to_bind(
 		Ts... //args
 	) {
-		MASALA_THROW( class_namespace() + "::" + class_name(), "deprecated_function_to_bind", "The function \""
+		MASALA_THROW( class_namespace() + "::" + class_name(), "deprecated_function_to_bind", "The setter function \""
 			+ setter_function_name_ + "()\" has been deprecated as of version " + std::to_string( major_deprecation_version_ )
 			+ "." + std::to_string( minor_deprecation_version_ ) + " of the " + library_name_for_deprecation_warning_
 			+ " library.  (Note that you can re-enable it by compiling with the "
@@ -176,7 +176,7 @@ public:
 		std::function< void(Ts...) > const fxn,
 		Ts... args
 	) {
-		write_to_tracer( "Warning! The function \"" + setter_function_name_ + "()\" will be deprecated as of version "
+		write_to_tracer( "Warning! The setter function \"" + setter_function_name_ + "()\" will be deprecated as of version "
 			+ std::to_string( major_deprecation_version_ ) + "." + std::to_string( minor_deprecation_version_ )
 			+ " of the " + library_name_for_deprecation_warning_ + " library.  "
 			"(Note that you can disable this warning by compiling with the -DMASALA_DISABLE_DEPRECATION_WARNINGS "
