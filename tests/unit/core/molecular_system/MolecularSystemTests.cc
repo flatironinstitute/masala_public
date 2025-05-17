@@ -61,14 +61,19 @@ TEST_CASE( "Test deprecated functions in molecular system.", "[core::molecular_s
 	CHECK( api_def != nullptr );
 	setter::MasalaObjectAPISetterDefinition_OneInputCSP<masala::base::Size> dep_setter( api_def->get_oneinput_setter_function< masala::base::Size >( "deprecated_api_setter" ).lock() );
 	getter::MasalaObjectAPIGetterDefinition_OneInputCSP<bool, masala::base::Size> dep_getter( api_def->get_oneinput_getter_function< bool, masala::base::Size >( "deprecated_api_getter" ).lock() );
+	work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputCSP< masala::base::Size, masala::base::Real const, bool const > dep_work_fxn( api_def->get_twoinput_work_function< masala::base::Size, masala::base::Real const, bool const  >( "deprecated_api_work_function" ).lock() );
 	CHECK( dep_setter != nullptr );
 	CHECK( dep_getter != nullptr );
+	CHECK( dep_work_fxn != nullptr );
 	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a function is deprecated." );
 	REQUIRE_THROWS([&](){
 		dep_setter->function( 5 );
 	}() );
 	REQUIRE_THROWS([&](){
 		dep_getter->function( 5 );
+	}() );
+	REQUIRE_THROWS([&](){
+		dep_work_fxn->function( 5.0, true );
 	}() );
 
 	masala::core_api::auto_generated_api::registration::unregister_core();
