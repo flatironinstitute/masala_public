@@ -200,7 +200,7 @@ public:
 	void
 	set_function_deprecated () override {
 		setter_function_ = std::bind(
-			&MasalaObjectAPISetterDefinition::deprecated_function_to_bind<T1, T2>, this,
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(T1,T2) >( &MasalaObjectAPISetterDefinition::deprecated_function_to_bind ), this,
 			std::placeholders::_1,
 			std::placeholders::_2
 		);
