@@ -245,8 +245,8 @@ public:
 	}
 
 	/// @brief Get the number of input parameters for this getter.
-	/// @details Returns 3.
-	masala::base::Size num_input_parameters() const override { return 3; }
+	/// @details Returns 4.
+	masala::base::Size num_input_parameters() const override { return 4; }
 
 	/// @brief Set the function to throw a deprecation error if invoked.
 	/// @details Must be implemented by derived classes.
