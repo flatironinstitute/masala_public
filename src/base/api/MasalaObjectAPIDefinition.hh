@@ -58,7 +58,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ThreeInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_FourInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_FiveInput.tmpl.hh>
-// #include <base/api/getter/MasalaObjectAPIGetterDefinition_SixInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_SixInput.tmpl.hh>
 // #include <base/api/getter/MasalaObjectAPIGetterDefinition_SevenInput.tmpl.hh>
 // #include <base/api/getter/MasalaObjectAPIGetterDefinition_EightInput.tmpl.hh>
 // #include <base/api/getter/MasalaObjectAPIGetterDefinition_NineInput.tmpl.hh>
@@ -274,7 +274,7 @@ public:
 		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_FiveInputCWP<P0,P1,P2,P3,P4,P5>();
 	}
 
-	/* /// @brief Get a six-parameter getter definition.
+	/// @brief Get a six-parameter getter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
@@ -296,7 +296,7 @@ public:
 		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_SixInputCWP<P0,P1,P2,P3,P4,P5,P6>();
 	}
 
-	/// @brief Get a seven-parameter getter definition.
+	/* /// @brief Get a seven-parameter getter definition.
 	/// @returns Nullptr if the function doesn't exist; a const weak pointer
 	/// to the function otherwise.
 	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7 >
