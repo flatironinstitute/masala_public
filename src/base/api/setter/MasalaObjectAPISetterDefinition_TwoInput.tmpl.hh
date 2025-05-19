@@ -212,7 +212,7 @@ public:
 	set_function_warning () override {
 		std::function< void(T1, T2) > const setter_function_copy( setter_function_ );
 		setter_function_ = std::bind(
-			&MasalaObjectAPISetterDefinition::warning_function_to_bind<T1, T2>, this, setter_function_copy,
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(std::function< void(T1, T2) >, T1, T2) >( &MasalaObjectAPISetterDefinition::warning_function_to_bind ), this, setter_function_copy,
 			std::placeholders::_1,
 			std::placeholders::_2
 		);
