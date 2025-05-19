@@ -153,7 +153,7 @@ public:
 		T2 input2,
 		T3 input3,
 		T4 input4,
-		T4 input5
+		T5 input5
 	) const {
 		return getter_function_(input1, input2, input3, input4, input5);
 	}
