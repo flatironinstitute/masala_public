@@ -20,7 +20,7 @@
 /// @brief A template class that stores the definition for a getter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for three-input getters.  The types T1 and T2
+/// @details This is a derived class for three-input getters.  The types T1, T2, and T3
 /// define the input type and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
@@ -51,7 +51,7 @@ namespace getter {
 /// @brief A class that stores the definition for a getter function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for three-input getters.  The types T1 and T2
+/// @details This is a derived class for three-input getters.  The types T1, T2, and T3
 /// define the input type and the type T0 defines the output type.
 /// @note A getter can take zero or more inputs, and must return one non-void output.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
@@ -139,7 +139,7 @@ public:
 	function(
 		T1 input1,
 		T2 input2,
-		T2 input3
+		T3 input3
 	) const {
 		return getter_function_(input1, input2, input3);
 	}
@@ -190,7 +190,7 @@ public:
 		json_api["Is_Override_Of_Base_API_Virtual_Function"] = is_override_of_api_virtual_fxn();
 
 		//Inputs:
-		json_api["Getter_N_Inputs"] = 2;
+		json_api["Getter_N_Inputs"] = 3;
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;

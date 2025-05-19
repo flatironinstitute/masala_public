@@ -21,7 +21,7 @@
 /// getter function, as part of the API for an object.  Used to auto-generate
 /// the public C++ headers, plus the bindings for Python or XML (or other
 //// scripting languages).
-/// @details This is a derived class for three-input getters.  The types T1 and T2
+/// @details This is a derived class for three-input getters.  The types T1, T2, and T3
 /// define the input type and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
