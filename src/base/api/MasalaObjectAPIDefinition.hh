@@ -56,9 +56,13 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ThreeInput.tmpl.hh>
-// #include <base/api/getter/MasalaObjectAPIGetterDefinition_FourInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_FourInput.tmpl.hh>
 // #include <base/api/getter/MasalaObjectAPIGetterDefinition_FiveInput.tmpl.hh>
 // #include <base/api/getter/MasalaObjectAPIGetterDefinition_SixInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_SevenInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_EightInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_NineInput.tmpl.hh>
+// #include <base/api/getter/MasalaObjectAPIGetterDefinition_TenInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
@@ -225,6 +229,160 @@ public:
 		}
 		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_ThreeInputCWP<P0,P1,P2,P3>();
 	}
+
+	/// @brief Get a four-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_FourInputCWP<P0,P1,P2,P3,P4>
+	get_fourinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 4 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_FourInputCSP< P0, P1, P2, P3, P4 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_FourInput< P0, P1, P2, P3, P4 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_FourInputCWP<P0,P1,P2,P3,P4>();
+	}
+
+	/* /// @brief Get a five-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_FiveInputCWP<P0,P1,P2,P3,P4,P5>
+	get_fiveinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 5 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_FiveInputCSP< P0, P1, P2, P3, P4, P5 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_FiveInput< P0, P1, P2, P3, P4, P5 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_FiveInputCWP<P0,P1,P2,P3,P4,P5>();
+	}
+
+	/// @brief Get a six-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_SixInputCWP<P0,P1,P2,P3,P4,P5,P6>
+	get_sixinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 6 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_SixInputCSP< P0, P1, P2, P3, P4, P5, P6 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_SixInput< P0, P1, P2, P3, P4, P5, P6 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_SixInputCWP<P0,P1,P2,P3,P4,P5,P6>();
+	}
+
+	/// @brief Get a seven-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_SevenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7>
+	get_seveninput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 7 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_SevenInputCSP< P0, P1, P2, P3, P4, P5, P6, P7 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_SevenInput< P0, P1, P2, P3, P4, P5, P6, P7 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_SevenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7>();
+	}
+
+	/// @brief Get a eight-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_EightInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8>
+	get_eightinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 8 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_EightInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_EightInput< P0, P1, P2, P3, P4, P5, P6, P7, P8 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_EightInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8>();
+	}
+
+	/// @brief Get a nine-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_NineInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9>
+	get_nineinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 9 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_NineInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_NineInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_NineInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9>();
+	}
+
+	/// @brief Get a ten-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_TenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>
+	get_teninput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 10 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_TenInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_TenInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_TenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>();
+	}*/
 
 public:
 
