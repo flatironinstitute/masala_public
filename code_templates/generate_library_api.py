@@ -786,7 +786,16 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
                 outstring +=") )\n"
 
         # Body:
-        outstring += "{}"
+        if deprecation_status == DEPRECATED or deprecation_status == DEPRECATION_WARNING :
+            outstring += "{\n"
+            outstring += tabchar + "masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );\n"
+            outstring += tabchar + "std::string const tracername( class_namespace_and_name_static() );\n"
+            outstring += tabchar + "if( tracer_handle->tracer_is_enabled( tracername ) ) {\n"
+            outstring += tabchar + tabchar + "tracer_handle->write_to_tracer( tracername, \"A constructor for \" + class_name_static() + \" was invoked, which will be deprecated in a future version of the " + project_name + " library.\", true );\n"
+            outstring += tabchar + "}\n"
+            outstring += "}"
+        else :
+            outstring += "{}"
 
         if deprecation_status == DEPRECATED :
             outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
