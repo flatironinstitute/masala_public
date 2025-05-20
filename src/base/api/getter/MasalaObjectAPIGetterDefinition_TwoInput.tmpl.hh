@@ -231,7 +231,7 @@ public:
 	set_function_warning () override {
 		std::function< T0(T1,T2) > const getter_function_copy( getter_function_ );
 		getter_function_ = std::bind(
-			&MasalaObjectAPIGetterDefinition::warning_function_to_bind<T0,T1,T2>, this, getter_function_copy,
+			static_cast< void(MasalaObjectAPIGetterDefinition::*)(std::function< T0( T1, T2 ) >, T1, T2 ) >( &MasalaObjectAPIGetterDefinition::warning_function_to_bind ), this, getter_function_copy,
 			std::placeholders::_1,
 			std::placeholders::_2
 		);
