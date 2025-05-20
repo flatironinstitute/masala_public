@@ -290,7 +290,7 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0( T1, T2 ) > const work_function_;
+	std::function< T0( T1, T2 ) > work_function_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition_TwoInput
 

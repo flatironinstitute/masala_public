@@ -409,7 +409,7 @@ private:
 	std::string const output_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< T0( T1, T2, T3, T4, T5, T6, T7 ) > const work_function_;
+	std::function< T0( T1, T2, T3, T4, T5, T6, T7 ) > work_function_;
 
 }; // class MasalaObjectAPIWorkFunctionDefinition_SevenInput
 
