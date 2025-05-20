@@ -127,8 +127,8 @@ public:
 		input_parameter3_description_(input_parameter3_description),
 		input_parameter4_name_(input_parameter4_name),
 		input_parameter4_description_(input_parameter4_description),
-		input_parameter4_name_(input_parameter5_name),
-		input_parameter4_description_(input_parameter5_description),
+		input_parameter5_name_(input_parameter5_name),
+		input_parameter5_description_(input_parameter5_description),
 		output_name_(output_parameter_name),
 		output_description_( output_parameter_description ),
 		getter_function_( getter_function )
