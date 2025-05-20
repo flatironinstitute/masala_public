@@ -76,6 +76,7 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SevenInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_EightInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_NineInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TenInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -848,6 +849,27 @@ public:
 			}
 		}
 		return MasalaObjectAPIWorkFunctionDefinition_NineInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 >();
+	}
+
+	/// @brief Get a ten-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_TenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 >
+	get_teninput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 10 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_TenInputCSP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_TenInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_TenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 >();
 	}
 
 public:
