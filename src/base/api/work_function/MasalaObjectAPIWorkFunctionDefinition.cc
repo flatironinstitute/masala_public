@@ -94,8 +94,6 @@ MasalaObjectAPIWorkFunctionDefinition::work_function_name() const {
 /// @brief Get the work function's description.
 std::string
 MasalaObjectAPIWorkFunctionDefinition::work_function_description() const {
-    return work_function_description_;
-
 	if( work_function_annotations_.empty() ) {
         return work_function_description_;
     }
