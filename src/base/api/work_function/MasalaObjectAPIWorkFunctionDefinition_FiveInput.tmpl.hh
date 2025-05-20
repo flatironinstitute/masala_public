@@ -170,6 +170,36 @@ public:
 	/// @returns Override returns 5.
 	masala::base::Size num_input_parameters() const override { return 5; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		std::function< T0(T1,T2,T3,T4,T5) > const work_function_copy( work_function_ );
+		work_function_ = std::bind(
+			static_cast< T0(MasalaObjectAPIWorkFunctionDefinition::*)(std::function< T0( T1, T2, T3, T4, T5 ) >, T1, T2, T3, T4, T5 ) >( &MasalaObjectAPIWorkFunctionDefinition::deprecated_function_to_bind ), this, work_function_copy,
+			std::placeholders::_1,
+			std::placeholders::_2,
+			std::placeholders::_3,
+			std::placeholders::_4,
+			std::placeholders::_5
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< T0(T1,T2,T3,T4,T5) > const work_function_copy( work_function_ );
+		work_function_ = std::bind(
+			static_cast< T0(MasalaObjectAPIWorkFunctionDefinition::*)(std::function< T0( T1, T2, T3, T4, T5 ) >, T1, T2, T3, T4, T5 ) >( &MasalaObjectAPIWorkFunctionDefinition::warning_function_to_bind ), this, work_function_copy,
+			std::placeholders::_1,
+			std::placeholders::_2,
+			std::placeholders::_3,
+			std::placeholders::_4,
+			std::placeholders::_5
+		);
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
