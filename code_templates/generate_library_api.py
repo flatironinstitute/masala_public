@@ -44,7 +44,15 @@ def determine_deprecation_status( \
     element_properties : json, \
     project_maj_version : int, \
     project_min_version : int
-    ) -> int :
+    ) -> tuple[int, int, int, int, int] :
+
+    dep_found = False
+    dep_warn_found = False
+
+    dep_maj_vers = -1
+    dep_min_vers = -1
+    dep_warn_maj_vers = -1
+    dep_warn_min_vers = -1
 
     if "Will_Be_Deprecated" in element_properties :
         if element_properties["Will_Be_Deprecated"] == True :
@@ -53,14 +61,18 @@ def determine_deprecation_status( \
             dep_maj_vers = element_properties["Deprecation_Major_Version"]
             dep_min_vers = element_properties["Deprecation_Minor_Version"]
             if ( project_maj_version > dep_maj_vers ) or ( project_maj_version == dep_maj_vers and project_min_version >= dep_min_vers ) :
-                return DEPRECATED
+                dep_found = True
             if "Deprecation_Warning_Major_Version" in element_properties :
                 assert "Deprecation_Warning_Minor_Version" in element_properties
                 dep_warn_maj_vers = element_properties["Deprecation_Warning_Major_Version"]
                 dep_warn_min_vers = element_properties["Deprecation_Warning_Minor_Version"]
                 if ( project_maj_version > dep_warn_maj_vers ) or ( project_maj_version == dep_warn_maj_vers and project_min_version >= dep_warn_min_vers ) :
-                    return DEPRECATION_WARNING
-    return INTACT
+                    dep_warn_found = True
+    if dep_found == True :
+        return DEPRECATED, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
+    elif dep_warn_found == True :
+        return DEPRECATION_WARNING, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
+    return INTACT, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
 
 ### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
 def wrap_comment_line( line : str ) -> [] :
@@ -695,7 +707,7 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
         else :
             outstring += "\n\n"
 
-        deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
             outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
@@ -729,7 +741,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
             first = False
         else :
             outstring += "\n\n"
-        deprecation_status = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
             outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
         outstring += "/// @brief " + constructor["Constructor_Description"] + "\n"
@@ -792,7 +804,7 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
             outstring += tabchar + "masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );\n"
             outstring += tabchar + "std::string const tracername( class_namespace_and_name_static() );\n"
             outstring += tabchar + "if( tracer_handle->tracer_is_enabled( tracername ) ) {\n"
-            outstring += tabchar + tabchar + "tracer_handle->write_to_tracer( tracername, \"A constructor for the \" + class_name_static() + \" API class was invoked, which will be deprecated in a future version of the " + project_name + " library.\", true );\n"
+            outstring += tabchar + tabchar + "tracer_handle->write_to_tracer( tracername, \"A constructor for the \" + class_name_static() + \" API class was invoked, which will be deprecated in version " + str(dep_majvers) + "." + str(dep_minvers) + " of the " + project_name + " library.\", true );\n"
             outstring += tabchar + "}\n"
             outstring += "#endif\n"
             outstring += "}"
@@ -920,7 +932,7 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             outstring += "\n\n"
 
-        deprecation_status = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
             outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
@@ -1311,7 +1323,7 @@ def generate_function_implementations( \
         else :
             outstring += "\n\n"
         
-        deprecation_status = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
         if deprecation_status == DEPRECATED :
             outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
 
@@ -1392,7 +1404,7 @@ def generate_function_implementations( \
             
         if deprecation_status == DEPRECATED or deprecation_status == DEPRECATION_WARNING :
             outstring += "\n#ifndef MASALA_DISABLE_DEPRECATION_WARNINGS\n"
-            outstring += tabchar + "write_to_tracer( \"The " + apiclassname + "::" + fxn[namepattern + "_Name"] + "() function was called, which will be deprecated in a future version of the " + project_name + " library.\" );" + "\n"
+            outstring += tabchar + "write_to_tracer( \"The " + apiclassname + "::" + fxn[namepattern + "_Name"] + "() function was called, which will be deprecated in version " + str(dep_majvers) + "." + str(dep_minvers) + " of the " + project_name + " library.\" );" + "\n"
             outstring += "#endif"
 
         if always_returns_nullptr :
