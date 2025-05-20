@@ -20,7 +20,7 @@
 /// @brief A template class that stores the definition for a work function, as part
 /// of the API for an object.  Used to auto-generate the public C++ headers,
 /// plus the bindings for Python or XML (or other scripting languages).
-/// @details This is a derived class for four-input work functions.  The types T1 through T7
+/// @details This is a derived class for four-input work functions.  The types T1 through T8
 /// define the input types and the type T0 defines the output type.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
