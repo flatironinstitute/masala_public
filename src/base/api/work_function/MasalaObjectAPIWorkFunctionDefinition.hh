@@ -41,6 +41,7 @@
 
 // STL headers.
 #include <string>
+#include <functional>
 
 namespace masala {
 namespace base {
