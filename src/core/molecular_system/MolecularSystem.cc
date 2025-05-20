@@ -450,11 +450,11 @@ MolecularSystem::get_api_definition() {
 		}
 
         // Work functions:
-        {
+		{
 			work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< Size, Real const, bool const > deprecated_fxn(
 				masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Size, Real const, bool const > >(
 					"deprecated_api_work_function", "An example of a deprecated API work function, annotated as such.  Does nothing.",
-                    false, false, false, false,
+					false, false, false, false,
 					"input1", "A real-valued input for this function.",
 					"input2", "A boolean-valued input for this function.",
 					"output_val", "An integer-valued output.",
