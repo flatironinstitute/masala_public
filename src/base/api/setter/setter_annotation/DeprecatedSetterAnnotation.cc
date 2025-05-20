@@ -175,8 +175,8 @@ DeprecatedSetterAnnotation::modify_json_description(
 	json_description["Deprecation_Major_Version"] = version_at_which_function_deprecated_.first;
 	json_description["Deprecation_Minor_Version"] = version_at_which_function_deprecated_.second;
 	if( version_set_at_which_warnings_start_ ) {
-		json_description["Deprecation_Warning_Major_Version"] = version_at_which_function_deprecated_.first;
-		json_description["Deprecation_Warning_Minor_Version"] = version_at_which_function_deprecated_.second;
+		json_description["Deprecation_Warning_Major_Version"] = version_at_which_warnings_start_.first;
+		json_description["Deprecation_Warning_Minor_Version"] = version_at_which_warnings_start_.second;
 	}
 }
 
