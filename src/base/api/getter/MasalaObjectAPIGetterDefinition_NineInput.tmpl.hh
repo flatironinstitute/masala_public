@@ -296,7 +296,7 @@ public:
 
 		nlohmann::json json_input8;
 		json_input8["Input_Index"] = 8;
-		json_input8["Input_Type"] = masala::base::api::name_from_type( base::api::type<T0>() );
+		json_input8["Input_Type"] = masala::base::api::name_from_type( base::api::type<T9>() );
 		json_input8["Input_Description"] = input_parameter8_description_;
 		json_input8["Input_Name"] = input_parameter8_name_;
 
