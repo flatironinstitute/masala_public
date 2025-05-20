@@ -186,7 +186,7 @@ public:
 	set_function_deprecated () override {
 		std::function< T0() > const getter_function_copy( getter_function_ );
 		getter_function_ = std::bind(
-			&MasalaObjectAPIGetterDefinition::deprecated_function_to_bind<T0>, this, getter_function_copy
+			static_cast< void(MasalaObjectAPIGetterDefinition::*)(std::function< T0() > ) >( &MasalaObjectAPIGetterDefinition::deprecated_function_to_bind ), this, getter_function_copy
 		);
 	}
 
