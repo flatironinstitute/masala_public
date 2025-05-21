@@ -31,6 +31,12 @@
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 #include <base/managers/file_interpreter/MasalaFileInterpreter.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/api/constructor/constructor_annotation/DeprecatedConstructorAnnotation.hh>
+#include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
+#include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/api/work_function/work_function_annotation/DeprecatedWorkFunctionAnnotation.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -428,11 +434,40 @@ MasalaObjectAPIDefinition::n_constructors_non_deprecated() const {
 }
 
 /// @brief Add a constructor.
+/// @details Automatically adds to the non-deprecated constructor list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_constructor(
     masala::base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
 ) {
+	using masala::base::Size;
+	using namespace constructor::constructor_annotation;
     constructors_.emplace_back( constructor_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	constructors_non_deprecated_.emplace_back( constructor_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( constructor_in->n_constructor_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaConstructorAnnotationCSP annotation( constructor_in->constructor_annotation(i) );
+		DeprecatedConstructorAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedConstructorAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		constructors_non_deprecated_.emplace_back( constructor_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the setters.

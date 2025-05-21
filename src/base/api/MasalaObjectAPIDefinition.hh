@@ -935,6 +935,7 @@ public:
 	n_constructors_non_deprecated() const;
 
 	/// @brief Add a constructor.
+	/// @details Automatically adds to the non-deprecated constructor list as well unless deprecated.
 	void
 	add_constructor(
 		base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
