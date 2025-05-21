@@ -98,7 +98,7 @@ public:
 		std::string const & input_parameter3_name,
 		std::string const & input_parameter3_description,
 		std::string const & input_parameter4_name,
-		std::string const & input_parameter4_description
+		std::string const & input_parameter4_description,
 		std::string const & input_parameter5_name,
 		std::string const & input_parameter5_description
 	) :
@@ -112,7 +112,7 @@ public:
 		input_parameter3_name_(input_parameter3_name),
 		input_parameter3_description_(input_parameter3_description),
 		input_parameter4_name_(input_parameter4_name),
-		input_parameter4_description_(input_parameter4_description)
+		input_parameter4_description_(input_parameter4_description),
 		input_parameter5_name_(input_parameter5_name),
 		input_parameter5_description_(input_parameter5_description)
 	{}
@@ -176,7 +176,7 @@ public:
 		json_api["Is_Const"] = false; //Constructors are never const.
 
 		//Inputs:
-		json_api["Constructor_N_Inputs"] = 5;
+		json_api["Constructor_N_Inputs"] = 6;
 
 		nlohmann::json json_input0;
 		json_input0["Input_Index"] = 0;
