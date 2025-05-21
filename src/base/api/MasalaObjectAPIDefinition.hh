@@ -34,13 +34,6 @@
 // Base headers.
 #include <base/types.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
-#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
