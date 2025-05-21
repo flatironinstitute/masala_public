@@ -389,21 +389,42 @@ MasalaObjectAPIDefinition::get_json_description() const {
 }
 
 /// @brief Begin iterator for the constructors.
+/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_begin().
 std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::constructors_begin() const {
     return constructors_.cbegin();
 }
 
 /// @brief End iterator for the constructors.
+/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_end().
 std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::constructors_end() const {
     return constructors_.cend();
 }
 
+/// @brief Begin iterator for the non-deprecated constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_non_deprecated_begin() const {
+    return constructors_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_non_deprecated_end() const {
+    return constructors_non_deprecated_.cend();
+}
+
 /// @brief Number of constructors.
+/// @note This includes deprecated and non-deprecated functions.  Use n_constructors_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_constructors() const {
-    return constructors_.size();
+	return constructors_.size();
+}
+
+/// @brief Number of non-deprecated constructors.
+base::Size
+MasalaObjectAPIDefinition::n_constructors_non_deprecated() const {
+	return constructors_non_deprecated_.size();
 }
 
 /// @brief Add a constructor.
@@ -415,21 +436,42 @@ MasalaObjectAPIDefinition::add_constructor(
 }
 
 /// @brief Begin iterator for the setters.
+/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_begin().
 std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::setters_begin() const {
     return setters_.cbegin();
 }
 
 /// @brief End iterator for the setters.
+/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_end().
 std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::setters_end() const {
     return setters_.cend();
 }
 
+/// @brief Begin iterator for the non-deprecated setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_non_deprecated_begin() const {
+    return setters_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_non_deprecated_end() const {
+    return setters_non_deprecated_.cend();
+}
+
 /// @brief Number of setters.
+/// @note This includes deprecated and non-deprecated functions.  Use n_setters_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_setters() const {
-    return setters_.size();
+	return setters_.size();
+}
+
+/// @brief Number of non-deprecated setters.
+base::Size
+MasalaObjectAPIDefinition::n_setters_non_deprecated() const {
+    return setters_non_deprecated_.size();
 }
 
 /// @brief Add a setter.
@@ -441,21 +483,42 @@ MasalaObjectAPIDefinition::add_setter(
 }
 
 /// @brief Begin iterator for the getters.
+/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_begin().
 std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::getters_begin() const {
-    return getters_.cbegin();
+	return getters_.cbegin();
 }
 
 /// @brief End iterator for the getters.
+/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_end().
 std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::getters_end() const {
-    return getters_.cend();
+	return getters_.cend();
+}
+
+/// @brief Begin iterator for the non-deprecated getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_non_deprecated_begin() const {
+	return getters_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_non_deprecated_end() const {
+	return getters_non_deprecated_.cend();
 }
 
 /// @brief Number of getters.
+/// @note This includes deprecated and non-deprecated functions.  Use n_getters_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_getters() const {
     return getters_.size();
+}
+
+/// @brief Number of non-deprecated getters.
+base::Size
+MasalaObjectAPIDefinition::n_getters_non_deprecated() const {
+	return getters_non_deprecated_.size();
 }
 
 /// @brief Add a getter.
@@ -467,21 +530,42 @@ MasalaObjectAPIDefinition::add_getter(
 }
 
 /// @brief Begin iterator for the work functions.
+/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_begin().
 std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::work_functions_begin() const {
-    return work_functions_.cbegin();
+	return work_functions_.cbegin();
 }
 
 /// @brief End iterator for the work functions.
+/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_end().
 std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::work_functions_end() const {
-    return work_functions_.cend();
+	return work_functions_.cend();
+}
+
+/// @brief Begin iterator for the non-deprecated work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_non_deprecated_begin() const {
+	return work_functions_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_non_deprecated_end() const {
+	return work_functions_non_deprecated_.cend();
 }
 
 /// @brief Number of work functions.
+/// @note This includes deprecated and non-deprecated functions.  Use n_work_functions_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_work_functions() const {
-    return work_functions_.size();
+	return work_functions_.size();
+}
+
+/// @brief Number of non-deprecated work functions.
+base::Size
+MasalaObjectAPIDefinition::n_work_functions_non_deprecated() const {
+	return work_functions_non_deprecated_.size();
 }
 
 /// @brief Add a work function.

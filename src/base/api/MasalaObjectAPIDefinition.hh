@@ -908,16 +908,31 @@ public:
 	get_json_description() const;
 
 	/// @brief Begin iterator for the constructors.
+	/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_begin_().
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 	constructors_begin() const;
 
 	/// @brief End iterator for the constructors.
+	/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_end().
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 	constructors_end() const;
 
+	/// @brief Begin iterator for the non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_non_deprecated_end() const;
+
 	/// @brief Number of constructors.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_constructors_non_deprecated() for just the callable ones.
 	base::Size
 	n_constructors() const;
+
+	/// @brief Number of non-deprecated constructors.
+	base::Size
+	n_constructors_non_deprecated() const;
 
 	/// @brief Add a constructor.
 	void
@@ -926,16 +941,31 @@ public:
 	);
 
 	/// @brief Begin iterator for the setters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_begin().
 	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_begin() const;
 
 	/// @brief End iterator for the setters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_end().
 	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_end() const;
 
+	/// @brief Begin iterator for the non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_non_deprecated_end() const;
+
 	/// @brief Number of setters.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_setters_non_deprecated() for just the callable ones.
 	base::Size
 	n_setters() const;
+
+	/// @brief Number of non-deprecated setters.
+	base::Size
+	n_setters_non_deprecated() const;
 
 	/// @brief Add a setter.
 	void
@@ -944,16 +974,31 @@ public:
 	);
 
 	/// @brief Begin iterator for the getters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_begin().
 	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_begin() const;
 
 	/// @brief End iterator for the getters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_end().
 	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_end() const;
 
+	/// @brief Begin iterator for the non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_non_deprecated_end() const;
+
 	/// @brief Number of getters.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_getters_non_deprecated() for just the callable ones.
 	base::Size
 	n_getters() const;
+
+	/// @brief Number of non-deprecated getters.
+	base::Size
+	n_getters_non_deprecated() const;
 
 	/// @brief Add a getter.
 	void
@@ -962,16 +1007,31 @@ public:
 	);
 
 	/// @brief Begin iterator for the work functions.
+	/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_begin().
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_begin() const;
 
 	/// @brief End iterator for the work functions.
+	/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_end().
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_end() const;
 
+	/// @brief Begin iterator for the non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_non_deprecated_end() const;
+
 	/// @brief Number of work functions.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_work_functions_non_deprecated() for just the callable ones.
 	base::Size
 	n_work_functions() const;
+
+	/// @brief Number of non-deprecated work functions.
+	base::Size
+	n_work_functions_non_deprecated() const;
 
 	/// @brief Add a work function.
 	void
@@ -1141,6 +1201,18 @@ private:
 
 	/// @brief A list of work functions.
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
+
+	/// @brief A list of non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP> constructors_non_deprecated_;
+
+	/// @brief A list of non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP> setters_non_deprecated_;
+
+	/// @brief A list of non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP> getters_non_deprecated_;
+
+	/// @brief A list of non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_non_deprecated_;
 
 	/// @brief Is this the API for a lightweight object that could be stack-allocated?
 	/// @details If so, the API container will store the object directly, not an owning pointer to it.
