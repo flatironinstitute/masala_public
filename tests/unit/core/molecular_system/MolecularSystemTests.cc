@@ -65,16 +65,51 @@ TEST_CASE( "Test deprecated functions in molecular system.", "[core::molecular_s
 	CHECK( dep_setter != nullptr );
 	CHECK( dep_getter != nullptr );
 	CHECK( dep_work_fxn != nullptr );
-	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a function is deprecated." );
+	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a setter function is deprecated." );
 	REQUIRE_THROWS([&](){
 		dep_setter->function( 5 );
 	}() );
+	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a getter function is deprecated." );
 	REQUIRE_THROWS([&](){
 		dep_getter->function( 5 );
 	}() );
+	my_molecular_system->write_to_tracer( "The next step is expected to throw an error indicating that a work function is deprecated." );
 	REQUIRE_THROWS([&](){
 		dep_work_fxn->function( 5.0, true );
 	}() );
+
+	CHECK( api_def->n_constructors() > api_def->n_constructors_non_deprecated() );
+	CHECK( api_def->n_setters() > api_def->n_setters_non_deprecated() );
+	CHECK( api_def->n_getters() > api_def->n_getters_non_deprecated() );
+	CHECK( api_def->n_work_functions() > api_def->n_work_functions_non_deprecated() );
+
+	bool dep_setter_found(false), dep_setter_found_in_nondep(false);
+	bool dep_getter_found(false), dep_getter_found_in_nondep(false);
+	bool dep_workfxn_found(false), dep_workfxn_found_in_nondep(false);
+	for( std::vector<masala::base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator it( api_def->setters_begin() ); it != api_def->setters_end(); ++it ) {
+		if( (*it)->setter_function_name() == "deprecated_api_setter" ) { dep_setter_found = true; }
+	}
+	for( std::vector<masala::base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator it( api_def->setters_non_deprecated_begin() ); it != api_def->setters_non_deprecated_end(); ++it ) {
+		if( (*it)->setter_function_name() == "deprecated_api_setter" ) { dep_setter_found_in_nondep = true; }
+	}
+	for( std::vector<masala::base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator it( api_def->getters_begin() ); it != api_def->getters_end(); ++it ) {
+		if( (*it)->getter_function_name() == "deprecated_api_getter" ) { dep_getter_found = true; }
+	}
+	for( std::vector<masala::base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator it( api_def->getters_non_deprecated_begin() ); it != api_def->getters_non_deprecated_end(); ++it ) {
+		if( (*it)->getter_function_name() == "deprecated_api_getter" ) { dep_getter_found_in_nondep = true; }
+	}
+	for( std::vector<masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator it( api_def->work_functions_begin() ); it != api_def->work_functions_end(); ++it ) {
+		if( (*it)->work_function_name() == "deprecated_api_work_function" ) { dep_workfxn_found = true; }
+	}
+	for( std::vector<masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator it( api_def->work_functions_non_deprecated_begin() ); it != api_def->work_functions_non_deprecated_end(); ++it ) {
+		if( (*it)->work_function_name() == "deprecated_api_work_function" ) { dep_workfxn_found_in_nondep = true; }
+	}
+	CHECK( dep_setter_found == true );
+	CHECK( dep_getter_found == true );
+	CHECK( dep_workfxn_found == true );
+	CHECK( dep_setter_found_in_nondep == false );
+	CHECK( dep_getter_found_in_nondep == false );
+	CHECK( dep_workfxn_found_in_nondep == false );
 
 	masala::core_api::auto_generated_api::registration::unregister_core();
 	masala::numeric_api::auto_generated_api::registration::unregister_numeric();
