@@ -969,6 +969,7 @@ public:
 	n_setters_non_deprecated() const;
 
 	/// @brief Add a setter.
+	/// @details Automatically adds to the non-deprecated setter list as well unless deprecated.
 	void
 	add_setter(
 		base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
@@ -1002,6 +1003,7 @@ public:
 	n_getters_non_deprecated() const;
 
 	/// @brief Add a getter.
+	/// @details Automatically adds to the non-deprecated getter list as well unless deprecated.
 	void
 	add_getter(
 		base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
@@ -1035,6 +1037,7 @@ public:
 	n_work_functions_non_deprecated() const;
 
 	/// @brief Add a work function.
+	/// @details Automatically adds to the non-deprecated work function list as well unless deprecated.
 	void
 	add_work_function(
 		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in

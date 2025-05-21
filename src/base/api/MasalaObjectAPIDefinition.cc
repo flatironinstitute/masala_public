@@ -510,11 +510,41 @@ MasalaObjectAPIDefinition::n_setters_non_deprecated() const {
 }
 
 /// @brief Add a setter.
+/// @details Automatically adds to the non-deprecated setter list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_setter(
     masala::base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
 ) {
-    setters_.emplace_back( setter_in );
+	using masala::base::Size;
+	using namespace masala::base::api::setter::setter_annotation;
+
+	setters_.emplace_back( setter_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	setters_non_deprecated_.emplace_back( setter_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( setter_in->n_setter_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaSetterFunctionAnnotationCSP annotation( setter_in->setter_annotation(i) );
+		DeprecatedSetterAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedSetterAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		setters_non_deprecated_.emplace_back( setter_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the getters.
@@ -557,11 +587,41 @@ MasalaObjectAPIDefinition::n_getters_non_deprecated() const {
 }
 
 /// @brief Add a getter.
+/// @details Automatically adds to the non-deprecated getter list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_getter(
     masala::base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
 ) {
-    getters_.emplace_back( getter_in );
+	using masala::base::Size;
+	using namespace masala::base::api::getter::getter_annotation;
+
+	getters_.emplace_back( getter_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	getters_non_deprecated_.emplace_back( getter_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( getter_in->n_getter_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaGetterFunctionAnnotationCSP annotation( getter_in->getter_annotation(i) );
+		DeprecatedGetterAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedGetterAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		getters_non_deprecated_.emplace_back( getter_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the work functions.
@@ -604,11 +664,41 @@ MasalaObjectAPIDefinition::n_work_functions_non_deprecated() const {
 }
 
 /// @brief Add a work function.
+/// @details Automatically adds to the non-deprecated work function list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_work_function(
     masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
-    work_functions_.emplace_back( work_function_in );
+	using masala::base::Size;
+	using namespace masala::base::api::work_function::work_function_annotation;
+
+	work_functions_.emplace_back( work_function_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	work_functions_non_deprecated_.emplace_back( work_function_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( work_function_in->n_work_function_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaWorkFunctionAnnotationCSP annotation( work_function_in->work_function_annotation(i) );
+		DeprecatedWorkFunctionAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedWorkFunctionAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		work_functions_non_deprecated_.emplace_back( work_function_in );
+	}
+#endif
 }
 
 /// @brief Get the categories that this object is in, if it is a plugin object.
