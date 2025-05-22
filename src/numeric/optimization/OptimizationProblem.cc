@@ -212,7 +212,7 @@ OptimizationProblem::get_api_definition() {
 				"one would not want to instantiate an abstract OptimizationProblem.  Instead, one would "
 				"usually use a particular sub-class defining a particular type of optimization problem, "
 				"such as a CostFunctionNetworkOptimizationProblem.",
-				false, false
+				false, true
 			)
 		);
 
