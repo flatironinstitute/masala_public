@@ -217,7 +217,7 @@ OptimizationProblem::get_api_definition() {
 		);
 
 		// Constructors:
-		ADD_PUBLIC_CONSTRUCTOR_DEFINITIONS( OptimizationProblem, api_def );
+		ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( OptimizationProblem, api_def );
 
 		// Getters:
 		api_def->add_getter(
