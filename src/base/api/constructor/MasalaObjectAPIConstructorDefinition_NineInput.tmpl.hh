@@ -131,8 +131,8 @@ public:
 		input_parameter6_description_(input_parameter6_description),
 		input_parameter7_name_(input_parameter7_name),
 		input_parameter7_description_(input_parameter7_description),
-		input_parameter7_name_(input_parameter9_name),
-		input_parameter7_description_(input_parameter9_description)
+		input_parameter8_name_(input_parameter8_name),
+		input_parameter8_description_(input_parameter8_description)
 	{}
 
 	/// @brief Copy constructor.
