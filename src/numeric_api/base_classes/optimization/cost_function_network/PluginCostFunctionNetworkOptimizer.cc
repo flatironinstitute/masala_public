@@ -16,9 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.cc
-/// @brief Implementation for a pure virtual base class for CostFunctionNetworkOptimizers.
-/// @details CostFunctionNetworkOptimizers solve a numerical cost function network optimization
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizer.cc
+/// @brief Implementation for a pure virtual base class for PluginCostFunctionNetworkOptimizers.
+/// @details PluginCostFunctionNetworkOptimizers solve a numerical cost function network optimization
 /// problem.  They have no chemical knowledge.  Cost function network problems include the packing
 /// or side-chain optimization problem.
 /// @note Since this class does not implement class_name() or class_namespace()
@@ -26,7 +26,7 @@
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizer.hh>
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.hh>
@@ -56,8 +56,8 @@ namespace cost_function_network {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Copy constructor.  Explicit due to mutex.
-CostFunctionNetworkOptimizer::CostFunctionNetworkOptimizer(
-	CostFunctionNetworkOptimizer const & src
+PluginCostFunctionNetworkOptimizer::PluginCostFunctionNetworkOptimizer(
+	PluginCostFunctionNetworkOptimizer const & src
 ) :
 	masala::numeric_api::base_classes::optimization::Optimizer( src )
 {
@@ -68,9 +68,9 @@ CostFunctionNetworkOptimizer::CostFunctionNetworkOptimizer(
 }
 
 /// @brief Assignment operator.  Explicit due to mutex.
-CostFunctionNetworkOptimizer &
-CostFunctionNetworkOptimizer::operator=(
-	CostFunctionNetworkOptimizer const & src
+PluginCostFunctionNetworkOptimizer &
+PluginCostFunctionNetworkOptimizer::operator=(
+	PluginCostFunctionNetworkOptimizer const & src
 ) {
 	std::lock( cfn_solver_mutex_, src.cfn_solver_mutex_ );
 	std::lock_guard< std::mutex > lockthis( cfn_solver_mutex_, std::adopt_lock );
@@ -85,16 +85,16 @@ CostFunctionNetworkOptimizer::operator=(
 
 /// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 /// may be overridden by derived classes.
-/// @returns { { "Optimizer", "CostFunctionNetworkOptimizer" } }
+/// @returns { { "Optimizer", "PluginCostFunctionNetworkOptimizer" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-CostFunctionNetworkOptimizer::get_categories() const {
+PluginCostFunctionNetworkOptimizer::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "Optimizer", "CostFunctionNetworkOptimizer" }
+		{ "Optimizer", "PluginCostFunctionNetworkOptimizer" }
 	};
 }
 
@@ -102,7 +102,7 @@ CostFunctionNetworkOptimizer::get_categories() const {
 /// by derived classes.
 /// @returns { "optimizer", "cost_function_network", "numeric" }
 std::vector< std::string >
-CostFunctionNetworkOptimizer::get_keywords() const {
+PluginCostFunctionNetworkOptimizer::get_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
 		"cost_function_network",
@@ -119,16 +119,16 @@ CostFunctionNetworkOptimizer::get_keywords() const {
 /// a list of hierarchical categories, and the inner vector is the particular hierarchical
 /// category, from most general to most specific.  Also note that this function is pure
 /// virtual, and must be defined for instantiable MasalaEngine subclasses.
-/// @returns { {"Optimizer", "CostFunctionNetworkOptimizer"} }
+/// @returns { {"Optimizer", "PluginCostFunctionNetworkOptimizer"} }
 std::vector< std::vector < std::string > >
-CostFunctionNetworkOptimizer::get_engine_categories() const {
-	return std::vector< std::vector < std::string > >{ { "Optimizer", "CostFunctionNetworkOptimizer" } };
+PluginCostFunctionNetworkOptimizer::get_engine_categories() const {
+	return std::vector< std::vector < std::string > >{ { "Optimizer", "PluginCostFunctionNetworkOptimizer" } };
 }
 
 /// @brief Keywords for engines.
 /// @returns { "optimizer", "cost_function_network", "numeric" }
 std::vector < std::string >
-CostFunctionNetworkOptimizer::get_engine_keywords() const {
+PluginCostFunctionNetworkOptimizer::get_engine_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
 		"cost_function_network",
@@ -140,7 +140,7 @@ CostFunctionNetworkOptimizer::get_engine_keywords() const {
 /// @details Must be implemented by derived classes.   Each solutions set in the vector of solutions corresponds to
 /// the problem with the same index.
 std::vector< masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP >
-CostFunctionNetworkOptimizer::run_optimizer(
+PluginCostFunctionNetworkOptimizer::run_optimizer(
 	masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 ) const {
 	using namespace masala::numeric_api::auto_generated_api::optimization;
@@ -168,7 +168,7 @@ CostFunctionNetworkOptimizer::run_optimizer(
 /// @details This can optionally be passed in, in which case the get_template_preferred_cfn_data_representation() function can be
 /// used to retrieve a deep clone.  This allows the solver to cache its preferred data representation with its setup.
 void
-CostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
+PluginCostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
     masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 ) {
 	CHECK_OR_THROW_FOR_CLASS( representation_in->inner_object_empty(), "set_template_preferred_cfn_data_representation",
@@ -188,7 +188,7 @@ CostFunctionNetworkOptimizer::set_template_preferred_cfn_data_representation(
 /// @details If set_template_preferred_cfn_data_representation() has not been called, this returns the output of protected_get_default_template_preferred_cfn_data_representation().
 /// This is nullptr by default, but can be overridden by derived classes.  Returns a deep clone of the object otherwise.
 masala::base::managers::engine::MasalaDataRepresentationAPISP
-CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_copy() const {
+PluginCostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_copy() const {
 	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
 	using namespace masala::base::managers::engine;
 
@@ -241,8 +241,8 @@ CostFunctionNetworkOptimizer::get_template_preferred_cfn_data_representation_cop
 /// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
 /*virtual*/
 void
-CostFunctionNetworkOptimizer::protected_assign(
-	CostFunctionNetworkOptimizer const & src
+PluginCostFunctionNetworkOptimizer::protected_assign(
+	PluginCostFunctionNetworkOptimizer const & src
 ) {
 	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
 	if( src.template_preferred_cfn_data_representation_ == nullptr ) {
@@ -271,7 +271,7 @@ CostFunctionNetworkOptimizer::protected_assign(
 /// base class to set the variable internally.
 /*virtual*/
 void
-CostFunctionNetworkOptimizer::protected_set_template_preferred_cfn_data_representation(
+PluginCostFunctionNetworkOptimizer::protected_set_template_preferred_cfn_data_representation(
     masala::base::managers::engine::MasalaDataRepresentationAPICSP const & representation_in
 ) {
 	using namespace masala::numeric_api::auto_generated_api::optimization::cost_function_network;
@@ -290,7 +290,7 @@ CostFunctionNetworkOptimizer::protected_set_template_preferred_cfn_data_represen
 /// @details The base class implementation returns nullptr.  Derived classes may override this to return something else.  Performs no mutex-locking.
 /*virtual*/
 // masala::base::managers::engine::MasalaDataRepresentationAPISP
-// CostFunctionNetworkOptimizer::protected_get_default_template_preferred_cfn_data_representation() const {
+// PluginCostFunctionNetworkOptimizer::protected_get_default_template_preferred_cfn_data_representation() const {
 // 	return nullptr;
 // }
 
