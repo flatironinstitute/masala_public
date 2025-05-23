@@ -16,20 +16,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.hh
-/// @brief Header for a pure virtual base class for CostFunctionNetworkOptimizers.
-/// @details CostFunctionNetworkOptimizers solve a numerical cost function network optimization
+/// @file src/numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizer.hh
+/// @brief Header for a pure virtual base class for PluginCostFunctionNetworkOptimizers.
+/// @details PluginCostFunctionNetworkOptimizers solve a numerical cost function network optimization
 /// problem.  They have no chemical knowledge.  Cost function network problems include the packing
 /// or side-chain optimization problem.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizer_hh
-#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizer_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizer_hh
+#define Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizer_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/cost_function_network/CostFunctionNetworkOptimizer.fwd.hh>
+#include <numeric_api/base_classes/optimization/cost_function_network/PluginCostFunctionNetworkOptimizer.fwd.hh>
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/cost_function_network/CostFunctionNetworkOptimizationProblems_API.fwd.hh>
@@ -39,7 +39,7 @@
 #include <base/managers/engine/MasalaDataRepresentationAPI.hh>
 
 // Parent header:
-#include <numeric_api/base_classes/optimization/Optimizer.hh>
+#include <numeric_api/base_classes/optimization/PluginOptimizer.hh>
 
 // STL headers:
 #include <mutex>
@@ -50,14 +50,18 @@ namespace base_classes {
 namespace optimization {
 namespace cost_function_network {
 
-/// @brief A pure virtual base class for CostFunctionNetworkOptimizers.
-/// @details CostFunctionNetworkOptimizers solve a numerical cost function network optimization
+/// @brief A pure virtual base class for PluginCostFunctionNetworkOptimizers.
+/// @details PluginCostFunctionNetworkOptimizers solve a numerical cost function network optimization
 /// problem.  They have no chemical knowledge.  Cost function network problems include the packing
 /// or side-chain optimization problem.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class CostFunctionNetworkOptimizer : public masala::numeric_api::base_classes::optimization::Optimizer {
+class PluginCostFunctionNetworkOptimizer : public masala::numeric_api::base_classes::optimization::PluginOptimizer {
+
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizer Parent;
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizerSP ParentSP;
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizerCSP ParentCSP;
 
 public:
 
@@ -66,17 +70,17 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	CostFunctionNetworkOptimizer() = default;
+	PluginCostFunctionNetworkOptimizer() = default;
 
 	/// @brief Copy constructor.  Explicit due to mutex.
-	CostFunctionNetworkOptimizer( CostFunctionNetworkOptimizer const & src );
+	PluginCostFunctionNetworkOptimizer( PluginCostFunctionNetworkOptimizer const & src );
 
 	/// @brief Assignment operator.  Explicit due to mutex.
-	CostFunctionNetworkOptimizer &
-	operator= ( CostFunctionNetworkOptimizer const & src );
+	PluginCostFunctionNetworkOptimizer &
+	operator= ( PluginCostFunctionNetworkOptimizer const & src );
 
 	/// @brief Destructor.
-	~CostFunctionNetworkOptimizer() override = default;
+	~PluginCostFunctionNetworkOptimizer() override = default;
 
 public:
 
@@ -157,7 +161,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
-	virtual void protected_assign( CostFunctionNetworkOptimizer const & src );
+	virtual void protected_assign( PluginCostFunctionNetworkOptimizer const & src );
 
 	/// @brief Allow derived classes to lock the mutex.
 	inline std::mutex & cfn_solver_mutex() const { return cfn_solver_mutex_; }
@@ -194,7 +198,7 @@ private:
 	/// @brief A mutex for locking this object.
 	mutable std::mutex cfn_solver_mutex_;
 
-}; // class CostFunctionNetworkOptimizer
+}; // class PluginCostFunctionNetworkOptimizer
 
 } // namespace cost_function_network
 } // namespace optimization
@@ -202,4 +206,4 @@ private:
 } // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_CostFunctionNetworkOptimizer_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_cost_function_network_PluginCostFunctionNetworkOptimizer_hh

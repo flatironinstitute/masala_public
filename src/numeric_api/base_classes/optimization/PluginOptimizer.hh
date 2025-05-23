@@ -16,19 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/Optimizer.hh
-/// @brief Header for a pure virtual base class for Optimizers.
-/// @details Optimizers solve a numerical optimization problem.  They have no
+/// @file src/numeric_api/base_classes/optimization/PluginOptimizer.hh
+/// @brief Header for a pure virtual base class for PluginOptimizers.
+/// @details PluginOptimizers solve a numerical optimization problem.  They have no
 /// chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_Optimizer_hh
-#define Masala_src_numeric_api_base_classes_optimization_Optimizer_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_PluginOptimizer_hh
+#define Masala_src_numeric_api_base_classes_optimization_PluginOptimizer_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/Optimizer.fwd.hh>
+#include <numeric_api/base_classes/optimization/PluginOptimizer.fwd.hh>
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.fwd.hh>
@@ -42,24 +42,24 @@ namespace numeric_api {
 namespace base_classes {
 namespace optimization {
 
-/// @brief A pure virtual base class for Optimizers.
-/// @details Optimizers solve a numerical optimization problem.  They have no
+/// @brief A pure virtual base class for PluginOptimizers.
+/// @details PluginOptimizers solve a numerical optimization problem.  They have no
 /// chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class Optimizer : public masala::base::managers::engine::MasalaEngine {
+class PluginOptimizer : public masala::base::managers::engine::MasalaEngine {
 
 public:
 
 	/// @brief Default constructor.
-	Optimizer() = default;
+	PluginOptimizer() = default;
 
 	/// @brief Copy constructor.
-	Optimizer( Optimizer const & ) = default;
+	PluginOptimizer( PluginOptimizer const & ) = default;
 
 	/// @brief Destructor.
-	~Optimizer() override = default;
+	~PluginOptimizer() override = default;
 
 public:
 
@@ -111,11 +111,11 @@ public:
 		masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 	) const = 0;
 
-}; // class Optimizer
+}; // class PluginOptimizer
 
 } // namespace optimization
 } // namespace base_classes
 } // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_Optimizer_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_PluginOptimizer_hh

@@ -16,19 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.hh
-/// @brief Header for a pure virtual base class for RealValuedFunctionLocalOptimizers.
-/// @details RealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
+/// @file src/numeric_api/base_classes/optimization/real_valued_local/PluginRealValuedFunctionLocalOptimizer.hh
+/// @brief Header for a pure virtual base class for PluginRealValuedFunctionLocalOptimizers.
+/// @details PluginRealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
 /// gradients of the loss function with respect to free parameters.  They have no chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh
-#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh
+#ifndef Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginRealValuedFunctionLocalOptimizer_hh
+#define Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginRealValuedFunctionLocalOptimizer_hh
 
 // Forward declarations:
-#include <numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.fwd.hh>
+#include <numeric_api/base_classes/optimization/real_valued_local/PluginRealValuedFunctionLocalOptimizer.fwd.hh>
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/real_valued_local/RealValuedFunctionLocalOptimizationProblems_API.fwd.hh>
@@ -38,7 +38,7 @@
 #include <base/types.hh>
 
 // Parent header:
-#include <numeric_api/base_classes/optimization/Optimizer.hh>
+#include <numeric_api/base_classes/optimization/PluginOptimizer.hh>
 
 // STL headers:
 #include <mutex>
@@ -49,13 +49,17 @@ namespace base_classes {
 namespace optimization {
 namespace real_valued_local {
 
-/// @brief A pure virtual base class for RealValuedFunctionLocalOptimizers.
-/// @details RealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
+/// @brief A pure virtual base class for PluginRealValuedFunctionLocalOptimizers.
+/// @details PluginRealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
 /// gradients of the loss function with respect to free parameters.  They have no chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class RealValuedFunctionLocalOptimizer : public masala::numeric_api::base_classes::optimization::Optimizer {
+class PluginRealValuedFunctionLocalOptimizer : public masala::numeric_api::base_classes::optimization::PluginOptimizer {
+
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizer Parent;
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizerSP ParentSP;
+	typedef masala::numeric_api::base_classes::optimization::PluginOptimizerCSP ParentCSP;
 
 public:
 
@@ -64,21 +68,21 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 	/// @brief Default constructor.
-	RealValuedFunctionLocalOptimizer() = default;
+	PluginRealValuedFunctionLocalOptimizer() = default;
 
 	/// @brief Copy constructor.  Explicit due to mutex.
-	RealValuedFunctionLocalOptimizer( RealValuedFunctionLocalOptimizer const & src);
+	PluginRealValuedFunctionLocalOptimizer( PluginRealValuedFunctionLocalOptimizer const & src);
 
 	/// @brief Assignment operator.  Explicit due to mutex.
-	RealValuedFunctionLocalOptimizer & operator=( RealValuedFunctionLocalOptimizer const & src );
+	PluginRealValuedFunctionLocalOptimizer & operator=( PluginRealValuedFunctionLocalOptimizer const & src );
 
 	/// @brief Destructor.
-	~RealValuedFunctionLocalOptimizer() override = default;
+	~PluginRealValuedFunctionLocalOptimizer() override = default;
 
 	/// @brief Clone operation: copy this object and return a shared pointer to the
 	/// copy.  Contained objects may still be shared.
 	virtual
-	RealValuedFunctionLocalOptimizerSP
+	PluginRealValuedFunctionLocalOptimizerSP
 	clone() const = 0;
 
 	/// @brief Make this object independent by calling deep_clone on all contained objects.
@@ -194,7 +198,7 @@ protected:
 	virtual
 	void
 	protected_assign(
-		RealValuedFunctionLocalOptimizer const & src
+		PluginRealValuedFunctionLocalOptimizer const & src
 	);
 
 	/// @brief Make independent: must be implemented by derived classes, which must call the base
@@ -219,7 +223,7 @@ private:
 	/// @brief The number of threads to request.  Defaults to 0, meaning "request all available".
 	masala::base::Size threads_to_request_ = 0;
 
-}; // class RealValuedFunctionLocalOptimizer
+}; // class PluginRealValuedFunctionLocalOptimizer
 
 } // namespace real_valued_local
 } // namespace optimization
@@ -227,4 +231,4 @@ private:
 } // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_api_base_classes_optimization_real_valued_local_RealValuedFunctionLocalOptimizer_hh
+#endif // Masala_src_numeric_api_base_classes_optimization_real_valued_local_PluginRealValuedFunctionLocalOptimizer_hh

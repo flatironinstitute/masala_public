@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/Optimizer.cc
-/// @brief Implementation for a pure virtual base class for Optimizers.
-/// @details Optimizers solve a numerical optimization problem.  They have no
+/// @file src/numeric_api/base_classes/optimization/PluginOptimizer.cc
+/// @brief Implementation for a pure virtual base class for PluginOptimizers.
+/// @details PluginOptimizers solve a numerical optimization problem.  They have no
 /// chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/Optimizer.hh>
+#include <numeric_api/base_classes/optimization/PluginOptimizer.hh>
 
 // STL headers:
 #include <vector>
@@ -50,7 +50,7 @@ namespace optimization {
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-Optimizer::get_categories() const {
+PluginOptimizer::get_categories() const {
 	return std::vector< std::vector< std::string > > {
 		{ "Optimizer" }
 	};
@@ -60,7 +60,7 @@ Optimizer::get_categories() const {
 /// by derived classes.
 /// @returns { "optimizer", "numeric" }
 std::vector< std::string >
-Optimizer::get_keywords() const {
+PluginOptimizer::get_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
 		"numeric"
@@ -78,14 +78,14 @@ Optimizer::get_keywords() const {
 /// virtual, and must be defined for instantiable MasalaEngine subclasses.
 /// @returns { {"Optimizer"} }
 std::vector< std::vector < std::string > >
-Optimizer::get_engine_categories() const {
+PluginOptimizer::get_engine_categories() const {
     return std::vector< std::vector < std::string > >{ { "Optimizer" } };
 }
 
 /// @brief Keywords for engines.
 /// @returns { "optimizer", "numeric" }
 std::vector < std::string >
-Optimizer::get_engine_keywords() const {
+PluginOptimizer::get_engine_keywords() const {
     return std::vector< std::string > {
 		"optimizer",
 		"numeric"
