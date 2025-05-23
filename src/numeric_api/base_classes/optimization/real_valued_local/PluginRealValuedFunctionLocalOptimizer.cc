@@ -87,7 +87,7 @@ PluginRealValuedFunctionLocalOptimizer::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 /// may be overridden by derived classes.
-/// @returns { { "Optimizer", "PluginRealValuedFunctionLocalOptimizer" } }
+/// @returns { { "Optimizer", "RealValuedFunctionLocalOptimizer" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
@@ -96,7 +96,7 @@ PluginRealValuedFunctionLocalOptimizer::make_independent() {
 std::vector< std::vector< std::string > >
 PluginRealValuedFunctionLocalOptimizer::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "Optimizer", "PluginRealValuedFunctionLocalOptimizer" }
+		{ "Optimizer", "RealValuedFunctionLocalOptimizer" }
 	};
 }
 
@@ -122,10 +122,10 @@ PluginRealValuedFunctionLocalOptimizer::get_keywords() const {
 /// a list of hierarchical categories, and the inner vector is the particular hierarchical
 /// category, from most general to most specific.  Also note that this function is pure
 /// virtual, and must be defined for instantiable MasalaEngine subclasses.
-/// @returns { {"Optimizer", "PluginRealValuedFunctionLocalOptimizer"} }
+/// @returns { {"Optimizer", "RealValuedFunctionLocalOptimizer"} }
 std::vector< std::vector < std::string > >
 PluginRealValuedFunctionLocalOptimizer::get_engine_categories() const {
-    return std::vector< std::vector < std::string > >{ { "Optimizer", "PluginRealValuedFunctionLocalOptimizer" } };
+    return std::vector< std::vector < std::string > >{ { "Optimizer", "RealValuedFunctionLocalOptimizer" } };
 }
 
 /// @brief Keywords for engines.
