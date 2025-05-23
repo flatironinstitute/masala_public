@@ -59,7 +59,7 @@ namespace cost_function_network {
 PluginCostFunctionNetworkOptimizer::PluginCostFunctionNetworkOptimizer(
 	PluginCostFunctionNetworkOptimizer const & src
 ) :
-	masala::numeric_api::base_classes::optimization::Optimizer( src )
+	Parent( src )
 {
 	std::lock( cfn_solver_mutex_, src.cfn_solver_mutex_ );
 	std::lock_guard< std::mutex > lockthis( cfn_solver_mutex_, std::adopt_lock );
@@ -261,6 +261,7 @@ PluginCostFunctionNetworkOptimizer::protected_assign(
 		);
 		template_preferred_cfn_data_representation_ = rep_cast->deep_clone();
 	}
+	//Parent::protected_assign(src);
 }
 
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
