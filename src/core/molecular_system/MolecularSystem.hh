@@ -70,6 +70,9 @@ public:
     /// @details Doesn't make this independent.  Use deep_clone() or make_independent() for that.
     MolecularSystem( MolecularSystem const & src );
 
+	/// @brief An example of a deprecated constructor.  Does nothing.
+	MolecularSystem( std::string const & dummy_setting_in, masala::base::Size const another_setting );
+
     /// @brief Default destructor.
     ~MolecularSystem() override = default;
 
@@ -115,7 +118,7 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Access the MolecularGeometry object in this molecular system, by shared pointer.
@@ -141,6 +144,12 @@ public:
     /// not all form one contiguously-bonded set).
     masala::core::chemistry::MolecularGeometry const &
     molecular_geometry() const;
+
+	/// @brief An example of a deprecated API getter.
+	bool
+	deprecated_api_getter(
+		masala::base::Size const input1
+	);
 
 public:
 
@@ -170,6 +179,25 @@ public:
         masala::core::chemistry::atoms::AtomInstanceCSP const & second_atom,
         masala::core::chemistry::bonds::ChemicalBondType const bond_type
     );
+
+	/// @brief An example of a deprecated API setter.
+	void
+	deprecated_api_setter(
+		masala::base::Size const input1
+	);
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief An example of a deprecated API work function.
+	masala::base::Size
+	deprecated_api_work_function(
+		masala::base::Real const input1,
+		bool const input2
+	);
 
 public:
 

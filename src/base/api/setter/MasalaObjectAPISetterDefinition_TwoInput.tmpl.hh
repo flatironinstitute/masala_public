@@ -195,6 +195,29 @@ public:
 	/// @details Returns 2.
 	masala::base::Size num_input_parameters() const override { return 2; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		setter_function_ = std::bind(
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(T1,T2) >( &MasalaObjectAPISetterDefinition::deprecated_function_to_bind ), this,
+			std::placeholders::_1,
+			std::placeholders::_2
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< void(T1, T2) > const setter_function_copy( setter_function_ );
+		setter_function_ = std::bind(
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(std::function< void(T1, T2) >, T1, T2) >( &MasalaObjectAPISetterDefinition::warning_function_to_bind ), this, setter_function_copy,
+			std::placeholders::_1,
+			std::placeholders::_2
+		);
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -214,7 +237,7 @@ private:
 	std::string const input_parameter1_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< void(T1,T2) > const setter_function_;
+	std::function< void(T1,T2) > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_TwoInput
 

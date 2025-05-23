@@ -28,6 +28,9 @@
 // Base headers
 #include <base/error/ErrorHandling.hh>
 #include <base/api/getter/getter_annotation/MasalaGetterFunctionAnnotation.hh>
+#include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 
 // STL headers
 #include <sstream>
@@ -145,6 +148,36 @@ MasalaObjectAPIGetterDefinition::add_getter_annotation(
 		"The " + annotation_in->class_name() + " getter annotation reports that it is incompatible with getter function " + getter_function_name_ + "."
 	);
 	getter_annotations_.push_back( annotation_in );
+    getter_annotation::DeprecatedGetterAnnotationCSP deprecated_annotation(
+		std::dynamic_pointer_cast< getter_annotation::DeprecatedGetterAnnotation const >( annotation_in )
+	);
+	if( deprecated_annotation != nullptr ) {
+		masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+			masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( deprecated_annotation->library_name() )
+		);
+		if( vers_info != nullptr ) {
+			std::pair< Size, Size > const deprecated_vers( deprecated_annotation->version_at_which_function_deprecated() );
+			major_deprecation_version_ = deprecated_vers.first;
+			minor_deprecation_version_ = deprecated_vers.second;
+			library_name_for_deprecation_warning_ = deprecated_annotation->library_name();
+			std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+			if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+				set_function_deprecated();
+			} else
+#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS
+#ifndef MASALA_DISABLE_DEPRECATION_WARNINGS
+			if( deprecated_annotation->version_set_at_which_warnings_start() ) {
+				std::pair< Size, Size > const warning_vers( deprecated_annotation->version_at_which_warnings_start() );
+				if( vers.first > warning_vers.first || ( vers.first == warning_vers.first && vers.second >= warning_vers.second ) ) {
+					set_function_warning();
+				}
+			}
+#else // MASALA_DISABLE_DEPRECATION_WARNINGS
+			{}
+#endif // MASALA_DISABLE_DEPRECATION_WARNINGS
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

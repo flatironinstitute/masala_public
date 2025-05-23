@@ -34,13 +34,6 @@
 // Base headers.
 #include <base/types.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition.hh>
-#include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
-#include <base/api/getter/MasalaObjectAPIGetterDefinition.hh>
-#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition.fwd.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
-#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ThreeInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
@@ -48,6 +41,21 @@
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FourInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_FiveInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_SixInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_SevenInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_EightInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_NineInput.tmpl.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TenInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_FourInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_FiveInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_SixInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_SevenInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_EightInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_NineInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_TenInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_TwoInput.tmpl.hh>
@@ -59,6 +67,9 @@
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_FiveInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SixInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_SevenInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_EightInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_NineInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TenInput.tmpl.hh>
 
 // External headers.
 #include <external/nlohmann_json/single_include/nlohmann/json_fwd.hpp>
@@ -120,6 +131,254 @@ public:
 
 	/// @brief Every class can provide its own namespace.  This returns "masala::base::api".  Static version.
 	static std::string class_namespace_static();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC TEMPLATE MEMBER FUNCTIONS FOR ACCESSING GETTERS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get a zero-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_ZeroInputCWP<P0>
+	get_zeroinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 0 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_ZeroInputCSP<P0> getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_ZeroInput<P0> const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIGetterDefinition_ZeroInputCWP<P0>();
+	}
+
+	/// @brief Get a one-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_OneInputCWP<P0,P1>
+	get_oneinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 1 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_OneInputCSP< P0, P1 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_OneInput< P0, P1 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_OneInputCWP<P0,P1>();
+	}
+
+	/// @brief Get a two-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_TwoInputCWP<P0,P1,P2>
+	get_twoinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 2 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_TwoInputCSP< P0, P1, P2 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_TwoInput< P0, P1, P2 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_TwoInputCWP<P0,P1,P2>();
+	}
+
+	/// @brief Get a three-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_ThreeInputCWP<P0,P1,P2,P3>
+	get_threeinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 3 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_ThreeInputCSP< P0, P1, P2, P3 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_ThreeInput< P0, P1, P2, P3 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_ThreeInputCWP<P0,P1,P2,P3>();
+	}
+
+	/// @brief Get a four-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_FourInputCWP<P0,P1,P2,P3,P4>
+	get_fourinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 4 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_FourInputCSP< P0, P1, P2, P3, P4 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_FourInput< P0, P1, P2, P3, P4 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_FourInputCWP<P0,P1,P2,P3,P4>();
+	}
+
+	/// @brief Get a five-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_FiveInputCWP<P0,P1,P2,P3,P4,P5>
+	get_fiveinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 5 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_FiveInputCSP< P0, P1, P2, P3, P4, P5 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_FiveInput< P0, P1, P2, P3, P4, P5 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_FiveInputCWP<P0,P1,P2,P3,P4,P5>();
+	}
+
+	/// @brief Get a six-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_SixInputCWP<P0,P1,P2,P3,P4,P5,P6>
+	get_sixinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 6 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_SixInputCSP< P0, P1, P2, P3, P4, P5, P6 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_SixInput< P0, P1, P2, P3, P4, P5, P6 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_SixInputCWP<P0,P1,P2,P3,P4,P5,P6>();
+	}
+
+	/// @brief Get a seven-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_SevenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7>
+	get_seveninput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 7 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_SevenInputCSP< P0, P1, P2, P3, P4, P5, P6, P7 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_SevenInput< P0, P1, P2, P3, P4, P5, P6, P7 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_SevenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7>();
+	}
+
+	/// @brief Get a eight-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_EightInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8>
+	get_eightinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 8 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_EightInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_EightInput< P0, P1, P2, P3, P4, P5, P6, P7, P8 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_EightInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8>();
+	}
+
+	/// @brief Get a nine-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_NineInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9>
+	get_nineinput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 9 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_NineInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_NineInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_NineInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9>();
+	}
+
+	// @brief Get a ten-parameter getter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::getter::MasalaObjectAPIGetterDefinition_TenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>
+	get_teninput_getter_function(
+		std::string const & function_name
+	) const {
+		using namespace getter;
+
+		for( auto const & getter: getters_ ) {
+			if( getter->num_input_parameters() == 10 && getter->getter_function_name() == function_name ) {
+				MasalaObjectAPIGetterDefinition_TenInputCSP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > getter_cast( std::dynamic_pointer_cast< MasalaObjectAPIGetterDefinition_TenInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >( getter ) );
+				if( getter_cast != nullptr ) {
+					return getter_cast;
+				}
+			}
+		}
+		return masala::base::api::getter::MasalaObjectAPIGetterDefinition_TenInputCWP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>();
+	}
 
 public:
 
@@ -264,13 +523,13 @@ public:
 	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6 >
 	inline
 	masala::base::api::setter::MasalaObjectAPISetterDefinition_SixInputCWP<P1,P2,P3,P4,P5,P6>
-	get_fiveinput_setter_function(
+	get_sixinput_setter_function(
 		std::string const & function_name
 	) const {
 		using namespace setter;
 
 		for( auto const & setter: setters_ ) {
-			if( setter->num_input_parameters() == 5 && setter->setter_function_name() == function_name ) {
+			if( setter->num_input_parameters() == 6 && setter->setter_function_name() == function_name ) {
 				MasalaObjectAPISetterDefinition_SixInputCSP< P1, P2, P3, P4, P5, P6 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_SixInput< P1, P2, P3, P4, P5, P6 > const >( setter ) );
 				if( setter_cast != nullptr ) {
 					return setter_cast;
@@ -278,6 +537,95 @@ public:
 			}
 		}
 		return MasalaObjectAPISetterDefinition_SixInputCWP<P1,P2,P3,P4,P5,P6>();
+	}
+
+
+	/// @brief Get a seven-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_SevenInputCWP<P1,P2,P3,P4,P5,P6,P7>
+	get_seveninput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 7 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_SevenInputCSP< P1, P2, P3, P4, P5, P6, P7 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_SevenInput< P1, P2, P3, P4, P5, P6, P7 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_SevenInputCWP<P1,P2,P3,P4,P5,P6,P7>();
+	}
+
+	/// @brief Get a eight-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>
+	get_eightinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 8 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_EightInputCSP< P1, P2, P3, P4, P5, P6, P7, P8 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_EightInput< P1, P2, P3, P4, P5, P6, P7, P8 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_EightInputCWP<P1,P2,P3,P4,P5,P6,P7,P8>();
+	}
+
+	/// @brief Get a nine-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_NineInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9>
+	get_nineinput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 9 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_NineInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_NineInput< P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_NineInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9>();
+	}
+
+	/// @brief Get a ten-parameter setter definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::setter::MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>
+	get_teninput_setter_function(
+		std::string const & function_name
+	) const {
+		using namespace setter;
+
+		for( auto const & setter: setters_ ) {
+			if( setter->num_input_parameters() == 10 && setter->setter_function_name() == function_name ) {
+				MasalaObjectAPISetterDefinition_TenInputCSP< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > setter_cast( std::dynamic_pointer_cast< MasalaObjectAPISetterDefinition_TenInput< P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >( setter ) );
+				if( setter_cast != nullptr ) {
+					return setter_cast;
+				}
+			}
+		}
+		return MasalaObjectAPISetterDefinition_TenInputCWP<P1,P2,P3,P4,P5,P6,P7,P8,P9,P10>();
 	}
 
 public:
@@ -454,6 +802,69 @@ public:
 		return MasalaObjectAPIWorkFunctionDefinition_SevenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7 >();
 	}
 
+	/// @brief Get a eight-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_EightInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8 >
+	get_eightinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 8 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_EightInputCSP<P0,P1,P2,P3,P4,P5,P6,P7,P8> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_EightInput< P0, P1, P2, P3, P4, P5, P6, P7, P8 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_EightInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8 >();
+	}
+
+	/// @brief Get a nine-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_NineInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 >
+	get_nineinput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 9 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_NineInputCSP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_NineInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_NineInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9 >();
+	}
+
+	/// @brief Get a ten-parameter work function definition.
+	/// @returns Nullptr if the function doesn't exist; a const weak pointer
+	/// to the function otherwise.
+	template< typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10 >
+	inline
+	masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinition_TenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 >
+	get_teninput_work_function(
+		std::string const & function_name
+	) const {
+		using namespace masala::base::api::work_function;
+		for( auto const & work_fxn: work_functions_ ) {
+			if( work_fxn->num_input_parameters() == 10 && work_fxn->work_function_name() == function_name ) {
+				MasalaObjectAPIWorkFunctionDefinition_TenInputCSP<P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10> work_fxn_cast( std::dynamic_pointer_cast< MasalaObjectAPIWorkFunctionDefinition_TenInput< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 > const >(work_fxn) );
+				if( work_fxn_cast != nullptr ) {
+					return work_fxn_cast;
+				}
+			}
+		}
+		return MasalaObjectAPIWorkFunctionDefinition_TenInputCWP< P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10 >();
+	}
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -490,72 +901,136 @@ public:
 	get_json_description() const;
 
 	/// @brief Begin iterator for the constructors.
+	/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_begin_().
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 	constructors_begin() const;
 
 	/// @brief End iterator for the constructors.
+	/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_end().
 	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 	constructors_end() const;
 
+	/// @brief Begin iterator for the non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+	constructors_non_deprecated_end() const;
+
 	/// @brief Number of constructors.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_constructors_non_deprecated() for just the callable ones.
 	base::Size
 	n_constructors() const;
 
+	/// @brief Number of non-deprecated constructors.
+	base::Size
+	n_constructors_non_deprecated() const;
+
 	/// @brief Add a constructor.
+	/// @details Automatically adds to the non-deprecated constructor list as well unless deprecated.
 	void
 	add_constructor(
 		base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
 	);
 
 	/// @brief Begin iterator for the setters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_begin().
 	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_begin() const;
 
 	/// @brief End iterator for the setters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_end().
 	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 	setters_end() const;
 
+	/// @brief Begin iterator for the non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+	setters_non_deprecated_end() const;
+
 	/// @brief Number of setters.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_setters_non_deprecated() for just the callable ones.
 	base::Size
 	n_setters() const;
 
+	/// @brief Number of non-deprecated setters.
+	base::Size
+	n_setters_non_deprecated() const;
+
 	/// @brief Add a setter.
+	/// @details Automatically adds to the non-deprecated setter list as well unless deprecated.
 	void
 	add_setter(
 		base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
 	);
 
 	/// @brief Begin iterator for the getters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_begin().
 	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_begin() const;
 
 	/// @brief End iterator for the getters.
+	/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_end().
 	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 	getters_end() const;
 
+	/// @brief Begin iterator for the non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+	getters_non_deprecated_end() const;
+
 	/// @brief Number of getters.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_getters_non_deprecated() for just the callable ones.
 	base::Size
 	n_getters() const;
 
+	/// @brief Number of non-deprecated getters.
+	base::Size
+	n_getters_non_deprecated() const;
+
 	/// @brief Add a getter.
+	/// @details Automatically adds to the non-deprecated getter list as well unless deprecated.
 	void
 	add_getter(
 		base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
 	);
 
 	/// @brief Begin iterator for the work functions.
+	/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_begin().
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_begin() const;
 
 	/// @brief End iterator for the work functions.
+	/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_end().
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 	work_functions_end() const;
 
+	/// @brief Begin iterator for the non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_non_deprecated_begin() const;
+
+	/// @brief End iterator for the non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+	work_functions_non_deprecated_end() const;
+
 	/// @brief Number of work functions.
+	/// @note This includes deprecated and non-deprecated functions.  Use n_work_functions_non_deprecated() for just the callable ones.
 	base::Size
 	n_work_functions() const;
 
+	/// @brief Number of non-deprecated work functions.
+	base::Size
+	n_work_functions_non_deprecated() const;
+
 	/// @brief Add a work function.
+	/// @details Automatically adds to the non-deprecated work function list as well unless deprecated.
 	void
 	add_work_function(
 		base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
@@ -723,6 +1198,18 @@ private:
 
 	/// @brief A list of work functions.
 	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_;
+
+	/// @brief A list of non-deprecated constructors.
+	std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP> constructors_non_deprecated_;
+
+	/// @brief A list of non-deprecated setters.
+	std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP> setters_non_deprecated_;
+
+	/// @brief A list of non-deprecated getters.
+	std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP> getters_non_deprecated_;
+
+	/// @brief A list of non-deprecated work functions.
+	std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP> work_functions_non_deprecated_;
 
 	/// @brief Is this the API for a lightweight object that could be stack-allocated?
 	/// @details If so, the API container will store the object directly, not an owning pointer to it.

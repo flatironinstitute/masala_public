@@ -214,8 +214,8 @@ public:
 
 	/// @brief Create an instance of this class using the constructor.
 	MASALA_SHARED_POINTER< T0 >
-	create_object( T1 const & input_parameter_0, T2 const & input_parameter_1, T2 const & input_parameter_3, T3 const & input_parameter_4 ) const {
-		return masala::make_shared< T0 >( input_parameter_0, input_parameter_1, input_parameter_3, input_parameter_4 );
+	create_object( T1 const & input_parameter_0, T2 const & input_parameter_1, T3 const & input_parameter_2, T4 const & input_parameter_3 ) const {
+		return masala::make_shared< T0 >( input_parameter_0, input_parameter_1, input_parameter_2, input_parameter_3 );
 	}
 
 private:

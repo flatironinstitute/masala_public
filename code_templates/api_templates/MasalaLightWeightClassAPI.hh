@@ -103,7 +103,6 @@ public:
     inner_class_namespace() const override;
 
     /// @brief Get the API definition for the contained class.
-    /// @details Must be implemented by derived classes.
     masala::base::api::MasalaObjectAPIDefinitionCWP
     get_api_definition_for_inner_class() override;
 

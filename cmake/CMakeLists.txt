@@ -19,11 +19,24 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
-PROJECT( Masala VERSION 0.9 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+PROJECT( Masala VERSION 0.10 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+
+# Default build is debug mode.  To build in release mode, comment out the two debug lines below and
+# uncomment the release lines.
 SET( MODE debug )
 SET( CMAKE_BUILD_TYPE Debug )
 # SET( MODE release )
 # SET( CMAKE_BUILD_TYPE Release )
+
+# Uncomment the following to enable deprecated API functions.
+#ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
+
+# Uncomment the following to disable deprecation warnings.
+#ADD_DEFINITIONS( -DMASALA_DISABLE_DEPRECATION_WARNINGS )
+
+# Ensure that version is set in only one place, in the PROJECT line at the top of this file:
+ADD_DEFINITIONS( -DMASALA_MAJOR_VERSION=${CMAKE_PROJECT_VERSION_MAJOR} -DMASALA_MINOR_VERSION=${CMAKE_PROJECT_VERSION_MINOR} )
+
 SET( LINK_TYPE SHARED )
 SET( LINK_EXTERNAL_LIBS stdc++ )
 SET( CMAKE_MACOSX_RPATH 0 )
@@ -42,13 +55,13 @@ INCLUDE( compiler.cmake )
 
 # Generate the build lists for base, numeric, and core libraries and their associated API libraries:
 execute_process(
-    COMMAND python3 ../code_templates/generate_cmake_build.py masala base ../src/base cmake_generated/base.cmake NONE cmake_generated/base_tests.cmake
+    COMMAND python3 ../code_templates/generate_cmake_build.py masala ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} base ../src/base cmake_generated/base.cmake NONE cmake_generated/base_tests.cmake
 )
 execute_process(
-    COMMAND python3 ../code_templates/generate_cmake_build.py masala numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
+    COMMAND python3 ../code_templates/generate_cmake_build.py masala ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} numeric ../src/numeric cmake_generated/numeric.cmake cmake_generated/numeric_api.cmake cmake_generated/numeric_tests.cmake
 )
 execute_process(
-    COMMAND python3 ../code_templates/generate_cmake_build.py masala core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
+    COMMAND python3 ../code_templates/generate_cmake_build.py masala ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} core ../src/core cmake_generated/core.cmake cmake_generated/core_api.cmake cmake_generated/core_tests.cmake
 )
 
 # Build the base, numeric, and core libraries:

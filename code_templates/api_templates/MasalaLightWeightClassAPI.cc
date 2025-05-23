@@ -108,7 +108,6 @@ std::string
 }
 
 /// @brief Get the API definition for the contained class.
-/// @details Must be implemented by derived classes.
 masala::base::api::MasalaObjectAPIDefinitionCWP
 <__SOURCE_CLASS_API_NAME__>::get_api_definition_for_inner_class() {
     return inner_object_.get_api_definition();

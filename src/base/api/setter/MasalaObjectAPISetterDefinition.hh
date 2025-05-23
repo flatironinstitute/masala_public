@@ -37,10 +37,12 @@
 
 // Base headers.
 #include <base/api/setter/setter_annotation/MasalaSetterFunctionAnnotation.fwd.hh>
+#include <base/error/ErrorHandling.hh>
 
 // STL headers.
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace masala {
 namespace base {
@@ -144,6 +146,46 @@ public:
 	/// @details Pure virtual; must be overridden by derived classes.
 	virtual masala::base::Size num_input_parameters() const = 0;
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	virtual void set_function_deprecated () = 0;
+
+	/// @brief We replace the function that would have been called with this error message if the function is deprecated.
+	template <typename... Ts >
+	void
+	deprecated_function_to_bind(
+		Ts... //args
+	) {
+		MASALA_THROW( class_namespace() + "::" + class_name(), "deprecated_function_to_bind", "The setter function \""
+			+ setter_function_name_ + "()\" has been deprecated as of version " + std::to_string( major_deprecation_version_ )
+			+ "." + std::to_string( minor_deprecation_version_ ) + " of the " + library_name_for_deprecation_warning_
+			+ " library.  (Note that you can re-enable it by compiling with the "
+			"-DMASALA_ENABLE_DEPRECATED_FUNCTIONS compiler flag set.  However, we cannot guarantee that things will "
+			"work as expected.)"
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	virtual void set_function_warning () = 0;
+
+	/// @brief We replace the function that would have been called with this warning message, followed by the function call,
+	/// if the function is soon to be deprecated.
+	template <typename... Ts >
+	void
+	warning_function_to_bind(
+		std::function< void(Ts...) > const fxn,
+		Ts... args
+	) {
+		write_to_tracer( "Warning! The setter function \"" + setter_function_name_ + "()\" will be deprecated as of version "
+			+ std::to_string( major_deprecation_version_ ) + "." + std::to_string( minor_deprecation_version_ )
+			+ " of the " + library_name_for_deprecation_warning_ + " library.  "
+			"(Note that you can disable this warning by compiling with the -DMASALA_DISABLE_DEPRECATION_WARNINGS "
+			"compiler flag set.)"
+		);
+		fxn( args... );
+	}
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +222,15 @@ private:
 
 	/// @brief Additional annotations that this function has attached to it.
 	std::vector< setter_annotation::MasalaSetterFunctionAnnotationCSP > setter_annotations_;
+
+	/// @brief The major version at which this will be deprecated.
+	masala::base::Size major_deprecation_version_ = 0;
+
+	/// @brief The minor version at which this will be deprecated.
+	masala::base::Size minor_deprecation_version_ = 0;
+
+	/// @brief The library name, used for deprecation warnings.
+	std::string library_name_for_deprecation_warning_;
 
 }; // class MasalaObjectAPISetterDefinition
 

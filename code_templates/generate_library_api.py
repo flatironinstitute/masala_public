@@ -35,6 +35,45 @@ from masala_fxns import is_plugin_or_noapi_class, parent_class_file_from_class_n
 VERBOSE_SCRIPT_OUTPUT = False
 COLUMN_WIDTH = 120
 
+INTACT = 0
+DEPRECATION_WARNING = 1
+DEPRECATED = 2
+
+### @brief Determine whether an element is intact, soon to be deprecated, or deprecated.
+def determine_deprecation_status( \
+    element_properties : json, \
+    project_maj_version : int, \
+    project_min_version : int
+    ) -> tuple[int, int, int, int, int] :
+
+    dep_found = False
+    dep_warn_found = False
+
+    dep_maj_vers = -1
+    dep_min_vers = -1
+    dep_warn_maj_vers = -1
+    dep_warn_min_vers = -1
+
+    if "Will_Be_Deprecated" in element_properties :
+        if element_properties["Will_Be_Deprecated"] == True :
+            assert "Deprecation_Major_Version" in element_properties
+            assert "Deprecation_Minor_Version" in element_properties
+            dep_maj_vers = element_properties["Deprecation_Major_Version"]
+            dep_min_vers = element_properties["Deprecation_Minor_Version"]
+            if ( project_maj_version > dep_maj_vers ) or ( project_maj_version == dep_maj_vers and project_min_version >= dep_min_vers ) :
+                dep_found = True
+            if "Deprecation_Warning_Major_Version" in element_properties :
+                assert "Deprecation_Warning_Minor_Version" in element_properties
+                dep_warn_maj_vers = element_properties["Deprecation_Warning_Major_Version"]
+                dep_warn_min_vers = element_properties["Deprecation_Warning_Minor_Version"]
+                if ( project_maj_version > dep_warn_maj_vers ) or ( project_maj_version == dep_warn_maj_vers and project_min_version >= dep_warn_min_vers ) :
+                    dep_warn_found = True
+    if dep_found == True :
+        return DEPRECATED, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
+    elif dep_warn_found == True :
+        return DEPRECATION_WARNING, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
+    return INTACT, dep_warn_maj_vers, dep_warn_min_vers, dep_maj_vers, dep_min_vers
+
 ### @brief Given a comment line, wrap it to fit an 80-character output, returning a series of new lines.
 def wrap_comment_line( line : str ) -> [] :
     if len(line) <= COLUMN_WIDTH :
@@ -144,8 +183,8 @@ def clean_up_generated_code( filecontents : str ) -> str :
 ## @returns Source library name, JSON API definition file.  Throws if
 ## these two options aren't provided.
 def get_options() -> tuple :
-    assert len(argv) == 4, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <source library name> <json api definition file>"
-    return (argv[1], argv[2], argv[3])
+    assert len(argv) == 6, "Invalid commandline flags.  Expected usage: python3 generate_library_api.py <project name> <project major version> <project minor version> <source library name> <json api definition file>"
+    return (argv[1], int(argv[2]), int(argv[3]), argv[4], argv[5] )
 
 ## @brief Returns true if a class starts with "masala::" or with project_name + "::".
 ## Always returns false if this is an API class.
@@ -652,7 +691,7 @@ def generate_source_class_filename( classname : str, namespace : list, extension
 
 ## @brief Generate the prototypes for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_prototypes(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list) -> str :
+def generate_constructor_prototypes(project_name: str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, proj_maj_vers : int, proj_min_vers : int) -> str :
     outstring = ""
 
     if jsonfile["Elements"][classname]["Properties"]["Has_Protected_Constructors"] == True :
@@ -667,6 +706,11 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
             first = False
         else :
             outstring += "\n\n"
+
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+
         outstring += tabchar + "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -681,11 +725,13 @@ def generate_constructor_prototypes(project_name: str, classname: str, jsonfile:
             outstring += "\n" + tabchar + ");"
         else :
             outstring += ");"
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Generate the implementations for the constructors based on the JSON description of the API.
 ## @note The classname input should include namespace.
-def generate_constructor_implementations(project_name: str, api_base_class : str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool,  is_derived : bool, is_plugin_class : bool ) -> str :
+def generate_constructor_implementations(project_name: str, api_base_class : str, classname: str, jsonfile: json, tabchar: str, additional_includes: list, is_lightweight : bool,  is_derived : bool, is_plugin_class : bool, proj_maj_vers : int, proj_min_vers : int ) -> str :
     outstring = ""
     first = True
 
@@ -695,6 +741,9 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
             first = False
         else :
             outstring += "\n\n"
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = constructor, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
         outstring += "/// @brief " + constructor["Constructor_Description"] + "\n"
         ninputs = constructor["Constructor_N_Inputs"]
         if ninputs > 0 :
@@ -749,14 +798,29 @@ def generate_constructor_implementations(project_name: str, api_base_class : str
                 outstring +=") )\n"
 
         # Body:
-        outstring += "{}"
+        if deprecation_status == DEPRECATED or deprecation_status == DEPRECATION_WARNING :
+            outstring += "{\n"
+            outstring += "#ifndef MASALA_DISABLE_DEPRECATION_WARNINGS\n"
+            outstring += tabchar + "masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );\n"
+            outstring += tabchar + "std::string const tracername( class_namespace_and_name_static() );\n"
+            outstring += tabchar + "if( tracer_handle->tracer_is_enabled( tracername ) ) {\n"
+            outstring += tabchar + tabchar + "tracer_handle->write_to_tracer( tracername, \"A constructor for the \" + class_name_static() + \" API class was invoked, which will be deprecated in version " + str(dep_majvers) + "." + str(dep_minvers) + " of the " + project_name + " library.\", true );\n"
+            outstring += tabchar + "}\n"
+            outstring += "#endif\n"
+            outstring += "}"
+            additional_includes.append( "<base/managers/tracer/TracerManager.hh>" )
+        else :
+            outstring += "{}"
+
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Generate the prototypes for setters, getters, or work functions based on the JSON
 ## description of the API.
 ## @note The classname input should include namespace.  As a side-effect, this function appends to the
 ## additional_includes list.
-def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool ) -> str :
+def generate_function_prototypes( project_name: str, classname: str, jsonfile: json, tabchar: str, fxn_type: str, additional_includes: list, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool, proj_maj_vers : int, proj_min_vers : int ) -> str :
     outstring = ""
     first = True
 
@@ -868,6 +932,10 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
         else :
             outstring += "\n\n"
 
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+
         if ( "Triggers_No_Mutex_Lock" in fxn ) and ( fxn["Triggers_No_Mutex_Lock"] == True ) :
             triggers_no_mutex_lock = True
         else :
@@ -935,6 +1003,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
             outstring += "\n" + tabchar + ")" + conststr + overridestr + ";"
         else :
             outstring += ")" + conststr + overridestr + ";"
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Generate the actual function call in a setter, getter, or work function.
@@ -1057,7 +1127,9 @@ def generate_function_implementations( \
     is_derived : bool, \
     is_plugin_class : bool, \
     is_engine_class : bool, \
-    is_data_representation_class : bool \
+    is_data_representation_class : bool, \
+    proj_maj_vers : int, \
+    proj_min_vers : int
     ) -> str :
 
     outstring = ""
@@ -1250,6 +1322,11 @@ def generate_function_implementations( \
             first = False
         else :
             outstring += "\n\n"
+        
+        deprecation_status, depwarn_majvers, depwarn_minvers, dep_majvers, dep_minvers = determine_deprecation_status( element_properties = fxn, project_maj_version=proj_maj_vers, project_min_version=proj_min_vers )
+        if deprecation_status == DEPRECATED :
+            outstring += "#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
+
         outstring += "/// @brief " + fxn[namepattern+"_Description"] + "\n"
         ninputs = fxn[namepattern+"_N_Inputs"]
         if ("Output" in fxn) :
@@ -1324,9 +1401,19 @@ def generate_function_implementations( \
             outstring += ")" + conststr + " {"
 
         # Body:
+            
+        if deprecation_status == DEPRECATED or deprecation_status == DEPRECATION_WARNING :
+            outstring += "\n#ifndef MASALA_DISABLE_DEPRECATION_WARNINGS\n"
+            outstring += tabchar + "write_to_tracer( \"The " + apiclassname + "::" + fxn[namepattern + "_Name"] + "() function was called, which will be deprecated in version " + str(dep_majvers) + "." + str(dep_minvers) + " of the " + project_name + " library.\" );" + "\n"
+            outstring += "#endif"
 
         if always_returns_nullptr :
-            outstring += " return nullptr; }\n"
+            if deprecation_status == DEPRECATED or deprecation_status == DEPRECATION_WARNING :
+                outstring += "\n" + tabchar + "return nullptr;\n}\n"
+            else:
+                outstring += " return nullptr; }\n"
+            if deprecation_status == DEPRECATED :
+                outstring += "#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
             continue
         else :
             outstring += "\n"
@@ -1411,6 +1498,9 @@ def generate_function_implementations( \
                     else :
                         outstring += "encapsulate_plugin_object_instance( returnobj )\n"
                     outstring += tabchar + ");\n}\n"
+
+                    if deprecation_status == DEPRECATED :
+                        outstring += "#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS\n"
                     add_base_class_include( project_name, outtype, additional_includes )
                     add_base_class_include( project_name, drop_const( outtype_inner ), additional_includes )
                     additional_includes.append( "base/managers/plugin_module/MasalaPluginModuleManager" )
@@ -1443,6 +1533,8 @@ def generate_function_implementations( \
         if returns_this_ref == True :
             outstring += tabchar + "return *this;\n"
         outstring += "}"
+        if deprecation_status == DEPRECATED :
+            outstring += "\n#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS"
     return outstring
 
 ## @brief Given a list of additional files to include, generate a
@@ -2014,7 +2106,7 @@ def get_api_class_include_and_classname( project_name : str, libraryname : str, 
             False )
 
 ## @brief Auto-generate the header file (***.hh) for the class.
-def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool ) :
+def prepare_header_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, hhfile_template : str, derived_hhfile_template : str, licence : str, jsonfile : json, tabchar : str, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, is_file_interpreter_class : bool, proj_maj_vers : int, proj_min_vers : int ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     header_guard_string = capitalize_project_name(project_name) + "_" + libraryname + "_api_auto_generated_api_"
@@ -2065,10 +2157,10 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
         .replace( "<__INCLUDE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".fwd.hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_FWD_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".fwd.hh" ) + ">" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes) ) \
-        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
-        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class) ) \
+        .replace( "<__CPP_CONSTRUCTOR_PROTOTYPES__>", generate_constructor_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, additional_includes, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_SETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_GETTER_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_WORK_FUNCTION_PROTOTYPES__>", generate_function_prototypes(project_name, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_plugin_class, is_engine_class, is_data_representation_class, is_file_interpreter_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
         .replace( "<__CPP_END_HH_HEADER_GUARD__>", "#endif // " + header_guard_string ) \
         .replace( "<__CPP_ADDITIONAL_FWD_INCLUDES__>", generate_additional_includes( additional_includes, True, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
@@ -2086,7 +2178,7 @@ def prepare_header_file( project_name: str, libraryname : str, classname : str, 
     print( "\tWrote \"" + fname + "\"."  )
 
 ## @brief Auto-generate the cc file (***.cc) for the class.
-def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool ) :
+def prepare_cc_file( project_name: str, libraryname : str, classname : str, namespace : list, dirname : str, ccfile_template : str, derived_ccfile_template : str, licence : str, jsonfile : json, tabchar : str, is_lightweight : bool, is_plugin_class : bool, is_engine_class : bool, is_data_representation_class : bool, proj_maj_vers : int, proj_min_vers : int ) :
     apiclassname = classname + "_API"
     original_class_namespace_string = ""
     for i in range( len(namespace) ):
@@ -2129,10 +2221,10 @@ def prepare_cc_file( project_name: str, libraryname : str, classname : str, name
         .replace( "<__SOURCE_CLASS_API_NAMESPACE__>", generate_cpp_namespace_singleline( namespace ) ) \
         .replace( "<__INCLUDE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + dirname_short + apiclassname + ".hh>" ) \
         .replace( "<__INCLUDE_SOURCE_FILE_PATH_AND_HH_FILE_NAME__>", "#include <" + generate_source_class_filename( classname, namespace, ".hh" ) + ">" ) \
-        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class) ) \
-        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
-        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
-        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class) ) \
+        .replace( "<__CPP_CONSTRUCTOR_IMPLEMENTATIONS__>", generate_constructor_implementations(project_name, api_base_class, namespace_and_source_class, jsonfile, tabchar, additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_SETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "SETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_GETTER_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "GETTER", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
+        .replace( "<__CPP_WORK_FUNCTION_IMPLEMENTATIONS__>", generate_function_implementations(project_name, libraryname, namespace_and_source_class, jsonfile, tabchar, "WORKFXN", additional_includes, is_lightweight, is_derived, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, proj_maj_vers=proj_maj_vers, proj_min_vers=proj_min_vers) ) \
         .replace( "<__CPP_ADDITIONAL_HH_INCLUDES__>", generate_additional_includes( additional_includes, False, dirname_short + apiclassname ) ) \
         .replace( "<__BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_base_class ) \
         .replace( "<__ROOT_BASE_API_CLASS_NAMESPACE_AND_NAME__>", api_root_base_class ) \
@@ -2275,7 +2367,7 @@ def do_generate_registration_function( \
 ################################################################################
 
 # Get options
-project_name, library_name, api_def_file = get_options()
+project_name, project_maj_version, project_min_version, library_name, api_def_file = get_options()
 print( "\tGenerating API for project " + project_name + ", library \"" + library_name + "\" from API definition file \"" + api_def_file + "\"." )
 
 # Read JSON
@@ -2352,12 +2444,12 @@ if json_api["Elements"] is not None :
 
         if json_api["Elements"][element]["Properties"]["Is_Lightweight"] == False :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class, proj_maj_vers=project_maj_version, proj_min_vers=project_min_version )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, False, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, proj_maj_vers=project_maj_version, proj_min_vers=project_min_version )
         else :
             prepare_forward_declarations( library_name, name_string, namespace, dirname, lightweight_fwdfile_template, licence_template )
-            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class )
-            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class )
+            prepare_header_file( project_name, library_name, name_string, namespace, dirname, lightweight_hhfile_template, derived_hhfile_template, licence_template, json_api, tabchar, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, is_file_interpreter_class=is_file_interpreter_class, proj_maj_vers=project_maj_version, proj_min_vers=project_min_version )
+            prepare_cc_file( project_name, library_name, name_string, namespace, dirname, lightweight_ccfile_template, derived_ccfile_template, licence_template, json_api, tabchar, True, is_plugin_class=is_plugin_class, is_engine_class=is_engine_class, is_data_representation_class=is_data_representation_class, proj_maj_vers=project_maj_version, proj_min_vers=project_min_version )
         
         if is_plugin_class == True :
             creator_name,creator_namespace,creator_filename = determine_creator_name_namespace_filename( library_name, name_string, namespace, project_name )

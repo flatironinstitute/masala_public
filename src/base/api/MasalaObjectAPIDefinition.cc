@@ -31,6 +31,12 @@
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 #include <base/managers/file_interpreter/MasalaFileInterpreter.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/api/constructor/constructor_annotation/DeprecatedConstructorAnnotation.hh>
+#include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
+#include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/api/work_function/work_function_annotation/DeprecatedWorkFunctionAnnotation.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 
 // External headers
 #include <external/nlohmann_json/single_include/nlohmann/json.hpp>
@@ -389,107 +395,310 @@ MasalaObjectAPIDefinition::get_json_description() const {
 }
 
 /// @brief Begin iterator for the constructors.
+/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_begin().
 std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::constructors_begin() const {
     return constructors_.cbegin();
 }
 
 /// @brief End iterator for the constructors.
+/// @note This is rarely the function to use.  Most of the time, you'll want constructors_non_deprecated_end().
 std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::constructors_end() const {
     return constructors_.cend();
 }
 
+/// @brief Begin iterator for the non-deprecated constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_non_deprecated_begin() const {
+    return constructors_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated constructors.
+std::vector<base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::constructors_non_deprecated_end() const {
+    return constructors_non_deprecated_.cend();
+}
+
 /// @brief Number of constructors.
+/// @note This includes deprecated and non-deprecated functions.  Use n_constructors_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_constructors() const {
-    return constructors_.size();
+	return constructors_.size();
+}
+
+/// @brief Number of non-deprecated constructors.
+base::Size
+MasalaObjectAPIDefinition::n_constructors_non_deprecated() const {
+	return constructors_non_deprecated_.size();
 }
 
 /// @brief Add a constructor.
+/// @details Automatically adds to the non-deprecated constructor list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_constructor(
     masala::base::api::constructor::MasalaObjectAPIConstructorDefinitionCSP constructor_in
 ) {
+	using masala::base::Size;
+	using namespace constructor::constructor_annotation;
     constructors_.emplace_back( constructor_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	constructors_non_deprecated_.emplace_back( constructor_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( constructor_in->n_constructor_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaConstructorAnnotationCSP annotation( constructor_in->constructor_annotation(i) );
+		DeprecatedConstructorAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedConstructorAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		constructors_non_deprecated_.emplace_back( constructor_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the setters.
+/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_begin().
 std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::setters_begin() const {
     return setters_.cbegin();
 }
 
 /// @brief End iterator for the setters.
+/// @note This is rarely the function to use.  Most of the time, you'll want setters_non_deprecated_end().
 std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::setters_end() const {
     return setters_.cend();
 }
 
+/// @brief Begin iterator for the non-deprecated setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_non_deprecated_begin() const {
+    return setters_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated setters.
+std::vector<base::api::setter::MasalaObjectAPISetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::setters_non_deprecated_end() const {
+    return setters_non_deprecated_.cend();
+}
+
 /// @brief Number of setters.
+/// @note This includes deprecated and non-deprecated functions.  Use n_setters_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_setters() const {
-    return setters_.size();
+	return setters_.size();
+}
+
+/// @brief Number of non-deprecated setters.
+base::Size
+MasalaObjectAPIDefinition::n_setters_non_deprecated() const {
+    return setters_non_deprecated_.size();
 }
 
 /// @brief Add a setter.
+/// @details Automatically adds to the non-deprecated setter list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_setter(
     masala::base::api::setter::MasalaObjectAPISetterDefinitionCSP setter_in
 ) {
-    setters_.emplace_back( setter_in );
+	using masala::base::Size;
+	using namespace masala::base::api::setter::setter_annotation;
+
+	setters_.emplace_back( setter_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	setters_non_deprecated_.emplace_back( setter_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( setter_in->n_setter_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaSetterFunctionAnnotationCSP annotation( setter_in->setter_annotation(i) );
+		DeprecatedSetterAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedSetterAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		setters_non_deprecated_.emplace_back( setter_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the getters.
+/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_begin().
 std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::getters_begin() const {
-    return getters_.cbegin();
+	return getters_.cbegin();
 }
 
 /// @brief End iterator for the getters.
+/// @note This is rarely the function to use.  Most of the time, you'll want getters_non_deprecated_end().
 std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::getters_end() const {
-    return getters_.cend();
+	return getters_.cend();
+}
+
+/// @brief Begin iterator for the non-deprecated getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_non_deprecated_begin() const {
+	return getters_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated getters.
+std::vector<base::api::getter::MasalaObjectAPIGetterDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::getters_non_deprecated_end() const {
+	return getters_non_deprecated_.cend();
 }
 
 /// @brief Number of getters.
+/// @note This includes deprecated and non-deprecated functions.  Use n_getters_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_getters() const {
     return getters_.size();
 }
 
+/// @brief Number of non-deprecated getters.
+base::Size
+MasalaObjectAPIDefinition::n_getters_non_deprecated() const {
+	return getters_non_deprecated_.size();
+}
+
 /// @brief Add a getter.
+/// @details Automatically adds to the non-deprecated getter list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_getter(
     masala::base::api::getter::MasalaObjectAPIGetterDefinitionCSP getter_in
 ) {
-    getters_.emplace_back( getter_in );
+	using masala::base::Size;
+	using namespace masala::base::api::getter::getter_annotation;
+
+	getters_.emplace_back( getter_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	getters_non_deprecated_.emplace_back( getter_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( getter_in->n_getter_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaGetterFunctionAnnotationCSP annotation( getter_in->getter_annotation(i) );
+		DeprecatedGetterAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedGetterAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		getters_non_deprecated_.emplace_back( getter_in );
+	}
+#endif
 }
 
 /// @brief Begin iterator for the work functions.
+/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_begin().
 std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::work_functions_begin() const {
-    return work_functions_.cbegin();
+	return work_functions_.cbegin();
 }
 
 /// @brief End iterator for the work functions.
+/// @note This is rarely the function to use.  Most of the time, you'll want work_functions_non_deprecated_end().
 std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
 MasalaObjectAPIDefinition::work_functions_end() const {
-    return work_functions_.cend();
+	return work_functions_.cend();
+}
+
+/// @brief Begin iterator for the non-deprecated work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_non_deprecated_begin() const {
+	return work_functions_non_deprecated_.cbegin();
+}
+
+/// @brief End iterator for the non-deprecated work functions.
+std::vector<base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP>::const_iterator
+MasalaObjectAPIDefinition::work_functions_non_deprecated_end() const {
+	return work_functions_non_deprecated_.cend();
 }
 
 /// @brief Number of work functions.
+/// @note This includes deprecated and non-deprecated functions.  Use n_work_functions_non_deprecated() for just the callable ones.
 base::Size
 MasalaObjectAPIDefinition::n_work_functions() const {
-    return work_functions_.size();
+	return work_functions_.size();
+}
+
+/// @brief Number of non-deprecated work functions.
+base::Size
+MasalaObjectAPIDefinition::n_work_functions_non_deprecated() const {
+	return work_functions_non_deprecated_.size();
 }
 
 /// @brief Add a work function.
+/// @details Automatically adds to the non-deprecated work function list as well unless deprecated.
 void
 MasalaObjectAPIDefinition::add_work_function(
     masala::base::api::work_function::MasalaObjectAPIWorkFunctionDefinitionCSP work_function_in
 ) {
-    work_functions_.emplace_back( work_function_in );
+	using masala::base::Size;
+	using namespace masala::base::api::work_function::work_function_annotation;
+
+	work_functions_.emplace_back( work_function_in );
+
+#ifdef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+	work_functions_non_deprecated_.emplace_back( work_function_in );
+#else
+	bool deprecated(false);
+	Size const n_annotations( work_function_in->n_work_function_annotations() );
+	for( Size i(0); i<n_annotations; ++i ) {
+		MasalaWorkFunctionAnnotationCSP annotation( work_function_in->work_function_annotation(i) );
+		DeprecatedWorkFunctionAnnotationCSP dep_annotation( std::dynamic_pointer_cast< DeprecatedWorkFunctionAnnotation const >( annotation ) );
+		if( dep_annotation != nullptr ) {
+			masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+				masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( dep_annotation->library_name() )
+			);
+			if( vers_info != nullptr ) {
+				std::pair< Size, Size > const deprecated_vers( dep_annotation->version_at_which_function_deprecated() );
+				std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+				if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+					deprecated = true;
+				}
+			}
+		}
+	}
+	if( !deprecated ) {
+		work_functions_non_deprecated_.emplace_back( work_function_in );
+	}
+#endif
 }
 
 /// @brief Get the categories that this object is in, if it is a plugin object.

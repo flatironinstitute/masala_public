@@ -121,6 +121,10 @@ public:
     masala::base::Size
     n_modules_registered() const;
 
+	/// @brief Get the version information for a library.
+	/// @details Returns nullptr if the library has not been registered.
+	MasalaModuleVersionInfoCSP get_library_version_info( std::string const & library_name ) const;
+
     /// @brief Remove all version information (except for the core libraries).
     void reset();
 

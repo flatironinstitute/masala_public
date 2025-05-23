@@ -36,10 +36,17 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_ZeroInput.tmpl.hh>
 #include <base/api/constructor/MasalaObjectAPIConstructorDefinition_OneInput.tmpl.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorDefinition_TwoInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
+#include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_TwoInput.tmpl.hh>
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition_ThreeInput.tmpl.hh>
+#include <base/api/setter/setter_annotation/DeprecatedSetterAnnotation.hh>
+#include <base/api/getter/getter_annotation/DeprecatedGetterAnnotation.hh>
+#include <base/api/work_function/work_function_annotation/DeprecatedWorkFunctionAnnotation.hh>
+#include <base/api/constructor/constructor_annotation/DeprecatedConstructorAnnotation.hh>
 #include <base/enums/ChemicalBondTypeEnum.hh>
 
 namespace masala {
@@ -65,6 +72,16 @@ MolecularSystem::MolecularSystem(
     masala::base::MasalaObject(src)
 {
     (*this) = src;
+}
+
+/// @brief An example of a deprecated constructor.  Does nothing.
+MolecularSystem::MolecularSystem(
+	std::string const & ,//dummy_setting_in,
+	masala::base::Size const //another_setting
+) :
+	masala::base::MasalaObject()
+{
+	// GNDN
 }
 
 /// @brief Assignment operator (explicit due to mutex).
@@ -132,7 +149,7 @@ MolecularSystem::class_namespace_static() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PUBLIC ACCESSORS
+// PUBLIC GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Access the MolecularGeometry object in this molecular system, by shared pointer.
@@ -166,6 +183,15 @@ core::chemistry::MolecularGeometry const &
 MolecularSystem::molecular_geometry() const {
     std::lock_guard< std::mutex > lock( mutex_ );
     return *molecular_geometry_;
+}
+
+/// @brief An example of a deprecated API getter.
+bool
+MolecularSystem::deprecated_api_getter(
+	masala::base::Size const //input1
+) {
+	// GNDN
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +233,29 @@ MolecularSystem::add_bond(
     molecular_geometry_->add_bond( first_atom, second_atom, bond_type );
 }
 
+
+/// @brief An example of a deprecated API setter.
+void
+MolecularSystem::deprecated_api_setter(
+    masala::base::Size const //input1
+) {
+    //GNDN
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC WORK FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief An example of a deprecated API work function.
+masala::base::Size
+MolecularSystem::deprecated_api_work_function(
+    masala::base::Real const ,//input1,
+    bool const //input2
+) {
+    //GNDN
+    return 2;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC INTERFACE DEFINITION
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,6 +264,8 @@ MolecularSystem::add_bond(
 base::api::MasalaObjectAPIDefinitionCWP
 MolecularSystem::get_api_definition() {
     using namespace masala::base::api;
+    using masala::base::Size;
+    using masala::base::Real;
 
     std::lock_guard< std::mutex > lock( mutex_ );
 
@@ -246,9 +297,22 @@ MolecularSystem::get_api_definition() {
                 "src", "The input MolecularSystem to copy.  Unaltered by this operation."
             )
         );
-
-        // Work functions:
-
+		{
+			constructor::MasalaObjectAPIConstructorDefinition_TwoInputSP< MolecularSystem, std::string const &, masala::base::Size const > deprecated_constructor(
+				masala::make_shared< constructor::MasalaObjectAPIConstructorDefinition_TwoInput< MolecularSystem, std::string const &, masala::base::Size const > >(
+					class_name_static(),
+					"Example of a deprecated constructor.",
+					"dummy_parameter", "A dummy input parameter.",
+					"dummy_parameter_2", "Another dummy input parameter"
+				)
+			);
+			deprecated_constructor->add_constructor_annotation(
+				masala::make_shared< constructor::constructor_annotation::DeprecatedConstructorAnnotation >(
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_constructor( deprecated_constructor );
+		}
 
         // Getters:
         api_def->add_getter(
@@ -260,6 +324,23 @@ MolecularSystem::get_api_definition() {
                 std::bind( &MolecularSystem::molecular_geometry_shared_ptr, this )
             )
         );
+		{
+			getter::MasalaObjectAPIGetterDefinition_OneInputSP< bool, Size > deprecated_fxn(
+				masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< bool, Size > >(
+					"deprecated_api_getter", "An example of a deprecated API getter, annotated as such.  Does nothing.",
+					"input1", "An input for this function.",
+					"output1", "An output parameter for this function.",
+					false, false,
+					std::bind( &MolecularSystem::deprecated_api_getter, this, std::placeholders::_1 )
+				)
+			);
+			deprecated_fxn->add_getter_annotation(
+				masala::make_shared< getter::getter_annotation::DeprecatedGetterAnnotation >(
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_getter( deprecated_fxn );
+		}
         // api_def->add_getter(
         //     masala::make_shared< getter::MasalaObjectAPIGetterDefinition_ZeroInput< masala::core::chemistry::MolecularGeometryCWP > >(
         //         "molecular_geometry_weak_ptr",
@@ -351,6 +432,42 @@ MolecularSystem::get_api_definition() {
 				)
 			)
 		);
+		{
+			setter::MasalaObjectAPISetterDefinition_OneInputSP< Size > deprecated_fxn(
+				masala::make_shared< setter::MasalaObjectAPISetterDefinition_OneInput< Size > >(
+					"deprecated_api_setter", "An example of a deprecated API setter, annotated as such.  Does nothing.",
+					"input1", "An input for this function.",
+					false, false,
+					std::bind( &MolecularSystem::deprecated_api_setter, this, std::placeholders::_1 )
+				)
+			);
+			deprecated_fxn->add_setter_annotation(
+				masala::make_shared< setter::setter_annotation::DeprecatedSetterAnnotation >(
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_setter( deprecated_fxn );
+		}
+
+        // Work functions:
+		{
+			work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInputSP< Size, Real const, bool const > deprecated_fxn(
+				masala::make_shared< work_function::MasalaObjectAPIWorkFunctionDefinition_TwoInput< Size, Real const, bool const > >(
+					"deprecated_api_work_function", "An example of a deprecated API work function, annotated as such.  Does nothing.",
+					false, false, false, false,
+					"input1", "A real-valued input for this function.",
+					"input2", "A boolean-valued input for this function.",
+					"output_val", "An integer-valued output.",
+					std::bind( &MolecularSystem::deprecated_api_work_function, this, std::placeholders::_1, std::placeholders::_2 )
+				)
+			);
+			deprecated_fxn->add_work_function_annotation(
+				masala::make_shared< work_function::work_function_annotation::DeprecatedWorkFunctionAnnotation >(
+					"Masala", std::pair< Size, Size >(0, 9), std::pair< Size, Size >(0, 10)
+				)
+			);
+			api_def->add_work_function( deprecated_fxn );
+		}
 
         api_definition_ = api_def; //Make const.
     }

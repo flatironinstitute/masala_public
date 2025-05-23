@@ -28,6 +28,9 @@
 // Base headers
 #include <base/error/ErrorHandling.hh>
 #include <base/api/work_function/work_function_annotation/MasalaWorkFunctionAnnotation.hh>
+#include <base/api/work_function/work_function_annotation/DeprecatedWorkFunctionAnnotation.hh>
+#include <base/managers/version/MasalaVersionManager.hh>
+#include <base/managers/version/MasalaModuleVersionInfo.hh>
 
 // STL headers:
 #include <sstream>
@@ -91,8 +94,6 @@ MasalaObjectAPIWorkFunctionDefinition::work_function_name() const {
 /// @brief Get the work function's description.
 std::string
 MasalaObjectAPIWorkFunctionDefinition::work_function_description() const {
-    return work_function_description_;
-
 	if( work_function_annotations_.empty() ) {
         return work_function_description_;
     }
@@ -177,6 +178,37 @@ MasalaObjectAPIWorkFunctionDefinition::add_work_function_annotation(
         "work function " + work_function_name_ + "."
 	);
 	work_function_annotations_.push_back( annotation_in );
+
+    work_function_annotation::DeprecatedWorkFunctionAnnotationCSP deprecated_annotation(
+		std::dynamic_pointer_cast< work_function_annotation::DeprecatedWorkFunctionAnnotation const >( annotation_in )
+	);
+	if( deprecated_annotation != nullptr ) {
+		masala::base::managers::version::MasalaModuleVersionInfoCSP vers_info(
+			masala::base::managers::version::MasalaVersionManager::get_instance()->get_library_version_info( deprecated_annotation->library_name() )
+		);
+		if( vers_info != nullptr ) {
+			std::pair< Size, Size > const deprecated_vers( deprecated_annotation->version_at_which_function_deprecated() );
+			major_deprecation_version_ = deprecated_vers.first;
+			minor_deprecation_version_ = deprecated_vers.second;
+			library_name_for_deprecation_warning_ = deprecated_annotation->library_name();
+			std::pair< Size, Size > const vers( vers_info->major_version(), vers_info->minor_version() );
+#ifndef MASALA_ENABLE_DEPRECATED_FUNCTIONS
+			if( vers.first > deprecated_vers.first || ( vers.first == deprecated_vers.first && vers.second >= deprecated_vers.second ) ) {
+				set_function_deprecated();
+			} else
+#endif // MASALA_ENABLE_DEPRECATED_FUNCTIONS
+#ifndef MASALA_DISABLE_DEPRECATION_WARNINGS
+			if( deprecated_annotation->version_set_at_which_warnings_start() ) {
+				std::pair< Size, Size > const warning_vers( deprecated_annotation->version_at_which_warnings_start() );
+				if( vers.first > warning_vers.first || ( vers.first == warning_vers.first && vers.second >= warning_vers.second ) ) {
+					set_function_warning();
+				}
+			}
+#else // MASALA_DISABLE_DEPRECATION_WARNINGS
+			{}
+#endif // MASALA_DISABLE_DEPRECATION_WARNINGS
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

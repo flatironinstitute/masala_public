@@ -263,6 +263,37 @@ public:
 	/// @details Returns 6.
 	masala::base::Size num_input_parameters() const override { return 6; }
 
+	/// @brief Set the function to throw a deprecation error if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_deprecated () override {
+		setter_function_ = std::bind(
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(T1,T2,T3,T4,T5,T6) >( &MasalaObjectAPISetterDefinition::deprecated_function_to_bind ), this,
+			std::placeholders::_1,
+			std::placeholders::_2,
+			std::placeholders::_3,
+			std::placeholders::_4,
+			std::placeholders::_5,
+			std::placeholders::_6
+		);
+	}
+
+	/// @brief Set the function to give a deprecation warning if invoked.
+	/// @details Must be implemented by derived classes.
+	void
+	set_function_warning () override {
+		std::function< void(T1, T2, T3, T4, T5, T6) > const setter_function_copy( setter_function_ );
+		setter_function_ = std::bind(
+			static_cast< void(MasalaObjectAPISetterDefinition::*)(std::function< void(T1, T2, T3, T4, T5, T6) >, T1, T2, T3, T4, T5, T6) >( &MasalaObjectAPISetterDefinition::warning_function_to_bind ), this, setter_function_copy,
+			std::placeholders::_1,
+			std::placeholders::_2,
+			std::placeholders::_3,
+			std::placeholders::_4,
+			std::placeholders::_5,
+			std::placeholders::_6
+		);
+	}
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -306,7 +337,7 @@ private:
 	std::string const input_parameter5_description_;
 
 	/// @brief The function that we're binding to.
-	std::function< void(T1,T2,T3,T4,T5,T6) > const setter_function_;
+	std::function< void(T1,T2,T3,T4,T5,T6) > setter_function_;
 
 }; // class MasalaObjectAPISetterDefinition_SixInput
 
