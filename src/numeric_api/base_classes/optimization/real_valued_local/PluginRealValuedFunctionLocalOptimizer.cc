@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.cc
-/// @brief Implementation for a pure virtual base class for RealValuedFunctionLocalOptimizers.
-/// @details RealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
+/// @file src/numeric_api/base_classes/optimization/real_valued_local/PluginRealValuedFunctionLocalOptimizer.cc
+/// @brief Implementation for a pure virtual base class for PluginRealValuedFunctionLocalOptimizers.
+/// @details PluginRealValuedFunctionLocalOptimizers solve a numerical loss function minimization problem using
 /// gradients of the loss function with respect to free parameters.  They have no chemical knowledge.
 /// @note Since this class does not implement class_name() or class_namespace()
 /// functions required by the MasalaObject base class, it remains pure virtual.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
-#include <numeric_api/base_classes/optimization/real_valued_local/RealValuedFunctionLocalOptimizer.hh>
+#include <numeric_api/base_classes/optimization/real_valued_local/PluginRealValuedFunctionLocalOptimizer.hh>
 
 // Numeric API headers:
 #include <numeric_api/auto_generated_api/optimization/OptimizationProblems_API.hh>
@@ -51,10 +51,10 @@ namespace real_valued_local {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Copy constructor.  Explicit due to mutex.
-RealValuedFunctionLocalOptimizer::RealValuedFunctionLocalOptimizer(
-	RealValuedFunctionLocalOptimizer const & src
+PluginRealValuedFunctionLocalOptimizer::PluginRealValuedFunctionLocalOptimizer(
+	PluginRealValuedFunctionLocalOptimizer const & src
 ) :
-	masala::numeric_api::base_classes::optimization::Optimizer( src )
+	Parent( src )
 {
 	std::lock( mutex_, src.mutex_ );
 	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
@@ -63,9 +63,9 @@ RealValuedFunctionLocalOptimizer::RealValuedFunctionLocalOptimizer(
 }
 
 /// @brief Assignment operator.  Explicit due to mutex.
-RealValuedFunctionLocalOptimizer &
-RealValuedFunctionLocalOptimizer::operator=(
-	RealValuedFunctionLocalOptimizer const & src
+PluginRealValuedFunctionLocalOptimizer &
+PluginRealValuedFunctionLocalOptimizer::operator=(
+	PluginRealValuedFunctionLocalOptimizer const & src
 ) {
 	std::lock( mutex_, src.mutex_ );
 	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
@@ -76,7 +76,7 @@ RealValuedFunctionLocalOptimizer::operator=(
 
 /// @brief Make this object independent by calling deep_clone on all contained objects.
 void
-RealValuedFunctionLocalOptimizer::make_independent() {
+PluginRealValuedFunctionLocalOptimizer::make_independent() {
 	std::lock_guard< std::mutex > lock( mutex_ );
 	protected_make_independent();
 }
@@ -87,16 +87,16 @@ RealValuedFunctionLocalOptimizer::make_independent() {
 
 /// @brief Get the category or categories for this plugin class.  Default for all optimizers;
 /// may be overridden by derived classes.
-/// @returns { { "Optimizer", "RealValuedFunctionLocalOptimizer" } }
+/// @returns { { "Optimizer", "PluginRealValuedFunctionLocalOptimizer" } }
 /// @note Categories are hierarchical (e.g. Selector->AtomSelector->AnnotatedRegionSelector,
 /// stored as { {"Selector", "AtomSelector", "AnnotatedRegionSelector"} }). A plugin can be
 /// in more than one hierarchical category (in which case there would be more than one
 /// entry in the outer vector), but must be in at least one.  The first one is used as
 /// the primary key.
 std::vector< std::vector< std::string > >
-RealValuedFunctionLocalOptimizer::get_categories() const {
+PluginRealValuedFunctionLocalOptimizer::get_categories() const {
 	return std::vector< std::vector< std::string > > {
-		{ "Optimizer", "RealValuedFunctionLocalOptimizer" }
+		{ "Optimizer", "PluginRealValuedFunctionLocalOptimizer" }
 	};
 }
 
@@ -104,7 +104,7 @@ RealValuedFunctionLocalOptimizer::get_categories() const {
 /// by derived classes.
 /// @returns { "optimizer", "real_valued", "local_optimizer", "numeric" }
 std::vector< std::string >
-RealValuedFunctionLocalOptimizer::get_keywords() const {
+PluginRealValuedFunctionLocalOptimizer::get_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
 		"real_valued",
@@ -122,16 +122,16 @@ RealValuedFunctionLocalOptimizer::get_keywords() const {
 /// a list of hierarchical categories, and the inner vector is the particular hierarchical
 /// category, from most general to most specific.  Also note that this function is pure
 /// virtual, and must be defined for instantiable MasalaEngine subclasses.
-/// @returns { {"Optimizer", "RealValuedFunctionLocalOptimizer"} }
+/// @returns { {"Optimizer", "PluginRealValuedFunctionLocalOptimizer"} }
 std::vector< std::vector < std::string > >
-RealValuedFunctionLocalOptimizer::get_engine_categories() const {
-    return std::vector< std::vector < std::string > >{ { "Optimizer", "RealValuedFunctionLocalOptimizer" } };
+PluginRealValuedFunctionLocalOptimizer::get_engine_categories() const {
+    return std::vector< std::vector < std::string > >{ { "Optimizer", "PluginRealValuedFunctionLocalOptimizer" } };
 }
 
 /// @brief Keywords for engines.
 /// @returns { "optimizer", "real_valued", "local_optimizer", "numeric" }
 std::vector < std::string >
-RealValuedFunctionLocalOptimizer::get_engine_keywords() const {
+PluginRealValuedFunctionLocalOptimizer::get_engine_keywords() const {
 	return std::vector< std::string > {
 		"optimizer",
 		"real_valued",
@@ -147,7 +147,7 @@ RealValuedFunctionLocalOptimizer::get_engine_keywords() const {
 /// @brief Set the number of threads to request.
 /// @param setting The number of threads to request.  A value of 0 means "request all available"
 void
-RealValuedFunctionLocalOptimizer::set_threads_to_request(
+PluginRealValuedFunctionLocalOptimizer::set_threads_to_request(
     masala::base::Size const setting
 ) {
     std::lock_guard< std::mutex > lock( mutex_ );
@@ -161,7 +161,7 @@ RealValuedFunctionLocalOptimizer::set_threads_to_request(
 /// @brief get the number of threads to request.
 /// @returns The number of threads to request.  A value of 0 means "request all available"
 masala::base::Size
-RealValuedFunctionLocalOptimizer::threads_to_request() const {
+PluginRealValuedFunctionLocalOptimizer::threads_to_request() const {
     std::lock_guard< std::mutex > lock( mutex_ );
     return threads_to_request_;
 }
@@ -174,7 +174,7 @@ RealValuedFunctionLocalOptimizer::threads_to_request() const {
 /// @details Must be implemented by derived classes.   Each solutions set in the vector of solutions corresponds to
 /// the problem with the same index.
 std::vector< masala::numeric_api::auto_generated_api::optimization::OptimizationSolutions_APICSP >
-RealValuedFunctionLocalOptimizer::run_optimizer(
+PluginRealValuedFunctionLocalOptimizer::run_optimizer(
     masala::numeric_api::auto_generated_api::optimization::OptimizationProblems_API const & problems
 ) const {
     using namespace masala::numeric_api::auto_generated_api::optimization;
@@ -204,14 +204,14 @@ RealValuedFunctionLocalOptimizer::run_optimizer(
 
 /// @brief Access the mutex from derived classes.
 std::mutex &
-RealValuedFunctionLocalOptimizer::mutex() const {
+PluginRealValuedFunctionLocalOptimizer::mutex() const {
 	return mutex_;
 }
 
 /// @brief Allow derived classes to access the API definition.
 /// @note Could be nullptr.  Performs no mutex locking.
 masala::base::api::MasalaObjectAPIDefinitionCSP &
-RealValuedFunctionLocalOptimizer::api_definition() {
+PluginRealValuedFunctionLocalOptimizer::api_definition() {
 	return api_definition_;
 }
 
@@ -219,10 +219,11 @@ RealValuedFunctionLocalOptimizer::api_definition() {
 /// class protected_assign().
 /// @details Performs no mutex locking.
 void
-RealValuedFunctionLocalOptimizer::protected_assign(
-	RealValuedFunctionLocalOptimizer const & src
+PluginRealValuedFunctionLocalOptimizer::protected_assign(
+	PluginRealValuedFunctionLocalOptimizer const & src
 ) {
 	threads_to_request_ = src.threads_to_request_;
+    //Parent::protected_assign(src);
 }
 
 
@@ -230,7 +231,7 @@ RealValuedFunctionLocalOptimizer::protected_assign(
 /// class protected_make_independent().
 /// @details Performs no mutex locking.
 void
-RealValuedFunctionLocalOptimizer::protected_make_independent() {
+PluginRealValuedFunctionLocalOptimizer::protected_make_independent() {
 	// GNDN.
 }
 
