@@ -17,8 +17,9 @@
 */
 
 /// @file src/core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh
-/// @brief A pure virtual base class class for the container of a collection of atom
+/// @brief A base class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
+/// @note This class is not intended to be instantiated outside of the API definition system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_hh
@@ -45,10 +46,15 @@ namespace atoms {
 namespace coordinates {
 
 
-/// @brief A pure virtual base class class for the container of a collection of atom
+/// @brief A base class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
+/// @note This class is not intended to be instantiated outside of the API definition system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 class AtomCoordinateRepresentation : public masala::base::managers::engine::MasalaDataRepresentation {
+
+	typedef masala::base::managers::engine::MasalaDataRepresentation Parent;
+	typedef masala::base::managers::engine::MasalaDataRepresentationSP ParentSP;
+	typedef masala::base::managers::engine::MasalaDataRepresentationCSP ParentCSP;
 
 public:
 
@@ -59,17 +65,72 @@ public:
     /// @brief Default constructor.
     AtomCoordinateRepresentation() = default;
 
-    /// @brief Copy constructor.
-    AtomCoordinateRepresentation( AtomCoordinateRepresentation const & ) = default;
+    /// @brief Copy constructor.  Explicit due to mutex.
+    AtomCoordinateRepresentation( AtomCoordinateRepresentation const & src );
 
     // Destructor.
     ~AtomCoordinateRepresentation() override = default;
 
-    /// @brief Clone operation: make a copy of this object and return a shared pointer
-    /// to the copy.
-    virtual
-    AtomCoordinateRepresentationSP
-    clone() const = 0;
+	/// @brief Clone operation: make a copy of this object and return a shared pointer
+	/// to the copy.
+	virtual
+	AtomCoordinateRepresentationSP
+	clone() const;
+
+	/// @brief Deep clone operation: make a deep copy of this object and return a shared
+	/// pointer to the deep copy.
+	AtomCoordinateRepresentationSP
+	deep_clone() const;
+
+	/// @brief Returns "AtomCoordinateRepresentation".
+	std::string
+	class_name() const override;
+
+	/// @brief Returns "masala::core::chemistry::atoms::coordinates".
+	std::string
+	class_namespace() const override;
+
+	/// @brief Make this object instance fully independent.
+	void
+	make_independent();
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PLUGIN CLASS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the categories for this plugin.
+	/// @returns {{ "AtomCoordinateRepresentation" }}
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the keywords for this plugin.
+	/// @returns { "atom_coordinate_representation" }
+	std::vector< std::string >
+	get_keywords() const override;
+
+	/// @brief Get the categories for this DataRepresentation.
+	/// @returns {{ "AtomCoordinateRepresentation" }}
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the keywords that this data representation plugin has.
+	/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+	/// strings.  One data representation category can be classified into multiple categories.
+	/// @returns { "atom_coordinate_representation" }
+	std::vector< std::string >
+	get_data_representation_keywords() const override;
+
+	/// @brief Get the compatible engines for this data representation.
+	/// @returns Currently an empty list.  This may change in the future.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the properties of this data representation.
+	/// @returns { "atom_coordinate_representation" }
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 public:
 
@@ -87,7 +148,7 @@ public:
     replace_atom_instance(
         AtomInstanceCSP const & old_instance,
         AtomInstanceCSP const & new_instance
-    ) = 0;
+    );
 
     /// @brief Add an atom.
     /// @note Must be implemented by derived classes.
@@ -96,7 +157,7 @@ public:
     add_atom_instance(
         AtomInstanceCSP const & new_atom,
         std::array< masala::base::Real, 3 > const & new_atom_coordinates
-    ) = 0;
+    );
 
     /// @brief Get the coordinates of an atom.
     /// @note Must be implemented by derived classes.
@@ -104,7 +165,15 @@ public:
     std::array< masala::base::Real, 3 >
     get_atom_coordinates(
         AtomInstanceCSP const & atom
-    ) const = 0;
+    ) const;
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION GETTER
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get an object describing the API for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCWP
+	get_api_definition() override;
 
 protected:
 
@@ -140,11 +209,17 @@ protected:
 		masala::base::managers::engine::MasalaDataRepresentation const & src
 	) override;
 
+	/// @brief Let derived classes access the API definition.  Could be nullptr.
+	inline masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition() { return api_definition_; }
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 };
 
