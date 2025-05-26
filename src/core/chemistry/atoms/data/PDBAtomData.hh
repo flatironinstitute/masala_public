@@ -90,6 +90,18 @@ public:
     /// @brief Every class can provide its own namespace.  This returns "masala::core::chemistry::atoms::data".
 	std::string class_namespace() const override;
 
+	/// @brief Get the category or categories for this plugin class.
+	/// @details Must be implemented by derived classes.
+	/// @returns {{"AtomData", "PDBAtomData"}}
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the keywords for this plugin class.
+	/// @details Must be implemented by derived classes.
+	/// @returns {"atom_data", "pdb", "protein_data_bank"}
+	std::vector< std::string >
+	get_keywords() const override;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////

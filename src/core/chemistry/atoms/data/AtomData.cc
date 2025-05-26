@@ -43,14 +43,14 @@ namespace data {
 
 /// @brief Default constructor.  Explicit due to mutex.
 AtomData::AtomData() :
-	masala::base::MasalaObject()
+	masala::base::managers::plugin_module::MasalaPlugin()
 {}
 
 /// @brief Copy constructor.  Explicit due to mutex.
 AtomData::AtomData(
 	AtomData const & src
 ) :
-	masala::base::MasalaObject(src)
+	masala::base::managers::plugin_module::MasalaPlugin(src)
 {
 	std::lock( src.mutex_, mutex_ );
 	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
@@ -133,6 +133,22 @@ AtomData::get_api_definition() {
 	}
 
 	return api_definition_;
+}
+
+/// @brief Get the category or categories for this plugin class.
+/// @details Must be implemented by derived classes.
+/// @returns {{"AtomData"}}
+std::vector< std::vector< std::string > >
+AtomData::get_categories() const {
+	return std::vector< std::vector< std::string > >{{"AtomData"}};
+}
+
+/// @brief Get the keywords for this plugin class.
+/// @details Must be implemented by derived classes.
+/// @returns {"atom_data"}
+std::vector< std::string >
+AtomData::get_keywords() const {
+	return std::vector< std::string >{ "atom_data" };
 }
 
 ////////////////////////////////////////////////////////////////////////////////

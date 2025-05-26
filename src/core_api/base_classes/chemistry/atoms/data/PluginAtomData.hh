@@ -82,6 +82,17 @@ public:
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Get the category or categories for this plugin class.
+	/// @details Must be implemented by derived classes.  Derived classes should ensure that
+    /// this appends to the AtomData::get_categories() output (which returns {{"AtomData"}}.
+	std::vector< std::vector< std::string > >
+	get_categories() const override = 0;
+
+	/// @brief Get the keywords for this plugin class.
+	/// @details Must be implemented by derived classes.  Derived classes should ensure that
+    /// this appends to the AtomData::get_keywords() output (which returns {"atom_data"});
+	std::vector< std::string >
+	get_keywords() const override = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS

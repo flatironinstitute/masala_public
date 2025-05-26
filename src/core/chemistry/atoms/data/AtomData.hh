@@ -30,7 +30,7 @@
 // Core headers:
 
 // Base headers:
-#include <base/MasalaObject.hh>
+#include <base/managers/plugin_module/MasalaPlugin.hh>
 
 // STL headers:
 #include <mutex>
@@ -45,7 +45,7 @@ namespace data {
 /// @brief A container for additional optional data that might be
 /// attached to an atom.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomData : public masala::base::MasalaObject {
+class AtomData : public masala::base::managers::plugin_module::MasalaPlugin {
 
 public:
 
@@ -94,6 +94,18 @@ public:
 	/// @brief Get the API definition for this object.
 	masala::base::api::MasalaObjectAPIDefinitionCWP
 	get_api_definition() override;
+
+	/// @brief Get the category or categories for this plugin class.
+	/// @details Must be implemented by derived classes.
+	/// @returns {{"AtomData"}}
+	std::vector< std::vector< std::string > >
+	get_categories() const override;
+
+	/// @brief Get the keywords for this plugin class.
+	/// @details Must be implemented by derived classes.
+	/// @returns {"atom_data"}
+	std::vector< std::string >
+	get_keywords() const override;
 
 protected:
 

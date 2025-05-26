@@ -85,6 +85,30 @@ PDBAtomData::class_namespace() const {
     return "masala::core::chemistry::atoms::data";
 }
 
+/// @brief Get the category or categories for this plugin class.
+/// @details Must be implemented by derived classes.
+/// @returns {{"AtomData", "PDBAtomData"}}
+std::vector< std::vector< std::string > >
+PDBAtomData::get_categories() const {
+    std::vector< std::vector< std::string > > categories( AtomData::get_categories() );
+    categories[0].push_back( "PDBAtomData" );
+    categories[0].shrink_to_fit();
+    categories.shrink_to_fit();
+    return categories;
+}
+
+/// @brief Get the keywords for this plugin class.
+/// @details Must be implemented by derived classes.
+/// @returns {"atom_data", "pdb", "protein_data_bank"}
+std::vector< std::string >
+PDBAtomData::get_keywords() const {
+    std::vector< std::string > keywords( AtomData::get_keywords() );
+    keywords.push_back( "pdb" );
+    keywords.push_back( "protein_data_bank" );
+    keywords.shrink_to_fit();
+    return keywords;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
