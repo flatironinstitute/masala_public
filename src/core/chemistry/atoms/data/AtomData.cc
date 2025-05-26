@@ -58,6 +58,34 @@ AtomData::AtomData(
 	protected_assign( src );
 }
 
+/// Assignment operator.  Explicit due to mutex.
+AtomData &
+AtomData::operator=(
+	AtomData const & src
+) {
+	std::lock( src.mutex_, mutex_ );
+	std::lock_guard< std::mutex > lockthat( src.mutex_, std::adopt_lock );
+	std::lock_guard< std::mutex > lockthis( mutex_, std::adopt_lock );
+	protected_assign( src );
+	return *this;
+}
+
+/// @brief Clone operation: make a copy of this object and return a shared pointer
+/// to the copy.
+AtomDataSP
+AtomData::clone() const {
+    return masala::make_shared< AtomData >( *this );
+}
+
+/// @brief Deep clone operation: make a deep copy of this object and return a shared
+/// pointer to the deep copy.
+AtomDataSP
+AtomData::deep_clone() const {
+	AtomDataSP atomdata_copy( masala::make_shared< AtomData >( *this ) );
+    atomdata_copy->make_independent();
+    return atomdata_copy;
+}
+
 /// @brief Make this object independent by making a deep copy of all of its private members.
 /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
 void

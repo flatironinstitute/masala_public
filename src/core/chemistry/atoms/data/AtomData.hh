@@ -62,6 +62,18 @@ public:
 	/// @brief Default destructor.
 	~AtomData() override = default;
 
+	/// Assignment operator.  Explicit due to mutex.
+	AtomData & operator=( AtomData const & src );
+
+	/// @brief Clone operation: make a copy of this object and return a shared pointer
+	/// to the copy.
+	virtual AtomDataSP clone() const;
+
+	/// @brief Deep clone operation: make a deep copy of this object and return a shared
+	/// pointer to the deep copy.
+	/// @details Threadsafe.  Be sure to update this function whenever a private member is added!
+	AtomDataSP deep_clone() const;
+
 	/// @brief Make this object independent by making a deep copy of all of its private members.
 	/// @details Be sure to update this function whenever a private member is added!
 	void

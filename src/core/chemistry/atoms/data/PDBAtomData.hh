@@ -75,14 +75,12 @@ public:
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
-    virtual
-    PDBAtomDataSP
-    clone() const;
+    AtomDataSP
+    clone() const override;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
     /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
-    virtual
     PDBAtomDataSP
     deep_clone() const;
 

@@ -59,9 +59,8 @@ PDBAtomData::PDBAtomData(
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-PDBAtomDataSP
+AtomDataSP
 PDBAtomData::clone() const {
-	std::lock_guard< std::mutex > lock( mutex() );
     return masala::make_shared< PDBAtomData >( *this );
 }
 
@@ -69,11 +68,7 @@ PDBAtomData::clone() const {
 /// pointer to the deep copy.
 PDBAtomDataSP
 PDBAtomData::deep_clone() const {
-	PDBAtomDataSP pdbdata_copy;
-	{
-		std::lock_guard< std::mutex > lock( mutex() );
-		pdbdata_copy = masala::make_shared< PDBAtomData >( *this );
-	}
+	PDBAtomDataSP pdbdata_copy( masala::make_shared< PDBAtomData >( *this ) );
     pdbdata_copy->make_independent();
     return pdbdata_copy;
 }
