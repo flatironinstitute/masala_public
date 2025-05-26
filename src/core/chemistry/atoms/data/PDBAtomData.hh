@@ -46,7 +46,7 @@ namespace data {
 
 /// @brief A container class for data attached to an atom that was read from a PDB file.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class PDBAtomData : public AtomData {
+class PDBAtomData : public masala::core::chemistry::atoms::data::AtomData {
 
 public:
 
@@ -75,22 +75,14 @@ public:
 
     /// @brief Clone operation: make a copy of this object and return a shared pointer
     /// to the copy.
-    virtual
-    PDBAtomDataSP
-    clone() const;
+    AtomDataSP
+    clone() const override;
 
     /// @brief Deep clone operation: make a deep copy of this object and return a shared
     /// pointer to the deep copy.
     /// @details Threadsafe.  Be sure to update this function whenever a private member is added!
-    virtual
     PDBAtomDataSP
     deep_clone() const;
-
-    /// @brief Make this object independent by making a deep copy of all of its private members.
-    /// @details Be sure to update this function whenever a private member is added!
-    virtual
-    void
-    make_independent();
 
 	/// @brief Returns "PDBAtomData".
 	std::string class_name() const override;
@@ -114,6 +106,25 @@ public:
     /// @note May not match the AtomInstance::element().  Use AtomInstance::element() for
     /// Masala protocols that depend on element types.
     std::string const & pdb_element_type() const;
+
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Make this object independent by making a deep copy of all of its private members.
+	/// @details Be sure to update this function whenever a private member is added!
+	void
+	protected_make_independent() override;
+
+	/// @brief Assign src to this.
+	/// @details Must be implemented by derived classes.  Should call parent class protected_make_independent().
+	/// @note This is called from a mutex-locked context.  Should do no mutex-locking.
+	void
+	protected_assign(
+		AtomData const & src
+	) override;
 
 private:
 

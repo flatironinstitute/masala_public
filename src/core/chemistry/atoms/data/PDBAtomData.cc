@@ -27,6 +27,9 @@
 #include <core/chemistry/atoms/AtomInstance.hh>
 #include <core/chemistry/bonds/ChemicalBondInstance.hh>
 
+// Base headers:
+#include <base/error/ErrorHandling.hh>
+
 // STL headers:
 
 namespace masala {
@@ -56,7 +59,7 @@ PDBAtomData::PDBAtomData(
 
 /// @brief Clone operation: make a copy of this object and return a shared pointer
 /// to the copy.
-PDBAtomDataSP
+AtomDataSP
 PDBAtomData::clone() const {
     return masala::make_shared< PDBAtomData >( *this );
 }
@@ -65,15 +68,9 @@ PDBAtomData::clone() const {
 /// pointer to the deep copy.
 PDBAtomDataSP
 PDBAtomData::deep_clone() const {
-    PDBAtomDataSP pdbdata_copy( masala::make_shared< PDBAtomData >( *this ) );
+	PDBAtomDataSP pdbdata_copy( masala::make_shared< PDBAtomData >( *this ) );
     pdbdata_copy->make_independent();
     return pdbdata_copy;
-}
-
-/// @brief Make this object independent by making a deep copy of all of its private members.
-/// @details Threadsafe.  Be sure to update this function whenever a private member is added!
-void
-PDBAtomData::make_independent() {
 }
 
 /// @brief Returns "PDBAtomData".
@@ -95,19 +92,49 @@ PDBAtomData::class_namespace() const {
 /// @brief Access the atom name as listed in a PDB file.
 std::string const &
 PDBAtomData::pdb_atom_name() const {
+	std::lock_guard< std::mutex > lock( mutex() );
     return pdb_atom_name_;
 }
 
 /// @brief Access the atom index as listed in a PDB file.
 signed long
 PDBAtomData::pdb_atom_index() const {
+	std::lock_guard< std::mutex > lock( mutex() );
     return pdb_atom_index_;
 }
 
 /// @brief Access the element type as listed in a PDB file.
 std::string const &
 PDBAtomData::pdb_element_type() const {
+	std::lock_guard< std::mutex > lock( mutex() );
     return pdb_element_type_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Make this object independent by making a deep copy of all of its private members.
+/// @details Be sure to update this function whenever a private member is added!
+void
+PDBAtomData::protected_make_independent() {
+	AtomData::protected_make_independent();
+}
+
+/// @brief Assign src to this.
+/// @details Must be implemented by derived classes.  Should call parent class protected_make_independent().
+/// @note This is called from a mutex-locked context.  Should do no mutex-locking.
+void
+PDBAtomData::protected_assign( AtomData const & src ) {
+	PDBAtomData const * src_ptr_cast( dynamic_cast< PDBAtomData const * >( &src ) );
+
+	CHECK_OR_THROW_FOR_CLASS( src_ptr_cast != nullptr, "protected_assign", "Cannot assign an object of type " + src.class_name() + " to a PDBAtomData object." );
+	
+	pdb_atom_name_ = src_ptr_cast->pdb_atom_name_;
+	pdb_atom_index_ = src_ptr_cast->pdb_atom_index_;
+	pdb_element_type_ = src_ptr_cast->pdb_element_type_;
+
+	AtomData::protected_assign( src );
 }
 
 } // namespace data
