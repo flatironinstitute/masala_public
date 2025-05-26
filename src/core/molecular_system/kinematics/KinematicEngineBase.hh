@@ -16,29 +16,35 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/engine/kinematics/KinematicEngineBase.hh
-/// @brief A base class for Masala kinematic engines, which perform kinematic
-/// manipulations (forward kinematics, inverse kinematics, and derivatives).
+/// @file src/core/molecular_system/kinematics/KinematicEngineBase.hh
+/// @brief Headers for a base class for Masala kinematic data representations, which facilitate kinematic
+/// manipulations (forward kinematics, inverse kinematics, and derivatives).  This class is not intended
+/// to be instantiated outside of the API system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_engine_kinematics_KinematicEngineBase_hh
-#define Masala_src_core_engine_kinematics_KinematicEngineBase_hh
+#ifndef Masala_src_core_molecular_system_kinematics_KinematicEngineBase_hh
+#define Masala_src_core_molecular_system_kinematics_KinematicEngineBase_hh
 
 // Forward declarations:
-#include <core/engine/kinematics/KinematicEngineBase.fwd.hh>
+#include <core/molecular_system/kinematics/KinematicEngineBase.fwd.hh>
 
-// Core headers:
-#include <core/engine/MasalaEngine.hh>
+// Base headers:
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 
 namespace masala {
 namespace core {
-namespace engine {
+namespace molecular_system {
 namespace kinematics {
 
-/// @brief A base class for Masala kinematic engines, which perform kinematic
-/// manipulations (forward kinematics, inverse kinematics, and derivatives).
+/// @brief A base class for Masala kinematic data representations, which facilitate kinematic
+/// manipulations (forward kinematics, inverse kinematics, and derivatives).  This class is not intended
+/// to be instantiated outside of the API system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class KinematicEngineBase : public masala::core::engine::MasalaEngine {
+class KinematicEngineBase : public masala::base::managers::engine::MasalaDataRepresentation {
+
+	typedef masala::base::managers::engine::MasalaDataRepresentation Parent;
+	typedef masala::base::managers::engine::MasalaDataRepresentationSP ParentSP;
+	typedef masala::base::managers::engine::MasalaDataRepresentationCSP ParentCSP;
 
 public:
 
@@ -55,8 +61,8 @@ public:
 }; // class KinematicEngineBase
 
 } // namespace kinematics
-} // namespace engine
+} // namespace molecular_system
 } // namespace core
 } // namespace masala
 
-#endif //Masala_src_core_engine_kinematics_KinematicEngineBase_hh
+#endif //Masala_src_core_molecular_system_kinematics_KinematicEngineBase_hh
