@@ -16,27 +16,29 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/core/chemistry/atoms/data/AtomData.hh
-/// @brief A container for additional optional data that might be
+/// @file src/core_api/base_classes/chemistry/atoms/data/PluginAtomData.hh
+/// @brief Headers for a container for additional optional data that might be
 /// attached to an atom.
+/// @details Note that this is a pure virtual base class for plugin
+/// atom data containers.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_core_chemistry_atoms_data_AtomData_hh
-#define Masala_src_core_chemistry_atoms_data_AtomData_hh
+#ifndef Masala_src_core_api_base_classes_chemistry_atoms_data_PluginAtomData_hh
+#define Masala_src_core_api_base_classes_chemistry_atoms_data_PluginAtomData_hh
 
 // Forward declarations:
-#include <core/chemistry/atoms/data/AtomData.fwd.hh>
+#include <core_api/base_classes/chemistry/atoms/data/PluginAtomData.fwd.hh>
 
 // Core headers:
+#include <core/chemistry/atoms/data/AtomData.hh>
 
 // Base headers:
-#include <base/MasalaObject.hh>
 
 // STL headers:
-#include <mutex>
 
 namespace masala {
-namespace core {
+namespace core_api {
+namespace base_classes {
 namespace chemistry {
 namespace atoms {
 namespace data {
@@ -44,8 +46,14 @@ namespace data {
 
 /// @brief A container for additional optional data that might be
 /// attached to an atom.
+/// @details Note that this is a pure virtual base class for plugin
+/// atom data containers.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
-class AtomData : public masala::base::MasalaObject {
+class PluginAtomData : public masala::core::chemistry::atoms::data::AtomData {
+
+    typedef masala::core::chemistry::atoms::data::AtomData Parent;
+    typedef masala::core::chemistry::atoms::data::AtomDataSP ParentSP;
+    typedef masala::core::chemistry::atoms::data::AtomDataCSP ParentCSP;
 
 public:
 
@@ -53,25 +61,20 @@ public:
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Default constructor.  Explicit due to mutex.
-	AtomData();
+    /// @brief Default constructor.
+    PluginAtomData() = default;
 
-	/// @brief Copy constructor.  Explicit due to mutex.
-	AtomData( AtomData const & src );
+    /// @brief Copy constructor.
+    PluginAtomData( PluginAtomData const & src ) = default;
 
-	/// @brief Default destructor.
-	~AtomData() override = default;
+    /// @brief Default destructor.
+    ~PluginAtomData() override = default;
 
-	/// @brief Make this object independent by making a deep copy of all of its private members.
-	/// @details Be sure to update this function whenever a private member is added!
-	void
-	make_independent();
+	/// @brief Get the class name.  Must be implemented by derived classes.
+	std::string class_name() const override = 0;
 
-	/// @brief Get the name of this class ("AtomData").
-	std::string class_name() const override;
-
-	/// @brief Get the namespace of this class ("masala::core::chemistry::atoms::data").
-	std::string class_namespace() const override;
+	/// @brief Get the class namespace.  Must be implemented by derived classes.
+	std::string class_namespace() const override = 0;
 
 public:
 
@@ -79,40 +82,21 @@ public:
 // PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Get the API definition for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCWP
-	get_api_definition() override;
-
-protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Allow derived classes to access the mutex.
-	inline std::mutex & mutex() const { return mutex_; }
-
-	/// @brief Allow derived classes to access the API definition for this object.  Could be nullptr.
-	inline masala::base::api::MasalaObjectAPIDefinitionCSP & api_definition() { return api_definition_; }
-
-	/// @brief Allow derived classes to access the API definition for this object.  Could be nullptr.
-	inline masala::base::api::MasalaObjectAPIDefinitionCSP const & api_definition() const { return api_definition_; }
-
-	/// @brief Make this object fully indpendent.
+	/// @brief Make this object independent by making a deep copy of all of its private members.
 	/// @details Must be implemented by derived classes.  Should call parent class protected_make_independent().
-	/// @note This is called from a mutex-locked context.  Should do no mutex-locking.
-	virtual
 	void
-	protected_make_independent();
+	protected_make_independent() override;
 
 	/// @brief Assign src to this.
 	/// @details Must be implemented by derived classes.  Should call parent class protected_make_independent().
 	/// @note This is called from a mutex-locked context.  Should do no mutex-locking.
-	virtual
 	void
-	protected_assign(
-		AtomData const & src
-	);
+	protected_assign( masala::core::chemistry::atoms::data::AtomData const & src ) override;
 
 private:
 
@@ -120,19 +104,13 @@ private:
 // PRIVATE MEMBER DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief A mutex for this object.
-	mutable std::mutex mutex_;
-
-	/// @brief API definition for this object.
-	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
-
-
 };
 
 } // namespace data
 } // namespace atoms
 } // namespace chemistry
-} // namespace core
+} // namespace base_classes
+} // namespace core_api
 } // namespace masala
 
-#endif // Masala_src_core_chemistry_atoms_data_AtomData_hh
+#endif // Masala_src_core_api_base_classes_chemistry_atoms_data_PluginAtomData_hh
