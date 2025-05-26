@@ -88,29 +88,6 @@ EigenLinalgCartesianAtomCoordinateRepresentation::deep_clone() const {
 	return new_object;
 }
 
-/// @brief Make this object instance fully independent.
-void
-EigenLinalgCartesianAtomCoordinateRepresentation::make_independent() {
-	std::lock_guard< std::mutex > lock( data_representation_mutex() );
-	using masala::core::chemistry::atoms::AtomInstanceCSP;
-	using masala::base::Size;
-
-	std::vector< AtomInstanceCSP > old_atom_instances;
-	std::vector< AtomInstanceCSP > new_atom_instances;
-	Size const n_atoms( atom_instance_to_column_.size() );
-	old_atom_instances.reserve( n_atoms );
-	new_atom_instances.reserve( n_atoms );
-	for( auto const & entry : atom_instance_to_column_ ) {
-		old_atom_instances.push_back( entry.first );
-		new_atom_instances.push_back( entry.first->deep_clone() );
-	}
-
-	for( Size i(0); i<=n_atoms; ++i ) {
-		replace_atom_instance_mutex_locked( old_atom_instances[i], new_atom_instances[i] );
-	}
-
-}
-
 /// @brief Returns "EigenLinalgCartesianAtomCoordinateRepresentation".
 std::string
 EigenLinalgCartesianAtomCoordinateRepresentation::class_name() const {
@@ -249,7 +226,7 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_api_definition() {
 
 	std::lock_guard< std::mutex > lock( data_representation_mutex() );
 
-	if( api_definition_ == nullptr ) {
+	if( api_definition() == nullptr ) {
 
 		MasalaObjectAPIDefinitionSP api_def(
 			masala::make_shared< MasalaObjectAPIDefinition >(
@@ -294,10 +271,10 @@ EigenLinalgCartesianAtomCoordinateRepresentation::get_api_definition() {
 			)
 		);
 
-		api_definition_ = api_def; //Make const.
+		api_definition() = api_def; //Make const.
 	}
 
-	return api_definition_;
+	return api_definition();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +313,22 @@ EigenLinalgCartesianAtomCoordinateRepresentation::protected_reset() {
 /// by derived classses.  Performs no mutex-locking.
 void
 EigenLinalgCartesianAtomCoordinateRepresentation::protected_make_independent() {
-	//GNDN.
+	using masala::core::chemistry::atoms::AtomInstanceCSP;
+	using masala::base::Size;
+
+	std::vector< AtomInstanceCSP > old_atom_instances;
+	std::vector< AtomInstanceCSP > new_atom_instances;
+	Size const n_atoms( atom_instance_to_column_.size() );
+	old_atom_instances.reserve( n_atoms );
+	new_atom_instances.reserve( n_atoms );
+	for( auto const & entry : atom_instance_to_column_ ) {
+		old_atom_instances.push_back( entry.first );
+		new_atom_instances.push_back( entry.first->deep_clone() );
+	}
+
+	for( Size i(0); i<=n_atoms; ++i ) {
+		replace_atom_instance_mutex_locked( old_atom_instances[i], new_atom_instances[i] );
+	}
 	Parent::protected_make_independent();
 }
 

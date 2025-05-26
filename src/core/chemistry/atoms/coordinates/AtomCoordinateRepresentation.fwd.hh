@@ -17,9 +17,10 @@
 */
 
 /// @file src/core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.fwd.hh
-/// @brief Forward declarations for a pure virtual base class class for the container
+/// @brief Forward declarations for a base class for the container
 /// of a collection of atom coordinates, represented in a manner that can make manipulations
 /// very efficient.
+/// @note This class is not intended to be instantiated outside of the API definition system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_core_chemistry_atoms_coordinates_AtomCoordinateRepresentation_fwd_hh

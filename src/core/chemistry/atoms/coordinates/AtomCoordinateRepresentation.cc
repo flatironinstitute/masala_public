@@ -17,15 +17,23 @@
 */
 
 /// @file src/core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.cc
-/// @brief A pure virtual base class class for the container of a collection of atom
+/// @brief A class for the container of a collection of atom
 /// coordinates, represented in a manner that can make manipulations very efficient.
+/// @note This class is not intended to be instantiated outside of the API definition system.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Forward declarations:
 #include <core/chemistry/atoms/coordinates/AtomCoordinateRepresentation.hh>
 
+// Core headers
+#include <core/chemistry/atoms/AtomInstance.hh>
+
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
+#include <base/api/setter/MasalaObjectAPISetterDefinition_TwoInput.tmpl.hh>
+#include <base/api/getter/MasalaObjectAPIGetterDefinition_OneInput.tmpl.hh>
 
 namespace masala {
 namespace core {
@@ -38,7 +46,211 @@ namespace coordinates {
 // CONSTRUCTION, DESTRUCTION, AND CLONING
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Copy constructor.  Explicit due to mutex.
+AtomCoordinateRepresentation::AtomCoordinateRepresentation(
+	AtomCoordinateRepresentation const & src
+) :
+	Parent(src)
+{
+	std::lock( src.data_representation_mutex(), data_representation_mutex() );
+	std::lock_guard< std::mutex > lockthis( data_representation_mutex(), std::adopt_lock ); 
+	std::lock_guard< std::mutex > lockthat( src.data_representation_mutex(), std::adopt_lock );
+	protected_assign(src);
+}
 
+/// @brief Clone operation: make a copy of this object and return a shared pointer
+/// to the copy.
+AtomCoordinateRepresentationSP
+AtomCoordinateRepresentation::clone() const {
+	return masala::make_shared< AtomCoordinateRepresentation >( *this );
+}
+
+/// @brief Deep clone operation: make a deep copy of this object and return a shared
+/// pointer to the deep copy.
+AtomCoordinateRepresentationSP
+AtomCoordinateRepresentation::deep_clone() const {
+	AtomCoordinateRepresentationSP new_object( masala::make_shared< AtomCoordinateRepresentation >( *this ) );
+	new_object->make_independent();
+	return new_object;
+}
+
+/// @brief Returns "AtomCoordinateRepresentation".
+std::string
+AtomCoordinateRepresentation::class_name() const {
+	return "AtomCoordinateRepresentation";
+}
+
+/// @brief Returns "masala::core::chemistry::atoms::coordinates".
+std::string
+AtomCoordinateRepresentation::class_namespace() const {
+	return "masala::core::chemistry::atoms::coordinates";
+}
+
+/// @brief Make this object instance fully independent.
+void
+AtomCoordinateRepresentation::make_independent() {
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+	
+	protected_make_independent();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PLUGIN CLASS FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the categories for this plugin.
+/// @returns {{ "AtomCoordinateRepresentation" }}
+std::vector< std::vector< std::string > >
+AtomCoordinateRepresentation::get_categories() const {
+	return std::vector< std::vector< std::string > > {{ "AtomCoordinateRepresentation" }};
+}
+
+/// @brief Get the keywords for this plugin.
+/// @returns { "atom_coordinate_representation" }
+std::vector< std::string >
+AtomCoordinateRepresentation::get_keywords() const {
+	return std::vector< std::string >{
+		"atom_coordinate_representation"
+	};
+}
+
+/// @brief Get the categories for this DataRepresentation.
+/// @returns {{ "AtomCoordinateRepresentation" }}
+std::vector< std::vector< std::string > >
+AtomCoordinateRepresentation::get_data_representation_categories() const {
+	return std::vector< std::vector< std::string > >{{ "AtomCoordinateRepresentation" }};
+}
+
+/// @brief Get the keywords that this data representation plugin has.
+/// @details Categories are hierarchical, with the hierarchy represented as a vector of
+/// strings.  One data representation category can be classified into multiple categories.
+/// @returns { "atom_coordinate_representation" }
+std::vector< std::string >
+AtomCoordinateRepresentation::get_data_representation_keywords() const {
+	return std::vector< std::string >{
+		"atom_coordinate_representation"
+	};
+}
+
+/// @brief Get the compatible engines for this data representation.
+/// @returns Currently an empty list.  This may change in the future.
+std::vector< std::string >
+AtomCoordinateRepresentation::get_compatible_masala_engines() const {
+	return std::vector< std::string >{};
+}
+
+/// @brief Get the properties of this data representation.
+/// @returns { "atom_coordinate_representation" }
+std::vector< std::string >
+AtomCoordinateRepresentation::get_present_data_representation_properties() const {
+	return std::vector< std::string >{
+		"atom_coordinate_representation"
+	};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+
+/// @brief Replace an atom instance with a new one.
+/// @details Used for deep cloning, since the AtomCoordinateRepresentation does not itself
+/// implement a deep_clone() function.
+/// @note Must be implemented by derived classes.
+void
+AtomCoordinateRepresentation::replace_atom_instance(
+	AtomInstanceCSP const & ,//old_instance,
+	AtomInstanceCSP const & //new_instance
+) {
+	MASALA_THROW( class_namespace() + "::" + class_name(), "replace_atom_instance",
+		"This function must be implemented by plugin classes derived from AtomCoordinateRepresentation."
+	);
+}
+
+/// @brief Add an atom.
+/// @note Must be implemented by derived classes.
+void
+AtomCoordinateRepresentation::add_atom_instance(
+	AtomInstanceCSP const & ,//new_atom,
+	std::array< masala::base::Real, 3 > const & //new_atom_coordinates
+) {
+	MASALA_THROW( class_namespace() + "::" + class_name(), "add_atom_instance",
+		"This function must be implemented by plugin classes derived from AtomCoordinateRepresentation."
+	);
+}
+
+/// @brief Get the coordinates of an atom.
+/// @note Must be implemented by derived classes.
+std::array< masala::base::Real, 3 >
+AtomCoordinateRepresentation::get_atom_coordinates(
+	AtomInstanceCSP const & //atom
+) const {
+	MASALA_THROW( class_namespace() + "::" + class_name(), "get_atom_coordinates",
+		"This function must be implemented by plugin classes derived from AtomCoordinateRepresentation."
+	);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION GETTER
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get an object describing the API for this object.
+masala::base::api::MasalaObjectAPIDefinitionCWP
+AtomCoordinateRepresentation::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+
+	if( api_definition_ == nullptr ) {
+
+		MasalaObjectAPIDefinitionSP api_def(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this,
+				"The AtomCoordinateRepresentation class is a base class for the coordinates of a bunch of atoms.  It is not "
+                "intended to be instantiated directly outside of the API definition system, and has protected constructors.",
+				false, true
+			)
+		);
+
+		// Constructors:
+		ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( AtomCoordinateRepresentation, api_def );
+
+		// Setters:
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, AtomInstanceCSP > >(
+				"replace_atom_instance", "Replace an atom instance with a new one.  Must be implemented by derived classes.  Base class implementation throws.",
+				"old_instance", "The atom that we are replacing.",
+				"new_instance", "The new atom that replaces the old.",
+				false, false,
+				std::bind( &AtomCoordinateRepresentation::replace_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
+		api_def->add_setter(
+			masala::make_shared< setter::MasalaObjectAPISetterDefinition_TwoInput< AtomInstanceCSP, std::array< masala::base::Real, 3 > const & > >(
+				"add_atom_instance", "Add an atom.  Must be implemented by derived classes.  Base class implementation throws.",
+				"new_atom", "The atom that we are adding.",
+				"new_coords", "The Cartesian coordinates of the atom that we're adding.",
+				false, false,
+				std::bind( &AtomCoordinateRepresentation::add_atom_instance, this, std::placeholders::_1, std::placeholders::_2 )
+			)
+		);
+
+		// Getters:
+		api_def->add_getter(
+			masala::make_shared< getter::MasalaObjectAPIGetterDefinition_OneInput< std::array< masala::base::Real, 3 >, AtomInstanceCSP const & > >(
+				"get_atom_coordinates", "Get the coordinates of an atom.  Must be implemented by derived classes.  Base class implementation throws.",
+				"atom", "The atom whose coordinates we're fetching.",
+				"coords", "The coordinates of the atom.",
+				false, false,
+				std::bind( &AtomCoordinateRepresentation::get_atom_coordinates, this, std::placeholders::_1 )
+			)
+		);
+
+		api_definition_ = api_def; //Make const.
+	}
+
+	return api_definition_;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED FUNCTIONS
