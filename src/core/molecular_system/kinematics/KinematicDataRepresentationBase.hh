@@ -77,6 +77,42 @@ public:
 	/// @brief Get the class namespace.  Returns "masala::core::molecular_system::kinematics".
 	std::string class_namespace() const override;
 
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Get the categories that this data representation plugin falls into.
+	/// @returns {{ "KinematicDataRepresentation" }}.
+	std::vector< std::vector< std::string > >
+	get_data_representation_categories() const override;
+
+	/// @brief Get the keywords that this data representation plugin has.
+	/// @returns Returns { "kinematic_data_representation" }.
+	std::vector< std::string >
+	get_data_representation_keywords() const override;
+
+	/// @brief Get the MasalaEngines that with which this data representation plugin
+	/// is DEFINITELY compatible.  (There may be other engines with which it is also
+	/// compatible, so this is not necessarily an exhaustive list.)
+	/// @returns An empty list right now.  May change later.
+	std::vector< std::string >
+	get_compatible_masala_engines() const override;
+
+	/// @brief Get the MasalaEngines that with which this data representation plugin
+	/// is DEFINITELY NOT compatible.  (There may be other engines with which it is also
+	/// not compatible, so this is not necessarily an exhaustive list.)
+	/// @returns An empty list right now.
+	std::vector< std::string >
+	get_incompatible_masala_engines() const override;
+
+	/// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
+	/// a non-exhaustive list.  If one data representation says it has the property
+	/// "linearly-scaling", another could also be linearly scaling despite not listing this.)
+	/// @returns { "kinematic_data_representation" }.
+	std::vector< std::string >
+	get_present_data_representation_properties() const override;
 
 }; // class KinematicDataRepresentationBase
 

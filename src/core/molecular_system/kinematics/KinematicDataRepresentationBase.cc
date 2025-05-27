@@ -78,9 +78,52 @@ KinematicDataRepresentationBase::class_namespace() const {
 	return "masala::core::molecular_system::kinematics";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the categories that this data representation plugin falls into.
+/// @returns {{ "KinematicDataRepresentation" }}.
+std::vector< std::vector< std::string > >
+KinematicDataRepresentationBase::get_data_representation_categories() const {
+	return std::vector< std::vector< std::string > >{ { "KinematicDataRepresentation" } };
+}
+
+/// @brief Get the keywords that this data representation plugin has.
+/// @returns Returns { "kinematic_data_representation" }.
+std::vector< std::string >
+KinematicDataRepresentationBase::get_data_representation_keywords() const {
+	return std::vector< std::string >{ "kinematic_data_representation" };
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY compatible.  (There may be other engines with which it is also
+/// compatible, so this is not necessarily an exhaustive list.)
+/// @returns An empty list right now.  May change later.
+std::vector< std::string >
+KinematicDataRepresentationBase::get_compatible_masala_engines() const {
+	return std::vector< std::string >{};
+}
+
+/// @brief Get the MasalaEngines that with which this data representation plugin
+/// is DEFINITELY NOT compatible.  (There may be other engines with which it is also
+/// not compatible, so this is not necessarily an exhaustive list.)
+/// @returns An empty list right now.
+std::vector< std::string >
+KinematicDataRepresentationBase::get_incompatible_masala_engines() const {
+	return std::vector< std::string >{};
+}
+
+/// @brief Get the properties that this MasalaDataRepresentation has.  (Note that this can be
+/// a non-exhaustive list.  If one data representation says it has the property
+/// "linearly-scaling", another could also be linearly scaling despite not listing this.)
+/// @returns { "kinematic_data_representation" }.
+std::vector< std::string >
+KinematicDataRepresentationBase::get_present_data_representation_properties() const {
+	return std::vector< std::string >{ "kinematic_data_representation" };
+}
+
 } // namespace kinematics
 } // namespace molecular_system
 } // namespace core
 } // namespace masala
-
-#endif //Masala_src_core_molecular_system_kinematics_KinematicDataRepresentationBase_hh
