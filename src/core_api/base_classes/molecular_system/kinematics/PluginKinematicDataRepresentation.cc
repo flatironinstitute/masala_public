@@ -89,7 +89,7 @@ PluginKinematicDataRepresentation::protected_clear() {
 /// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
 void
 PluginKinematicDataRepresentation::protected_reset() {
-	Parent::protected_assign();
+	Parent::protected_reset();
 }
 
 /// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
