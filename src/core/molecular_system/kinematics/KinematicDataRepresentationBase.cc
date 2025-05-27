@@ -80,6 +80,24 @@ KinematicDataRepresentationBase::class_namespace() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS FOR PLUGINS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the category or categories for this plugin class.
+/// @returns {{ "KinematicDataRepresentation" }}.
+std::vector< std::vector< std::string > >
+KinematicDataRepresentationBase::get_categories() const {
+	return std::vector< std::vector< std::string > >{ { "KinematicDataRepresentation" } };
+}
+
+/// @brief Get the keywords for this plugin class.
+/// @returns Returns { "kinematic_data_representation" }.
+std::vector< std::string >
+KinematicDataRepresentationBase::get_keywords() const {
+	return std::vector< std::string >{ "kinematic_data_representation" };
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

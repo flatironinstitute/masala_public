@@ -80,6 +80,22 @@ public:
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PUBLIC MEMBER FUNCTIONS FOR PLUGINS
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the category or categories for this plugin class.
+	/// @returns {{ "KinematicDataRepresentation" }}.
+    std::vector< std::vector< std::string > >
+    get_categories() const override;
+
+    /// @brief Get the keywords for this plugin class.
+	/// @returns Returns { "kinematic_data_representation" }.
+    std::vector< std::string >
+    get_keywords() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
 // DATA REPRESENTATION CATEGORIES, COMPATIBILITY, AND PROPERTIES FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
