@@ -162,6 +162,16 @@ public:
 		std::string const & name_in
 	) const;
 
+	/// @brief Get a vector of file interpreter creators, by file type descriptor.
+	/// @details File type descriptor is something like "protein_data_bank_file".  More than one file
+	/// interpreter could handle the same file type descriptor.
+	/// @returns A vector of shared pointers to the creator(s) that match the file type descriptor.  Could
+	/// be an empty vector if nothing matches.
+	std::vector< MasalaFileInterpreterCreatorCSP >
+	get_file_interpreters_by_file_type_descriptor(
+		std::string const & descriptor_in
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -181,6 +181,27 @@ MasalaFileInterpreterManager::get_file_interpreters_by_short_name(
 	return outvec;
 }
 
+/// @brief Get a vector of file interpreter creators, by file type descriptor.
+/// @details File type descriptor is something like "protein_data_bank_file".  More than one file
+/// interpreter could handle the same file type descriptor.
+/// @returns A vector of shared pointers to the creator(s) that match the file type descriptor.  Could
+/// be an empty vector if nothing matches.
+std::vector< MasalaFileInterpreterCreatorCSP >
+MasalaFileInterpreterManager::get_file_interpreters_by_file_type_descriptor(
+	std::string const & descriptor_in
+) const {
+	std::lock_guard< std::mutex > lock( file_interpreter_manager_mutex_ );
+
+	std::map< std::string, std::vector< MasalaFileInterpreterCreatorCSP > >::const_iterator it(
+		file_interpreters_by_file_type_descriptor_.find( descriptor_in )
+	);
+	if( it != file_interpreters_by_file_type_descriptor_.end() ) {
+		return it->second;
+	}
+
+	return std::vector< MasalaFileInterpreterCreatorCSP >{};
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
