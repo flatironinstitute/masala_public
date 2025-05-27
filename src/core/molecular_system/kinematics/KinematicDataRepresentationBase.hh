@@ -114,6 +114,42 @@ public:
 	std::vector< std::string >
 	get_present_data_representation_properties() const override;
 
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Is this data representation empty?
+	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
+	/// @returns True if no data have been loaded into this data representation, false otherwise.
+	/// @note This does not report on whether the data representation has been configured; only whether it has been loaded with data.
+	bool
+	protected_empty() const override;
+
+	/// @brief Remove the data loaded in this object.  Note that this does not result in the configuration being discarded.
+	/// @details Must be implemented by derived classes, and should call parent class protected_clear().  Performs no mutex-locking.
+	void
+	protected_clear() override;
+
+	/// @brief Remove the data loaded in this object AND reset its configuration to defaults.
+	/// @details Must be implemented by derived classes, and should call parent class protected_reset().  Performs no mutex-locking.
+	void
+	protected_reset() override;
+
+	/// @brief Make this object independent by deep-cloning all of its contained objects.  Must be implemented
+	/// by derived classses.  Performs no mutex-locking.
+	void
+	protected_make_independent() override;
+
+	/// @brief Called by the assignment operator and the copy constructor, this copies all data.  Must be implemented by
+	/// derived classes.  Performs no mutex locking.
+	/// @param src The object that we are copying from.
+	void
+	protected_assign(
+		masala::base::managers::engine::MasalaDataRepresentation const & src
+	) override;
+
 }; // class KinematicDataRepresentationBase
 
 } // namespace kinematics
