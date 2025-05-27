@@ -28,6 +28,8 @@
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentation.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/api/MasalaObjectAPIDefinition.hh>
+#include <base/api/constructor/MasalaObjectAPIConstructorMacros.hh>
 
 namespace masala {
 namespace core {
@@ -77,6 +79,35 @@ KinematicDataRepresentationBase::class_name() const {
 std::string
 KinematicDataRepresentationBase::class_namespace() const {
 	return "masala::core::molecular_system::kinematics";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Get the API definition for this object.
+base::api::MasalaObjectAPIDefinitionCWP
+KinematicDataRepresentationBase::get_api_definition() {
+	using namespace masala::base::api;
+
+	std::lock_guard< std::mutex > lock( data_representation_mutex() );
+
+	if( api_definition_ == nullptr ) {
+		MasalaObjectAPIDefinitionSP apidef(
+			masala::make_shared< MasalaObjectAPIDefinition >(
+				*this, "A base class for kinematic data representations.  Kinematic data representations represent the "
+				"kinematic relationships between atoms in a MolecularSystem object, permitting rapid manipulation.  This base "
+				"class has protected constructors and is not intended to be instantiated outside of an API definition scheme.",
+				false, true
+			)
+		);
+
+		ADD_PROTECTED_CONSTRUCTOR_DEFINITIONS( KinematicDataRepresentationBase, apidef );
+
+		api_definition_ = apidef;
+	}
+
+	return api_definition_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

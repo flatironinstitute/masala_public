@@ -30,6 +30,7 @@
 
 // Base headers:
 #include <base/managers/engine/MasalaDataRepresentation.hh>
+#include <base/api/MasalaObjectAPIDefinition.fwd.hh>
 
 namespace masala {
 namespace core {
@@ -76,6 +77,16 @@ public:
 
 	/// @brief Get the class namespace.  Returns "masala::core::molecular_system::kinematics".
 	std::string class_namespace() const override;
+
+public:
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC API DEFINITION FUNCTION
+////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Get the API definition for this object.
+    base::api::MasalaObjectAPIDefinitionCWP
+    get_api_definition() override;
 
 public:
 
@@ -136,6 +147,13 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Let derived classes access the API definition.
+	inline
+	masala::base::api::MasalaObjectAPIDefinitionCSP &
+	api_definition() {
+		return api_definition_;
+	}
+
 	/// @brief Is this data representation empty?
 	/// @details Must be implemented by derived classes.  Should return its value && the parent class protected_empty().  Performs no mutex-locking.
 	/// @returns True if no data have been loaded into this data representation, false otherwise.
@@ -165,6 +183,15 @@ protected:
 	protected_assign(
 		masala::base::managers::engine::MasalaDataRepresentation const & src
 	) override;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The API definition for this object.
+	masala::base::api::MasalaObjectAPIDefinitionCSP api_definition_;
 
 }; // class KinematicDataRepresentationBase
 
