@@ -65,6 +65,22 @@ KinematicDataRepresentationBase::operator=(
 	return *this;
 }
 
+/// @brief Make a copy of this object and return a shared pointer to the copy.
+/// @details Must be implemented by derived classes.
+KinematicDataRepresentationBaseSP
+KinematicDataRepresentationBase::clone() const {
+	return masala::make_shared< KinematicDataRepresentationBase >( *this ); // Mutex lock handled by constructor.
+}
+
+/// @brief Make a fully independent copy of this object and return a shared pointer to the copy.
+/// @details Must be implemented by derived classes.
+KinematicDataRepresentationBaseSP
+KinematicDataRepresentationBase::deep_clone() const {
+	KinematicDataRepresentationBaseSP newobj( clone() );
+	newobj->make_independent();
+	return newobj;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////

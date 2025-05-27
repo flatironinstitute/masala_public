@@ -66,6 +66,17 @@ public:
 	/// derived classes can.
 	virtual ~KinematicDataRepresentationBase() = default;
 
+	/// @brief Make a copy of this object and return a shared pointer to the copy.
+	/// @details Must be implemented by derived classes.
+	virtual
+	KinematicDataRepresentationBaseSP
+	clone() const;
+
+	/// @brief Make a fully independent copy of this object and return a shared pointer to the copy.
+	/// @details Must be implemented by derived classes.
+	KinematicDataRepresentationBaseSP
+	deep_clone() const;
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
