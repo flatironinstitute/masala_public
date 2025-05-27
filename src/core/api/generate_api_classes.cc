@@ -33,6 +33,7 @@
 #include <core/chemistry/atoms/coordinates/EigenLinalgCartesianAtomCoordinateRepresentation.hh>
 #include <core/chemistry/atoms/data/AtomData.hh>
 #include <core/chemistry/atoms/data/PDBAtomData.hh>
+#include <core/molecular_system/kinematics/KinematicDataRepresentationBase.hh>
 #include <core/selection/atom_selection/AtomSelection.hh>
 #include <core/io/pdb/BasicPDBReader.hh>
 #include <core/scoring/ScoringTerm.hh>
@@ -61,6 +62,7 @@ namespace api {
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::data::AtomData >() );
         outvec.emplace_back( masala::make_shared< masala::core::chemistry::atoms::data::PDBAtomData >() );
         outvec.emplace_back( masala::make_shared< masala::core::selection::atom_selection::AtomSelection >() );
+        outvec.emplace_back( masala::make_shared< masala::core::molecular_system::kinematics::KinematicDataRepresentationBase >() );
         outvec.emplace_back( masala::make_shared< masala::core::io::pdb::BasicPDBReader >() );
         outvec.emplace_back( masala::make_shared< masala::core::scoring::ScoringTerm >() );
         outvec.emplace_back( masala::make_shared< masala::core::scoring::ScoringTermAdditionalInput >() );
