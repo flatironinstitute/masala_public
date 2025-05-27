@@ -64,7 +64,7 @@ public:
 
 	/// @brief Pure virtual destructor.  This class cannot be instantiated; only its
 	/// derived classes can.
-	virtual ~KinematicDataRepresentationBase() = default;
+	~KinematicDataRepresentationBase() override = default;
 
 	/// @brief Make a copy of this object and return a shared pointer to the copy.
 	/// @details Must be implemented by derived classes.
