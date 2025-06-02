@@ -21,12 +21,17 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 # Set project attributes:
 PROJECT( Masala VERSION 0.11 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 
-# Default build is debug mode.  To build in release mode, comment out the two debug lines below and
-# uncomment the release lines.
-SET( MODE debug )
-SET( CMAKE_BUILD_TYPE Debug )
-# SET( MODE release )
-# SET( CMAKE_BUILD_TYPE Release )
+# Default build is release mode.  To build in debug mode (recommeded for development),
+# change the nex tline to SET( MODE debug ).
+SET( MODE release )
+#SET( MODE debug )
+IF( ${MODE} STREQUAL "release" )
+	SET( CMAKE_BUILD_TYPE Release )
+ELSEIF( ${MODE} STREQUAL "debug" )
+	SET( CMAKE_BUILD_TYPE Debug )
+ELSE()
+	MESSAGE( FATAL_ERROR "The only allowed compilation modes are debug and release." )
+ENDIF()
 
 # Uncomment the following to enable deprecated API functions.
 #ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
