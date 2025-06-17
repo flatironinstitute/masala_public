@@ -1,4 +1,4 @@
-# Masala
+# Masala Core library
 
 ## Description
 
@@ -10,7 +10,7 @@ The Masala project was started by Vikram K. Mulligan, a Research Scientist in th
 
 ## Building
 
-To build the core Masala libraries:
+To build the Core Masala library:
 
 1.  Clone the git repository (`git clone git@github.com:flatironinstitute/masala_dev.git`).
 2.  Clone all of the needed submodules (`cd masala_dev && git submodule update --init`).
@@ -25,6 +25,16 @@ After building, you will likely want to pull and build the standard Masala plugi
 1.  If you are on the `main` branch, pull the latest changes via `git pull`. If you are on another branch (you can check via `git branch`), update your remote branch (`git remote update origin --prune`).
 2.  Optionally, delete the previous build (`./delete_build.sh`).  Under most circumstances, this should _not_ be necessary, however: CMake is quite good at only rebuilding parts that need rebuilding, which saves time.  But a clean rebuild can be a good idea if the new version that you are compiling is drastically different from old versions.
 3.  Run the `buildme.sh` script.
+
+## Building Doxygen code documentation
+
+All source code (both manually-written sub-libraries and auto-generated API sub-libraries) is documented with Doxygen tags.  To generate Doxygen HTML documentation, first, follow the instructions above to build Masala's Core library.  Second, build Doxygen documentation with:
+
+```
+doxygen Doxyfile.src
+```
+
+(Note that Doxygen must be installed.) Documentation will be addded to the `html_docs/` directory.  Delete this directory to recompile documentation from scratch.
 
 ## Using
 
@@ -46,8 +56,8 @@ The Garam Masala GUI uses the Masala API definitions to auto-generate bindings f
 
 Masala can be used as a C++ library in two ways:
 
-1.  By conventionally linking (at compile-time) the core Masala libraries plus any needed plugins, and calling code directly.  In this case, it is recommended to call code only from the API libraries, since these are the libraries that present a consistent API with guarantees of stability.
-2.  By conventionally linking (at compile-time) the core Masala libraries, and auto-detecting and loading plugin libraries through runtime linking.  In this case, plugin objects are accessed entirely through the function pointers in their API descriptions.  This has the advantage of allowing a software project to use Masala plugins that were not available at compile time, and to take advantage of new Masala plugins without any recompilation or re-linking (but for runtime linking) needed.
+1.  By conventionally linking (at compile-time) the Core Masala library plus any needed plugins, and calling code directly.  In this case, it is recommended to call code only from the API libraries, since these are the libraries that present a consistent API with guarantees of stability.
+2.  By conventionally linking (at compile-time) the Core Masala library, and auto-detecting and loading plugin libraries through runtime linking.  In this case, plugin objects are accessed entirely through the function pointers in their API descriptions.  This has the advantage of allowing a software project to use Masala plugins that were not available at compile time, and to take advantage of new Masala plugins without any recompilation or re-linking (but for runtime linking) needed.
 
 ## Licence
 
