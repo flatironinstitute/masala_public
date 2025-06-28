@@ -69,6 +69,14 @@ MasalaMPIManager::initialize_for_external_mpi(
 	return mpiman;
 }
 
+/// @brief Check whether the MasalaMPIManager has been initialized.
+/*static*/
+bool
+MasalaMPIManager::manager_was_initialized() {
+	std::lock_guard< std::mutex > lock( initialization_mutex_ );
+	return manager_is_initialized_;
+}
+
 /// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.
 /// @details If an initialization function isn't called first (in all processes), then this sets the MPI
 /// manager up to report that MPI is NOT being used at all.
