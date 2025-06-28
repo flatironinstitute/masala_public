@@ -92,15 +92,29 @@ void
 MasalaRandomNumberGenerator::reseed() {
 	using namespace masala::base::managers::mpi;
 	base::Size mpi_rank( 0 );
+
+	// Note that we can't use write_to_tracer() from a constructor.
+	masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
+    std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
+
 	if( MasalaMPIManager::manager_was_initialized() ) {
 		MasalaMPIManagerHandle mpiman( MasalaMPIManager::get_instance() );
 		if( mpiman->using_mpi() ) {
 			mpi_rank = mpiman->mpi_process_rank();
 		}
+	} else {
+   		if( tracer_handle->tracer_is_enabled( tracername ) ) {
+       		tracer_handle->write_to_tracer( tracername, "WARNING: Initializing random generator prior to initialization of MPI manager.", true );
+		}
 	}
 	base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
 	base::Size const clock_ticks( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
-	random_engine_.seed( thread_id * 10000 + mpi_rank * 1212121 + clock_ticks );
+	uint_fast64_t const seedval( thread_id * 10000 + mpi_rank * 1212121 + clock_ticks );
+	random_engine_.seed( seedval );
+
+    if( tracer_handle->tracer_is_enabled( tracername ) ) {
+        tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seedval ) + ".", true );
+    }
 }
 
 
