@@ -27,6 +27,7 @@
 // Base headers:
 #include <base/managers/threads/MasalaThreadManager.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
+#include <base/managers/mpi/MasalaMPIManager.hh>
 #include <base/error/ErrorHandling.hh>
 
 // STL headers:
@@ -66,9 +67,7 @@ MasalaRandomNumberGenerator::get_instance() {
 MasalaRandomNumberGenerator::MasalaRandomNumberGenerator() :
     masala::base::MasalaObject()
 {
-    base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
-    base::Size const clock_ticks( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
-    random_engine_.seed( thread_id * 10000 + clock_ticks );
+	reseed();
 }
 
 /// @brief Private constructor with seed: object can only be instantiated with getInstance().
@@ -84,6 +83,23 @@ MasalaRandomNumberGenerator::MasalaRandomNumberGenerator(
     if( tracer_handle->tracer_is_enabled( tracername ) ) {
         tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seed_value ) + ".", true );
     }
+}
+
+
+/// @brief Private function to reset the seed.
+void
+MasalaRandomNumberGenerator::reseed() {
+	using namespace masala::base::managers::mpi;
+	base::Size mpi_rank( 0 );
+	if( MasalaMPIManager::manager_was_initialized() ) {
+		MasalaMPIManagerHandle mpiman( MasalaMPIManager::get_instance() );
+		if( mpiman->using_mpi() ) {
+			mpi_rank = mpiman->mpi_process_rank();
+		}
+	}
+	base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
+	base::Size const clock_ticks( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
+	random_engine_.seed( thread_id * 10000 + mpi_rank * 1212121 + clock_ticks );
 }
 
 
