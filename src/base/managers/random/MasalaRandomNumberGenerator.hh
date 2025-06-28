@@ -71,11 +71,15 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor: object can only be instantiated with getInstance().
-    /// @details Sets seed value by time perturbed by thread index.
+    /// @details Sets seed value by time perturbed by thread index and MPI rank.
     MasalaRandomNumberGenerator();
 
     /// @brief Private constructor with seed: object can only be instantiated with getInstance().
     MasalaRandomNumberGenerator( base::Size const seed_value );
+
+	/// @brief Private function to reset the seed.
+    /// @details Sets seed value by time perturbed by thread index and MPI rank.
+	void reseed();
 
 public:
 

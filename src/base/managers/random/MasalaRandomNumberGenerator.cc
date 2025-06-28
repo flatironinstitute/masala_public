@@ -63,7 +63,7 @@ MasalaRandomNumberGenerator::get_instance() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Default constructor: object can only be instantiated with getInstance().
-/// @details Sets seed value by time perturbed by thread index.
+/// @details Sets seed value by time perturbed by thread index and MPI rank.
 MasalaRandomNumberGenerator::MasalaRandomNumberGenerator() :
     masala::base::MasalaObject()
 {
@@ -87,6 +87,7 @@ MasalaRandomNumberGenerator::MasalaRandomNumberGenerator(
 
 
 /// @brief Private function to reset the seed.
+/// @details Sets seed value by time perturbed by thread index and MPI rank.
 void
 MasalaRandomNumberGenerator::reseed() {
 	using namespace masala::base::managers::mpi;
