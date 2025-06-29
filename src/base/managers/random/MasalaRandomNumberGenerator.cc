@@ -109,7 +109,7 @@ MasalaRandomNumberGenerator::reseed() {
 	}
 	base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
 	base::Size const clock_ticks( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
-	uint_fast64_t const seedval( thread_id * 10000 + mpi_rank * 1212121 + clock_ticks );
+	uint_fast64_t const seedval( thread_id * 8297 + mpi_rank * 1212121 + clock_ticks );
 	random_engine_.seed( seedval );
 
     if( tracer_handle->tracer_is_enabled( tracername ) ) {
