@@ -6,4 +6,4 @@
 	url = git@github.com:flatironinstitute/masala_public_eigen_fork.git
 [submodule "external/catch2_fork"]
 	path = external/catch2
-	url = git@github.com:flatironinstitute/masala_dev_catch2_fork.git
+	url = git@github.com:flatironinstitute/masala_public_catch2_fork.git
