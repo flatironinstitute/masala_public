@@ -1,5 +1,9 @@
 # Masala Core library
 
+## Version
+
+Masala' Core library is currently version 0.11 (beta release).  The full version 1.0 will be released shortly.
+
 ## Description
 
 Project Masala is an open-source successor to the Rosetta software suite, combining the best physics-based, statistics-based, and machine learning-based methods for heteropolymer structure prediction, design, analysis, and modelling.
