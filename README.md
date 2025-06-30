@@ -12,7 +12,9 @@ Project Masala is an open-source successor to the Rosetta software suite, combin
 
 The Masala project was started by Vikram K. Mulligan, a Research Scientist in the Center for Computational Biology, at the Flatiron Institute.  For questions, e-mail vmulligan@flatironinstitute.org.
 
-Noora Azadvari, a graduate student at the University of Oregon (eazadvar@uoregon.edu), Tristan Zaborniak, a graduate student at the University of Victoria (tristanz@uvic.ca), and P. Douglas Renfrew, a Reserach Scientist in the Center for Computational Biology, Flatiron Institute (pdrenfrew@flatironinstitute.org) all contributed to Masala' Core development.
+Noora Azadvari, a graduate student at the University of Oregon (eazadvar@uoregon.edu), Tristan Zaborniak, a graduate student at the University of Victoria (tristanz@uvic.ca), and P. Douglas Renfrew, a Research Scientist in the Center for Computational Biology, Flatiron Institute (pdrenfrew@flatironinstitute.org) all contributed to Masala' Core development.
+
+Masala is maintained by the Biomolecular Design Group in the Center for Computatonal Biology at the Flatiron Institute.  Vikram K. Mulligan and P. Douglas Renfrew co-head the group.
 
 ## Building
 
