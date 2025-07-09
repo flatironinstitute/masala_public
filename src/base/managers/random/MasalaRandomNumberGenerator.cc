@@ -104,7 +104,9 @@ MasalaRandomNumberGenerator::reseed() {
 		}
 	} else {
    		if( tracer_handle->tracer_is_enabled( tracername ) ) {
-       		tracer_handle->write_to_tracer( tracername, "WARNING: Initializing random generator prior to initialization of MPI manager.", true );
+       		tracer_handle->write_to_tracer( tracername, "WARNING: Initializing Masala random generator prior to initialization of MPI "
+                "manager.  If Masala is being used in a non-MPI context, this warning may be safely ignored.", true
+            );
 		}
 	}
 	base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
