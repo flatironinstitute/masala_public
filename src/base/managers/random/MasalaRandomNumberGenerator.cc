@@ -1,19 +1,19 @@
 /*
-    Masala
-    Copyright (C) 2025 Vikram K. Mulligan
+	Masala
+	Copyright (C) 2025 Vikram K. Mulligan
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /// @file src/base/managers/engine/MasalaRandomNumberGenerator.cc
@@ -54,8 +54,8 @@ namespace random {
 /// @brief Instantiate the static singleton and get a handle to it.
 MasalaRandomNumberGeneratorHandle
 MasalaRandomNumberGenerator::get_instance() {
-    static thread_local MasalaRandomNumberGenerator random_generator;
-    return &random_generator;
+	static thread_local MasalaRandomNumberGenerator random_generator;
+	return &random_generator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,24 +65,24 @@ MasalaRandomNumberGenerator::get_instance() {
 /// @brief Default constructor: object can only be instantiated with getInstance().
 /// @details Sets seed value by time perturbed by thread index and MPI rank.
 MasalaRandomNumberGenerator::MasalaRandomNumberGenerator() :
-    masala::base::MasalaObject()
+	masala::base::MasalaObject()
 {
 	reseed();
 }
 
 /// @brief Private constructor with seed: object can only be instantiated with getInstance().
 MasalaRandomNumberGenerator::MasalaRandomNumberGenerator(
-    base::Size const seed_value
+	base::Size const seed_value
 ) :
-    masala::base::MasalaObject(),
-    random_engine_( seed_value )
+	masala::base::MasalaObject(),
+	random_engine_( seed_value )
 {
-    // Note that we can't use write_to_tracer() from a constructor.
-    masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
-    std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
-    if( tracer_handle->tracer_is_enabled( tracername ) ) {
-        tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seed_value ) + ".", true );
-    }
+	// Note that we can't use write_to_tracer() from a constructor.
+	masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
+	std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
+	if( tracer_handle->tracer_is_enabled( tracername ) ) {
+		tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seed_value ) + ".", true );
+	}
 }
 
 
@@ -95,7 +95,7 @@ MasalaRandomNumberGenerator::reseed() {
 
 	// Note that we can't use write_to_tracer() from a constructor.
 	masala::base::managers::tracer::MasalaTracerManagerHandle const tracer_handle( masala::base::managers::tracer::MasalaTracerManager::get_instance() );
-    std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
+	std::string const tracername( "masala::base::managers::random::MasalaRandomNumberGenerator" );
 
 	if( MasalaMPIManager::manager_was_initialized() ) {
 		MasalaMPIManagerHandle mpiman( MasalaMPIManager::get_instance() );
@@ -103,10 +103,10 @@ MasalaRandomNumberGenerator::reseed() {
 			mpi_rank = mpiman->mpi_process_rank();
 		}
 	} else {
-   		if( tracer_handle->tracer_is_enabled( tracername ) ) {
-       		tracer_handle->write_to_tracer( tracername, "WARNING: Initializing Masala random generator prior to initialization of MPI "
-                "manager.  If Masala is being used in a non-MPI context, this warning may be safely ignored.", true
-            );
+		if( tracer_handle->tracer_is_enabled( tracername ) ) {
+			tracer_handle->write_to_tracer( tracername, "WARNING: Initializing Masala random generator prior to initialization of MPI "
+				"manager.  If Masala is being used in a non-MPI context, this warning may be safely ignored.", true
+			);
 		}
 	}
 	base::Size const thread_id( base::managers::threads::MasalaThreadManager::get_instance()->get_thread_manager_thread_id() );
@@ -114,9 +114,9 @@ MasalaRandomNumberGenerator::reseed() {
 	uint_fast64_t const seedval( thread_id * 8297 + mpi_rank * 1212121 + clock_ticks );
 	random_engine_.seed( seedval );
 
-    if( tracer_handle->tracer_is_enabled( tracername ) ) {
-        tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seedval ) + ".", true );
-    }
+	if( tracer_handle->tracer_is_enabled( tracername ) ) {
+		tracer_handle->write_to_tracer( tracername, "Initialized random generator with seed value " + std::to_string( seedval ) + ".", true );
+	}
 }
 
 
@@ -128,14 +128,14 @@ MasalaRandomNumberGenerator::reseed() {
 /// @details Returns "MasalaRandomNumberGenerator".
 std::string
 MasalaRandomNumberGenerator::class_name() const {
-    return "MasalaRandomNumberGenerator";
+	return "MasalaRandomNumberGenerator";
 }
 
 /// @brief Get the namespace of this object.
 /// @details Returns "masala::base::managers::random".
 std::string
 MasalaRandomNumberGenerator::class_namespace() const {
-    return "masala::base::managers::random";
+	return "masala::base::managers::random";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,19 +149,19 @@ MasalaRandomNumberGenerator::class_namespace() const {
 /// @returns True to accept a the move that produces this delta_E, false to reject it.
 bool
 MasalaRandomNumberGenerator::apply_metropolis_criterion(
-    base::Real const delta_E,
-    base::Real const kbT
+	base::Real const delta_E,
+	base::Real const kbT
 ) {
-    if( delta_E < 0.0 ) {
-        random_engine_.discard(1); // Step forward one in the random trajectory anyways, to keep trajectory consistent if this is a knife's-edge case.
-        return true;
-    }
-    if( kbT == 0 ) {
-        return false; // Always reject increases in delta E at absolute 0.
-    }
-    base::Real const expval( std::exp( -delta_E / std::abs(kbT) ) );
-    base::Real const comparisonval( uniform_real_distribution( 0, 1 ) );
-    return expval > comparisonval;
+	if( delta_E < 0.0 ) {
+		random_engine_.discard(1); // Step forward one in the random trajectory anyways, to keep trajectory consistent if this is a knife's-edge case.
+		return true;
+	}
+	if( kbT == 0 ) {
+		return false; // Always reject increases in delta E at absolute 0.
+	}
+	base::Real const expval( std::exp( -delta_E / std::abs(kbT) ) );
+	base::Real const comparisonval( uniform_real_distribution( 0, 1 ) );
+	return expval > comparisonval;
 }
 
 /// @brief Apply the Metropolis criterion (for floating-point values.).
@@ -171,19 +171,19 @@ MasalaRandomNumberGenerator::apply_metropolis_criterion(
 /// @returns True to accept a the move that produces this delta_E, false to reject it.
 bool
 MasalaRandomNumberGenerator::apply_metropolis_criterion(
-    float const delta_E,
-    float const kbT
+	float const delta_E,
+	float const kbT
 ) {
-    if( delta_E < 0.0 ) {
-        random_engine_.discard(1); // Step forward one in the random trajectory anyways, to keep trajectory consistent if this is a knife's-edge case.
-        return true;
-    }
-    if( kbT == 0 ) {
-        return false; // Always reject increases in delta E at absolute 0.
-    }
-    float const expval( std::exp( -delta_E / std::abs(kbT) ) );
-    float const comparisonval( uniform_float_distribution( 0, 1 ) );
-    return expval > comparisonval;
+	if( delta_E < 0.0 ) {
+		random_engine_.discard(1); // Step forward one in the random trajectory anyways, to keep trajectory consistent if this is a knife's-edge case.
+		return true;
+	}
+	if( kbT == 0 ) {
+		return false; // Always reject increases in delta E at absolute 0.
+	}
+	float const expval( std::exp( -delta_E / std::abs(kbT) ) );
+	float const comparisonval( uniform_float_distribution( 0, 1 ) );
+	return expval > comparisonval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,83 +193,83 @@ MasalaRandomNumberGenerator::apply_metropolis_criterion(
 /// @brief Get a random, uniformly-distributed Boolean.
 bool 
 MasalaRandomNumberGenerator::uniform_boolean_distribution( ) {
-    std::uniform_int_distribution< base::Size > int_gen( 0, 1 );
-    bool boolean = int_gen( random_engine_ );
-    return boolean;
+	std::uniform_int_distribution< base::Size > int_gen( 0, 1 );
+	bool boolean = int_gen( random_engine_ );
+	return boolean;
 }
 
 /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
 base::Size
 MasalaRandomNumberGenerator::uniform_size_distribution(
-    base::Size const beginrange,
-    base::Size const endrange
+	base::Size const beginrange,
+	base::Size const endrange
 ) {
-    std::uniform_int_distribution< base::Size > int_gen( beginrange, endrange );
-    return int_gen( random_engine_ );
+	std::uniform_int_distribution< base::Size > int_gen( beginrange, endrange );
+	return int_gen( random_engine_ );
 }
 
 /// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
 signed long int
 MasalaRandomNumberGenerator::uniform_signed_long_int_distribution(
-    signed long int const beginrange,
-    signed long int const endrange
+	signed long int const beginrange,
+	signed long int const endrange
 ) {
-    std::uniform_int_distribution< signed long int > int_gen( beginrange, endrange );
-    return int_gen( random_engine_ );
+	std::uniform_int_distribution< signed long int > int_gen( beginrange, endrange );
+	return int_gen( random_engine_ );
 }
 
 /// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
 /// interval [beginrange, endrange).
 base::Real
 MasalaRandomNumberGenerator::uniform_real_distribution(
-    base::Real const beginrange,
-    base::Real const endrange
+	base::Real const beginrange,
+	base::Real const endrange
 ) {
-    std::uniform_real_distribution< base::Real > real_gen( beginrange, endrange );
-    return real_gen( random_engine_ );
+	std::uniform_real_distribution< base::Real > real_gen( beginrange, endrange );
+	return real_gen( random_engine_ );
 }
 
 /// @brief Generate a single-precision floating-point number uniformly drawn from the
 /// interval [beginrange, endrange).
 float
 MasalaRandomNumberGenerator::uniform_float_distribution(
-    float const beginrange,
-    float const endrange
+	float const beginrange,
+	float const endrange
 ) {
-    std::uniform_real_distribution< float > real_gen( beginrange, endrange );
-    return real_gen( random_engine_ );
+	std::uniform_real_distribution< float > real_gen( beginrange, endrange );
+	return real_gen( random_engine_ );
 }
 
 /// @brief Generate a real (double-precision floating-point) number drawn from a Gaussian distribution
 /// with a given mean and standard deviation.
 base::Real
 MasalaRandomNumberGenerator::gaussian_real_distribution(
-    base::Real const mean,
-    base::Real const stddev
+	base::Real const mean,
+	base::Real const stddev
 ) {
-    std::normal_distribution< base::Real > gaussian_gen( mean, stddev );
-    return gaussian_gen( random_engine_ );
+	std::normal_distribution< base::Real > gaussian_gen( mean, stddev );
+	return gaussian_gen( random_engine_ );
 }
 
 /// @brief Generate a single-precision floating-point number drawn from a Gaussian distribution
 /// with a given mean and standard deviation.
 float
 MasalaRandomNumberGenerator::gaussian_float_distribution(
-    float const mean,
-    float const stddev
+	float const mean,
+	float const stddev
 ) {
-    std::normal_distribution< float > gaussian_gen( mean, stddev );
-    return gaussian_gen( random_engine_ );
+	std::normal_distribution< float > gaussian_gen( mean, stddev );
+	return gaussian_gen( random_engine_ );
 }
 
 /// @brief Generate an unsigned long integer drawn from a Poisson distribution
 /// with a given mean.
 base::Size
 MasalaRandomNumberGenerator::poisson_size_distribution(
-    base::Real const mean
+	base::Real const mean
 ) {
-    std::poisson_distribution< base::Size > poisson_gen( mean );
-    return poisson_gen( random_engine_ );
+	std::poisson_distribution< base::Size > poisson_gen( mean );
+	return poisson_gen( random_engine_ );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +288,7 @@ MasalaRandomNumberGenerator::poisson_size_distribution(
 bool 
 uniform_boolean_distribution( ) 
 {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_boolean_distribution( );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_boolean_distribution( );
 }
 
 /// @brief Get a random unsigned integer uniformly distributed in the range [beginrange, endrange].
@@ -298,10 +298,10 @@ uniform_boolean_distribution( )
 /// random generator and call the class member function.
 base::Size
 uniform_size_distribution(
-    base::Size const beginrange,
-    base::Size const endrange
+	base::Size const beginrange,
+	base::Size const endrange
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_size_distribution( beginrange, endrange );
 }
 
 /// @brief Get a random signed long integer uniformly distributed in the range [beginrange, endrange].
@@ -311,10 +311,10 @@ uniform_size_distribution(
 /// random generator and call the class member function.
 signed long int
 uniform_signed_long_int_distribution(
-    signed long int const beginrange,
-    signed long int const endrange
+	signed long int const beginrange,
+	signed long int const endrange
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_signed_long_int_distribution( beginrange, endrange );
 }
 
 /// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
@@ -325,10 +325,10 @@ uniform_signed_long_int_distribution(
 /// random generator and call the class member function.
 base::Real
 uniform_real_distribution(
-    base::Real const beginrange,
-    base::Real const endrange
+	base::Real const beginrange,
+	base::Real const endrange
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( beginrange, endrange );
 }
 
 /// @brief Generate a real (double-precision floating-point) number uniformly drawn from the
@@ -339,7 +339,7 @@ uniform_real_distribution(
 /// random generator and call the class member function.
 base::Real
 uniform_real_distribution() {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_real_distribution( 0, 1 );
 }
 
 /// @brief Generate a single-precision floating-point number uniformly drawn from the
@@ -350,10 +350,10 @@ uniform_real_distribution() {
 /// random generator and call the class member function.
 float
 uniform_float_distribution(
-    float const beginrange,
-    float const endrange
+	float const beginrange,
+	float const endrange
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( beginrange, endrange );
 }
 
 /// @brief Generate a single-precision floating-point number uniformly drawn from the
@@ -364,7 +364,7 @@ uniform_float_distribution(
 /// random generator and call the class member function.
 float
 uniform_float_distribution() {
-    return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 );
+	return MasalaRandomNumberGenerator::get_instance()->uniform_float_distribution( 0, 1 );
 }
 
 /// @brief Generate a real (double-precision floating-point) number drawn from a gaussian distribution
@@ -375,10 +375,10 @@ uniform_float_distribution() {
 /// random generator and call the class member function.
 base::Real
 gaussian_real_distribution(
-    base::Real const mean,
-    base::Real const stddev
+	base::Real const mean,
+	base::Real const stddev
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean, stddev );
+	return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( mean, stddev );
 }
 
 /// @brief Generate a real (double-precision floating-point) number drawn from a gaussian distribution
@@ -389,7 +389,7 @@ gaussian_real_distribution(
 /// random generator and call the class member function.
 base::Real
 gaussian_real_distribution() {
-    return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 );
+	return MasalaRandomNumberGenerator::get_instance()->gaussian_real_distribution( 0, 1 );
 }
 
 /// @brief Generate a single-precision floating-point number drawn from a gaussian distribution
@@ -400,10 +400,10 @@ gaussian_real_distribution() {
 /// random generator and call the class member function.
 float
 gaussian_float_distribution(
-    float const mean,
-    float const stddev
+	float const mean,
+	float const stddev
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean, stddev );
+	return MasalaRandomNumberGenerator::get_instance()->gaussian_float_distribution( mean, stddev );
 }
 
 /// @brief Generate a signed long int number drawn from a Poisson distribution with a given mean.
@@ -413,9 +413,9 @@ gaussian_float_distribution(
 /// random generator and call the class member function.
 base::Size
 poisson_size_distribution(
-    base::Real const mean
+	base::Real const mean
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( mean );
+	return MasalaRandomNumberGenerator::get_instance()->poisson_size_distribution( mean );
 }
 
 /// @brief Apply the Metropolis criterion.
@@ -426,10 +426,10 @@ poisson_size_distribution(
 /// @returns True to accept a the move that produces this delta_E, false to reject it.
 bool
 apply_metropolis_criterion(
-    base::Real const delta_E,
-    base::Real const kbT
+	base::Real const delta_E,
+	base::Real const kbT
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
+	return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
 }
 
 /// @brief Apply the Metropolis criterion (for floating-point values.).
@@ -440,10 +440,10 @@ apply_metropolis_criterion(
 /// @returns True to accept a the move that produces this delta_E, false to reject it.
 bool
 apply_metropolis_criterion(
-    float const delta_E,
-    float const kbT
+	float const delta_E,
+	float const kbT
 ) {
-    return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
+	return MasalaRandomNumberGenerator::get_instance()->apply_metropolis_criterion( delta_E, kbT );
 }
 
 } // namespace random
