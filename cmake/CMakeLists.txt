@@ -33,6 +33,10 @@ ELSE()
 	MESSAGE( FATAL_ERROR "The only allowed compilation modes are debug and release." )
 ENDIF()
 
+# Uncomment the following to enable compilation with support for AVX512 instructions on Linux or Windows systems.
+# Note that this only has an effect in relase mode.
+SET( MASALA_SUPPORT_AVX512 TRUE )
+
 # Uncomment the following to enable deprecated API functions.
 #ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
 
