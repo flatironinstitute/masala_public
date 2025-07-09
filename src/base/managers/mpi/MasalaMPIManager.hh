@@ -80,6 +80,9 @@ public:
 		masala::base::Size const n_mpi_ranks
 	);
 
+	/// @brief Check whether the MasalaMPIManager has been initialized.
+	static bool manager_was_initialized();
+
 	/// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.
 	/// @details If an initialization function isn't called first (in all processes), then this sets the MPI
 	/// manager up to report that MPI is NOT being used at all.
