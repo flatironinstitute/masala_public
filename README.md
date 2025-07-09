@@ -2,7 +2,7 @@
 
 ## Version
 
-Masala's Core library is currently version 0.11 (beta release).  The full version 1.0 will be released shortly.
+Masala's Core library is currently version 0.12 (beta release).  The full version 1.0 will be released shortly.
 
 ## Description
 
