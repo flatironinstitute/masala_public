@@ -35,6 +35,9 @@
 #include <base/api/MasalaObjectAPIDefinition.hh>
 #include <base/api/setter/MasalaObjectAPISetterDefinition.hh>
 
+// STL headers
+#include <array>
+
 namespace masala {
 namespace tests {
 namespace unit {

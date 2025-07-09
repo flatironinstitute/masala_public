@@ -2,7 +2,7 @@
 
 ## Version
 
-Masala's Core library is currently version 0.12 (beta release).  The full version 1.0 will be released shortly.
+Masala's Core library is currently version 0.13 (beta release).  The full version 1.0 will be released shortly.
 
 ## Description
 
@@ -26,7 +26,9 @@ To build the Core Masala library:
 4.  Masala's build scripts use `nproc` to determine the number of cores available for compilation.  On newer Macintosh operating systems, it may be necessary to set up an alias for `nproc` that runs `sysctl -n hw.logicalcpu`.
 5.  Run the `buildme.sh` script.
 
-After building, you will likely want to pull and build the standard Masala plugins repository, and possibly the Garam Masala GUI.
+Note that release mode is the default.  To build in debug mode, edit cmake/CMakeLists.txt and change `SET( MODE release )` to `SET( MODE debug )`.
+
+After building, you will likely want to pull and build the standard Masala plugins repository, and possibly the Garam Masala GUI (to be released) or the quantum computing Masala plugins repository (to be released).
 
 ## Updating the build
 
