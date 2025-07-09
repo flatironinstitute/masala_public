@@ -1,6 +1,6 @@
 /*
     Masala
-    Copyright (C) 2022 Vikram K. Mulligan
+    Copyright (C) 2025 Vikram K. Mulligan
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -67,6 +67,14 @@ MasalaMPIManager::initialize_for_external_mpi(
 		tracerman->set_mpi_rank( this_mpi_rank, access_key );
 	}
 	return mpiman;
+}
+
+/// @brief Check whether the MasalaMPIManager has been initialized.
+/*static*/
+bool
+MasalaMPIManager::manager_was_initialized() {
+	std::lock_guard< std::mutex > lock( initialization_mutex_ );
+	return manager_is_initialized_;
 }
 
 /// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.

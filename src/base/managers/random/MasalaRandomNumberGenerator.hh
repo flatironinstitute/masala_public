@@ -1,6 +1,6 @@
 /*
     Masala
-    Copyright (C) 2022 Vikram K. Mulligan
+    Copyright (C) 2025 Vikram K. Mulligan
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -71,11 +71,15 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor: object can only be instantiated with getInstance().
-    /// @details Sets seed value by time perturbed by thread index.
+    /// @details Sets seed value by time perturbed by thread index and MPI rank.
     MasalaRandomNumberGenerator();
 
     /// @brief Private constructor with seed: object can only be instantiated with getInstance().
     MasalaRandomNumberGenerator( base::Size const seed_value );
+
+	/// @brief Private function to reset the seed.
+    /// @details Sets seed value by time perturbed by thread index and MPI rank.
+	void reseed();
 
 public:
 

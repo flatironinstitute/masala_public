@@ -1,6 +1,6 @@
 /*
     Masala
-    Copyright (C) 2022 Vikram K. Mulligan
+    Copyright (C) 2025 Vikram K. Mulligan
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -79,6 +79,9 @@ public:
 		masala::base::Size const this_mpi_rank,
 		masala::base::Size const n_mpi_ranks
 	);
+
+	/// @brief Check whether the MasalaMPIManager has been initialized.
+	static bool manager_was_initialized();
 
 	/// @brief Get a handle to the static singleton, instantiating it if it has not yet been instantiated.
 	/// @details If an initialization function isn't called first (in all processes), then this sets the MPI

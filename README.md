@@ -1,16 +1,24 @@
-# Masala
+# Masala Core library
+
+## Version
+
+Masala's Core library is currently version 0.12 (beta release).  The full version 1.0 will be released shortly.
 
 ## Description
 
 Project Masala is an open-source successor to the Rosetta software suite, combining the best physics-based, statistics-based, and machine learning-based methods for heteropolymer structure prediction, design, analysis, and modelling.
 
-## Author
+## Authors
 
 The Masala project was started by Vikram K. Mulligan, a Research Scientist in the Center for Computational Biology, at the Flatiron Institute.  For questions, e-mail vmulligan@flatironinstitute.org.
 
+Noora Azadvari, a graduate student at the University of Oregon (eazadvar@uoregon.edu), Tristan Zaborniak, a graduate student at the University of Victoria (tristanz@uvic.ca), and P. Douglas Renfrew, a Research Scientist in the Center for Computational Biology, Flatiron Institute (pdrenfrew@flatironinstitute.org) all contributed to Masala' Core development.
+
+Masala is maintained by the Biomolecular Design Group in the Center for Computatonal Biology at the Flatiron Institute.  Vikram K. Mulligan and P. Douglas Renfrew co-head the group.
+
 ## Building
 
-To build the core Masala libraries:
+To build the Core Masala library:
 
 1.  Clone the git repository (`git clone git@github.com:flatironinstitute/masala_dev.git`).
 2.  Clone all of the needed submodules (`cd masala_dev && git submodule update --init`).
@@ -27,6 +35,16 @@ After building, you will likely want to pull and build the standard Masala plugi
 1.  If you are on the `main` branch, pull the latest changes via `git pull`. If you are on another branch (you can check via `git branch`), update your remote branch (`git remote update origin --prune`).
 2.  Optionally, delete the previous build (`./delete_build.sh`).  Under most circumstances, this should _not_ be necessary, however: CMake is quite good at only rebuilding parts that need rebuilding, which saves time.  But a clean rebuild can be a good idea if the new version that you are compiling is drastically different from old versions.
 3.  Run the `buildme.sh` script.
+
+## Building Doxygen code documentation
+
+All source code (both manually-written sub-libraries and auto-generated API sub-libraries) is documented with Doxygen tags.  To generate Doxygen HTML documentation, first, follow the instructions above to build Masala's Core library.  Second, build Doxygen documentation with:
+
+```
+doxygen Doxyfile.src
+```
+
+(Note that Doxygen must be installed.) Documentation will be addded to the `html_docs/` directory.  Delete this directory to recompile documentation from scratch.
 
 ## Using
 
@@ -48,9 +66,9 @@ The Garam Masala GUI uses the Masala API definitions to auto-generate bindings f
 
 Masala can be used as a C++ library in two ways:
 
-1.  By conventionally linking (at compile-time) the core Masala libraries plus any needed plugins, and calling code directly.  In this case, it is recommended to call code only from the API libraries, since these are the libraries that present a consistent API with guarantees of stability.
-2.  By conventionally linking (at compile-time) the core Masala libraries, and auto-detecting and loading plugin libraries through runtime linking.  In this case, plugin objects are accessed entirely through the function pointers in their API descriptions.  This has the advantage of allowing a software project to use Masala plugins that were not available at compile time, and to take advantage of new Masala plugins without any recompilation or re-linking (but for runtime linking) needed.
+1.  By conventionally linking (at compile-time) the Core Masala library plus any needed plugins, and calling code directly.  In this case, it is recommended to call code only from the API libraries, since these are the libraries that present a consistent API with guarantees of stability.
+2.  By conventionally linking (at compile-time) the Core Masala library, and auto-detecting and loading plugin libraries through runtime linking.  In this case, plugin objects are accessed entirely through the function pointers in their API descriptions.  This has the advantage of allowing a software project to use Masala plugins that were not available at compile time, and to take advantage of new Masala plugins without any recompilation or re-linking (but for runtime linking) needed.
 
 ## Licence
 
-Masala is released under an AGPL version 3 licence.  This licence permits anyone to use the software for any purpose (not-for-profit or commercial), as well as to modify the software and incorporate it into derivative works.  The one stipulation is that if any modified version or derivative work is distributed, or users are given access to it over a network, then the source code must be made available under an AGPL licence (version 3 or later).  This ensures that the software remains free and open-source.  For full details, see the LICENCE file.
+Masala is released under an AGPL version 3 licence.  This licence permits anyone to use the software for any purpose (not-for-profit or commercial), as well as to modify the software and incorporate it into derivative works.  The one stipulation is that if any modified version or derivative work is distributed, or users are given access to it over a network, then the source code must be made available under a GPL or AGPL licence (version 3 or later).  This ensures that the software remains free and open-source.  For full details, see the LICENCE file.
