@@ -2406,7 +2406,7 @@ plugin_registration_ccfile_template = read_file( "code_templates/api_templates/r
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
 project_name_capitalized = capitalize_project_name( project_name ).replace( "_", " " )
-licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2024) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
+licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2025) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
 generate_registration_function = False
