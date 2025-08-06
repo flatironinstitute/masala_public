@@ -544,7 +544,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
             else :
                 return "std::map< " \
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
@@ -552,7 +552,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
         elif inputclass.startswith( "unordered_map" ) or inputclass.startswith( "std::unordered_map" ) :
             firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<unordered_map>")
@@ -561,7 +561,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
             else :
                 return "std::unordered_map< " \
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
@@ -569,7 +569,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
