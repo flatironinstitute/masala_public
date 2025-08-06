@@ -966,7 +966,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += tabchar + "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes ) + "\n"
@@ -977,7 +978,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += tabchar + "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
@@ -1373,7 +1375,8 @@ def generate_function_implementations( \
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += "/// @note This version always returns nullptr.\n"
             outstring += correct_masala_types( project_name, outtype, additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
@@ -1382,7 +1385,8 @@ def generate_function_implementations( \
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += "/// @note This version always returns nullptr.\n"
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
 
