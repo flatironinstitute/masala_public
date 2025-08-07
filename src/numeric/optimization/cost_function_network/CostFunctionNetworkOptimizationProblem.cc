@@ -834,7 +834,8 @@ CostFunctionNetworkOptimizationProblem::protected_reset() {
 void
 CostFunctionNetworkOptimizationProblem::protected_make_independent() {
 	for( auto & cost_function : cost_functions_ ) {
-		cost_function::CostFunctionSP cf_copy( cost_function->deep_clone() );
+		cost_function::CostFunctionSP cf_copy( cost_function->clone() );
+		cf_copy->make_independent();
 		cost_function = cf_copy;
 	}
 	Parent::protected_make_independent();

@@ -93,7 +93,8 @@ void
 OptimizationProblems::make_independent() {
     std::lock_guard< std::mutex > lock( problems_mutex_ );
     for( masala::base::Size i(0); i<optimization_problems_.size(); ++i ) {
-        optimization_problems_[i] = optimization_problems_[i]->deep_clone();
+        optimization_problems_[i] = optimization_problems_[i]->clone();
+        optimization_problems_[i]->make_independent();
     }
 }
 

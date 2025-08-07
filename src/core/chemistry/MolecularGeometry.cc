@@ -148,7 +148,8 @@ MolecularGeometry::make_independent() {
         it != old_atom_instances.end();
         ++it
     ) {
-        masala::core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->deep_clone() );
+        masala::core::chemistry::atoms::AtomInstanceSP new_atom( (*it)->clone() );
+        new_atom->make_independent();
         atoms_.insert( new_atom );
         atoms_const_.insert( new_atom );
         master_atom_coordinate_representation_mutex_locked()->replace_atom_instance( *it, new_atom );
@@ -161,7 +162,9 @@ MolecularGeometry::make_independent() {
         it != old_bonds.end();
         ++it
     ) {
-        bonds_.insert( (*it)->deep_clone() );
+        masala::core::chemistry::bonds::ChemicalBondInstanceSP bondclone( (*it)->clone() );
+        bondclone->make_independent();
+        bonds_.insert( bondclone );
     }
 
     //TODO TODO TODO -- deep-clone additional atom coordinate representations.
