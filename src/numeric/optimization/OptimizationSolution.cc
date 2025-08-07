@@ -97,9 +97,12 @@ OptimizationSolution::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 OptimizationSolution::make_independent() {
-    //std::lock_guard< std::mutex > lock( solution_mutex_ );
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    api_definition_ = nullptr;
     if( problem_ != nullptr ) {
-        problem_ = problem_->deep_clone();
+        OptimizationProblemSP new_prob( problem_->clone() );
+        new_prob->make_independent();
+        problem_ = new_prob; // Nonconst to const.
     }
     //GNDN
 }
