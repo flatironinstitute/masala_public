@@ -23,7 +23,7 @@
 #ifndef Masala_src_numeric_api_utility_angles_angle_util_hh
 #define Masala_src_numeric_api_utility_angles_angle_util_hh
 
-#include <numeric>
+#include <cmath>
 
 namespace masala {
 namespace numeric_api {
@@ -35,25 +35,26 @@ namespace angles {
     /// @param angle_in The input angle, in degrees.
     /// @return An angle, in degrees, in the range [0, 360).
     template < typename T >
-    T
     inline
+    T
     positive_angle_degrees(
-        T const angle_in
+        T angle_in
     ) {
-        return angle_in % T(360);
+        T const fmod_result( std::fmod( angle_in, T(360) ) );
+        return (fmod_result < 0 ? fmod_result + T(360) : fmod_result);
     }
 
-    /// @brief Convert an angle, in degrees, to the equivalent angle, in degrees, in the range (-180, 180].
+    /// @brief Convert an angle, in degrees, to the equivalent angle, in degrees, in the range [-180, 180).
     /// @tparam T The type of the angle (e.g. float, double, masala::base::Real).
     /// @param angle_in The input angle, in degrees.
-    /// @return An angle, in degrees, in the range (-180, 180].
+    /// @return An angle, in degrees, in the range [-180, 180).
     template < typename T >
-    T
     inline
+    T
     zero_centred_angle_degrees(
-        T const angle_in
+        T angle_in
     ) {
-        return ( (angle_in + T(180)) % T(360) ) - T(180);
+        return ( positive_angle_degrees( angle_in + T(180) ) - T(180) );
     }
 
 } // namespace angles
