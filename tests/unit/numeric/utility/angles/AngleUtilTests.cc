@@ -40,6 +40,8 @@ namespace numeric {
 namespace utility {
 namespace angles {
 
+std::string const tracer_name( "masala::tests::unit::numeric::utility::angles::AngleUtilTests" );
+
 TEST_CASE(
 	"Test the conversion of an angle in degrees to the 0 to 360 range.",
 	"[numeric_api::utility::angles]"
@@ -67,7 +69,7 @@ TEST_CASE(
 			<< "\t" << actual_results[i];
 		CHECK( std::abs( expected_results[i] - actual_results[i] ) < 1.0e-6 );
 	}
-	tm->write_to_tracer( ss.str() );
+	tm->write_to_tracer( tracer_name, ss.str() );
 }
 
 } // namespace angles
