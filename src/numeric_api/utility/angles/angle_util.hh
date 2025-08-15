@@ -16,18 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric/utility/angle_util.hh
+/// @file src/numeric_api/utility/angles/angle_util.hh
 /// @brief Inlined functions for manipulating angles.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
-#ifndef Masala_src_numeric_utility_angle_util_hh
-#define Masala_src_numeric_utility_angle_util_hh
+#ifndef Masala_src_numeric_api_utility_angles_angle_util_hh
+#define Masala_src_numeric_api_utility_angles_angle_util_hh
 
 #include <numeric>
 
 namespace masala {
-namespace numeric {
+namespace numeric_api {
 namespace utility {
+namespace angles {
 
     /// @brief Convert an angle, in degrees, to the equivalent angle, in degrees, in the range [0, 360).
     /// @tparam T The type of the angle (e.g. float, double, masala::base::Real).
@@ -55,8 +56,9 @@ namespace utility {
         return ( (angle_in + T(180)) % T(360) ) - T(180);
     }
 
+} // namespace angles
 } // namespace utility
-} // namespace numeric
+} // namespace numeric_api
 } // namespace masala
 
-#endif // Masala_src_numeric_utility_angle_util_hh
+#endif // Masala_src_numeric_api_utility_angles_angle_util_hh
