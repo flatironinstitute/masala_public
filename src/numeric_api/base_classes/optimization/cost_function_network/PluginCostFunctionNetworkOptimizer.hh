@@ -82,6 +82,10 @@ public:
 	/// @brief Destructor.
 	~PluginCostFunctionNetworkOptimizer() override = default;
 
+	/// @brief Make this object fully independent.
+	/// @details Calls protected_make_independent().
+	void make_independent();
+
 public:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,8 +164,13 @@ protected:
 // PROTECTED FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.  Derived classes should call their parent's protected_assign().
+	/// @brief Assign src to this object.  Must be implemented by derived classes.  Performs no mutex-locking.
+	/// Derived classes should call their parent's protected_assign().
 	virtual void protected_assign( PluginCostFunctionNetworkOptimizer const & src );
+
+	/// @brief Make this object fully independent.  Must be implemented by derived classes.  Performs no
+	/// mutex-locking.  Derived classes should call their parent's protected_make_independent().
+	virtual void protected_make_independent();
 
 	/// @brief Allow derived classes to lock the mutex.
 	inline std::mutex & cfn_solver_mutex() const { return cfn_solver_mutex_; }
