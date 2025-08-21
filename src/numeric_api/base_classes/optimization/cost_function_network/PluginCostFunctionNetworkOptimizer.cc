@@ -79,6 +79,14 @@ PluginCostFunctionNetworkOptimizer::operator=(
 	return *this;
 }
 
+/// @brief Make this object fully independent.
+/// @details Calls protected_make_independent().
+void
+PluginCostFunctionNetworkOptimizer::make_independent() {
+	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
+	protected_make_independent();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,6 +270,13 @@ PluginCostFunctionNetworkOptimizer::protected_assign(
 		template_preferred_cfn_data_representation_ = rep_cast->deep_clone();
 	}
 	//Parent::protected_assign(src);
+}
+
+/// @brief Make this object fully independent.  Must be implemented by derived classes.  Performs no
+/// mutex-locking.  Derived classes should call their parent's protected_make_independent().
+void
+PluginCostFunctionNetworkOptimizer::protected_make_independent() {
+	// GNDN
 }
 
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
