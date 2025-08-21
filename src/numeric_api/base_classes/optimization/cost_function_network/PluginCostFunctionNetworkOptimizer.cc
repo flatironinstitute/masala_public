@@ -39,6 +39,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 #include <base/types.hh>
 
 // STL headers:
@@ -276,7 +277,11 @@ PluginCostFunctionNetworkOptimizer::protected_assign(
 /// mutex-locking.  Derived classes should call their parent's protected_make_independent().
 void
 PluginCostFunctionNetworkOptimizer::protected_make_independent() {
-	// GNDN
+	// TODO TODO TODO
+	// if( template_preferred_cfn_data_representation_ != nullptr ) {
+	// 	template_preferred_cfn_data_representation_ = template_preferred_cfn_data_representation_->clone();
+	// 	template_preferred_cfn_data_representation_->make_independent();
+	// }
 }
 
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.
