@@ -37,6 +37,7 @@
 // STL headers:
 #include <mutex>
 #include <unordered_map>
+#include <string>
 
 namespace masala {
 namespace base {
