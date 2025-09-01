@@ -2,7 +2,7 @@
 
 ## Description
 
-The Masala Core library version 0.14 (beta) defines the plugin system, the API definition system, and static singletons for managing shared resources like memory, output loggers (tracers), disk i/o, CPU threads, and MPI processes.  It also defines base classes for certain types of Masala plugin modules.
+The Masala Core library version 0.15 (beta) defines the plugin system, the API definition system, and static singletons for managing shared resources like memory, output loggers (tracers), disk i/o, CPU threads, and MPI processes.  It also defines base classes for certain types of Masala plugin modules.
 
 ## Authors
 
