@@ -118,7 +118,7 @@ public:
 	void operator=( MasalaTracerManager const & ) = delete;
 
 	/// @brief Default destructor.
-	~MasalaTracerManager() = default;
+	~MasalaTracerManager();
 
 public:
 
