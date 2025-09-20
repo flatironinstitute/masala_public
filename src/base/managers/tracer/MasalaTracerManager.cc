@@ -53,22 +53,23 @@ MasalaTracerManager::~MasalaTracerManager() {
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 	if( using_mpi_ == false || mpi_process_rank_ == 0 ) {
 		if( output_stream_ == nullptr ) {
-			std::cout << "MASALA: " << "Thank you for using the Masala software suite.  If you publish results\n";
-			std::cout << "MASALA: " << "obtained with Masala, please cite the following preprint:\n";
+			//            xxxxxxxx      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+			std::cout << "MASALA: " << "Thank you for using the Masala software suite.  If you publish results. \n";
+			std::cout << "MASALA: " << "obtained with Masala, please cite the following preprint:               \n";
 			std::cout << "MASALA: " << "\n";
 			std::cout << "MASALA: " << "T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D.\n";
-			std::cout << "MASALA: " << "Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software\n";
-			std::cout << "MASALA: " << "suite: Facilitating rapid methods development for synthetic heteropolymer\n";
-			std::cout << "MASALA: " << "design. bioRxiv https://doi.org/10.1101/2025.07.02.662756." << std::endl;
+			std::cout << "MASALA: " << "Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software.  \n";
+			std::cout << "MASALA: " << "suite: Facilitating rapid methods development for synthetic             \n";
+			std::cout << "MASALA: " << "heteropolymer design. bioRxiv https://doi.org/10.1101/2025.07.02.662756." << std::endl;
 			std::cout.flush();
 		} else {
-			(*output_stream_) << "MASALA: " << "Thank you for using the Masala software suite.  If you publish results\n";
-			(*output_stream_) << "MASALA: " << "obtained with Masala, please cite the following preprint:\n";
+			(*output_stream_) << "MASALA: " << "Thank you for using the Masala software suite.  If you publish results. \n";
+			(*output_stream_) << "MASALA: " << "obtained with Masala, please cite the following preprint:               \n";
 			(*output_stream_) << "MASALA: " << "\n";
 			(*output_stream_) << "MASALA: " << "T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D.\n";
-			(*output_stream_) << "MASALA: " << "Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software\n";
-			(*output_stream_) << "MASALA: " << "suite: Facilitating rapid methods development for synthetic heteropolymer\n";
-			(*output_stream_) << "MASALA: " << "design. bioRxiv https://doi.org/10.1101/2025.07.02.662756." << std::endl;
+			(*output_stream_) << "MASALA: " << "Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software.  \n";
+			(*output_stream_) << "MASALA: " << "suite: Facilitating rapid methods development for synthetic             \n";
+			(*output_stream_) << "MASALA: " << "heteropolymer design. bioRxiv https://doi.org/10.1101/2025.07.02.662756." << std::endl;
 			output_stream_->flush();
 		}
 	}
