@@ -23,6 +23,12 @@ In addition, the following individuals contributed to the development of Masala'
 
 Masala is maintained by the Biomolecular Design (BmD) Group in the Center for Computatonal Biology at the Flatiron Institute.  Vikram K. Mulligan and P. Douglas Renfrew co-head the group.
 
+## Citing Masala
+
+If you use Masala for work that you publish, please cite the following preprint:
+
+**T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D. Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software suite: Facilitating rapid methods development for synthetic heteropolymer design. _bioRxiv_ [https://doi.org/10.1101/2025.07.02.662756 ](https://doi.org/10.1101/2025.07.02.662756).**
+
 ## Building
 
 To build the Core Masala library:
