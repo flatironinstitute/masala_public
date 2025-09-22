@@ -26,6 +26,7 @@
 // Base headers:
 #include <base/types.hh>
 #include <base/utility/string/string_manipulation.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 #include <base/error/ErrorHandling.hh>
 
 // STL headers:
@@ -125,15 +126,24 @@ MasalaTracerManager::set_redirect_tracers(
 
 /// @brief Provide a message to write out when the tracer manager is destroyed.  This is useful for plugin
 /// modules to be able to provide citations on exit, for instance.
-/// @details Message must be at least one line, or this throws.
+/// @details Message must be at least one line, or this throws.  Optionally, a unique key may be provided.
+/// If this key has already been provided, this message is not included again.
 void
 MasalaTracerManager::add_destruction_message(
 	std::string const & originating_module_namespace_and_name,
-	std::vector< std::string > const & message_lines
+	std::vector< std::string > const & message_lines,
+	std::string const & unique_key
 ) {
 	CHECK_OR_THROW_FOR_CLASS( !originating_module_namespace_and_name.empty(), "add_destruction_message", "The originating module namespace and name cannot be empty." );
 	CHECK_OR_THROW_FOR_CLASS( !message_lines.empty(), "add_destruction_message", "The message must have at least one line." );
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	if( unique_key != "" ) {
+		if( masala::base::utility::container::has_value( unique_ids_for_additional_destruction_messages_, unique_key ) ) {
+			return; // Do nothing if we've already seen this key.
+		} else {
+			unique_ids_for_additional_destruction_messages_.push_back( unique_key );
+		}
+	}
 	additional_destruction_messages_.push_back( std::make_pair( originating_module_namespace_and_name, message_lines )  );
 }
 
