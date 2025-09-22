@@ -106,6 +106,20 @@ MasalaTracerManager::set_redirect_tracers(
 	output_stream_ = output_stream_pointer;
 }
 
+/// @brief Provide a message to write out when the tracer manager is destroyed.  This is useful for plugin
+/// modules to be able to provide citations on exit, for instance.
+/// @details Message must be at least one line, or this throws.
+void
+MasalaTracerManager::add_destruction_message(
+	std::string const & originating_module_namespace_and_name,
+	std::vector< std::string > const & message_lines
+) {
+	CHECK_OR_THROW_FOR_CLASS( !originating_module_namespace_and_name.empty(), "add_destruction_message", "The originating module namespace and name cannot be empty." );
+	CHECK_OR_THROW_FOR_CLASS( !message_lines.empty(), "add_destruction_message", "The message must have at least one line." );
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	additional_destruction_messages_.push_back( std::make_pair( originating_module_namespace_and_name, message_lines )  );
+}
+
 /// @brief Reset the output to flow to std::cout instead of to any custom std::ostream provided previously.
 void
 MasalaTracerManager::reset_redirect_tracers() {
