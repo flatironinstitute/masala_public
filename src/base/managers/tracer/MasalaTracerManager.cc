@@ -61,6 +61,14 @@ MasalaTracerManager::~MasalaTracerManager() {
 			std::cout << "MASALA: " << "\033[1;33;41mRenfrew, and V.K. Mulligan.  (2025).  The open-source Masala software.  \033[0m\n";
 			std::cout << "MASALA: " << "\033[1;33;41msuite: Facilitating rapid methods development for synthetic             \033[0m\n";
 			std::cout << "MASALA: " << "\033[1;33;41mheteropolymer design. \033[4mbioRxiv\033[24m https://doi.org/10.1101/2025.07.02.662756.\033[0m" << std::endl;
+
+			if( !additional_destruction_messages_.empty() ) {
+				for( auto const & entry : additional_destruction_messages_ ) {
+					for( auto const & line : entry.second ) {
+						std::cout << entry.first << ": \033[1;33;41m" << line << "\033[0m\n";
+					}
+				}
+			}
 			std::cout.flush();
 		} else {
 			(*output_stream_) << "MASALA: " << "\033[1;33;41mThank you for using the Masala software suite.  If you publish results. \033[0m\n";
@@ -70,6 +78,15 @@ MasalaTracerManager::~MasalaTracerManager() {
 			(*output_stream_) << "MASALA: " << "\033[1;33;41mRenfrew, and V.K. Mulligan.  (2025).  The open-source Masala software.  \033[0m\n";
 			(*output_stream_) << "MASALA: " << "\033[1;33;41msuite: Facilitating rapid methods development for synthetic             \033[0m\n";
 			(*output_stream_) << "MASALA: " << "\033[1;33;41mheteropolymer design. \033[4mbioRxiv\033[24m https://doi.org/10.1101/2025.07.02.662756.\033[0m" << std::endl;
+
+
+			if( !additional_destruction_messages_.empty() ) {
+				for( auto const & entry : additional_destruction_messages_ ) {
+					for( auto const & line : entry.second ) {
+						(*output_stream_) << entry.first << ": \033[1;33;41m" << line << "\033[0m\n";
+					}
+				}
+			}
 			output_stream_->flush();
 		}
 	}
