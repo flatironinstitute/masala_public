@@ -1,6 +1,6 @@
 \mainpage Masala Core library
 
-\image html Masala_logo_v3_sm.png width=1024px
+\image html Masala_logo_v3_sm.png width=512px
 
 ## Description
 
