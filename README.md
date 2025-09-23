@@ -61,6 +61,8 @@ doxygen Doxyfile.src
 
 (Note that Doxygen must be installed.) Documentation will be addded to the `html_docs/` directory.  Delete this directory to recompile documentation from scratch.
 
+Full Doxygen documentation for the current version of Masala's core is found at [https://users.flatironinstitute.org/~vmulligan/doxygen/masala_core_doxygen/index.html](https://users.flatironinstitute.org/~vmulligan/doxygen/masala_core_doxygen/index.html).
+
 ## Using
 
 In order to use Masala, the `MASALA_PATH` environment variable must be set to the directory in which Masala is installed.
