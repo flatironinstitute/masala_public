@@ -1,5 +1,7 @@
 # Masala Core library
 
+![Masala logo](logos/Masala_logo_v3_sm.png)
+
 ## Version
 
 Masala's Core library is currently version 1.0. 
