@@ -99,8 +99,10 @@ OptimizationSolutions::deep_clone() const {
 void
 OptimizationSolutions::make_independent() {
     std::lock_guard< std::mutex > lock( solutions_mutex_ );
+    api_definition_ = nullptr;
     for( masala::base::Size i(0); i<optimization_solutions_.size(); ++i ) {
-        optimization_solutions_[i] = optimization_solutions_[i]->deep_clone();
+        optimization_solutions_[i] = optimization_solutions_[i]->clone();
+        optimization_solutions_[i]->make_independent();
     }
 }
 

@@ -323,7 +323,9 @@ EigenLinalgCartesianAtomCoordinateRepresentation::protected_make_independent() {
 	new_atom_instances.reserve( n_atoms );
 	for( auto const & entry : atom_instance_to_column_ ) {
 		old_atom_instances.push_back( entry.first );
-		new_atom_instances.push_back( entry.first->deep_clone() );
+		AtomInstanceSP new_instance( entry.first->clone() );
+		new_instance->make_independent();
+		new_atom_instances.push_back( new_instance );
 	}
 
 	for( Size i(0); i<=n_atoms; ++i ) {

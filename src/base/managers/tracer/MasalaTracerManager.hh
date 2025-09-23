@@ -118,7 +118,7 @@ public:
 	void operator=( MasalaTracerManager const & ) = delete;
 
 	/// @brief Default destructor.
-	~MasalaTracerManager() = default;
+	~MasalaTracerManager();
 
 public:
 
@@ -143,6 +143,17 @@ public:
 	void
 	set_redirect_tracers(
 		std::shared_ptr< std::ostream > const & output_stream_pointer
+	);
+
+	/// @brief Provide a message to write out when the tracer manager is destroyed.  This is useful for plugin
+	/// modules to be able to provide citations on exit, for instance.
+	/// @details Message must be at least one line, or this throws.  Optionally, a unique key may be provided.
+	/// If this key has already been provided, this message is not included again.
+	void
+	add_destruction_message(
+		std::string const & originating_module_namespace_and_name,
+		std::vector< std::string > const & message_lines,
+		std::string const & unique_key = ""
 	);
 
 	/// @brief Reset the output to flow to std::cout instead of to any custom std::ostream provided previously.
@@ -252,6 +263,14 @@ private:
 
 	/// @brief List of threads that this object knows about.
 	std::map< std::thread::id, base::Size > thread_map_;
+
+	/// @brief Additional messages that should be printed when the MasalaTracerManager is destroyed.
+	/// @details This is stored as a vector of (module name producing message), (message lines vector).
+	std::vector< std::pair< std::string, std::vector< std::string > > > additional_destruction_messages_;
+
+	/// @brief A list of unique strings representing modules already registered for additional destruction messages,
+	/// which should only be registered once.
+	std::vector< std::string > unique_ids_for_additional_destruction_messages_;
 
 };
 

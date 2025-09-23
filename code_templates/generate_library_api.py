@@ -544,7 +544,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
             else :
                 return "std::map< " \
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
@@ -552,7 +552,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
         elif inputclass.startswith( "unordered_map" ) or inputclass.startswith( "std::unordered_map" ) :
             firstchevron, lastchevron, firstcomma, lastcomma = parse_unordered_map( inputclass )
             additional_includes.append("<unordered_map>")
@@ -561,7 +561,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
             else :
                 return "std::unordered_map< " \
                     + correct_masala_types( project_name, inputclass[firstchevron + 1 : firstcomma].strip(), additional_includes ) \
@@ -569,7 +569,7 @@ def correct_masala_types( project_name: str, inputclass : str, additional_includ
                     + correct_masala_types( project_name, inputclass[firstcomma + 1 : lastcomma].strip(), additional_includes ) \
                     + ", " \
                     + correct_masala_types( project_name, inputclass[lastcomma + 1 : lastchevron].strip(), additional_includes ) \
-                    + " >"
+                    + " " + inputclass[lastchevron :]
         # elif inputclass.startswith( "std::MASALA_WEAK_POINTER" ) :
         #     firstchevron = inputclass.find( "<" )
         #     lastchevron = inputclass.rfind( ">" )
@@ -966,7 +966,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += tabchar + "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + correct_masala_types( project_name, fxn["Output"]["Output_Type"], additional_includes ) + "\n"
@@ -977,7 +978,8 @@ def generate_function_prototypes( project_name: str, classname: str, jsonfile: j
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += tabchar + "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += tabchar + "/// @note This version always returns nullptr.\n"
             if fxn["Is_Virtual_Not_Overriding_Base_API_Virtual_Function"] == True :
                 outstring += tabchar + "virtual\n"
             outstring += tabchar + "void\n"
@@ -1373,7 +1375,8 @@ def generate_function_implementations( \
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += "/// @note This version always returns nullptr.\n"
             outstring += correct_masala_types( project_name, outtype, additional_includes ) + "\n"
         else :
             if triggers_no_mutex_lock :
@@ -1382,7 +1385,8 @@ def generate_function_implementations( \
                     outstring += "  Also note that this version always returns nullptr."
                 outstring += "\n"
             else :
-                outstring += "/// @note This version always returns nullptr.\n"
+                if always_returns_nullptr :
+                    outstring += "/// @note This version always returns nullptr.\n"
             outstring += "void\n"
         outstring +=  apiclassname + "::" + fxn[namepattern + "_Name"] + "("
 
@@ -2406,7 +2410,7 @@ plugin_registration_ccfile_template = read_file( "code_templates/api_templates/r
 plugin_registration_hhfile_template = read_file( "code_templates/api_templates/register_plugins.hh" )
 
 project_name_capitalized = capitalize_project_name( project_name ).replace( "_", " " )
-licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2024) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
+licence_template = read_file( "code_templates/licences/AGPL3.template" ).replace( "<__PROJECT_NAME__>", project_name_capitalized ).replace( "<__YEAR__>", str(2025) ).replace( "<__COPYRIGHT_HOLDER__>", "Vikram K. Mulligan" )
 tabchar = "    "
 
 generate_registration_function = False

@@ -26,6 +26,7 @@
 // Base headers:
 #include <base/types.hh>
 #include <base/utility/string/string_manipulation.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 #include <base/error/ErrorHandling.hh>
 
 // STL headers:
@@ -41,6 +42,56 @@ MasalaTracerManagerHandle
 MasalaTracerManager::get_instance() {
 	static MasalaTracerManager config_manager;
 	return &config_manager;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC CONSTRUCTORS AND DESTRUCTORS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Default destructor.
+MasalaTracerManager::~MasalaTracerManager() {
+	// Print the Masala citation when we destroy this tracer.
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	if( using_mpi_ == false || mpi_process_rank_ == 0 ) {
+		if( output_stream_ == nullptr ) {
+			//            xxxxxxxx                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+			std::cout << "MASALA: " << "\033[1;33;41mThank you for using the Masala software suite.  If you publish results. \033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41mobtained with Masala, \033[5mplease cite\033[25m the following preprint:               \033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41m                                                                        \033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41mT. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D.\033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41mRenfrew, and V.K. Mulligan.  (2025).  The open-source Masala software   \033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41msuite: Facilitating rapid methods development for synthetic             \033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41mheteropolymer design. \033[4mbioRxiv\033[24m https://doi.org/10.1101/2025.07.02.662756.\033[0m\n";
+			std::cout << "MASALA: " << "\033[1;33;41m                                                                        \033[0m\n";
+
+			if( !additional_destruction_messages_.empty() ) {
+				for( auto const & entry : additional_destruction_messages_ ) {
+					for( auto const & line : entry.second ) {
+						std::cout << entry.first << ": \033[1;33;41m" << line << "\033[0m\n";
+					}
+				}
+			}
+			std::cout.flush();
+		} else {
+			(*output_stream_) << "MASALA: " << "\033[1;33;41mThank you for using the Masala software suite.  If you publish results. \033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41mobtained with Masala, \033[5mplease cite\033[25m the following preprint:               \033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41m                                                                        \033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41mT. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D.\033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41mRenfrew, and V.K. Mulligan.  (2025).  The open-source Masala software   \033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41msuite: Facilitating rapid methods development for synthetic             \033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41mheteropolymer design. \033[4mbioRxiv\033[24m https://doi.org/10.1101/2025.07.02.662756.\033[0m\n";
+			(*output_stream_) << "MASALA: " << "\033[1;33;41m                                                                        \033[0m\n";
+
+			if( !additional_destruction_messages_.empty() ) {
+				for( auto const & entry : additional_destruction_messages_ ) {
+					for( auto const & line : entry.second ) {
+						(*output_stream_) << entry.first << ": \033[1;33;41m" << line << "\033[0m\n";
+					}
+				}
+			}
+			output_stream_->flush();
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +123,29 @@ MasalaTracerManager::set_redirect_tracers(
 	CHECK_OR_THROW_FOR_CLASS( output_stream_pointer != nullptr, "set_redirect_tracers", "A null pointer was passed to this function." );
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
 	output_stream_ = output_stream_pointer;
+}
+
+/// @brief Provide a message to write out when the tracer manager is destroyed.  This is useful for plugin
+/// modules to be able to provide citations on exit, for instance.
+/// @details Message must be at least one line, or this throws.  Optionally, a unique key may be provided.
+/// If this key has already been provided, this message is not included again.
+void
+MasalaTracerManager::add_destruction_message(
+	std::string const & originating_module_namespace_and_name,
+	std::vector< std::string > const & message_lines,
+	std::string const & unique_key
+) {
+	CHECK_OR_THROW_FOR_CLASS( !originating_module_namespace_and_name.empty(), "add_destruction_message", "The originating module namespace and name cannot be empty." );
+	CHECK_OR_THROW_FOR_CLASS( !message_lines.empty(), "add_destruction_message", "The message must have at least one line." );
+	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	if( unique_key != "" ) {
+		if( masala::base::utility::container::has_value( unique_ids_for_additional_destruction_messages_, unique_key ) ) {
+			return; // Do nothing if we've already seen this key.
+		} else {
+			unique_ids_for_additional_destruction_messages_.push_back( unique_key );
+		}
+	}
+	additional_destruction_messages_.push_back( std::make_pair( originating_module_namespace_and_name, message_lines )  );
 }
 
 /// @brief Reset the output to flow to std::cout instead of to any custom std::ostream provided previously.
