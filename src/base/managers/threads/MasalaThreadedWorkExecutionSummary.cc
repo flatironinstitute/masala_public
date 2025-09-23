@@ -237,7 +237,10 @@ MasalaThreadedWorkExecutionSummary::write_summary_to_tracer() const {
 
     ss << std::setprecision(16);
 
-    ss << "Carried out " << njobs_ << " jobs in " << nthreads_actual_ << " threads (" << ( all_threads_requested_ ? "all" : std::to_string( nthreads_requested_ ) ) << " threads were requested)." << std::endl;
+    ss << "Carried out " << njobs_ << ( njobs_ == 1 ? " job in " : " jobs in " ) << nthreads_actual_
+        << (  nthreads_actual_ == 1 ? " thread (" : " threads (" )
+        << ( all_threads_requested_ ? "all threads were" : std::to_string( nthreads_requested_ ) + ( nthreads_requested_ == 1 ? " thread was" : " threads were" ) )
+        << " requested)." << std::endl;
     ss << "Total walltime:\t" << execution_time_microseconds_ << " microseconds." << std::endl;
     ss << "\tThreadID:\tTime(us):" << std::endl;
     DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS(

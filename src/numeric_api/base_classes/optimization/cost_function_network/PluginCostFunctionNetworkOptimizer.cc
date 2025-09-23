@@ -39,6 +39,7 @@
 
 // Base headers:
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/engine/MasalaDataRepresentation.hh>
 #include <base/types.hh>
 
 // STL headers:
@@ -77,6 +78,14 @@ PluginCostFunctionNetworkOptimizer::operator=(
 	std::lock_guard< std::mutex > lockthat( src.cfn_solver_mutex_, std::adopt_lock );
 	protected_assign( src );
 	return *this;
+}
+
+/// @brief Make this object fully independent.
+/// @details Calls protected_make_independent().
+void
+PluginCostFunctionNetworkOptimizer::make_independent() {
+	std::lock_guard< std::mutex > lock( cfn_solver_mutex_ );
+	protected_make_independent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,6 +271,17 @@ PluginCostFunctionNetworkOptimizer::protected_assign(
 		template_preferred_cfn_data_representation_ = rep_cast->deep_clone();
 	}
 	//Parent::protected_assign(src);
+}
+
+/// @brief Make this object fully independent.  Must be implemented by derived classes.  Performs no
+/// mutex-locking.  Derived classes should call their parent's protected_make_independent().
+void
+PluginCostFunctionNetworkOptimizer::protected_make_independent() {
+	// TODO TODO TODO
+	// if( template_preferred_cfn_data_representation_ != nullptr ) {
+	// 	template_preferred_cfn_data_representation_ = template_preferred_cfn_data_representation_->clone();
+	// 	template_preferred_cfn_data_representation_->make_independent();
+	// }
 }
 
 /// @brief Set a template cost function network optimization problem data representation, configured by the user but with no data entered.

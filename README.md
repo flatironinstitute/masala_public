@@ -1,8 +1,10 @@
 # Masala Core library
 
+![Masala logo](logos/Masala_logo_v3_sm.png)
+
 ## Version
 
-Masala's Core library is currently version 0.13 (beta release).  The full version 1.0 will be released shortly.
+Masala's Core library is currently version 1.0. 
 
 ## Description
 
@@ -12,9 +14,22 @@ Project Masala is an open-source successor to the Rosetta software suite, combin
 
 The Masala project was started by Vikram K. Mulligan, a Research Scientist in the Center for Computational Biology, at the Flatiron Institute.  For questions, e-mail vmulligan@flatironinstitute.org.
 
-Noora Azadvari, a graduate student at the University of Oregon (eazadvar@uoregon.edu), Tristan Zaborniak, a graduate student at the University of Victoria (tristanz@uvic.ca), and P. Douglas Renfrew, a Research Scientist in the Center for Computational Biology, Flatiron Institute (pdrenfrew@flatironinstitute.org) all contributed to Masala' Core development.
+In addition, the following individuals contributed to the development of Masala's Core library:
 
-Masala is maintained by the Biomolecular Design Group in the Center for Computatonal Biology at the Flatiron Institute.  Vikram K. Mulligan and P. Douglas Renfrew co-head the group.
+- Noora Azadvari, a graduate student at the University of Oregon (eazadvar@uoregon.edu).
+- Tristan Zaborniak, a graduate student at the University of Victoria (tristanz@uvic.ca).
+- Qiyao Zhu, a Flatiron Research Fellow in the Center for Computational Biology, Flatiron Institute (qzhu@flatironinstitute.org).
+- S.M. Bargeen A. Turzo, a Flatiron Research Fellow in the Center for Computational Biology, Flatiron Institute (bturzo@flatironinstitute.org).
+- Parisa Hossienzadeh, a professor at the University of Oregon (parisah@uoregon.edu).
+- P. Douglas Renfrew, a Research Scientist in the Center for Computational Biology, Flatiron Institute (pdrenfrew@flatironinstitute.org).
+
+Masala is maintained by the Biomolecular Design (BmD) Group in the Center for Computatonal Biology at the Flatiron Institute.  Vikram K. Mulligan and P. Douglas Renfrew co-head the group.
+
+## Citing Masala
+
+If you use Masala for work that you publish, please cite the following preprint:
+
+**T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D. Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software suite: Facilitating rapid methods development for synthetic heteropolymer design. _bioRxiv_ [https://www.biorxiv.org/content/10.1101/2025.07.02.662756v2](https://www.biorxiv.org/content/10.1101/2025.07.02.662756v2).**
 
 ## Building
 

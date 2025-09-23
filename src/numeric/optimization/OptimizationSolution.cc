@@ -97,9 +97,12 @@ OptimizationSolution::deep_clone() const {
 /// @brief Ensure that all data are unique and not shared (i.e. everytihng is deep-cloned.)
 void
 OptimizationSolution::make_independent() {
-    //std::lock_guard< std::mutex > lock( solution_mutex_ );
+    std::lock_guard< std::mutex > lock( solution_mutex_ );
+    api_definition_ = nullptr;
     if( problem_ != nullptr ) {
-        problem_ = problem_->deep_clone();
+        OptimizationProblemSP new_prob( problem_->clone() );
+        new_prob->make_independent();
+        problem_ = new_prob; // Nonconst to const.
     }
     //GNDN
 }
@@ -190,10 +193,16 @@ OptimizationSolution::set_solution_score_solver_approximation(
 /// @details Cloned on input.
 void
 OptimizationSolution::set_problem(
-    OptimizationProblemCSP const & problem
+	OptimizationProblemCSP const & problem
 ) {
-    std::lock_guard< std::mutex > lock( solution_mutex_ );
-    problem_ = ( problem == nullptr ? nullptr : problem->deep_clone() );
+	std::lock_guard< std::mutex > lock( solution_mutex_ );
+	if( problem == nullptr ) {
+		problem_ = nullptr;
+	} else {
+		OptimizationProblemSP problem_clone( problem_->clone() );
+		problem_clone->make_independent();
+		problem_ = problem_clone;
+	}
 }
 
 /// @brief Increment the number of times that the solution was produced by 1.

@@ -38,6 +38,8 @@
 #include <base/MasalaObject.hh>
 
 // STL headers:
+#include <vector>
+#include <string>
 
 namespace masala {
 namespace core_api {
