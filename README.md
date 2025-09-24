@@ -47,7 +47,7 @@ To build the Core Masala library:
 
 Note that release mode is the default.  To build in debug mode, edit cmake/CMakeLists.txt and change `SET( MODE release )` to `SET( MODE debug )`.
 
-After building, you will likely want to pull and build the standard Masala plugins repository, and possibly the Garam Masala GUI (to be released) or the quantum computing Masala plugins repository (to be released).
+After building, you will likely want to pull and build the [https://github.com/flatironinstitute/masala_public_standard_plugins](Standard Masala Plugins library), and possibly the Garam Masala GUI (to be released) or the quantum computing Masala plugins library (to be released).
 
 ## Updating the build
 
