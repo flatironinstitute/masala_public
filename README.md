@@ -10,6 +10,10 @@ Masala's Core library is currently version 1.0.
 
 Project Masala is an open-source successor to the Rosetta software suite, combining the best physics-based, statistics-based, and machine learning-based methods for heteropolymer structure prediction, design, analysis, and modelling.
 
+Masala is divided into a Core library (contained in a Git repository hosted at [https://github.com/flatironinstitute/masala_public](https://github.com/flatironinstitute/masala_public)), and various plugin libraries.  External code may link the cCore library at compilation time, and then load and use plugin libraries at runtime, getting the benefit of plugin modules contained in those libraries that were not known at compilation time.  This makes things easier for developers, since it allows them to try out new ideas in standalone libraries that can be independently compiled and distributed, as well as for users, who only need to download and compile those libraries that they wish to use, and who do not need to modify or recompile the external software that links Masala's Core library each time a new plugin module is added.
+
+We recommend that, after downloading and compiling Masala's Core library, you consider downloading and compiling the Standard Masala Plugins library, hosted at [https://github.com/flatironinstitute/masala_public_standard_plugins](https://github.com/flatironinstitute/masala_public_standard_plugins).  A full list of Masala libraries may be found at [https://users.flatironinstitute.org/~vmulligan/](https://users.flatironinstitute.org/~vmulligan/).
+
 ## Authors
 
 The Masala project was started by Vikram K. Mulligan, a Research Scientist in the Center for Computational Biology, at the Flatiron Institute.  For questions, e-mail vmulligan@flatironinstitute.org.
