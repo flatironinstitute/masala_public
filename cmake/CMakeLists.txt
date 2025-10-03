@@ -23,8 +23,8 @@ PROJECT( Masala VERSION 1.1 DESCRIPTION "The Masala molecular modelling suite, c
 
 # Default build is release mode.  To build in debug mode (recommeded for development),
 # change the nex tline to SET( MODE debug ).
-#SET( MODE release )
-SET( MODE debug )
+SET( MODE release )
+#SET( MODE debug )
 IF( ${MODE} STREQUAL "release" )
 	SET( CMAKE_BUILD_TYPE Release )
 ELSEIF( ${MODE} STREQUAL "debug" )
