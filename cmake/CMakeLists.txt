@@ -19,12 +19,12 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
-PROJECT( Masala VERSION 1.0 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+PROJECT( Masala VERSION 1.1 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 
 # Default build is release mode.  To build in debug mode (recommeded for development),
 # change the nex tline to SET( MODE debug ).
-SET( MODE release )
-#SET( MODE debug )
+#SET( MODE release )
+SET( MODE debug )
 IF( ${MODE} STREQUAL "release" )
 	SET( CMAKE_BUILD_TYPE Release )
 ELSEIF( ${MODE} STREQUAL "debug" )

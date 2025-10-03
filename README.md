@@ -4,7 +4,7 @@
 
 ## Version
 
-Masala's Core library is currently version 1.0. 
+Masala's Core library is currently version 1.1. 
 
 ## Description
 
@@ -93,3 +93,8 @@ Masala can be used as a C++ library in two ways:
 ## Licence
 
 Masala is released under an AGPL version 3 licence.  This licence permits anyone to use the software for any purpose (not-for-profit or commercial), as well as to modify the software and incorporate it into derivative works.  The one stipulation is that if any modified version or derivative work is distributed, or users are given access to it over a network, then the source code must be made available under a GPL or AGPL licence (version 3 or later).  This ensures that the software remains free and open-source.  For full details, see the LICENCE file.
+
+## Version history
+
+Version 1.1: Small bugfix to RVL optimizer base classes.  (A float-float comparison could sometimes fail due to machine precision limits.)
+Version 1.0: Initial non-beta release.  Infrastructure for the plugin system, CPU thread management, CFN optimizer base classes, and RVL optimizer base classes fully implemented.
