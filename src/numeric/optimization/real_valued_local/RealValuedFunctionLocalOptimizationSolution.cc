@@ -38,6 +38,7 @@
 #include <base/api/getter/MasalaObjectAPIGetterDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_ZeroInput.tmpl.hh>
 #include <base/api/work_function/MasalaObjectAPIWorkFunctionDefinition_OneInput.tmpl.hh>
+#include <base/utility/container/container_util.tmpl.hh>
 
 // STL headers:
 #include <vector>
@@ -414,7 +415,7 @@ RealValuedFunctionLocalOptimizationSolution::set_problem(
 			+ std::to_string( problem_cast->starting_points().size() ) + " starting points in the problem."
 		)
 		CHECK_OR_THROW_FOR_CLASS(
-			starting_point_ == problem_cast->starting_points()[starting_point_index_], "set_problem",
+			masala::base::utility::container::equal_within_threshold( starting_point_, problem_cast->starting_points()[starting_point_index_], 1.0e-6), "set_problem",
 			"The starting point does not match the corresponding starting point in the problem."
 		)
 	}
@@ -443,7 +444,7 @@ RealValuedFunctionLocalOptimizationSolution::set_starting_point_and_index(
 		RealValuedFunctionLocalOptimizationProblem const * prob( dynamic_cast< RealValuedFunctionLocalOptimizationProblem const * >( protected_problem().get() ) );
 		CHECK_OR_THROW_FOR_CLASS( prob != nullptr, "set_starting_point_and_index", "Problem is not a RealValuedFunctionLocalOptimizationProblem!" );
 		CHECK_OR_THROW_FOR_CLASS( starting_point_index < prob->starting_points().size(), "set_starting_point_and_index", "The starting point index is out of range." );
-		CHECK_OR_THROW_FOR_CLASS( starting_point_in == prob->starting_points()[starting_point_index], "set_starting_point_and_index",
+		CHECK_OR_THROW_FOR_CLASS( masala::base::utility::container::equal_within_threshold( starting_point_in, prob->starting_points()[starting_point_index], 1.0e-6), "set_starting_point_and_index",
 			"The starting point does not match the corresponding starting point in the problem."
 		);
 	}
