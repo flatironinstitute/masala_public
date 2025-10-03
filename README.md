@@ -96,5 +96,5 @@ Masala is released under an AGPL version 3 licence.  This licence permits anyone
 
 ## Version history
 
-Version 1.1: Small bugfix to RVL optimizer base classes.  (A float-float comparison could sometimes fail due to machine precision limits.)
-Version 1.0: Initial non-beta release.  Infrastructure for the plugin system, CPU thread management, CFN optimizer base classes, and RVL optimizer base classes fully implemented.
+* Version 1.1: Small bugfix to RVL optimizer base classes.  (A float-float comparison could sometimes fail due to machine precision limits.)
+* Version 1.0: Initial non-beta release.  Infrastructure for the plugin system, CPU thread management, CFN optimizer base classes, and RVL optimizer base classes fully implemented.
