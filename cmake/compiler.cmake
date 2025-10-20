@@ -85,7 +85,7 @@ SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -rdynamic -frtti" 
 IF( MASALA_USE_OPENBLAS )
     SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -fopenmp" )
     SET( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -fopenmp -lopenblas" )
-ENDIF
+ENDIF()
 SET( cxx -std=c++17 )
 #SET( compile -pipe -ftemplate-depth-512 -fPIC -I /usr/include -I src -Wl --no-as-needed )
 SET( warn -Wall -Wextra -pedantic -Werror -Wno-long-long -Wno-strict-aliasing )
