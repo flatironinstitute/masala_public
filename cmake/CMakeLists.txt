@@ -37,6 +37,9 @@ ENDIF()
 # Note that this only has an effect in relase mode.
 #SET( MASALA_SUPPORT_AVX512 TRUE )
 
+# Uncomment the following to enable compilation with support for OpenBLAS, for more efficient matrix manipulations.
+#SET( MASALA_USE_OPENBLAS TRUE )
+
 # Uncomment the following to enable deprecated API functions.
 #ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
 
