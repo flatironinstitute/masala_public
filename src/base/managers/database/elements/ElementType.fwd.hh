@@ -184,7 +184,7 @@ namespace elements {
         ELEMENT_Ts = 117, // tennessine
         ELEMENT_Og = 118, // oganesson
 
-        NUM_KNOWN_ELEMENTS = Og // keep last
+        NUM_KNOWN_ELEMENTS = ELEMENT_Og // keep last
 
     };
 
