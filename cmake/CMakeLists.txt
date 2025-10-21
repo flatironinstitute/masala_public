@@ -19,7 +19,7 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
-PROJECT( Masala VERSION 1.1 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+PROJECT( Masala VERSION 1.2 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 
 # Default build is release mode.  To build in debug mode (recommeded for development),
 # change the nex tline to SET( MODE debug ).
@@ -36,6 +36,9 @@ ENDIF()
 # Uncomment the following to enable compilation with support for AVX512 instructions on Linux or Windows systems.
 # Note that this only has an effect in relase mode.
 #SET( MASALA_SUPPORT_AVX512 TRUE )
+
+# Uncomment the following to enable compilation with support for OpenBLAS, for more efficient matrix manipulations.
+#SET( MASALA_USE_OPENBLAS TRUE )
 
 # Uncomment the following to enable deprecated API functions.
 #ADD_DEFINITIONS( -DMASALA_ENABLE_DEPRECATED_FUNCTIONS )
