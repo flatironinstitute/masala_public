@@ -89,6 +89,16 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+	/// @brief Access the data array directly.  (Const access.)
+	/// @details Only intended for testing.  Use setters, getters, and operator() for routine access.
+	/// @note Could be nullptr if matrix is empty and size zero.
+	T const * data() const;
+
+	/// @brief Access the data array directly.  (Non-const access.)
+	/// @details Dangerous!  Only intended for testing.  Use setters, getters, and operator() for routine access.
+	/// @note Could be nullptr if matrix is empty and size zero.
+	T * data_nonconst();
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////

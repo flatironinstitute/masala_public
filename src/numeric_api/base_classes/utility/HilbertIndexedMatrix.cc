@@ -89,6 +89,24 @@ HilbertIndexedMatrix<T>::class_namespace() const {
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Access the data array directly.  (Const access.)
+/// @details Only intended for testing.  Use setters, getters, and operator() for routine access.
+/// @note Could be nullptr if matrix is empty and size zero.
+template< typename T >
+T const *
+HilbertIndexedMatrix<T>::data() const {
+	return array_;
+}
+
+/// @brief Access the data array directly.  (Non-const access.)
+/// @details Dangerous!  Only intended for testing.  Use setters, getters, and operator() for routine access.
+/// @note Could be nullptr if matrix is empty and size zero.
+template< typename T >
+T *
+HilbertIndexedMatrix<T>::data_nonconst() {
+	return array_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PROTECTED MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
