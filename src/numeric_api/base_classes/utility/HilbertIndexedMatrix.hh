@@ -32,6 +32,7 @@
 
 // Base headers:
 #include <base/MasalaNoAPIObject.hh>
+#include <base/types.hh>
 
 // Parent header:
 
@@ -51,6 +52,10 @@ class HilbertIndexedMatrix : public masala::base::MasalaNoAPIObject {
 
 public:
 
+////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTION AND DESTRUCTION
+////////////////////////////////////////////////////////////////////////////////
+
 	/// @brief Default constructor.
 	HilbertIndexedMatrix() = default;
 
@@ -58,7 +63,7 @@ public:
 	HilbertIndexedMatrix( HilbertIndexedMatrix const & ) = default;
 
 	/// @brief Destructor.
-	~HilbertIndexedMatrix() override = default;
+	~HilbertIndexedMatrix() override;
 
 public:
 
@@ -66,8 +71,22 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Pointer to the linear array storing the values in Hilbert index order.
+    /// @details Deleted on destruction.
+    T * array_ = nullptr;
 
 }; // class HilbertIndexedMatrix
+
+template class HilbertIndexedMatrix< masala::base::Real >;
+template class HilbertIndexedMatrix< masala::base::Size >;
+template class HilbertIndexedMatrix< float >;
+template class HilbertIndexedMatrix< signed short int >;
+template class HilbertIndexedMatrix< signed int >;
+template class HilbertIndexedMatrix< signed long int >;
+template class HilbertIndexedMatrix< unsigned short int >;
+template class HilbertIndexedMatrix< unsigned int >;
+template class HilbertIndexedMatrix< bool >;
+template class HilbertIndexedMatrix< char >;
 
 } // namespace utility
 } // namespace base_classes
