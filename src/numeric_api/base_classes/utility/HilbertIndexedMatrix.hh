@@ -122,17 +122,6 @@ private:
 
 }; // class HilbertIndexedMatrix
 
-template class HilbertIndexedMatrix< masala::base::Real >;
-template class HilbertIndexedMatrix< masala::base::Size >;
-template class HilbertIndexedMatrix< float >;
-template class HilbertIndexedMatrix< signed short int >;
-template class HilbertIndexedMatrix< signed int >;
-template class HilbertIndexedMatrix< signed long int >;
-template class HilbertIndexedMatrix< unsigned short int >;
-template class HilbertIndexedMatrix< unsigned int >;
-template class HilbertIndexedMatrix< bool >;
-template class HilbertIndexedMatrix< char >;
-
 } // namespace utility
 } // namespace base_classes
 } // namespace numeric_api
