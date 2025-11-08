@@ -34,23 +34,28 @@ namespace numeric_api {
 namespace base_classes {
 namespace utility {
 
+	template< typename T >
 	class HilbertIndexedMatrix;
 
 	/// @brief We will use the convention that an class name followed by SP
 	/// represents a MASALA_SHARED_POINTER for objects of that class.
-	using HilbertIndexedMatrixSP = MASALA_SHARED_POINTER< HilbertIndexedMatrix >;
+	template< typename T >
+	using HilbertIndexedMatrixSP = MASALA_SHARED_POINTER< HilbertIndexedMatrix<T> >;
 
 	/// @brief We will use the convention that an class name followed by CSP
 	/// represents a MASALA_SHARED_POINTER for const objects of that class.
-	using HilbertIndexedMatrixCSP = MASALA_SHARED_POINTER< HilbertIndexedMatrix const >;
+	template< typename T >
+	using HilbertIndexedMatrixCSP = MASALA_SHARED_POINTER< HilbertIndexedMatrix<T> const >;
 
 	/// @brief We will use the convention that an class name followed by WP
 	/// represents a MASALA_WEAK_POINTER for objects of that class.
-	using HilbertIndexedMatrixWP = MASALA_WEAK_POINTER< HilbertIndexedMatrix >;
+	template< typename T >
+	using HilbertIndexedMatrixWP = MASALA_WEAK_POINTER< HilbertIndexedMatrix<T> >;
 
 	/// @brief We will use the convention that an class name followed by CWP
 	/// represents a MASALA_WEAK_POINTER for const objects of that class.
-	using HilbertIndexedMatrixCWP = MASALA_WEAK_POINTER< HilbertIndexedMatrix const >;
+	template< typename T >
+	using HilbertIndexedMatrixCWP = MASALA_WEAK_POINTER< HilbertIndexedMatrix<T> const >;
 
 } // namespace utility
 } // namespace base_classes

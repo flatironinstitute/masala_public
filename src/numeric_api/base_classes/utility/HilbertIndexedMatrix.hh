@@ -46,6 +46,7 @@ namespace utility {
 /// near to some starting point.
 /// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
+template< typename T >
 class HilbertIndexedMatrix : public masala::base::MasalaNoAPIObject {
 
 public:
