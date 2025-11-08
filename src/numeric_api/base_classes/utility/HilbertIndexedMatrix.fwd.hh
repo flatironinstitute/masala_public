@@ -23,7 +23,8 @@
 /// near to some starting point.
 /// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
 /// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
-/// that this class is inefficient for rectangular matrices where the dimensions are very different.
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.  Moreover, the actual
+/// size (number of rows or columns) of the allocated matrix must be an even power of 2, so there's a rounding-up.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_utility_HilbertIndexedMatrix_fwd_hh

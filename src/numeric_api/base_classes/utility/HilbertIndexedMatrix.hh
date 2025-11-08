@@ -23,7 +23,8 @@
 /// near to some starting point.
 /// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
 /// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
-/// that this class is inefficient for rectangular matrices where the dimensions are very different.
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.  Moreover, the actual
+/// size (number of rows or columns) of the allocated matrix must be an even power of 2, so there's a rounding-up.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_utility_HilbertIndexedMatrix_hh
@@ -49,7 +50,8 @@ namespace utility {
 /// near to some starting point.
 /// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
 /// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
-/// that this class is inefficient for rectangular matrices where the dimensions are very different.
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.  Moreover, the actual
+/// size (number of rows or columns) of the allocated matrix must be an even power of 2, so there's a rounding-up.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 template< typename T >
 class HilbertIndexedMatrix : public masala::base::MasalaNoAPIObject {
@@ -119,6 +121,13 @@ private:
 	/// @brief Pointer to the linear array storing the values in Hilbert index order.
 	/// @details Deleted on destruction.
 	T * array_ = nullptr;
+
+	/// @brief The size of the allocated array.
+	masala::base::Size allocated_array_size_ = 0;
+
+	/// @brief The dimension of the square matrix actually allocated.
+	/// @details This is the largest of rows_ or columns_, rounded up to be a power of 2.
+	masala::base::Size allocated_matrix_cols_or_rows_ = 0;
 
 }; // class HilbertIndexedMatrix
 

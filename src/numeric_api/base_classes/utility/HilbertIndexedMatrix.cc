@@ -23,7 +23,8 @@
 /// near to some starting point.
 /// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
 /// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
-/// that this class is inefficient for rectangular matrices where the dimensions are very different.
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.  Moreover, the actual
+/// size (number of rows or columns) of the allocated matrix must be an even power of 2, so there's a rounding-up.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 // Unit header:
@@ -108,16 +109,24 @@ HilbertIndexedMatrix<T>::protected_resize_array(
 	T const * old_array = array_;
 	if( rows > 0 && cols > 0 ) {
 		Size const maxdim( std::max( rows, cols ) );
-		Size const maxdimsq( maxdim*maxdim );
+		Size const maxdim_round( static_cast< Size >( std::round( std::pow( 2, std::ceil( std::log2( static_cast<double>(maxdim) ) ) ) ) ) );
+		Size const maxdimsq( maxdim_round*maxdim_round );
 		array_ = new T[maxdimsq];
 		if( array_ == nullptr ) {
+			allocated_array_size_ = 0;
+			allocated_matrix_cols_or_rows_ = 0;
 			if( old_array != nullptr ) {
 				delete[] old_array;
 				MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
 			}
+		} else {
+			allocated_array_size_ = maxdimsq;
+			allocated_matrix_cols_or_rows_ = maxdim_round;
 		}
 	} else {
 		array_ = nullptr;
+		allocated_array_size_ = 0;
+		allocated_matrix_cols_or_rows_ = 0;
 	}
 
 	// TODO COPY DATA HERE.
