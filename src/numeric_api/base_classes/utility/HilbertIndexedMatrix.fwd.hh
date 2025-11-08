@@ -21,7 +21,9 @@
 /// @details A HilbertIndexedMatrix is a 2D matrix in which values following a Hilbert curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values
 /// near to some starting point.
-/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.
+/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
+/// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_utility_HilbertIndexedMatrix_fwd_hh

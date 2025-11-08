@@ -21,7 +21,9 @@
 /// @details A HilbertIndexedMatrix is a 2D matrix in which values following a Hilbert curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values
 /// near to some starting point.
-/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.
+/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
+/// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 
 #ifndef Masala_src_numeric_api_base_classes_utility_HilbertIndexedMatrix_hh
@@ -45,7 +47,9 @@ namespace utility {
 /// @details A HilbertIndexedMatrix is a 2D matrix in which values following a Hilbert curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values
 /// near to some starting point.
-/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.
+/// @note This class is not intrinsically threadsafe.  Calling code must implement mutex locking schemes.  Also note
+/// that, under the hood, storage must be allocated for a square matrix, regardless the actual matrix dimensions.  This means
+/// that this class is inefficient for rectangular matrices where the dimensions are very different.
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 template< typename T >
 class HilbertIndexedMatrix : public masala::base::MasalaNoAPIObject {
@@ -59,11 +63,23 @@ public:
 	/// @brief Default constructor.
 	HilbertIndexedMatrix() = default;
 
+	/// @brief Dimensions constructor.
+	/// @details This leaves the matrix uninitialized.
+	HilbertIndexedMatrix( masala::base::Size const rows, masala::base::Size const cols );
+
 	/// @brief Copy constructor.
 	HilbertIndexedMatrix( HilbertIndexedMatrix const & ) = default;
 
 	/// @brief Destructor.
 	~HilbertIndexedMatrix() override;
+
+	/// @brief Get the name of this class.
+	/// @returns "HilbertIndexedMatrix".
+	std::string class_name() const override;
+
+	/// @brief Get the namespace of this class.
+	/// @returns "masala::numeric_api::base_classes::utility".
+	std::string class_namespace() const override;
 
 public:
 
@@ -71,9 +87,38 @@ public:
 // PUBLIC MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Pointer to the linear array storing the values in Hilbert index order.
-    /// @details Deleted on destruction.
-    T * array_ = nullptr;
+protected:
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTECTED MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Resize the array_ private member variable so that it matches the rows_ and columns_.
+	/// @details Under the hood, storage for a square matrix (with dimension equal to the larger of rows_ or columns_) is
+	/// always allocated.
+	void
+	protected_resize_array(
+		masala::base::Size const oldrows,
+		masala::base::Size const oldcols,
+		masala::base::Size const rows,
+		masala::base::Size const cols
+	);
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE DATA
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief The number of rows in this object.
+	masala::base::Size rows_ = 0;
+
+	/// @brief The number of columns in this object.
+	masala::base::Size cols_ = 0;
+
+	/// @brief Pointer to the linear array storing the values in Hilbert index order.
+	/// @details Deleted on destruction.
+	T * array_ = nullptr;
 
 }; // class HilbertIndexedMatrix
 
