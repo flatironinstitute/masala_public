@@ -216,6 +216,7 @@ protected:
 		using masala::base::Size;
 
 		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
+		bool new_allocation(false);
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
@@ -223,6 +224,7 @@ protected:
 			if( maxdim_round != old_maxdim_round ) {
 				Size const maxdimsq( maxdim_round*maxdim_round );
 				array_ = new T[maxdimsq];
+				new_allocation = true;
 				if( array_ == nullptr ) {
 					allocated_array_size_ = 0;
 					allocated_matrix_cols_or_rows_ = 0;
@@ -252,7 +254,7 @@ protected:
 			allocated_matrix_cols_or_rows_ = 0;
 		}
 
-		if( old_array != nullptr ) {
+		if( old_array != nullptr && new_allocation ) {
 			delete[] old_array;
 		}
 	}
