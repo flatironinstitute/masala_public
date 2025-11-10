@@ -32,6 +32,7 @@
 
 // STL headers:
 #include <sstream>
+#include <iomanip>
 
 namespace masala {
 namespace tests {
@@ -166,7 +167,7 @@ TEST_CASE(
 				if(row > 0) { ss << "\n"; }
 				for( Size col(0); col<15; ++col ) {
 					if(col > 0) { ss << " "; }
-					ss << mat(row, col);
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
 				}
 			}
 			tm->write_to_tracer( testname, ss.str() );
@@ -185,7 +186,7 @@ TEST_CASE(
 				if(row > 0) { ss << "\n"; }
 				for( Size col(0); col<16; ++col ) {
 					if(col > 0) { ss << " "; }
-					ss << mat(row, col);
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
 					if( col < 15 ) {
 						CHECK( mat(row, col) == counter );
 						++counter;
@@ -203,14 +204,43 @@ TEST_CASE(
 			mat( 15, icol ) = 0; 
 		}
 		counter = 0;
-		tm->write_to_tracer( testname, "Row-expanded matrix 1:");
+		tm->write_to_tracer( testname, "Row-expanded matrix 2:");
 		{
 			std::ostringstream ss;
 			for( Size row(0); row<16; ++row ) {
 				if(row > 0) { ss << "\n"; }
 				for( Size col(0); col<16; ++col ) {
 					if(col > 0) { ss << " "; }
-					ss << mat(row, col);
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
+					if( col < 15 && row < 15 ) {
+						CHECK( mat(row, col) == counter );
+						++counter;
+					} else {
+						CHECK( mat(row, col) == 0 );
+					}
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
+		// Further increase the size.  Should trigger reallocation.
+		mat.conservativeResize( 20, 20 );
+		for( Size icol(0); icol < 20; ++icol ) {
+			for( Size irow(0); irow < 20; ++irow ) {
+				if( icol > 14 || irow > 14 ) {
+					mat(icol, irow) = 0;
+				}
+			}
+		}
+		counter = 0;
+		tm->write_to_tracer( testname, "Row- and column-expanded matrix 3:");
+		{
+			std::ostringstream ss;
+			for( Size row(0); row<20; ++row ) {
+				if(row > 0) { ss << "\n"; }
+				for( Size col(0); col<20; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
 					if( col < 15 && row < 15 ) {
 						CHECK( mat(row, col) == counter );
 						++counter;
