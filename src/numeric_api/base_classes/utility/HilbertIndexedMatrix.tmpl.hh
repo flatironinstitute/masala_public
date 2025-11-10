@@ -170,6 +170,17 @@ public:
 	/// @brief Get the number of columns.
 	inline masala::base::Size cols() const{ return cols_; }
 
+	/// @brief Fill the matrix with zeroes.
+	inline
+	void
+	setZero() {
+		using masala::base::Size;
+
+		for( Size i(0); i<allocated_array_size_; ++i ) {
+			array_[i] = T(0);
+		}
+	}
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
