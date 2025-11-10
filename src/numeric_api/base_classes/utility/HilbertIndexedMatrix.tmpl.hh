@@ -181,6 +181,21 @@ public:
 		}
 	}
 
+	/// @brief Resize the matrix and preserve existing data.  Note that if the matrix shinks, some data will
+	/// be lost.  If the matrix grows, the new entries will be uninitialized.
+	/// @note If new_rows or new_cols is zero, the matrix size is zero and storage is deallocated.
+	inline
+	void
+	conservativeResize(
+		masala::base::Size const new_rows,
+		masala::base::Size const new_cols
+	) {
+		using masala::base::Size;
+		protected_resize_array( rows_, cols_, new_rows, new_cols );
+		rows_ = new_rows;
+		cols_ = new_cols;
+	}
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +214,8 @@ protected:
 		masala::base::Size const cols
 	) {
 		using masala::base::Size;
+
+		TODO DETERMINE IF RESIZE IS NEEDED HERE;
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
@@ -223,7 +240,7 @@ protected:
 			allocated_matrix_cols_or_rows_ = 0;
 		}
 
-		// TODO COPY DATA HERE.
+		TODO COPY DATA HERE;
 
 		if( old_array != nullptr ) {
 			delete[] old_array;
