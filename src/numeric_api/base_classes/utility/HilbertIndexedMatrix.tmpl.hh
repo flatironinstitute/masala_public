@@ -41,6 +41,7 @@
 // STL headers:
 #include <vector>
 #include <string>
+#include <utility>
 
 namespace masala {
 namespace numeric_api {
@@ -122,7 +123,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
-		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, col, row ) ];
+		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
 	}
 
 	/// @brief Const accessor operator.
@@ -135,7 +136,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
-		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, col, row ) ];
+		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
 	}
 
 	/// @brief Access the data array directly.  (Const access.)
@@ -244,26 +245,48 @@ private:
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
 	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
 	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
-	/// @tparam T The type contained in this matrix.
-	/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
-	/// @param x The column of the matrix.
-	/// @param y The row of the matrix.
+	/// @param[in] dimension The dimension of the matrix.  Assumed to be an even power of 2.
+	/// @param[in] row The row of the matrix.
+	/// @param[in] col The column of the matrix.
 	/// @return The index in the array used for data storage.
 	inline
 	masala::base::Size
 	matrix_coord_to_array_coord(
 		masala::base::Size const dimension,
-		masala::base::Size x,
-		masala::base::Size y
+		masala::base::Size row,
+		masala::base::Size col
 	) const {
 		masala::base::Size rx, ry, lincoord(0);
 		for ( masala::base::Size localdimension( dimension/2 ); localdimension >= 1; localdimension /= 2 ) {
-			rx = (x & localdimension) > 0;
-			ry = (y & localdimension) > 0;
+			rx = (col & localdimension) > 0;
+			ry = (row & localdimension) > 0;
 			lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
-			rotate_and_flip_quadrant(dimension, x, y, rx, ry);
+			rotate_and_flip_quadrant(dimension, col, row, rx, ry);
 		}
 		return lincoord;
+	}
+
+	/// @brief Convert the linear coordinate in the array to matrix row and column.
+	/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
+	/// @param array_coord The index in the array used for data storage.
+	/// @returns A pair of (row, col) indicating the coordinates in the matrix.
+	inline
+	std::pair< masala::base::Size, masala::base::Size >
+	array_coord_to_matrix_coord(
+		masala::base::Size const dimension,
+		masala::base::Size const array_coord
+	) const {
+		masala::base::Size rx, ry, local_array_coord(array_coord);
+		masala::base::Size col(0), row(0);
+		for (masala::base::Size localdimension(1); localdimension<dimension; localdimension*=2) {
+			rx = 1 & (local_array_coord/2);
+			ry = 1 & (local_array_coord ^ rx);
+			rotate_and_flip_quadrant(localdimension, col, row, rx, ry);
+			col += localdimension * rx;
+			row += localdimension * ry;
+			local_array_coord /= 4;
+		}
+		return std::make_pair( row, col );
 	}
 
 private:
