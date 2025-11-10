@@ -252,6 +252,56 @@ TEST_CASE(
 			tm->write_to_tracer( testname, ss.str() );
 		}
 
+		// Contract the size.  Should not trigger reallocation.
+		mat.conservativeResize( 20, 8 );
+		counter = 0;
+		tm->write_to_tracer( testname, "Row-expanded, column-contracted matrix 4:");
+		{
+			std::ostringstream ss;
+			for( Size row(0); row<20; ++row ) {
+				if(row > 0) {
+					ss << "\n";
+					counter += 7;
+				}
+				for( Size col(0); col<8; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
+					if( col < 15 && row < 15 ) {
+						CHECK( mat(row, col) == counter );
+						++counter;
+					} else {
+						CHECK( mat(row, col) == 0 );
+					}
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
+		// Contract the size.  Should trigger reallocation.
+		mat.conservativeResize( 8, 8 );
+		counter = 0;
+		tm->write_to_tracer( testname, "Row-expanded, column-contracted matrix 4:");
+		{
+			std::ostringstream ss;
+			for( Size row(0); row<8; ++row ) {
+				if(row > 0) {
+					ss << "\n";
+					counter += 7;
+				}
+				for( Size col(0); col<8; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << std::setfill(' ') << std::setw(3) << mat(row, col);
+					if( col < 15 && row < 15 ) {
+						CHECK( mat(row, col) == counter );
+						++counter;
+					} else {
+						CHECK( mat(row, col) == 0 );
+					}
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
 	}() );
 }
 
