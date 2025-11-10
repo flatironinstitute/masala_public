@@ -280,7 +280,7 @@ TEST_CASE(
 		// Contract the size.  Should trigger reallocation.
 		mat.conservativeResize( 8, 8 );
 		counter = 0;
-		tm->write_to_tracer( testname, "Row-expanded, column-contracted matrix 4:");
+		tm->write_to_tracer( testname, "Row-expanded, column-contracted matrix 5:");
 		{
 			std::ostringstream ss;
 			for( Size row(0); row<8; ++row ) {
