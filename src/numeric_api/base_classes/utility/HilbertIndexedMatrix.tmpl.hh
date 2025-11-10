@@ -164,6 +164,12 @@ public:
 		return allocated_array_size_;
 	}
 
+	/// @brief Get the number of rows.
+	inline masala::base::Size rows() const{ return rows_; }
+
+	/// @brief Get the number of columns.
+	inline masala::base::Size cols() const{ return cols_; }
+
 protected:
 
 ////////////////////////////////////////////////////////////////////////////////
