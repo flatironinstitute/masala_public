@@ -125,6 +125,19 @@ public:
 		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, col, row ) ];
 	}
 
+	/// @brief Const accessor operator.
+	T const &
+	operator() const (
+		masala::base::Size const row,
+		masala::base::Size const col
+	) {
+		DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( row < rows_ && col < cols_, "operator()", "The matrix has " + std::to_string(rows_)
+			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
+			+ ") are out of bounds."
+		);
+		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, col, row ) ];
+	}
+
 	/// @brief Access the data array directly.  (Const access.)
 	/// @details Only intended for testing.  Use setters, getters, and operator() for routine access.
 	/// @note Could be nullptr if matrix is empty and size zero.
