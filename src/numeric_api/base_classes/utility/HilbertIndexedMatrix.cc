@@ -154,6 +154,34 @@ HilbertIndexedMatrix<T>::protected_resize_array(
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Rotate and/or flip a quadrant appropriately.  Used when coverting between the row/column index of
+/// the matrix and the linear index in the array.
+/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
+/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
+/// @note Assumes that dimension is an even power of 2.
+template< typename T >
+void
+HilbertIndexedMatrix<T>::rotate_and_flip_quadrant(
+	masala::base::Size const dimension,
+	masala::base::Size & x,
+	masala::base::Size & y,
+	masala::base::Size const rx,
+	masala::base::Size const ry
+) const {
+	if (ry == 0) {
+		if (rx == 1) {
+			x = dimension-1 - x;
+			y = dimension-1 - y;
+		}
+		// Swap x and y:
+		std::swap( x, y );
+	}
+}
+
 template class HilbertIndexedMatrix< masala::base::Real >;
 template class HilbertIndexedMatrix< masala::base::Size >;
 template class HilbertIndexedMatrix< float >;

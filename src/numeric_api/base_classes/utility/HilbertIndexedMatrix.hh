@@ -119,6 +119,25 @@ protected:
 private:
 
 ////////////////////////////////////////////////////////////////////////////////
+// PRIVATE MEMBER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+	/// @brief Rotate and/or flip a quadrant appropriately.  Used when coverting between the row/column index of
+	/// the matrix and the linear index in the array.
+	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
+	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
+	void
+	rotate_and_flip_quadrant(
+		masala::base::Size const dimension,
+		masala::base::Size & x,
+		masala::base::Size & y,
+		masala::base::Size const rx,
+		masala::base::Size const ry
+	) const;
+
+private:
+
+////////////////////////////////////////////////////////////////////////////////
 // PRIVATE DATA
 ////////////////////////////////////////////////////////////////////////////////
 
