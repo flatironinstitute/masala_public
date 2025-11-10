@@ -36,8 +36,11 @@
 // Base headers:
 #include <base/MasalaNoAPIObject.hh>
 #include <base/types.hh>
+#include <base/error/ErrorHandling.hh>
 
-// Parent header:
+// STL headers:
+#include <vector>
+#include <string>
 
 namespace masala {
 namespace numeric_api {
@@ -67,21 +70,41 @@ public:
 
 	/// @brief Dimensions constructor.
 	/// @details This leaves the matrix uninitialized.
-	HilbertIndexedMatrix( masala::base::Size const rows, masala::base::Size const cols );
+	HilbertIndexedMatrix(
+		masala::base::Size const rows,
+		masala::base::Size const cols
+	) :
+		masala::base::MasalaNoAPIObject(),
+		rows_( rows ),
+		cols_( cols )
+	{
+		protected_resize_array( 0, 0, rows_, cols_ );
+	}
 
 	/// @brief Copy constructor.
 	HilbertIndexedMatrix( HilbertIndexedMatrix const & ) = default;
 
 	/// @brief Destructor.
-	~HilbertIndexedMatrix() override;
+	~HilbertIndexedMatrix() override {
+		if( array_ != nullptr ) {
+			delete[] array_;
+			array_ = nullptr;
+		}
+	}
 
 	/// @brief Get the name of this class.
 	/// @returns "HilbertIndexedMatrix".
-	std::string class_name() const override;
+	std::string
+	class_name() const override {
+		return "HilbertIndexedMatrix";
+	}
 
 	/// @brief Get the namespace of this class.
 	/// @returns "masala::numeric_api::base_classes::utility".
-	std::string class_namespace() const override;
+	std::string
+	class_namespace() const override {
+		return "masala::numeric_api::base_classes::utility";
+	}
 
 public:
 
@@ -92,12 +115,18 @@ public:
 	/// @brief Access the data array directly.  (Const access.)
 	/// @details Only intended for testing.  Use setters, getters, and operator() for routine access.
 	/// @note Could be nullptr if matrix is empty and size zero.
-	T const * data() const;
+	inline T const *
+	data() const {
+		return array_;
+	}
 
 	/// @brief Access the data array directly.  (Non-const access.)
 	/// @details Dangerous!  Only intended for testing.  Use setters, getters, and operator() for routine access.
 	/// @note Could be nullptr if matrix is empty and size zero.
-	T * data_nonconst();
+	inline T *
+	data_nonconst() {
+		return array_;
+	}
 
 protected:
 
@@ -108,13 +137,45 @@ protected:
 	/// @brief Resize the array_ private member variable so that it matches the rows_ and columns_.
 	/// @details Under the hood, storage for a square matrix (with dimension equal to the larger of rows_ or columns_) is
 	/// always allocated.
+	inline
 	void
 	protected_resize_array(
 		masala::base::Size const oldrows,
 		masala::base::Size const oldcols,
 		masala::base::Size const rows,
 		masala::base::Size const cols
-	);
+	) {
+		using masala::base::Size;
+
+		T const * old_array = array_;
+		if( rows > 0 && cols > 0 ) {
+			Size const maxdim( std::max( rows, cols ) );
+			Size const maxdim_round( static_cast< Size >( std::round( std::pow( 2, std::ceil( std::log2( static_cast<double>(maxdim) ) ) ) ) ) );
+			Size const maxdimsq( maxdim_round*maxdim_round );
+			array_ = new T[maxdimsq];
+			if( array_ == nullptr ) {
+				allocated_array_size_ = 0;
+				allocated_matrix_cols_or_rows_ = 0;
+				if( old_array != nullptr ) {
+					delete[] old_array;
+					MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
+				}
+			} else {
+				allocated_array_size_ = maxdimsq;
+				allocated_matrix_cols_or_rows_ = maxdim_round;
+			}
+		} else {
+			array_ = nullptr;
+			allocated_array_size_ = 0;
+			allocated_matrix_cols_or_rows_ = 0;
+		}
+
+		// TODO COPY DATA HERE.
+
+		if( old_array != nullptr ) {
+			delete[] old_array;
+		}
+	}
 
 private:
 
@@ -126,6 +187,7 @@ private:
 	/// the matrix and the linear index in the array.
 	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
 	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
+	inline
 	void
 	rotate_and_flip_quadrant(
 		masala::base::Size const dimension,
@@ -133,7 +195,16 @@ private:
 		masala::base::Size & y,
 		masala::base::Size const rx,
 		masala::base::Size const ry
-	) const;
+	) const {
+		if (ry == 0) {
+			if (rx == 1) {
+				x = dimension-1 - x;
+				y = dimension-1 - y;
+			}
+			// Swap x and y:
+			std::swap( x, y );
+		}
+	}
 
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
 	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
@@ -143,12 +214,22 @@ private:
 	/// @param x The column of the matrix.
 	/// @param y The row of the matrix.
 	/// @return The index in the array used for data storage.
+	inline
 	masala::base::Size
 	matrix_coord_to_array_coord(
 		masala::base::Size const dimension,
 		masala::base::Size x,
 		masala::base::Size y
-	) const;
+	) const {
+		masala::base::Size rx, ry, lincoord(0);
+		for ( masala::base::Size localdimension( dimension/2 ); localdimension >= 1; localdimension /= 2 ) {
+			rx = (x & localdimension) > 0;
+			ry = (y & localdimension) > 0;
+			lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
+			rotate_and_flip_quadrant(dimension, x, y, rx, ry);
+		}
+		return lincoord;
+	}
 
 private:
 
