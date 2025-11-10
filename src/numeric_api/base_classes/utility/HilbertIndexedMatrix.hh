@@ -135,6 +135,21 @@ private:
 		masala::base::Size const ry
 	) const;
 
+	/// @brief Convert matrix coordinates to the linear coordinate in the array.
+	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
+	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
+	/// @tparam T The type contained in this matrix.
+	/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
+	/// @param x The column of the matrix.
+	/// @param y The row of the matrix.
+	/// @return The index in the array used for data storage.
+	masala::base::Size
+	matrix_coord_to_array_coord(
+		masala::base::Size const dimension,
+		masala::base::Size const x,
+		masala::base::Size const y
+	) const;
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

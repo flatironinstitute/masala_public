@@ -182,6 +182,31 @@ HilbertIndexedMatrix<T>::rotate_and_flip_quadrant(
 	}
 }
 
+/// @brief Convert matrix coordinates to the linear coordinate in the array.
+/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
+/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
+/// @tparam T The type contained in this matrix.
+/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
+/// @param x The column of the matrix.
+/// @param y The row of the matrix.
+/// @return The index in the array used for data storage.
+template< typename T >
+masala::base::Size
+HilbertIndexedMatrix<T>::matrix_coord_to_array_coord(
+	masala::base::Size const dimension,
+	masala::base::Size const x,
+	masala::base::Size const y
+) const {
+    masala::base::Size rx, ry, lincoord(0);
+    for ( masala::base::Size localdimension( dimension/2 ); localdimension >= 1; localdimension /= 2 ) {
+        rx = (x & localdimension) > 0;
+        ry = (y & localdimension) > 0;
+        lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
+        rot(dimension, x, y, rx, ry);
+    }
+    return lincoord;
+}
+
 template class HilbertIndexedMatrix< masala::base::Real >;
 template class HilbertIndexedMatrix< masala::base::Size >;
 template class HilbertIndexedMatrix< float >;
