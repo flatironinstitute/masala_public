@@ -227,18 +227,18 @@ private:
 	void
 	rotate_and_flip_quadrant(
 		masala::base::Size const dimension,
-		masala::base::Size & x,
-		masala::base::Size & y,
+		masala::base::Size & row,
+		masala::base::Size & col,
 		masala::base::Size const rx,
 		masala::base::Size const ry
 	) const {
 		if (ry == 0) {
 			if (rx == 1) {
-				x = dimension-1 - x;
-				y = dimension-1 - y;
+				row = dimension-1 - row;
+				col = dimension-1 - col;
 			}
 			// Swap x and y:
-			std::swap( x, y );
+			std::swap( row, col );
 		}
 	}
 
@@ -261,7 +261,7 @@ private:
 			rx = (col & localdimension) > 0;
 			ry = (row & localdimension) > 0;
 			lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
-			rotate_and_flip_quadrant(dimension, col, row, rx, ry);
+			rotate_and_flip_quadrant(dimension, row, col, rx, ry);
 		}
 		return lincoord;
 	}
@@ -281,7 +281,7 @@ private:
 		for (masala::base::Size localdimension(1); localdimension<dimension; localdimension*=2) {
 			rx = 1 & (local_array_coord/2);
 			ry = 1 & (local_array_coord ^ rx);
-			rotate_and_flip_quadrant(localdimension, col, row, rx, ry);
+			rotate_and_flip_quadrant(localdimension, row, col, rx, ry);
 			col += localdimension * rx;
 			row += localdimension * ry;
 			local_array_coord /= 4;
