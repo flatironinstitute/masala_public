@@ -233,7 +233,17 @@ protected:
 				} else {
 					allocated_array_size_ = maxdimsq;
 					allocated_matrix_cols_or_rows_ = maxdim_round;
-					TODO COPY DATA HERE;
+
+					// Copy old data:
+					Size const old_maxdim_sq( old_maxdim_round * old_maxdim_round );
+					for( Size i(0); i<old_maxdim_sq; ++i ) {
+						std::pair< Size, Size > const coord( array_coord_to_matrix_coord( old_maxdim_round, i ) );
+						if( coord.first < rows && coord.second < cols ) {
+							Size const new_i( matrix_coord_to_array_coord( maxdim_round, coord.first, coord.second ) );
+							DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( new_i < maxdimsq, "protected_resize_array", "Destination array index out of bounds.  This is a program error.  Please consult a developer, as this ought not to happen." );
+							array_[ new_i ] = old_array[i];
+						}
+					}
 				}
 			}
 		} else {
@@ -267,7 +277,7 @@ private:
 					std::ceil(
 						std::log2(
 							static_cast<double>(
-								std::max( rows, cols )
+								std::max( nrows, ncols )
 							)
 						)
 					)
