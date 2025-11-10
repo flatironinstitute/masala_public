@@ -127,10 +127,10 @@ public:
 
 	/// @brief Const accessor operator.
 	T const &
-	operator() const (
+	operator() (
 		masala::base::Size const row,
 		masala::base::Size const col
-	) {
+	) const {
 		DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( row < rows_ && col < cols_, "operator()", "The matrix has " + std::to_string(rows_)
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
@@ -141,7 +141,8 @@ public:
 	/// @brief Access the data array directly.  (Const access.)
 	/// @details Only intended for testing.  Use setters, getters, and operator() for routine access.
 	/// @note Could be nullptr if matrix is empty and size zero.
-	inline T const *
+	inline
+	T const *
 	data() const {
 		return array_;
 	}
@@ -149,9 +150,17 @@ public:
 	/// @brief Access the data array directly.  (Non-const access.)
 	/// @details Dangerous!  Only intended for testing.  Use setters, getters, and operator() for routine access.
 	/// @note Could be nullptr if matrix is empty and size zero.
-	inline T *
+	inline
+	T *
 	data_nonconst() {
 		return array_;
+	}
+	
+	/// @brief Get the allocated array size.
+	inline
+	Size
+	allocated_array_size() const{
+		return allocated_array_size_;
 	}
 
 protected:
