@@ -146,8 +146,8 @@ private:
 	masala::base::Size
 	matrix_coord_to_array_coord(
 		masala::base::Size const dimension,
-		masala::base::Size const x,
-		masala::base::Size const y
+		masala::base::Size x,
+		masala::base::Size y
 	) const;
 
 private:

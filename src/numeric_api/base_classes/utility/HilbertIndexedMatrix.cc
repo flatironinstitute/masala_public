@@ -194,15 +194,15 @@ template< typename T >
 masala::base::Size
 HilbertIndexedMatrix<T>::matrix_coord_to_array_coord(
 	masala::base::Size const dimension,
-	masala::base::Size const x,
-	masala::base::Size const y
+	masala::base::Size x,
+	masala::base::Size y
 ) const {
     masala::base::Size rx, ry, lincoord(0);
     for ( masala::base::Size localdimension( dimension/2 ); localdimension >= 1; localdimension /= 2 ) {
         rx = (x & localdimension) > 0;
         ry = (y & localdimension) > 0;
         lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
-        rot(dimension, x, y, rx, ry);
+        rotate_and_flip_quadrant(dimension, x, y, rx, ry);
     }
     return lincoord;
 }
