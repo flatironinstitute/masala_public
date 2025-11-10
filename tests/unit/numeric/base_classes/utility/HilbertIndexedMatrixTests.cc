@@ -26,12 +26,18 @@
 // Unit headers:
 #include <numeric_api/base_classes/utility/HilbertIndexedMatrix.tmpl.hh>
 
+// Base headers:
+#include <base/utility/container/container_util.tmpl.hh>
+#include <base/managers/tracer/MasalaTracerManager.hh>
+
 namespace masala {
 namespace tests {
 namespace unit {
 namespace numeric {
 namespace base_classes {
 namespace utility {
+
+std::string const testname( "masala::tests::unit::numeric::base_classes::utility" );
 
 TEST_CASE(
 	"Test the HilbertIndexedMatrix class with unsigned integer values.",
@@ -40,6 +46,15 @@ TEST_CASE(
 ) {
 	using masala::base::Size;
 	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	std::vector< Size > expected_array{
+		0, 8, 9, 1, 2, 3, 11, 10 
+	};
+	std::vector< Size > actual_array(256);
 	REQUIRE_NOTHROW([&](){
 		HilbertIndexedMatrix< Size > mat( 16, 16 );
 		Size counter( 0 );
@@ -49,6 +64,12 @@ TEST_CASE(
 				++counter;
 			}
 		}
+	
+		Size * data( mat.data_nonconst() );
+		for( Size i(0); i<256; ++i ) {
+			actual_array[i] = data[i];
+		}
+		tm->write_to_tracer( testname, "Actual array:\t[" + container_to_string( actual_array, "," ) + "]" );
 	}() );
 }
 

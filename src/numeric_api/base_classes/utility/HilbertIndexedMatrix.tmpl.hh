@@ -158,7 +158,7 @@ public:
 	
 	/// @brief Get the allocated array size.
 	inline
-	Size
+	masala::base::Size
 	allocated_array_size() const{
 		return allocated_array_size_;
 	}
