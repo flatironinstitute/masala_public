@@ -215,32 +215,32 @@ protected:
 	) {
 		using masala::base::Size;
 
-		TODO DETERMINE IF RESIZE IS NEEDED HERE;
 		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
 			Size const maxdim_round( compute_power_of_two_size( rows, cols ) );
-			Size const maxdimsq( maxdim_round*maxdim_round );
-			array_ = new T[maxdimsq];
-			if( array_ == nullptr ) {
-				allocated_array_size_ = 0;
-				allocated_matrix_cols_or_rows_ = 0;
-				if( old_array != nullptr ) {
-					delete[] old_array;
-					MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
+			if( maxdim_round != old_maxdim_round ) {
+				Size const maxdimsq( maxdim_round*maxdim_round );
+				array_ = new T[maxdimsq];
+				if( array_ == nullptr ) {
+					allocated_array_size_ = 0;
+					allocated_matrix_cols_or_rows_ = 0;
+					if( old_array != nullptr ) {
+						delete[] old_array;
+						MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
+					}
+				} else {
+					allocated_array_size_ = maxdimsq;
+					allocated_matrix_cols_or_rows_ = maxdim_round;
+					TODO COPY DATA HERE;
 				}
-			} else {
-				allocated_array_size_ = maxdimsq;
-				allocated_matrix_cols_or_rows_ = maxdim_round;
 			}
 		} else {
 			array_ = nullptr;
 			allocated_array_size_ = 0;
 			allocated_matrix_cols_or_rows_ = 0;
 		}
-
-		TODO COPY DATA HERE;
 
 		if( old_array != nullptr ) {
 			delete[] old_array;
