@@ -46,6 +46,7 @@ TEST_CASE(
 	"Test the HilbertIndexedMatrix class with unsigned integer values.",
 	"[numeric_api::base_classes::utility::HilbertIndexedMatrix]"
 	"[instantiation]"
+	"[storage]"
 ) {
 	using masala::base::Size;
 	using namespace masala::numeric_api::base_classes::utility;
@@ -132,7 +133,72 @@ TEST_CASE(
 				CHECK( mat(row, col) == expected_final_matrix[row][col] );
 			}
 		}
-		tm->write_to_tracer( testname, ss.str() ); 
+		tm->write_to_tracer( testname, ss.str() );
+	}() );
+}
+
+TEST_CASE(
+	"Test resizing the HilbertIndexedMatrix class with unsigned integer values.",
+	"[numeric_api::base_classes::utility::HilbertIndexedMatrix]"
+	"[instantiation]"
+	"[resizing]"
+) {
+	using masala::base::Size;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	REQUIRE_NOTHROW([&](){
+		HilbertIndexedMatrix< Size > mat( 15, 15 );
+		Size counter(0);
+		for( Size irow(0); irow < 15; ++irow ) {
+			for( Size icol(0); icol < 15; ++icol ) {
+				mat( irow, icol ) = counter;
+				++counter;
+			}
+		}
+
+		{
+			std::ostringstream ss;
+			tm->write_to_tracer( testname, "Initial matrix:");
+			for( Size row(0); row<15; ++row ) {
+				if(row > 0) { ss << "\n"; }
+				for( Size col(0); col<15; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << mat(row, col);
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
+		// Add a column.  Should not trigger reallocation.
+		mat.conservativeResize( mat.rows(), 16 );
+		for( Size irow(0); irow < 15; ++irow ) {
+			mat( irow, 15 ) = 0; 
+		}
+		counter = 0;
+		tm->write_to_tracer( testname, "Column-expanded matrix 1:");
+
+		{
+			std::ostringstream ss;
+			for( Size row(0); row<15; ++row ) {
+				if(row > 0) { ss << "\n"; }
+				for( Size col(0); col<16; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << mat(row, col);
+					if( col < 15 ) {
+						CHECK( mat(row, col) == counter );
+						++counter;
+					} else {
+						CHECK( mat(row, col) == 0 );
+					}
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
 	}() );
 }
 
