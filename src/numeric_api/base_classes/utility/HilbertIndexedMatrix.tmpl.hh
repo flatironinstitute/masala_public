@@ -216,11 +216,11 @@ protected:
 		using masala::base::Size;
 
 		TODO DETERMINE IF RESIZE IS NEEDED HERE;
+		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
-			Size const maxdim( std::max( rows, cols ) );
-			Size const maxdim_round( static_cast< Size >( std::round( std::pow( 2, std::ceil( std::log2( static_cast<double>(maxdim) ) ) ) ) ) );
+			Size const maxdim_round( compute_power_of_two_size( rows, cols ) );
 			Size const maxdimsq( maxdim_round*maxdim_round );
 			array_ = new T[maxdimsq];
 			if( array_ == nullptr ) {
@@ -252,6 +252,29 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
+
+	inline
+	masala::base::Size
+	compute_power_of_two_size(
+		masala::base::Size const nrows,
+		masala::base::Size const ncols
+	) const {
+		using masala::base::Size;
+		return static_cast< Size >(
+			std::round(
+				std::pow(
+					2,
+					std::ceil(
+						std::log2(
+							static_cast<double>(
+								std::max( rows, cols )
+							)
+						)
+					)
+				)
+			)
+		);
+	}
 
 	/// @brief Rotate and/or flip a quadrant appropriately.  Used when coverting between the row/column index of
 	/// the matrix and the linear index in the array.
