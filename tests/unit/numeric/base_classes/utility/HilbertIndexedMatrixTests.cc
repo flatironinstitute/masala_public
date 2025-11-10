@@ -159,7 +159,6 @@ TEST_CASE(
 				++counter;
 			}
 		}
-
 		{
 			std::ostringstream ss;
 			tm->write_to_tracer( testname, "Initial matrix:");
@@ -180,7 +179,6 @@ TEST_CASE(
 		}
 		counter = 0;
 		tm->write_to_tracer( testname, "Column-expanded matrix 1:");
-
 		{
 			std::ostringstream ss;
 			for( Size row(0); row<15; ++row ) {
@@ -189,6 +187,31 @@ TEST_CASE(
 					if(col > 0) { ss << " "; }
 					ss << mat(row, col);
 					if( col < 15 ) {
+						CHECK( mat(row, col) == counter );
+						++counter;
+					} else {
+						CHECK( mat(row, col) == 0 );
+					}
+				}
+			}
+			tm->write_to_tracer( testname, ss.str() );
+		}
+
+		// Add a row.  Should not trigger reallocation.
+		mat.conservativeResize( 16, mat.cols() );
+		for( Size icol(0); icol < 16; ++icol ) {
+			mat( 15, icol ) = 0; 
+		}
+		counter = 0;
+		tm->write_to_tracer( testname, "Row-expanded matrix 1:");
+		{
+			std::ostringstream ss;
+			for( Size row(0); row<16; ++row ) {
+				if(row > 0) { ss << "\n"; }
+				for( Size col(0); col<16; ++col ) {
+					if(col > 0) { ss << " "; }
+					ss << mat(row, col);
+					if( col < 15 && row < 15 ) {
 						CHECK( mat(row, col) == counter );
 						++counter;
 					} else {
