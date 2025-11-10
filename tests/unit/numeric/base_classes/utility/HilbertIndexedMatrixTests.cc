@@ -30,6 +30,9 @@
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/managers/tracer/MasalaTracerManager.hh>
 
+// STL headers:
+#include <sstream>
+
 namespace masala {
 namespace tests {
 namespace unit {
@@ -51,7 +54,7 @@ TEST_CASE(
 
 	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
 
-	std::vector< Size > expected_array{
+	std::vector< Size > const expected_array{
 		0,16,17,1,2,3,19,18,34,35,51,50,49,33,32,48,
 		64,65,81,80,96,112,113,97,98,114,115,99,83,82,66,67,
 		68,69,85,84,100,116,117,101,102,118,119,103,87,86,70,71,
@@ -69,8 +72,27 @@ TEST_CASE(
 		179,178,162,163,147,131,130,146,145,129,128,144,160,161,177,176,
 		192,208,209,193,194,195,211,210,226,227,243,242,241,225,224,240
 	};
-
 	std::vector< Size > actual_array(256);
+
+	std::vector< std::vector< Size > > expected_final_matrix{
+		std::vector< Size >{0,1,14,15,16,19,20,21,234,235,236,239,240,241,254,255},
+		std::vector< Size >{3,2,13,12,17,18,23,22,233,232,237,238,243,242,253,252},
+		std::vector< Size >{4,7,8,11,30,29,24,25,230,231,226,225,244,247,248,251},
+		std::vector< Size >{5,6,9,10,31,28,27,26,229,228,227,224,245,246,249,250},
+		std::vector< Size >{58,57,54,53,32,35,36,37,218,219,220,223,202,201,198,197},
+		std::vector< Size >{59,56,55,52,33,34,39,38,217,216,221,222,203,200,199,196},
+		std::vector< Size >{60,61,50,51,46,45,40,41,214,215,210,209,204,205,194,195},
+		std::vector< Size >{63,62,49,48,47,44,43,42,213,212,211,208,207,206,193,192},
+		std::vector< Size >{64,67,68,69,122,123,124,127,128,131,132,133,186,187,188,191},
+		std::vector< Size >{65,66,71,70,121,120,125,126,129,130,135,134,185,184,189,190},
+		std::vector< Size >{78,77,72,73,118,119,114,113,142,141,136,137,182,183,178,177},
+		std::vector< Size >{79,76,75,74,117,116,115,112,143,140,139,138,181,180,179,176},
+		std::vector< Size >{80,81,94,95,96,97,110,111,144,145,158,159,160,161,174,175},
+		std::vector< Size >{83,82,93,92,99,98,109,108,147,146,157,156,163,162,173,172},
+		std::vector< Size >{84,87,88,91,100,103,104,107,148,151,152,155,164,167,168,171},
+		std::vector< Size >{85,86,89,90,101,102,105,106,149,150,153,154,165,166,169,170}
+	};
+
 	REQUIRE_NOTHROW([&](){
 		HilbertIndexedMatrix< Size > mat( 16, 16 );
 		CHECK( mat.allocated_array_size() == 256 );
@@ -89,6 +111,28 @@ TEST_CASE(
 		tm->write_to_tracer( testname, "Actual array:\t[" + container_to_string( actual_array, "," ) + "]" );
 		tm->write_to_tracer( testname, "Expected array:\t[" + container_to_string( expected_array, "," ) + "]");
 		CHECK( actual_array == expected_array );
+
+		CHECK( mat( 15,15 ) == 255 );
+		CHECK( mat( 0,0 ) == 0 );
+		CHECK( mat( 15,0 ) == 15 );
+		CHECK( mat( 0,1 ) == 16 );
+		CHECK( mat( 0,15 ) == 240 );
+
+		for( Size i(0); i<256; ++i ) {
+			data[i] = i;
+		}
+
+		std::ostringstream ss;
+		tm->write_to_tracer( testname, "Matrix after overwriting data array:");
+		for( Size row(0); row<16; ++row ) {
+			if(row > 0) { ss << "\n"; }
+			for( Size col(0); col<16; ++col ) {
+				if(col > 0) { ss << " "; }
+				ss << mat(row, col);
+				CHECK( mat(row, col) == expected_final_matrix[row][col] );
+			}
+		}
+		tm->write_to_tracer( testname, ss.str() ); 
 	}() );
 }
 
