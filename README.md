@@ -4,7 +4,7 @@
 
 ## Version
 
-Masala's Core library is currently version 1.2.
+Masala's Core library is currently version 1.3.
 
 ## Description
 
@@ -96,6 +96,7 @@ Masala is released under an AGPL version 3 licence.  This licence permits anyone
 
 ## Version history
 
+* Version 1.3: Introduction of the HilbertIndexedMatrix for more efficient searches of data in matrices with fewer cache misses.
 * Version 1.2: Small tweak to element names in the ElementType enum class, to avoid name conflicts with "I" (which is often used for identitiy matrices).
 * Version 1.1: Small bugfix to RVL optimizer base classes.  (A float-float comparison could sometimes fail due to machine precision limits.)
 * Version 1.0: Initial non-beta release.  Infrastructure for the plugin system, CPU thread management, CFN optimizer base classes, and RVL optimizer base classes fully implemented.
