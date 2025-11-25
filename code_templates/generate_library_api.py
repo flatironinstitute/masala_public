@@ -681,7 +681,7 @@ def generate_cpp_namespace_singleline( namespace: list ) -> str :
 ## @brief Given a source class and namespace, generate the path and filename for a source file
 ## with a given extension.
 def generate_source_class_filename( classname : str, namespace : list, extension : str ) -> str :
-    assert len(namespace) >= 2
+    assert len(namespace) >= 2, "Error generating path and filename for class \"" + classname + "\", namespace \"" + namespace + "\"."
     outstr = ""
     for i in range( 1, len(namespace) ) :
         outstr += namespace[i]
@@ -2262,7 +2262,7 @@ def determine_creator_name_namespace_filename( library_name : str, name_string :
     creator_name = name_string + "Creator"
     creator_namespace = [ project_name, library_name + "_api", "auto_generated_api" ]
     creator_filename_no_extension = "src/" + library_name + "_api/auto_generated_api"
-    assert len(namespace) >= 2
+    assert len(namespace) >= 2, "Error generating creator name for class \"" + name_string + "\", namespace \"" + namespace + "\"."
     for i in range( len(namespace) ) :
         if i == 0 :
             assert namespace[i] == project_name
@@ -2424,7 +2424,7 @@ if json_api["Elements"] is not None :
         namespace = separate_namespace( namespace_string )
         #print( namespace_string, name_string )
         #print( namespace )
-        assert len(namespace) > 2
+        assert len(namespace) >= 2
         assert namespace[0] == project_name, "Error!  All Masla classes (with or without APIs) are expected to be in base namespace \"" + project_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
         assert namespace[1] == library_name, "Error!  All Masla classes in library " + library_name + " (with or without APIs) are expected to be in namespace \"" + project_name + "::" + library_name + "\".  This doesn't seem to be so for " + namespace_string + "::" + name_string + "."
         dirname = prepare_directory( project_name, library_name, namespace )

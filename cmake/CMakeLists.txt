@@ -19,7 +19,7 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
 # Set project attributes:
-PROJECT( Masala VERSION 1.3 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
+PROJECT( Masala VERSION 1.4 DESCRIPTION "The Masala molecular modelling suite, combining the best of physics-based simulations and machine-learning based methods." )
 
 # Default build is release mode.  To build in debug mode (recommeded for development),
 # change the nex tline to SET( MODE debug ).
@@ -56,7 +56,9 @@ SET( CMAKE_SKIP_BUILD_RPATH FALSE )
 SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
 SET( THREADS_PREFER_PTHREAD_FLAG ON )
 SET( Catch2_DIR ../catch2_build )
+SET( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE )
 #SET(CMAKE_CXX_FLAGS "-Werror -Wall -Wextra -pedantic-errors")
+LINK_DIRECTORIES( ../lib )
 FIND_PACKAGE( Threads REQUIRED )
 
 # Set header file locations:
