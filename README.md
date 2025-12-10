@@ -33,7 +33,7 @@ Masala is maintained by the Biomolecular Design (BmD) Group in the Center for Co
 
 If you use Masala for work that you publish, please cite the following preprint:
 
-**T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D. Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software suite: Facilitating rapid methods development for synthetic heteropolymer design. _bioRxiv_ [https://www.biorxiv.org/content/10.1101/2025.07.02.662756v2](https://www.biorxiv.org/content/10.1101/2025.07.02.662756v2).**
+**T. Zaborniak, N. Azadvari, Q. Zhu, S.M.B.A. Turzo, P. Hosseinzadeh, P.D. Renfrew, and V.K. Mulligan.  (2025).  The open-source Masala software suite: Facilitating rapid methods development for synthetic heteropolymer design. _Methods in Enzymology_ 723:299-426, doi: [10.1016/bs.mie.2025.09.015](https://doi.org/10.1016/bs.mie.2025.09.015).  Preprint available from _bioRxiv_ [https://www.biorxiv.org/content/10.1101/2025.07.02.662756](https://www.biorxiv.org/content/10.1101/2025.07.02.662756).**
 
 ## Building
 
