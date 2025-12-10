@@ -44,7 +44,7 @@ def determine_deprecation_status( \
     element_properties : json, \
     project_maj_version : int, \
     project_min_version : int
-    ) -> tuple[int, int, int, int, int] :
+    ) -> tuple :
 
     dep_found = False
     dep_warn_found = False
