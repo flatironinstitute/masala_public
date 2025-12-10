@@ -136,8 +136,8 @@ TEST_CASE( "Instantiate a molecular system by its API and add some atoms and bon
 		my_molecular_system->write_to_tracer( "Instantiated a molecular system." );
 		// Build carbon dioxide:
 		AtomInstance_APISP atom1( masala::make_shared< AtomInstance_API >( "C", "sp2", 0, 0 ) ); // Less efficient -- requires string parsing.
-		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( ElementTypeEnum::O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
-		AtomInstance_APISP atom3( masala::make_shared< AtomInstance_API >( ElementTypeEnum::O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
+		AtomInstance_APISP atom2( masala::make_shared< AtomInstance_API >( ElementTypeEnum::ELEMENT_O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
+		AtomInstance_APISP atom3( masala::make_shared< AtomInstance_API >( ElementTypeEnum::ELEMENT_O, AtomHybridizationState::sp2, 0, 0 ) ); // More efficient -- enum-based.
 		my_molecular_system->add_atom( atom1, std::array< Real, 3 >{ 0, 0, 0 } );
 		my_molecular_system->add_atom( atom2, std::array< Real, 3 >{ 1.16, 0, 0 } );
 		my_molecular_system->add_atom( atom3, std::array< Real, 3 >{ -1.16, 0, 0 } );
