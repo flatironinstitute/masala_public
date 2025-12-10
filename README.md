@@ -4,7 +4,7 @@
 
 ## Version
 
-Masala's Core library is currently version 1.3.
+Masala's Core library is currently version 1.5.
 
 ## Description
 
@@ -96,6 +96,7 @@ Masala is released under an AGPL version 3 licence.  This licence permits anyone
 
 ## Version history
 
+* Version 1.5: Update buildscripts to remove language feature incompatible with Python older than version 3.9 (tuple type hinting).
 * Version 1.4: Minor adjustments to generate\_library\_api.py for compatibility with the Masala SYCL loop closure plugins.
 * Version 1.3: Introduction of the HilbertIndexedMatrix for more efficient searches of data in matrices with fewer cache misses.
 * Version 1.2: Small tweak to element names in the ElementType enum class, to avoid name conflicts with "I" (which is often used for identitiy matrices).
