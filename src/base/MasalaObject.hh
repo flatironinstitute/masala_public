@@ -116,6 +116,14 @@ public:
 		std::string const & message
 	) const;
 
+	/// @brief Writes text to the tracer, using the MasalaTracerManager, with a safety check for whether
+	/// the MasalaTracerManager has been spun down.
+	/// @details Threadsafe, but DO NOT USE FROM CONSTRUCTOR!
+	void
+	write_to_tracer_with_spindown_check(
+		std::string const & message
+	) const;
+
 	/// @brief Get a creator object for objects of this type.
 	/// @details By default, returns nullptr.  Can be overridden by derived classes.
 	virtual

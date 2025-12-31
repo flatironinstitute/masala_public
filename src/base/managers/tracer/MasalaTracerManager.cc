@@ -28,20 +28,44 @@
 #include <base/utility/string/string_manipulation.hh>
 #include <base/utility/container/container_util.tmpl.hh>
 #include <base/error/ErrorHandling.hh>
+#include <base/managers/threads/MasalaThreadManager.hh>
 
 // STL headers:
 #include <string>
+#include <atomic>
 
 namespace masala {
 namespace base {
 namespace managers {
 namespace tracer {
 
+/// @brief A boolean that indicates whether the tracer manager has been spun down.
+static std::atomic_bool tracer_manager_spun_down = false;
+
 /// @brief Instantiate the static singleton and get a handle to it.
+/*static*/
 MasalaTracerManagerHandle
 MasalaTracerManager::get_instance() {
-	static MasalaTracerManager config_manager;
-	return &config_manager;
+	static MasalaTracerManager tracer_manager;
+	return &tracer_manager;
+}
+
+/// @brief Write to the tracer manager if it has not yet been spun down, and to std::cout otherwise.
+/// @returns True if we wrote to the tracer manager, false otherwise.
+/*static*/
+bool
+MasalaTracerManager::write_to_tracer_with_spindown_check(
+	std::string const & tracer_name,
+	std::string const & message,
+	bool const skip_check /*= false*/
+) {
+	if( tracer_manager_spun_down.load() == true ) {
+		std::cout << tracer_name << ": " << message << std::endl;
+		return false;
+	}
+	MasalaTracerManagerHandle tm( MasalaTracerManager::get_instance() );
+	tm->write_to_tracer( tracer_name, message, skip_check );
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +76,8 @@ MasalaTracerManager::get_instance() {
 MasalaTracerManager::~MasalaTracerManager() {
 	// Print the Masala citation when we destroy this tracer.
 	std::lock_guard< std::mutex > lock( masala_tracer_manager_mutex_ );
+	tracer_manager_spun_down.store( true );
+
 	if( using_mpi_ == false || mpi_process_rank_ == 0 ) {
 		if( output_stream_ == nullptr ) {
 			//            xxxxxxxx                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
