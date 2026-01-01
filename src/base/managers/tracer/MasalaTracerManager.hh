@@ -96,6 +96,16 @@ public:
 	/// @brief Instantiate the static singleton and get a handle to it.
 	static MasalaTracerManagerHandle get_instance();
 
+	/// @brief Write to the tracer manager if it has not yet been spun down, and to std::cout otherwise.
+	/// @returns True if we wrote to the tracer manager, false otherwise.
+	static
+	bool
+	write_to_tracer_with_spindown_check(
+		std::string const & tracer_name,
+		std::string const & message,
+		bool const skip_check = false
+	);
+
 private:
 
 ////////////////////////////////////////////////////////////////////////////////

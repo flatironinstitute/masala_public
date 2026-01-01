@@ -95,6 +95,16 @@ MasalaObject::write_to_tracer(
     }
 }
 
+/// @brief Writes text to the tracer, using the MasalaTracerManager, with a safety check for whether
+/// the MasalaTracerManager has been spun down.
+/// @details Threadsafe, but DO NOT USE FROM CONSTRUCTOR!
+void
+MasalaObject::write_to_tracer_with_spindown_check(
+	std::string const & message
+) const {
+	masala::base::managers::tracer::MasalaTracerManager::write_to_tracer_with_spindown_check( class_namespace_and_name(), message, false );
+}
+
 /// @brief Get a creator object for objects of this type.
 /// @details By default, returns nullptr.  Can be overridden by derived classes.
 masala::base::managers::plugin_module::MasalaPluginCreatorCSP
