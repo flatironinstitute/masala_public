@@ -78,7 +78,7 @@ MasalaThreadPool::~MasalaThreadPool() {
     std::lock_guard< std::mutex > lock( thread_pool_mutex_ );
     thread_pool_state_ = MasalaThreadPoolState::ALL_THREADS_SPINNING_DOWN;
     for( std::vector< MasalaThreadSP >::iterator it( threads_.begin() ); it != threads_.end(); ) {
-        write_to_tracer( "Terminating thread " + std::to_string( (*it)->thread_index() ) + "." );
+        write_to_tracer_with_spindown_check( "Terminating thread " + std::to_string( (*it)->thread_index() ) + "." );
         {
             std::unique_lock< std::mutex > lock2( (*it)->thread_mutex() );
             (*it)->set_forced_idle(true);
