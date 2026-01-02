@@ -272,20 +272,22 @@ private:
 	/// @brief Given a binary number abcdefghij, convert to a0b0c0d0e0f0g0h0i0j.
 	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are shifted without spacing.  For instance,
 	/// if leastdim were 5, then abcdefghij would convert to abcde0f0g0h0i0j.
+	/// @note Assumes that number is 32 bits or less.
 	inline
 	void
 	shift_for_interleave(
 		masala::base::Size & number,
 		masala::base::Size const leastdim
 	) {
+		DEBUG_MODE_CHECK_OR_THROW( number < masala::base::Size(1e32), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 10^32." );
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 		masala::base::Size const number_copy( number << leastdim );
 
-		number = (number | (number << 16)) & 0x0000ffff0000ffff;
-		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff;
-		number = (number | (number << 4 )) & 0x0f0f0f0f0f0f0f0f;
-		number = (number | (number << 2 )) & 0x3333333333333333;
-		number = (number | (number << 1 )) & 0x5555555555555555;
+		number = (number | (number << 16)) & 0x0000ffff0000ffff; // Masks every other block of 16 bits.
+		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff; // Masks every other block of 8 bits.
+		number = (number | (number << 4 )) & 0x0f0f0f0f0f0f0f0f; // Masks every other block of 4 bits.
+		number = (number | (number << 2 )) & 0x3333333333333333; // Masks every other block of 2 bits.
+		number = (number | (number << 1 )) & 0x5555555555555555; // Masks every 2nd bit.
 		number = ( number & ((1 << leastdim) - 1) ) | number_copy;
 	}
 
