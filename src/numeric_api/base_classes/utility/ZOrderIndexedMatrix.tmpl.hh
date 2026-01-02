@@ -279,7 +279,7 @@ private:
 		masala::base::Size const leastdim
 	) {
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
-		Size const number_copy( number << leastdim );
+		masala::base::Size const number_copy( number << leastdim );
 
 		number = (number | (number << 16)) & 0x0000ffff0000ffff;
 		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff;
