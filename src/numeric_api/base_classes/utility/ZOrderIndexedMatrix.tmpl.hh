@@ -42,6 +42,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <bitset>
 
 namespace masala {
 namespace numeric_api {
@@ -123,7 +124,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
-		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
+		return array_[ matrix_coord_to_array_coord( allocated_matrix_rows_log2_, allocated_matrix_cols_log2_, row, col ) ];
 	}
 
 	/// @brief Const accessor operator.
@@ -136,7 +137,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
-		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
+		return array_[ matrix_coord_to_array_coord( allocated_matrix_rows_log2_, allocated_matrix_cols_log2_, row, col ) ];
 	}
 
 	/// @brief Access the data array directly.  (Const access.)
@@ -227,7 +228,10 @@ protected:
 				new_allocation = true;
 				if( array_ == nullptr ) {
 					allocated_array_size_ = 0;
-					allocated_matrix_cols_or_rows_ = 0;
+					allocated_matrix_cols_ = 0;
+					allocated_matrix_cols_log2_ = 0;
+					allocated_matrix_rows_ = 0;
+					allocated_matrix_rows_log2_ = 0;
 					if( old_array != nullptr ) {
 						delete[] old_array;
 						MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
@@ -241,7 +245,7 @@ protected:
 					for( Size i(0); i<old_maxdim_sq; ++i ) {
 						std::pair< Size, Size > const coord( array_coord_to_matrix_coord( old_maxdim_round, i ) );
 						if( coord.first < rows && coord.second < cols ) {
-							Size const new_i( matrix_coord_to_array_coord( maxdim_round, coord.first, coord.second ) );
+							Size const new_i( matrix_coord_to_array_coord( rowdim_round_log2, coldim_round_log2, coord.first, coord.second ) );
 							DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( new_i < maxdimsq, "protected_resize_array", "Destination array index out of bounds.  This is a program error.  Please consult a developer, as this ought not to happen." );
 							array_[ new_i ] = old_array[i];
 						}
@@ -288,51 +292,27 @@ private:
 		);
 	}
 
-	/// @brief Rotate and/or flip a quadrant appropriately.  Used when coverting between the row/column index of
-	/// the matrix and the linear index in the array.
-	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
-	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
-	inline
-	void
-	rotate_and_flip_quadrant(
-		masala::base::Size const dimension,
-		masala::base::Size & row,
-		masala::base::Size & col,
-		masala::base::Size const rx,
-		masala::base::Size const ry
-	) const {
-		if (ry == 0) {
-			if (rx == 1) {
-				row = dimension-1 - row;
-				col = dimension-1 - col;
-			}
-			// Swap x and y:
-			std::swap( row, col );
-		}
-	}
-
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
-	/// @details From C code taken from https://hugocisneros.com/notes/hilbert_curve_indexing/.  Credit goes to
-	/// Hugo Cisneros for this.  Small modifications were made by Vikram K. Mulligan to convert to C++.
-	/// @param[in] dimension The dimension of the matrix.  Assumed to be an even power of 2.
+	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
+	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
 	/// @param[in] row The row of the matrix.
 	/// @param[in] col The column of the matrix.
 	/// @return The index in the array used for data storage.
 	inline
 	masala::base::Size
 	matrix_coord_to_array_coord(
-		masala::base::Size const dimension,
+		masala::base::Size const row_dimension_log2,
+		masala::base::Size const col_dimension_log2,
 		masala::base::Size row,
 		masala::base::Size col
 	) const {
-		masala::base::Size rx, ry, lincoord(0);
-		for ( masala::base::Size localdimension( dimension/2 ); localdimension >= 1; localdimension /= 2 ) {
-			rx = (col & localdimension) > 0;
-			ry = (row & localdimension) > 0;
-			lincoord += localdimension * localdimension * ((3 * rx) ^ ry);
-			rotate_and_flip_quadrant(dimension, row, col, rx, ry);
-		}
-		return lincoord;
+		std::bitset< sizeof(masala::base::Size) * 8 > output_coord;
+		std::bitset< sizeof(masala::base::Size) * 8 > const rowcoord(row);
+		std::bitset< sizeof(masala::base::Size) * 8 > const colcoord(col);
+		
+		TODO TODO TODO INTERLEAVE HERE;
+
+		return static_cast< masala::base::Size >( output_coord.to_ulong() );
 	}
 
 	/// @brief Convert the linear coordinate in the array to matrix row and column.
@@ -381,9 +361,15 @@ private:
 	/// @details This is rows_, rounded up to be a power of 2.
 	masala::base::Size allocated_matrix_rows_ = 0;
 
+	/// @brief The allocated number of rows, as a power of 2.
+	masala::base::Size allocated_matrix_rows_log2_ = 0;
+
 	/// @brief The horizontal dimension of the square matrix actually allocated.
 	/// @details This is cols_, rounded up to be a power of 2.
 	masala::base::Size allocated_matrix_cols_ = 0;
+
+	/// @brief The allocated number of columns, as a power of 2.
+	masala::base::Size allocated_matrix_cols_log2_ = 0;
 
 }; // class ZOrderIndexedMatrix
 
