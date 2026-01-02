@@ -377,9 +377,13 @@ private:
 	/// @brief The size of the allocated array.
 	masala::base::Size allocated_array_size_ = 0;
 
-	/// @brief The dimension of the square matrix actually allocated.
-	/// @details This is the largest of rows_ or columns_, rounded up to be a power of 2.
-	masala::base::Size allocated_matrix_cols_or_rows_ = 0;
+	/// @brief The vertical dimension of the square matrix actually allocated.
+	/// @details This is rows_, rounded up to be a power of 2.
+	masala::base::Size allocated_matrix_rows_ = 0;
+
+	/// @brief The horizontal dimension of the square matrix actually allocated.
+	/// @details This is cols_, rounded up to be a power of 2.
+	masala::base::Size allocated_matrix_cols_ = 0;
 
 }; // class ZOrderIndexedMatrix
 
