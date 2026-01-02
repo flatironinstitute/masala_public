@@ -291,6 +291,32 @@ private:
 		number = ( number & ((1 << leastdim) - 1) ) | number_copy;
 	}
 
+	/// @brief Given a binary number axbxcxdxexfxgxhxixj, convert to abcdefghij.
+	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are shifted without spacing.  For instance,
+	/// if leastdim were 5, then abcdexfxgxhxixj would convert to abcdefghij.
+	inline
+	masala::base::Size
+	shift_for_deinterleave(
+		masala::base::Size number,
+		masala::base::Size const leastdim
+	) {
+		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
+		masala::base::Size const number_copy( number >> leastdim );
+
+		number = ( (number & 0x5555555555555555) >> 1 ) | (number & 0x5555555555555555);
+		number = (number >> 2 ) | (number & 0x3333333333333333);
+		number = (number >> 4 ) | (number & 0x0f0f0f0f0f0f0f0f);
+		number = (number >> 8 ) | (number & 0x00ff00ff00ff00ff);
+		number = (number >> 16) | (number & 0x0000ffff0000ffff);
+
+		number = (number | (number << 16)) & 0x0000ffff0000ffff; // Masks every other block of 16 bits.
+		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff; // Masks every other block of 8 bits.
+		number = (number | (number << 4 )) & 0x0f0f0f0f0f0f0f0f; // Masks every other block of 4 bits.
+		number = (number | (number << 2 )) & 0x3333333333333333; // Masks every other block of 2 bits.
+		number = (number | (number << 1 )) & 0x5555555555555555; // Masks every 2nd bit.
+		number = ( number & ((1 << leastdim) - 1) ) | number_copy;
+	}
+
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
 	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
 	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
