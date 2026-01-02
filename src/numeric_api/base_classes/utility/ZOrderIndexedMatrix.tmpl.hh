@@ -269,29 +269,6 @@ private:
 // PRIVATE MEMBER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-	inline
-	masala::base::Size
-	compute_power_of_two_size(
-		masala::base::Size const nrows,
-		masala::base::Size const ncols
-	) const {
-		using masala::base::Size;
-		return static_cast< Size >(
-			std::round(
-				std::pow(
-					2,
-					std::ceil(
-						std::log2(
-							static_cast<double>(
-								std::max( nrows, ncols )
-							)
-						)
-					)
-				)
-			)
-		);
-	}
-
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
 	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
 	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
