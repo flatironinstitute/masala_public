@@ -274,6 +274,7 @@ private:
 	/// if leastdim were 5, then abcdefghij would convert to abcde0f0g0h0i0j.
 	/// @note Assumes that number is 32 bits or less.
 	inline
+	static
 	void
 	shift_for_interleave(
 		masala::base::Size & number,
@@ -295,6 +296,7 @@ private:
 	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are zeroed out.  For instance,
 	/// if leastdim were 5, then abcdexfxgxhxixj would convert to fghij.
 	inline
+	static
 	masala::base::Size
 	shift_for_deinterleave(
 		masala::base::Size number,
@@ -318,13 +320,14 @@ private:
 	/// @param[in] col The column of the matrix.
 	/// @return The index in the array used for data storage.
 	inline
+	static
 	masala::base::Size
 	matrix_coord_to_array_coord(
 		masala::base::Size const row_dimension_log2,
 		masala::base::Size const col_dimension_log2,
 		masala::base::Size row,
 		masala::base::Size col
-	) const {
+	) {
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 
 		masala::base::Size const leastdim( std::min(row_dimension_log2, col_dimension_log2) );
@@ -340,12 +343,13 @@ private:
 	/// @param[in] array_coord The index in the array used for data storage.
 	/// @returns A pair of (row, col) indicating the coordinates in the matrix.
 	inline
+	static
 	std::pair< masala::base::Size, masala::base::Size >
 	array_coord_to_matrix_coord(
 		masala::base::Size const row_dimension_log2,
 		masala::base::Size const col_dimension_log2,
 		masala::base::Size const array_coord
-	) const {
+	) {
 		return std::make_pair( shift_for_deinterleave(array_coord, row_dimension_log2), shift_for_deinterleave(array_coord >> 1, col_dimension_log2) );
 	}
 
