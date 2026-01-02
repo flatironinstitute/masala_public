@@ -315,26 +315,19 @@ private:
 	}
 
 	/// @brief Convert the linear coordinate in the array to matrix row and column.
-	/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
-	/// @param array_coord The index in the array used for data storage.
+	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
+	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
+	/// @param[in] array_coord The index in the array used for data storage.
 	/// @returns A pair of (row, col) indicating the coordinates in the matrix.
 	inline
 	std::pair< masala::base::Size, masala::base::Size >
 	array_coord_to_matrix_coord(
-		masala::base::Size const dimension,
+		masala::base::Size const row_dimension_log2,
+		masala::base::Size const col_dimension_log2,
 		masala::base::Size const array_coord
 	) const {
-		masala::base::Size rx, ry, local_array_coord(array_coord);
-		masala::base::Size col(0), row(0);
-		for (masala::base::Size localdimension(1); localdimension<dimension; localdimension*=2) {
-			rx = 1 & (local_array_coord/2);
-			ry = 1 & (local_array_coord ^ rx);
-			rotate_and_flip_quadrant(localdimension, row, col, rx, ry);
-			col += localdimension * rx;
-			row += localdimension * ry;
-			local_array_coord /= 4;
-		}
-		return std::make_pair( row, col );
+		masala::base::Size const leastdim( std::min(row_dimension_log2, col_dimension_log2) );
+		return std::make_pair( shift_for_deinterleave(array_coord, leastdim), shift_for_deinterleave(array_coord >> 1, leastdim) );
 	}
 
 private:
