@@ -283,13 +283,13 @@ private:
 		masala::base::Size row,
 		masala::base::Size col
 	) const {
-		std::bitset< sizeof(masala::base::Size) * 8 > output_coord;
-		std::bitset< sizeof(masala::base::Size) * 8 > const rowcoord(row);
-		std::bitset< sizeof(masala::base::Size) * 8 > const colcoord(col);
-		
-		TODO TODO TODO INTERLEAVE HERE;
+		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 
-		return static_cast< masala::base::Size >( output_coord.to_ulong() );
+		masala::base::Size const leastdim( std::min(row_dimension_log2, col_dimension_log2) );
+		shift_for_interleave(row, leastdim );
+		shift_for_interleave(col, leastdim );
+
+		return (row << 1) | col;
 	}
 
 	/// @brief Convert the linear coordinate in the array to matrix row and column.
