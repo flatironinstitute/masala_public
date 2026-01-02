@@ -292,8 +292,8 @@ private:
 	}
 
 	/// @brief Given a binary number axbxcxdxexfxgxhxixj, convert to abcdefghij.
-	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are shifted without spacing.  For instance,
-	/// if leastdim were 5, then abcdexfxgxhxixj would convert to abcdefghij.
+	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are zeroed out.  For instance,
+	/// if leastdim were 5, then abcdexfxgxhxixj would convert to fghij.
 	inline
 	masala::base::Size
 	shift_for_deinterleave(
@@ -301,7 +301,6 @@ private:
 		masala::base::Size const leastdim
 	) {
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
-		masala::base::Size const number_copy( number >> leastdim );
 
 		number = ( (number & 0x5555555555555555) >> 1 ) | (number & 0x5555555555555555);
 		number = (number >> 2 ) | (number & 0x3333333333333333);
@@ -309,12 +308,7 @@ private:
 		number = (number >> 8 ) | (number & 0x00ff00ff00ff00ff);
 		number = (number >> 16) | (number & 0x0000ffff0000ffff);
 
-		number = (number | (number << 16)) & 0x0000ffff0000ffff; // Masks every other block of 16 bits.
-		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff; // Masks every other block of 8 bits.
-		number = (number | (number << 4 )) & 0x0f0f0f0f0f0f0f0f; // Masks every other block of 4 bits.
-		number = (number | (number << 2 )) & 0x3333333333333333; // Masks every other block of 2 bits.
-		number = (number | (number << 1 )) & 0x5555555555555555; // Masks every 2nd bit.
-		number = ( number & ((1 << leastdim) - 1) ) | number_copy;
+		number = ( number & ((1 << leastdim) - 1) );
 	}
 
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
@@ -352,8 +346,7 @@ private:
 		masala::base::Size const col_dimension_log2,
 		masala::base::Size const array_coord
 	) const {
-		masala::base::Size const leastdim( std::min(row_dimension_log2, col_dimension_log2) );
-		return std::make_pair( shift_for_deinterleave(array_coord, leastdim), shift_for_deinterleave(array_coord >> 1, leastdim) );
+		return std::make_pair( shift_for_deinterleave(array_coord, row_dimension_log2), shift_for_deinterleave(array_coord >> 1, col_dimension_log2) );
 	}
 
 private:
