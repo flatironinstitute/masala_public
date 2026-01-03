@@ -216,17 +216,25 @@ protected:
 	) {
 		using masala::base::Size;
 
-		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
+		Size const old_maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldrows) ) ) ) );
+		Size const old_maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldcols) ) ) ) );
+
 		bool new_allocation(false);
 
 		T const * old_array = array_;
+
 		if( rows > 0 && cols > 0 ) {
-			Size const maxdim_round( compute_power_of_two_size( rows, cols ) );
-			if( maxdim_round != old_maxdim_round ) {
-				Size const maxdimsq( maxdim_round*maxdim_round );
+			Size const maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(rows) ) ) ) );
+			Size const maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(cols) ) ) ) );
+
+			if( (maxdim_rows_log2 != old_maxdim_rows_log2) || (old_maxdim_cols_log2 != old_maxdim_cols_log2) ) {
+				Size const maxdim_rows( Size(1) << maxdim_rows_log2 );
+				Size const maxdim_cols( Size(1) << maxdim_cols_log2 );
+				Size const maxdimsq( maxdim_rows*maxdim_cols );
 				array_ = new T[maxdimsq];
 				new_allocation = true;
 				if( array_ == nullptr ) {
+					// Allocation failure.
 					allocated_array_size_ = 0;
 					allocated_matrix_cols_ = 0;
 					allocated_matrix_cols_log2_ = 0;
@@ -237,8 +245,14 @@ protected:
 						MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
 					}
 				} else {
+					// Allocation success.
 					allocated_array_size_ = maxdimsq;
-					allocated_matrix_cols_or_rows_ = maxdim_round;
+					allocated_matrix_rows_ = maxdim_rows;
+					allocated_matrix_cols_ = maxdim_cols;
+					allocated_matrix_rows_log2_ = maxdim_rows_log2;
+					allocated_matrix_cols_log2_ = maxdim_cols_log2;
+
+					TODO CONTINUE HERE;
 
 					// Copy old data:
 					Size const old_maxdim_sq( old_maxdim_round * old_maxdim_round );
@@ -255,7 +269,11 @@ protected:
 		} else {
 			array_ = nullptr;
 			allocated_array_size_ = 0;
-			allocated_matrix_cols_or_rows_ = 0;
+			allocated_matrix_cols_ = 0;
+			allocated_matrix_cols_log2_ = 0;
+			allocated_matrix_rows_ = 0;
+			allocated_matrix_rows_log2_ = 0;
+			new_allocation = true;
 		}
 
 		if( old_array != nullptr && new_allocation ) {

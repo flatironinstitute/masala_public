@@ -252,6 +252,7 @@ protected:
 			array_ = nullptr;
 			allocated_array_size_ = 0;
 			allocated_matrix_cols_or_rows_ = 0;
+			new_allocation = true;
 		}
 
 		if( old_array != nullptr && new_allocation ) {
