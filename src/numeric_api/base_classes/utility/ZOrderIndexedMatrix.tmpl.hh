@@ -227,7 +227,7 @@ protected:
 			Size const maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(rows) ) ) ) );
 			Size const maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(cols) ) ) ) );
 
-			if( (maxdim_rows_log2 != old_maxdim_rows_log2) || (old_maxdim_cols_log2 != old_maxdim_cols_log2) ) {
+			if( (maxdim_rows_log2 != old_maxdim_rows_log2) || (maxdim_cols_log2 != old_maxdim_cols_log2) ) {
 				Size const maxdim_rows( Size(1) << maxdim_rows_log2 );
 				Size const maxdim_cols( Size(1) << maxdim_cols_log2 );
 				Size const maxdimsq( maxdim_rows*maxdim_cols );
@@ -252,16 +252,14 @@ protected:
 					allocated_matrix_rows_log2_ = maxdim_rows_log2;
 					allocated_matrix_cols_log2_ = maxdim_cols_log2;
 
-					TODO CONTINUE HERE;
-
 					// Copy old data:
-					Size const old_maxdim_sq( old_maxdim_round * old_maxdim_round );
-					for( Size i(0); i<old_maxdim_sq; ++i ) {
-						std::pair< Size, Size > const coord( array_coord_to_matrix_coord( old_maxdim_round, i ) );
-						if( coord.first < rows && coord.second < cols ) {
-							Size const new_i( matrix_coord_to_array_coord( rowdim_round_log2, coldim_round_log2, coord.first, coord.second ) );
-							DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( new_i < maxdimsq, "protected_resize_array", "Destination array index out of bounds.  This is a program error.  Please consult a developer, as this ought not to happen." );
-							array_[ new_i ] = old_array[i];
+					for( Size icol(0); icol < cols; ++icol ) {
+						for( Size irow(0); irow < rows; ++irow ) {
+							if( icol < oldcols && irow < oldrows ) {
+								Size const oldindex( matrix_coord_to_array_coord( old_maxdim_rows_log2, old_maxdim_cols_log2, irow, icol ) );
+								Size const newindex( matrix_coord_to_array_coord( maxdim_rows_log2, maxdim_cols_log2, irow, icol ) );
+								array_[newindex] = old_array[oldindex];
+							} // Note that other cells remain uninitialized.  Initialization must be explicit.
 						}
 					}
 				}
@@ -310,27 +308,6 @@ private:
 		number = ( number & ((1 << leastdim) - 1) ) | number_copy;
 	}
 
-	/// @brief Given a binary number axbxcxdxexfxgxhxixj, convert to abcdefghij.
-	/// @details Only does this for the least significant digits, up to leastdim.  Most significant digits are zeroed out.  For instance,
-	/// if leastdim were 5, then abcdexfxgxhxixj would convert to fghij.
-	inline
-	static
-	masala::base::Size
-	shift_for_deinterleave(
-		masala::base::Size number,
-		masala::base::Size const leastdim
-	) {
-		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
-
-		number = ( (number & 0x5555555555555555) >> 1 ) | (number & 0x5555555555555555);
-		number = (number >> 2 ) | (number & 0x3333333333333333);
-		number = (number >> 4 ) | (number & 0x0f0f0f0f0f0f0f0f);
-		number = (number >> 8 ) | (number & 0x00ff00ff00ff00ff);
-		number = (number >> 16) | (number & 0x0000ffff0000ffff);
-
-		number = ( number & ((1 << leastdim) - 1) );
-	}
-
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
 	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
 	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
@@ -353,22 +330,6 @@ private:
 		shift_for_interleave(col, leastdim );
 
 		return (row << 1) | col;
-	}
-
-	/// @brief Convert the linear coordinate in the array to matrix row and column.
-	/// @param[in] row_dimension_log2 The vertical dimension of the matrix, expressed as a power of 2.
-	/// @param[in] col_dimension_log2 The horizontal dimension of the matrix, expressed as a power of 2.
-	/// @param[in] array_coord The index in the array used for data storage.
-	/// @returns A pair of (row, col) indicating the coordinates in the matrix.
-	inline
-	static
-	std::pair< masala::base::Size, masala::base::Size >
-	array_coord_to_matrix_coord(
-		masala::base::Size const row_dimension_log2,
-		masala::base::Size const col_dimension_log2,
-		masala::base::Size const array_coord
-	) {
-		return std::make_pair( shift_for_deinterleave(array_coord, row_dimension_log2), shift_for_deinterleave(array_coord >> 1, col_dimension_log2) );
 	}
 
 private:
