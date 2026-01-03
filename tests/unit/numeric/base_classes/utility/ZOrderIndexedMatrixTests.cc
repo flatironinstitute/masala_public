@@ -89,10 +89,10 @@ TEST_CASE(
 
 		{
 			std::vector< Size > const inputs3{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-			std::vector< Size > const expected_outputs3{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
+			std::vector< Size > const expected_outputs3{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 128 };
 			std::vector< Size > outputs3( inputs3.size(), 0 );
 			std::ostringstream ss;
-			ss << "Input2\tExpected2\tActual2\n";
+			ss << "Input3\tExpected3\tActual3\n";
 			for( Size i(0); i<inputs3.size(); ++i ) {
 				outputs3[i] = inputs3[i];
 				tester.shift_for_interleave( outputs3[i], 4 );
@@ -100,6 +100,21 @@ TEST_CASE(
 			}
 			tm->write_to_tracer( testname, ss.str() );
 			CHECK( expected_outputs3 == outputs3 );
+		}
+
+		{
+			std::vector< Size > const inputs4{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+			std::vector< Size > const expected_outputs4{ 0, 1, 4, 5, 16, 17, 20, 21, 32, 33, 36, 37, 48, 49, 52, 53, 64 };
+			std::vector< Size > outputs4( inputs4.size(), 0 );
+			std::ostringstream ss;
+			ss << "Input4\tExpected4\tActual4\n";
+			for( Size i(0); i<inputs4.size(); ++i ) {
+				outputs4[i] = inputs4[i];
+				tester.shift_for_interleave( outputs4[i], 3 );
+				ss << inputs4[i] << "\t" << expected_outputs4[i] << "\t" << outputs4[i] << "\n";
+			}
+			tm->write_to_tracer( testname, ss.str() );
+			CHECK( expected_outputs4 == outputs4 );
 		}
 	}() );
 }
