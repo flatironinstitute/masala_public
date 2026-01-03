@@ -44,6 +44,35 @@ namespace utility {
 std::string const testname( "masala::tests::unit::numeric::base_classes::utility" );
 
 TEST_CASE(
+	"Test the ZOrderIndexedMatrix::shift_for_interleave() function.",
+	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
+) {
+	using masala::base::Size;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	REQUIRE_NOTHROW([&](){
+		ZOrderIndexedMatrixTester< Size > tester;
+
+		std::vector< Size > const inputs          { 0, 1, 2, 3, 4,   5,  6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+		std::vector< Size > const expected_outputs{ 0, 1, 3, 5, 16, 17, 20, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+		std::vector< Size > outputs( inputs.size(), 0 );
+		std::ostringstream ss;
+		ss << "Input\tExpected\tActual\n"; 
+		for( Size i(0); i<inputs.size(); ++i ) {
+			outputs[i] = inputs[i];
+			tester.shift_for_interleave( outputs[i], 4 );
+			ss << inputs[i] << "\t" << expected_outputs[i] << "\t" << outputs[i] << "\n";
+		}
+		tm->write_to_tracer( testname, ss.str() );
+		CHECK( expected_outputs == outputs );
+	}() );
+}
+
+TEST_CASE(
 	"Test the ZOrderIndexedMatrix class with unsigned integer values.",
 	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
 	"[instantiation]"

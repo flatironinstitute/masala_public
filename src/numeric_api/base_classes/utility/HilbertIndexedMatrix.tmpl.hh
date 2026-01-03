@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/utility/HilbertIndexedMatrix.hh
+/// @file src/numeric_api/base_classes/utility/HilbertIndexedMatrix.tmpl.hh
 /// @brief Headers for the HilbertIndexedMatrix class.
 /// @details A HilbertIndexedMatrix is a 2D matrix in which values following a Hilbert curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values

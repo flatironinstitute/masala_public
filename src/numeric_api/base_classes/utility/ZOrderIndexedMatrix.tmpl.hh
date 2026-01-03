@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// @file src/numeric_api/base_classes/utility/ZOrderIndexedMatrix.hh
+/// @file src/numeric_api/base_classes/utility/ZOrderIndexedMatrix.tmpl.hh
 /// @brief Headers for the ZOrderIndexedMatrix class.
 /// @details A ZOrderIndexedMatrix is a 2D matrix in which values following a fractal Z-shaped (Morton order) curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values
@@ -49,6 +49,51 @@ namespace numeric_api {
 namespace base_classes {
 namespace utility {
 
+/// @brief A class intended only for testing the ZOrderIndexedMatrix.  Not to be instantiated under ordinary circumstances.
+template< typename T >
+class ZOrderIndexedMatrixTester : public masala::base::MasalaNoAPIObject {
+
+public:
+
+	/// @brief Default constructor:
+	ZOrderIndexedMatrixTester() = default;
+
+	/// @brief Default destructor:
+	~ZOrderIndexedMatrixTester() = default;
+
+	/// @brief Get the name of this class.
+	/// @returns "ZOrderIndexedMatrixTester".
+	std::string
+	class_name() const override {
+		return "ZOrderIndexedMatrixTester";
+	}
+
+	/// @brief Get the namespace of this class.
+	/// @returns "masala::numeric_api::base_classes::utility".
+	std::string
+	class_namespace() const override {
+		return "masala::numeric_api::base_classes::utility";
+	}
+
+public:
+
+	/// @brief Test the ZOrderIndexedMatrix::shift_for_interleave() function.
+	/// @details Given a binary number abcdefghij, convert to a0b0c0d0e0f0g0h0i0j.  Only does this for the least significant
+	/// digits, up to leastdim.  Most significant digits are shifted without spacing.  For instance,
+	/// if leastdim were 5, then abcdefghij would convert to abcde0f0g0h0i0j.
+	/// @note Assumes that number is 32 bits or less.
+	inline
+	static
+	void
+	shift_for_interleave(
+		masala::base::Size & number,
+		masala::base::Size const leastdim
+	) {
+		ZOrderIndexedMatrix< T >::shift_for_interleave( number, leastdim );
+	}
+
+};
+
 /// @brief The ZOrderIndexedMatrix class.
 /// @details A ZOrderIndexedMatrix is a 2D matrix in which values following a fractal Z-shaped (Morton order) curve through the
 /// matrix are arrayed linearly in memory.  This is intended to minimize cache misses when looking up values
@@ -60,6 +105,10 @@ namespace utility {
 /// @author Vikram K. Mulligan (vmulligan@flatironinstitute.org).
 template< typename T >
 class ZOrderIndexedMatrix : public masala::base::MasalaNoAPIObject {
+
+public:
+
+	friend class ZOrderIndexedMatrixTester< T >; // For testing only.
 
 public:
 
