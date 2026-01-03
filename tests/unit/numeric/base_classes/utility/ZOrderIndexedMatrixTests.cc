@@ -56,18 +56,51 @@ TEST_CASE(
 
 	REQUIRE_NOTHROW([&](){
 		ZOrderIndexedMatrixTester< Size > tester;
-		std::vector< Size > const inputs{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-		std::vector< Size > const expected_outputs{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
-		std::vector< Size > outputs( inputs.size(), 0 );
-		std::ostringstream ss;
-		ss << "Input\tExpected\tActual\n"; 
-		for( Size i(0); i<inputs.size(); ++i ) {
-			outputs[i] = inputs[i];
-			tester.shift_for_interleave( outputs[i], 16 );
-			ss << inputs[i] << "\t" << expected_outputs[i] << "\t" << outputs[i] << "\n";
+
+		{
+			std::vector< Size > const inputs1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+			std::vector< Size > const expected_outputs1{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
+			std::vector< Size > outputs1( inputs1.size(), 0 );
+			std::ostringstream ss;
+			ss << "Input1\tExpected1\tActual1\n";
+			for( Size i(0); i<inputs1.size(); ++i ) {
+				outputs1[i] = inputs1[i];
+				tester.shift_for_interleave( outputs1[i], 16 );
+				ss << inputs1[i] << "\t" << expected_outputs1[i] << "\t" << outputs1[i] << "\n";
+			}
+			tm->write_to_tracer( testname, ss.str() );
+			CHECK( expected_outputs1 == outputs1 );
 		}
-		tm->write_to_tracer( testname, ss.str() );
-		CHECK( expected_outputs == outputs );
+
+		{
+			std::vector< Size > const inputs2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+			std::vector< Size > const expected_outputs2{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
+			std::vector< Size > outputs2( inputs2.size(), 0 );
+			std::ostringstream ss;
+			ss << "Input2\tExpected2\tActual2\n";
+			for( Size i(0); i<inputs2.size(); ++i ) {
+				outputs2[i] = inputs2[i];
+				tester.shift_for_interleave( outputs2[i], 31 );
+				ss << inputs2[i] << "\t" << expected_outputs2[i] << "\t" << outputs2[i] << "\n";
+			}
+			tm->write_to_tracer( testname, ss.str() );
+			CHECK( expected_outputs2 == outputs2 );
+		}
+
+		{
+			std::vector< Size > const inputs3{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+			std::vector< Size > const expected_outputs3{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
+			std::vector< Size > outputs3( inputs3.size(), 0 );
+			std::ostringstream ss;
+			ss << "Input2\tExpected2\tActual2\n";
+			for( Size i(0); i<inputs3.size(); ++i ) {
+				outputs3[i] = inputs3[i];
+				tester.shift_for_interleave( outputs3[i], 4 );
+				ss << inputs3[i] << "\t" << expected_outputs3[i] << "\t" << outputs3[i] << "\n";
+			}
+			tm->write_to_tracer( testname, ss.str() );
+			CHECK( expected_outputs3 == outputs3 );
+		}
 	}() );
 }
 
