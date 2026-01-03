@@ -296,7 +296,7 @@ private:
 		masala::base::Size & number,
 		masala::base::Size const leastdim
 	) {
-		DEBUG_MODE_CHECK_OR_THROW( number < masala::base::Size(1e32), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 10^32." );
+		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 		masala::base::Size const number_copy( number << leastdim );
 
