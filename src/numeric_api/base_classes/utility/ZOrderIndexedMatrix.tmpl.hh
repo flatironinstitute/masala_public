@@ -347,7 +347,7 @@ private:
 	) {
 		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
-		masala::base::Size const number_copy( number << leastdim );
+		masala::base::Size const number_copy( ( number >> leastdim ) << ( 2 * leastdim ) );
 
 		number = (number | (number << 16)) & 0x0000ffff0000ffff; // Masks every other block of 16 bits.
 		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff; // Masks every other block of 8 bits.

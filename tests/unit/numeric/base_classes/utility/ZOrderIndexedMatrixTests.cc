@@ -56,15 +56,14 @@ TEST_CASE(
 
 	REQUIRE_NOTHROW([&](){
 		ZOrderIndexedMatrixTester< Size > tester;
-
-		std::vector< Size > const inputs          { 0, 1, 2, 3, 4,   5,  6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-		std::vector< Size > const expected_outputs{ 0, 1, 3, 5, 16, 17, 20, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+		std::vector< Size > const inputs{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+		std::vector< Size > const expected_outputs{ 0, 1, 4, 5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85, 256 };
 		std::vector< Size > outputs( inputs.size(), 0 );
 		std::ostringstream ss;
 		ss << "Input\tExpected\tActual\n"; 
 		for( Size i(0); i<inputs.size(); ++i ) {
 			outputs[i] = inputs[i];
-			tester.shift_for_interleave( outputs[i], 4 );
+			tester.shift_for_interleave( outputs[i], 16 );
 			ss << inputs[i] << "\t" << expected_outputs[i] << "\t" << outputs[i] << "\n";
 		}
 		tm->write_to_tracer( testname, ss.str() );
