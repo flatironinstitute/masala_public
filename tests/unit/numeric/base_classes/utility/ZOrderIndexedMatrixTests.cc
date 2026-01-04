@@ -227,7 +227,7 @@ TEST_CASE(
 
 	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
 
-	std::vector< std::vector< Size > > expected_final_matrix_1{
+	std::vector< std::vector< Size > > const expected_final_matrix_1{
 		std::vector< Size >{  0,  1,  4,  5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85},
 		std::vector< Size >{  2,  3,  6,  7, 18, 19, 22, 23, 66, 67, 70, 71, 82, 83, 86, 87},
 		std::vector< Size >{  8,  9, 12, 13, 24, 25, 28, 29, 72, 73, 76, 77, 88, 89, 92, 93},
@@ -250,23 +250,45 @@ TEST_CASE(
 		std::vector< Size >{266,267,270,271,282,283,286,287,330,331,334,335,346,347,350,351}
 	};
 
+	std::vector< std::vector< Size > > const expected_final_matrix_2{
+		std::vector< Size >{  0,  1,  4,  5, 16, 17, 20, 21, 32, 33},
+		std::vector< Size >{  2,  3,  6,  7, 18, 19, 22, 23, 34, 35},
+		std::vector< Size >{  8,  9, 12, 13, 24, 25, 28, 29, 40, 41},
+		std::vector< Size >{ 10, 11, 14, 15, 26, 27, 30, 31, 42, 43}
+	};
+
 	REQUIRE_NOTHROW([&](){
 		ZOrderIndexedMatrix< Size > mat1( 20, 16 );
+		ZOrderIndexedMatrix< Size > mat2( 4, 10 );
 		CHECK( mat1.allocated_array_size() == 512 );
+		CHECK( mat2.allocated_array_size() == 64 );
 
 		Size * data1( mat1.data_nonconst() );
+		Size * data2( mat2.data_nonconst() );
 		for( Size i(0); i<512; ++i ) {
 			data1[i] = i;
+			if( i < 64 ){
+				data2[i] = i;
+			}
 		}
 
 		std::ostringstream ss1;
-		tm->write_to_tracer( testname, "Matrix 1 after overwriting data array:");
+		ss1 << "Matrix 1 after overwriting data array:" << "\n";
 		for( Size row(0); row<20; ++row ) {
 			if(row > 0) { ss1 << "\n"; }
 			for( Size col(0); col<16; ++col ) {
 				if(col > 0) { ss1 << "\t"; }
 				ss1 << mat1(row, col);
 				CHECK( mat1(row, col) == expected_final_matrix_1[row][col] );
+			}
+		}
+		ss1 << "\nMatrix 2 after overwriting data array:" << "\n";
+		for( Size row(0); row<4; ++row ) {
+			if(row > 0) { ss1 << "\n"; }
+			for( Size col(0); col<10; ++col ) {
+				if(col > 0) { ss1 << "\t"; }
+				ss1 << mat2(row, col);
+				CHECK( mat2(row, col) == expected_final_matrix_2[row][col] );
 			}
 		}
 		tm->write_to_tracer( testname, ss1.str() );
