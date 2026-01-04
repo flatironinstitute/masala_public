@@ -378,7 +378,7 @@ private:
 
 		masala::base::Size const leastdim( std::min(row_dimension_log2, col_dimension_log2) );
 		shift_for_interleave(row, leastdim );
-		shift_for_interleave(col, leastdim );
+		shift_for_interleave(col, leastdim+1 );
 
 		return (row << 1) | col;
 	}
