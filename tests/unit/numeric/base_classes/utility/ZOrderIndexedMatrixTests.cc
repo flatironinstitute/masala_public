@@ -215,6 +215,65 @@ TEST_CASE(
 }
 
 TEST_CASE(
+	"Test initializing non-square ZOrderIndexedMatrix instances.",
+	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
+	"[instantiation]"
+	"[storage]"
+) {
+		using masala::base::Size;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	std::vector< std::vector< Size > > expected_final_matrix_1{
+		std::vector< Size >{  0,  1,  4,  5, 16, 17, 20, 21, 64, 65, 68, 69, 80, 81, 84, 85},
+		std::vector< Size >{  2,  3,  6,  7, 18, 19, 22, 23, 66, 67, 70, 71, 82, 83, 86, 87},
+		std::vector< Size >{  8,  9, 12, 13, 24, 25, 28, 29, 72, 73, 76, 77, 88, 89, 92, 93},
+		std::vector< Size >{ 10, 11, 14, 15, 26, 27, 30, 31, 74, 75, 78, 79, 90, 91, 94, 95},
+		std::vector< Size >{ 32, 33, 36, 37, 48, 49, 52, 53, 96, 97,100,101,112,113,116,117},
+		std::vector< Size >{ 34, 35, 38, 39, 50, 51, 54, 55, 98, 99,102,103,114,115,118,119},
+		std::vector< Size >{ 40, 41, 44, 45, 56, 57, 60, 61,104,105,108,109,120,121,124,125},
+		std::vector< Size >{ 42, 43, 46, 47, 58, 59, 62, 63,106,107,110,111,122,123,126,127},
+		std::vector< Size >{128,129,132,133,144,145,148,149,192,193,196,197,208,209,212,213},
+		std::vector< Size >{130,131,134,135,146,147,150,151,194,195,198,199,210,211,214,215},
+		std::vector< Size >{136,137,140,141,152,153,156,157,200,201,204,205,216,217,220,221},
+		std::vector< Size >{138,139,142,143,154,155,158,159,202,203,206,207,218,219,222,223},
+		std::vector< Size >{160,161,164,165,176,177,180,181,224,225,228,229,240,241,244,245},
+		std::vector< Size >{162,163,166,167,178,179,182,183,226,227,230,231,242,243,246,247},
+		std::vector< Size >{168,169,172,173,184,185,188,189,232,233,236,237,248,249,252,253},
+		std::vector< Size >{170,171,174,175,186,187,190,191,234,235,238,239,250,251,254,255},
+		std::vector< Size >{256,257,260,261,272,273,276,277,320,321,324,325,336,337,340,341},
+		std::vector< Size >{258,259,262,263,274,275,278,279,322,323,326,327,338,339,342,343},
+		std::vector< Size >{264,265,268,269,280,281,284,285,328,329,332,333,344,345,348,349},
+		std::vector< Size >{266,267,270,271,282,283,286,287,330,331,334,335,346,347,350,351}
+	};
+
+	REQUIRE_NOTHROW([&](){
+		ZOrderIndexedMatrix< Size > mat1( 20, 16 );
+		CHECK( mat1.allocated_array_size() == 512 );
+
+		Size * data1( mat1.data_nonconst() );
+		for( Size i(0); i<512; ++i ) {
+			data1[i] = i;
+		}
+
+		std::ostringstream ss1;
+		tm->write_to_tracer( testname, "Matrix 1 after overwriting data array:");
+		for( Size row(0); row<20; ++row ) {
+			if(row > 0) { ss1 << "\n"; }
+			for( Size col(0); col<16; ++col ) {
+				if(col > 0) { ss1 << "\t"; }
+				ss1 << mat1(row, col);
+				CHECK( mat1(row, col) == expected_final_matrix_1[row][col] );
+			}
+		}
+		tm->write_to_tracer( testname, ss1.str() );
+	}() );
+}
+
+TEST_CASE(
 	"Test resizing the ZOrderIndexedMatrix class with unsigned integer values.",
 	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
 	"[instantiation]"
