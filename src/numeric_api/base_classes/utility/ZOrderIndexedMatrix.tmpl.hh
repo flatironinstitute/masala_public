@@ -43,6 +43,7 @@
 #include <string>
 #include <utility>
 #include <bitset>
+//#include <iostream> // DELETE ME
 
 namespace masala {
 namespace numeric_api {
@@ -342,7 +343,7 @@ private:
 	static
 	void
 	shift_for_interleave(
-		masala::base::Size & number,
+		volatile masala::base::Size & number,
 		masala::base::Size leastdim
 	) {
 		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
@@ -352,6 +353,7 @@ private:
 
 		masala::base::Size const mask(  (1 << leastdim) - 1 );
 		masala::base::Size const number_copy( ( number - (number & mask) ) << leastdim );
+		//std::cout << number_copy << std::endl; // DELETE ME
 
 		number = (number | (number << 16)) & 0x0000ffff0000ffff; // Masks every other block of 16 bits.
 		number = (number | (number << 8 )) & 0x00ff00ff00ff00ff; // Masks every other block of 8 bits.
