@@ -77,7 +77,10 @@ public:
 	) :
 		masala::base::MasalaNoAPIObject(),
 		rows_( rows ),
-		cols_( cols )
+		cols_( cols ),
+		array_( nullptr ),
+		allocated_array_size_( 0 ),
+		allocated_matrix_cols_or_rows_( 0 )
 	{
 		protected_resize_array( 0, 0, rows_, cols_ );
 	}
@@ -237,12 +240,11 @@ protected:
 
 					// Copy old data:
 					Size const old_maxdim_sq( old_maxdim_round * old_maxdim_round );
-					for( Size i(0); i<old_maxdim_sq; ++i ) {
-						std::pair< Size, Size > const coord( array_coord_to_matrix_coord( old_maxdim_round, i ) );
-						if( coord.first < rows && coord.second < cols ) {
-							Size const new_i( matrix_coord_to_array_coord( maxdim_round, coord.first, coord.second ) );
-							DEBUG_MODE_CHECK_OR_THROW_FOR_CLASS( new_i < maxdimsq, "protected_resize_array", "Destination array index out of bounds.  This is a program error.  Please consult a developer, as this ought not to happen." );
-							array_[ new_i ] = old_array[i];
+					for( Size irow(0); irow < std::min( oldrows, rows ); ++irow ) {
+						for( Size icol(0); icol < std::min( oldcols, cols ); ++icol ) {
+							Size const old_i( matrix_coord_to_array_coord( old_maxdim_round, irow, icol ) );
+							Size const new_i( matrix_coord_to_array_coord( maxdim_round, irow, icol ) );
+							array_[ new_i ] = old_array[ old_i ];
 						}
 					}
 				}
@@ -333,29 +335,6 @@ private:
 			rotate_and_flip_quadrant(dimension, row, col, rx, ry);
 		}
 		return lincoord;
-	}
-
-	/// @brief Convert the linear coordinate in the array to matrix row and column.
-	/// @param dimension The dimension of the matrix.  Assumed to be an even power of 2.
-	/// @param array_coord The index in the array used for data storage.
-	/// @returns A pair of (row, col) indicating the coordinates in the matrix.
-	inline
-	std::pair< masala::base::Size, masala::base::Size >
-	array_coord_to_matrix_coord(
-		masala::base::Size const dimension,
-		masala::base::Size const array_coord
-	) const {
-		masala::base::Size rx, ry, local_array_coord(array_coord);
-		masala::base::Size col(0), row(0);
-		for (masala::base::Size localdimension(1); localdimension<dimension; localdimension*=2) {
-			rx = 1 & (local_array_coord/2);
-			ry = 1 & (local_array_coord ^ rx);
-			rotate_and_flip_quadrant(localdimension, row, col, rx, ry);
-			col += localdimension * rx;
-			row += localdimension * ry;
-			local_array_coord /= 4;
-		}
-		return std::make_pair( row, col );
 	}
 
 private:
