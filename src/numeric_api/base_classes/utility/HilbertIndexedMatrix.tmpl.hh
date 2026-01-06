@@ -216,7 +216,6 @@ protected:
 		using masala::base::Size;
 
 		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
-		bool new_allocation(false);
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
@@ -224,12 +223,12 @@ protected:
 			if( maxdim_round != old_maxdim_round ) {
 				Size const maxdimsq( maxdim_round*maxdim_round );
 				array_ = new T[maxdimsq];
-				new_allocation = true;
 				if( array_ == nullptr ) {
 					allocated_array_size_ = 0;
 					allocated_matrix_cols_or_rows_ = 0;
 					if( old_array != nullptr ) {
 						delete[] old_array;
+						old_array = nullptr;
 						MASALA_THROW( class_namespace() + "::" + class_name(), "protected_resize_array", "Unable to allocate array of size " + std::to_string( maxdimsq * sizeof(T) ) + " bytes." );
 					}
 				} else {
@@ -252,11 +251,11 @@ protected:
 			array_ = nullptr;
 			allocated_array_size_ = 0;
 			allocated_matrix_cols_or_rows_ = 0;
-			new_allocation = true;
 		}
 
-		if( old_array != nullptr && new_allocation ) {
+		if( old_array != nullptr && old_array != array_ ) {
 			delete[] old_array;
+			old_array = nullptr;
 		}
 	}
 
