@@ -343,8 +343,8 @@ private:
 	static
 	void
 	shift_for_interleave(
-		volatile masala::base::Size & number,
-		masala::base::Size leastdim
+		masala::base::Size & number,
+		volatile masala::base::Size leastdim
 	) {
 		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
 		DEBUG_MODE_CHECK_OR_THROW( leastdim > 0, "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected leastdim to be greater than 0." );
