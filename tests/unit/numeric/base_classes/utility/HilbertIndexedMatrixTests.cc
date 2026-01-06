@@ -139,6 +139,35 @@ TEST_CASE(
 }
 
 TEST_CASE(
+	"Test resizing the HilbertIndexedMatrix class with Real values.",
+	"[numeric_api::base_classes::utility::HilbertIndexedMatrix]"
+	"[instantiation]"
+	"[resizing]"
+) {
+	using masala::base::Size;
+	using masala::base::Real;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	//MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	REQUIRE_NOTHROW([&](){
+		HilbertIndexedMatrix< Real > mat( 1, 1 );
+		mat(0, 0) = 3.14;
+
+		CHECK( mat(0,0) == 3.14 );
+
+		mat.conservativeResize(1, 2);
+		mat(0, 1) = 6.28;
+
+		CHECK( mat(0,0) == 3.14 );
+		CHECK( mat(0,1) == 6.28 );
+
+	}() );
+}	
+
+TEST_CASE(
 	"Test resizing the HilbertIndexedMatrix class with unsigned integer values.",
 	"[numeric_api::base_classes::utility::HilbertIndexedMatrix]"
 	"[instantiation]"
