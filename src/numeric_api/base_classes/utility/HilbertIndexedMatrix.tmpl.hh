@@ -88,7 +88,38 @@ public:
 	}
 
 	/// @brief Copy constructor.
-	HilbertIndexedMatrix( HilbertIndexedMatrix const & ) = default;
+	HilbertIndexedMatrix(
+		HilbertIndexedMatrix const & src
+	) {
+		rows_ = src.rows_;
+		cols_ = src.cols_;
+		array_ = new T[src.allocated_array_size_];
+		allocated_array_size_ = src.allocated_array_size_;
+		allocated_matrix_cols_or_rows_ = src.allocated_matrix_cols_or_rows_;
+		for( masala::base::Size i(0); i<allocated_array_size_; ++i ) {
+			array_[i] = src.array_[i];
+		}
+	}
+
+	/// @brief Assignment operator.
+	HilbertIndexedMatrix &
+	operator=(
+		HilbertIndexedMatrix const & src
+	) {
+		if( array_ != nullptr ) {
+			delete[] array_;
+			array_ = nullptr;
+		}
+		rows_ = src.rows_;
+		cols_ = src.cols_;
+		array_ = new T[src.allocated_array_size_];
+		allocated_array_size_ = src.allocated_array_size_;
+		allocated_matrix_cols_or_rows_ = src.allocated_matrix_cols_or_rows_;
+		for( masala::base::Size i(0); i<allocated_array_size_; ++i ) {
+			array_[i] = src.array_[i];
+		}
+		return *this;
+	}
 
 	/// @brief Destructor.
 	~HilbertIndexedMatrix() override {
