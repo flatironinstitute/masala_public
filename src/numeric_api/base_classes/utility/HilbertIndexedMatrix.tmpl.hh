@@ -42,6 +42,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <iostream> // DELETE ME
 
 namespace masala {
 namespace numeric_api {
@@ -82,6 +83,7 @@ public:
 		allocated_array_size_( 0 ),
 		allocated_matrix_cols_or_rows_( 0 )
 	{
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		protected_resize_array( 0, 0, rows_, cols_ );
 	}
 
@@ -93,6 +95,7 @@ public:
 		if( array_ != nullptr ) {
 			delete[] array_;
 			array_ = nullptr;
+			std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		}
 	}
 
@@ -126,6 +129,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
 	}
 
@@ -139,6 +143,7 @@ public:
 			+ " rows and " + std::to_string( cols_ ) + " columns.  Indices (" + std::to_string(row) + "," + std::to_string(col)
 			+ ") are out of bounds."
 		);
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		return array_[ matrix_coord_to_array_coord( allocated_matrix_cols_or_rows_, row, col ) ];
 	}
 
@@ -148,6 +153,7 @@ public:
 	inline
 	T const *
 	data() const {
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		return array_;
 	}
 
@@ -157,6 +163,7 @@ public:
 	inline
 	T *
 	data_nonconst() {
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 		return array_;
 	}
 	
@@ -178,6 +185,7 @@ public:
 	void
 	setZero() {
 		using masala::base::Size;
+		std::cout << "array_ pointer = " << array_ << std::endl; // DELETE ME
 
 		for( Size i(0); i<allocated_array_size_; ++i ) {
 			array_[i] = T(0);
@@ -219,6 +227,7 @@ protected:
 		using masala::base::Size;
 
 		Size const old_maxdim_round( compute_power_of_two_size( oldrows, oldcols ) );
+		std::cout << "protected_resize_array() start: array_ pointer = " << array_ << std::endl; // DELETE ME
 
 		T const * old_array = array_;
 		if( rows > 0 && cols > 0 ) {
@@ -259,6 +268,8 @@ protected:
 			delete[] old_array;
 			old_array = nullptr;
 		}
+
+		std::cout << "protected_resize_array() end: array_ pointer = " << array_ << std::endl; // DELETE ME
 	}
 
 private:
