@@ -269,8 +269,6 @@ protected:
 		Size const old_maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldrows) ) ) ) );
 		Size const old_maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldcols) ) ) ) );
 
-		bool new_allocation(false);
-
 		T const * old_array = array_;
 
 		if( rows > 0 && cols > 0 ) {
@@ -282,7 +280,6 @@ protected:
 				Size const maxdim_cols( Size(1) << maxdim_cols_log2 );
 				Size const maxdimsq( maxdim_rows*maxdim_cols );
 				array_ = new T[maxdimsq];
-				new_allocation = true;
 				if( array_ == nullptr ) {
 					// Allocation failure.
 					allocated_array_size_ = 0;
@@ -321,10 +318,9 @@ protected:
 			allocated_matrix_cols_log2_ = 0;
 			allocated_matrix_rows_ = 0;
 			allocated_matrix_rows_log2_ = 0;
-			new_allocation = true;
 		}
 
-		if( old_array != nullptr && new_allocation ) {
+		if( old_array != nullptr && old_array != array_ ) {
 			delete[] old_array;
 		}
 	}
