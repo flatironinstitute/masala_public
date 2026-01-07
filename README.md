@@ -96,7 +96,7 @@ Masala is released under an AGPL version 3 licence.  This licence permits anyone
 
 ## Version history
 
-* Version 1.8: Fixed a small error in the ZOrderIndexedMatrix caused by compiler optimization altering bitwise operations in release mode.
+* Version 1.8: Fixed a small error in the ZOrderIndexedMatrix caused by compiler optimization altering bitwise operations in release mode.  Also added missing assignment operators for ZOrderIndexedMatrix and HilbertIndexedMatrix.
 * Version 1.7: Add a matrix indexed in Z-order, for more efficient searches of data in matrices with fewer cache misses.
 * Version 1.6: Fix an occasional bug when applications that link Masala terminate, caused by the order in which Masala's singletons (particularly the thread manager and the tracer manager) are destroyed.
 * Version 1.5: Update buildscripts to remove language feature incompatible with Python older than version 3.9 (tuple type hinting).
