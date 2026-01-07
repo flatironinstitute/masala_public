@@ -43,7 +43,7 @@
 #include <string>
 #include <utility>
 #include <bitset>
-//#include <iostream> // DELETE ME
+#include <iostream> // DELETE ME
 
 namespace masala {
 namespace numeric_api {
@@ -128,13 +128,51 @@ public:
 	) :
 		masala::base::MasalaNoAPIObject(),
 		rows_( rows ),
-		cols_( cols )
+		cols_( cols ),
+		array_( nullptr )
 	{
 		protected_resize_array( 0, 0, rows_, cols_ );
 	}
 
 	/// @brief Copy constructor.
-	ZOrderIndexedMatrix( ZOrderIndexedMatrix const & ) = default;
+	ZOrderIndexedMatrix(
+		ZOrderIndexedMatrix const & src
+	) {
+		rows_ = src.rows_;
+		cols_ = src.cols_;
+		array_ = new T[src.allocated_array_size_];
+		allocated_array_size_ = src.allocated_array_size_;
+		allocated_matrix_rows_ = src.allocated_matrix_rows_;
+		allocated_matrix_rows_log2_ = src.allocated_matrix_rows_log2_;
+		allocated_matrix_cols_ = src.allocated_matrix_cols_;
+		allocated_matrix_cols_log2_ = src.allocated_matrix_cols_log2_;
+		for( masala::base::Size i(0); i<allocated_array_size_; ++i ) {
+			array_[i] = src.array_[i];
+		}
+	}
+
+	/// @brief Assignment operator.
+	ZOrderIndexedMatrix &
+	operator=(
+		ZOrderIndexedMatrix const & src
+	) {
+		if( array_ != nullptr ) {
+			delete[] array_;
+			array_ = nullptr;
+		}
+		rows_ = src.rows_;
+		cols_ = src.cols_;
+		array_ = new T[src.allocated_array_size_];
+		allocated_array_size_ = src.allocated_array_size_;
+		allocated_matrix_rows_ = src.allocated_matrix_rows_;
+		allocated_matrix_rows_log2_ = src.allocated_matrix_rows_log2_;
+		allocated_matrix_cols_ = src.allocated_matrix_cols_;
+		allocated_matrix_cols_log2_ = src.allocated_matrix_cols_log2_;
+		for( masala::base::Size i(0); i<allocated_array_size_; ++i ) {
+			array_[i] = src.array_[i];
+		}
+		return *this;
+	}
 
 	/// @brief Destructor.
 	~ZOrderIndexedMatrix() override {
@@ -266,6 +304,8 @@ protected:
 	) {
 		using masala::base::Size;
 
+		std::cout << "protected_resize_array() start: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
+
 		Size const old_maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldrows) ) ) ) );
 		Size const old_maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldcols) ) ) ) );
 
@@ -275,7 +315,10 @@ protected:
 			Size const maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(rows) ) ) ) );
 			Size const maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(cols) ) ) ) );
 
-			if( (maxdim_rows_log2 != old_maxdim_rows_log2) || (maxdim_cols_log2 != old_maxdim_cols_log2) ) {
+			if(
+				( ( oldrows == 0 || oldcols == 0 ) && ( rows != 0 && cols != 0 ) ) ||
+				( (maxdim_rows_log2 != old_maxdim_rows_log2) || (maxdim_cols_log2 != old_maxdim_cols_log2) )
+			) {
 				Size const maxdim_rows( Size(1) << maxdim_rows_log2 );
 				Size const maxdim_cols( Size(1) << maxdim_cols_log2 );
 				Size const maxdimsq( maxdim_rows*maxdim_cols );
@@ -322,7 +365,10 @@ protected:
 
 		if( old_array != nullptr && old_array != array_ ) {
 			delete[] old_array;
+			old_array = nullptr;
 		}
+
+		std::cout << "protected_resize_array() end: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
 	}
 
 private:
@@ -343,8 +389,9 @@ private:
 		volatile masala::base::Size leastdim
 	) {
 		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
-		DEBUG_MODE_CHECK_OR_THROW( leastdim > 0, "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected leastdim to be greater than 0." );
-		--leastdim;
+		if( leastdim > 0 ) {
+			--leastdim;
+		}
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 
 		masala::base::Size const mask(  (1 << leastdim) - 1 );
