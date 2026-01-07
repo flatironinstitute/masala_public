@@ -43,7 +43,7 @@
 #include <string>
 #include <utility>
 #include <bitset>
-#include <iostream> // DELETE ME
+//#include <iostream> // DELETE ME
 
 namespace masala {
 namespace numeric_api {
@@ -304,7 +304,7 @@ protected:
 	) {
 		using masala::base::Size;
 
-		std::cout << "protected_resize_array() start: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
+		// std::cout << "protected_resize_array() start: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
 
 		Size const old_maxdim_rows_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldrows) ) ) ) );
 		Size const old_maxdim_cols_log2( static_cast< Size >( std::ceil( std::log2( static_cast<double>(oldcols) ) ) ) );
@@ -368,7 +368,7 @@ protected:
 			old_array = nullptr;
 		}
 
-		std::cout << "protected_resize_array() end: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
+		// std::cout << "protected_resize_array() end: this = " << this << " array_ pointer = " << array_ << std::endl; // DELETE ME
 	}
 
 private:
