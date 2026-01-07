@@ -153,7 +153,8 @@ TEST_CASE(
 	//MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
 
 	REQUIRE_NOTHROW([&](){
-		HilbertIndexedMatrix< Real > mat( 1, 1 );
+		HilbertIndexedMatrix< Real > mat;
+		mat.conservativeResize(1, 1);
 		mat(0, 0) = 3.14;
 
 		CHECK( mat(0,0) == 3.14 );
@@ -163,6 +164,13 @@ TEST_CASE(
 
 		CHECK( mat(0,0) == 3.14 );
 		CHECK( mat(0,1) == 6.28 );
+
+		mat.conservativeResize(1, 3);
+		mat( 0, 2 ) = 42.42;
+		
+		CHECK( mat(0,0) == 3.14 );
+		CHECK( mat(0,1) == 6.28 );
+		CHECK( mat(0,2) == 42.42 );
 
 	}() );
 }	
