@@ -296,6 +296,91 @@ TEST_CASE(
 }
 
 TEST_CASE(
+	"Test assignment with the ZOrderIndexedMatrix class with Real values.",
+	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
+	"[instantiation]"
+	"[assignment]"
+) {
+	using masala::base::Size;
+	using masala::base::Real;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	//MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	REQUIRE_NOTHROW([&](){
+		ZOrderIndexedMatrix< Real > mat2;
+		{
+			ZOrderIndexedMatrix< Real > mat1;
+			mat1.conservativeResize(2, 2);
+			mat1(0, 0) = 3.14;
+			mat1(0, 1) = 6.28;
+			mat1(1, 0) = 42.42;
+			mat1(1, 1) = 11.11;
+
+			CHECK( mat1(0,0) == 3.14 );
+			CHECK( mat1(0,1) == 6.28 );
+			CHECK( mat1(1,0) == 42.42 );
+			CHECK( mat1(1,1) == 11.11 );
+
+			mat2 = mat1;
+
+			CHECK( mat2(0,0) == 3.14 );
+			CHECK( mat2(0,1) == 6.28 );
+			CHECK( mat2(1,0) == 42.42 );
+			CHECK( mat2(1,1) == 11.11 );
+			// At this point, mat1 goes out of scope and is destroyed.
+		}
+
+		CHECK( mat2.cols() == 2 );
+		CHECK( mat2.rows() == 2 );
+
+		CHECK( mat2(0,0) == 3.14 );
+		CHECK( mat2(0,1) == 6.28 );
+		CHECK( mat2(1,0) == 42.42 );
+		CHECK( mat2(1,1) == 11.11 );
+	}() );
+}
+
+TEST_CASE(
+	"Test resizing the ZOrderIndexedMatrix class with Real values.",
+	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
+	"[instantiation]"
+	"[resizing]"
+) {
+	using masala::base::Size;
+	using masala::base::Real;
+	using namespace masala::numeric_api::base_classes::utility;
+	using namespace masala::base::utility::container;
+	using namespace masala::base::managers::tracer;
+
+	//MasalaTracerManagerHandle tm(MasalaTracerManager::get_instance() );
+
+	REQUIRE_NOTHROW([&](){
+		ZOrderIndexedMatrix< Real > mat;
+		mat.conservativeResize(1, 1);
+		mat(0, 0) = 3.14;
+
+		CHECK( mat(0,0) == 3.14 );
+
+		mat.conservativeResize(1, 2);
+		mat(0, 1) = 6.28;
+
+		CHECK( mat(0,0) == 3.14 );
+		CHECK( mat(0,1) == 6.28 );
+
+		mat.conservativeResize(1, 3);
+		mat( 0, 2 ) = 42.42;
+		
+		CHECK( mat(0,0) == 3.14 );
+		CHECK( mat(0,1) == 6.28 );
+		CHECK( mat(0,2) == 42.42 );
+
+	}() );
+}
+
+TEST_CASE(
 	"Test resizing the ZOrderIndexedMatrix class with unsigned integer values.",
 	"[numeric_api::base_classes::utility::ZOrderIndexedMatrix]"
 	"[instantiation]"

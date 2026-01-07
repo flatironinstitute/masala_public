@@ -221,7 +221,7 @@ TEST_CASE(
 		CHECK( mat(0,2) == 42.42 );
 
 	}() );
-}	
+}
 
 TEST_CASE(
 	"Test resizing the HilbertIndexedMatrix class with unsigned integer values.",
