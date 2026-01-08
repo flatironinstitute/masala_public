@@ -386,7 +386,7 @@ private:
 	void
 	shift_for_interleave(
 		masala::base::Size & number,
-		volatile masala::base::Size leastdim
+		masala::base::Size leastdim
 	) {
 		DEBUG_MODE_CHECK_OR_THROW( number < static_cast<masala::base::Size>(std::pow(2,32)), "masala::numeric_api::base_classes::utility::ZOrderIndexedMatrix", "shift_for_interleave", "Expected an input less than 2^32." );
 		if( leastdim > 0 ) {
@@ -394,7 +394,7 @@ private:
 		}
 		static_assert( sizeof(masala::base::Size) == 8, "Compilation error: expected std::size_t to be 64-bit." );
 
-		masala::base::Size const mask(  (1 << leastdim) - 1 );
+		masala::base::Size const mask(  (std::uint64_t(1) << leastdim) - 1 );
 		masala::base::Size const number_copy( ( number - (number & mask) ) << leastdim );
 		//std::cout << number_copy << std::endl; // DELETE ME
 
@@ -403,7 +403,7 @@ private:
 		number = (number | (number << 4 )) & 0x0f0f0f0f0f0f0f0f; // Masks every other block of 4 bits.
 		number = (number | (number << 2 )) & 0x3333333333333333; // Masks every other block of 2 bits.
 		number = (number | (number << 1 )) & 0x5555555555555555; // Masks every 2nd bit.
-		number = ( number & ((1 << ( leastdim * 2 ) ) - 1) ) | number_copy;
+		number = ( number & ((std::uint64_t(1) << ( leastdim * 2 ) ) - 1) ) | number_copy;
 	}
 
 	/// @brief Convert matrix coordinates to the linear coordinate in the array.
