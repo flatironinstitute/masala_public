@@ -1,10 +1,10 @@
 # Masala Core library
 
-![Masala logo](logos/Masala_logo_v3_sm.png)
+<img src="logos/Masala_logo_v4_sm.png" alt="Masala logo" width="512"/>
 
 ## Version
 
-Masala's Core library is currently version 1.8.
+Masala's Core library is currently version 1.9.
 
 ## Description
 
@@ -96,6 +96,7 @@ Masala is released under an AGPL version 3 licence.  This licence permits anyone
 
 ## Version history
 
+* Version 1.9: Update logo and citations. 
 * Version 1.8: Fixed a small error in the ZOrderIndexedMatrix caused by compiler optimization altering bitwise operations in release mode.  Also added missing assignment operators for ZOrderIndexedMatrix and HilbertIndexedMatrix.
 * Version 1.7: Add a matrix indexed in Z-order, for more efficient searches of data in matrices with fewer cache misses.
 * Version 1.6: Fix an occasional bug when applications that link Masala terminate, caused by the order in which Masala's singletons (particularly the thread manager and the tracer manager) are destroyed.

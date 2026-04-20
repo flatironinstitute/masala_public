@@ -1,10 +1,10 @@
 \mainpage Masala Core library
 
-\image html Masala_logo_v3_sm.png width=512px
+\image html Masala_logo_v4_sm.png width=512px
 
 ## Description
 
-The Masala Core library version 1.8 defines the plugin system, the API definition system, and static singletons for managing shared resources like memory, output loggers (tracers), disk i/o, CPU threads, and MPI processes.  It also defines base classes for certain types of Masala plugin modules.
+The Masala Core library version 1.9 defines the plugin system, the API definition system, and static singletons for managing shared resources like memory, output loggers (tracers), disk i/o, CPU threads, and MPI processes.  It also defines base classes for certain types of Masala plugin modules.
 
 ## Authors
 
@@ -34,6 +34,7 @@ If you link this library at compilation time, it is _only_ safe to directly call
 
 ## Version history
 
+* Version 1.9: Update logo and citations. 
 * Version 1.8: Fixed a small error in the ZOrderIndexedMatrix caused by compiler optimization altering bitwise operations in release mode.  Also added missing assignment operators for ZOrderIndexedMatrix and HilbertIndexedMatrix.
 * Version 1.7: Add a matrix indexed in Z-order, for more efficient searches of data in matrices with fewer cache misses.
 * Version 1.6: Fix an occasional bug when applications that link Masala terminate, caused by the order in which Masala's singletons (particularly the thread manager and the tracer manager) are destroyed.
